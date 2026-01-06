@@ -1,6 +1,6 @@
 /**
- * Manya Set Theory Engine (Pro UI - Mobile Fix)
- * Restores the "Polished" look but ensures the Control Card is NEVER hidden.
+ * Manya Set Theory Engine (Stacked Mobile Layout)
+ * Features: Vertical Input/Button Stack, Big Touch Targets, and Safe Area Padding.
  */
 export const SetTheoryEngine = {
     state: {
@@ -22,17 +22,17 @@ export const SetTheoryEngine = {
             .set-root {
                 display: flex; 
                 flex-direction: column;
-                height: 100dvh; /* Use Dynamic Viewport Height for mobile browsers */
+                height: 100dvh; 
                 width: 100%;
                 background: #f8fafc; 
                 overflow: hidden; 
                 position: relative;
             }
             
-            /* CANVAS WRAPPER - The key fix is min-height: 0 */
+            /* CANVAS WRAPPER */
             .canvas-wrapper {
-                flex: 1; /* Grow to fill space */
-                min-height: 0; /* CRITICAL: Allows this container to shrink! */
+                flex: 1; 
+                min-height: 0; 
                 display: flex; 
                 align-items: center; 
                 justify-content: center;
@@ -47,10 +47,9 @@ export const SetTheoryEngine = {
                 background: white;
                 max-width: 100%;
                 max-height: 100%;
-                object-fit: contain; /* Ensures canvas scales down without distortion */
+                object-fit: contain;
             }
 
-            /* HINT BUTTON */
             .hint-pill {
                 position: absolute; top: 15px; right: 15px;
                 background: white; border: 1px solid #e2e8f0;
@@ -59,30 +58,36 @@ export const SetTheoryEngine = {
                 box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
                 transition: 0.2s; z-index: 20; display: flex; align-items: center; gap: 6px;
             }
-            .hint-pill:active { transform: scale(0.95); }
 
-            /* CONTROL CARD - Always stick to bottom */
+            /* CONTROL CARD - STACKED LAYOUT */
             .control-card {
-                flex-shrink: 0; /* Prevent this from being squashed */
+                flex-shrink: 0; 
                 background: white; 
-                padding: 20px;
-                padding-bottom: max(20px, env(safe-area-inset-bottom)); /* iOS Safety */
+                padding: 24px 20px 30px 20px; /* Extra bottom padding pushes it up */
                 border-top-left-radius: 24px; border-top-right-radius: 24px;
                 box-shadow: 0 -10px 40px rgba(0,0,0,0.08);
                 z-index: 30;
-                display: flex; flex-direction: column; gap: 12px;
+                display: flex; flex-direction: column; gap: 14px;
             }
 
             .q-text { 
                 font-size: 1.15rem; font-weight: 700; color: var(--text-dark); 
-                text-align: center; margin-bottom: 5px; 
+                text-align: center; margin-bottom: 4px;
             }
             
-            .input-group { display: flex; gap: 10px; height: 48px; }
+            /* STACKED INPUT GROUP */
+            .input-group { 
+                display: flex; 
+                flex-direction: column; /* Vertical Stack */
+                gap: 12px; 
+                width: 100%;
+            }
 
             .set-input {
-                flex: 1; font-size: 1.2rem; text-align: center; font-weight: 700;
-                border: 2px solid #e2e8f0; border-radius: 12px; outline: none;
+                width: 100%;
+                height: 54px; /* Big touch target */
+                font-size: 1.4rem; text-align: center; font-weight: 700;
+                border: 2px solid #e2e8f0; border-radius: 14px; outline: none;
                 color: var(--text-dark); background: #f8fafc;
                 transition: all 0.2s;
             }
@@ -92,16 +97,19 @@ export const SetTheoryEngine = {
             }
 
             .check-btn {
+                width: 100%;
+                height: 54px; /* Big button matching input */
                 background: var(--manya-purple); color: white;
-                border: none; border-radius: 12px; padding: 0 25px;
-                font-weight: 700; font-size: 1rem; cursor: pointer;
-                transition: 0.2s;
+                border: none; border-radius: 14px; 
+                font-weight: 700; font-size: 1.1rem; cursor: pointer;
+                transition: 0.2s; display: flex; align-items: center; justify-content: center;
+                box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
             }
-            .check-btn:active { transform: scale(0.96); opacity: 0.9; }
+            .check-btn:active { transform: scale(0.98); opacity: 0.9; }
 
             .feedback-msg { 
-                text-align: center; font-size: 0.9rem; font-weight: 700; 
-                min-height: 20px; margin-top: -5px;
+                text-align: center; font-size: 0.95rem; font-weight: 700; 
+                min-height: 20px; margin-top: 4px;
             }
         `;
         document.head.appendChild(style);
@@ -124,7 +132,7 @@ export const SetTheoryEngine = {
                     <div id="q-display" class="q-text">Loading...</div>
                     <div class="input-group">
                         <input type="text" id="user-ans" class="set-input" placeholder="?" autocomplete="off" inputmode="text">
-                        <button id="btn-check" class="check-btn">CHECK</button>
+                        <button id="btn-check" class="check-btn">CHECK ANSWER</button>
                     </div>
                     <div id="feedback" class="feedback-msg"></div>
                 </div>
@@ -134,40 +142,33 @@ export const SetTheoryEngine = {
         const canvas = document.getElementById('set-canvas');
         SetTheoryEngine.state.ctx = canvas.getContext('2d');
         
-        // --- RESIZE LOGIC (Scales Canvas Down if Space is Tight) ---
+        // --- RESIZE LOGIC ---
         const handleResize = () => {
             const parent = document.getElementById('canvas-mount');
             if(!parent) return;
             const rect = parent.getBoundingClientRect();
             
-            // Safety: Abort if hidden
             if (rect.width === 0 || rect.height === 0) return;
 
             const dpr = window.devicePixelRatio || 2; 
             
-            // Determine maximum possible size within the flex container
-            // Use 95% of available space to show the "Card" effect
+            // Calculate size - leave a bit of breathing room around canvas
             let targetW = rect.width * 0.95;
             let targetH = rect.height * 0.95;
             
-            // Limit Aspect Ratio (Don't let it get too skinny or too wide)
+            // Aspect Ratio Guard
             if (targetW / targetH > 1.6) targetW = targetH * 1.6;
             if (targetH / targetW > 1.1) targetH = targetW * 1.1;
             
-            // Update Canvas Dimensions
             canvas.width = targetW * dpr;
             canvas.height = targetH * dpr;
-            
-            // Update CSS Dimensions
             canvas.style.width = `${targetW}px`;
             canvas.style.height = `${targetH}px`;
 
             SetTheoryEngine.state.ctx.scale(dpr, dpr);
-            
             SetTheoryEngine.state.width = targetW;
             SetTheoryEngine.state.height = targetH;
             
-            // Dynamic Scale Factor based on width
             SetTheoryEngine.state.scale = Math.min(targetW / 400, 1.4); 
 
             SetTheoryEngine.draw();
@@ -191,7 +192,7 @@ export const SetTheoryEngine = {
         input.value = '';
         input.disabled = false;
         
-        document.getElementById('btn-check').innerText = "CHECK";
+        document.getElementById('btn-check').innerText = "CHECK ANSWER";
         document.getElementById('btn-check').style.background = "var(--manya-purple)";
         document.getElementById('feedback').innerText = "";
         
@@ -238,7 +239,7 @@ export const SetTheoryEngine = {
         if (isCorrect) {
             fb.innerText = "Correct!";
             fb.style.color = "var(--success-color)";
-            btn.innerText = "NEXT";
+            btn.innerText = "NEXT QUESTION";
             btn.style.background = "var(--success-color)";
             document.getElementById('user-ans').disabled = true;
             SetTheoryEngine.state.activeHighlight = q.targetRegion;
@@ -274,12 +275,10 @@ export const SetTheoryEngine = {
         const padding = 30 * s;
         
         const cx = width / 2;
-        const cy = height / 2 + (10 * s); // Offset slightly down for U-Set label
+        const cy = height / 2 + (10 * s); 
 
-        // Radius Calc (Safe and Responsive)
         const availW = width - (padding * 2);
         const availH = height - (padding * 2);
-        // Ensure radius is positive
         const r = Math.max(10, Math.min(availW * 0.28, availH * 0.35)); 
         const offset = r * 0.65;
         
@@ -305,7 +304,7 @@ export const SetTheoryEngine = {
             ctx.restore();
         }
 
-        // 2. UNIVERSAL SET (Box)
+        // 2. UNIVERSAL SET
         ctx.strokeStyle = "#cbd5e1";
         ctx.lineWidth = 2;
         ctx.strokeRect(padding, padding, width - padding*2, height - padding*2);
@@ -317,15 +316,12 @@ export const SetTheoryEngine = {
         // 3. CIRCLES
         ctx.lineWidth = 3.5 * s;
         
-        // Circle A
         ctx.strokeStyle = c1.color;
         ctx.beginPath(); ctx.arc(c1.x, c1.y, c1.r, 0, Math.PI*2); ctx.stroke();
         ctx.fillStyle = c1.color;
         ctx.font = `700 ${20 * s}px "Plus Jakarta Sans", sans-serif`;
-        // Coordinate geometry ensures label stays inside
         ctx.fillText(data.sets.A.label, c1.x - r + (20*s), c1.y - r + (20*s));
 
-        // Circle B
         ctx.strokeStyle = c2.color;
         ctx.beginPath(); ctx.arc(c2.x, c2.y, c2.r, 0, Math.PI*2); ctx.stroke();
         ctx.fillStyle = c2.color;
@@ -339,7 +335,6 @@ export const SetTheoryEngine = {
 
         const drawScatter = (nums, centerX, centerY, radius) => {
             if (!nums || nums.length === 0) return;
-            // Safety check for NaN
             if (isNaN(centerX) || isNaN(centerY)) return;
 
             const positions = [
