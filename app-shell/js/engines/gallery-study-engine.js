@@ -1,6 +1,6 @@
 /**
- * Manya Ultra-Pro Gallery Engine v5
- * Feature: Top-aligned Image, Floating Sidebar Nav, and Non-blocking Bottom Sheet.
+ * Manya Elite Gallery Engine (Tap-to-Toggle Edition)
+ * Feature: Full-image hit detection to toggle notes expansion.
  */
 export const GalleryStudyEngine = {
     injectStyles: () => {
@@ -18,101 +18,104 @@ export const GalleryStudyEngine = {
                 position: relative;
             }
 
-            /* 1. TOP PROGRESS TRACKER */
+            /* PROGRESS TRACKER */
             .p-tracker {
                 display: flex; gap: 6px; padding: 12px 20px;
-                background: white; z-index: 1000;
+                background: white; z-index: 1200;
             }
             .p-bar { flex: 1; height: 4px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
             .p-fill { height: 100%; background: var(--manya-purple); width: 0%; transition: width 0.4s ease; }
             .p-bar.active .p-fill { width: 100%; }
 
-            /* 2. THE STAGE (Pushed up for visibility) */
+            /* IMAGE STAGE (The Hitbox) */
             .gallery-stage {
                 flex: 1;
                 width: 100%;
                 display: flex;
-                align-items: flex-start; /* Pushes image to top */
+                align-items: flex-start;
                 justify-content: center;
                 padding: 10px 20px;
                 box-sizing: border-box;
                 min-height: 0;
                 margin-top: 10px;
+                cursor: pointer; /* Feedback that it's clickable */
             }
 
             .gallery-stage img {
                 max-width: 100%;
-                max-height: 65%; /* Leaves room so text-tab doesn't cover it */
+                max-height: 65%; 
                 object-fit: contain;
                 border-radius: 16px;
                 filter: drop-shadow(0 10px 30px rgba(0,0,0,0.08));
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
-            /* 3. FLOATING SIDE CHEVRONS (Always Visible) */
+            /* FLOATING SIDE NAV */
             .side-nav {
                 position: absolute;
-                top: 40%; /* Center of the image area */
+                top: 40%;
                 left: 0; right: 0;
                 display: flex;
                 justify-content: space-between;
                 padding: 0 10px;
                 pointer-events: none;
-                z-index: 800;
+                z-index: 1000;
             }
 
             .side-btn {
-                width: 44px; height: 44px;
-                border-radius: 50%; border: none;
-                background: rgba(124, 58, 237, 0.9); /* Manya Purple with opacity */
+                width: 46px; height: 46px;
+                border-radius: 50%; border: 2px solid white;
+                background: rgba(124, 58, 237, 0.95); 
                 color: white; font-size: 24px; font-weight: bold;
                 display: flex; align-items: center; justify-content: center;
                 cursor: pointer; pointer-events: auto;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
                 transition: 0.2s;
             }
-            .side-btn:disabled { background: rgba(226, 232, 240, 0.8); color: #94a3b8; box-shadow: none; }
-            .side-btn:active { transform: scale(0.9); }
+            .side-btn:disabled { background: rgba(226, 232, 240, 0.9); color: #94a3b8; border-color: transparent; box-shadow: none; }
 
-            /* 4. SLICK BOTTOM SHEET */
+            /* SLICK EXPANDABLE BOTTOM SHEET */
             .bottom-sheet {
                 position: absolute;
                 bottom: 0; left: 0; right: 0;
                 background: white;
-                border-radius: 30px 30px 0 0;
-                padding: 20px;
-                padding-bottom: env(safe-area-inset-bottom, 20px);
-                box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+                border-radius: 32px 32px 0 0;
+                padding: 24px;
+                padding-bottom: env(safe-area-inset-bottom, 24px);
+                box-shadow: 0 -15px 50px rgba(0,0,0,0.15);
                 z-index: 1100;
+                transform: translateY(calc(100% - 80px)); /* Minimized state */
                 transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
             }
 
-            .bottom-sheet.minimized {
-                transform: translateY(calc(100% - 75px)); /* Only title bar visible */
+            .bottom-sheet.expanded {
+                transform: translateY(0);
             }
 
             .sheet-header {
                 display: flex; justify-content: space-between; align-items: center;
-                margin-bottom: 15px; cursor: pointer; height: 40px;
+                margin-bottom: 20px; cursor: pointer; height: 35px;
             }
 
-            .sheet-title { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 0; }
+            .sheet-title { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 0; pointer-events: none; }
             
-            .sheet-toggle-icon {
-                width: 28px; height: 28px; border-radius: 50%;
+            .toggle-indicator {
+                padding: 6px 12px; border-radius: 12px;
                 background: var(--manya-purple-light); color: var(--manya-purple);
-                display: flex; align-items: center; justify-content: center;
-                font-size: 14px; font-weight: bold; transition: 0.3s;
+                font-size: 11px; font-weight: 800; text-transform: uppercase;
             }
-            .bottom-sheet.minimized .sheet-toggle-icon { transform: rotate(180deg); }
 
             .sheet-content {
-                max-height: 40vh;
+                max-height: 45vh;
                 overflow-y: auto;
                 font-size: 14px;
                 line-height: 1.6;
                 color: #475569;
                 padding-bottom: 10px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
             }
+            .bottom-sheet.expanded .sheet-content { opacity: 1; }
         `;
         document.head.appendChild(style);
     },
@@ -120,7 +123,7 @@ export const GalleryStudyEngine = {
     renderStudy: (container, data) => {
         GalleryStudyEngine.injectStyles();
         let currentIdx = 0;
-        let isMinimized = false;
+        let isExpanded = false;
 
         const refresh = () => {
             const slide = data.slides[currentIdx];
@@ -141,14 +144,17 @@ export const GalleryStudyEngine = {
                         </button>
                     </div>
 
-                    <div class="gallery-stage">
-                        <img src="${slide.image}" alt="Simulation">
+                    <!-- THE IMAGE TRIGGER AREA -->
+                    <div class="gallery-stage" id="img-trigger">
+                        <img src="${slide.image}" alt="Slide">
                     </div>
 
-                    <div class="bottom-sheet ${isMinimized ? 'minimized' : ''}" id="sheet">
-                        <div class="sheet-header" id="sheet-trigger">
+                    <div class="bottom-sheet ${isExpanded ? 'expanded' : ''}" id="sheet">
+                        <div class="sheet-header" id="header-trigger">
                             <h2 class="sheet-title">${slide.title}</h2>
-                            <div class="sheet-toggle-icon">↓</div>
+                            <div class="toggle-indicator" id="status-tag">
+                                ${isExpanded ? 'Hide' : 'Read'}
+                            </div>
                         </div>
                         <div class="sheet-content">
                             ${slide.description}
@@ -157,21 +163,29 @@ export const GalleryStudyEngine = {
                 </div>
             `;
 
-            // BUTTON LOGIC
-            container.querySelector('#prev-btn').onclick = () => {
-                if(currentIdx > 0) { currentIdx--; refresh(); }
+            // NAVIGATION
+            container.querySelector('#prev-btn').onclick = (e) => {
+                e.stopPropagation();
+                if(currentIdx > 0) { currentIdx--; isExpanded = false; refresh(); }
             };
 
-            container.querySelector('#next-btn').onclick = () => {
-                if(currentIdx < data.slides.length - 1) { currentIdx++; refresh(); }
-                else { alert("Module Complete! 🌟"); }
+            container.querySelector('#next-btn').onclick = (e) => {
+                e.stopPropagation();
+                if(currentIdx < data.slides.length - 1) { currentIdx++; isExpanded = false; refresh(); }
+                else { alert("Lesson Complete! 🎓"); }
             };
 
-            // SHEET TOGGLE
-            container.querySelector('#sheet-trigger').onclick = () => {
-                isMinimized = !isMinimized;
-                container.querySelector('#sheet').classList.toggle('minimized');
+            // THE TOGGLE LOGIC (Unified for Image and Header)
+            const toggle = () => {
+                isExpanded = !isExpanded;
+                const sheet = container.querySelector('#sheet');
+                const tag = container.querySelector('#status-tag');
+                sheet.classList.toggle('expanded');
+                tag.innerText = isExpanded ? 'Hide' : 'Read';
             };
+
+            container.querySelector('#img-trigger').onclick = toggle;
+            container.querySelector('#header-trigger').onclick = toggle;
         };
 
         refresh();
