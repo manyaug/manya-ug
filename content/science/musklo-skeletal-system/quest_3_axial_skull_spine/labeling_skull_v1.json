@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Skull Anatomy Quiz",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
+  "hotspots": [
+    { "id": "1", "label": "Cranium", "pos": "38.66 -25.26 -51.43", "norm": "0 1 0" },
+    { "id": "4", "label": "Orbit", "pos": "35.41 -36.51 -49.75", "norm": "0 1 0" },
+    { "id": "5", "label": "Mandible", "pos": "42.91 -42.01 -52.04", "norm": "0 1 0" },
+    { "id": "8", "label": "Maxilla", "pos": "36.04 -40.92 -46.54", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Cranium", "Orbit", "Mandible", "Maxilla", "Femur", "Patella"]
+}

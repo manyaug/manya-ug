@@ -1,0 +1,12 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Flexors & Extensors",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/Relaxed_muscle.png",
+  "hotspots": [
+    { "id": "p5", "label": "Flexor (Biceps)", "x": 72.81, "y": 40.25 },
+    { "id": "p3", "label": "Extensor (Triceps)", "x": 15.08, "y": 56.75 },
+    { "id": "p7", "label": "Stationary Bone", "x": 23.52, "y": 61.12 }
+  ],
+  "wordBank": ["Flexor (Biceps)", "Extensor (Triceps)", "Stationary Bone", "Movable Bone", "Cardiac"]
+}

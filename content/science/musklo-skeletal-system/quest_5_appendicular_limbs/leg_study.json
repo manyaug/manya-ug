@@ -1,0 +1,19 @@
+{
+  "mode": "study",
+  "topic": "Appendicular Skeleton: The Leg",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/Lower_limb.glb",
+  "intro": "The lower limb consists of the Femur, Patella, Tibia, Fibula, and the foot bones.",
+  "notes": [
+    "<b>Femur:</b> The longest and strongest bone in the body.",
+    "<b>Patella:</b> The kneecap that protects the knee joint.",
+    "<b>Tibia:</b> The larger 'shin bone' of the lower leg.",
+    "<b>Tarsals:</b> Bones that make up the ankle."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Femur", "region": "appendicular", "pos": "-0.10 0.67 0.01", "norm": "-0.16 0.00 0.98", "info": "The thigh bone (Longest/Strongest)." },
+    { "id": "2", "label": "Patella", "region": "appendicular", "pos": "-0.08 0.43 0.00", "norm": "-0.09 -0.42 0.90", "info": "The kneecap." },
+    { "id": "3", "label": "Tibia", "region": "appendicular", "pos": "-0.07 0.27 -0.00", "norm": "0.68 -0.10 0.71", "info": "The larger shin bone." },
+    { "id": "4", "label": "Fibula", "region": "appendicular", "pos": "-0.10 0.24 -0.04", "norm": "-0.84 -0.11 0.52", "info": "The thinner lower leg bone." },
+    { "id": "5", "label": "Tarsals", "region": "appendicular", "pos": "-0.09 0.05 -0.03", "norm": "-0.32 -0.55 0.76", "info": "The bones of the ankle." }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "id": "q_sci_t2_01",
+    "subject": "science",
+    "title": "Types of Skeletons",
+    "engine": "variable-slider"
+  },
+  "config": {
+    "visualScript": "content/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/sc7_musklo-skeletal_q1.json"",
+    "tabs": [
+      { "id": "hydro", "label": "HYDRO", "title": "Squishy Water Skeleton" },
+      { "id": "exo", "label": "EXO", "title": "Hard Armor Skeleton" },
+      { "id": "endo", "label": "ENDO", "title": "Inside-Bony Skeleton" }
+    ],
+    "slider": {
+      "min": 0,
+      "max": 100,
+      "start": 0,
+      "labels": ["Infant", "Adult"]
+    },
+    "text": {
+      "instruction": "Step 1: Observe Structural Growth",
+      "subInstruction": "Drag the slider to see how the skeleton responds."
+    }
+  },
+  "quiz": [
+    {
+      "q": "Which friend has a squishy skeleton filled with water?",
+      "options": ["The Worm", "The Grasshopper", "The Human"],
+      "correct": 0
+    },
+    {
+      "q": "What does the grasshopper do when its hard shell gets too tight?",
+      "options": ["It shrinks", "It molts (sheds its shell)", "It stays small forever"],
+      "correct": 1
+    },
+    {
+      "q": "Where is our human skeleton located?",
+      "options": ["On the outside like armor", "We don't have one", "Inside our bodies"],
+      "correct": 2
+    }
+  ]
+}

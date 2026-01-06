@@ -1,0 +1,27 @@
+{
+  "engineType": "GALLERY_STUDY",
+  "mode": "study",
+  "topic": "Body Maintenance: Posture",
+  "slides": [
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/sitting.png",
+      "title": "A. Correct Sitting Posture",
+      "description": "<div class='rule-box'><b>The Rule:</b> Sit upright with a straight back, feet flat on the floor, and weight balanced on both buttocks.</div><p style='margin-top:10px'><b>Importance:</b> It prevents the stomach and lungs from being compressed, allowing for better digestion and breathing.</p><div class='danger-box'><b>Danger:</b> Slumping leads to backaches and permanent deformation of the spine.</div>"
+    },
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/standing.png",
+      "title": "B. Correct Standing Posture",
+      "description": "<div class='rule-box'><b>The Rule:</b> Stand straight with the head up, chin level, and shoulders relaxed but pulled back.</div><p style='margin-top:10px'><b>Exam Fact:</b> Good standing posture ensures the <b>vertebral column</b> (backbone) grows in its natural shape and supports weight efficiently.</p>"
+    },
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/walking.jpg",
+      "title": "C. Correct Walking Posture",
+      "description": "<div class='rule-box'><b>The Rule:</b> Keep the back straight and swing the arms rhythmically.</div><p style='margin-top:10px'><b>Exam Fact:</b> This helps maintain <b>body balance</b> and reduces the energy used to move the skeleton.</p>"
+    },
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/standing.png",
+      "title": "D. Correct Sleeping Posture",
+      "description": "<div class='rule-box'><b>The Rule:</b> Sleep on a <b>firm surface</b> (like a firm mattress or a mat) to keep the spine naturally aligned.</div><div class='danger-box'><b>Danger:</b> Sleeping on a sagging surface twists the backbone, leading to long-term back pain.</div>"
+    }
+  ]
+}

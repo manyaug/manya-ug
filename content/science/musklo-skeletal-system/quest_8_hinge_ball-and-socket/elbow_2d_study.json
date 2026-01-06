@@ -1,0 +1,20 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "study",
+  "topic": "The Elbow Joint (Diagram View)",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_image.png",
+  "hotspots": [
+    { 
+      "id": "point_1", "label": "Humerus", "x": 35.94, "y": 42.42, 
+      "info": "Stationary bone of the upper arm." 
+    },
+    { 
+      "id": "point_2", "label": "Ulna", "x": 36.52, "y": 75.1, 
+      "info": "Bone that forms the point of the elbow." 
+    },
+    { 
+      "id": "point_3", "label": "Radius", "x": 81.64, "y": 53.81, 
+      "info": "The outer bone of the forearm." 
+    }
+  ]
+}

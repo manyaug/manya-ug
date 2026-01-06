@@ -1,0 +1,19 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Gliding Joint (Ankle)",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/ankle.glb",
+  "intro": "The ankle contains tarsals that allow sliding movement.",
+  "notes": [
+    "<b>Tarsals:</b> 7 bones forming the ankle.",
+    "<b>Tibia:</b> The main shin bone connecting to the ankle.",
+    "<b>Fibula:</b> The thin outer bone of the lower leg."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Fibula", "pos": "-0.196 0.262 -0.146", "norm": "-0.990 -0.038 0.132", "info": "Thin outer leg bone." },
+    { "id": "2", "label": "Tibia", "pos": "-0.168 0.294 -0.105", "norm": "-0.993 -0.039 -0.113", "info": "Thick inner shin bone." },
+    { "id": "3", "label": "Tarsals", "pos": "-0.162 0.004 -0.120", "norm": "-0.497 0.867 0.028", "info": "7 bones that glide in the ankle." },
+    { "id": "4", "label": "Metatarsals", "pos": "-0.197 -0.018 -0.010", "norm": "-0.682 0.673 0.286", "info": "Bones of the foot arch." },
+    { "id": "5", "label": "Phalanges", "pos": "-0.214 -0.045 0.065", "norm": "-0.115 0.965 0.238", "info": "Bones of the toes." }
+  ]
+}

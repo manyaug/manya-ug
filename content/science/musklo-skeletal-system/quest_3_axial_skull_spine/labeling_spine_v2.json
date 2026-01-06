@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Spine: Anatomy & Bone Counts",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/the_human_spinal_column.glb",
+  "hotspots": [
+    { "id": "1", "label": "Neck Region (7)", "pos": "-82.26 159.32 -0.47", "norm": "-1 0 0" },
+    { "id": "2", "label": "Chest Region (12)", "pos": "-82.03 137.76 -7.94", "norm": "-1 0 0" },
+    { "id": "3", "label": "Lower Back (5)", "pos": "-82.67 115.05 -2.26", "norm": "-1 0 0" },
+    { "id": "6", "label": "Tailbone", "pos": "-80.11 98.83 -11.06", "norm": "-1 0 0" }
+  ],
+  "wordBank": ["Neck Region (7)", "Chest Region (12)", "Lower Back (5)", "Tailbone", "Skull", "Pelvis"]
+}

@@ -1,0 +1,18 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Gliding Joint (Wrist)",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/wrist.glb",
+  "intro": "Gliding joints allow bones to slide over each other.",
+  "notes": [
+    "The <b>Carpals</b> are 8 small bones in the wrist.",
+    "They slide to allow movement in many directions.",
+    "Also found in the ankle (Tarsals) and between vertebrae."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Radius", "pos": "79.251 114.275 -51.249", "norm": "-0.869 0.302 -0.393", "info": "Forearm bone on the thumb side." },
+    { "id": "2", "label": "Ulna", "pos": "69.502 106.941 -59.352", "norm": "0.074 0.744 -0.664", "info": "Forearm bone on the pinky side." },
+    { "id": "3", "label": "Carpals", "pos": "72.424 136.091 -33.974", "norm": "-0.961 0.148 -0.234", "info": "8 bones that glide over each other." },
+    { "id": "4", "label": "Metacarpals", "pos": "73.611 147.112 -32.010", "norm": "-0.102 0.070 -0.992", "info": "Bones forming the palm." }
+  ]
+}

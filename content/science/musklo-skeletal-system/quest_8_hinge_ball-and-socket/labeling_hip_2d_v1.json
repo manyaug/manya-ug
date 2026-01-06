@@ -1,0 +1,12 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Hip Diagram: Identification",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/hip joint.jfif",
+  "hotspots": [
+    { "id": "h1", "label": "Femur", "x": 78.26, "y": 79.69 },
+    { "id": "h2", "label": "Socket (Acetabulum)", "x": 67.39, "y": 49.09 },
+    { "id": "h3", "label": "Ball-and-Socket Joint", "x": 68.84, "y": 9.2 }
+  ],
+  "wordBank": ["Femur", "Socket (Acetabulum)", "Ball-and-Socket Joint", "Patella", "Humerus"]
+}

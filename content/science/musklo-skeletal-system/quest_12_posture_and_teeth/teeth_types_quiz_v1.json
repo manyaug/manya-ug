@@ -1,0 +1,17 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Master Quiz: The Complete Set",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/tooth_anatomy.png",
+  "hotspots": [
+    { "id": "q1", "label": "Incisor", "x": 27.42, "y": 22.46 },
+    { "id": "q2", "label": "Canine", "x": 35.88, "y": 28.91 },
+    { "id": "q3", "label": "Premolar", "x": 39.07, "y": 40.9 },
+    { "id": "q4", "label": "Molar", "x": 40.93, "y": 59.2 },
+    { "id": "q5", "label": "Incisor", "x": 75.36, "y": 72.54 },
+    { "id": "q6", "label": "Canine", "x": 83.2, "y": 65.19 },
+    { "id": "q7", "label": "Premolar", "x": 86.49, "y": 52.6 },
+    { "id": "q8", "label": "Molar", "x": 88.56, "y": 44.65 }
+  ],
+  "wordBank": ["Incisor", "Canine", "Premolar", "Molar", "Milk Tooth", "Dentine"]
+}

@@ -1,0 +1,12 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Ankle & Foot Bones",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/ankle.glb",
+  "hotspots": [
+    { "id": "3", "label": "Tarsals", "pos": "-0.162 0.004 -0.120" },
+    { "id": "1", "label": "Fibula", "pos": "-0.196 0.262 -0.146" },
+    { "id": "2", "label": "Tibia", "pos": "-0.168 0.294 -0.105" }
+  ],
+  "wordBank": ["Tarsals", "Fibula", "Tibia", "Carpals", "Radius", "Ulna"]
+}

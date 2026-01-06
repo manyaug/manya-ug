@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Health & Vital Functions",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
+  "hotspots": [
+    { "id": "2", "label": "Produces White Blood Cells", "pos": "0.097 -0.041 0.002", "norm": "0 1 0" },
+    { "id": "5", "label": "Stores Phosphorus", "pos": "0.000 -0.216 0.035", "norm": "0 1 0" },
+    { "id": "1", "label": "Produces Platelets", "pos": "0.034 0.245 0.010", "norm": "0 1 0" },
+    { "id": "4", "label": "Reduces Bone Weight", "pos": "0.094 -0.281 -0.001", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Produces White Blood Cells", "Stores Phosphorus", "Produces Platelets", "Reduces Bone Weight", "Connects Bone to Bone"]
+}

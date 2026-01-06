@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manya | 3D Pro Editor v3</title>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --manya-purple: #7c3aed;
+            --manya-bg: #0f172a;
+            --panel-bg: #1e293b;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--manya-bg);
+            color: white;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            overflow: hidden;
+        }
+
+        #viewer-container {
+            position: relative;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            border-right: 1px solid var(--glass-border);
+        }
+
+        model-viewer { width: 100%; height: 100%; --min-hotspot-opacity: 0.3; }
+
+        /* EDITOR PIN STYLING */
+        .editor-pin {
+            width: 24px; height: 24px;
+            background: var(--manya-purple);
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 800; color: white;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            position: absolute;
+            top: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid var(--manya-purple);
+            display: flex; gap: 8px;
+            z-index: 100;
+        }
+
+        .tool-btn {
+            padding: 10px 18px; border-radius: 10px; border: none;
+            background: transparent; color: white; font-weight: 700;
+            font-size: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .tool-btn.active { background: var(--manya-purple); box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); }
+
+        /* SIDEBAR */
+        aside {
+            background: var(--panel-bg);
+            display: flex; flex-direction: column;
+            padding: 20px; overflow-y: auto;
+            border-left: 1px solid var(--manya-purple);
+        }
+
+        .logo { font-size: 22px; font-weight: 800; color: var(--manya-purple); margin-bottom: 5px; }
+        .logo span { color: white; opacity: 0.8; }
+
+        .points-list { flex-grow: 1; margin-top: 20px; }
+        .point-item {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 12px;
+            margin-bottom: 10px; position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(5px); } to { opacity:1; transform: translateY(0); } }
+
+        .point-item label { font-size: 10px; font-weight: 800; color: var(--manya-purple); display: block; margin-bottom: 5px; }
+        .point-item input {
+            background: #0f172a; border: 1px solid #334155;
+            color: white; border-radius: 8px; padding: 8px;
+            width: 100%; box-sizing: border-box; font-size: 13px; outline: none;
+        }
+        .point-item input:focus { border-color: var(--manya-purple); }
+
+        .btn-remove {
+            position: absolute; top: 10px; right: 12px;
+            color: var(--error); cursor: pointer; font-size: 18px; font-weight: bold;
+        }
+
+        /* JSON OUTPUT */
+        .json-box {
+            background: #000; border-radius: 12px; padding: 15px;
+            font-family: 'Courier New', monospace; font-size: 11px;
+            color: var(--success); max-height: 180px; overflow-y: auto;
+            border: 1px solid #334155; margin-top: 10px;
+        }
+
+        .btn {
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px;
+        }
+        .btn-primary { background: var(--manya-purple); color: white; }
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="viewer-container">
+        <div class="toolbar">
+            <button class="tool-btn active" id="mode-move" onclick="setMode('move')">🖐️ MOVE / ROTATE</button>
+            <button class="tool-btn" id="mode-add" onclick="setMode('add')">📍 ADD BONE PIN</button>
+        </div>
+
+        <model-viewer id="editor-viewer" src="" camera-controls shadow-intensity="1" environment-image="neutral">
+        </model-viewer>
+
+        <div style="position: absolute; bottom: 20px; left: 20px; display:flex; gap:10px;">
+            <button class="btn-primary" style="padding: 12px 24px; border-radius: 50px; border:none; cursor:pointer; font-weight:800;" onclick="document.getElementById('file-input').click()">📂 LOAD .GLB MODEL</button>
+            <input id="file-input" type="file" accept=".glb" />
+        </div>
+    </div>
+
+    <aside>
+        <div class="logo">Manya<span>.Editor v3</span></div>
+        <p style="font-size:11px; opacity:0.5;">Verified Normals Engine for Manya P7 Quests.</p>
+
+        <div class="points-list" id="points-list"></div>
+
+        <h4 style="font-size: 10px; color: var(--manya-purple); margin-bottom: 0;">CARTRIDGE JSON SNIPPET</h4>
+        <pre class="json-box" id="json-output"></pre>
+
+        <button class="btn btn-primary" onclick="copyJSON()">Copy hotspots[] array</button>
+        <button style="background:transparent; color:white; border:none; opacity:0.3; cursor:pointer; margin-top:10px; font-size:11px;" onclick="resetAll()">RESET WORKSPACE</button>
+    </aside>
+
+    <script>
+        const viewer = document.getElementById('editor-viewer');
+        const fileInput = document.getElementById('file-input');
+        const pointsList = document.getElementById('points-list');
+        const jsonOutput = document.getElementById('json-output');
+
+        let hotspots = [];
+        let editMode = 'move';
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                viewer.src = URL.createObjectURL(file);
+                hotspots = [];
+                renderUI();
+            }
+        });
+
+        function setMode(m) {
+            editMode = m;
+            document.getElementById('mode-move').classList.toggle('active', m === 'move');
+            document.getElementById('mode-add').classList.toggle('active', m === 'add');
+            // When in Add mode, we don't disable controls so you can still micro-adjust position
+        }
+
+        viewer.addEventListener('click', (event) => {
+            if (editMode !== 'add') return;
+
+            const hit = viewer.positionAndNormalFromPoint(event.clientX, event.clientY);
+            if (hit) {
+                const { position, normal } = hit;
+                
+                // MATH: Ensure Normal is a unit vector (Length 1.0)
+                // This makes them identical to Google's standard
+                const length = Math.sqrt(normal.x**2 + normal.y**2 + normal.z**2);
+                const nx = (normal.x / length).toFixed(3);
+                const ny = (normal.y / length).toFixed(3);
+                const nz = (normal.z / length).toFixed(3);
+
+                const newPoint = {
+                    id: (hotspots.length + 1).toString(),
+                    label: "Bone Name",
+                    pos: `${position.x.toFixed(3)} ${position.y.toFixed(3)} ${position.z.toFixed(3)}`,
+                    norm: `${nx} ${ny} ${nz}`
+                };
+
+                hotspots.push(newPoint);
+                renderUI();
+            }
+        });
+
+        function renderUI() {
+            // 1. Update Sidebar without losing focus
+            // We only rebuild the list if the length changed
+            if (pointsList.children.length !== hotspots.length) {
+                pointsList.innerHTML = '';
+                hotspots.forEach((hs, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'point-item';
+                    div.innerHTML = `
+                        <div class="btn-remove" onclick="removePoint(${index})">×</div>
+                        <label>BONE NAME (ID: ${hs.id})</label>
+                        <input type="text" value="${hs.label}" oninput="updateLabel(${index}, this.value)">
+                    `;
+                    pointsList.appendChild(div);
+                });
+            }
+
+            // 2. Update Pins on 3D Model
+            viewer.querySelectorAll('.editor-pin').forEach(p => p.remove());
+            hotspots.forEach((hs, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'editor-pin';
+                btn.slot = `hotspot-${hs.id}`;
+                btn.dataset.position = hs.pos;
+                btn.dataset.normal = hs.norm;
+                btn.innerText = hs.id;
+                btn.onclick = () => removePoint(index);
+                viewer.appendChild(btn);
+            });
+
+            // 3. Update JSON
+            const cleanHotspots = hotspots.map(h => ({
+                id: h.id,
+                label: h.label,
+                pos: h.pos,
+                norm: h.norm
+            }));
+            jsonOutput.textContent = JSON.stringify(cleanHotspots, null, 2);
+        }
+
+        function updateLabel(index, val) {
+            hotspots[index].label = val;
+            // Only update JSON display to avoid input flickering
+            const cleanHotspots = hotspots.map(h => ({
+                id: h.id,
+                label: h.label,
+                pos: h.pos,
+                norm: h.norm
+            }));
+            jsonOutput.textContent = JSON.stringify(cleanHotspots, null, 2);
+        }
+
+        function removePoint(index) {
+            hotspots.splice(index, 1);
+            // Re-index IDs
+            hotspots.forEach((h, i) => h.id = (i + 1).toString());
+            renderUI();
+        }
+
+        function copyJSON() {
+            navigator.clipboard.writeText(jsonOutput.textContent);
+            alert("Manya Array Copied!");
+        }
+
+        function resetAll() {
+            if(confirm("Delete all progress?")) {
+                hotspots = [];
+                renderUI();
+            }
+        }
+    </script>
+</body>
+</html>

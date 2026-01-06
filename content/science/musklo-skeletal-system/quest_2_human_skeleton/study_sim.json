@@ -1,0 +1,19 @@
+{
+  "mode": "study",
+  "topic": "Human Skeleton",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",
+  "intro": "The human backbone is made of 33 small bones called vertebrae. The skeleton has two regions: Axial (Central Axis) and Appendicular (Limbs and Girdles).",
+  "hotspots": [
+    { "id": "2", "label": "Skull", "region": "axial", "pos": "-0.041 17.74 0.73", "norm": "0 1 0", "info": "Protects the brain (Cranium)." },
+    { "id": "4", "label": "Vertebrae", "region": "axial", "pos": "-0.075 13.35 -1.05", "norm": "0 1 0", "info": "Protects the spinal cord." },
+    { "id": "5", "label": "Sternum", "region": "axial", "pos": "0.039 14.06 0.88", "norm": "0 1 0", "info": "The breastbone where ribs attach." },
+    { "id": "6", "label": "Rib Cage", "region": "axial", "pos": "-0.87 12.91 0.79", "norm": "0 1 0", "info": "Protects the heart and lungs." },
+    { "id": "7", "label": "Pectoral Girdle", "region": "appendicular", "pos": "-1.23 14.97 -1.28", "norm": "0 1 0", "info": "Shoulder blades and collar bone." },
+    { "id": "9", "label": "Pelvic Girdle", "region": "appendicular", "pos": "-0.95 10.41 -0.02", "norm": "0 1 0", "info": "Supports the lower trunk." },
+    { "id": "10", "label": "Humerus", "region": "appendicular", "pos": "-2.78 13.81 -0.38", "norm": "0 1 0", "info": "The upper arm bone." },
+    { "id": "11", "label": "Radius & Ulna", "region": "appendicular", "pos": "-4.61 11.22 0.30", "norm": "0 1 0", "info": "The forearm bones." },
+    { "id": "12", "label": "Femur", "region": "appendicular", "pos": "1.35 7.51 0.36", "norm": "0 1 0", "info": "Longest and strongest bone." },
+    { "id": "13", "label": "Patella", "region": "appendicular", "pos": "-1.03 5.27 0.73", "norm": "0 1 0", "info": "Protects the knee joint." },
+    { "id": "14", "label": "Tibia & Fibula", "region": "appendicular", "pos": "1.19 3.22 0.16", "norm": "0 1 0", "info": "The lower leg bones." }
+  ]
+}

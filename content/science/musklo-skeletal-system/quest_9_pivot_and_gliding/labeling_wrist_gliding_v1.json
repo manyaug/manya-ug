@@ -1,0 +1,11 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Wrist & Hand Bones",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/wrist.glb",
+  "hotspots": [
+    { "id": "3", "label": "Carpals", "pos": "72.424 136.091 -33.974" },
+    { "id": "4", "label": "Metacarpals", "pos": "73.611 147.112 -32.010" }
+  ],
+  "wordBank": ["Carpals", "Metacarpals", "Tarsals", "Patella", "Skull"]
+}

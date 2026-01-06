@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Internal Bone Anatomy",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
+  "hotspots": [
+    { "id": "1", "label": "Red Bone Marrow", "pos": "0.034 0.245 0.010", "norm": "0 1 0" },
+    { "id": "2", "label": "Yellow Bone Marrow", "pos": "0.097 -0.041 0.002", "norm": "0 1 0" },
+    { "id": "5", "label": "Compact Bone", "pos": "0.000 -0.216 0.035", "norm": "0 1 0" },
+    { "id": "3", "label": "Cartilage", "pos": "0.032 -0.450 0.014", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Red Bone Marrow", "Yellow Bone Marrow", "Compact Bone", "Cartilage", "Skull", "Ligament"]
+}

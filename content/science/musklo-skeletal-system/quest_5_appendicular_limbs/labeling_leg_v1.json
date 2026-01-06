@@ -1,0 +1,11 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Leg Bones: Primary Structure",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/Lower_limb.glb",
+  "hotspots": [
+    { "id": "1", "label": "Femur", "pos": "-0.10 0.67 0.01", "norm": "0 1 0" },
+    { "id": "2", "label": "Patella", "pos": "-0.08 0.43 0.00", "norm": "0 1 0" },
+    { "id": "3", "label": "Tibia", "pos": "-0.07 0.27 -0.00", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Femur", "Patella", "Tibia", "Humerus", "Fibula", "Skull"]
+}

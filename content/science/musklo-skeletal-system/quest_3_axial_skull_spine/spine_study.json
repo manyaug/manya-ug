@@ -1,0 +1,20 @@
+{
+  "mode": "study",
+  "topic": "The Axial Skeleton: Vertebral Column",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/the_human_spinal_column.glb",
+  "intro": "The backbone is made of 33 small bones called vertebrae.",
+  "notes": [
+    "The vertebral column protects the <b>Spinal Cord</b>.",
+    "<b>Cervical (7):</b> Found in the neck region.",
+    "<b>Thoracic (12):</b> Where the ribs are attached.",
+    "<b>Lumbar (5):</b> Supports the body weight in the lower back.",
+    "<b>Sacrum & Coccyx:</b> Fused bones at the base of the spine."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Cervical", "pos": "-82.26 159.32 -0.47", "norm": "-1 0 0", "info": "7 vertebrae in the neck region." },
+    { "id": "2", "label": "Thoracic", "pos": "-82.03 137.76 -7.94", "norm": "-0.93 -0.36 0.05", "info": "12 vertebrae in the chest area." },
+    { "id": "3", "label": "Lumbar", "pos": "-82.67 115.05 -2.26", "norm": "-0.99 -0.05 0.10", "info": "5 vertebrae in the lower back." },
+    { "id": "5", "label": "Sacrum", "pos": "-80.79 104.16 -11.48", "norm": "-0.10 -0.02 -0.99", "info": "5 fused bones in the pelvis." },
+    { "id": "6", "label": "Coccyx", "pos": "-80.11 98.83 -11.06", "norm": "0 -0.15 -0.98", "info": "The tailbone at the end of the spine." }
+  ]
+}

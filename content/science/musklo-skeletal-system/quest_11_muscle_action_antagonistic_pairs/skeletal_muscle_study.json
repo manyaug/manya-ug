@@ -1,0 +1,19 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "Anatomy of Voluntary Muscles (3D)",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles.glb",
+  "intro": "Voluntary muscles are attached to the skeleton to allow movement.",
+  "notes": [
+    "<b>Muscle Belly:</b> The thick part of the muscle that contracts.",
+    "<b>Tendon:</b> Tough, non-elastic fibers that join <b>Muscle to Bone</b>.",
+    "<b>Origin:</b> The point where muscle joins a stationary bone (Humerus).",
+    "<b>Insertion:</b> The point where muscle joins a movable bone (Radius/Ulna)."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Biceps", "region": "appendicular", "pos": "-0.215 1.180 -0.002", "norm": "-0.002 -0.257 0.967", "info": "The flexor muscle on the front of the arm." },
+    { "id": "2", "label": "Triceps", "region": "appendicular", "pos": "-0.207 1.212 -0.082", "norm": "-0.321 0.013 -0.947", "info": "The extensor muscle on the back of the arm." },
+    { "id": "3", "label": "Tendon", "region": "appendicular", "pos": "-0.224 1.101 -0.012", "norm": "-0.200 0.036 0.979", "info": "Connects the biceps muscle to the radius bone." },
+    { "id": "4", "label": "Humerus", "region": "axial", "pos": "-0.195 1.346 -0.021", "norm": "-0.812 0.091 0.577", "info": "The stationary bone (Origin point)." }
+  ]
+}

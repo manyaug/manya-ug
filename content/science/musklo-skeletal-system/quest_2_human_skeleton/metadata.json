@@ -1,0 +1,24 @@
+{
+  "quest_id": "sci_p7_ms_q2",
+  "curriculum_ref": "NCDC.P7.SCI.T1.1",
+  "title": "The Human Skeleton (Axial vs. Appendicular)",
+  "subject": "Science",
+  "unit": "Muscular-Skeletal System",
+  "difficulty": "Intermediate",
+  "assets": {
+    "model": "male_skeleton.glb",
+    "thumbnail": "poster.webp",
+    "engine": "skeleton-quest-engine.js"
+  },
+  "phases": {
+    "1_study": "study_sim.json",
+    "2_practice_axial": "labeling_v1.json",
+    "3_practice_limbs": "labeling_v2.json",
+    "4_final_master": "labeling_v3.json"
+  },
+  "learning_objectives": [
+    "Differentiate between Axial and Appendicular skeleton.",
+    "Identify the 11 major bone groups of the human body.",
+    "Understand the protective functions of the central axis."
+  ]
+}

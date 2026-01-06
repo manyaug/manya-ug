@@ -1,0 +1,11 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Arm Anatomy Challenge",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",
+  "hotspots": [
+    { "id": "3", "label": "Humerus", "pos": "69.08 81.51 -101.92", "norm": "0 1 0" },
+    { "id": "1", "label": "Radius", "pos": "77.36 119.98 -49.19", "norm": "0 1 0" },
+    { "id": "2", "label": "Ulna", "pos": "69.04 110.86 -56.59", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Humerus", "Radius", "Ulna", "Femur", "Tibia"]
+}

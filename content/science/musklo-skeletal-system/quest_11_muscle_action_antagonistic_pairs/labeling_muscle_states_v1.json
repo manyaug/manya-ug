@@ -1,0 +1,13 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Muscle States",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/Relaxed_muscle.png",
+  "hotspots": [
+    { "id": "p5", "label": "Contracted Biceps", "x": 72.81, "y": 40.25 },
+    { "id": "p4", "label": "Relaxed Triceps", "x": 65.47, "y": 51.13 },
+    { "id": "p2", "label": "Relaxed Biceps", "x": 20.94, "y": 39.25 },
+    { "id": "p3", "label": "Contracted Triceps", "x": 15.08, "y": 56.75 }
+  ],
+  "wordBank": ["Contracted Biceps", "Relaxed Biceps", "Contracted Triceps", "Relaxed Triceps", "Ligament"]
+}

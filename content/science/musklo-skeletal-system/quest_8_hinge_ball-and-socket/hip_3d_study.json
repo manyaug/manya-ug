@@ -1,0 +1,17 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Hip Joint (3D Exploration)",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/hip_joint.glb",
+  "intro": "The hip is a ball-and-socket joint allowing circular movement.",
+  "notes": [
+    "Allows movement in <b>all directions</b> (360°).",
+    "Acts like a <b>joystick</b> or a mortar and pestle.",
+    "Consists of a rounded head (ball) fitting into a cavity (socket)."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Pelvic Socket", "pos": "-0.091 0.883 0.019", "norm": "-0.355 -0.256 0.899", "info": "The cup-shaped cavity (Acetabulum)." },
+    { "id": "2", "label": "Ball (Femur Head)", "pos": "-0.098 0.855 0.013", "norm": "-0.674 -0.250 0.696", "info": "The rounded end of the thigh bone." },
+    { "id": "3", "label": "Ball-and-Socket Joint", "pos": "-0.077 0.866 0.017", "norm": "0.261 0.274 0.926", "info": "The joint allowing circular rotation." }
+  ]
+}

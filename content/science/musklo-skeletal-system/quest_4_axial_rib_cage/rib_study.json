@@ -1,0 +1,18 @@
+{
+  "mode": "study",
+  "topic": "The Axial Skeleton: The Rib Cage",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_4_axial_rib_cage/rib-cage-heart.glb",
+  "intro": "The Rib Cage consists of 12 pairs of curved bones that protect the heart and lungs.",
+  "notes": [
+    "<b>Sternum:</b> The flat breastbone where ribs attach at the front.",
+    "<b>Cartilage:</b> Flexible tissue that allows the chest to expand during breathing.",
+    "<b>Thoracic Vertebrae:</b> The 12 bones of the spine where ribs attach at the back.",
+    "<b>Floating Ribs:</b> The last 2 pairs of ribs that do not attach to the Sternum."
+  ],
+  "hotspots": [
+    { "id": "2", "label": "Ribs", "region": "axial", "pos": "0.09 0.19 -0.13", "norm": "0.65 0.51 -0.55", "info": "12 pairs of bones forming a protective cage." },
+    { "id": "3", "label": "Sternum", "region": "axial", "pos": "0.18 0.14 -0.01", "norm": "0.90 0.40 -0.15", "info": "Flat bone at the front of the chest." },
+    { "id": "6", "label": "Thoracic Vertebrae", "region": "axial", "pos": "-0.13 0.13 -0.00", "norm": "-0.34 0.91 -0.19", "info": "Mid-back bones where ribs attach." },
+    { "id": "8", "label": "Cartilage", "region": "axial", "pos": "0.21 -0.04 -0.07", "norm": "0.86 0.21 -0.45", "info": "Flexible tissue that aids in breathing." }
+  ]
+}

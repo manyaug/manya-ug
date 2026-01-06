@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "engineType": "2D_HOTSPOT",
+  "variantTitle": "Internal Joint Mechanics",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_7_joints_structure/sylluvial.png",
+  "hotspots": [
+    { "id": "point_1", "label": "Patella", "x": 48.31, "y": 33.63 },
+    { "id": "point_2", "label": "Synovial Membrane", "x": 22.79, "y": 43.82 },
+    { "id": "point_3", "label": "Synovial Fluid", "x": 44.01, "y": 50 }
+  ],
+  "wordBank": ["Patella", "Synovial Membrane", "Synovial Fluid", "Ligament", "Tendon"]
+}

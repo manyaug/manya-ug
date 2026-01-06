@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manya | Pro Hotspotter v3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --manya-purple: #9333ea;
+            --manya-bg: #f1f5f9;
+            --manya-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--manya-bg);
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--manya-purple);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo { font-size: 18px; font-weight: 800; }
+
+        main {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tool-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+        .tool-btn.active {
+            border-color: var(--manya-purple);
+            color: var(--manya-purple);
+            background: #f5f3ff;
+        }
+
+        textarea {
+            flex-grow: 1;
+            width: 100%;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            background: #1e293b;
+            color: #f8fafc;
+            resize: none;
+            outline: none;
+        }
+
+        /* VIEWPORT AREA */
+        .viewport {
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* DRAGGABLE WRAPPER */
+        .img-wrapper {
+            position: absolute;
+            display: inline-block;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            cursor: grab;
+            user-select: none;
+        }
+        .img-wrapper:active { cursor: grabbing; }
+        .img-wrapper.crosshair { cursor: crosshair; }
+
+        #target-image {
+            display: block;
+            max-width: none; /* Allow image to be full size */
+            -webkit-user-drag: none;
+        }
+
+        .marker {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background: var(--manya-purple);
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            background: var(--manya-purple);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .controls-hint {
+            font-size: 11px;
+            color: var(--text-light);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Manya<span> Hotspotter v3</span></div>
+    <div style="display:flex; gap:10px;">
+        <button class="btn" style="background:#334155; font-size:12px;" onclick="document.getElementById('file-input').click()">Change Image</button>
+        <input type="file" id="file-input" accept="image/*" style="display:none;">
+    </div>
+</header>
+
+<main>
+    <div class="sidebar">
+        <label style="font-weight: 800; font-size: 12px; color: var(--text-light);">TOOLBOX</label>
+        <div class="toolbar">
+            <button class="tool-btn active" id="btn-pin" onclick="setMode('pin')">📍 ADD PINS</button>
+            <button class="tool-btn" id="btn-move" onclick="setMode('move')">🖐️ MOVE IMAGE</button>
+        </div>
+
+        <label style="font-weight: 800; font-size: 12px; color: var(--text-light); margin-top: 10px;">JSON EDITOR (Live)</label>
+        <textarea id="json-editor" spellcheck="false"></textarea>
+        
+        <button class="btn" onclick="copyJSON()">Copy Code</button>
+        <div class="controls-hint">Tip: Mode [📍] to click. Mode [🖐️] to drag image.</div>
+    </div>
+
+    <div class="viewport" id="viewport">
+        <div class="img-wrapper" id="img-wrapper">
+            <img id="target-image" src="https://via.placeholder.com/1000x800?text=Upload+Simulation+Image" alt="target">
+            <!-- Markers will be injected here -->
+        </div>
+    </div>
+</main>
+
+<script>
+    const wrapper = document.getElementById('img-wrapper');
+    const image = document.getElementById('target-image');
+    const viewport = document.getElementById('viewport');
+    const editor = document.getElementById('json-editor');
+    const fileInput = document.getElementById('file-input');
+
+    let hotspots = [];
+    let mode = 'pin'; // 'pin' or 'move'
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    // --- 1. MODE SWITCHING ---
+    function setMode(newMode) {
+        mode = newMode;
+        document.getElementById('btn-pin').classList.toggle('active', mode === 'pin');
+        document.getElementById('btn-move').classList.toggle('active', mode === 'move');
+        wrapper.classList.toggle('crosshair', mode === 'pin');
+    }
+
+    // --- 2. DRAGGING LOGIC ---
+    viewport.addEventListener('mousedown', (e) => {
+        if (mode !== 'move') return;
+        isDragging = true;
+        startX = e.clientX - wrapper.offsetLeft;
+        startY = e.clientY - wrapper.offsetTop;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging || mode !== 'move') return;
+        wrapper.style.left = (e.clientX - startX) + 'px';
+        wrapper.style.top = (e.clientY - startY) + 'px';
+        wrapper.style.position = 'absolute';
+    });
+
+    window.addEventListener('mouseup', () => isDragging = false);
+
+    // --- 3. PIN ACCURACY LOGIC ---
+    image.addEventListener('click', (e) => {
+        if (mode !== 'pin') return;
+
+        // Get exact click relative to image
+        const rect = image.getBoundingClientRect();
+        const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+        const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+        const newPoint = {
+            id: `point_${hotspots.length + 1}`,
+            label: "Label",
+            x: parseFloat(xPercent.toFixed(2)),
+            y: parseFloat(yPercent.toFixed(2)),
+            info: "PLE Description"
+        };
+
+        hotspots.push(newPoint);
+        updateUI();
+    });
+
+    // --- 4. TWO-WAY SYNC ---
+    editor.addEventListener('input', () => {
+        try {
+            const data = JSON.parse(editor.value);
+            if (Array.isArray(data)) {
+                hotspots = data;
+                renderMarkers();
+            }
+        } catch (e) { /* silent fail on syntax error */ }
+    });
+
+    function updateUI() {
+        editor.value = JSON.stringify(hotspots, null, 2);
+        renderMarkers();
+    }
+
+    function renderMarkers() {
+        // Remove existing
+        document.querySelectorAll('.marker').forEach(m => m.remove());
+
+        hotspots.forEach((hs, idx) => {
+            const marker = document.createElement('div');
+            marker.className = 'marker';
+            marker.innerText = idx + 1;
+            marker.style.left = hs.x + '%';
+            marker.style.top = hs.y + '%';
+            wrapper.appendChild(marker);
+        });
+    }
+
+    // --- 5. IMAGE LOADING ---
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                image.src = ev.target.result;
+                hotspots = [];
+                wrapper.style.left = 'auto'; // Reset position
+                wrapper.style.top = 'auto';
+                updateUI();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function copyJSON() {
+        editor.select();
+        document.execCommand('copy');
+        alert("Copied to clipboard!");
+    }
+
+    updateUI();
+</script>
+
+</body>
+</html>

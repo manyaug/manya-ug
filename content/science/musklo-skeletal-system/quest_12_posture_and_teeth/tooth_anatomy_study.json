@@ -1,0 +1,19 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "Internal Anatomy of a Tooth",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/inside_my_tooth.glb",
+  "intro": "A tooth is made of several layers. The crown is the part we see, and the root is in the jaw.",
+  "notes": [
+    "<b>Enamel:</b> The hardest substance in the human body. It protects the tooth.",
+    "<b>Dentine:</b> A bone-like layer under the enamel that forms the bulk of the tooth.",
+    "<b>Pulp Cavity:</b> Contains nerves and blood vessels (provides nutrients and feeling).",
+    "<b>Cementum:</b> Fixes the tooth firmly into the jaw bone."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Enamel", "pos": "-62.27 83.68 -63.37", "norm": "-1 0 0", "info": "The outer white protective layer." },
+    { "id": "2", "label": "Dentine", "pos": "-60.19 45.50 -37.02", "norm": "-1 -0.06 0", "info": "Sensitive layer below the enamel." },
+    { "id": "3", "label": "Pulp Cavity", "pos": "-51.48 10.68 -28.54", "norm": "-1 0.19 0", "info": "The 'living' part with blood and nerves." },
+    { "id": "4", "label": "Cementum", "pos": "-52.98 -212.47 -75.53", "norm": "-1 0.06 0.15", "info": "Tough tissue that holds the tooth root." }
+  ]
+}

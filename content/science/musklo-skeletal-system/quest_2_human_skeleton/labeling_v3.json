@@ -1,0 +1,23 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Full Skeleton Master Challenge",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",
+  "hotspots": [
+    { "id": "2", "label": "Skull", "pos": "-0.04 17.74 0.73", "norm": "0 1 0" },
+    { "id": "4", "label": "Vertebrae", "pos": "-0.07 13.35 -1.05", "norm": "0 1 0" },
+    { "id": "5", "label": "Sternum", "pos": "0.03 14.06 0.88", "norm": "0 1 0" },
+    { "id": "6", "label": "Rib Cage", "pos": "-0.87 12.91 0.79", "norm": "0 1 0" },
+    { "id": "7", "label": "Pectoral Girdle", "pos": "-1.23 14.97 -1.28", "norm": "0 1 0" },
+    { "id": "9", "label": "Pelvic Girdle", "pos": "-0.95 10.41 -0.02", "norm": "0 1 0" },
+    { "id": "10", "label": "Humerus", "pos": "-2.78 13.81 -0.38", "norm": "0 1 0" },
+    { "id": "11", "label": "Radius & Ulna", "pos": "-4.61 11.22 0.30", "norm": "0 1 0" },
+    { "id": "12", "label": "Femur", "pos": "1.35 7.51 0.36", "norm": "0 1 0" },
+    { "id": "13", "label": "Patella", "pos": "-1.03 5.27 0.73", "norm": "0 1 0" },
+    { "id": "14", "label": "Tibia & Fibula", "pos": "1.19 3.22 0.16", "norm": "0 1 0" }
+  ],
+  "wordBank": [
+    "Skull", "Vertebrae", "Sternum", "Rib Cage", 
+    "Pectoral Girdle", "Pelvic Girdle", "Humerus", 
+    "Radius & Ulna", "Femur", "Patella", "Tibia & Fibula"
+  ]
+}

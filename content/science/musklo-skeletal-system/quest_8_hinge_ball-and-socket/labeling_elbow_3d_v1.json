@@ -1,0 +1,13 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Elbow Anatomy: 3D Challenge",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_joint.glb",
+  "hotspots": [
+    { "id": "1", "label": "Radius", "pos": "-0.263 0.933 -0.005" },
+    { "id": "2", "label": "Ulna", "pos": "-0.229 0.989 -0.022" },
+    { "id": "3", "label": "Humerus", "pos": "-0.197 1.243 -0.032" },
+    { "id": "4", "label": "Hinge Joint", "pos": "-0.224 1.096 -0.035" }
+  ],
+  "wordBank": ["Radius", "Ulna", "Humerus", "Hinge Joint", "Femur", "Patella"]
+}

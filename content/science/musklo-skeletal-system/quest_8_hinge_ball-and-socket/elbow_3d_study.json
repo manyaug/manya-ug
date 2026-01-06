@@ -1,0 +1,18 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Elbow Joint (3D Exploration)",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_joint.glb",
+  "intro": "The elbow is a hinge joint allowing movement in one plane.",
+  "notes": [
+    "A hinge joint moves like a <b>door hinge</b>.",
+    "The <b>Humerus</b> remains stationary while the lower arm moves.",
+    "It allows bending and straightening (up to 180°)."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Radius", "pos": "-0.263 0.933 -0.005", "norm": "0.081 0.214 0.974", "info": "Forearm bone on the thumb side." },
+    { "id": "2", "label": "Ulna", "pos": "-0.229 0.989 -0.022", "norm": "0.636 0.157 0.756", "info": "Forearm bone on the little finger side." },
+    { "id": "3", "label": "Humerus", "pos": "-0.197 1.243 -0.032", "norm": "0.496 -0.136 0.858", "info": "The long bone of the upper arm." },
+    { "id": "4", "label": "Hinge Joint", "pos": "-0.224 1.096 -0.035", "norm": "0.082 -0.854 0.513", "info": "The point where movement occurs in one direction." }
+  ]
+}

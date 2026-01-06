@@ -1,0 +1,11 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Neck Pivot Anatomy",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/pivot_joint_neck.glb",
+  "hotspots": [
+    { "id": "1", "label": "Atlas C1", "pos": "-34.806 138.805 -87.330" },
+    { "id": "2", "label": "Axis C2", "pos": "-33.460 135.737 -83.528" }
+  ],
+  "wordBank": ["Atlas C1", "Axis C2", "Humerus", "Femur", "Lumbar"]
+}

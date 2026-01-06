@@ -1,0 +1,17 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Pivot Joint (Neck)",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/pivot_joint_neck.glb",
+  "intro": "The pivot joint allows for rotation or turning movement.",
+  "notes": [
+    "<b>Atlas (C1):</b> The first bone that supports the skull.",
+    "<b>Axis (C2):</b> The second bone with a peg for rotation.",
+    "Allows the head to turn side-to-side ('No' movement)."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Atlas C1", "pos": "-34.806 138.805 -87.330", "norm": "-0.335 0.782 0.525", "info": "Supports the skull and allows nodding." },
+    { "id": "2", "label": "Axis C2", "pos": "-33.460 135.737 -83.528", "norm": "-0.254 0.907 0.336", "info": "Contains the 'peg' that the Atlas turns on." },
+    { "id": "3", "label": "Skull Base", "pos": "0.210 127.509 -83.678", "norm": "-0.946 -0.313 0.082", "info": "The Occipital bone resting on the Atlas." }
+  ]
+}

@@ -1,0 +1,42 @@
+/* The clickable dot */
+.hotspot-pin {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 3px solid white;
+    background-color: #007bff; /* PLE Blue */
+    cursor: pointer;
+}
+
+/* The popup (hidden by default) */
+.label-popup {
+    display: none;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-family: sans-serif;
+    color: #333;
+}
+
+/* Show popup when active */
+.hotspot-pin.active .label-popup {
+    display: block;
+}
+
+.label-popup strong {
+    color: #007bff;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.info-text {
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.4;
+}

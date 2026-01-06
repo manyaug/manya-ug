@@ -1,0 +1,18 @@
+{
+  "mode": "study",
+  "topic": "Joint Structure: The Knee",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_7_joints_structure/joint_structure.glb",
+  "intro": "A joint is where two or more bones meet. The knee is a hinge joint.",
+  "notes": [
+    "<b>Ligament:</b> Joins bone to bone (L-B-B).",
+    "<b>Tendon:</b> Joins muscle to bone (T-M-B).",
+    "<b>Patella:</b> The kneecap bone that protects the joint.",
+    "<b>Cartilage:</b> Reduces friction and acts as a shock absorber."
+  ],
+  "hotspots": [
+    { "id": "2", "label": "Patella", "region": "appendicular", "pos": "0.158 0.058 0.011", "norm": "0.98 -0.02 0.14", "info": "The kneecap protecting the joint." },
+    { "id": "3", "label": "Tendon", "region": "appendicular", "pos": "0.100 0.228 -0.011", "norm": "0.90 0.26 -0.31", "info": "Connects thigh muscle to the bone." },
+    { "id": "4", "label": "Cartilage", "region": "appendicular", "pos": "0.121 -0.024 0.077", "norm": "0.97 -0.13 0.15", "info": "Smooth tissue reducing friction." },
+    { "id": "5", "label": "Ligament", "region": "appendicular", "pos": "-0.044 -0.069 0.169", "norm": "-0.27 -0.02 0.96", "info": "Tough fibers joining bone to bone." }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "mode": "study",
+  "topic": "The Axial Skeleton: The Skull",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
+  "intro": "The skull is a collection of 22 bones that protect the brain and sense organs.",
+  "notes": [
+    "The <b>Cranium</b> is the 'brain box' that protects the brain.",
+    "The <b>Mandible</b> (lower jaw) is the ONLY movable bone in the skull.",
+    "<b>Sutures</b> are immovable joints that look like zig-zag lines.",
+    "The <b>Orbit</b> is the cavity that protects the eyes."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Cranium", "pos": "38.66 -25.26 -51.43", "norm": "0.05 0.95 0.28", "info": "Protects the brain from injury." },
+    { "id": "2", "label": "Sutures", "pos": "38.16 -31.47 -63.61", "norm": "-0.02 0.19 -0.98", "info": "Immovable joints joining skull bones." },
+    { "id": "4", "label": "Orbit", "pos": "35.41 -36.51 -49.75", "norm": "0.25 0.40 0.87", "info": "The eye socket that protects the eyes." },
+    { "id": "5", "label": "Mandible", "pos": "42.91 -42.01 -52.04", "norm": "0.88 0.21 0.42", "info": "The only movable bone in the skull." },
+    { "id": "8", "label": "Maxilla", "pos": "36.04 -40.92 -46.54", "norm": "-0.81 0.17 0.54", "info": "The upper jaw bone (immovable)." }
+  ]
+}

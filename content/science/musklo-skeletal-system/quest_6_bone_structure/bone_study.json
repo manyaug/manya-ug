@@ -1,0 +1,19 @@
+{
+  "mode": "study",
+  "topic": "Bone Structure & Blood Cells",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
+  "intro": "Bones are not just hard sticks; they are living 'factories' that produce blood cells.",
+  "notes": [
+    "<b>Red Bone Marrow:</b> Found in spongy bone; it makes <b>Red Blood Cells</b>.",
+    "<b>Yellow Bone Marrow:</b> Found in the center; it stores fat and makes <b>White Blood Cells</b>.",
+    "<b>Compact Bone:</b> The hard outer part that stores Calcium and Phosphorus.",
+    "<b>Cartilage:</b> Smooth tissue at the ends that reduces friction."
+  ],
+  "hotspots": [
+    { "id": "1", "label": "Red Bone Marrow", "region": "appendicular", "pos": "0.034 0.245 0.010", "norm": "0.92 0.15 0.34", "info": "Makes red blood cells (for oxygen)." },
+    { "id": "2", "label": "Yellow Bone Marrow", "region": "appendicular", "pos": "0.097 -0.041 0.002", "norm": "0.92 0.09 -0.37", "info": "Stores fat and makes white blood cells." },
+    { "id": "3", "label": "Cartilage", "region": "appendicular", "pos": "0.032 -0.450 0.014", "norm": "0.71 -0.63 -0.30", "info": "Reduces friction between bones." },
+    { "id": "4", "label": "Spongy Bone", "region": "appendicular", "pos": "0.094 -0.281 -0.001", "norm": "0.94 -0.11 -0.29", "info": "Contains the red marrow." },
+    { "id": "5", "label": "Compact Bone", "region": "appendicular", "pos": "0.000 -0.216 0.035", "norm": "-0.83 0.20 0.50", "info": "The hard part that provides strength." }
+  ]
+}

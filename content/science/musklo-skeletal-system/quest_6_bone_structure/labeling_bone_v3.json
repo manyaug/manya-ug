@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Bone Layers & Tissues",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
+  "hotspots": [
+    { "id": "5", "label": "Compact Bone", "pos": "0.000 -0.216 0.035", "norm": "0 1 0" },
+    { "id": "4", "label": "Spongy Bone", "pos": "0.094 -0.281 -0.001", "norm": "0 1 0" },
+    { "id": "3", "label": "Cartilage", "pos": "0.032 -0.450 0.014", "norm": "0 1 0" },
+    { "id": "1", "label": "Red Marrow", "pos": "0.034 0.245 0.010", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Compact Bone", "Spongy Bone", "Cartilage", "Red Marrow", "Periosteum", "Tendon"]
+}

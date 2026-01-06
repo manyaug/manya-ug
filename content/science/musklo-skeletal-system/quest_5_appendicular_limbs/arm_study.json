@@ -1,0 +1,20 @@
+{
+  "mode": "study",
+  "topic": "Appendicular Skeleton: The Arm",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",
+  "intro": "The upper limb consists of the Humerus, Radius, Ulna, and the bones of the hand.",
+  "notes": [
+    "<b>Humerus:</b> The single long bone of the upper arm.",
+    "<b>Radius:</b> Found on the <b>Thumb side</b> of the forearm.",
+    "<b>Ulna:</b> Found on the <b>Little finger side</b> of the forearm.",
+    "<b>Carpals:</b> 8 small bones that make up the wrist."
+  ],
+  "hotspots": [
+    { "id": "3", "label": "Humerus", "region": "appendicular", "pos": "69.08 81.51 -101.92", "norm": "0.00 0.93 -0.36", "info": "Upper arm bone." },
+    { "id": "1", "label": "Radius", "region": "appendicular", "pos": "77.36 119.98 -49.19", "norm": "0.31 0.59 -0.74", "info": "Forearm bone on the thumb side." },
+    { "id": "2", "label": "Ulna", "region": "appendicular", "pos": "69.04 110.86 -56.59", "norm": "0.07 0.65 -0.74", "info": "Forearm bone on the pinky side." },
+    { "id": "4", "label": "Carpals", "region": "appendicular", "pos": "72.85 138.14 -32.75", "norm": "-0.28 -0.90 -0.30", "info": "The 8 bones of the wrist." },
+    { "id": "5", "label": "Metacarpals", "region": "appendicular", "pos": "72.43 146.66 -29.81", "norm": "-0.95 -0.01 0.28", "info": "Bones forming the palm." },
+    { "id": "6", "label": "Phalanges", "region": "appendicular", "pos": "72.63 160.57 -32.49", "norm": "-0.14 -0.19 -0.97", "info": "Bones of the fingers." }
+  ]
+}

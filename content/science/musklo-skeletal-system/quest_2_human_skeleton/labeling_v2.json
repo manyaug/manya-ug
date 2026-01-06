@@ -1,0 +1,12 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Appendicular Skeleton Mastery",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",
+  "hotspots": [
+    { "id": "10", "label": "Humerus", "pos": "-2.78 13.81 -0.38", "norm": "0 1 0" },
+    { "id": "12", "label": "Femur", "pos": "1.35 7.51 0.36", "norm": "0 1 0" },
+    { "id": "13", "label": "Patella", "pos": "-1.03 5.27 0.73", "norm": "0 1 0" },
+    { "id": "9", "label": "Pelvic Girdle", "pos": "-0.95 10.41 -0.02", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Femur", "Humerus", "Patella", "Pelvic Girdle", "Skull", "Sternum"]
+}
