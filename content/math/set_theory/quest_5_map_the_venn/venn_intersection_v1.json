@@ -1,0 +1,45 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "topic": "Venn Diagrams: Intersections",
+  "variantTitle": "Quest 5: The Overlap Artist",
+  
+  "sets": {
+    "A": { "label": "Y", "color": "#9333ea" },
+    "B": { "label": "Z", "color": "#db2777" }
+  },
+
+  "zones": {
+    "left": [2, 5, 9],
+    "center": [4, 6, 7],
+    "right": [20],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "List the elements of <span style='color:#64748b'>Y ∩ Z</span>",
+      "hint": "Look at the overlapping region in the middle."
+    },
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Find <span style='color:#64748b'>n(Y ∩ Z)</span>",
+      "hint": "Count how many numbers are in the overlap."
+    },
+    {
+      "type": "COUNT",
+      "targetRegion": "left_only",
+      "prompt": "Find <span style='color:#9333ea'>n(Y only)</span>",
+      "hint": "Count numbers in circle Y that are NOT in Z."
+    },
+    {
+      "type": "COUNT",
+      "targetRegion": "right_only",
+      "prompt": "Find <span style='color:#db2777'>n(Z - Y)</span>",
+      "hint": "Count numbers in Z minus the ones shared with Y."
+    }
+  ]
+}

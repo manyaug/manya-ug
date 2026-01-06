@@ -13,10 +13,14 @@
         :root {
             --manya-purple: #7c3aed;
             --manya-purple-light: #ede9fe;
+            --manya-pink: #db2777;
+            --manya-pink-light: #fce7f3;
+            --manya-green: #059669;
             --manya-bg: #f8fafc;
             --text-dark: #0f172a;
             --text-light: #64748b;
             --sidebar-width: 320px;
+            
             /* Global Engine Theme Variables */
             --axial-color: #ef4444;
             --appendicular-color: #3b82f6;
@@ -46,7 +50,6 @@
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Scrollbar styling for Sidebar */
         aside::-webkit-scrollbar { width: 5px; }
         aside::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 
@@ -63,6 +66,58 @@
             padding: 2px 8px; border-radius: 10px; font-weight: 800;
             text-transform: uppercase; margin-left: 10px;
         }
+
+        /* SUBJECT HEADERS */
+        /* --- SUBJECT HEADERS (Collapsible) --- */
+.subject-wrapper {
+    margin-bottom: 10px;
+}
+
+.subject-header {
+    font-size: 11px; 
+    font-weight: 800; 
+    letter-spacing: 1px;
+    padding: 16px 20px; 
+    text-transform: uppercase; 
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: white;
+    transition: background 0.2s;
+}
+
+.subject-header:hover {
+    background: #f8fafc;
+}
+
+.subject-chevron {
+    font-size: 10px; 
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+/* State: Open (Default) */
+.subject-header.open .subject-chevron {
+    transform: rotate(180deg);
+}
+
+/* Content Container */
+.subject-content-body {
+    display: none; /* Hidden by default */
+    padding-top: 5px;
+}
+
+.subject-header.open + .subject-content-body {
+    display: block; /* Show when header has 'open' class */
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
         /* COLLAPSIBLE ACCORDION */
         .nav-container { padding: 0 16px 40px 16px; }
@@ -149,10 +204,8 @@
             header { padding: 0 16px; }
         }
 
-        /* --- ANIMATIONS --- */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
         .manya-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 0.6; }
     </style>
 </head>
@@ -162,202 +215,266 @@
 
     <!-- NAVIGATION SIDEBAR -->
     <aside id="sidebar">
-        <div class="logo" onclick="location.reload()">Manya<span>.p7</span> <span class="dev-badge">Dev</span></div>
+    <div class="logo" onclick="location.reload()">Manya<span>.p7</span> <span class="dev-badge">Dev</span></div>
 
-        <div class="nav-container">
-            <!-- TOPIC 1 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 1: Skeleton Types</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_1_Types_of_Skeletons', 'sc7_musklo-skeletal_q1', this)">🐛 Growth Simulation</button>
-                </div>
+    <div class="nav-container">
+        
+        <!-- ========================== -->
+        <!-- 📐 MATHEMATICS (WRAPPER)   -->
+        <!-- ========================== -->
+        <div class="subject-wrapper">
+            <!-- Header with toggle -->
+            <div class="subject-header open" onclick="toggleSubject(this)" style="color:var(--manya-pink);">
+                <span>Mathematics</span>
+                <span class="subject-chevron">▼</span>
             </div>
-
-            <!-- TOPIC 2 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 2: Overview</span>
-                    <span class="chevron">▼</span>
+            
+            <!-- Body (Hidden when closed) -->
+            <div class="subject-content-body">
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 1: Set Theory</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', 'venn_intersection_v1', this)">🎨 Venn: Intersections</button>
+                    </div>
                 </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_2_human_skeleton', 'study_sim', this)">📖 Learn: Overview</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_2_human_skeleton', 'labeling_v1', this)">🧩 Identification I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_2_human_skeleton', 'labeling_v2', this)">🧩 Identification II</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_2_human_skeleton', 'labeling_v3', this)">🧩 Identification III</button>
-                </div>
-            </div>
-
-            <!-- TOPIC 3 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 3: Skull & Spine</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_3_axial_skull_spine', 'skull_study', this)">💀 Learn: Skull</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_3_axial_skull_spine', 'labeling_skull_v1', this)">🧩 Skull Quiz I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_3_axial_skull_spine', 'labeling_skull_v2', this)">🧩 Skull Quiz II</button>
-                    <hr>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_3_axial_skull_spine', 'spine_study', this)">🦴 Learn: Spine</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_3_axial_skull_spine', 'labeling_spine_v1', this)">🧩 Spine Quiz I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_3_axial_skull_spine', 'labeling_spine_v2', this)">🧩 Spine Quiz II</button>
-                </div>
-            </div>
-
-            <!-- TOPIC 4 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 4: Rib Cage</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_4_axial_rib_cage', 'rib_study', this)">🫁 Learn: Rib Cage</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_4_axial_rib_cage', 'labeling_v1', this)">🧩 Ribs Quiz I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_4_axial_rib_cage', 'labeling_v2', this)">🧩 Ribs Quiz II</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_4_axial_rib_cage', 'labeling_v3', this)">🧩 Ribs Quiz III</button>
-                </div>
-            </div>
-
-            <!-- TOPIC 5 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 5: Limbs</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_5_appendicular_limbs', 'arm_study', this)">💪 Learn: Arm</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_5_appendicular_limbs', 'labeling_arm_v1', this)">🧩 Arm Quiz I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_5_appendicular_limbs', 'labeling_arm_v2', this)">🧩 Arm Quiz II</button>
-                    <hr>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_5_appendicular_limbs', 'leg_study', this)">🦵 Learn: Leg</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_5_appendicular_limbs', 'labeling_leg_v1', this)">🧩 Leg Quiz I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_5_appendicular_limbs', 'labeling_leg_v2', this)">🧩 Leg Quiz II</button>
-                </div>
-            </div>
-
-            <!-- TOPIC 6 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 6: Bone Structure</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_6_bone_structure', 'bone_study', this)">🏭 Learn: Bone Structure</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_6_bone_structure', 'labeling_bone_v1', this)">🧩 Bone Quiz I</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_6_bone_structure', 'labeling_bone_v2', this)">🧩 Bone Quiz II</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_6_bone_structure', 'labeling_bone_v3', this)">🧩 Bone Quiz III</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_6_bone_structure', 'labeling_bone_v4', this)">🧩 Bone Quiz IV</button>
-                </div>
-            </div>
-
-            <!-- TOPIC 7 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 7: Joints</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'knee_study_3d', this)">🦵 Learn: Knee (3D)</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'labeling_knee_joints_v1', this)">🧩 Label Joints 1</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'labeling_knee_joints_v2', this)">🧩 Label Joints 2</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'labeling_knee_joints_v3', this)">🧩 Label Joints 3</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'synovial_study', this)"> Learn: Synovial Joint</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'labeling_synovial_v1', this)">🧩 Synovial Quiz 1</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_7_joints_structure', 'labeling_synovial_v2', this)">🧩 Synovial Quiz 2</button>
-                </div>
-            </div>
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 8: Elbow and Hip Joints</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <span style="font-size:10px; opacity:0.5; padding:5px 15px;">ELBOW (HINGE)</span>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'elbow_3d_study', this)">📖 Elbow 3D Study</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'elbow_2d_study', this)">🖼️ Elbow 2D Study</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'labeling_elbow_3d_v1', this)">🧩 Elbow 3D Quiz</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'labeling_elbow_2d_v1', this)">🖼️ Elbow 2D Quiz</button>
-                    <hr>
-                    <span style="font-size:10px; opacity:0.5; padding:5px 15px;">HIP (BALL-AND-SOCKET)</span>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'hip_3d_study', this)">📖 Hip 3D Study</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'hip_2d_study', this)">🖼️ Hip 2D Study</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'labeling_hip_3d_v1', this)">🧩 Hip 3D Quiz</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_8_hinge_ball-and-socket', 'labeling_hip_2d_v1', this)">🖼️ Hip 2D Quiz</button>
-                </div>
-            </div>
-            <!-- TOPIC 9 -->
-            <div class="nav-group">
-                <div class="nav-header" onclick="toggleSection(this)">
-                    <span class="nav-label">Topic 9: Pivot & Gliding</span>
-                    <span class="chevron">▼</span>
-                </div>
-                <div class="nav-content">
-                    <span style="font-size:10px; opacity:0.5; padding:5px 15px;">NECK (PIVOT)</span>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'neck_pivot_study', this)">📖 Learn: Neck</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'labeling_neck_pivot_v1', this)">🧩 Quiz: Neck</button>
-                    <hr>
-                    <span style="font-size:10px; opacity:0.5; padding:5px 15px;">WRIST (GLIDING)</span>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'wrist_gliding_study', this)">📖 Learn: Wrist</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'labeling_wrist_gliding_v1', this)">🧩 Quiz: Wrist</button>
-                    <hr>
-                    <span style="font-size:10px; opacity:0.5; padding:5px 15px;">ANKLE (GLIDING)</span>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'ankle_gliding_study', this)">📖 Learn: Ankle</button>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'labeling_ankle_gliding_v1', this)">🧩 Quiz: Ankle</button>
-                    <hr>
-                    <button class="quest-btn" onclick="ManyaRouter.load('quest_9_pivot_and_gliding', 'quest_skeleton_joints', this)">📖 Learn: Ankle</button>
-
-                </div>
-            </div>
-        <!-- TOPIC 10: MUSCULAR SYSTEM -->
-        <div class="nav-group">
-            <div class="nav-header" onclick="toggleSection(this)">
-                <span class="nav-label">Topic 10: Muscle Types</span>
-                <span class="chevron">▼</span>
-            </div>
-            <div class="nav-content">
-                <span style="font-size:10px; opacity:0.5; padding:5px 15px;">MUSCLE TYPES</span>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_10_muscular_system_types', 'muscle_types_study', this)">🖼️ Learn: 3 Types (2D)</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_10_muscular_system_types', 'labeling_muscle_types_V1', this)">🧩 Quiz: 3 Types</button>
-                <hr>
-                
             </div>
         </div>
-        <div class="nav-group">
-            <div class="nav-header" onclick="toggleSection(this)">
-                <span class="nav-label">Topic 11: Muscle Action</span>
-                <span class="chevron">▼</span>
+
+        <!-- ========================== -->
+        <!-- 🧬 SCIENCE (WRAPPER)       -->
+        <!-- ========================== -->
+        <div class="subject-wrapper">
+            <div class="subject-header open" onclick="toggleSubject(this)" style="color:var(--manya-purple);">
+                <span>Science</span>
+                <span class="subject-chevron">▼</span>
             </div>
-            <div class="nav-content">
-                <span style="font-size:10px; opacity:0.5; padding:5px 15px;">MUSCLE ACTION</span>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'skeletal_muscle_study', this)">💪 Learn: Skeletal (3D)</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'labeling_arm_muscles', this)">🧩 Quiz: Arm Anatomy</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'muscle_action_study', this)">📖 Learn: Action (2D)</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'labeling_muscle_states_v1', this)">🧩 Quiz: States</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'labeling_bone_muscle_connection_v1', this)">🧩 Quiz: Connections</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'labeling_flexor_extensor_v1', this)">🧩 Quiz: Flexor/Extensor</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_11_muscle_action_antagonistic_pairs', 'muscle_action_procedural', this)"> 💪 Canvas: Flexor/Extensor</button>
-            </div>
-        </div>
-        <!-- TOPIC 12 -->
-        <div class="nav-group">
-            <div class="nav-header" onclick="toggleSection(this)">
-                <span class="nav-label">Topic 12: Maintenance & Teeth</span>
-                <span class="chevron">▼</span>
-            </div>
-            <div class="nav-content">
-                <span style="font-size:10px; opacity:0.5; padding:5px 15px;">DENTAL ANATOMY (3D)</span>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_12_posture_and_teeth', 'tooth_anatomy_study', this)">🦷 Learn: Tooth Inside</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_12_posture_and_teeth', 'tooth_anatomy_quiz_v1', this)">🧩 Quiz: Tooth Parts</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_12_posture_and_teeth', 'teeth_types_study', this)">🦷 Learn: Teeth Types (2D)</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_12_posture_and_teeth', 'teeth_types_quiz_v1', this)">🧩 Quiz: Full Dentition</button>
-                <button class="quest-btn" onclick="ManyaRouter.load('quest_12_posture_and_teeth', 'posture_maintenance_study', this)">🦷 Learn: Posture</button>
+
+            <div class="subject-content-body">
+                <!-- TOPIC 1 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 1: Skeleton Types</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_1_Types_of_Skeletons', 'sc7_musklo-skeletal_q1', this)">🐛 Growth Simulation</button>
+                    </div>
                 </div>
+
+                <!-- TOPIC 2 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 2: Overview</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_2_human_skeleton', 'study_sim', this)">📖 Learn: Overview</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_2_human_skeleton', 'labeling_v1', this)">🧩 Identification I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_2_human_skeleton', 'labeling_v2', this)">🧩 Identification II</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_2_human_skeleton', 'labeling_v3', this)">🧩 Identification III</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 3 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 3: Skull & Spine</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_3_axial_skull_spine', 'skull_study', this)">💀 Learn: Skull</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_3_axial_skull_spine', 'labeling_skull_v1', this)">🧩 Skull Quiz I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_3_axial_skull_spine', 'labeling_skull_v2', this)">🧩 Skull Quiz II</button>
+                        <hr>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_3_axial_skull_spine', 'spine_study', this)">🦴 Learn: Spine</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_3_axial_skull_spine', 'labeling_spine_v1', this)">🧩 Spine Quiz I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_3_axial_skull_spine', 'labeling_spine_v2', this)">🧩 Spine Quiz II</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 4 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 4: Rib Cage</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_4_axial_rib_cage', 'rib_study', this)">🫁 Learn: Rib Cage</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_4_axial_rib_cage', 'labeling_v1', this)">🧩 Ribs Quiz I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_4_axial_rib_cage', 'labeling_v2', this)">🧩 Ribs Quiz II</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_4_axial_rib_cage', 'labeling_v3', this)">🧩 Ribs Quiz III</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 5 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 5: Limbs</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_5_appendicular_limbs', 'arm_study', this)">💪 Learn: Arm</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_5_appendicular_limbs', 'labeling_arm_v1', this)">🧩 Arm Quiz I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_5_appendicular_limbs', 'labeling_arm_v2', this)">🧩 Arm Quiz II</button>
+                        <hr>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_5_appendicular_limbs', 'leg_study', this)">🦵 Learn: Leg</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_5_appendicular_limbs', 'labeling_leg_v1', this)">🧩 Leg Quiz I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_5_appendicular_limbs', 'labeling_leg_v2', this)">🧩 Leg Quiz II</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 6 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 6: Bone Structure</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_6_bone_structure', 'bone_study', this)">🏭 Learn: Bone Structure</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_6_bone_structure', 'labeling_bone_v1', this)">🧩 Bone Quiz I</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_6_bone_structure', 'labeling_bone_v2', this)">🧩 Bone Quiz II</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_6_bone_structure', 'labeling_bone_v3', this)">🧩 Bone Quiz III</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_6_bone_structure', 'labeling_bone_v4', this)">🧩 Bone Quiz IV</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 7 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 7: Joints</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'knee_study_3d', this)">🦵 Learn: Knee (3D)</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'labeling_knee_joints_v1', this)">🧩 Label Joints 1</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'labeling_knee_joints_v2', this)">🧩 Label Joints 2</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'labeling_knee_joints_v3', this)">🧩 Label Joints 3</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'synovial_study', this)"> Learn: Synovial Joint</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'labeling_synovial_v1', this)">🧩 Synovial Quiz 1</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_7_joints_structure', 'labeling_synovial_v2', this)">🧩 Synovial Quiz 2</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 8 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 8: Elbow and Hip Joints</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">ELBOW (HINGE)</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'elbow_3d_study', this)">📖 Elbow 3D Study</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'elbow_2d_study', this)">🖼️ Elbow 2D Study</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'labeling_elbow_3d_v1', this)">🧩 Elbow 3D Quiz</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'labeling_elbow_2d_v1', this)">🖼️ Elbow 2D Quiz</button>
+                        <hr>
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">HIP (BALL-AND-SOCKET)</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'hip_3d_study', this)">📖 Hip 3D Study</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'hip_2d_study', this)">🖼️ Hip 2D Study</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'labeling_hip_3d_v1', this)">🧩 Hip 3D Quiz</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_8_hinge_ball-and-socket', 'labeling_hip_2d_v1', this)">🖼️ Hip 2D Quiz</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 9 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 9: Pivot & Gliding</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">NECK (PIVOT)</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'neck_pivot_study', this)">📖 Learn: Neck</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'labeling_neck_pivot_v1', this)">🧩 Quiz: Neck</button>
+                        <hr>
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">WRIST (GLIDING)</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'wrist_gliding_study', this)">📖 Learn: Wrist</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'labeling_wrist_gliding_v1', this)">🧩 Quiz: Wrist</button>
+                        <hr>
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">ANKLE (GLIDING)</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'ankle_gliding_study', this)">📖 Learn: Ankle</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'labeling_ankle_gliding_v1', this)">🧩 Quiz: Ankle</button>
+                        <hr>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_9_pivot_and_gliding', 'quest_skeleton_joints', this)">📖 Learn: Ankle</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 10 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 10: Muscle Types</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">MUSCLE TYPES</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_10_muscular_system_types', 'muscle_types_study', this)">🖼️ Learn: 3 Types (2D)</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_10_muscular_system_types', 'labeling_muscle_types_V1', this)">🧩 Quiz: 3 Types</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 11 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 11: Muscle Action</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">MUSCLE ACTION</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'skeletal_muscle_study', this)">💪 Learn: Skeletal (3D)</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'labeling_arm_muscles', this)">🧩 Quiz: Arm Anatomy</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'muscle_action_study', this)">📖 Learn: Action (2D)</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'labeling_muscle_states_v1', this)">🧩 Quiz: States</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'labeling_bone_muscle_connection_v1', this)">🧩 Quiz: Connections</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'labeling_flexor_extensor_v1', this)">🧩 Quiz: Flexor/Extensor</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_11_muscle_action_antagonistic_pairs', 'muscle_action_procedural', this)"> 💪 Canvas: Flexor/Extensor</button>
+                    </div>
+                </div>
+
+                <!-- TOPIC 12 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 12: Maintenance & Teeth</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <span style="font-size:10px; opacity:0.5; padding:5px 15px;">DENTAL ANATOMY (3D)</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_12_posture_and_teeth', 'tooth_anatomy_study', this)">🦷 Learn: Tooth Inside</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_12_posture_and_teeth', 'tooth_anatomy_quiz_v1', this)">🧩 Quiz: Tooth Parts</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_12_posture_and_teeth', 'teeth_types_study', this)">🦷 Learn: Teeth Types (2D)</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_12_posture_and_teeth', 'teeth_types_quiz_v1', this)">🧩 Quiz: Full Dentition</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('science/musklo-skeletal-system', 'quest_12_posture_and_teeth', 'posture_maintenance_study', this)">🦷 Learn: Posture</button>
+                    </div>
+                </div>
+
+            </div> <!-- END SUBJECT BODY -->
+        </div> <!-- END SUBJECT WRAPPER -->
+
+        <!-- ========================== -->
+        <!-- 🌍 SST (WRAPPER)           -->
+        <!-- ========================== -->
+        <div class="subject-wrapper">
+            <div class="subject-header" onclick="toggleSubject(this)" style="color:var(--manya-green);">
+                <span>Social Studies</span>
+                <span class="subject-chevron">▼</span>
+            </div>
+            <div class="subject-content-body">
+                <div class="nav-group">
+                     <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 1: Location of Uganda</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <span style="font-size:10px; padding:10px; opacity:0.6;">Content coming soon...</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        </div>
-    </aside>
+        
+    </div>
+</aside>
 
     <!-- MAIN INTERFACE -->
     <main>
@@ -381,51 +498,64 @@
     </main>
 
     <script>
+
         // SIDEBAR & SECTION LOGIC
         function toggleSection(header) {
             const group = header.parentElement;
             group.classList.toggle('open');
         }
-
+        // Toggle Subject Function
+function toggleSubject(header) {
+    header.classList.toggle('open');
+}
         function toggleSidebar() {
             document.body.classList.toggle('sidebar-open');
         }
 
+        // Close sidebar when clicking outside
         document.addEventListener('mousedown', (e) => {
-    const sidebar = document.getElementById('sidebar');
-    // If sidebar is open and user clicks outside of it
-    if (document.body.classList.contains('sidebar-open') && !sidebar.contains(e.target) && !e.target.closest('.mobile-toggle')) {
-        toggleSidebar();
-    }
-});
+            const sidebar = document.getElementById('sidebar');
+            if (document.body.classList.contains('sidebar-open') && !sidebar.contains(e.target) && !e.target.closest('.mobile-toggle')) {
+                toggleSidebar();
+            }
+        });
     </script>
 
     <script type="module">
         /**
          * MANYA UNIVERSAL ROUTER
+         * Handles routing for Science, Math, SST, and English
          */
         const ENGINE_REGISTRY = {
             "3D_SKELETON": "./app-shell/js/engines/3D-skeleton-engine.js",
             "2D_HOTSPOT":  "./app-shell/js/engines/image-hotspots-engine.js",
-            //"VARIABLE_SLIDER": "./app-shell/js/engines/variable-slider-engine.js",
-            "GALLERY_STUDY": "./app-shell/js/engines/gallery-study-engine.js", // NEW ENGINE
-            "PROCEDURAL_CANVAS": "./app-shell/js/engines/procedural-canvas-engine.js", // NEW ENGINE
-            "SKELETON_PUPPET": "./app-shell/js/engines/skeleton-puppet-engine.js", 
+            "GALLERY_STUDY": "./app-shell/js/engines/gallery-study-engine.js",
+            "PROCEDURAL_CANVAS": "./app-shell/js/engines/procedural-canvas-engine.js",
+            "SKELETON_PUPPET": "./app-shell/js/engines/skeleton-puppet-engine.js",
+            "SET_THEORY": "./app-shell/js/engines/math-engines/set-theory-engine.js" 
         };
 
         window.ManyaRouter = {
-            load: async (folder, variant, btn) => {
+            /**
+             * load: The Master Loading Function
+             * @param {string} categoryPath - e.g. "science/musklo-skeletal-system" or "math/sets"
+             * @param {string} folder - The specific quest folder
+             * @param {string} variant - The JSON filename (without .json)
+             * @param {HTMLElement} btn - The DOM element clicked (for styling)
+             */
+            load: async (categoryPath, folder, variant, btn) => {
                 const mount = document.getElementById('view-mount');
                 const title = document.getElementById('quest-title');
                 const tag = document.getElementById('engine-tag');
 
-                // 1. UI Updates
+                // 1. UI Updates (Sidebar highlighting)
                 document.querySelectorAll('.quest-btn').forEach(b => b.classList.remove('active'));
                 if(btn) btn.classList.add('active');
                 
-                // Close sidebar on mobile after selection
+                // Auto-close sidebar on mobile
                 if(window.innerWidth < 900) document.body.classList.remove('sidebar-open');
                 
+                // Loading Spinner
                 mount.innerHTML = `
                     <div class="manya-loader">
                         <div style="width:30px; height:30px; border:4px solid #e2e8f0; border-top-color:var(--manya-purple); border-radius:50%; animation: spin 1s linear infinite;"></div>
@@ -436,25 +566,37 @@
 
                 try {
                     // 2. Resolve Path & Fetch
-                    const path = `content/science/musklo-skeletal-system/${folder}/${variant}.json`;
+                    // Robust path construction: content / category / folder / file.json
+                    const path = `content/${categoryPath}/${folder}/${variant}.json`;
                     const res = await fetch(encodeURI(path));
-                    if(!res.ok) throw new Error("Quest file not found.");
+                    
+                    if(!res.ok) throw new Error(`Quest file not found at: ${path}`);
                     const data = await res.json();
 
                     // 3. Resolve Engine
                     const engineKey = data.engineType || "3D_SKELETON";
                     const enginePath = ENGINE_REGISTRY[engineKey];
-                    tag.innerText = engineKey.replace('_', ' ');
+                    
+                    if (!enginePath) throw new Error(`Engine type '${engineKey}' is not registered.`);
 
-                    // 4. Dynamic Load & Run
+                    // 4. Update Header Tag (Visual Context)
+                    // If it's math, turn it pink. If Science, purple.
+                    const isMath = categoryPath.includes('math');
+                    tag.innerText = isMath ? "MATHEMATICS" : engineKey.replace('_', ' ');
+                    tag.style.background = isMath ? "var(--manya-pink-light)" : "var(--manya-purple-light)";
+                    tag.style.color = isMath ? "var(--manya-pink)" : "var(--manya-purple)";
+
+                    // 5. Dynamic Load & Run
                     const module = await import(enginePath);
                     const engine = Object.values(module)[0]; 
 
                     title.innerText = data.topic || data.variantTitle;
 
+                    // Execute the specific render mode
                     if (data.mode === 'study') {
                         engine.renderStudy(mount, data);
                     } else {
+                        // For Math or Quizzes
                         engine.renderLabeling(mount, data);
                     }
 
@@ -464,7 +606,7 @@
                     console.error(err);
                     mount.innerHTML = `<div style="padding:50px; color:red; text-align:center;">
                         <h3 style="margin:0">Failed to launch Quest</h3>
-                        <p style="font-size:13px; opacity:0.7;">${err.message}</p>
+                        <p style="font-size:12px; opacity:0.7; margin-top:10px; font-family:monospace;">${err.message}</p>
                     </div>`;
                 }
             }
