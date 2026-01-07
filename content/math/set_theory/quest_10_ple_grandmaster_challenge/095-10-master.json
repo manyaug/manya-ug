@@ -1,0 +1,39 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebra Final Exam",
+  "variantTitle": "Quest 10: Grandmaster III",
+  "sets": { "A": { "label": "D", "color": "#9333ea" }, "B": { "label": "S", "color": "#db2777" } },
+  "zones": {
+    "left": ["4k"],
+    "center": ["k+2"],
+    "right": ["2k+6"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "symmetric_difference",
+      "equation_target": 36,
+      "expected_x": 5,
+      "prompt": "1. If <span style='color:#db2777'>36 pupils</span> do only one activity, find <b>k</b>.",
+      "hint": "4k + (2k+6) = 36"
+    },
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "intersection",
+      "x_val": 5,
+      "expression": "k + 2",
+      "prompt": "2. How many do <b>BOTH</b> activities?",
+      "hint": "k + 2"
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "x_val": 5,
+      "prompt": "3. Find the Total Count for <span style='color:#9333ea'>Set D</span>.",
+      "hint": "4k + (k+2) = 5k + 2"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Substituting X",
+  "variantTitle": "Quest 7b: Calculating Regions",
+  
+  "sets": { "A": { "label": "R", "color": "#9333ea" }, "B": { "label": "M", "color": "#db2777" } },
+  
+  "zones": {
+    "left": ["15"], 
+    "center": [10],
+    "right": ["2x"],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 15,
+      "expression": "2x",
+      "prompt": "If <b>x = 15</b>, how many eat <span style='color:#db2777'>Matooke ONLY</span>?",
+      "hint": "The region shows '2x'. Calculate 2 × 15."
+    }
+  ]
+}

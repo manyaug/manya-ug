@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebra Master Class",
+  "variantTitle": "Quest 10: Grandmaster II",
+  "sets": { "A": { "label": "A", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  "zones": {
+    "left": ["3y+5"],
+    "center": ["y"],
+    "right": ["2y+8"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_only",
+      "equation_target": 20,
+      "expected_x": 5,
+      "prompt": "1. If <span style='color:#9333ea'>n(A only) = 20</span>, find <b>y</b>.",
+      "hint": "3y + 5 = 20"
+    },
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 5,
+      "expression": "2y + 8",
+      "prompt": "2. Find <span style='color:#db2777'>n(B only)</span>.",
+      "hint": "2(5) + 8"
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "3. Find the <b>Total Union</b> of the sets.",
+      "hint": "20 + 5 + 18."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Step 3: Calculating Subsets",
+  "variantTitle": "Quest 3b: Venn Subsets",
+  "sets": { "A": { "label": "P", "color": "#9333ea" }, "B": { "label": "Q", "color": "#db2777" } },
+  "zones": {
+    "left": ["d", "e", "f"],
+    "center": ["a", "b", "c"],
+    "right": ["g", "h"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "left_only",
+      "prompt": "How many <b>subsets</b> in <span style='color:#9333ea'>(P - Q)</span>?",
+      "hint": "You found n(P-Q)=3. Now calculate 2³."
+    },
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "right_total",
+      "prompt": "How many <b>subsets</b> in Set <span style='color:#db2777'>Q</span>?",
+      "hint": "You found n(Q)=5. Now calculate 2⁵."
+    }
+  ]
+}

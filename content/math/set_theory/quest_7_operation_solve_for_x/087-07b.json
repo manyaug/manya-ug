@@ -1,0 +1,35 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complex Substitution",
+  "variantTitle": "Quest 7d: Substitution II",
+  
+  "sets": { "A": { "label": "C", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  
+  "zones": {
+    "left": ["2x+5"],
+    "center": ["10"],
+    "right": ["3x+10"],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 10,
+      "expression": "2x + 5",
+      "prompt": "If x=10, how many grow <span style='color:#9333ea'>Coffee ONLY</span>?",
+      "hint": "Calculate 2(10) + 5."
+    },
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 10,
+      "expression": "3x + 10",
+      "prompt": "How many grow <span style='color:#db2777'>Beans but not Coffee</span>?",
+      "hint": "This is n(B only). Calculate 3(10) + 10."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Step 2: Finding Cardinality (n)",
+  "variantTitle": "Quest 8: Counting Regions",
+  "sets": { "A": { "label": "P", "color": "#9333ea" }, "B": { "label": "Q", "color": "#db2777" } },
+  "zones": {
+    "left": ["d", "e", "f"],
+    "center": ["a", "b", "c"],
+    "right": ["g", "h"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "left_only",
+      "prompt": "Find <span style='color:#9333ea'>n(P - Q)</span>",
+      "hint": "Count how many items are in the P-Only region."
+    },
+    {
+      "type": "COUNT",
+      "targetRegion": "right_total",
+      "prompt": "Find <span style='color:#db2777'>n(Q)</span>",
+      "hint": "Count the total number of items inside circle Q."
+    }
+  ]
+}

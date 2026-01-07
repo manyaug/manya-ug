@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Advanced Equations",
+  "variantTitle": "Quest 7c: Complex Algebra",
+  
+  "sets": { "A": { "label": "C", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  
+  "zones": {
+    "left": ["2x+5"],
+    "center": ["x"],
+    "right": ["3x+10"],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "right_total",
+      "equation_target": 50,
+      "prompt": "Given <span style='color:#db2777'>n(B) = 50</span>, find <b>x</b>.",
+      "hint": "n(B) = (x) + (3x + 10). Equation: 4x + 10 = 50."
+    }
+  ]
+}

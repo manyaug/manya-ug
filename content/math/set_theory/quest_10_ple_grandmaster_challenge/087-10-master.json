@@ -1,0 +1,42 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Expert Algebra",
+  "variantTitle": "Quest 10: Grandmaster II",
+  
+  "sets": { "A": { "label": "C", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  
+  "zones": {
+    "left": ["2x+5"],
+    "center": ["x"],
+    "right": ["3x+10"],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "right_total",
+      "equation_target": 50,
+      "prompt": "1. Given <span style='color:#db2777'>n(B) = 50</span>, find <b>x</b>.",
+      "hint": "x + 3x + 10 = 50"
+    },
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_total",
+      "x_val": 10,
+      "expression": "3x + 5",
+      "prompt": "2. Find <span style='color:#9333ea'>n(C)</span>.",
+      "hint": "n(C) = (2x+5) + x = 3x+5."
+    },
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "symmetric_difference",
+      "x_val": 10,
+      "expression": "5x + 15",
+      "prompt": "3. How many grow <b>only one type</b>?",
+      "hint": "(2x+5) + (3x+10)."
+    }
+  ]
+}

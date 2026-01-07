@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Reading Survey Data",
+  "variantTitle": "Quest 8a: Sports Survey",
+  
+  "sets": { "A": { "label": "F", "color": "#9333ea" }, "B": { "label": "V", "color": "#db2777" } },
+  
+  "zones": {
+    "left": [8],
+    "center": [10],
+    "right": [8],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "prompt": "How many pupils play <span style='color:#9333ea'>Football</span>?",
+      "hint": "n(F) = n(F only) + n(Both). Add 8 + 10."
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "right_only",
+      "prompt": "How many play <span style='color:#db2777'>Volleyball ONLY</span>?",
+      "hint": "Look at the region inside V but outside F."
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "intersection",
+      "prompt": "How many play <span style='color:#4f46e5'>BOTH</span> sports?",
+      "hint": "Read the number in the overlapping middle part."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebra Final Exam",
+  "variantTitle": "Quest 10: Grandmaster III",
+  "sets": { "A": { "label": "L", "color": "#9333ea" }, "B": { "label": "E", "color": "#db2777" } },
+  "zones": {
+    "left": ["5m+4"],
+    "center": ["m"],
+    "right": ["3m+12"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "expected_x": 4,
+      "prompt": "1. If n(L) = n(E), find <b>m</b>.",
+      "hint": "(5m+4)+m = m+(3m+12)"
+    },
+    {
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 4,
+      "expression": "5m + 4",
+      "prompt": "2. Find n(L only).",
+      "hint": "5(4) + 4"
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 4,
+      "prompt": "3. Find the Total Class Size.",
+      "hint": "Add all three regions using m=4."
+    }
+  ]
+}

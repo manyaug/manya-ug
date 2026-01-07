@@ -1,0 +1,31 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Analyzing Survey Data",
+  "variantTitle": "Quest 8b: Deep Dive",
+  
+  "sets": { "A": { "label": "F", "color": "#9333ea" }, "B": { "label": "V", "color": "#db2777" } },
+  
+  "zones": {
+    "left": [8],
+    "center": [10],
+    "right": [8],
+    "outside": []
+  },
+
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "How many pupils play <b>only one type</b> of sport?",
+      "hint": "Add (Football Only) + (Volleyball Only). Ignore the intersection."
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "How many pupils play <b>at least one</b> sport?",
+      "hint": "This means n(F ∪ V). Add all the numbers inside the circles."
+    }
+  ]
+}
