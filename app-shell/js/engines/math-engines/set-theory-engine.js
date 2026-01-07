@@ -1,6 +1,6 @@
 /**
- * Manya Set Theory Engine (Stacked Mobile Layout)
- * Features: Vertical Input/Button Stack, Big Touch Targets, and Safe Area Padding.
+ * Manya Set Theory Engine (Label Fix & Mobile Stack)
+ * Fixes: Labels overlapping circle lines by anchoring them to bounding corners.
  */
 export const SetTheoryEngine = {
     state: {
@@ -63,7 +63,7 @@ export const SetTheoryEngine = {
             .control-card {
                 flex-shrink: 0; 
                 background: white; 
-                padding: 24px 20px 30px 20px; /* Extra bottom padding pushes it up */
+                padding: 24px 20px 30px 20px; 
                 border-top-left-radius: 24px; border-top-right-radius: 24px;
                 box-shadow: 0 -10px 40px rgba(0,0,0,0.08);
                 z-index: 30;
@@ -98,7 +98,7 @@ export const SetTheoryEngine = {
 
             .check-btn {
                 width: 100%;
-                height: 54px; /* Big button matching input */
+                height: 54px; 
                 background: var(--manya-purple); color: white;
                 border: none; border-radius: 14px; 
                 font-weight: 700; font-size: 1.1rem; cursor: pointer;
@@ -152,7 +152,7 @@ export const SetTheoryEngine = {
 
             const dpr = window.devicePixelRatio || 2; 
             
-            // Calculate size - leave a bit of breathing room around canvas
+            // Calc sizes
             let targetW = rect.width * 0.95;
             let targetH = rect.height * 0.95;
             
@@ -226,8 +226,9 @@ export const SetTheoryEngine = {
         let isCorrect = false;
 
         if (q.type === 'LIST') {
-            const cleanInput = input.replace(/[{}]/g, '').split(/[\s,]+/).map(n => parseInt(n)).filter(n => !isNaN(n)).sort((a,b)=>a-b);
-            const correctArr = [...correctData].sort((a,b)=>a-b);
+            const cleanInput = input.replace(/[{}]/g, '').split(/[\s,]+/).map(n => isNaN(parseInt(n)) ? n : parseInt(n)).sort();
+            const correctArr = [...correctData].sort();
+            // Simple string comparison for arrays (works for numbers and strings)
             isCorrect = JSON.stringify(cleanInput) === JSON.stringify(correctArr);
         } else if (q.type === 'COUNT') {
             isCorrect = parseInt(input) === correctData.length;
@@ -246,7 +247,7 @@ export const SetTheoryEngine = {
             SetTheoryEngine.state.isResolved = true;
             SetTheoryEngine.draw();
         } else {
-            fb.innerText = "Check the numbers and try again.";
+            fb.innerText = "Check the answer and try again.";
             fb.style.color = "#ef4444";
         }
     },
@@ -275,7 +276,7 @@ export const SetTheoryEngine = {
         const padding = 30 * s;
         
         const cx = width / 2;
-        const cy = height / 2 + (10 * s); 
+        const cy = height / 2 + (15 * s); // More spacing from top
 
         const availW = width - (padding * 2);
         const availH = height - (padding * 2);
@@ -316,18 +317,27 @@ export const SetTheoryEngine = {
         // 3. CIRCLES
         ctx.lineWidth = 3.5 * s;
         
+        // Circle A
         ctx.strokeStyle = c1.color;
         ctx.beginPath(); ctx.arc(c1.x, c1.y, c1.r, 0, Math.PI*2); ctx.stroke();
+        
+        // Label A (Fixed to Top-Left Corner, Outside Circle)
         ctx.fillStyle = c1.color;
-        ctx.font = `700 ${20 * s}px "Plus Jakarta Sans", sans-serif`;
-        ctx.fillText(data.sets.A.label, c1.x - r + (20*s), c1.y - r + (20*s));
+        ctx.font = `800 ${22 * s}px "Plus Jakarta Sans", sans-serif`;
+        // Logic: x = Center - radius, y = Center - radius + textHeight offset
+        ctx.textAlign = "right"; 
+        ctx.fillText(data.sets.A.label, c1.x - (r * 0.6), c1.y - (r * 0.85));
 
+        // Circle B
         ctx.strokeStyle = c2.color;
         ctx.beginPath(); ctx.arc(c2.x, c2.y, c2.r, 0, Math.PI*2); ctx.stroke();
+        
+        // Label B (Fixed to Top-Right Corner, Outside Circle)
         ctx.fillStyle = c2.color;
-        ctx.fillText(data.sets.B.label, c2.x + r - (35*s), c2.y - r + (20*s));
+        ctx.textAlign = "left";
+        ctx.fillText(data.sets.B.label, c2.x + (r * 0.6), c2.y - (r * 0.85));
 
-        // 4. NUMBERS
+        // 4. NUMBERS SCATTER
         ctx.font = `600 ${18 * s}px "Plus Jakarta Sans", sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -341,8 +351,7 @@ export const SetTheoryEngine = {
                 {x:0, y:0},
                 {x:0, y:-0.5}, {x:0, y:0.5},
                 {x:0, y:-0.5}, {x:-0.5, y:0.5}, {x:0.5, y:0.5},
-                {x:-0.4, y:-0.4}, {x:0.4, y:-0.4}, {x:-0.4, y:0.4}, {x:0.4, y:0.4},
-                {x:0, y:0}, {x:-0.5, y:-0.5}, {x:0.5, y:-0.5}, {x:-0.5, y:0.5}, {x:0.5, y:0.5}
+                {x:-0.4, y:-0.4}, {x:0.4, y:-0.4}, {x:-0.4, y:0.4}, {x:0.4, y:0.4}
             ];
             
             let layout = positions.slice(0, 1);
@@ -360,7 +369,8 @@ export const SetTheoryEngine = {
 
             nums.forEach((n, i) => {
                 const pos = layout[i];
-                const spread = radius * 0.7; 
+                // Slightly tighter spread for elements inside
+                const spread = radius * 0.55; 
                 ctx.fillText(n, centerX + (pos.x * spread), centerY + (pos.y * spread));
             });
         };
