@@ -1,0 +1,32 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Map the Venn",
+  "variantTitle": "Quest 5: The Sorter",
+  
+  "sets": { "A": { "label": "M", "color": "#9333ea" }, "B": { "label": "O", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Drag numbers to the correct region.<br><span style='color:#9333ea'>M (Multiples of 3)</span> & <span style='color:#db2777'>O (Odds)</span>",
+      "hint": "3 is Odd AND Multiple of 3 (Center). 6 is Even (Left).",
+      "items": [
+        { "val": "3", "target": "center" },
+        { "val": "6", "target": "left" },
+        { "val": "5", "target": "right" },
+        { "val": "9", "target": "center" },
+        { "val": "12", "target": "left" },
+        { "val": "7", "target": "right" }
+      ]
+    },
+    {
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "Now list the elements of <span style='color:#64748b'>M ∩ O</span>",
+      "hint": "Check the middle overlap."
+    }
+  ]
+}
