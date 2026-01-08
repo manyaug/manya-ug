@@ -1,0 +1,46 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Placing Information",
+  "variantTitle": "Quest 6-001: Map the Venn",
+  "sets": {
+    "A": { "label": "M", "color": "#9333ea" },
+    "B": { "label": "O", "color": "#db2777" }
+  },
+  "zones": {
+    "left": [6, 12],
+    "center": [3, 9],
+    "right": [5, 7],
+    "outside": []
+  },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Drag numbers to the correct region.<br><b>M (Multiples of 3)</b> & <b>O (Odds)</b>",
+      "hint": "Intersection = Odd multiples of 3 (e.g., 3, 9). Left = Even multiples (6, 12).",
+      "items": [
+        { "val": "3", "target": "center" },
+        { "val": "6", "target": "left" },
+        { "val": "5", "target": "right" },
+        { "val": "9", "target": "center" },
+        { "val": "12", "target": "left" },
+        { "val": "7", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "List elements of <span style='color:#64748b'>M ∩ O</span>.",
+      "hint": "List the numbers you placed in the middle."
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "left_only",
+      "prompt": "List elements of <span style='color:#9333ea'>M only</span>.",
+      "hint": "List the numbers in the purple crescent."
+    }
+  ]
+}

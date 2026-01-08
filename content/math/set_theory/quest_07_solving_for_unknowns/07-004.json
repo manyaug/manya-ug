@@ -1,0 +1,44 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Symmetric Difference",
+  "variantTitle": "Quest 7-004: Only One Type",
+  "sets": {
+    "A": { "label": "D", "color": "#9333ea" },
+    "B": { "label": "S", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["4k"],
+    "center": ["k+2"],
+    "right": ["2k+6"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "symmetric_difference",
+      "equation_target": 36,
+      "expected_x": 5,
+      "prompt": "If <span style='color:#9333ea'>36 pupils</span> do <b>only one</b> activity, find <b>k</b>.",
+      "hint": "(Left Only) + (Right Only) = 36. So 4k + (2k+6) = 36."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "intersection",
+      "x_val": 5,
+      "expression": "k+2",
+      "prompt": "How many pupils do <span style='color:#64748b'>both</span> activities?",
+      "hint": "k + 2"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "x_val": 5,
+      "prompt": "Total pupils in <span style='color:#9333ea'>Dancing</span>?",
+      "hint": "n(D) = (4k) + (k+2)"
+    }
+  ]
+}

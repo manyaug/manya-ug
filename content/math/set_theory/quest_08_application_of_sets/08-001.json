@@ -1,0 +1,46 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Survey Applications",
+  "variantTitle": "Quest 8-001: Sports Survey",
+  "sets": {
+    "A": { "label": "F", "color": "#9333ea" },
+    "B": { "label": "V", "color": "#db2777" }
+  },
+  "zones": {
+    "left": [8],
+    "center": [10],
+    "right": [8],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "prompt": "How many pupils play <span style='color:#9333ea'>Football</span>?",
+      "hint": "n(F) = Only + Both. Add 8 + 10."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_only",
+      "prompt": "How many play <span style='color:#db2777'>Volleyball only</span>?",
+      "hint": "Look at the region inside V but outside F."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "intersection",
+      "prompt": "How many play <b>both</b>?",
+      "hint": "The overlapping middle part."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "How many pupils play <b>one type</b> only?",
+      "hint": "(F Only) + (V Only)"
+    }
+  ]
+}
