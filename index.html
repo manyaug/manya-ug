@@ -223,130 +223,127 @@
         <!-- 📐 MATHEMATICS (WRAPPER)   -->
         <!-- ========================== -->
         <div class="subject-wrapper">
-            <!-- Header with toggle -->
-            <div class="subject-header open" onclick="toggleSubject(this)" style="color:var(--manya-pink);">
-                <span>Mathematics</span>
-                <span class="subject-chevron">▼</span>
+    <!-- Header with toggle -->
+    <div class="subject-header open" onclick="toggleSubject(this)" style="color:var(--manya-pink);">
+        <span>Mathematics</span>
+        <span class="subject-chevron">▼</span>
+    </div>
+    
+    <!-- Body (Hidden when closed) -->
+    <div class="subject-content-body">
+        
+        <!-- Quest 1 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 1: Finite vs Infinite Sets</span>
+                <span class="chevron">▼</span>
             </div>
-            
-            <!-- Body (Hidden when closed) -->
-            <div class="subject-content-body">
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 1: Set Classifier</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_1_set_classifier', '101-01', this)"> 101-01</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_1_set_classifier', '101-01b', this)"> 101-01b</button>
-
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 2: Subset Architect</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_2_subset_architect', '062-02', this)">🎨 062-02</button>
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 3: Formula finder</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_3_formula_finder', '055-03', this)">Venn: 055-03</button>
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 4: Proper vs Improper</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', 'venn_intersection_v1', this)">🎨 Venn: Intersections</button>
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 5: Map the Venn</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', 'venn_intersection_v1', this)">🎨 Venn: Intersections</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', '055-05', this)"> Venn: 055-05</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', '110-05', this)"> Venn: 110-05</button>
-                    
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 6: Region Decoder</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', 'venn_intersection_v1', this)">🎨 Venn: Intersections</button>
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 7: Operation solve for x</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '083-07a', this)">🎨 083-07a</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '083-07b', this)">🎨 083-07b</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '087-07a', this)">🎨 087-07a</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '087-07b', this)">🎨 087-07b</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '092-07a', this)">🎨 092-07ba</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '092-07b', this)">🎨 092-07b</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '095-07a', this)">🎨 095-07a</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '095-07b', this)">🎨 095-07b</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '098-07a', this)">🎨 098-07a</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_7_operation_solve_for_x', '098-07b', this)">🎨 098-07b</button>
-
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 8: Only Specialist</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_8_only_specialist', 'PQ-MT-T1-017', this)">Venn: PQ-MT-T1-017</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_8_only_specialist', '055-08', this)">Venn: 055-08</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_8_only_specialist', '075-08a', this)">Venn: 075-08a</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_8_only_specialist', '075-08b', this)">Venn: 075-08b</button>
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 9: Set Probability Wizard</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_5_map_the_venn', 'venn_intersection_v1', this)">🎨 Venn: Intersections</button>
-                    </div>
-                </div>
-                <div class="nav-group">
-                    <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 10: PLE set Grandmaster</span>
-                        <span class="chevron">▼</span>
-                    </div>
-                    <div class="nav-content">
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_ple_grandmaster_challenge', '055-10-master', this)">Venn: 055-10-master</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_ple_grandmaster_challenge', '083-10-master', this)">Venn: 083-10-master</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_ple_grandmaster_challenge', '087-10-master', this)">Venn: 087-10-master</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_ple_grandmaster_challenge', '092-10-master', this)">Venn: 092-10-master</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_ple_grandmaster_challenge', '095-10-master', this)">Venn: 095-10-master</button>
-                        <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_ple_grandmaster_challenge', '098-10-master', this)">Venn: 098-10-master</button>
-
-                    </div>
-                </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_01_finite_&_infinite_sets', 'intro_sets', this)">Introduction</button>
             </div>
         </div>
+
+        <!-- Quest 2 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 2: Set Notation & Regions</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_02_set_notation_&_regions', '02-001', this)">🎨 02-001</button>
+            </div>
+        </div>
+
+        <!-- Quest 3 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 3: Calculating Subsets</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_03_calculating_subsets', '03-001', this)">03-001</button>
+            </div>
+        </div>
+
+        <!-- Quest 4 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 4: Calculating Proper Subsets</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_04_calculating_proper_subsets', 'proper_subsets', this)">Proper Subsets</button>
+            </div>
+        </div>
+
+        <!-- Quest 5 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 5: Working Backwards</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_05_working_backwards', 'finding_elements', this)">Finding n(E)</button>
+            </div>
+        </div>
+
+        <!-- Quest 6 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 6: Placing Info on Venn Diagrams</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_06_placing_info_on_venn_diagrams', 'filling_diagrams', this)">Filling Diagrams</button>
+            </div>
+        </div>
+
+        <!-- Quest 7 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 7: Solving for Unknowns</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_07_solving_for_unknowns', 'solve_x', this)">🎨 Solve for X</button>
+            </div>
+        </div>
+
+        <!-- Quest 8 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 8: Application of Sets</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_08_application_of_sets', 'word_problems', this)">Word Problems</button>
+            </div>
+        </div>
+
+        <!-- Quest 9 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 9: Difference & Complements</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_09_difference_of_sets_&_complements', 'complements', this)">Complements</button>
+            </div>
+        </div>
+
+        <!-- Quest 10 -->
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSection(this)">
+                <span class="nav-label">Topic 10: Probability using Venn Diagrams</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_probability_using_venn_diagrams', 'set_probability', this)">Set Probability</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
         <!-- ========================== -->
         <!-- 🧬 SCIENCE (WRAPPER)       -->
