@@ -6,10 +6,32 @@ export const SetTheoryEngine = {
     },
 
     injectStyles: () => {
+        
         if (document.getElementById('set-theory-styles')) return;
         const style = document.createElement('style');
         style.id = 'set-theory-styles';
         style.innerHTML = `
+        
+    body, html { height: 100%; overflow: hidden; position: fixed; width: 100%; }
+    .set-root { 
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; flex-direction: column; background: #f8fafc; 
+    }
+    .canvas-wrapper { 
+        flex: 1; position: relative; width: 100%;
+        background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); 
+        touch-action: none;
+    }
+    /* Control Card pinned to bottom */
+    .control-card { 
+        flex-shrink: 0; background: white; 
+        padding: 16px 20px;
+        padding-bottom: max(20px, env(safe-area-inset-bottom)); /* SAFE AREA FIX */
+        border-top-left-radius: 24px; border-top-right-radius: 24px; 
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.08); 
+        z-index: 30; display: flex; flex-direction: column; gap: 12px; 
+    }
+   
             /* 100dvh fixes the "Hidden behind address bar" issue */
             .set-root { display: flex; flex-direction: column; height: 100dvh; width: 100%; background: #f8fafc; overflow: hidden; position: relative; }
             
