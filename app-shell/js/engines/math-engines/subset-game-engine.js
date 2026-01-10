@@ -1,9 +1,8 @@
 /**
- * Manya Subset Game Engine (v6.0 - Mobile Layout Final Fix)
+ * Manya Subset Game Engine (v7.0 - Aggressive Mobile Fix)
  * Fixes:
- * - "Hidden Button": HUD now has high z-index and extra safe-area padding.
- * - "Double Icons": Rendering logic strictly separates Inventory vs Box.
- * - "Drag Offset": Pointer coordinates now map perfectly to canvas scale.
+ * - Increases bottom padding significantly to clear mobile nav bars.
+ * - Uses 'inset: 0' to strictly lock container size.
  */
 export const SubsetGameEngine = {
     state: { 
@@ -33,43 +32,42 @@ export const SubsetGameEngine = {
         const style = document.createElement('style');
         style.id = 'subset-game-styles';
         style.innerHTML = `
-            /* ROOT: Occupy 100% of parent, no more */
+            /* STRICT FIT: inset:0 forces it to fit parent exactly */
             .subset-root { 
-                width: 100%; height: 100%; 
+                position: absolute; inset: 0;
                 display: flex; flex-direction: column; 
                 background: #f8fafc; overflow: hidden; 
                 user-select: none;
             }
             
-            /* CANVAS WRAPPER: Takes whatever space is left. */
-            /* min-height: 0 is CRITICAL to prevent overflow */
+            /* CANVAS WRAPPER: Shrinks to accommodate HUD */
             .canvas-wrapper { 
-                flex: 1 1 auto; 
-                min-height: 0; 
+                flex: 1; 
+                min-height: 0; /* CRITICAL */
                 position: relative; 
                 width: 100%;
                 background: radial-gradient(circle, #fff 0%, #f1f5f9 100%); 
                 touch-action: none;
-                overflow: hidden;
             }
             
             canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
             
-            /* HUD: Rigid height, extra padding for mobile bars */
+            /* HUD: Aggressive padding to clear mobile bars */
             .hud { 
-                flex: 0 0 auto; /* Do not shrink */
+                flex-shrink: 0; 
                 background: white; 
-                padding: 12px 16px; 
-                /* EXTRA padding for bottom safety */
-                padding-bottom: calc(30px + env(safe-area-inset-bottom));
+                padding: 15px 20px; 
+                /* 60px base padding + Safe Area for iPhone Home Bar */
+                padding-bottom: calc(60px + env(safe-area-inset-bottom));
                 border-top: 1px solid #e2e8f0; 
-                display: flex; flex-direction: column; gap: 8px; 
-                z-index: 50; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
+                display: flex; flex-direction: column; gap: 10px; 
+                z-index: 100; 
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
             }
             
             .shelf-container { 
                 display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; 
-                min-height: 40px; scrollbar-width: none;
+                min-height: 45px; scrollbar-width: none;
             }
             .shelf-container::-webkit-scrollbar { display: none; }
 
@@ -86,10 +84,12 @@ export const SubsetGameEngine = {
             
             .btn-pack { 
                 display: block; width: 100%;
-                padding: 14px; 
+                padding: 16px; 
                 background: var(--manya-purple); color: white; border: none; 
                 border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; 
                 box-shadow: 0 4px 0 #6d28d9; transition: transform 0.1s;
+                /* Extra margin bottom just in case */
+                margin-bottom: 10px; 
             }
             .btn-pack:active { transform: translateY(3px); box-shadow: none; }
             .btn-pack:disabled { background: #22c55e; box-shadow: none; cursor: default; transform: none; }
@@ -136,7 +136,6 @@ export const SubsetGameEngine = {
             SubsetGameEngine.state.width = canvas.width;
             SubsetGameEngine.state.height = canvas.height;
             
-            // Re-layout items if they exist
             if (SubsetGameEngine.state.items.length > 0) SubsetGameEngine.layoutItems();
         };
 
@@ -156,20 +155,19 @@ export const SubsetGameEngine = {
     initInputs: (canvas) => {
         const getPos = (e) => {
             const rect = canvas.getBoundingClientRect();
-            // Handle pointer events
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
             return {
-                x: (e.clientX - rect.left) * (canvas.width / rect.width),
-                y: (e.clientY - rect.top) * (canvas.height / rect.height)
+                x: (cx - rect.left) * (canvas.width / rect.width),
+                y: (cy - rect.top) * (canvas.height / rect.height)
             };
         };
 
         const down = (e) => {
-            e.preventDefault(); // Stop Drag Scroll
-            
+            if (e.target === canvas) e.preventDefault();
             if(SubsetGameEngine.state.isResolved && document.querySelector('.btn-pack').innerText.indexOf("NEXT") === -1) return;
             const p = getPos(e);
             
-            // Hit Test (Top items first)
             const hitItem = [...SubsetGameEngine.state.items].reverse().find(item => {
                 const dist = Math.sqrt((p.x - item.x)**2 + (p.y - item.y)**2);
                 return dist < 80 * SubsetGameEngine.state.scale; 
@@ -201,14 +199,11 @@ export const SubsetGameEngine = {
             canvas.releasePointerCapture(e.pointerId);
             
             const { width, height, scale } = SubsetGameEngine.state;
-            
-            // Visual Box Bounds
             const boxW = Math.min(400 * scale, width * 0.85);
             const boxH = Math.min(250 * scale, height * 0.5);
             const boxX = (width - boxW) / 2;
             const boxY = (height - boxH) / 2 - (40 * scale);
 
-            // Logic: Is center inside box?
             if(item.x > boxX && item.x < boxX + boxW && item.y > boxY && item.y < boxY + boxH) {
                 item.isInside = true;
             } else {
@@ -254,7 +249,6 @@ export const SubsetGameEngine = {
         const yPos = height - (80 * scale);
         
         items.forEach((item, i) => {
-            // Only move items that are in the "Inventory" (not inside box, not dragging)
             if(!item.isInside && SubsetGameEngine.state.dragging !== item) {
                 item.x = gap * (i + 1);
                 item.y = yPos;
@@ -270,7 +264,10 @@ export const SubsetGameEngine = {
 
     pack: () => {
         if(SubsetGameEngine.state.isResolved) {
-            SubsetGameEngine.loadLevel(SubsetGameEngine.state.currentStep + 1);
+            const nextIdx = SubsetGameEngine.state.currentStep + 1;
+            if (nextIdx < SubsetGameEngine.state.data.questions.length) {
+                SubsetGameEngine.loadLevel(nextIdx);
+            }
             return;
         }
 
@@ -299,7 +296,6 @@ export const SubsetGameEngine = {
             const slot = document.getElementById(`slot-${count-1}`);
             if(slot) { slot.className = 'shelf-item'; slot.innerHTML = label; }
 
-            // Reset items to inventory
             items.forEach(i => i.isInside = false);
             if (SubsetGameEngine.state.theme !== 'flag') SubsetGameEngine.layoutItems();
 
@@ -315,6 +311,7 @@ export const SubsetGameEngine = {
         }
     },
 
+    // Browser-Safe Draw Helper
     drawRoundedRect: (ctx, x, y, w, h, r) => {
         ctx.beginPath(); ctx.moveTo(x+r, y);
         ctx.arcTo(x+w, y, x+w, y+h, r); ctx.arcTo(x+w, y+h, x, y+h, r);
@@ -365,6 +362,10 @@ export const SubsetGameEngine = {
             ctx.fill(); ctx.stroke();
             
             const insideItems = items.filter(i => i.isInside);
+            // Double-Render Fix: Only draw "Inside" items here if not dragging
+            // Actually, for Lunchbox, we draw items at their X/Y coordinates in the loop below.
+            // So we only need to draw the "Empty Set" text here.
+            
             if(insideItems.length === 0) {
                 ctx.fillStyle = "#cbd5e1"; ctx.font = `italic 700 ${20*scale}px sans-serif`; 
                 ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -372,16 +373,10 @@ export const SubsetGameEngine = {
             }
         }
 
-        // --- FIXED RENDERING LOOP ---
+        // Draw Items (Inventory)
         items.forEach(item => {
-            // IF ITEM IS INSIDE BOX:
-            if (item.isInside) {
-                // If dragging this specific item again, draw it floating
-                // Otherwise, it was already drawn "inside the box" (for flags) or needs to be drawn inside (for lunchbox)
-                
-                if (theme === 'flag') return; // Flags are painted, so don't draw floating item inside
-                // For lunchbox, we continue to draw it below...
-            }
+            // Flag Mode: Don't draw inventory item if it's painted inside
+            if (theme === 'flag' && item.isInside) return;
 
             if (theme === 'flag') {
                 const color = SubsetGameEngine.COLORS[item.name] || '#ccc';
@@ -401,7 +396,8 @@ export const SubsetGameEngine = {
                 ctx.fillStyle = "rgba(0,0,0,0.05)";
                 ctx.beginPath(); ctx.ellipse(0, 25*scale, 30*scale, 10*scale, 0, 0, Math.PI*2); ctx.fill();
 
-                ctx.font = `${60*scale}px serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.font = `${60*scale}px serif`; 
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.fillText(icon, 0, 0);
                 
                 ctx.font = `bold ${12*scale}px sans-serif`; ctx.fillStyle = "#64748b";
