@@ -6,8 +6,20 @@
   "variantTitle": "Quest 5: The Pizza Chef",
   "questions": [
     {
+      "targetVal": 3,
+      "prompt": "<b>Intern Level:</b> Make a menu with <b>3 Proper Subsets</b>."
+    },
+    {
+      "targetVal": 7,
+      "prompt": "<b>Sous Chef:</b> Make a menu with <b>7 Proper Subsets</b>."
+    },
+    {
       "targetVal": 15,
-      "prompt": "Goal: Create a menu with exactly <b>15 Proper Subsets</b>."
+      "prompt": "<b>Head Chef:</b> Make a menu with <b>15 Proper Subsets</b>."
+    },
+    {
+      "targetVal": 31,
+      "prompt": "<b>Master Chef:</b> The ultimate order! <b>31 Proper Subsets</b>."
     }
   ]
 }
