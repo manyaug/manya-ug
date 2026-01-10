@@ -1,0 +1,46 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability using Venn Diagrams",
+  "variantTitle": "Topic 10: Probability Master",
+  "sets": {
+    "A": { "label": "G", "color": "#9333ea" },
+    "B": { "label": "S", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["30-x"],
+    "center": ["x"],
+    "right": ["25-x"],
+    "outside": ["10"]
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 60,
+      "expected_x": 5,
+      "prompt": "Total farmers = 60. Find <b>x</b>.",
+      "hint": "(30-x) + x + (25-x) + 10 = 60"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 5,
+      "expression": "30-x",
+      "prompt": "How many keep <span style='color:#9333ea'>Goats ONLY</span>?",
+      "hint": "30 - 5"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "left_only",
+      "x_val": 5,
+      "total": 60,
+      "expression": "30-x",
+      "prompt": "What is the probability of choosing a farmer with <span style='color:#9333ea'>Goats Only</span>?",
+      "hint": "n(Goats Only) / Total Farmers. (25/60)"
+    }
+  ]
+}

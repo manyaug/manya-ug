@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability II",
+  "variantTitle": "Topic 10: School Subjects",
+  "sets": { "A": { "label": "S (30)", "color": "#9333ea" }, "B": { "label": "T (25)", "color": "#db2777" } },
+  "zones": { "left": [], "center": ["x"], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> 5 pupils learn neither subject. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "30-x" },
+        { "region": "right", "expected": "25-x" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 50,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total pupils = 50. Find <b>x</b>.",
+      "hint": "(30-x) + x + (25-x) + 5 = 50"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "left_only",
+      "x_val": 10,
+      "total": 50,
+      "expression": "30-x",
+      "prompt": "Probability of choosing a pupil who studies <span style='color:#9333ea'>Science Only</span>?",
+      "hint": "n(Science Only) / Total. (20/50)"
+    }
+  ]
+}
