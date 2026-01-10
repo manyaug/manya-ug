@@ -170,7 +170,7 @@ export const SubsetGameEngine = {
             
             const hitItem = [...SubsetGameEngine.state.items].reverse().find(item => {
                 const dist = Math.sqrt((p.x - item.x)**2 + (p.y - item.y)**2);
-                return dist < 80 * SubsetGameEngine.state.scale; 
+                return dist < 90* SubsetGameEngine.state.scale; 
             });
 
             if (SubsetGameEngine.state.theme === 'flag' && hitItem) {
@@ -246,7 +246,7 @@ export const SubsetGameEngine = {
     layoutItems: () => {
         const { width, height, items, scale } = SubsetGameEngine.state;
         const gap = width / (items.length + 1);
-        const yPos = height - (80 * scale);
+        const yPos = height - (90* scale);
         
         items.forEach((item, i) => {
             if(!item.isInside && SubsetGameEngine.state.dragging !== item) {
