@@ -1,6 +1,6 @@
 /**
- * Manya Subset Game Engine (v3.1 - Final Merge)
- * Fixes: Restores Level Progression (Next Button) while keeping Flag Mode.
+ * Manya Subset Game Engine (Mobile Layout Fix)
+ * Fixes: "Hidden Button" on mobile by using flexbox shrinking and auto-sizing.
  */
 export const SubsetGameEngine = {
     state: { 
@@ -15,7 +15,9 @@ export const SubsetGameEngine = {
     ICONS: { 
         "Apple": "🍎", "Banana": "🍌", "Orange": "🍊", 
         "Mango": "🥭", "Pen": "🖊️", "Book": "📘", "Car": "🚗",
-        "Ball": "⚽", "Bear": "🧸", "Robot": "🤖", "Spade": "♠️", "Heart": "♥️", "Club": "♣️", "Diamond": "♦️"
+        "Ball": "⚽", "Bear": "🧸", "Robot": "🤖",
+        "Spade": "♠️", "Heart": "♥️", "Club": "♣️", "Diamond": "♦️",
+        "Black": "⚫", "Yellow": "🟡", "Red": "🔴"
     },
 
     COLORS: {
@@ -28,13 +30,35 @@ export const SubsetGameEngine = {
         const style = document.createElement('style');
         style.id = 'subset-game-styles';
         style.innerHTML = `
-            .subset-root { display: flex; flex-direction: column; height: 100dvh; width: 100%; background: #f8fafc; overflow: hidden; position: relative; user-select: none; }
-            .canvas-wrapper { flex: 1; min-height: 0; position: relative; background: radial-gradient(circle, #fff 0%, #f1f5f9 100%); touch-action: none; }
-            canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+            /* ROOT: 100dvh handles mobile browser bars properly */
+            .subset-root { 
+                display: flex; flex-direction: column; 
+                height: 100dvh; width: 100%; 
+                background: #f8fafc; overflow: hidden; position: relative; user-select: none; 
+            }
             
+            /* CANVAS WRAPPER: min-height: 0 is CRITICAL for flex shrinking */
+            .canvas-wrapper { 
+                flex: 1; min-height: 0;
+                position: relative; 
+                background: radial-gradient(circle, #fff 0%, #f1f5f9 100%); 
+                touch-action: none;
+                display: flex; align-items: center; justify-content: center;
+            }
+            
+            canvas { 
+                width: 100%; height: 100%; 
+                display: block; touch-action: none; object-fit: contain;
+            }
+            
+            /* HUD: Safe Area padding for iPhones */
             .hud { 
-                flex-shrink: 0; background: white; padding: 15px 20px 24px 20px; padding-bottom: max(20px, env(safe-area-inset-bottom));
-                border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px; 
+                flex-shrink: 0; 
+                background: white; 
+                padding: 15px 20px;
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+                border-top: 1px solid #e2e8f0; 
+                display: flex; flex-direction: column; gap: 10px; 
                 z-index: 10; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
             }
             
@@ -62,7 +86,9 @@ export const SubsetGameEngine = {
             }
             .btn-pack:active { transform: translateY(4px); box-shadow: none; }
             .btn-pack:disabled { background: #22c55e; box-shadow: none; cursor: default; transform: none; }
+            
             .instruction { text-align: center; color: #64748b; font-size: 0.9rem; font-weight: 700; }
+            
             @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         `;
         document.head.appendChild(style);
@@ -74,7 +100,7 @@ export const SubsetGameEngine = {
         
         container.innerHTML = `
             <div class="subset-root">
-                <div class="canvas-wrapper"><canvas id="game-canvas"></canvas></div>
+                <div class="canvas-wrapper" id="canvas-mount"><canvas id="game-canvas"></canvas></div>
                 <div class="hud">
                     <div class="instruction" id="level-title">Loading Level...</div>
                     <div class="shelf-container" id="math-shelf"></div>
@@ -91,29 +117,36 @@ export const SubsetGameEngine = {
 
         SubsetGameEngine.initInputs(canvas);
 
-        const resize = () => {
-            const rect = container.getBoundingClientRect();
-            const hud = container.querySelector('.hud');
-            const hudH = hud ? hud.getBoundingClientRect().height : 0;
+        // --- NEW RESIZE LOGIC (AUTO-FIT) ---
+        const handleResize = () => {
+            const parent = document.getElementById('canvas-mount');
+            if(!parent) return;
+            
+            const rect = parent.getBoundingClientRect();
+            // Don't resize if hidden/zero
+            if(rect.width === 0 || rect.height === 0) return;
+
             const dpr = window.devicePixelRatio || 2;
-            const targetW = rect.width;
-            const targetH = Math.max(0, rect.height - hudH);
-
-            canvas.width = Math.round(targetW * dpr);
-            canvas.height = Math.round(targetH * dpr);
-            canvas.style.width = `${targetW}px`;
-            canvas.style.height = `${targetH}px`;
-
-            SubsetGameEngine.state.scale = Math.max(1, dpr);
-            SubsetGameEngine.state.width = canvas.width; SubsetGameEngine.state.height = canvas.height;
+            
+            // Set internal resolution matches visual size exactly
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            
+            // Logic size
+            SubsetGameEngine.state.scale = dpr;
+            SubsetGameEngine.state.width = rect.width * dpr;
+            SubsetGameEngine.state.height = rect.height * dpr;
+            
             if (SubsetGameEngine.state.items.length > 0) SubsetGameEngine.layoutItems();
         };
 
-        const ro = new ResizeObserver(() => requestAnimationFrame(resize));
-        ro.observe(container);
-
-        // Initial layout + load
-        requestAnimationFrame(() => { resize(); SubsetGameEngine.loadLevel(0); });
+        // Use ResizeObserver to detect when the flex container changes size
+        new ResizeObserver(handleResize).observe(document.getElementById('canvas-mount'));
+        
+        setTimeout(() => { 
+            handleResize(); 
+            SubsetGameEngine.loadLevel(0); 
+        }, 100);
     },
 
     initInputs: (canvas) => {
@@ -171,7 +204,6 @@ export const SubsetGameEngine = {
             } else {
                 item.isInside = false;
             }
-            // Snap handled in layout if needed
             SubsetGameEngine.state.dragging = null;
         };
 
@@ -186,7 +218,6 @@ export const SubsetGameEngine = {
         SubsetGameEngine.state.currentStep = index;
         SubsetGameEngine.state.theme = q.theme || 'default';
         
-        // Init Items
         const items = q.items.map(name => ({ name, x: 0, y: 0, isInside: false }));
         SubsetGameEngine.state.items = items;
         
@@ -200,7 +231,7 @@ export const SubsetGameEngine = {
         btn.innerText = SubsetGameEngine.state.theme === 'flag' ? "🎨 CHECK PATTERN" : "📦 PACK IT!";
         btn.disabled = false;
         btn.style.background = "var(--manya-purple)";
-        btn.onclick = () => SubsetGameEngine.pack(); // Ensure handler is fresh
+        btn.onclick = () => SubsetGameEngine.pack(); 
 
         const shelf = document.getElementById('math-shelf');
         shelf.innerHTML = '';
@@ -212,7 +243,7 @@ export const SubsetGameEngine = {
     layoutItems: () => {
         const { width, height, items, scale } = SubsetGameEngine.state;
         const gap = width / (items.length + 1);
-        const yPos = height - (80 * scale);
+        const yPos = height - (80 * scale); // Position near bottom of canvas
         
         items.forEach((item, i) => {
             if(!item.isInside && SubsetGameEngine.state.dragging !== item) {
@@ -229,7 +260,6 @@ export const SubsetGameEngine = {
     },
 
     pack: () => {
-        // --- LEVEL PROGRESSION LOGIC (FIXED) ---
         if(SubsetGameEngine.state.isResolved) {
             const nextIdx = SubsetGameEngine.state.currentStep + 1;
             if (nextIdx < SubsetGameEngine.state.data.questions.length) {
@@ -239,7 +269,6 @@ export const SubsetGameEngine = {
         }
 
         const { found, items, totalSubsets } = SubsetGameEngine.state;
-        
         const insideItems = items.filter(i => i.isInside).map(i => i.name).sort();
         const key = insideItems.join(',') || "EMPTY";
         
@@ -257,7 +286,6 @@ export const SubsetGameEngine = {
             found.add(key);
             const count = found.size;
             
-            // Label Generation
             let label = "∅";
             if(key !== "EMPTY") {
                 if (SubsetGameEngine.state.theme === 'flag') {
@@ -273,19 +301,16 @@ export const SubsetGameEngine = {
             const slot = document.getElementById(`slot-${count-1}`);
             if(slot) { slot.className = 'shelf-item'; slot.innerHTML = label; }
 
-            // Reset Logic
             items.forEach(i => i.isInside = false);
             if (SubsetGameEngine.state.theme !== 'flag') SubsetGameEngine.layoutItems();
 
-            // --- WIN CONDITION ---
             if (count === totalSubsets) {
                 const btn = document.querySelector('.btn-pack');
                 btn.style.background = "#22c55e";
                 
-                // Check if there is a next level
                 if (SubsetGameEngine.state.currentStep < SubsetGameEngine.state.data.questions.length - 1) {
                     btn.innerText = "NEXT LEVEL ➔";
-                    SubsetGameEngine.state.isResolved = true; // Sets "Ready for Next" state
+                    SubsetGameEngine.state.isResolved = true;
                 } else {
                     btn.innerText = "🎉 QUEST COMPLETE!";
                     btn.disabled = true;
@@ -360,7 +385,6 @@ export const SubsetGameEngine = {
             }
         }
 
-        // Draw Inventory
         items.forEach(item => {
             if (theme === 'flag') {
                 const color = SubsetGameEngine.COLORS[item.name] || '#ccc';
