@@ -1,0 +1,21 @@
+{
+  "engineType": "SUBSET_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Finding All Subsets",
+  "variantTitle": "Quest 2-004: The Lunchbox",
+  "questions": [
+    {
+      "items": ["Apple"],
+      "prompt": "Level 1: Find all 2 subsets of {Apple}. (2¹)"
+    },
+    {
+      "items": ["Apple", "Banana"],
+      "prompt": "Level 2: Find all 4 subsets of {Apple, Banana}. (2²)"
+    },
+    {
+      "items": ["Apple", "Banana", "Orange"],
+      "prompt": "Level 3: Find all 8 subsets of {Apple, Banana, Orange}. (2³)"
+    }
+  ]
+}

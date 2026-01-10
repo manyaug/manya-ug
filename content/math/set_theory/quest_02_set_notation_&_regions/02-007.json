@@ -1,0 +1,14 @@
+{
+  "engineType": "SUBSET_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Finding Subsets",
+  "variantTitle": "Quest 3-004: The Card Machine",
+  "questions": [
+    {
+      "items": ["Spade", "Heart", "Club", "Diamond"],
+      "prompt": "Grandmaster Level: Find all 16 subsets of the Card Suits.",
+      "hint": "Start with 0 (Empty), then 1s, 2s, 3s, and finally 4."
+    }
+  ]
+}

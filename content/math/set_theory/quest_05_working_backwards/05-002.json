@@ -1,0 +1,13 @@
+{
+  "engineType": "PIZZA_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 5: The Pizza Chef",
+  "questions": [
+    {
+      "targetVal": 15,
+      "prompt": "Goal: Create a menu with exactly <b>15 Proper Subsets</b>."
+    }
+  ]
+}

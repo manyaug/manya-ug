@@ -22,7 +22,7 @@ export const SetTheoryEngine = {
             .canvas-wrapper { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); padding: 5px; touch-action: none; }
             canvas { box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-radius: 20px; background: white; max-width: 100%; max-height: 100%; object-fit: contain; }
             .hint-pill { position: absolute; top: 15px; right: 15px; background: white; border: 1px solid #e2e8f0; padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 800; color: var(--manya-purple); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; z-index: 20; display: flex; align-items: center; gap: 6px; }
-            .control-card { flex-shrink: 0; background: white; padding: 16px 20px 24px 20px; border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: 0 -10px 40px rgba(0,0,0,0.08); z-index: 30; display: flex; flex-direction: column; gap: 12px; }
+            .control-card { flex-shrink: 0; background: white; padding: 16px 20px 24px 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: 0 -10px 40px rgba(0,0,0,0.08); z-index: 30; display: flex; flex-direction: column; gap: 12px; }
             .q-text { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); text-align: center; margin-bottom: 2px; }
             .feedback-msg { text-align: center; font-size: 0.9rem; font-weight: 700; min-height: 18px; margin-top: 2px; }
             .input-group { display: flex; flex-direction: column; gap: 10px; width: 100%; }
@@ -307,6 +307,14 @@ export const SetTheoryEngine = {
             }
             else if (q.type === 'REVERSE_SUBSET') {
                 // Basic number comparison for "Find n" questions
+                isCorrect = parseInt(input) === q.expected_val;
+            }
+                else if (q.type === 'REVERSE_PROPER_SUBSET') {
+                // Formula: (2^n) - 1 = InputValue -> 2^n = InputValue + 1
+                // We expect user to input 'n'.
+                // Logic: isCorrect = parseInt(input) === expected_val
+                // This is mathematically identical to REVERSE_SUBSET logic-wise (comparing against expected N)
+                // but semantically different.
                 isCorrect = parseInt(input) === q.expected_val;
             }
         }

@@ -15,13 +15,13 @@ export const SetClassifierEngine = {
         style.id = 'classifier-styles';
         style.innerHTML = `
             .classifier-root { display: flex; flex-direction: column; height: 100dvh; width: 100%; background: #0f172a; overflow: hidden; position: relative; }
-            .scene-canvas { flex: 1; width: 100%; display: block; }
+            .scene-canvas { flex: 1; min-height: 0; width: 100%; display: block; }
             
             .hud-card {
                 position: absolute; bottom: 0; left: 0; width: 100%;
                 background: white; border-top-left-radius: 24px; border-top-right-radius: 24px;
-                padding: 24px; padding-bottom: 40px;
-                display: flex; flex-direction: column; gap: 16px;
+                padding: 24px; padding-bottom: max(20px, env(safe-area-inset-bottom));
+                display: flex; flex-direction: column; gap: 16px; flex-shrink: 0;
                 box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
                 z-index: 10;
             }
@@ -72,17 +72,29 @@ export const SetClassifierEngine = {
         const canvas = document.getElementById('scene-canvas');
         SetClassifierEngine.state.ctx = canvas.getContext('2d');
         
-        // Resize Logic
+        // Resize Logic: measure available area (container minus HUD) and observe size changes
         const handleResize = () => {
             const rect = container.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height * 0.7; // Take up top 70%
+            const hud = container.querySelector('.hud-card');
+            const hudH = hud ? hud.getBoundingClientRect().height : 0;
+            const dpr = window.devicePixelRatio || 2;
+
+            const targetW = rect.width;
+            const targetH = Math.max(0, rect.height - hudH);
+
+            canvas.width = Math.round(targetW * dpr);
+            canvas.height = Math.round(targetH * dpr);
+            canvas.style.width = `${targetW}px`;
+            canvas.style.height = `${targetH}px`;
+
             SetClassifierEngine.state.width = canvas.width;
             SetClassifierEngine.state.height = canvas.height;
             SetClassifierEngine.initScene();
         };
-        window.addEventListener('resize', handleResize);
-        setTimeout(handleResize, 50);
+
+        const ro = new ResizeObserver(() => requestAnimationFrame(handleResize));
+        ro.observe(container);
+        requestAnimationFrame(handleResize);
 
         SetClassifierEngine.loadQuestion();
         SetClassifierEngine.loop();
