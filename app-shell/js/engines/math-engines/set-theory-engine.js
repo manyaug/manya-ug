@@ -1,9 +1,10 @@
 /**
  * Manya Set Theory Engine (v14.0 - Mobile Layout Perfection)
- * Fixes:
- * - Uses Flexbox-aware resizing (measures canvas-wrapper instead of window).
- * - Reduces circle radius on mobile to prevent edge touching.
- * - Scales input boxes to match diagram size.
+ * 
+ * FIXES INCLUDED:
+ * 1. Layout: Uses 'inset: 0' and 'min-height: 0' to stop mobile overflow.
+ * 2. Visuals: Scales input boxes and circles down slightly for narrow screens.
+ * 3. Logic: Includes ALL previous features (Algebra, Probability, Drag, Fill).
  */
 export const SetTheoryEngine = {
     state: { 
@@ -19,23 +20,27 @@ export const SetTheoryEngine = {
         const style = document.createElement('style');
         style.id = 'set-theory-styles';
         style.innerHTML = `
+            /* ROOT: Locks the container to the parent view size */
             .set-root { 
                 position: absolute; inset: 0; 
                 display: flex; flex-direction: column; 
                 background: #f8fafc; overflow: hidden; user-select: none; 
             }
+            
+            /* CANVAS WRAPPER: min-height:0 is CRITICAL for flexbox to shrink properly */
             .canvas-wrapper { 
                 flex: 1 1 auto; 
-                min-height: 0; /* CRITICAL */
+                min-height: 0; 
                 position: relative; width: 100%; 
                 background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); 
                 touch-action: none; 
             }
             canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
             
+            /* INPUTS: Scaled for mobile */
             .venn-input {
                 position: absolute; transform: translate(-50%, -50%);
-                width: 50px; height: 32px; /* Slightly smaller base size */
+                width: 50px; height: 32px; 
                 border: 2px solid #e2e8f0; border-radius: 8px;
                 text-align: center; font-weight: 700; font-size: 0.9rem; color: #1e293b;
                 background: rgba(255, 255, 255, 0.95);
@@ -48,10 +53,11 @@ export const SetTheoryEngine = {
             
             .hint-pill { position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 30px; font-size: 10px; font-weight: 800; color: var(--manya-purple); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; z-index: 20; display: flex; align-items: center; gap: 4px; }
             
+            /* HUD: Pinned to bottom, never shrinks */
             .hud { 
                 flex: 0 0 auto; background: white; 
                 padding: 12px 16px; 
-                padding-bottom: max(20px, env(safe-area-inset-bottom)); 
+                padding-bottom: max(20px, env(safe-area-inset-bottom)); /* iPhone Safe Area */
                 border-top: 1px solid #e2e8f0; 
                 display: flex; flex-direction: column; gap: 10px; 
                 z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
@@ -118,8 +124,6 @@ export const SetTheoryEngine = {
             canvas.width = rect.width * dpr; 
             canvas.height = rect.height * dpr;
             
-            // Important: Do not force style width/height here, let Flexbox handle it
-            
             SetTheoryEngine.state.scale = dpr;
             SetTheoryEngine.state.width = rect.width * dpr; 
             SetTheoryEngine.state.height = rect.height * dpr;
@@ -135,7 +139,7 @@ export const SetTheoryEngine = {
             SetTheoryEngine.updateInputPositions();
         };
 
-        // Use ResizeObserver on the WRAPPER, not the container
+        // Use ResizeObserver on the WRAPPER
         new ResizeObserver(resize).observe(document.getElementById('canvas-mount'));
         setTimeout(resize, 100); // Initial boot
 
@@ -163,7 +167,6 @@ export const SetTheoryEngine = {
                 el.className = 'venn-input';
                 el.placeholder = '?';
                 el.dataset.region = def.region;
-                // Allow numeric keyboard for algebra too? Usually text.
                 el.setAttribute('inputmode', 'text');
                 inputContainer.appendChild(el);
                 SetTheoryEngine.state.inputs.push(el);
@@ -218,13 +221,14 @@ export const SetTheoryEngine = {
     updateInputPositions: () => {
         const { width, height, scale } = SetTheoryEngine.state;
         if (!width) return;
-        const s = scale; const pad = 15 * s; 
+        const s = scale; 
         const cx = (width / 2) / s; 
         const cy = ((height / 2) / s) + 10; 
         
+        const pad = 15 * s;
         const availW = (width/s) - (pad*2/s);
         const availH = (height/s) - (pad*2/s);
-        const r = Math.max(10, Math.min(availW * 0.25, availH * 0.35)); // Scaled down to 0.25
+        const r = Math.max(10, Math.min(availW * 0.25, availH * 0.35)); // Reduced radius for safety
         const offset = r * 0.65;
         const c1x = cx - offset; const c2x = cx + offset;
 
@@ -284,6 +288,7 @@ export const SetTheoryEngine = {
             else if(q.targetRegion === 'union') correctData = [...zones.left, ...zones.center, ...zones.right];
             else if(q.targetRegion === 'left_total') correctData = [...zones.left, ...zones.center];
             else if(q.targetRegion === 'right_total') correctData = [...zones.right, ...zones.center];
+            else if(q.targetRegion === 'symmetric_difference') correctData = [...zones.left, ...zones.right];
 
             if (q.type === 'ALGEBRA_SOLVE') {
                 let targetX = q.expected_x;
@@ -367,13 +372,13 @@ export const SetTheoryEngine = {
                  const cx = width/2; const cy = height/2 + (15*scale);
                  const r = Math.max(10, Math.min((width-40*scale)*0.28, (height-40*scale)*0.35));
                  const offset = r*0.65;
-                 const d1 = Math.hypot(chip.x-(cx-offset), chip.y-cy); const d2 = Math.hypot(chip.x-(cx+offset), chip.y-cy);
+                 const c1x = (data.sets.B.label === "") ? cx : cx - offset; const c2x = cx + offset;
+                 const d1 = Math.hypot(chip.x-c1x, chip.y-cy); const d2 = Math.hypot(chip.x-c2x, chip.y-cy);
                  if(d1<r && d2<r) chip.currentRegion='center'; else if(d1<r) chip.currentRegion='left'; else if(d2<r) chip.currentRegion='right'; else chip.currentRegion='outside';
                  chip.isPlaced=true;
             } else if (q.interaction === 'DRAG_SETS') {
-                // ... drag sets logic ...
                 const c1 = SetTheoryEngine.state.chips[0]; const c2 = SetTheoryEngine.state.chips[1];
-                if (c1 && c2) {
+                if(c1 && c2) {
                     const dist = Math.sqrt(Math.pow(c1.x - c2.x, 2) + Math.pow(c1.y - c2.y, 2));
                     const s = SetTheoryEngine.state.scale;
                     const r1 = c1.radius * s; const r2 = c2.radius * s; 
@@ -409,9 +414,7 @@ export const SetTheoryEngine = {
         if(width<=0) return;
         ctx.clearRect(0,0,width,height);
         const s = scale; const pad = 15*s; const cx = width/2; const cy = height/2 + 10*s;
-        const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); // Reduced 0.28 -> 0.25
-        const offset = r*0.65;
-        
+        const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); const offset = r*0.65;
         const q = data.questions[SetTheoryEngine.state.currentStep];
         const isVisualDrag = q.interaction === 'DRAG_SETS';
         const isFilling = q.interaction === 'DIAGRAM_FILL';
@@ -424,7 +427,11 @@ export const SetTheoryEngine = {
             if(activeHighlight) {
                 ctx.save(); ctx.fillStyle = "#fef9c3";
                 if(activeHighlight==='intersection') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.clip(); ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
-                // ... same highlights ...
+                else if(activeHighlight==='left_only') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
+                else if(activeHighlight==='right_only') { ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); }
+                else if(activeHighlight==='right_total') { ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
+                else if(activeHighlight==='left_total') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); }
+                else if(activeHighlight==='union') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
                 ctx.restore();
             }
 
@@ -437,15 +444,12 @@ export const SetTheoryEngine = {
             ctx.fillStyle=c1.color; ctx.textAlign="right"; ctx.fillText(data.sets.A.label, c1.x-r*0.6, c1.y-r*0.8);
             if(!isSingleSet) { ctx.strokeStyle=c2.color; ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.stroke(); ctx.fillStyle=c2.color; ctx.textAlign="left"; ctx.fillText(data.sets.B.label, c2.x+r*0.6, c2.y-r*0.8); }
 
-            // DRAW STATIC TEXT 
             if(chips.length === 0) {
                 ctx.font=`600 ${18*s}px sans-serif`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="#1e293b";
                 
                 const drawZone = (arr, bx, by, regionName) => {
                     if(!arr || arr.length===0) return;
-                    // FIX: Check if specific region is actively filling
                     if (isFilling && q.inputs.some(i => i.region === regionName)) return;
-                    
                     arr.forEach((v,i) => {
                         const shift = (arr.length > 1) ? ((i-(arr.length-1)/2) * 15 * s) : 0;
                         ctx.fillText(String(v), bx, by+shift);
