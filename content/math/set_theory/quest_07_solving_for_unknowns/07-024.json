@@ -1,0 +1,39 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Partial Sums",
+  "variantTitle": "Quest 7-019: Set Logic",
+  "sets": { "A": { "label": "H (24)", "color": "#9333ea" }, "B": { "label": "R", "color": "#db2777" } },
+  "zones": { "left": ["2k"], "center": ["k+3"], "right": ["3k-1"], "outside": ["k+3"] }, 
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "prompt": "<b>Step 1:</b> Which equation helps find <b>k</b> given n(H)=24?",
+      "options": [
+        "2k + (k+3) = 24",
+        "(k+3) + (3k-1) = 24",
+        "Sum of all regions = 24"
+      ],
+      "expected": "2k + (k+3) = 24",
+      "hint": "n(H) is the total of the Left Circle (Only + Both)."
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 24,
+      "expected_x": 7,
+      "prompt": "<b>Step 2:</b> Solve 3k + 3 = 24. Find <b>k</b>.",
+      "hint": "3k = 21"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 7,
+      "expression": "3k-1",
+      "prompt": "<b>Step 3:</b> How many play <span style='color:#db2777'>Rugby Only</span>?",
+      "hint": "3(7) - 1 = 20."
+    }
+  ]
+}

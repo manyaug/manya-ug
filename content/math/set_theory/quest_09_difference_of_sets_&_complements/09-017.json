@@ -1,0 +1,30 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Construction",
+  "variantTitle": "Quest 9-019: Party Build",
+  "sets": { "A": { "label": "J", "color": "#f59e0b" }, "B": { "label": "W", "color": "#06b6d4" } },
+  "zones": { "left": ["15"], "center": ["5"], "right": ["10"], "outside": ["p"] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "<b>Phase 1: Build It</b><br>• J-only: 15 &nbsp; • W-only: 10<br>• Both: 5 &nbsp; • Outside: <b>p</b>",
+      "items": [
+        { "val": "15", "target": "left" },
+        { "val": "5", "target": "center" },
+        { "val": "10", "target": "right" },
+        { "val": "p", "target": "outside" }
+      ]
+    },
+    {
+      "retain_visuals": false,
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total=40. Find <b>p</b>.",
+      "hint": "15 + 5 + 10 + p = 40 -> 30 + p = 40."
+    }
+  ]
+}

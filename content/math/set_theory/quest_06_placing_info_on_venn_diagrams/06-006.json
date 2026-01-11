@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Subsets",
+  "variantTitle": "Quest 6-006: Factors Subset",
+  "sets": { "A": { "label": "A", "color": "#16a34a" }, "B": { "label": "B", "color": "#ea580c" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "A={1,2,4}, B={1,2,4,8}. Sort them.",
+      "items": [
+        { "val": "1", "target": "center" },
+        { "val": "2", "target": "center" },
+        { "val": "4", "target": "center" },
+        { "val": "8", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "BINARY",
+      "expected": "yes",
+      "prompt": "Is Set A a <b>Proper Subset</b> of Set B?",
+      "hint": "Yes, all of A is inside B, but B has extra elements."
+    }
+  ]
+}

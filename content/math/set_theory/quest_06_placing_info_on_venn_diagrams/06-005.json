@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Disjoint Sets",
+  "variantTitle": "Quest 6-007: Even vs Odd",
+  "sets": { "A": { "label": "Even", "color": "#0284c7" }, "B": { "label": "Odd", "color": "#e11d48" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort the numbers.",
+      "items": [
+        { "val": "2", "target": "left" },
+        { "val": "3", "target": "right" },
+        { "val": "4", "target": "left" },
+        { "val": "5", "target": "right" },
+        { "val": "6", "target": "left" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Find <b>n(Even ∩ Odd)</b>.",
+      "hint": "Intersection is empty. Answer is 0."
+    }
+  ]
+}

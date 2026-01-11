@@ -1,0 +1,33 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Equal vs Equivalent",
+  "variantTitle": "Quest 2-004: Equal or Equivalent?",
+  "sets": { "A": { "label": "X", "color": "#9333ea" }, "B": { "label": "Y", "color": "#db2777" } },
+  "zones": { "left": ["a", "b", "c"], "center": [], "right": ["1", "2", "3"], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort: X={a,b,c}, Y={1,2,3}. Are they overlapping?",
+      "items": [
+        { "val": "a", "target": "left" }, { "val": "b", "target": "left" }, { "val": "c", "target": "left" },
+        { "val": "1", "target": "right" }, { "val": "2", "target": "right" }, { "val": "3", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "interaction": "BINARY",
+      "expected": "no",
+      "prompt": "Are sets X and Y <b>Equal</b>?",
+      "hint": "Equal sets must have the exact same elements."
+    },
+    {
+      "retain_visuals": true,
+      "interaction": "BINARY",
+      "expected": "yes",
+      "prompt": "Are sets X and Y <b>Equivalent</b>?",
+      "hint": "Equivalent sets have the same number of elements. n(X)=3, n(Y)=3."
+    }
+  ]
+}

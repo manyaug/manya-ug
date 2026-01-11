@@ -1,0 +1,20 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Classification",
+  "variantTitle": "Quest 6-008: Food Sort",
+  "sets": { "A": { "label": "Fruits", "color": "#f59e0b" }, "B": { "label": "Red", "color": "#ef4444" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort: Apple (Red Fruit), Banana (Yellow Fruit), Tomato (Red Veg).",
+      "items": [
+        { "val": "🍎", "target": "center" }, 
+        { "val": "🍌", "target": "left" },   
+        { "val": "🍅", "target": "right" }   
+      ]
+    }
+  ]
+}

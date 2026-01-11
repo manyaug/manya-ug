@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebra",
+  "variantTitle": "Quest 7-014: Mystery Total",
+  "sets": { "A": { "label": "A (2x)", "color": "#0284c7" }, "B": { "label": "B (3x)", "color": "#059669" } },
+  "zones": { "left": ["2x-10"], "center": ["10"], "right": ["3x-10"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "Total=40. Intersection=10. A=2x, B=3x. Find <b>x</b>.",
+      "hint": "(2x-10) + 10 + (3x-10) = 40 -> 5x - 10 = 40 -> 5x = 50."
+    }
+  ]
+}

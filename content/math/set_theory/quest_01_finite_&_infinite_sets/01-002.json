@@ -1,0 +1,13 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Types",
+  "variantTitle": "Quest 1-003: Abstract Sets",
+  "questions": [
+    { "scene": "rain", "expected": "infinite", "prompt": "Set of <b>Multiples of 5</b>." },
+    { "scene": "stars", "expected": "infinite", "prompt": "Set of <b>Points on a Line</b>." },
+    { "scene": "cows", "expected": "finite", "prompt": "Set of <b>Primary Schools in Uganda</b>." },
+    { "scene": "default", "expected": "finite", "prompt": "Set of <b>Letters in 'MATHEMATICS'</b>." }
+  ]
+}

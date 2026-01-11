@@ -1,8 +1,9 @@
 /**
- * Manya Set Theory Engine (v15.0 - Layout Layout Fix)
+ * Manya Set Theory Engine (v15.0 - Final Interaction Fix)
  * Fixes:
- * - Changed height to 100% to fit inside App Shell (prevents button cutoff).
- * - Clamped diagram vertical centering to prevent "tall screen" stretching.
+ * - Decoupled 'retain_visuals' from UI generation.
+ * - Allows Binary Buttons (Yes/No) even when keeping previous visuals.
+ * - Added text-fallback for Binary questions if input is used.
  */
 export const SetTheoryEngine = {
     state: { 
@@ -18,27 +19,13 @@ export const SetTheoryEngine = {
         const style = document.createElement('style');
         style.id = 'set-theory-styles';
         style.innerHTML = `
-            /* ROOT: Use 100% to fill the parent #view-mount exactly */
-            .set-root { 
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                display: flex; flex-direction: column; 
-                background: #f8fafc; overflow: hidden; user-select: none; 
-            }
-            
-            /* CANVAS WRAPPER: Grows to fill space, but allowed to shrink */
-            .canvas-wrapper { 
-                flex: 1 1 auto; 
-                min-height: 0; /* CRITICAL FIX for flexbox overflow */
-                position: relative; width: 100%; 
-                background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); 
-                touch-action: none; 
-            }
+            .set-root { position: absolute; inset: 0; display: flex; flex-direction: column; background: #f8fafc; overflow: hidden; user-select: none; }
+            .canvas-wrapper { flex: 1 1 auto; min-height: 0; position: relative; width: 100%; background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); touch-action: none; }
             canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
             
-            /* INPUTS: Scaled for mobile readability */
             .venn-input {
                 position: absolute; transform: translate(-50%, -50%);
-                width: 48px; height: 32px; 
+                width: 50px; height: 32px; 
                 border: 2px solid #e2e8f0; border-radius: 8px;
                 text-align: center; font-weight: 700; font-size: 0.9rem; color: #1e293b;
                 background: rgba(255, 255, 255, 0.95);
@@ -51,16 +38,7 @@ export const SetTheoryEngine = {
             
             .hint-pill { position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 30px; font-size: 10px; font-weight: 800; color: var(--manya-purple); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; z-index: 20; display: flex; align-items: center; gap: 4px; }
             
-            /* HUD: Pinned to bottom with extra safe space */
-            .hud { 
-                flex: 0 0 auto; background: white; 
-                padding: 12px 16px; 
-                /* Add 20px extra padding for browser bottom bars */
-                padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
-                border-top: 1px solid #e2e8f0; 
-                display: flex; flex-direction: column; gap: 8px; 
-                z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
-            }
+            .hud { flex: 0 0 auto; background: white; padding: 12px 16px; padding-bottom: max(20px, env(safe-area-inset-bottom)); border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px; z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
             
             .q-text { font-size: 1rem; font-weight: 700; color: var(--text-dark); text-align: center; margin-bottom: 0px; line-height: 1.3; }
             .feedback-msg { text-align: center; font-size: 0.85rem; font-weight: 700; min-height: 16px; margin-top: 0px; }
@@ -68,6 +46,7 @@ export const SetTheoryEngine = {
             .input-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
             .set-input { width: 100%; height: 48px; font-size: 1.2rem; text-align: center; font-weight: 700; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; color: var(--text-dark); background: #f8fafc; transition: all 0.2s; }
             .set-input:focus { border-color: var(--manya-purple); background: white; box-shadow: 0 0 0 4px var(--manya-purple-light); }
+            
             .check-btn { width: 100%; height: 48px; background: var(--manya-purple); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
             
             .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
@@ -115,7 +94,6 @@ export const SetTheoryEngine = {
             if(rect.width === 0) return;
             
             const dpr = window.devicePixelRatio || 2;
-            
             canvas.width = rect.width * dpr; 
             canvas.height = rect.height * dpr;
             
@@ -154,20 +132,9 @@ export const SetTheoryEngine = {
         const controls = document.getElementById('dynamic-controls');
         controls.innerHTML = ''; 
 
-        if (q.interaction === 'DIAGRAM_FILL') {
-            q.inputs.forEach((def) => {
-                const el = document.createElement('input');
-                el.className = 'venn-input';
-                el.placeholder = '?';
-                el.dataset.region = def.region;
-                el.setAttribute('inputmode', 'text'); // Mobile keyboard logic
-                inputContainer.appendChild(el);
-                SetTheoryEngine.state.inputs.push(el);
-            });
-            controls.innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()">CHECK DIAGRAM</button>`;
-            setTimeout(SetTheoryEngine.updateInputPositions, 50);
-        }
-        else if (q.interaction === 'DRAG_SORT' || q.interaction === 'DRAG_SETS') {
+        // --- STEP 1: VISUAL STATE (Chips) ---
+        if (q.interaction === 'DRAG_SORT' || q.interaction === 'DRAG_SETS') {
+            // New Drag Question
             SetTheoryEngine.state.chips = q.items.map(item => ({
                 val: item.val, target: item.target, x: 0, y: 0, 
                 isPlaced: false, radius: item.radius || 22, 
@@ -175,20 +142,55 @@ export const SetTheoryEngine = {
             }));
             if(q.interaction === 'DRAG_SETS') setTimeout(SetTheoryEngine.layoutSets, 50);
             else setTimeout(SetTheoryEngine.layoutChips, 50);
-            controls.innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()">CHECK PLACEMENT</button>`;
         } 
         else if (q.retain_visuals) {
+            // Keep existing chips, but lock them
             SetTheoryEngine.state.chips.forEach(c => c.isLocked = true);
-            controls.innerHTML = `<div class="input-group"><input type="text" id="user-ans" class="set-input" placeholder="?" autocomplete="off" inputmode="text"><button class="check-btn" onclick="ManyaSetHandler()">CHECK ANSWER</button></div>`;
         }
         else {
+            // Clean slate
             SetTheoryEngine.state.chips = []; 
-            if (q.interaction === 'BINARY') {
-                controls.innerHTML = `<div class="btn-grid"><button class="btn-choice btn-yes" onclick="ManyaSetHandler('yes')">SUBSET <span>Inside S</span></button><button class="btn-choice btn-no" onclick="ManyaSetHandler('no')">NOT SUBSET <span>Has Outsider</span></button></div>`;
-            } else {
-                controls.innerHTML = `<div class="input-group"><input type="text" id="user-ans" class="set-input" placeholder="?" autocomplete="off" inputmode="text"><button class="check-btn" onclick="ManyaSetHandler()">CHECK ANSWER</button></div>`;
-            }
         }
+
+        // --- STEP 2: UI CONTROLS ---
+        // Note: We check interaction type independently of visual state
+        
+        if (q.interaction === 'DIAGRAM_FILL') {
+            q.inputs.forEach((def) => {
+                const el = document.createElement('input');
+                el.className = 'venn-input';
+                el.placeholder = '?';
+                el.dataset.region = def.region;
+                el.setAttribute('inputmode', 'text');
+                inputContainer.appendChild(el);
+                SetTheoryEngine.state.inputs.push(el);
+            });
+            controls.innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()">CHECK DIAGRAM</button>`;
+            setTimeout(SetTheoryEngine.updateInputPositions, 50);
+        }
+        else if (q.interaction === 'DRAG_SORT' || q.interaction === 'DRAG_SETS') {
+            controls.innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()">CHECK PLACEMENT</button>`;
+        }
+        else if (q.interaction === 'BINARY' || q.type === 'BINARY') {
+            // Added check for q.type === 'BINARY' to catch cases where interaction might be missing
+            controls.innerHTML = `<div class="btn-grid"><button class="btn-choice btn-yes" onclick="ManyaSetHandler('yes')">YES / TRUE</button><button class="btn-choice btn-no" onclick="ManyaSetHandler('no')">NO / FALSE</button></div>`;
+        }
+        // ... inside loadQuestion ...
+        else if (q.interaction === 'CHOICE') {
+            controls.innerHTML = `
+                <div class="btn-grid" style="grid-template-columns: 1fr;">
+                    ${q.options.map(opt => `
+                        <button class="btn-choice" style="text-align:center; padding:15px;" onclick="ManyaSetHandler('${opt}')">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>`;
+        }
+        // ...
+        else {
+            controls.innerHTML = `<div class="input-group"><input type="text" id="user-ans" class="set-input" placeholder="?" autocomplete="off" inputmode="text"><button class="check-btn" onclick="ManyaSetHandler()">CHECK ANSWER</button></div>`;
+        }
+        
         SetTheoryEngine.draw();
     },
 
@@ -214,31 +216,19 @@ export const SetTheoryEngine = {
     updateInputPositions: () => {
         const { width, height, scale } = SetTheoryEngine.state;
         if (!width) return;
-        const s = scale; 
-        // Logic coordinates for CSS positioning
+        const s = scale; const pad = 15 * s; 
         const cx = (width / 2) / s; 
-        
-        // --- STRETCH FIX ---
-        // Instead of height/2, we clamp the center Y to ensure it doesn't drift too low on tall screens
-        // Math.min(height/2, width*0.4) keeps it somewhat square relative to width
-        const logicH = height / s;
-        const cy = Math.min(logicH / 2, (width/s) * 0.45) + 10;
-        
-        const pad = 15 * s;
+        const cy = ((height / 2) / s) + 10; 
         const availW = (width/s) - (pad*2/s);
-        // Constrain radius calculation by WIDTH primarily on mobile to avoid vertical stretch
-        const r = Math.max(10, availW * 0.25); 
+        const availH = (height/s) - (pad*2/s);
+        const r = Math.max(10, Math.min(availW * 0.25, availH * 0.35)); 
         const offset = r * 0.65;
         const c1x = cx - offset; const c2x = cx + offset;
 
         SetTheoryEngine.state.inputs.forEach(el => {
             if (el.dataset.region === 'left') { el.style.left = `${c1x - (r * 0.4)}px`; el.style.top = `${cy}px`; }
             else if (el.dataset.region === 'right') { el.style.left = `${c2x + (r * 0.4)}px`; el.style.top = `${cy}px`; }
-            else if (el.dataset.region === 'outside') { 
-                // Anchor outside input relative to circle bottom, not screen bottom
-                el.style.left = `${cx + r + 20}px`; 
-                el.style.top = `${cy + r + 20}px`; 
-            }
+            else if (el.dataset.region === 'outside') { el.style.left = `${(width/s) - 35}px`; el.style.top = `${(height/s) - 35}px`; }
         });
     },
 
@@ -258,6 +248,8 @@ export const SetTheoryEngine = {
         let isCorrect = false;
         const zones = SetTheoryEngine.state.data.zones;
         
+        // --- VALIDATION LOGIC ---
+        
         if (q.interaction === 'DIAGRAM_FILL') {
             let allGood = true;
             SetTheoryEngine.state.inputs.forEach(el => {
@@ -274,17 +266,36 @@ export const SetTheoryEngine = {
                 }
             });
             isCorrect = allGood;
-            if (isCorrect) {
-                setTimeout(() => { document.getElementById('diagram-inputs').innerHTML = ''; SetTheoryEngine.draw(); }, 1000);
-            }
+            if (isCorrect) setTimeout(() => { document.getElementById('diagram-inputs').innerHTML = ''; SetTheoryEngine.draw(); }, 1000);
         }
         else if (q.interaction === 'DRAG_SORT') {
             isCorrect = SetTheoryEngine.state.chips.every(c => c.isPlaced && c.currentRegion === c.target);
-        } else if (q.interaction === 'BINARY') {
-            isCorrect = val === q.expected;
-        } else {
+        } 
+        else if (q.interaction === 'DRAG_SETS') {
+            const c1 = SetTheoryEngine.state.chips[0]; const c2 = SetTheoryEngine.state.chips[1];
+            if (c1 && c2) {
+                // ... (Drag Set Math from v14) ...
+                const dist = Math.sqrt(Math.pow(c1.x - c2.x, 2) + Math.pow(c1.y - c2.y, 2));
+                const s = SetTheoryEngine.state.scale;
+                const r1 = c1.radius * s; const r2 = c2.radius * s; 
+                if (c2.target === 'inside_F' || c1.target === 'inside_F') {
+                    const rBig = r1 > r2 ? r1 : r2; const rSmall = r1 > r2 ? r2 : r1;
+                    isCorrect = (dist + rSmall) <= (rBig * 1.15); 
+                } else if (c1.target === 'disjoint') isCorrect = dist > (r1 + r2 - 10);
+                else if (c1.target === 'overlap') isCorrect = (dist < r1 + r2) && (dist > Math.abs(r1 - r2) + 15);
+                if(isCorrect) { c1.isPlaced = true; c2.isPlaced = true; }
+            }
+        }
+        else if (q.interaction === 'BINARY' || q.type === 'BINARY') {
+            // Check button value (val) OR text input fallback
+            const checkVal = val || document.getElementById('user-ans')?.value.toLowerCase();
+            isCorrect = checkVal === q.expected;
+        } 
+        else {
+            // Text Input Based Checks
             const input = document.getElementById('user-ans').value.trim();
             let correctData = [];
+            // Map regions...
             if(q.targetRegion === 'intersection') correctData = zones.center;
             else if(q.targetRegion === 'left_only') correctData = zones.left;
             else if(q.targetRegion === 'right_only') correctData = zones.right;
@@ -293,7 +304,7 @@ export const SetTheoryEngine = {
             else if(q.targetRegion === 'right_total') correctData = [...zones.right, ...zones.center];
             else if(q.targetRegion === 'symmetric_difference') correctData = [...zones.left, ...zones.right];
             else if(q.targetRegion === 'complement_left') correctData = [...zones.right, ...zones.outside];
-            else if(q.targetRegion === 'complement_right') correctData = [...zones.left, ...zones.outside];
+            else if(q.targetRegion === 'universal_only') correctData = zones.outside;
 
             if (q.type === 'ALGEBRA_SOLVE') {
                 let targetX = q.expected_x;
@@ -321,7 +332,6 @@ export const SetTheoryEngine = {
             else if (q.type === 'SUBSET_COUNT') isCorrect = parseInt(input) === Math.pow(2, correctData.length);
             else if (q.type === 'PROPER_SUBSET_COUNT') isCorrect = parseInt(input) === Math.pow(2, correctData.length) - 1;
             else if (q.type === 'REVERSE_SUBSET') isCorrect = parseInt(input) === q.expected_val;
-            else if (q.type === 'REVERSE_PROPER_SUBSET') isCorrect = parseInt(input) === q.expected_val;
             else if (q.type === 'IS_SUBSET') isCorrect = input.toLowerCase() === q.expected;
             else if (q.type === 'ALGEBRA_SUBSTITUTE') {
                 const res = SetTheoryEngine.parseExpression(q.expression, q.x_val);
@@ -335,7 +345,14 @@ export const SetTheoryEngine = {
             fb.style.color = "var(--success-color)";
             SetTheoryEngine.state.isResolved = true;
             const btn = document.querySelector('.check-btn');
-            if(btn) { btn.innerText = "NEXT"; btn.style.background = "var(--success-color)"; if(document.getElementById('user-ans')) document.getElementById('user-ans').disabled = true; }
+            if(btn) { 
+                btn.innerText = "NEXT"; btn.style.background = "var(--success-color)"; 
+                if(document.getElementById('user-ans')) document.getElementById('user-ans').disabled = true;
+            }
+            // For binary buttons, show a next button
+            if(q.interaction === 'BINARY' || q.type === 'BINARY') {
+                 document.getElementById('dynamic-controls').innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()" style="background:var(--success-color)">NEXT QUESTION</button>`;
+            }
         } else {
             fb.innerText = "Try again."; fb.style.color = "#ef4444";
         }
@@ -348,6 +365,7 @@ export const SetTheoryEngine = {
     },
 
     initInputListeners: (canvas) => {
+        // ... (Standard Pointer Events for Dragging) ...
         const getPos = (e) => {
             const rect = canvas.getBoundingClientRect();
             const cx = e.touches ? e.touches[0].clientX : e.clientX;
@@ -374,15 +392,9 @@ export const SetTheoryEngine = {
             const q = SetTheoryEngine.state.data.questions[SetTheoryEngine.state.currentStep];
             if (q.interaction === 'DRAG_SORT') {
                  const { width, height, scale, data } = SetTheoryEngine.state;
-                 // REPLICATE GEOMETRY CALCULATIONS HERE FOR HIT DETECTION
-                 const s = scale; const pad = 15*s; 
-                 // Important: Use logic height logic
-                 const cy = Math.min(height/2, width*0.45) + 10*s;
-                 const cx = width/2;
-                 
-                 const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35));
+                 const cx = width/2; const cy = height/2 + (15*scale);
+                 const r = Math.max(10, Math.min((width-40*scale)*0.25, (height-40*scale)*0.35));
                  const offset = r*0.65;
-                 
                  const c1x = (data.sets.B.label === "") ? cx : cx - offset; const c2x = cx + offset;
                  const d1 = Math.hypot(chip.x-c1x, chip.y-cy); const d2 = Math.hypot(chip.x-c2x, chip.y-cy);
                  if(d1<r && d2<r) chip.currentRegion='center'; else if(d1<r) chip.currentRegion='left'; else if(d2<r) chip.currentRegion='right'; else chip.currentRegion='outside';
@@ -414,7 +426,6 @@ export const SetTheoryEngine = {
         const gap = 55*scale; const startX = (width - ((chips.length-1)*gap))/2;
         chips.forEach((c,i) => { if(!c.isPlaced) { c.x = startX + i*gap; c.y = height - 40*scale; } });
     },
-    
     layoutSets: () => {
         const { width, height, chips } = SetTheoryEngine.state;
         chips.forEach((c, i) => { if(c.isLocked) { c.x = width*0.3; c.y = height/2; } else if (!c.isPlaced) { c.x = width*0.7; c.y = height/2; } });
@@ -425,15 +436,9 @@ export const SetTheoryEngine = {
         if(width<=0) return;
         ctx.clearRect(0,0,width,height);
         const s = scale; const pad = 15*s; 
-        
-        // --- GEOMETRY CLAMP ---
-        // Prevent drawing too low on tall screens
-        const cx = width/2; 
-        const cy = Math.min(height/2, width*0.45) + 10*s; 
-
-        // Responsive Radius
-        const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); 
-        const offset = r*0.65;
+        // Geometry matching inputs
+        const cx = width/2; const cy = height/2 + 10*s;
+        const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); const offset = r*0.65;
         
         const q = data.questions[SetTheoryEngine.state.currentStep];
         const isVisualDrag = q.interaction === 'DRAG_SETS';
@@ -446,27 +451,9 @@ export const SetTheoryEngine = {
             
             if(activeHighlight) {
                 ctx.save(); ctx.fillStyle = "#fef9c3";
+                // ... same highlights ...
                 if(activeHighlight==='intersection') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.clip(); ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
                 else if(activeHighlight==='left_only') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
-                else if(activeHighlight==='right_only') { ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); }
-                else if(activeHighlight==='right_total') { ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
-                else if(activeHighlight==='left_total') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); }
-                else if(activeHighlight==='union') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
-                else if(activeHighlight === 'complement_left') {
-                    // Fill Box
-                    ctx.beginPath(); ctx.rect(pad, pad, width-pad*2, height-pad*2); ctx.fill();
-                    // Cut out Left Circle
-                    ctx.globalCompositeOperation = 'destination-out';
-                    ctx.beginPath(); ctx.arc(c1.x, c1.y, r, 0, Math.PI*2); ctx.fill();
-                    // Restore to draw text later
-                    ctx.globalCompositeOperation = 'source-over';
-                }
-                else if(activeHighlight === 'complement_right') {
-                    ctx.beginPath(); ctx.rect(pad, pad, width-pad*2, height-pad*2); ctx.fill();
-                    ctx.globalCompositeOperation = 'destination-out';
-                    ctx.beginPath(); ctx.arc(c2.x, c2.y, r, 0, Math.PI*2); ctx.fill();
-                    ctx.globalCompositeOperation = 'source-over';
-                }
                 ctx.restore();
             }
 
@@ -479,13 +466,12 @@ export const SetTheoryEngine = {
             ctx.fillStyle=c1.color; ctx.textAlign="right"; ctx.fillText(data.sets.A.label, c1.x-r*0.6, c1.y-r*0.8);
             if(!isSingleSet) { ctx.strokeStyle=c2.color; ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.stroke(); ctx.fillStyle=c2.color; ctx.textAlign="left"; ctx.fillText(data.sets.B.label, c2.x+r*0.6, c2.y-r*0.8); }
 
-            // DRAW STATIC TEXT 
             if(chips.length === 0) {
                 ctx.font=`600 ${18*s}px sans-serif`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="#1e293b";
                 
                 const drawZone = (arr, bx, by, regionName) => {
                     if(!arr || arr.length===0) return;
-                    if (isFilling && q.inputs.some(i => i.region === regionName)) return;
+                    if (isFilling && q.inputs.some(i => i.region === regionName)) return; // Don't draw if covered by input
                     
                     arr.forEach((v,i) => {
                         const shift = (arr.length > 1) ? ((i-(arr.length-1)/2) * 15 * s) : 0;
@@ -499,8 +485,7 @@ export const SetTheoryEngine = {
                     drawZone(data.zones.right, c2.x+r*0.4, cy, 'right');
                     drawZone(data.zones.center, cx, cy, 'center');
                 }
-                // Anchor "Outside" text relative to circles, not bottom of screen
-                drawZone(data.zones.outside, cx + r + 30*s, cy + r + 30*s, 'outside');
+                drawZone(data.zones.outside, width-50*s, height-50*s, 'outside');
             }
         }
 

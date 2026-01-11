@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "De Morgan Law",
+  "variantTitle": "Quest 9-017: Complements",
+  "sets": { "A": { "label": "A", "color": "#0891b2" }, "B": { "label": "B", "color": "#7c3aed" } },
+  "zones": { "left": [1,2], "center": [3], "right": [4,5], "outside": [6,7] },
+  "questions": [
+    {
+      "type": "LIST",
+      "targetRegion": "universal_only",
+      "prompt": "List elements of <span style='color:#64748b'>(A ∪ B)'</span>.",
+      "hint": "Elements outside both circles."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT",
+      "targetRegion": "universal_only",
+      "prompt": "Find <span style='color:#64748b'>n(A' ∩ B')</span>.",
+      "hint": "A' ∩ B' is the same as (A ∪ B)'. Count is 2."
+    }
+  ]
+}

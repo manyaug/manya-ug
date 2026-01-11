@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Double Variables",
+  "variantTitle": "Quest 10-018: Subject Sets",
+  "sets": { "A": { "label": "E (36)", "color": "#9333ea" }, "B": { "label": "M", "color": "#db2777" } },
+  "zones": { "left": ["3n"], "center": ["12"], "right": ["4h+5"], "outside": ["15-h"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 36,
+      "expected_x": 8,
+      "prompt": "<b>Part 1:</b> Given n(E) = 36, find <b>n</b>.",
+      "hint": "3n + 12 = 36."
+    },
+    {
+      "type": "ALGEBRA_SOLVE", 
+      "targetRegion": "right_total",
+      "equation_target": 33, 
+      "expected_x": 33, 
+      "prompt": "<b>Part 2:</b> Given n(M) = h + 29. Find Total n(M).",
+      "hint": "(4h+5) + 12 = h + 29. Solve for h, then find Total M."
+      
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 8,
+      "prompt": "Find the <b>Total Number</b> of pupils.",
+      "hint": "n=8, h=4. Sum: 24 + 12 + 21 + 11 = 68."
+    }
+  ]
+}

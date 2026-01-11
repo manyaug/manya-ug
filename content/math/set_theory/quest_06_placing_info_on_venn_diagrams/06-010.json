@@ -1,0 +1,30 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Number Properties",
+  "variantTitle": "Quest 6-002: Primes & Odds",
+  "sets": { "A": { "label": "P (Prime)", "color": "#16a34a" }, "B": { "label": "O (Odd)", "color": "#f59e0b" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort numbers < 10.<br><b>P (Primes)</b> & <b>O (Odds)</b>",
+      "items": [
+        { "val": "2", "target": "left" },  
+        { "val": "3", "target": "center" }, 
+        { "val": "5", "target": "center" },
+        { "val": "9", "target": "right" },  
+        { "val": "7", "target": "center" },
+        { "val": "1", "target": "right" }   
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT",
+      "targetRegion": "left_only",
+      "prompt": "How many numbers are <b>Even Primes</b>?",
+      "hint": "Only 2 is an even prime."
+    }
+  ]
+}

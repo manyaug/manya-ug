@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Universal Set",
+  "variantTitle": "Quest 6-005: Universal Box",
+  "sets": { "A": { "label": "A {1,2}", "color": "#9333ea" }, "B": { "label": "B {3,4}", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Universal Set = {1, 2, 3, 4, 5}. Sort them.",
+      "items": [
+        { "val": "1", "target": "left" },
+        { "val": "2", "target": "left" },
+        { "val": "3", "target": "right" },
+        { "val": "4", "target": "right" },
+        { "val": "5", "target": "outside" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT",
+      "targetRegion": "universal_only",
+      "prompt": "Find <b>n(A ∪ B)'</b> (Complement).",
+      "hint": "Count items outside the circles."
+    }
+  ]
+}

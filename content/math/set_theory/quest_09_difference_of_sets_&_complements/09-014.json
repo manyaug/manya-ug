@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Logic",
+  "variantTitle": "Quest 9-015: Exam Results",
+  "sets": { "A": { "label": "M (30)", "color": "#2563eb" }, "B": { "label": "E (25)", "color": "#0891b2" } },
+  "zones": { "left": ["30-x"], "center": ["x"], "right": ["25-x"], "outside": ["5"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 50,
+      "expected_x": 10,
+      "prompt": "Total=50. Neither=5. Find <b>x</b> (Both).",
+      "hint": "(30+25-x) + 5 = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "x_val": 10,
+      "prompt": "How many passed <b>exactly one</b> subject?",
+      "hint": "(Math Only) + (Eng Only). 20 + 15."
+    }
+  ]
+}

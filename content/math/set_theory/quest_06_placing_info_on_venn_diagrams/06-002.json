@@ -1,0 +1,21 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Logic",
+  "variantTitle": "Quest 6-010: Shape Logic",
+  "sets": { "A": { "label": "Triangles", "color": "#16a34a" }, "B": { "label": "Blue", "color": "#3b82f6" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort the shapes.",
+      "items": [
+        { "val": "🔺", "target": "left" }, 
+        { "val": "🔵", "target": "right" }, 
+        { "val": "🔹", "target": "center" }, 
+        { "val": "🟦", "target": "right" }
+      ]
+    }
+  ]
+}
