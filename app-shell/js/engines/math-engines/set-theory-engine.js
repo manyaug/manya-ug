@@ -1,10 +1,8 @@
 /**
- * Manya Set Theory Engine (v14.0 - Mobile Layout Perfection)
- * 
- * FIXES INCLUDED:
- * 1. Layout: Uses 'inset: 0' and 'min-height: 0' to stop mobile overflow.
- * 2. Visuals: Scales input boxes and circles down slightly for narrow screens.
- * 3. Logic: Includes ALL previous features (Algebra, Probability, Drag, Fill).
+ * Manya Set Theory Engine (v15.0 - Layout Layout Fix)
+ * Fixes:
+ * - Changed height to 100% to fit inside App Shell (prevents button cutoff).
+ * - Clamped diagram vertical centering to prevent "tall screen" stretching.
  */
 export const SetTheoryEngine = {
     state: { 
@@ -20,27 +18,27 @@ export const SetTheoryEngine = {
         const style = document.createElement('style');
         style.id = 'set-theory-styles';
         style.innerHTML = `
-            /* ROOT: Locks the container to the parent view size */
+            /* ROOT: Use 100% to fill the parent #view-mount exactly */
             .set-root { 
-                position: absolute; inset: 0; 
+                position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
                 display: flex; flex-direction: column; 
                 background: #f8fafc; overflow: hidden; user-select: none; 
             }
             
-            /* CANVAS WRAPPER: min-height:0 is CRITICAL for flexbox to shrink properly */
+            /* CANVAS WRAPPER: Grows to fill space, but allowed to shrink */
             .canvas-wrapper { 
                 flex: 1 1 auto; 
-                min-height: 0; 
+                min-height: 0; /* CRITICAL FIX for flexbox overflow */
                 position: relative; width: 100%; 
                 background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); 
                 touch-action: none; 
             }
             canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
             
-            /* INPUTS: Scaled for mobile */
+            /* INPUTS: Scaled for mobile readability */
             .venn-input {
                 position: absolute; transform: translate(-50%, -50%);
-                width: 50px; height: 32px; 
+                width: 48px; height: 32px; 
                 border: 2px solid #e2e8f0; border-radius: 8px;
                 text-align: center; font-weight: 700; font-size: 0.9rem; color: #1e293b;
                 background: rgba(255, 255, 255, 0.95);
@@ -53,13 +51,14 @@ export const SetTheoryEngine = {
             
             .hint-pill { position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 30px; font-size: 10px; font-weight: 800; color: var(--manya-purple); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; z-index: 20; display: flex; align-items: center; gap: 4px; }
             
-            /* HUD: Pinned to bottom, never shrinks */
+            /* HUD: Pinned to bottom with extra safe space */
             .hud { 
                 flex: 0 0 auto; background: white; 
                 padding: 12px 16px; 
-                padding-bottom: max(20px, env(safe-area-inset-bottom)); /* iPhone Safe Area */
+                /* Add 20px extra padding for browser bottom bars */
+                padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
                 border-top: 1px solid #e2e8f0; 
-                display: flex; flex-direction: column; gap: 10px; 
+                display: flex; flex-direction: column; gap: 8px; 
                 z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
             }
             
@@ -69,7 +68,6 @@ export const SetTheoryEngine = {
             .input-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
             .set-input { width: 100%; height: 48px; font-size: 1.2rem; text-align: center; font-weight: 700; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; color: var(--text-dark); background: #f8fafc; transition: all 0.2s; }
             .set-input:focus { border-color: var(--manya-purple); background: white; box-shadow: 0 0 0 4px var(--manya-purple-light); }
-            
             .check-btn { width: 100%; height: 48px; background: var(--manya-purple); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
             
             .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
@@ -84,7 +82,6 @@ export const SetTheoryEngine = {
 
     renderLabeling: (container, data) => {
         SetTheoryEngine.injectStyles();
-        
         SetTheoryEngine.state.data = data;
         SetTheoryEngine.state.currentStep = 0;
         SetTheoryEngine.state.chips = []; 
@@ -111,7 +108,6 @@ export const SetTheoryEngine = {
         SetTheoryEngine.state.ctx = canvas.getContext('2d');
         SetTheoryEngine.initInputListeners(canvas);
         
-        // --- ROBUST RESIZE LOGIC ---
         const resize = () => {
             const wrapper = document.getElementById('canvas-mount');
             if(!wrapper) return;
@@ -120,7 +116,6 @@ export const SetTheoryEngine = {
             
             const dpr = window.devicePixelRatio || 2;
             
-            // Set canvas logic size to match visual wrapper size exactly
             canvas.width = rect.width * dpr; 
             canvas.height = rect.height * dpr;
             
@@ -128,7 +123,6 @@ export const SetTheoryEngine = {
             SetTheoryEngine.state.width = rect.width * dpr; 
             SetTheoryEngine.state.height = rect.height * dpr;
             
-            // Re-Layouts
             const q = SetTheoryEngine.state.data?.questions[SetTheoryEngine.state.currentStep];
             if(SetTheoryEngine.state.chips.length > 0 && q) {
                 if(q.interaction === 'DRAG_SETS') SetTheoryEngine.layoutSets();
@@ -139,9 +133,8 @@ export const SetTheoryEngine = {
             SetTheoryEngine.updateInputPositions();
         };
 
-        // Use ResizeObserver on the WRAPPER
         new ResizeObserver(resize).observe(document.getElementById('canvas-mount'));
-        setTimeout(resize, 100); // Initial boot
+        setTimeout(resize, 100);
 
         document.getElementById('btn-hint').onclick = SetTheoryEngine.toggleHint;
         SetTheoryEngine.loadQuestion();
@@ -167,7 +160,7 @@ export const SetTheoryEngine = {
                 el.className = 'venn-input';
                 el.placeholder = '?';
                 el.dataset.region = def.region;
-                el.setAttribute('inputmode', 'text');
+                el.setAttribute('inputmode', 'text'); // Mobile keyboard logic
                 inputContainer.appendChild(el);
                 SetTheoryEngine.state.inputs.push(el);
             });
@@ -222,20 +215,30 @@ export const SetTheoryEngine = {
         const { width, height, scale } = SetTheoryEngine.state;
         if (!width) return;
         const s = scale; 
+        // Logic coordinates for CSS positioning
         const cx = (width / 2) / s; 
-        const cy = ((height / 2) / s) + 10; 
+        
+        // --- STRETCH FIX ---
+        // Instead of height/2, we clamp the center Y to ensure it doesn't drift too low on tall screens
+        // Math.min(height/2, width*0.4) keeps it somewhat square relative to width
+        const logicH = height / s;
+        const cy = Math.min(logicH / 2, (width/s) * 0.45) + 10;
         
         const pad = 15 * s;
         const availW = (width/s) - (pad*2/s);
-        const availH = (height/s) - (pad*2/s);
-        const r = Math.max(10, Math.min(availW * 0.25, availH * 0.35)); // Reduced radius for safety
+        // Constrain radius calculation by WIDTH primarily on mobile to avoid vertical stretch
+        const r = Math.max(10, availW * 0.25); 
         const offset = r * 0.65;
         const c1x = cx - offset; const c2x = cx + offset;
 
         SetTheoryEngine.state.inputs.forEach(el => {
             if (el.dataset.region === 'left') { el.style.left = `${c1x - (r * 0.4)}px`; el.style.top = `${cy}px`; }
             else if (el.dataset.region === 'right') { el.style.left = `${c2x + (r * 0.4)}px`; el.style.top = `${cy}px`; }
-            else if (el.dataset.region === 'outside') { el.style.left = `${(width/s) - 35}px`; el.style.top = `${(height/s) - 35}px`; }
+            else if (el.dataset.region === 'outside') { 
+                // Anchor outside input relative to circle bottom, not screen bottom
+                el.style.left = `${cx + r + 20}px`; 
+                el.style.top = `${cy + r + 20}px`; 
+            }
         });
     },
 
@@ -369,9 +372,15 @@ export const SetTheoryEngine = {
             const q = SetTheoryEngine.state.data.questions[SetTheoryEngine.state.currentStep];
             if (q.interaction === 'DRAG_SORT') {
                  const { width, height, scale, data } = SetTheoryEngine.state;
-                 const cx = width/2; const cy = height/2 + (15*scale);
-                 const r = Math.max(10, Math.min((width-40*scale)*0.28, (height-40*scale)*0.35));
+                 // REPLICATE GEOMETRY CALCULATIONS HERE FOR HIT DETECTION
+                 const s = scale; const pad = 15*s; 
+                 // Important: Use logic height logic
+                 const cy = Math.min(height/2, width*0.45) + 10*s;
+                 const cx = width/2;
+                 
+                 const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35));
                  const offset = r*0.65;
+                 
                  const c1x = (data.sets.B.label === "") ? cx : cx - offset; const c2x = cx + offset;
                  const d1 = Math.hypot(chip.x-c1x, chip.y-cy); const d2 = Math.hypot(chip.x-c2x, chip.y-cy);
                  if(d1<r && d2<r) chip.currentRegion='center'; else if(d1<r) chip.currentRegion='left'; else if(d2<r) chip.currentRegion='right'; else chip.currentRegion='outside';
@@ -413,8 +422,17 @@ export const SetTheoryEngine = {
         const { ctx, width, height, data, activeHighlight, scale, chips, inputs } = SetTheoryEngine.state;
         if(width<=0) return;
         ctx.clearRect(0,0,width,height);
-        const s = scale; const pad = 15*s; const cx = width/2; const cy = height/2 + 10*s;
-        const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); const offset = r*0.65;
+        const s = scale; const pad = 15*s; 
+        
+        // --- GEOMETRY CLAMP ---
+        // Prevent drawing too low on tall screens
+        const cx = width/2; 
+        const cy = Math.min(height/2, width*0.45) + 10*s; 
+
+        // Responsive Radius
+        const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); 
+        const offset = r*0.65;
+        
         const q = data.questions[SetTheoryEngine.state.currentStep];
         const isVisualDrag = q.interaction === 'DRAG_SETS';
         const isFilling = q.interaction === 'DIAGRAM_FILL';
@@ -444,12 +462,14 @@ export const SetTheoryEngine = {
             ctx.fillStyle=c1.color; ctx.textAlign="right"; ctx.fillText(data.sets.A.label, c1.x-r*0.6, c1.y-r*0.8);
             if(!isSingleSet) { ctx.strokeStyle=c2.color; ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.stroke(); ctx.fillStyle=c2.color; ctx.textAlign="left"; ctx.fillText(data.sets.B.label, c2.x+r*0.6, c2.y-r*0.8); }
 
+            // DRAW STATIC TEXT 
             if(chips.length === 0) {
                 ctx.font=`600 ${18*s}px sans-serif`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="#1e293b";
                 
                 const drawZone = (arr, bx, by, regionName) => {
                     if(!arr || arr.length===0) return;
                     if (isFilling && q.inputs.some(i => i.region === regionName)) return;
+                    
                     arr.forEach((v,i) => {
                         const shift = (arr.length > 1) ? ((i-(arr.length-1)/2) * 15 * s) : 0;
                         ctx.fillText(String(v), bx, by+shift);
@@ -462,7 +482,8 @@ export const SetTheoryEngine = {
                     drawZone(data.zones.right, c2.x+r*0.4, cy, 'right');
                     drawZone(data.zones.center, cx, cy, 'center');
                 }
-                drawZone(data.zones.outside, width-50*s, height-50*s, 'outside');
+                // Anchor "Outside" text relative to circles, not bottom of screen
+                drawZone(data.zones.outside, cx + r + 30*s, cy + r + 30*s, 'outside');
             }
         }
 
