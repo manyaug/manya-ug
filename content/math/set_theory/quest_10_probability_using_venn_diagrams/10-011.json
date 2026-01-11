@@ -1,0 +1,45 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Agricultural Sets",
+  "variantTitle": "Topic 10: Crop Farming",
+  "sets": {
+    "A": { "label": "C (44)", "color": "#9333ea" },
+    "B": { "label": "P", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["44-k"],
+    "center": ["k"],
+    "right": ["2k"],
+    "outside": ["k"]
+  },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> P only is 2k. Neither is k. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "44-k" },
+        { "region": "right", "expected": "2k" },
+        { "region": "outside", "expected": "k" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 80,
+      "expected_x": 12,
+      "prompt": "<b>Phase 2:</b> Total farmers = 80. Find <b>k</b>.",
+      "hint": "(44-k) + k + 2k + k = 80 -> 44 + 3k = 80"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only", 
+      "x_val": 12,
+      "expression": "44-k+k",
+      "prompt": "How many farmers <b>did not grow Peas (P)</b>?",
+      "hint": "(Cotton Only) + (Neither) = (44-k) + k"
+    }
+  ]
+}

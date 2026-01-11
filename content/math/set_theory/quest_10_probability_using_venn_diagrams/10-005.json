@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability",
+  "variantTitle": "Topic 10: Pet Owners",
+  "sets": { "A": { "label": "C", "color": "#9333ea" }, "B": { "label": "D", "color": "#db2777" } },
+  "zones": { "left": ["15"], "center": ["x"], "right": ["20"], "outside": ["x+5"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 50,
+      "expected_x": 5,
+      "prompt": "Total families = 50. Find <b>x</b>.",
+      "hint": "15 + x + 20 + (x+5) = 50. -> 2x + 40 = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "universal_only",
+      "x_val": 5,
+      "expression": "x+5",
+      "prompt": "How many families have <b>Neither</b>?",
+      "hint": "x + 5 = 5 + 5"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "universal_only",
+      "x_val": 5,
+      "total": 50,
+      "expression": "x+5",
+      "prompt": "What is the probability of picking a family with <b>No Pets</b>?",
+      "hint": "n(Neither) / Total. (10/50)"
+    }
+  ]
+}

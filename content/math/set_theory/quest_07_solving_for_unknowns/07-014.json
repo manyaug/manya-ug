@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Totals",
+  "variantTitle": "Quest 7-009: Food Survey",
+  "sets": { "A": { "label": "Rice", "color": "#16a34a" }, "B": { "label": "Posho", "color": "#f59e0b" } },
+  "zones": { "left": ["x+10"], "center": ["5"], "right": ["x"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 45,
+      "expected_x": 15,
+      "prompt": "Total = 45. Find <b>x</b>.",
+      "hint": "(x+10) + 5 + x = 45 -> 2x = 30"
+    }
+  ]
+}

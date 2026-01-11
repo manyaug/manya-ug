@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Complements",
+  "variantTitle": "Quest 9-008: Book Fair",
+  "sets": { "A": { "label": "F (25)", "color": "#7c3aed" }, "B": { "label": "N", "color": "#db2777" } },
+  "zones": { "left": ["x+5"], "center": ["x"], "right": ["10"], "outside": ["5"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 25,
+      "expected_x": 10,
+      "prompt": "Total Fiction = 25. Find <b>x</b>.",
+      "hint": "(x+5) + x = 25 -> 2x = 20."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "universal_only",
+      "x_val": 10,
+      "prompt": "Find <span style='color:#7c3aed'>n(F')</span> (Not Fiction).",
+      "hint": "Non-Fiction Only (10) + Neither (5)."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Solving for Intersection",
+  "variantTitle": "Quest 10: Fruit Market",
+  "sets": { "A": { "label": "A", "color": "#16a34a" }, "B": { "label": "B", "color": "#f59e0b" } },
+  "zones": { "left": ["20"], "center": ["y"], "right": ["25"], "outside": ["y"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> 20 sell Apples only, 25 Bananas only. Intersection and Outside are both <b>y</b>.",
+      "inputs": [
+        { "region": "left", "expected": "20" },
+        { "region": "center", "expected": "y" },
+        { "region": "outside", "expected": "y" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 65,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total farmers = 65. Find <b>y</b>.",
+      "hint": "20 + y + 25 + y = 65. Simplify: 2y + 45 = 65."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "intersection",
+      "x_val": 10,
+      "total": 65,
+      "expression": "y",
+      "prompt": "What is the <b>Probability</b> a farmer sells BOTH?",
+      "hint": "n(Both) / Total = 10 / 65. (Simplify to 2/13)"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Equal Sets",
+  "variantTitle": "Quest 7-008: Clinic Data",
+  "sets": { "A": { "label": "M", "color": "#dc2626" }, "B": { "label": "T", "color": "#0891b2" } },
+  "zones": { "left": ["2y+1"], "center": ["y"], "right": ["y+5"], "outside": [] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "expected_x": 4,
+      "prompt": "If n(M) = n(T), find <b>y</b>.",
+      "hint": "(2y+1) + y = y + (y+5)"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_only",
+      "x_val": 4,
+      "prompt": "Find <span style='color:#dc2626'>Malaria Only</span>.",
+      "hint": "2(4) + 1 = 9"
+    }
+  ]
+}

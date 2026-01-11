@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Ratio Problems",
+  "variantTitle": "Quest 8-008: Debate Club",
+  "sets": { "A": { "label": "S", "color": "#9333ea" }, "B": { "label": "D", "color": "#db2777" } },
+  "zones": { "left": ["3x"], "center": ["x"], "right": ["2x"], "outside": ["0"] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> S-only is 3x. D-only is 2x. Both is x.",
+      "inputs": [
+        { "region": "left", "expected": "3x" },
+        { "region": "right", "expected": "2x" },
+        { "region": "center", "expected": "x" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 60,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total students = 60. Find <b>x</b>.",
+      "hint": "3x + x + 2x = 60 -> 6x = 60"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_total",
+      "x_val": 10,
+      "expression": "4x",
+      "prompt": "Find Total Speakers n(S).",
+      "hint": "S Only + Both = 3x + x = 4x."
+    }
+  ]
+}

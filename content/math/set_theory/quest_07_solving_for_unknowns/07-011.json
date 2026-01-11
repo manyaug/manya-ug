@@ -1,0 +1,44 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complex Algebra",
+  "variantTitle": "Quest 7-006: Sports Algebra",
+  "sets": {
+    "A": { "label": "B", "color": "#9333ea" },
+    "B": { "label": "N", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["3h+1"],
+    "center": ["2h"],
+    "right": ["h-4"],
+    "outside": ["h+2"]
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "symmetric_difference",
+      "equation_target": 21,
+      "expected_x": 6,
+      "prompt": "If <b>21 pupils</b> play <b>only one</b> game, find <b>h</b>.",
+      "hint": "(3h+1) + (h-4) = 21. Simplify: 4h - 3 = 21."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 6,
+      "prompt": "How many play <span style='color:#db2777'>Netball</span> altogether?",
+      "hint": "Intersection (2h) + Right Only (h-4). 12 + 2 = 14."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "universal_only",
+      "x_val": 6,
+      "expression": "3h+1 + h+2", 
+      "prompt": "How many pupils do <span style='color:#ef4444'>NOT</span> play Netball?",
+      "hint": "(B Only) + (Outside). 19 + 8 = 27."
+    }
+  ]
+}

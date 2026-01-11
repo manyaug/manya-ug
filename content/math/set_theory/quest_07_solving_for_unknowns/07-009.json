@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Ratios",
+  "variantTitle": "Quest 7-008: Sports Ratios",
+  "sets": { "A": { "label": "F (2x)", "color": "#ef4444" }, "B": { "label": "R (x)", "color": "#f59e0b" } },
+  "zones": { "left": ["2x-10"], "center": ["10"], "right": ["x-10"], "outside": ["10"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 90,
+      "expected_x": 30,
+      "prompt": "Total = 90. n(F)=2x, n(R)=x. Both=10. Find <b>x</b>.",
+      "hint": "(2x-10) + 10 + (x-10) + 10 = 90 -> 3x = 90"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "x_val": 30,
+      "prompt": "Find Total Footballers.",
+      "hint": "n(F) = 2x = 2(30) = 60."
+    }
+  ]
+}

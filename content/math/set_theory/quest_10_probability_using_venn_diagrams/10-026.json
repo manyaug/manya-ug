@@ -1,0 +1,44 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Symmetric Difference II",
+  "variantTitle": "Topic 10: Math & English",
+  "sets": {
+    "A": { "label": "M (60)", "color": "#9333ea" },
+    "B": { "label": "E", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["60-x"],
+    "center": ["x"],
+    "right": ["x+8"],
+    "outside": ["4"]
+  }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> English only is 8 more than both. Neither is 4.",
+      "inputs": [
+        { "region": "left", "expected": "60-x" },
+        { "region": "right", "expected": "x+8" },
+        { "region": "outside", "expected": "4" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 92,
+      "expected_x": 20,
+      "prompt": "<b>Phase 2:</b> Total students = 92. Find <b>x</b>.",
+      "hint": "(60-x) + x + (x+8) + 4 = 92 -> x + 72 = 92"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 20,
+      "prompt": "Find Total English students.",
+      "hint": "Intersection (20) + E Only (28) = 48."
+    }
+  ]
+}

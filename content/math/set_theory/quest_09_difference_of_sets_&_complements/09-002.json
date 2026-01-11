@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Complements",
+  "variantTitle": "Quest 9-002: Science Lab",
+  "sets": { "A": { "label": "B (20)", "color": "#06b6d4" }, "B": { "label": "C (15)", "color": "#8b5cf6" } },
+  "zones": { "left": ["15"], "center": ["5"], "right": ["10"], "outside": ["y"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Both is 5. Fill Only regions.",
+      "inputs": [
+        { "region": "left", "expected": "15" },
+        { "region": "right", "expected": "10" },
+        { "region": "center", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total = 40. Find <b>y</b> (Neither).",
+      "hint": "15 + 5 + 10 + y = 40"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Intersection Formula",
+  "variantTitle": "Quest 8-003: Book Club",
+  "sets": { "A": { "label": "F (30)", "color": "#16a34a" }, "B": { "label": "N (25)", "color": "#f59e0b" } },
+  "zones": { "left": ["30-x"], "center": ["x"], "right": ["25-x"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 50,
+      "expected_x": 5,
+      "prompt": "Total = 50. Everyone reads. Find <b>x</b> (Both).",
+      "hint": "30 + 25 - x = 50. Or (30-x)+x+(25-x)=50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 5,
+      "expression": "30-x",
+      "prompt": "How many read <b>Fiction ONLY</b>?",
+      "hint": "30 - 5 = 25"
+    }
+  ]
+}

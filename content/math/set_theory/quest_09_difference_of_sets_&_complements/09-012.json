@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Logic",
+  "variantTitle": "Quest 9-013: Lunch Logic",
+  "sets": { "A": { "label": "R (30)", "color": "#f59e0b" }, "B": { "label": "P (25)", "color": "#10b981" } },
+  "zones": { "left": ["30-x"], "center": ["x"], "right": ["25-x"], "outside": ["10"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 50,
+      "expected_x": 15,
+      "prompt": "Total=50. Neither=10. Find <b>x</b> (Both).",
+      "hint": "(Total Rice) + (Total Posho) - x + Neither = Total. 30 + 25 - x + 10 = 50."
+    }
+  ]
+}

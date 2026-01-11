@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Totals",
+  "variantTitle": "Quest 7-007: Market Day",
+  "sets": { "A": { "label": "P", "color": "#f59e0b" }, "B": { "label": "M", "color": "#10b981" } },
+  "zones": { "left": ["y+5"], "center": ["y"], "right": ["10"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 29,
+      "expected_x": 12,
+      "prompt": "Given n(P) = 29, find <b>y</b>.",
+      "hint": "(y + 5) + y = 29 -> 2y = 24."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 12,
+      "prompt": "Find the <b>Total People</b> in the market.",
+      "hint": "Sum all regions using y=12: (17) + (12) + (10)."
+    }
+  ]
+}

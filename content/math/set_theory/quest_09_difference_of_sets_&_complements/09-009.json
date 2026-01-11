@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Voting Probability",
+  "variantTitle": "Quest 9-009: Election Day",
+  "sets": { "A": { "label": "A (40)", "color": "#9333ea" }, "B": { "label": "B (30)", "color": "#db2777" } },
+  "zones": { "left": ["30"], "center": ["10"], "right": ["20"], "outside": ["y"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Both is 10. Fill Only regions. (A=40, B=30)",
+      "inputs": [
+        { "region": "left", "expected": "30" }, 
+        { "region": "right", "expected": "20" }, 
+        { "region": "center", "expected": "10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 80,
+      "expected_x": 20,
+      "prompt": "<b>Phase 2:</b> Total = 80. Find <b>y</b> (Invalid Votes).",
+      "hint": "30 + 10 + 20 + y = 80 -> 60 + y = 80."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "universal_only",
+      "x_val": 20,
+      "total": 80,
+      "expression": "y",
+      "prompt": "Probability of an <b>Invalid Vote</b>?",
+      "hint": "20/80 = 1/4"
+    }
+  ]
+}

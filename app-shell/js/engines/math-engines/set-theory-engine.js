@@ -292,6 +292,8 @@ export const SetTheoryEngine = {
             else if(q.targetRegion === 'left_total') correctData = [...zones.left, ...zones.center];
             else if(q.targetRegion === 'right_total') correctData = [...zones.right, ...zones.center];
             else if(q.targetRegion === 'symmetric_difference') correctData = [...zones.left, ...zones.right];
+            else if(q.targetRegion === 'complement_left') correctData = [...zones.right, ...zones.outside];
+            else if(q.targetRegion === 'complement_right') correctData = [...zones.left, ...zones.outside];
 
             if (q.type === 'ALGEBRA_SOLVE') {
                 let targetX = q.expected_x;
@@ -450,6 +452,21 @@ export const SetTheoryEngine = {
                 else if(activeHighlight==='right_total') { ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
                 else if(activeHighlight==='left_total') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); }
                 else if(activeHighlight==='union') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
+                else if(activeHighlight === 'complement_left') {
+                    // Fill Box
+                    ctx.beginPath(); ctx.rect(pad, pad, width-pad*2, height-pad*2); ctx.fill();
+                    // Cut out Left Circle
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath(); ctx.arc(c1.x, c1.y, r, 0, Math.PI*2); ctx.fill();
+                    // Restore to draw text later
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if(activeHighlight === 'complement_right') {
+                    ctx.beginPath(); ctx.rect(pad, pad, width-pad*2, height-pad*2); ctx.fill();
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath(); ctx.arc(c2.x, c2.y, r, 0, Math.PI*2); ctx.fill();
+                    ctx.globalCompositeOperation = 'source-over';
+                }
                 ctx.restore();
             }
 

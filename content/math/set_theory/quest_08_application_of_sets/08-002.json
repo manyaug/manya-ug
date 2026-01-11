@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Fractions in Sets",
+  "variantTitle": "Quest 8-002: The Reading Club",
+  "sets": { "A": { "label": "N (News)", "color": "#9333ea" }, "B": { "label": "C (Comics)", "color": "#db2777" } },
+  "zones": { "left": ["15"], "center": ["5"], "right": ["5"], "outside": ["15"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Class of <b>40</b>. ½ read News (20), ¼ read Comics (10). 5 read Both. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "15" }, 
+        { "region": "right", "expected": "5" }, 
+        { "region": "outside", "expected": "15" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "<b>Phase 2:</b> How many read <b>only one</b> type of book?",
+      "hint": "News Only (15) + Comics Only (5)"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "universal_only",
+      "total": 40,
+      "expression": "15",
+      "prompt": "What is the probability a pupil reads <b>Neither</b>?",
+      "hint": "n(Neither) / Total = 15/40"
+    }
+  ]
+}

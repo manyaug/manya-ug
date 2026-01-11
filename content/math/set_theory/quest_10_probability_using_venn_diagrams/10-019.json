@@ -1,0 +1,35 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Totals Algebra",
+  "variantTitle": "Quest 10-007: The Clinic",
+  "sets": { "A": { "label": "M (2x)", "color": "#dc2626" }, "B": { "label": "T (x)", "color": "#f59e0b" } },
+  "zones": { "left": ["2x-10"], "center": ["10"], "right": ["x-10"], "outside": ["10"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> n(M)=2x, n(T)=x. Both=10. Fill Only regions.",
+      "inputs": [
+        { "region": "left", "expected": "2x-10" },
+        { "region": "right", "expected": "x-10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 60,
+      "expected_x": 20,
+      "prompt": "<b>Phase 2:</b> Total patients = 60. Find <b>x</b>.",
+      "hint": "(2x-10) + 10 + (x-10) + 10 = 60 -> 3x = 60"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "x_val": 20,
+      "prompt": "Find Total Malaria Cases n(M).",
+      "hint": "n(M) = 2x. 2(20) = 40."
+    }
+  ]
+}

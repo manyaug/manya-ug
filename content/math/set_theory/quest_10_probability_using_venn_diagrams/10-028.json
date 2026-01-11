@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Final Mix",
+  "variantTitle": "Topic 10: Math & Science",
+  "sets": { "A": { "label": "M", "color": "#9333ea" }, "B": { "label": "S (45)", "color": "#db2777" } },
+  "zones": { "left": ["2h+3"], "center": ["h"], "right": ["45-h"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only", 
+      "equation_target": 65, 
+      "expected_x": 6,
+      "prompt": "Total = 65. Total Science = 45. Find <b>h</b>.",
+      "hint": "(2h+3) + 45 + 5 = 65. So 2h + 53 = 65."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 6,
+      "expression": "2h+3",
+      "prompt": "How many like <span style='color:#9333ea'>Math ONLY</span>?",
+      "hint": "2(6) + 3 = 15."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "left_total",
+      "x_val": 6,
+      "total": 65,
+      "expression": "2h+3 + h", 
+      "prompt": "Probability of picking a pupil who likes <span style='color:#9333ea'>Math</span>?",
+      "hint": "Total Math / Total Pupils. (21/65)"
+    }
+  ]
+}

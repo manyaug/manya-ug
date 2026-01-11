@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Sets",
+  "variantTitle": "Quest 10-005: Music Class",
+  "sets": { "A": { "label": "P (25)", "color": "#9333ea" }, "B": { "label": "G", "color": "#db2777" } },
+  "zones": { "left": [], "center": ["x"], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> n(P)=25. Guitar only is x+5. 5 play neither. Fill diagram.",
+      "inputs": [
+        { "region": "left", "expected": "25-x" },
+        { "region": "right", "expected": "x+5" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 50,
+      "expected_x": 15,
+      "prompt": "<b>Phase 2:</b> Total students = 50. Find <b>x</b>.",
+      "hint": "(25-x) + x + (x+5) + 5 = 50. Simplify: x + 35 = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 15,
+      "expression": "x+5",
+      "prompt": "How many play <span style='color:#db2777'>Guitar Only</span>?",
+      "hint": "15 + 5"
+    }
+  ]
+}

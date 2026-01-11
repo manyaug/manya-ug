@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Overlap Logic",
+  "variantTitle": "Quest 8-012: The Debate",
+  "sets": { "A": { "label": "P (70)", "color": "#16a34a" }, "B": { "label": "A (40)", "color": "#dc2626" } },
+  "zones": { "left": ["70-x"], "center": ["x"], "right": ["40-x"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 100,
+      "expected_x": 15,
+      "prompt": "Total=100. Neither=5. Find <b>x</b> (Both).",
+      "hint": "70 + 40 - x + 5 = 100 -> 115 - x = 100."
+    }
+  ]
+}

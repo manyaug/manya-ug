@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Logic Applications",
+  "variantTitle": "Quest 8-009: Voting",
+  "sets": { "A": { "label": "A (60)", "color": "#9333ea" }, "B": { "label": "B (50)", "color": "#db2777" } },
+  "zones": { "left": ["40"], "center": ["20"], "right": ["30"], "outside": ["10"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "A=60, B=50, Both=20, Invalid=10. Fill diagram.",
+      "inputs": [
+        { "region": "left", "expected": "40" },
+        { "region": "right", "expected": "30" },
+        { "region": "outside", "expected": "10" }
+      ]
+    },
+    {
+      "type": "COUNT_SUM", 
+      "targetRegion": "universal_only", 
+      "x_val": 0,
+      "expression": "30+10",
+      "prompt": "How many did <b>NOT</b> vote for A?",
+      "hint": "(B Only) + (Invalid) = 30 + 10."
+    }
+  ]
+}

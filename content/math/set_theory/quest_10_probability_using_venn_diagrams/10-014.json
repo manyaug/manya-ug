@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Symmetric Difference",
+  "variantTitle": "Quest 10: Talent Show",
+  "sets": { "A": { "label": "S", "color": "#2563eb" }, "B": { "label": "D", "color": "#e11d48" } },
+  "zones": { "left": ["x+5"], "center": ["10"], "right": ["x"], "outside": ["5"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> S only is x+5. 10 do both. Outside is 5. Fill it.",
+      "inputs": [
+        { "region": "left", "expected": "x+5" },
+        { "region": "center", "expected": "10" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 50,
+      "expected_x": 15,
+      "prompt": "<b>Phase 2:</b> Total students = 50. Find <b>x</b>.",
+      "hint": "(x+5) + 10 + x + 5 = 50. Simplify: 2x + 20 = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "x_val": 15,
+      "prompt": "How many have <b>Only One</b> talent?",
+      "hint": "Singers Only (20) + Dancers Only (15)."
+    }
+  ]
+}

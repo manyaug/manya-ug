@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability",
+  "variantTitle": "Quest 9-004: Sports Prob",
+  "sets": { "A": { "label": "T (60)", "color": "#8b5cf6" }, "B": { "label": "G (50)", "color": "#06b6d4" } },
+  "zones": { "left": ["60-x"], "center": ["x"], "right": ["50-x"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 100,
+      "expected_x": 10,
+      "prompt": "Total = 100. Find <b>x</b> (Both).",
+      "hint": "60 + 50 - x = 100"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "right_only",
+      "x_val": 10,
+      "total": 100,
+      "expression": "50-x",
+      "prompt": "Probability of playing <b>Golf Only</b>?",
+      "hint": "(50-10)/100 = 40/100"
+    }
+  ]
+}

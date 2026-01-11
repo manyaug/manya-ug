@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Complements",
+  "variantTitle": "Quest 10-007: Reading List",
+  "sets": { "A": { "label": "N", "color": "#2563eb" }, "B": { "label": "B", "color": "#0891b2" } },
+  "zones": { "left": ["2k"], "center": ["10"], "right": ["k"], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Neither is <b>k+2</b>. N-only is 2k. B-only is k.",
+      "inputs": [
+        { "region": "left", "expected": "2k" },
+        { "region": "right", "expected": "k" },
+        { "region": "outside", "expected": "k+2" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 60,
+      "expected_x": 12,
+      "prompt": "<b>Phase 2:</b> Total people = 60. Find <b>k</b>.",
+      "hint": "2k + 10 + k + (k+2) = 60. Simplify: 4k + 12 = 60."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "universal_only",
+      "x_val": 12,
+      "total": 60,
+      "expression": "k+2",
+      "prompt": "Probability of reading <b>Neither</b>?",
+      "hint": "n(Neither) = 12 + 2 = 14. Prob = 14/60."
+    }
+  ]
+}

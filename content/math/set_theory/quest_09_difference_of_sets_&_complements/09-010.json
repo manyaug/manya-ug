@@ -1,0 +1,35 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Algebra",
+  "variantTitle": "Quest 9-010: Party Drinks",
+  "sets": { "A": { "label": "S", "color": "#9333ea" }, "B": { "label": "W", "color": "#db2777" } },
+  "zones": { "left": ["3x"], "center": ["10"], "right": ["x+2"], "outside": ["2x"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "complement_left", 
+      "equation_target": 42, 
+      "expected_x": 5,
+      "prompt": "If n(S ∩ W)' = 32 (Not Both), find <b>x</b>.",
+      "hint": "Total (42) - Both (10) = 32. Or sum Left+Right+Outside."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 5,
+      "prompt": "How many guests attended <b>altogether</b>?",
+      "hint": "32 + 10 = 42."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "complement_left", 
+      "expression": "x+2 + 2x",
+      "prompt": "How many did <span style='color:#ef4444'>NOT</span> take Soda?",
+      "hint": "(Water Only) + (Neither) = 7 + 10 = 17."
+    }
+  ]
+}
