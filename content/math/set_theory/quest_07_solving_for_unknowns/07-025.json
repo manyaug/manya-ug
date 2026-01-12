@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Intersection Formula",
+  "variantTitle": "Quest 7-020: Intersection Solver",
+  "sets": { "A": { "label": "R (30)", "color": "#9333ea" }, "B": { "label": "M (25)", "color": "#db2777" } },
+  "zones": { "left": ["p"], "center": ["z"], "right": ["q"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 50,
+      "expected_x": 5,
+      "prompt": "Total=50. Outside=0. Find Intersection <b>z</b>.",
+      "hint": "n(R) + n(M) - z = Total. 30 + 25 - z = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 5,
+      "expression": "30-z",
+      "prompt": "Find <b>p</b> (Rice Only).",
+      "hint": "30 - 5 = 25."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 5,
+      "expression": "25-z",
+      "prompt": "Find <b>q</b> (Matooke Only).",
+      "hint": "25 - 5 = 20."
+    }
+  ]
+}

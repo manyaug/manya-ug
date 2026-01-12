@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Indices",
+  "variantTitle": "Quest 5-007: Indices Quiz",
+  "sets": { "A": { "label": "", "color": "transparent" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "prompt": "Solve for n: <b>2ⁿ = 32</b>",
+      "options": ["4", "5", "6", "16"],
+      "expected": "5",
+      "hint": "2 x 2 x 2 x 2 x 2 = 32."
+    },
+    {
+      "interaction": "CHOICE",
+      "prompt": "Solve for x: <b>2ˣ - 1 = 15</b>",
+      "options": ["3", "4", "5", "15"],
+      "expected": "4",
+      "hint": "2ˣ = 16. So x=4."
+    }
+  ]
+}

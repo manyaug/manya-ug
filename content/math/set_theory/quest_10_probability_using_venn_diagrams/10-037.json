@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Intersection Probability",
+  "variantTitle": "Quest 10-025: Drink Prob",
+  "sets": { "A": { "label": "T (25)", "color": "#06b6d4" }, "B": { "label": "C (20)", "color": "#8b5cf6" } },
+  "zones": { "left": ["20"], "center": ["x"], "right": ["15"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 40,
+      "expected_x": 5,
+      "prompt": "Total=40. Find <b>x</b> (Both).",
+      "hint": "25 + 20 - x = 40."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "intersection",
+      "x_val": 5, "total": 40, "expression": "x",
+      "prompt": "Probability of drinking <b>Both</b>?",
+      "hint": "5/40 = 1/8."
+    }
+  ]
+}

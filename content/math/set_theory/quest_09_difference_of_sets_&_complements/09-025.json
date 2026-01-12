@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Algebra",
+  "variantTitle": "Quest 9-025: Travel Plans",
+  "sets": { "A": { "label": "USA", "color": "#2563eb" }, "B": { "label": "UK", "color": "#dc2626" } },
+  "zones": { "left": ["25"], "center": ["5"], "right": ["20"], "outside": ["y"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> USA(30), UK(25), Both(5). Fill Only regions.",
+      "inputs": [
+        { "region": "left", "expected": "25" }, 
+        { "region": "right", "expected": "20" }, 
+        { "region": "center", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 60,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total=60. Find <b>y</b> (Neither).",
+      "hint": "25 + 5 + 20 + y = 60 -> 50 + y = 60."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Visual Intersection",
+  "variantTitle": "Quest 6-015: Visual Intersect",
+  "sets": { "A": { "label": "X", "color": "#9333ea" }, "B": { "label": "Y", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Place 'Both' in the intersection.",
+      "items": [
+        { "val": "Both", "target": "center" },
+        { "val": "Only X", "target": "left" },
+        { "val": "Only Y", "target": "right" }
+      ]
+    }
+  ]
+}

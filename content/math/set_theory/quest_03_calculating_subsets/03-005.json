@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Calculating Subsets",
+  "variantTitle": "Quest 3-008: High Powers",
+  "sets": { "A": { "label": "F", "color": "#16a34a" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["👍", "☝️", "🖕", "🖖", "🤙"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Find n(F) (Fingers on a hand).",
+      "hint": "Count the fingers (5)."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Calculate total Subsets.",
+      "hint": "2⁵ = 32."
+    }
+  ]
+}

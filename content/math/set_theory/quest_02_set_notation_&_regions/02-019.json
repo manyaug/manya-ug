@@ -2,24 +2,24 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Region Shading",
-  "variantTitle": "Quest 6-017: Identify Overlap",
+  "topic": "Set Notation",
+  "variantTitle": "Quest 2-017: Notation Quiz",
   "sets": { "A": { "label": "A", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
   "zones": { "left": [], "center": [], "right": [], "outside": [] },
   "questions": [
     {
       "type": "REGION_ID_QUIZ",
-      "targetRegion": "intersection",
+      "targetRegion": "complement_left", 
       "interaction": "CHOICE",
-      "prompt": "Which notation represents the <b>shaded region</b>?",
+      "prompt": "Which symbol represents the <b>shaded region</b>?",
       "options": [
-        "A ∩ B",
-        "A ∪ B",
-        "A - B",
-        "(A ∩ B)'"
+        "A'", 
+        "B'", 
+        "A ∩ B", 
+        "A ∪ B"
       ],
-      "expected": "A ∩ B",
-      "hint": "The shaded part is where A and B overlap."
+      "expected": "A'",
+      "hint": "The shaded area is everything NOT in circle A."
     }
   ]
 }

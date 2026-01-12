@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability of Union",
+  "variantTitle": "Quest 10-026: Sports Prob",
+  "sets": { "A": { "label": "F (40)", "color": "#16a34a" }, "B": { "label": "R (30)", "color": "#f59e0b" } },
+  "zones": { "left": ["30"], "center": ["10"], "right": ["20"], "outside": ["20"] },
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "How many play <b>at least one</b> sport?",
+      "hint": "30 + 10 + 20 = 60."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "union",
+      "total": 80,
+      "x_val": 0,
+      "expression": "60",
+      "prompt": "Probability of picking a student who plays a sport?",
+      "hint": "Union (60) / Total (80) = 3/4."
+    }
+  ]
+}

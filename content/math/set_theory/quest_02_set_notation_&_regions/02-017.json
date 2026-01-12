@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Equal Sets",
+  "variantTitle": "Quest 2-015: Equality",
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "items": [
+          { "val": "A = B", "radius": 70, "color": "#f3e8ff", "locked": true }
+      ],
+      "prompt": "If Set A and Set B look like this, they are...",
+      "options": [
+        "Disjoint",
+        "Subsets",
+        "Equal Sets",
+        "Unequal"
+      ],
+      "expected": "Equal Sets",
+      "hint": "They occupy the exact same space."
+    }
+  ]
+}

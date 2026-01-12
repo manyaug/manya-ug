@@ -1,0 +1,13 @@
+{
+  "engineType": "BINARY_GENERATOR",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 5-002: Power Plant II",
+  "questions": [
+    {
+      "targetVal": 32, 
+      "prompt": "Target: <b>31 Proper Subsets</b>.<br>Hint: Generator calculates Total (2ⁿ). Set it to 32 to get 31 Proper."
+    }
+  ]
+}

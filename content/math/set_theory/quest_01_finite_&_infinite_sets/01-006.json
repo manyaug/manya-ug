@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Infinite Sets",
+  "variantTitle": "Quest 1-007: Infinite Visuals",
+  "questions": [
+    {
+      "scene": "stars",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Space</b><br>Set of Stars in the Universe."
+    },
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Matrix Rain</b><br>Set of All Even Numbers {2, 4, 6...}."
+    },
+    {
+      "scene": "integers",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Floating Numbers</b><br>Set of Integers {..., -1, 0, 1, ...}."
+    }
+  ]
+}

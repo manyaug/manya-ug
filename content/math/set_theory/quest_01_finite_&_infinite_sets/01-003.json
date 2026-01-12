@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-004: Nature Walk",
+  "questions": [
+    {
+      "scene": "leaves",
+      "expected": "finite",
+      "prompt": "Set of <b>Leaves on a Tree</b>."
+    },
+    {
+      "scene": "fish",
+      "expected": "finite",
+      "prompt": "Set of <b>Fish in Lake Victoria</b>."
+    },
+    {
+      "scene": "sand",
+      "expected": "finite",
+      "prompt": "Set of <b>Grains of Sand</b> on a beach."
+    },
+    {
+      "scene": "stars",
+      "expected": "infinite",
+      "prompt": "Set of <b>Stars in the Universe</b>."
+    }
+  ]
+}

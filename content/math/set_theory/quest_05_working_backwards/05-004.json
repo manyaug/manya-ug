@@ -1,0 +1,18 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5-009: Reverse 63",
+  "sets": { "A": { "label": "K", "color": "#2563eb" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "REVERSE_PROPER_SUBSET",
+      "targetRegion": "union",
+      "expected_val": 6,
+      "prompt": "Set K has <b>63 Proper Subsets</b>. Find n(K).",
+      "hint": "2ⁿ - 1 = 63. So 2ⁿ = 64. Count powers of 2."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Math Concepts",
+  "variantTitle": "Quest 1-005: Number Sets",
+  "questions": [
+    {
+      "scene": "integers",
+      "expected": "infinite",
+      "prompt": "Set of <b>Integers</b> {..., -2, -1, 0, 1, 2, ...}."
+    },
+    {
+      "scene": "vowels",
+      "expected": "finite",
+      "prompt": "Set of <b>Vowels</b> in the alphabet."
+    },
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "Set of <b>Multiples of 5</b>."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Powers of 2",
+  "variantTitle": "Quest 3-012: Vowels Set",
+  "sets": { "A": { "label": "V", "color": "#9333ea" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["a", "e", "i", "o", "u"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Find n(V).",
+      "hint": "There are 5 vowels."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Calculate total subsets (2ⁿ).",
+      "hint": "2⁵ = 32."
+    }
+  ]
+}

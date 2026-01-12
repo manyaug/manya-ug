@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Symmetric Difference",
+  "variantTitle": "Quest 6-019: Only One",
+  "sets": { "A": { "label": "X", "color": "#059669" }, "B": { "label": "Y", "color": "#7c3aed" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "REGION_ID_QUIZ",
+      "targetRegion": "symmetric_difference",
+      "interaction": "CHOICE",
+      "prompt": "What does the shaded region represent?",
+      "options": [
+        "Only X or Only Y",
+        "X ∩ Y",
+        "X ∪ Y",
+        "(X ∪ Y)'"
+      ],
+      "expected": "Only X or Only Y",
+      "hint": "It includes everything inside the circles EXCEPT the intersection."
+    }
+  ]
+}

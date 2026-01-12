@@ -1,0 +1,17 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Shading Sets",
+  "variantTitle": "Quest 6-024: Shade Union",
+  "sets": { "A": { "label": "P", "color": "#9333ea" }, "B": { "label": "Q", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "union",
+      "prompt": "Tap to shade <span style='color:#0f172a'>P ∪ Q</span> (Union).",
+      "hint": "Union means 'Unite'. Tap everything inside both circles."
+    }
+  ]
+}

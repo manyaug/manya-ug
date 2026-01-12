@@ -1,0 +1,13 @@
+{
+  "engineType": "PIZZA_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4-006: The Giant Pizza",
+  "questions": [
+    {
+      "targetVal": 31,
+      "prompt": "<b>Master Chef Level:</b> Create a menu with exactly <b>31 Proper Subsets</b>."
+    }
+  ]
+}

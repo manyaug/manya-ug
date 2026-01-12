@@ -1,0 +1,31 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Visual Calculation",
+  "variantTitle": "Quest 8-024: Visual Sums",
+  "sets": { "A": { "label": "M", "color": "#9333ea" }, "B": { "label": "E", "color": "#db2777" } },
+  "zones": { "left": [5], "center": [10], "right": [3], "outside": [7] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM", 
+      "targetRegion": "left_total", 
+      "prompt": "Tap regions to find total <b>Mathematics (M)</b>.",
+      "hint": "Click 'M only' (5) and 'Both' (10). Total = 15."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_left", 
+      "prompt": "Tap regions representing <b>Not Mathematics</b>.",
+      "hint": "Click 'E only' (3) and 'Outside' (7). Total = 10."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "union", 
+      "prompt": "Tap regions to find probability of <b>Either</b> subject.",
+      "hint": "Click all regions inside the circles. (5+10+3) = 18.",
+      "isProbability": true, 
+      "total": 25
+    }
+  ]
+}

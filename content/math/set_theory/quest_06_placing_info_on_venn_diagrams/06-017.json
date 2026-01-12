@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Difference",
+  "variantTitle": "Quest 6-018: Identify Difference",
+  "sets": { "A": { "label": "P", "color": "#2563eb" }, "B": { "label": "Q", "color": "#ea580c" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "REGION_ID_QUIZ",
+      "targetRegion": "left_only",
+      "interaction": "CHOICE",
+      "prompt": "Identify the shaded region.",
+      "options": [
+        "P - Q",
+        "Q - P",
+        "P ∩ Q",
+        "P ∪ Q"
+      ],
+      "expected": "P - Q",
+      "hint": "It shows elements in P but NOT in Q."
+    }
+  ]
+}

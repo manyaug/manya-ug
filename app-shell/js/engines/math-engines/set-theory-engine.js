@@ -1,9 +1,11 @@
 /**
- * Manya Set Theory Engine (v15.0 - Final Interaction Fix)
- * Fixes:
- * - Decoupled 'retain_visuals' from UI generation.
- * - Allows Binary Buttons (Yes/No) even when keeping previous visuals.
- * - Added text-fallback for Binary questions if input is used.
+ * Manya Set Theory Engine (v22.0 - Final Full Version)
+ * 
+ * CAPABILITIES:
+ * 1. Visual Modes: Static Text, Floating Inputs (DIAGRAM_FILL), Draggable Chips (DRAG_SORT), Draggable Sets (DRAG_SETS).
+ * 2. Logic Modes: List, Count, Sum, Algebra (Solve/Sub), Probability, Subsets (2^n), Click-to-Sum.
+ * 3. Architecture: Mobile-first absolute layout, ResizeObserver, Canvas Pointer Events, Atomic Layering for Highlights.
+ * 4. Special: Custom Visual Layouts for Choice Quizzes (Subsets, Disjoint).
  */
 export const SetTheoryEngine = {
     state: { 
@@ -11,7 +13,10 @@ export const SetTheoryEngine = {
         currentStep: 0, isResolved: false, data: null, activeHighlight: null,
         chips: [], dragging: null, dragOffset: {x:0,y:0},
         theme: 'default',
-        inputs: []
+        inputs: [], // DOM Elements for DIAGRAM_FILL
+        selectedRegions: new Set(), // For CLICK_SUM
+        currentSum: 0,
+        tempCanvas: null, tempCtx: null // Offscreen buffer for artifact-free drawing
     },
 
     injectStyles: () => {
@@ -19,13 +24,28 @@ export const SetTheoryEngine = {
         const style = document.createElement('style');
         style.id = 'set-theory-styles';
         style.innerHTML = `
-            .set-root { position: absolute; inset: 0; display: flex; flex-direction: column; background: #f8fafc; overflow: hidden; user-select: none; }
-            .canvas-wrapper { flex: 1 1 auto; min-height: 0; position: relative; width: 100%; background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); touch-action: none; }
+            /* ROOT: Absolute positioning to fill App Shell exactly */
+            .set-root { 
+                position: absolute; inset: 0; 
+                display: flex; flex-direction: column; 
+                background: #f8fafc; overflow: hidden; 
+                user-select: none; 
+            }
+            
+            /* CANVAS WRAPPER */
+            .canvas-wrapper { 
+                flex: 1 1 auto; 
+                min-height: 0; 
+                position: relative; width: 100%; 
+                background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%); 
+                touch-action: none; 
+            }
             canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
             
+            /* FLOATING INPUTS (DIAGRAM_FILL) */
             .venn-input {
                 position: absolute; transform: translate(-50%, -50%);
-                width: 50px; height: 32px; 
+                width: 50px; height: 32px;
                 border: 2px solid #e2e8f0; border-radius: 8px;
                 text-align: center; font-weight: 700; font-size: 0.9rem; color: #1e293b;
                 background: rgba(255, 255, 255, 0.95);
@@ -36,9 +56,17 @@ export const SetTheoryEngine = {
             .venn-input.correct { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
             .venn-input.wrong { border-color: #ef4444; background: #fef2f2; animation: shake 0.3s; }
             
+            /* HUD & CONTROLS */
             .hint-pill { position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 30px; font-size: 10px; font-weight: 800; color: var(--manya-purple); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; z-index: 20; display: flex; align-items: center; gap: 4px; }
             
-            .hud { flex: 0 0 auto; background: white; padding: 12px 16px; padding-bottom: max(20px, env(safe-area-inset-bottom)); border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px; z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+            .hud { 
+                flex: 0 0 auto; background: white; 
+                padding: 12px 16px; 
+                padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
+                border-top: 1px solid #e2e8f0; 
+                display: flex; flex-direction: column; gap: 8px; 
+                z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
+            }
             
             .q-text { font-size: 1rem; font-weight: 700; color: var(--text-dark); text-align: center; margin-bottom: 0px; line-height: 1.3; }
             .feedback-msg { text-align: center; font-size: 0.85rem; font-weight: 700; min-height: 16px; margin-top: 0px; }
@@ -49,10 +77,15 @@ export const SetTheoryEngine = {
             
             .check-btn { width: 100%; height: 48px; background: var(--manya-purple); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
             
-            .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-            .btn-choice { padding: 12px 10px; border-radius: 12px; border: 2px solid transparent; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; box-shadow: 0 4px 0 rgba(0,0,0,0.05); }
+            .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+            .btn-choice { padding: 12px 10px; border-radius: 12px; border: 2px solid #e2e8f0; background: white; color: #475569; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; box-shadow: 0 2px 0 rgba(0,0,0,0.05); }
+            .btn-choice:active { transform: scale(0.98); }
+            .btn-choice.correct { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+            .btn-choice.wrong { background: #fee2e2; border-color: #ef4444; color: #b91c1c; animation: shake 0.3s; }
             .btn-yes { background: #dcfce7; color: #16a34a; border-color: #bbf7d0; }
             .btn-no { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+
+            .sum-display { text-align: center; font-family: monospace; font-size: 1.2rem; font-weight: 700; color: #db2777; background: #fdf2f8; padding: 8px; border-radius: 8px; border: 1px solid #fce7f3; }
             
             @keyframes shake { 0%, 100% { transform: translate(-50%, -50%); } 25% { transform: translate(calc(-50% - 5px), -50%); } 75% { transform: translate(calc(-50% + 5px), -50%); } }
         `;
@@ -61,12 +94,20 @@ export const SetTheoryEngine = {
 
     renderLabeling: (container, data) => {
         SetTheoryEngine.injectStyles();
+        
+        // Reset State
         SetTheoryEngine.state.data = data;
         SetTheoryEngine.state.currentStep = 0;
         SetTheoryEngine.state.chips = []; 
         SetTheoryEngine.state.dragging = null;
         SetTheoryEngine.state.isResolved = false;
         SetTheoryEngine.state.inputs = [];
+        SetTheoryEngine.state.selectedRegions = new Set();
+        SetTheoryEngine.state.currentSum = 0;
+        
+        // Init Offscreen Buffer
+        SetTheoryEngine.state.tempCanvas = document.createElement('canvas');
+        SetTheoryEngine.state.tempCtx = SetTheoryEngine.state.tempCanvas.getContext('2d');
 
         container.innerHTML = `
             <div class="set-root">
@@ -94,9 +135,12 @@ export const SetTheoryEngine = {
             if(rect.width === 0) return;
             
             const dpr = window.devicePixelRatio || 2;
-            canvas.width = rect.width * dpr; 
-            canvas.height = rect.height * dpr;
+            const hudH = document.querySelector('.hud').offsetHeight;
             
+            canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+            SetTheoryEngine.state.tempCanvas.width = canvas.width;
+            SetTheoryEngine.state.tempCanvas.height = canvas.height;
+
             SetTheoryEngine.state.scale = dpr;
             SetTheoryEngine.state.width = rect.width * dpr; 
             SetTheoryEngine.state.height = rect.height * dpr;
@@ -105,8 +149,8 @@ export const SetTheoryEngine = {
             if(SetTheoryEngine.state.chips.length > 0 && q) {
                 if(q.interaction === 'DRAG_SETS') SetTheoryEngine.layoutSets();
                 else if (q.interaction === 'DRAG_SORT') SetTheoryEngine.layoutChips();
+                else if (q.interaction === 'CHOICE') SetTheoryEngine.layoutVisualQuiz();
             }
-            
             SetTheoryEngine.draw();
             SetTheoryEngine.updateInputPositions();
         };
@@ -122,40 +166,53 @@ export const SetTheoryEngine = {
         const q = SetTheoryEngine.state.data.questions[SetTheoryEngine.state.currentStep];
         document.getElementById('q-display').innerHTML = q.prompt;
         document.getElementById('feedback').innerText = "";
-        SetTheoryEngine.state.activeHighlight = null;
-        SetTheoryEngine.state.isResolved = false;
         
+        // Visual Quiz Highlight
+        SetTheoryEngine.state.activeHighlight = null;
+        if(q.type === 'REGION_ID_QUIZ') SetTheoryEngine.state.activeHighlight = q.targetRegion;
+        
+        // Reset Click Sum
+        if (q.interaction !== 'CLICK_SUM') SetTheoryEngine.state.selectedRegions.clear();
+
         const inputContainer = document.getElementById('diagram-inputs');
         inputContainer.innerHTML = '';
         SetTheoryEngine.state.inputs = [];
-        
         const controls = document.getElementById('dynamic-controls');
         controls.innerHTML = ''; 
 
-        // --- STEP 1: VISUAL STATE (Chips) ---
-        if (q.interaction === 'DRAG_SORT' || q.interaction === 'DRAG_SETS') {
-            // New Drag Question
+        // --- UNIFIED CHIP LOADING ---
+        if (q.items && q.items.length > 0) {
             SetTheoryEngine.state.chips = q.items.map(item => ({
                 val: item.val, target: item.target, x: 0, y: 0, 
-                isPlaced: false, radius: item.radius || 22, 
-                customColor: item.color, isLocked: item.locked || false, currentRegion: null
+                isPlaced: item.isPlaced || false, 
+                radius: item.radius || 22, 
+                customColor: item.color, 
+                isLocked: item.locked || false, 
+                currentRegion: null,
+                dx: item.label_dx || 0,
+                dy: item.label_dy || 0
             }));
+            
+            // Trigger appropriate layout
             if(q.interaction === 'DRAG_SETS') setTimeout(SetTheoryEngine.layoutSets, 50);
+            else if(q.interaction === 'CHOICE') setTimeout(SetTheoryEngine.layoutVisualQuiz, 50);
             else setTimeout(SetTheoryEngine.layoutChips, 50);
         } 
         else if (q.retain_visuals) {
-            // Keep existing chips, but lock them
             SetTheoryEngine.state.chips.forEach(c => c.isLocked = true);
         }
         else {
-            // Clean slate
             SetTheoryEngine.state.chips = []; 
         }
 
-        // --- STEP 2: UI CONTROLS ---
-        // Note: We check interaction type independently of visual state
-        
-        if (q.interaction === 'DIAGRAM_FILL') {
+        // --- CONTROLS ---
+        if (q.interaction === 'CLICK_SUM') {
+            controls.innerHTML = `
+                <div class="sum-display" id="sum-disp">Sum: 0</div>
+                <button class="check-btn" onclick="ManyaSetHandler()">CHECK SUM</button>
+            `;
+        }
+        else if (q.interaction === 'DIAGRAM_FILL') {
             q.inputs.forEach((def) => {
                 const el = document.createElement('input');
                 el.className = 'venn-input';
@@ -171,26 +228,15 @@ export const SetTheoryEngine = {
         else if (q.interaction === 'DRAG_SORT' || q.interaction === 'DRAG_SETS') {
             controls.innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()">CHECK PLACEMENT</button>`;
         }
-        else if (q.interaction === 'BINARY' || q.type === 'BINARY') {
-            // Added check for q.type === 'BINARY' to catch cases where interaction might be missing
+        else if (q.interaction === 'BINARY') {
             controls.innerHTML = `<div class="btn-grid"><button class="btn-choice btn-yes" onclick="ManyaSetHandler('yes')">YES / TRUE</button><button class="btn-choice btn-no" onclick="ManyaSetHandler('no')">NO / FALSE</button></div>`;
         }
-        // ... inside loadQuestion ...
         else if (q.interaction === 'CHOICE') {
-            controls.innerHTML = `
-                <div class="btn-grid" style="grid-template-columns: 1fr;">
-                    ${q.options.map(opt => `
-                        <button class="btn-choice" style="text-align:center; padding:15px;" onclick="ManyaSetHandler('${opt}')">
-                            ${opt}
-                        </button>
-                    `).join('')}
-                </div>`;
+            controls.innerHTML = `<div class="btn-grid" style="grid-template-columns: 1fr; gap: 8px;">${q.options.map((opt, i) => `<button id="btn-opt-${i}" class="btn-choice" style="width:100%; padding: 12px; font-size: 1rem;" onclick="ManyaSetHandler(${i})">${opt}</button>`).join('')}</div>`;
         }
-        // ...
         else {
             controls.innerHTML = `<div class="input-group"><input type="text" id="user-ans" class="set-input" placeholder="?" autocomplete="off" inputmode="text"><button class="check-btn" onclick="ManyaSetHandler()">CHECK ANSWER</button></div>`;
         }
-        
         SetTheoryEngine.draw();
     },
 
@@ -218,7 +264,8 @@ export const SetTheoryEngine = {
         if (!width) return;
         const s = scale; const pad = 15 * s; 
         const cx = (width / 2) / s; 
-        const cy = ((height / 2) / s) + 10; 
+        const cy = Math.min(height/2/s, (width/s)*0.45) + 10;
+        
         const availW = (width/s) - (pad*2/s);
         const availH = (height/s) - (pad*2/s);
         const r = Math.max(10, Math.min(availW * 0.25, availH * 0.35)); 
@@ -248,9 +295,30 @@ export const SetTheoryEngine = {
         let isCorrect = false;
         const zones = SetTheoryEngine.state.data.zones;
         
-        // --- VALIDATION LOGIC ---
-        
-        if (q.interaction === 'DIAGRAM_FILL') {
+        if (q.interaction === 'CLICK_SUM') {
+            let target = [];
+            if(q.targetRegion === 'left_total') target = ['left', 'center'];
+            else if(q.targetRegion === 'right_total') target = ['right', 'center'];
+            else if(q.targetRegion === 'union') target = ['left', 'center', 'right'];
+            else if(q.targetRegion === 'intersection') target = ['center'];
+            else if(q.targetRegion === 'complement_left') target = ['right', 'outside'];
+            else if(q.targetRegion === 'complement_right') target = ['left', 'outside'];
+            else if(q.targetRegion === 'universal_only') target = ['outside'];
+            else if(q.targetRegion === 'symmetric_difference') target = ['left', 'right'];
+            
+            // Check Match
+            isCorrect = SetTheoryEngine.state.selectedRegions.size === target.length;
+            if(isCorrect) target.forEach(r => { if(!SetTheoryEngine.state.selectedRegions.has(r)) isCorrect = false; });
+        }
+        else if (q.interaction === 'CHOICE') {
+            isCorrect = q.options[val] === q.expected;
+            const btn = document.getElementById(`btn-opt-${val}`);
+            if(btn) {
+                if(isCorrect) { btn.classList.add('correct'); btn.style.background='#dcfce7'; btn.style.borderColor='#22c55e'; }
+                else { btn.classList.add('wrong'); btn.style.background='#fee2e2'; btn.style.borderColor='#ef4444'; }
+            }
+        }
+        else if (q.interaction === 'DIAGRAM_FILL') {
             let allGood = true;
             SetTheoryEngine.state.inputs.forEach(el => {
                 const def = q.inputs.find(d => d.region === el.dataset.region);
@@ -270,29 +338,26 @@ export const SetTheoryEngine = {
         }
         else if (q.interaction === 'DRAG_SORT') {
             isCorrect = SetTheoryEngine.state.chips.every(c => c.isPlaced && c.currentRegion === c.target);
-        } 
+        }
         else if (q.interaction === 'DRAG_SETS') {
             const c1 = SetTheoryEngine.state.chips[0]; const c2 = SetTheoryEngine.state.chips[1];
             if (c1 && c2) {
-                // ... (Drag Set Math from v14) ...
                 const dist = Math.sqrt(Math.pow(c1.x - c2.x, 2) + Math.pow(c1.y - c2.y, 2));
-                const s = SetTheoryEngine.state.scale;
-                const r1 = c1.radius * s; const r2 = c2.radius * s; 
+                const s = SetTheoryEngine.state.scale; const r1 = c1.radius * s; const r2 = c2.radius * s; 
+                let ok = false;
                 if (c2.target === 'inside_F' || c1.target === 'inside_F') {
                     const rBig = r1 > r2 ? r1 : r2; const rSmall = r1 > r2 ? r2 : r1;
-                    isCorrect = (dist + rSmall) <= (rBig * 1.15); 
-                } else if (c1.target === 'disjoint') isCorrect = dist > (r1 + r2 - 10);
-                else if (c1.target === 'overlap') isCorrect = (dist < r1 + r2) && (dist > Math.abs(r1 - r2) + 15);
-                if(isCorrect) { c1.isPlaced = true; c2.isPlaced = true; }
+                    ok = (dist + rSmall) <= (rBig * 1.15); 
+                } else if (c1.target === 'disjoint') ok = dist > (r1 + r2 - 10);
+                else if (c1.target === 'overlap') ok = (dist < r1 + r2) && (dist > Math.abs(r1 - r2) + 15);
+                if(ok) { c1.isPlaced = true; c2.isPlaced = true; isCorrect = true; }
             }
-        }
-        else if (q.interaction === 'BINARY' || q.type === 'BINARY') {
-            // Check button value (val) OR text input fallback
+        } 
+        else if (q.interaction === 'BINARY') {
             const checkVal = val || document.getElementById('user-ans')?.value.toLowerCase();
             isCorrect = checkVal === q.expected;
         } 
         else {
-            // Text Input Based Checks
             const input = document.getElementById('user-ans').value.trim();
             let correctData = [];
             // Map regions...
@@ -332,6 +397,7 @@ export const SetTheoryEngine = {
             else if (q.type === 'SUBSET_COUNT') isCorrect = parseInt(input) === Math.pow(2, correctData.length);
             else if (q.type === 'PROPER_SUBSET_COUNT') isCorrect = parseInt(input) === Math.pow(2, correctData.length) - 1;
             else if (q.type === 'REVERSE_SUBSET') isCorrect = parseInt(input) === q.expected_val;
+            else if (q.type === 'REVERSE_PROPER_SUBSET') isCorrect = parseInt(input) === q.expected_val;
             else if (q.type === 'IS_SUBSET') isCorrect = input.toLowerCase() === q.expected;
             else if (q.type === 'ALGEBRA_SUBSTITUTE') {
                 const res = SetTheoryEngine.parseExpression(q.expression, q.x_val);
@@ -344,14 +410,12 @@ export const SetTheoryEngine = {
             fb.innerText = "Correct!";
             fb.style.color = "var(--success-color)";
             SetTheoryEngine.state.isResolved = true;
-            const btn = document.querySelector('.check-btn');
-            if(btn) { 
-                btn.innerText = "NEXT"; btn.style.background = "var(--success-color)"; 
-                if(document.getElementById('user-ans')) document.getElementById('user-ans').disabled = true;
-            }
-            // For binary buttons, show a next button
-            if(q.interaction === 'BINARY' || q.type === 'BINARY') {
-                 document.getElementById('dynamic-controls').innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()" style="background:var(--success-color)">NEXT QUESTION</button>`;
+            if(q.interaction === 'CLICK_SUM') setTimeout(() => { document.getElementById('dynamic-controls').innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()" style="background:var(--success-color)">NEXT QUESTION</button>`; }, 500);
+            else if(q.interaction !== 'BINARY' && q.interaction !== 'CHOICE' && q.interaction !== 'DRAG_SETS' && q.interaction !== 'DRAG_SORT') {
+                const btn = document.querySelector('.check-btn');
+                if(btn) { btn.innerText = "NEXT"; btn.style.background = "var(--success-color)"; if(document.getElementById('user-ans')) document.getElementById('user-ans').disabled = true; }
+            } else {
+                 setTimeout(() => { document.getElementById('dynamic-controls').innerHTML = `<button class="check-btn" onclick="ManyaSetHandler()" style="background:var(--success-color)">NEXT QUESTION</button>`; }, 500);
             }
         } else {
             fb.innerText = "Try again."; fb.style.color = "#ef4444";
@@ -365,7 +429,6 @@ export const SetTheoryEngine = {
     },
 
     initInputListeners: (canvas) => {
-        // ... (Standard Pointer Events for Dragging) ...
         const getPos = (e) => {
             const rect = canvas.getBoundingClientRect();
             const cx = e.touches ? e.touches[0].clientX : e.clientX;
@@ -373,8 +436,41 @@ export const SetTheoryEngine = {
             return { x: (cx - rect.left) * (SetTheoryEngine.state.width / rect.width), y: (cy - rect.top) * (SetTheoryEngine.state.height / rect.height) };
         };
         const start = (e) => {
-            if(SetTheoryEngine.state.isResolved) return;
+            const q = SetTheoryEngine.state.data?.questions[SetTheoryEngine.state.currentStep];
+            if(SetTheoryEngine.state.isResolved && document.querySelector('.check-btn')?.innerText !== "NEXT") return;
             const p = getPos(e);
+            
+            // CLICK SUM HIT DETECTION
+            if (q && q.interaction === 'CLICK_SUM') {
+                 const { width, height, scale, data } = SetTheoryEngine.state;
+                 const s = scale; const pad = 15*s; 
+                 const cy = Math.min(height/2, width*0.45) + 10*s; const cx = width/2;
+                 const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35));
+                 const offset = r*0.65;
+                 const c1x = (data.sets.B.label === "") ? cx : cx - offset; const c2x = cx + offset;
+                 
+                 const d1 = Math.hypot(p.x-c1x, p.y-cy); const d2 = Math.hypot(p.x-c2x, p.y-cy);
+                 let region = null;
+                 if (d1 < r && d2 < r) region = 'center';
+                 else if (d1 < r) region = 'left';
+                 else if (d2 < r) region = 'right';
+                 else if (p.x > pad && p.x < width-pad && p.y > pad && p.y < height-pad) region = 'outside';
+                 
+                 if (region) {
+                     if (SetTheoryEngine.state.selectedRegions.has(region)) SetTheoryEngine.state.selectedRegions.delete(region);
+                     else SetTheoryEngine.state.selectedRegions.add(region);
+                     
+                     let sum = 0; const z = SetTheoryEngine.state.data.zones;
+                     SetTheoryEngine.state.selectedRegions.forEach(reg => {
+                         let arr = reg === 'center' ? z.center : reg === 'left' ? z.left : reg === 'right' ? z.right : z.outside;
+                         if (arr) arr.forEach(val => sum += (parseInt(val)||0));
+                     });
+                     document.getElementById('sum-disp').innerText = "Sum: " + sum;
+                     SetTheoryEngine.draw();
+                 }
+                 return;
+            }
+            
             const chip = [...SetTheoryEngine.state.chips].reverse().find(c => !c.isLocked && Math.hypot(c.x-p.x, c.y-p.y) < c.radius*1.3*SetTheoryEngine.state.scale);
             if(chip) { SetTheoryEngine.state.dragging=chip; SetTheoryEngine.state.dragOffset={x:p.x-chip.x, y:p.y-chip.y}; }
         };
@@ -392,7 +488,7 @@ export const SetTheoryEngine = {
             const q = SetTheoryEngine.state.data.questions[SetTheoryEngine.state.currentStep];
             if (q.interaction === 'DRAG_SORT') {
                  const { width, height, scale, data } = SetTheoryEngine.state;
-                 const cx = width/2; const cy = height/2 + (15*scale);
+                 const cx = width/2; const cy = Math.min(height/2, width*0.45) + 10*scale;
                  const r = Math.max(10, Math.min((width-40*scale)*0.25, (height-40*scale)*0.35));
                  const offset = r*0.65;
                  const c1x = (data.sets.B.label === "") ? cx : cx - offset; const c2x = cx + offset;
@@ -403,15 +499,14 @@ export const SetTheoryEngine = {
                 const c1 = SetTheoryEngine.state.chips[0]; const c2 = SetTheoryEngine.state.chips[1];
                 if(c1 && c2) {
                     const dist = Math.sqrt(Math.pow(c1.x - c2.x, 2) + Math.pow(c1.y - c2.y, 2));
-                    const s = SetTheoryEngine.state.scale;
-                    const r1 = c1.radius * s; const r2 = c2.radius * s; 
+                    const s = SetTheoryEngine.state.scale; const r1 = c1.radius * s; const r2 = c2.radius * s; 
                     let ok = false;
                     if (c2.target === 'inside_F' || c1.target === 'inside_F') {
                         const rBig = r1 > r2 ? r1 : r2; const rSmall = r1 > r2 ? r2 : r1;
                         ok = (dist + rSmall) <= (rBig * 1.15); 
                     } else if (c1.target === 'disjoint') ok = dist > (r1 + r2 - 10);
                     else if (c1.target === 'overlap') ok = (dist < r1 + r2) && (dist > Math.abs(r1 - r2) + 15);
-                    if(ok) { c1.isPlaced = true; c2.isPlaced = true; }
+                    if(ok) { c1.isPlaced = true; c2.isPlaced = true; SetTheoryEngine.handleInput(); }
                 }
             }
             SetTheoryEngine.state.dragging = null; SetTheoryEngine.draw();
@@ -426,35 +521,103 @@ export const SetTheoryEngine = {
         const gap = 55*scale; const startX = (width - ((chips.length-1)*gap))/2;
         chips.forEach((c,i) => { if(!c.isPlaced) { c.x = startX + i*gap; c.y = height - 40*scale; } });
     },
+    
     layoutSets: () => {
         const { width, height, chips } = SetTheoryEngine.state;
         chips.forEach((c, i) => { if(c.isLocked) { c.x = width*0.3; c.y = height/2; } else if (!c.isPlaced) { c.x = width*0.7; c.y = height/2; } });
     },
+    
+   layoutVisualQuiz: () => {
+        const { width, height, chips, scale } = SetTheoryEngine.state;
+        const cx = width / 2;
+        const cy = height / 2;
+
+        if (chips.length === 2) {
+            const c1 = chips[0];
+            const c2 = chips[1];
+            
+            // Check if we need to force overlap based on JSON 'target'
+            const forceOverlap = c1.target === 'overlap' || c2.target === 'overlap';
+            
+            // Use the chip's visual radius to calculate offset
+            // If Overlap: Distance < 2*radius (e.g., 0.7 * r)
+            // If Disjoint: Distance > 2*radius (e.g., 1.3 * r)
+            const r = c1.radius * scale; 
+            const offset = forceOverlap ? (r * 0.7) : (r * 1.4);
+
+            // A is a Subset of B (Different Sizes, Centered)
+            if (c1.radius !== c2.radius) {
+                c1.x = cx; c1.y = cy;
+                c2.x = cx; c2.y = cy;
+            } 
+            // Side-by-Side (Intersecting or Disjoint)
+            else {
+                c1.x = cx - offset; c1.y = cy;
+                c2.x = cx + offset; c2.y = cy;
+            }
+        } 
+        else if (chips.length === 1) {
+            // Equal Sets (A=B)
+            chips[0].x = cx;
+            chips[0].y = cy;
+        }
+    },
+    
+    // --- DRAW_ATOMIC_REGION ---
+    drawAtomicRegion: (tCtx, region, c1, c2, r, w, h, pad) => {
+        tCtx.save(); tCtx.clearRect(0,0,w,h); tCtx.fillStyle = "#fef9c3";
+        if (region === 'center') {
+            tCtx.beginPath(); tCtx.arc(c1.x, c1.y, r, 0, Math.PI*2); tCtx.clip();
+            tCtx.beginPath(); tCtx.arc(c2.x, c2.y, r, 0, Math.PI*2); tCtx.fill();
+        } else if (region === 'left') {
+            tCtx.beginPath(); tCtx.arc(c1.x, c1.y, r, 0, Math.PI*2); tCtx.fill();
+            tCtx.globalCompositeOperation = 'destination-out';
+            tCtx.beginPath(); tCtx.arc(c2.x, c2.y, r, 0, Math.PI*2); tCtx.fill();
+        } else if (region === 'right') {
+            tCtx.beginPath(); tCtx.arc(c2.x, c2.y, r, 0, Math.PI*2); tCtx.fill();
+            tCtx.globalCompositeOperation = 'destination-out';
+            tCtx.beginPath(); tCtx.arc(c1.x, c1.y, r, 0, Math.PI*2); tCtx.fill();
+        } else if (region === 'outside') {
+            tCtx.beginPath(); tCtx.rect(pad,pad,w-pad*2,h-pad*2); tCtx.fill();
+            tCtx.globalCompositeOperation = 'destination-out';
+            tCtx.beginPath(); tCtx.arc(c1.x, c1.y, r, 0, Math.PI*2); tCtx.fill();
+            tCtx.beginPath(); tCtx.arc(c2.x, c2.y, r, 0, Math.PI*2); tCtx.fill();
+        }
+        tCtx.restore();
+    },
 
     draw: () => {
-        const { ctx, width, height, data, activeHighlight, scale, chips, inputs } = SetTheoryEngine.state;
+        const { ctx, width, height, data, activeHighlight, scale, chips, inputs, selectedRegions } = SetTheoryEngine.state;
         if(width<=0) return;
         ctx.clearRect(0,0,width,height);
         const s = scale; const pad = 15*s; 
-        // Geometry matching inputs
-        const cx = width/2; const cy = height/2 + 10*s;
+        const cx = width/2; const cy = Math.min(height/2, width*0.45) + 10*s;
         const r = Math.max(10, Math.min((width-pad*2)*0.25, (height-pad*2)*0.35)); const offset = r*0.65;
-        
         const q = data.questions[SetTheoryEngine.state.currentStep];
         const isVisualDrag = q.interaction === 'DRAG_SETS';
+        const isCustomVisual = q.interaction === 'CHOICE' && chips.length > 0;
         const isFilling = q.interaction === 'DIAGRAM_FILL';
 
-        if (!isVisualDrag) {
+        if (!isVisualDrag && !isCustomVisual) {
             const isSingleSet = data.sets.B.label === "";
             const c1 = { x: isSingleSet ? cx : cx - offset, y: cy, r: r, color: data.sets.A.color };
             const c2 = { x: cx + offset, y: cy, r: r, color: data.sets.B.color };
             
-            if(activeHighlight) {
-                ctx.save(); ctx.fillStyle = "#fef9c3";
-                // ... same highlights ...
-                if(activeHighlight==='intersection') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.clip(); ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
-                else if(activeHighlight==='left_only') { ctx.beginPath(); ctx.arc(c1.x,c1.y,r,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(c2.x,c2.y,r,0,Math.PI*2); ctx.fill(); }
-                ctx.restore();
+            // --- ATOMIC HIGHLIGHT RENDERING ---
+            const tCtx = SetTheoryEngine.state.tempCtx;
+            if (tCtx && (activeHighlight || selectedRegions.size > 0)) {
+                const check = (reg) => (activeHighlight === reg) || selectedRegions.has(reg) || 
+                                       (activeHighlight==='union' && ['left','center','right'].includes(reg)) ||
+                                       (activeHighlight==='left_total' && ['left','center'].includes(reg)) ||
+                                       (activeHighlight==='right_total' && ['right','center'].includes(reg)) ||
+                                       (activeHighlight==='complement_left' && ['right','outside'].includes(reg)) ||
+                                       (activeHighlight==='complement_right' && ['left','outside'].includes(reg)) ||
+                                       (activeHighlight==='symmetric_difference' && ['left','right'].includes(reg));
+
+                if (check('center') || check('intersection')) { SetTheoryEngine.drawAtomicRegion(tCtx, 'center', c1, c2, r, width, height, pad); ctx.drawImage(SetTheoryEngine.state.tempCanvas, 0, 0); }
+                if (check('left') || check('left_only')) { SetTheoryEngine.drawAtomicRegion(tCtx, 'left', c1, c2, r, width, height, pad); ctx.drawImage(SetTheoryEngine.state.tempCanvas, 0, 0); }
+                if (check('right') || check('right_only')) { SetTheoryEngine.drawAtomicRegion(tCtx, 'right', c1, c2, r, width, height, pad); ctx.drawImage(SetTheoryEngine.state.tempCanvas, 0, 0); }
+                if (check('outside') || check('universal_only')) { SetTheoryEngine.drawAtomicRegion(tCtx, 'outside', c1, c2, r, width, height, pad); ctx.drawImage(SetTheoryEngine.state.tempCanvas, 0, 0); }
             }
 
             ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=2; ctx.strokeRect(pad,pad,width-pad*2,height-pad*2);
@@ -468,17 +631,14 @@ export const SetTheoryEngine = {
 
             if(chips.length === 0) {
                 ctx.font=`600 ${18*s}px sans-serif`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="#1e293b";
-                
                 const drawZone = (arr, bx, by, regionName) => {
                     if(!arr || arr.length===0) return;
-                    if (isFilling && q.inputs.some(i => i.region === regionName)) return; // Don't draw if covered by input
-                    
+                    if (isFilling && q.inputs.some(i => i.region === regionName)) return;
                     arr.forEach((v,i) => {
                         const shift = (arr.length > 1) ? ((i-(arr.length-1)/2) * 15 * s) : 0;
                         ctx.fillText(String(v), bx, by+shift);
                     });
                 };
-
                 if(isSingleSet) drawZone(data.zones.center, cx, cy, 'center');
                 else {
                     drawZone(data.zones.left, c1.x-r*0.4, cy, 'left');
@@ -491,11 +651,26 @@ export const SetTheoryEngine = {
 
         if(chips.length > 0) {
             chips.forEach(c => {
-                 if(c.x===0 && c.y===0 && !c.isPlaced) { if(isVisualDrag) SetTheoryEngine.layoutSets(); else SetTheoryEngine.layoutChips(); }
+                 if(c.x===0 && c.y===0 && !c.isPlaced) { 
+                     if(isVisualDrag) SetTheoryEngine.layoutSets(); 
+                     else if(q.interaction === 'CHOICE') SetTheoryEngine.layoutVisualQuiz(); 
+                     else SetTheoryEngine.layoutChips(); 
+                 }
                  ctx.save(); ctx.translate(c.x, c.y);
                  ctx.beginPath(); ctx.arc(0,0,c.radius*s,0,Math.PI*2);
-                 if(c.customColor) { ctx.fillStyle=c.customColor; ctx.fill(); ctx.lineWidth=3; ctx.stroke(); }
-                 else { if(c.isPlaced) { ctx.fillStyle='#dcfce7'; ctx.strokeStyle='#15803d'; } else { ctx.fillStyle='#f3e8ff'; ctx.strokeStyle='#9333ea'; } ctx.fill(); ctx.lineWidth=2; ctx.stroke(); }
+                if(c.customColor) { 
+                                    // Custom Visual (Visual Quiz)
+                                    ctx.fillStyle=c.customColor; ctx.fill(); 
+                                    ctx.lineWidth=3; ctx.strokeStyle='#9333ea'; ctx.stroke(); 
+                                    
+                                    ctx.fillStyle='#9333ea'; 
+                                    ctx.font=`bold ${24*s}px sans-serif`; 
+                                    ctx.textAlign='center'; ctx.textBaseline='middle'; 
+                                    
+                                    // FIX: Apply offsets here
+                                    ctx.fillText(String(c.val), c.dx * s, c.dy * s);
+                                }                  
+                else { if(c.isPlaced) { ctx.fillStyle='#dcfce7'; ctx.strokeStyle='#15803d'; } else { ctx.fillStyle='#f3e8ff'; ctx.strokeStyle='#9333ea'; } ctx.fill(); ctx.lineWidth=2; ctx.stroke(); }
                  ctx.fillStyle=c.customColor?'#9333ea':'#0f172a'; ctx.font=`bold ${c.customColor?24*s:16*s}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(String(c.val), 0, 0);
                  ctx.restore();
             });

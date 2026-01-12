@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Disjoint Sets",
+  "variantTitle": "Quest 2-013: Disjoint",
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "items": [
+        
+          { "val": "A", "radius": 50, "color": "#dbeafe", "locked": true },
+          { "val": "B", "radius": 50, "color": "#ffedd5", "locked": true }
+      ],
+      "prompt": "Describe the relationship.",
+      "options": [
+        "Intersecting Sets",
+        "Disjoint Sets",
+        "Subsets",
+        "Universal Set"
+      ],
+      "expected": "Disjoint Sets",
+      "hint": "The circles do not touch or overlap."
+    }
+  ]
+}

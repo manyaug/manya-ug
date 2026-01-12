@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4-002: Vowels",
+  "sets": { "A": { "label": "V", "color": "#9333ea" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["a", "e", "i", "o", "u"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Find n(V). (Count the vowels)",
+      "hint": "Count a, e, i, o, u."
+    },
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Calculate total <b>Subsets</b> (2ⁿ).",
+      "hint": "2⁵ = 2×2×2×2×2 = 32."
+    },
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 3:</b> Calculate <b>Proper Subsets</b>.",
+      "hint": "Total - 1 = 31."
+    }
+  ]
+}

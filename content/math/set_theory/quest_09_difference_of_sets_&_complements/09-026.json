@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Visual Complements",
+  "variantTitle": "Quest 9-026: Food Clicks",
+  "sets": { "A": { "label": "P", "color": "#16a34a" }, "B": { "label": "B", "color": "#ea580c" } },
+  "zones": { "left": [20], "center": [15], "right": [10], "outside": [15] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_left", 
+      "prompt": "Tap regions representing people who did <b>NOT</b> eat Pizza.",
+      "hint": "Click 'Burger Only' (10) and 'Neither' (15). Sum = 25."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_right", 
+      "prompt": "Tap regions representing people who did <b>NOT</b> eat Burgers.",
+      "hint": "Click 'Pizza Only' (20) and 'Neither' (15). Sum = 35."
+    }
+  ]
+}

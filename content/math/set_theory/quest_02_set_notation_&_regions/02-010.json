@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Union of Sets",
+  "variantTitle": "Quest 2-007: Union Quiz",
+  "sets": { "A": { "label": "P", "color": "#9333ea" }, "B": { "label": "Q", "color": "#db2777" } },
+  "zones": { "left": [1, 2], "center": [3], "right": [4, 5], "outside": [] },
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "prompt": "List the members of <span style='color:#0f172a'>P ∪ Q</span> (Union).",
+      "options": [
+        "{1, 2, 3, 4, 5}",
+        "{3}",
+        "{1, 2, 4, 5}",
+        "{1, 2}"
+      ],
+      "expected": "{1, 2, 3, 4, 5}",
+      "hint": "Union means 'Unite'. List every number inside both circles."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Relationships",
+  "variantTitle": "Quest 2-012: Subset Reverse",
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "items": [
+          { "val": "A", "radius": 90, "color": "#f3e8ff", "locked": true, "label_dy": -60 }, 
+          { "val": "B", "radius": 45, "color": "#ffffff", "locked": true } 
+      ],
+      "prompt": "What is the relationship shown?",
+      "options": [
+        "A is a subset of B",
+        "B is a subset of A",
+        "A and B are disjoint",
+        "A = B"
+      ],
+      "expected": "B is a subset of A",
+      "hint": "Set B is completely inside Set A."
+    }
+  ]
+}

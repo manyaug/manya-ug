@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Calculating Subsets",
+  "variantTitle": "Quest 3-009: Weekend",
+  "sets": { "A": { "label": "W", "color": "#db2777" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["Sat", "Sun"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Find n(Weekend Days).",
+      "hint": "Saturday and Sunday (2)."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Calculate total Subsets.",
+      "hint": "2² = 4."
+    }
+  ]
+}

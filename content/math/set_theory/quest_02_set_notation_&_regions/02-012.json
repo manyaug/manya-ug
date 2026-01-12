@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement",
+  "variantTitle": "Quest 2-009: Complement Quiz",
+  "sets": { "A": { "label": "A", "color": "#059669" }, "B": { "label": "B", "color": "#7c3aed" } },
+  "zones": { "left": ["x"], "center": ["y"], "right": ["z"], "outside": ["w"] },
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "prompt": "List the members of <span style='color:#7c3aed'>B'</span> (Complement of B).",
+      "options": [
+        "{x, w}",
+        "{z, w}",
+        "{x}",
+        "{w}"
+      ],
+      "expected": "{x, w}",
+      "hint": "Cover circle B. List whatever is left (A only + Outside)."
+    }
+  ]
+}
