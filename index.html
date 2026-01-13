@@ -5,9 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Manya | P7 Prep Hub</title>
 
-    <!-- Core Dependencies -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Core Dependencies for offline use -->
+    
+    <link rel="stylesheet" href="./assets/fonts/fonts.css">
+    <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
+ 
+    <!-- 3. MANIFEST (For PWA Install) -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- FONTS & MODEL VIEWER CDN (For online use dev purposes) -->
+    <!--<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>-->
 
     <style>
         :root {
@@ -366,6 +374,7 @@
                 <span class="chevron">▼</span>
             </div>
             <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_06_placing_info_on_venn_diagrams', '06-sim_1', this)">06-sim_1</button>
                 <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_06_placing_info_on_venn_diagrams', '06-001', this)">06-001</button>
                 <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_06_placing_info_on_venn_diagrams', '06-002', this)">06-002</button>
                 <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_06_placing_info_on_venn_diagrams', '06-003', this)">06-003</button>
@@ -521,6 +530,7 @@
                 <span class="chevron">▼</span>
             </div>
             <div class="nav-content">
+                <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_probability_using_venn_diagrams', '10-sim_1', this)">10-sim_1</button>
                 <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_probability_using_venn_diagrams', '10-001', this)">10-001</button>
                 <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_probability_using_venn_diagrams', '10-002', this)">10-002</button>
                 <button class="quest-btn" onclick="ManyaRouter.load('math/set_theory', 'quest_10_probability_using_venn_diagrams', '10-003', this)">10-003</button>
@@ -781,15 +791,149 @@
                 <span class="subject-chevron">▼</span>
             </div>
             <div class="subject-content-body">
+                 <!-- TOPIC 1 -->
                 <div class="nav-group">
-                     <div class="nav-header" onclick="toggleSection(this)">
-                        <span class="nav-label">Topic 1: Location of Uganda</span>
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 1: The World Stage</span>
                         <span class="chevron">▼</span>
                     </div>
                     <div class="nav-content">
-                        <span style="font-size:10px; padding:10px; opacity:0.6;">Content coming soon...</span>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
                     </div>
                 </div>
+            
+
+             <!-- TOPIC 2 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 2: The Grid Master (Latitudes)</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+                   <!-- TOPIC 3 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 3: The Time Traveller (Longitudes & Time)</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_3_calculating_time', '03-001', this)">globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+                   <!-- TOPIC 4 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 4: The Water Borders</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+   <!-- TOPIC 5 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 5: Shaping the Coast (Coastal Features)</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+
+   <!-- TOPIC 6 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 6: Island Hopper</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+   <!-- TOPIC 7 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 7: The Regional Puzzle (Political Divisions)</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+   <!-- TOPIC 8 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 8: Capital City Sprint</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+   <!-- TOPIC 9 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 9: The Landlocked Challenge</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+   <!-- TOPIC 10 -->
+                <div class="nav-group">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <span class="nav-label">Topic 10: The Cartographer (Map Reading)</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-content">
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+                        <button class="quest-btn" onclick="ManyaRouter.load('sst/locating_africa', 'quest_1', 'quest_time', this)">sst trial globe</button>
+
+                    </div>
+                </div>
+
+
             </div>
         </div>
         
@@ -857,6 +1001,9 @@ function toggleSubject(header) {
             "SUBSET_GAME": "./app-shell/js/engines/math-engines/subset-game-engine.js",
             "BINARY_GENERATOR": "./app-shell/js/engines/math-engines/binary-generator-engine.js",
             "PIZZA_GAME": "./app-shell/js/engines/math-engines/pizza-game-engine.js",
+            "VENN_SPOTLIGHT": "./app-shell/js/engines/math-engines/venn-spotlight-engine.js",
+            "VENN_PROB_ENGINE": "./app-shell/js/engines/math-engines/venn-prob-engine.js",
+            "GLOBE_TIME_ENGINE": "./app-shell/js/engines/sst-engines/universal-globe-engine.js",
         };
 
         window.ManyaRouter = {

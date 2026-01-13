@@ -1,0 +1,21 @@
+{
+  "name": "Manya Uganda PLE Exam Prep Hub",
+  "short_name": "Manya UG",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icons/icon-mac-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-mac-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Calculating Time",
+  "variantTitle": "Quest 3: The Time Traveller",
+  
+  "mode": "lesson", 
+
+  "cases": [
+    {
+      "tabTitle": "Concept",
+      "title": "Rotation & Time",
+      "description": "Why do times differ?",
+      "initialRotation": [0, -10, 0],
+      "markers": [
+        { "label": "Greenwich (0°)", "lat": 51.5, "lon": 0, "color": "#f59e0b" }
+      ],
+      "steps": [
+        "The Earth rotates from <b>West to East</b>.",
+        "It takes 24 hours to complete one rotation (360°).",
+        "Therefore, every hour, the earth turns <b>15°</b> (360 ÷ 24).",
+        "<b>Rule:</b> 15° = 1 Hour."
+      ]
+    },
+    {
+      "tabTitle": "GMT -> East",
+      "title": "Adding Time (East)",
+      "description": "Calculate time from Greenwich (0°) to Uganda (45°E).",
+      "initialRotation": [-20, -10, 0],
+      "connection": { "from": [0, 51.5], "to": [32, 1] },
+      "markers": [
+        { "label": "Greenwich (12:00)", "lat": 51.5, "lon": 0, "color": "#f59e0b" },
+        { "label": "Uganda (?)", "lat": 1, "lon": 45, "color": "#8b5cf6" }
+      ],
+      "steps": [
+        "Find the difference: <b>45° - 0° = 45°</b>.",
+        "Calculate hours: <b>45 ÷ 15 = 3 hours</b>.",
+        "East is AHEAD of Greenwich.",
+        "12:00 PM + 3 hours = <b>3:00 PM</b>."
+      ]
+    },
+    {
+      "tabTitle": "East -> West",
+      "title": "Subtracting Time",
+      "description": "From Accra (0°) to a ship at 30° West.",
+      "initialRotation": [15, -5, 0],
+      "connection": { "from": [0, 5.6], "to": [-30, 0] },
+      "markers": [
+        { "label": "Accra (3:00 PM)", "lat": 5.6, "lon": 0, "color": "#10b981" },
+        { "label": "Ship (?)", "lat": 0, "lon": -30, "color": "#ef4444" }
+      ],
+      "steps": [
+        "Difference: <b>30°</b>.",
+        "Hours: <b>30 ÷ 15 = 2 hours</b>.",
+        "West is BEHIND. We SUBTRACT.",
+        "3:00 PM - 2 hours = <b>1:00 PM</b>."
+      ]
+    }
+  ],
+
+  "questions": [
+    {
+      "title": "Time Challenge 1",
+      "question": "If it is 12:00 PM at Greenwich (0°), what time is it in Italy (15° East)?",
+      "initialRotation": [-10, -30, 0],
+      "correctAnswer": "1 PM",
+      "markers": [
+         { "label": "Greenwich (12PM)", "lat": 51, "lon": 0 },
+         { "label": "Italy (?)", "lat": 41, "lon": 15, "color": "#8b5cf6" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "The World Stage",
+  "variantTitle": "Quest 1: Project Genesis",
+  "mode": "puzzle",
+  "initialRotation": [0, -10, 0],
+  "pieces": [
+    { "id": "afr", "label": "Africa", "icon": "🌍", "target": [20, 0] },
+    { "id": "asia", "label": "Asia", "icon": "🏯", "target": [90, 40] },
+    { "id": "eur", "label": "Europe", "icon": "🏰", "target": [20, 50] },
+    { "id": "na", "label": "N. America", "icon": "🦅", "target": [-100, 40] },
+    { "id": "sa", "label": "S. America", "icon": "🦜", "target": [-60, -15] },
+    { "id": "aus", "label": "Australia", "icon": "🦘", "target": [135, -25] },
+    { "id": "ant", "label": "Antarctica", "icon": "❄️", "target": [0, -85] }
+  ]
+}
