@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manya | 3D Optimizer (Direct Link)</title>
+    
+    <!-- 1. MODEL VIEWER (CDN) -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <style>
+        :root { --bg: #0f172a; --panel: #1e293b; --primary: #7c3aed; --text: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: grid; grid-template-columns: 1fr 350px; overflow: hidden; }
+        .workspace { position: relative; background: #020617; display: flex; align-items: center; justify-content: center; }
+        model-viewer { width: 100%; height: 100%; }
+        
+        .overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+        .overlay.hidden { display: none; }
+        .sidebar { background: var(--panel); border-left: 1px solid #334155; padding: 25px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .btn { padding: 15px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; background: var(--primary); color: white; margin-top: 10px; }
+        .btn:disabled { background: #475569; }
+        
+        /* DEBUG BOX */
+        #status { position: fixed; bottom: 10px; left: 10px; background: black; color: yellow; padding: 10px; font-family: monospace; z-index: 9999; max-width: 500px; }
+    </style>
+</head>
+<body>
+
+    <!-- 2. FORCE STOP DOWNLOADS (Inline Script runs immediately) -->
+    <script>
+        window.addEventListener("dragover", function(e) { e.preventDefault(); e.stopPropagation(); }, false);
+        window.addEventListener("drop", function(e) { e.preventDefault(); e.stopPropagation(); }, false);
+        console.log("Global Drag Prevented");
+    </script>
+
+    <div class="workspace">
+        <model-viewer id="preview" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
+        
+        <div class="overlay" id="dropOverlay">
+            <h1 style="color:white; margin-bottom:10px;">Drag GLB Here</h1>
+            <p style="color:#94a3b8">Using Online Modules</p>
+            <input type="file" id="fileInput" accept=".glb" style="margin-top: 20px;">
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <h2>Manya Compress</h2>
+        <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px;">
+            <p>Original: <span id="origSize">0 MB</span></p>
+            <p>New: <span id="newSize" style="color:#4ade80">--</span></p>
+        </div>
+        <button id="btnProcess" class="btn" disabled>RUN COMPRESSION</button>
+        <button id="btnDownload" class="btn" style="background:#22c55e; display:none;">DOWNLOAD</button>
+    </aside>
+
+    <div id="status">Status: Waiting for Three.js...</div>
+
+    <!-- 3. MAIN LOGIC (Direct Imports from Unpkg) -->
+    <script type="module">
+        // Import directly from URL (No Import Map needed)
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+        import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+        import { GLTFExporter } from 'https://unpkg.com/three@0.160.0/examples/jsm/exporters/GLTFExporter.js';
+        import { DRACOLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/DRACOLoader.js';
+
+        const status = document.getElementById('status');
+        status.innerText = "Status: Libraries Loaded. Ready.";
+
+        const ui = {
+            overlay: document.getElementById('dropOverlay'),
+            fileIn: document.getElementById('fileInput'),
+            viewer: document.getElementById('preview'),
+            orig: document.getElementById('origSize'),
+            new: document.getElementById('newSize'),
+            btnProcess: document.getElementById('btnProcess'),
+            btnDownload: document.getElementById('btnDownload')
+        };
+
+        let loadedScene = null;
+        let originalName = "model.glb";
+        let resultBlob = null;
+
+        // --- FILE HANDLING ---
+        // Drag Logic
+        window.addEventListener('drop', (e) => {
+            e.preventDefault(); 
+            ui.overlay.classList.add('hidden');
+            if(e.dataTransfer.files.length > 0) loadFile(e.dataTransfer.files[0]);
+        });
+
+        // Browse Logic
+        ui.fileIn.addEventListener('change', (e) => {
+            ui.overlay.classList.add('hidden');
+            if(e.target.files.length > 0) loadFile(e.target.files[0]);
+        });
+
+        async function loadFile(file) {
+            status.innerText = "Status: Reading File...";
+            originalName = file.name;
+            ui.orig.innerText = (file.size / 1024 / 1024).toFixed(2) + " MB";
+            
+            // 1. Visual Preview
+            ui.viewer.src = URL.createObjectURL(file);
+
+            // 2. Logic Loading
+            try {
+                const buffer = await file.arrayBuffer();
+                
+                const dracoLoader = new DRACOLoader();
+                // Point to Google CDN
+                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+                dracoLoader.setDecoderConfig({ type: 'js' });
+
+                const loader = new GLTFLoader();
+                loader.setDRACOLoader(dracoLoader);
+
+                status.innerText = "Status: Parsing 3D Model...";
+                loader.parse(buffer, '', (gltf) => {
+                    loadedScene = gltf.scene;
+                    ui.btnProcess.disabled = false;
+                    status.innerText = "Status: Model Parsed. Ready to Compress.";
+                }, (err) => {
+                    console.error(err);
+                    status.innerText = "Error: Three.js Parse Failed.";
+                });
+
+            } catch (err) {
+                status.innerText = "Error: " + err.message;
+            }
+        }
+
+        // --- COMPRESSION ---
+        ui.btnProcess.onclick = () => {
+            if(!loadedScene) return;
+            status.innerText = "Status: Compressing (This may freeze briefly)...";
+            ui.btnProcess.disabled = true;
+
+            setTimeout(() => {
+                const exporter = new GLTFExporter();
+                exporter.parse(loadedScene, (result) => {
+                    if (result instanceof ArrayBuffer) {
+                        resultBlob = new Blob([result], { type: 'application/octet-stream' });
+                        ui.new.innerText = (resultBlob.size / 1024 / 1024).toFixed(2) + " MB";
+                        
+                        ui.viewer.src = URL.createObjectURL(resultBlob); // Preview Result
+                        
+                        ui.btnDownload.style.display = 'block';
+                        status.innerText = "Status: Done! Download ready.";
+                    }
+                }, {
+                    binary: true,
+                    dracoOptions: {
+                        compressionLevel: 7,
+                        quantizationPos: 10,
+                        quantizationNor: 8,
+                        quantizationTex: 8,
+                        quantizationCol: 8,
+                        quantizationGen: 8
+                    }
+                });
+            }, 100);
+        };
+
+        ui.btnDownload.onclick = () => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(resultBlob);
+            a.download = originalName.replace('.glb', '_compressed.glb');
+            a.click();
+        };
+
+    </script>
+</body>
+</html>
