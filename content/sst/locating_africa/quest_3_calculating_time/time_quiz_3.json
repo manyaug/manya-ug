@@ -1,0 +1,39 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Complex Time Zones",
+  "variantTitle": "PLE Level 3: The Examiner's Challenge",
+  "mode": "puzzle",
+  "initialRotation": [-10, 0, 0],
+  "zoomFactor": 1.2,
+
+  "lines": [
+    { "type": "lon", "value": 45, "color": "#1e293b", "label": "Start: 3:00 PM", "width": 2 },
+    { "type": "lon", "value": 0, "color": "#ef4444", "dashed": true, "label": "GMT" },
+    { "type": "lon", "value": -30, "color": "#94a3b8", "dashed": true, "label": "30°W" }
+  ],
+
+  "pieces": [
+    { 
+      "id": "gmt_time", 
+      "label": "12:00 PM", 
+      "icon": "🇬🇧", 
+      "target": [0, 51], 
+      "color": "#ef4444" 
+    },
+    { 
+      "id": "west_time", 
+      "label": "10:00 AM", 
+      "icon": "🚢", 
+      "target": [-30, 0], 
+      "color": "#3b82f6" 
+    },
+    { 
+      "id": "coord_country", 
+      "label": "Lat 30°N, Lon 31°E", 
+      "icon": "📍", 
+      "target": [31, 30], 
+      "color": "#10b981" 
+    }
+  ]
+}

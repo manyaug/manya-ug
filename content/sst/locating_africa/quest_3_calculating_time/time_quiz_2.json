@@ -1,0 +1,40 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Zones (East)",
+  "variantTitle": "PLE Level 2: Calculating Time",
+  "mode": "puzzle",
+  "initialRotation": [-30, 0, 0],
+  "zoomFactor": 1.4,
+
+  "lines": [
+    { "type": "lon", "value": 0, "color": "#1e293b", "label": "GMT (12:00)", "width": 2 },
+    { "type": "lon", "value": 15, "color": "#94a3b8", "dashed": true, "label": "15°E" },
+    { "type": "lon", "value": 30, "color": "#94a3b8", "dashed": true, "label": "30°E" },
+    { "type": "lon", "value": 45, "color": "#94a3b8", "dashed": true, "label": "45°E" }
+  ],
+
+  "pieces": [
+    { 
+      "id": "1pm", 
+      "label": "1:00 PM", 
+      "icon": "🕐", 
+      "target": [15, 10], 
+      "color": "#facc15" 
+    },
+    { 
+      "id": "2pm", 
+      "label": "2:00 PM", 
+      "icon": "🕑", 
+      "target": [30, 0], 
+      "color": "#facc15" 
+    },
+    { 
+      "id": "3pm", 
+      "label": "3:00 PM", 
+      "icon": "🕒", 
+      "target": [45, -10], 
+      "color": "#facc15" 
+    }
+  ]
+}

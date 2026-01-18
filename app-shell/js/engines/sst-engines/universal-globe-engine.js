@@ -325,39 +325,37 @@ export const UniversalGlobeEngine = {
 
     // --- 6. CINEMATIC UPDATE FUNCTION ---
     updateToCurrentData: () => {
-        const { data, activeTab, projection, baseScale } = UniversalGlobeEngine.state;
-        if (data.mode === 'lesson') {
-            const currentCase = data.cases[activeTab];
-            
-            // Get Target Rotation
-            const targetRot = currentCase.initialRotation;
-            
-            // Get Target Zoom (If defined in tab, use it. Else use global. Else 1)
-            const targetZoom = currentCase.zoomFactor || data.zoomFactor || 1;
-            const targetScale = baseScale * targetZoom;
+        const { data, activeTab, projection } = UniversalGlobeEngine.state;
+        
+        // Determine the target rotation based on the mode
+        let targetRot = null;
 
-            if(targetRot && projection) {
-                // ANIMATE BOTH ROTATION AND SCALE
-                d3.transition()
-                    .duration(1000)
-                    .ease(d3.easeCubicOut)
-                    .tween("render", () => {
-                        const r = d3.interpolate(projection.rotate(), targetRot);
-                        const s = d3.interpolate(projection.scale(), targetScale);
-                        
-                        return (t) => {
-                            projection.rotate(r(t));
-                            projection.scale(s(t));
-                            UniversalGlobeEngine.draw();
-                        };
-                    });
-            }
+        if (data.mode === 'lesson') {
+            targetRot = data.cases[activeTab].initialRotation;
+        } else if (data.mode === 'game') {
+            // QUIZ MODE: Get rotation from the specific question
+            targetRot = data.questions[activeTab].initialRotation;
+        }
+
+        // Execute Animation
+        if(targetRot && projection) {
+            d3.transition()
+                .duration(1200) // Slightly slower for dramatic effect
+                .ease(d3.easeCubicOut)
+                .tween("rotate", () => {
+                    const r = d3.interpolate(projection.rotate(), targetRot);
+                    return (t) => {
+                        projection.rotate(r(t));
+                        UniversalGlobeEngine.state.rotation = projection.rotate(); // Sync state
+                        UniversalGlobeEngine.draw();
+                    };
+                });
+        } else {
+            UniversalGlobeEngine.draw();
         }
     },
     
-    // --- 7. DRAWING LOGIC ---
-   // --- MERGED DRAW FUNCTION (v7.2) ---
-   // --- 7. DRAWING LOGIC (Updated v7.2) ---
+    // --- 7. DRAWING LOGIC (Updated v7.3) ---
     draw: () => {
         const { ctx, width, height, path, projection, worldData, data, activeTab, placedPieces, isDraggingGlobe } = UniversalGlobeEngine.state;
         if (!ctx || !path) return;
@@ -424,16 +422,11 @@ export const UniversalGlobeEngine = {
             });
 
             // D. Climate Zones (Shading)
-            // Draws bands of color for climatic regions
             if (currentItem && currentItem.zones) {
                 currentItem.zones.forEach(zone => {
-                    // Create a polygon ring for the latitude band
                     const coords = [];
-                    // Top Edge
                     for(let i=180; i>=-180; i-=5) coords.push([i, zone.toLat]);
-                    // Bottom Edge
                     for(let i=-180; i<=180; i+=5) coords.push([i, zone.fromLat]);
-                    // Close loop
                     coords.push(coords[0]);
 
                     const poly = {type: "Polygon", coordinates: [coords]};
@@ -457,65 +450,71 @@ export const UniversalGlobeEngine = {
             ctx.strokeStyle = "#94a3b8"; ctx.lineWidth = 1.0; ctx.stroke();
         }
 
-        // 4. LINES (Latitudes / Longitudes)
-        // Check both Lesson and Game modes for custom lines
-        const item = data.mode === 'lesson' ? data.cases[activeTab] : 
-                     data.mode === 'game' ? data.questions[activeTab] : null;
+        // 4. LINES & MARKERS SELECTION LOGIC
+        // Determine the active item based on mode
+        let item = null;
+        if (data.mode === 'lesson') item = data.cases[activeTab];
+        else if (data.mode === 'game') item = data.questions[activeTab];
+        else if (data.mode === 'puzzle') item = data; // In Puzzle mode, lines/markers are top-level
 
-        if (item && item.lines) {
-            item.lines.forEach(line => {
-                let coords = [];
-                if (line.type === 'lat') {
-                    // Draw horizontal circle
-                    for(let i=-180; i<=180; i+=5) coords.push([i, line.value]);
-                } else if (line.type === 'lon') {
-                    // Draw vertical circle
-                    for(let i=90; i>=-90; i-=5) coords.push([line.value, i]);
-                }
-                
-                ctx.beginPath(); path({type: "LineString", coordinates: coords});
-                ctx.strokeStyle = line.color || "#ef4444";
-                ctx.lineWidth = 2;
-                ctx.setLineDash(line.dashed ? [4, 4] : []);
-                ctx.stroke(); ctx.setLineDash([]);
-
-                // Labels (Only when not rotating for readability)
-                if (line.label && !isDraggingGlobe) {
-                    const center = projection.invert([width/2, height/2]);
-                    // Find a point on the line closest to the viewer center
-                    const labelPoint = line.type === 'lat' ? [center[0], line.value] : [line.value, center[1]];
+        if (item) {
+            // A. Draw Custom Lines (Latitudes / Longitudes)
+            if (item.lines) {
+                item.lines.forEach(line => {
+                    let coords = [];
+                    if (line.type === 'lat') {
+                        // Horizontal Circle
+                        for(let i=-180; i<=180; i+=5) coords.push([i, line.value]);
+                    } else if (line.type === 'lon') {
+                        // Vertical Semi-Circle (Pole to Pole)
+                        for(let i=90; i>=-90; i-=5) coords.push([line.value, i]);
+                    }
                     
-                    if (d3.geoDistance(center, labelPoint) < 1.5) {
-                        const pos = projection(labelPoint);
-                        if(pos) {
-                            ctx.fillStyle = line.color || "#ef4444";
-                            ctx.font = "800 11px sans-serif"; ctx.textAlign = "center";
-                            ctx.shadowColor = "white"; ctx.shadowBlur = 4;
-                            ctx.fillText(line.label, pos[0], pos[1] - 4);
-                            ctx.shadowBlur = 0;
+                    ctx.beginPath(); path({type: "LineString", coordinates: coords});
+                    ctx.strokeStyle = line.color || "#ef4444";
+                    ctx.lineWidth = line.width || 2;
+                    ctx.setLineDash(line.dashed ? [4, 4] : []);
+                    ctx.stroke(); ctx.setLineDash([]);
+
+                    // Labels (Hide during drag)
+                    if (line.label && !isDraggingGlobe) {
+                        const center = projection.invert([width/2, height/2]);
+                        const labelPoint = line.type === 'lat' ? [center[0], line.value] : [line.value, center[1]];
+                        
+                        // Only draw label if near center of view
+                        if (d3.geoDistance(center, labelPoint) < 1.5) {
+                            const pos = projection(labelPoint);
+                            if(pos) {
+                                ctx.fillStyle = line.color || "#ef4444";
+                                ctx.font = "800 11px sans-serif"; ctx.textAlign = "center";
+                                ctx.shadowColor = "white"; ctx.shadowBlur = 4;
+                                ctx.fillText(line.label, pos[0], pos[1] - 4);
+                                ctx.shadowBlur = 0;
+                            }
                         }
                     }
-                }
-            });
-        } else if (!item || !item.hideDefaultLines) {
-            // Default Overlays (Prime Meridian + Equator) ONLY if not hidden by JSON
-            ctx.beginPath(); path({type: "LineString", coordinates: [[0, 90], [0, -90]]});
-            ctx.strokeStyle = "rgba(239, 68, 68, 0.4)"; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.stroke();
-            
-            ctx.beginPath(); path({type: "LineString", coordinates: [[-180, 0], [180, 0]]});
-            ctx.strokeStyle = "rgba(34, 197, 94, 0.4)"; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
-        }
+                });
+            } else if (!item.hideDefaultLines) {
+                // B. Default Lines (Equator/Prime) if no custom lines and not hidden
+                ctx.beginPath(); path({type: "LineString", coordinates: [[0, 90], [0, -90]]});
+                ctx.strokeStyle = "rgba(239, 68, 68, 0.4)"; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.stroke();
+                
+                ctx.beginPath(); path({type: "LineString", coordinates: [[-180, 0], [180, 0]]});
+                ctx.strokeStyle = "rgba(34, 197, 94, 0.4)"; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
+            }
 
-        // 5. MARKERS & CONNECTIONS
-        if (item) {
+            // C. Connections (Arcs)
             if (item.connection) {
                 ctx.beginPath();
                 path({type: "LineString", coordinates: [item.connection.from, item.connection.to]});
                 ctx.strokeStyle = "#6366f1"; ctx.lineWidth = 2.5; ctx.setLineDash([4, 4]); ctx.stroke(); ctx.setLineDash([]);
             }
+
+            // D. Markers (Pins)
             if (item.markers) {
                 const center = projection.invert([width/2, height/2]);
                 item.markers.forEach(m => {
+                    // Check visibility (Front of globe)
                     if (d3.geoDistance(center, [m.lon, m.lat]) < 1.57) {
                         const [x, y] = projection([m.lon, m.lat]);
                         
@@ -525,7 +524,7 @@ export const UniversalGlobeEngine = {
                             ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.fill();
                         }
                         
-                        // Pin
+                        // Pin Head
                         ctx.beginPath(); ctx.arc(x, y, 4, 0, 2*Math.PI);
                         ctx.fillStyle = m.color || "#ef4444"; ctx.fill();
                         ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
@@ -542,7 +541,7 @@ export const UniversalGlobeEngine = {
             }
         }
         
-        // 6. ATMOSPHERE
+        // 5. ATMOSPHERE (Outer Glow)
         ctx.beginPath(); path({type: "Sphere"});
         ctx.strokeStyle = "rgba(56, 189, 248, 0.3)"; ctx.lineWidth = 2; ctx.stroke();
     },
