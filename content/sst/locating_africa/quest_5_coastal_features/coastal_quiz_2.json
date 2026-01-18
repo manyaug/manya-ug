@@ -2,63 +2,66 @@
   "engineType": "GLOBE_TIME_ENGINE",
   "subject": "SOCIAL_STUDIES",
   "topic": "Coastal Features",
-  "variantTitle": "Quiz: Islands & Oceans",
+  "variantTitle": "Quiz 2: Island Nations",
   "mode": "game",
   
   "questions": [
     {
       "title": "Question 1",
-      "question": "Which ocean is located to the WEST of Africa?",
-      "initialRotation": [20, -10, 0],
-      "zoomFactor": 1.0,
-      "markers": [
-          { "label": "???", "lat": 0, "lon": -20, "color": "#3b82f6" }
-      ],
-      "correctAnswer": "Atlantic Ocean",
-      "options": ["Indian Ocean", "Atlantic Ocean", "Pacific Ocean"]
-    },
-    {
-      "title": "Question 2",
-      "question": "Identify the largest island country in Africa shown on the map.",
-      "initialRotation": [-45, 20, 0],
-      "zoomFactor": 1.5,
+      "question": "What is the largest island country in Africa?",
+      "initialRotation": [-47, 20, 0],
+      "zoomFactor": 1.8,
       "highlight": ["450"],
       "highlightColor": "#22c55e",
       "correctAnswer": "Madagascar",
-      "options": ["Comoros", "Madagascar", "Seychelles"]
+      "options": ["Seychelles", "Madagascar", "Mauritius"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Which ocean surrounds the island of Madagascar?",
+      "initialRotation": [-55, 15, 0],
+      "zoomFactor": 1.2,
+      "markers": [
+          { "label": "???", "lat": -15, "lon": 70, "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Indian Ocean",
+      "options": ["Atlantic Ocean", "Indian Ocean", "Red Sea"]
     },
     {
       "title": "Question 3",
-      "question": "Which group of islands is located in the Atlantic Ocean?",
-      "initialRotation": [25, -15, 0],
-      "zoomFactor": 1.5,
+      "question": "Identify the smallest country in Africa, located East of Tanzania.",
+      "initialRotation": [-55, 5, 0],
+      "zoomFactor": 3.5,
       "markers": [
-          { "label": "???", "lat": 16, "lon": -24, "color": "#facc15" }
+          { "label": "???", "lat": -4.6, "lon": 55.5, "color": "#facc15" }
       ],
-      "correctAnswer": "Cape Verde",
-      "options": ["Seychelles", "Mauritius", "Cape Verde"]
+      "correctAnswer": "Seychelles",
+      "options": ["Comoros", "Seychelles", "Zanzibar"]
     },
     {
       "title": "Question 4",
-      "question": "Zanzibar and Pemba are islands found in which ocean?",
-      "initialRotation": [-40, -5, 0],
-      "zoomFactor": 2.0,
+      "question": "Which island nation is located in the Atlantic Ocean, west of Senegal?",
+      "initialRotation": [24, -16, 0],
+      "zoomFactor": 3.0,
       "markers": [
-          { "label": "Zanzibar", "lat": -6, "lon": 39.5, "color": "#a855f7" }
+          { "label": "???", "lat": 16, "lon": -24, "color": "#ef4444" }
       ],
-      "correctAnswer": "Indian Ocean",
-      "options": ["Atlantic Ocean", "Red Sea", "Indian Ocean"]
+      "correctAnswer": "Cape Verde",
+      "options": ["Sao Tome", "Cape Verde", "Canary Islands"]
     },
     {
       "title": "Question 5",
-      "question": "Which is the smallest country in Africa?",
-      "initialRotation": [-55, 5, 0],
-      "zoomFactor": 2.5,
-      "markers": [
-          { "label": "???", "lat": -4.6, "lon": 55.4, "color": "#ef4444" }
+      "question": "Which island country lies on the Equator in the Gulf of Guinea?",
+      "initialRotation": [-6, 0, 0],
+      "zoomFactor": 4.0,
+      "lines": [
+          { "type": "lat", "value": 0, "color": "#22c55e", "dashed": true }
       ],
-      "correctAnswer": "Seychelles",
-      "options": ["Sao Tome", "Seychelles", "Comoros"]
+      "markers": [
+          { "label": "???", "lat": 0.2, "lon": 6.6, "color": "#a855f7" }
+      ],
+      "correctAnswer": "Sao Tome and Principe",
+      "options": ["Comoros", "Sao Tome and Principe", "Madagascar"]
     }
   ]
 }

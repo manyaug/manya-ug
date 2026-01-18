@@ -74,104 +74,148 @@ export const UniversalGlobeEngine = {
 
     // --- 2. CSS STYLES ---
     injectStyles: () => {
-        if (document.getElementById('uni-globe-v7-styles')) return;
+        if (document.getElementById('uni-globe-v8-styles')) return;
         const style = document.createElement('style');
-        style.id = 'uni-globe-v7-styles';
+        style.id = 'uni-globe-v8-styles';
         style.innerHTML = `
             :root {
                 --primary: #6366f1;
-                --primary-light: #e0e7ff;
+                --primary-bg: #e0e7ff;
                 --surface: #ffffff;
                 --bg: #f8fafc;
-                --text: #1e293b;
+                --text: #0f172a;
                 --text-muted: #64748b;
-                --success: #22c55e;
-                --error: #ef4444;
             }
 
             .globe-root { 
                 position: absolute; inset: 0; 
                 display: flex; flex-direction: column; 
-                background: var(--bg); 
-                padding: 16px; gap: 16px;
+                background: var(--bg); font-family: 'Inter', sans-serif;
                 overflow: hidden;
             }
 
-            /* --- GLOBE CARD --- */
+            /* --- TOP: GLOBE AREA --- */
             .globe-card { 
-                flex: 0 0 45vh; 
+                flex: 0 0 45vh; /* Globe takes 45% height */
                 position: relative; 
-                background: radial-gradient(circle at 50% 50%, #f0f9ff 0%, #e0f2fe 100%);
-                border-radius: 24px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                border: 1px solid #fff;
-                overflow: hidden;
-                display: flex; align-items: center; justify-content: center;
+                background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #cbd5e1 100%);
+                z-index: 1; /* Behind content */
             }
-            
-            .globe-canvas { 
-                display: block; width: 100%; height: 100%; 
-                cursor: grab; touch-action: none; 
-            }
+            .globe-canvas { display: block; width: 100%; height: 100%; cursor: grab; }
             .globe-canvas:active { cursor: grabbing; }
-            .globe-canvas.locked { cursor: default; }
 
-            .map-hud {
-                position: absolute; top: 12px; left: 12px; right: 12px;
-                display: flex; justify-content: space-between; pointer-events: none;
-            }
-            .hud-pill {
-                background: rgba(255,255,255,0.9); padding: 6px 12px;
-                border-radius: 20px; font-size: 11px; font-weight: 800;
-                color: var(--text); backdrop-filter: blur(4px);
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            /* HUD */
+            .map-hud { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; pointer-events: none; }
+            .hud-pill { 
+                background: rgba(255,255,255,0.8); backdrop-filter: blur(8px);
+                padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; 
+                color: var(--text); border: 1px solid rgba(255,255,255,0.4);
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             }
 
-            /* --- CONTENT CARD --- */
+            /* --- BOTTOM: CONTENT SHEET --- */
             .content-card { 
-                flex: 1; background: var(--surface); border-radius: 24px;
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column;
-                overflow: hidden; border: 1px solid #fff;
+                flex: 1; /* Takes remaining space */
+                background: var(--surface);
+                border-top-left-radius: 24px; border-top-right-radius: 24px;
+                box-shadow: 0 -10px 40px -10px rgba(0,0,0,0.1);
+                display: flex; flex-direction: column;
+                position: relative; z-index: 10;
+                margin-top: -20px; /* Overlap globe slightly */
+                overflow: hidden;
+            }
+            
+            /* Drag Handle (Visual only) */
+            .sheet-handle {
+                width: 40px; height: 4px; background: #e2e8f0; 
+                border-radius: 2px; margin: 12px auto 4px auto; flex-shrink: 0;
             }
 
-            /* TABS */
-            .tabs-wrapper { padding: 16px; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #f1f5f9; }
-            .case-btn { padding: 8px 16px; border-radius: 20px; background: #f8fafc; border: 1px solid #e2e8f0; margin-right: 8px; font-weight: 600; color: #64748b; font-size:13px; cursor: pointer; }
-            .case-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
-
-            /* LESSON CONTENT */
-            .lesson-body { padding: 20px; overflow-y: auto; }
-            .lesson-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-            .lesson-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+            /* --- MODERN TABS --- */
+            .tabs-wrapper { 
+                padding: 8px 16px; border-bottom: 1px solid #f1f5f9;
+                overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+                -webkit-overflow-scrolling: touch; flex-shrink: 0;
+            }
+            .tabs-wrapper::-webkit-scrollbar { display: none; }
             
-            .step-card { display: flex; gap: 12px; margin-bottom: 24px; position: relative; }
-            .step-card:not(:last-child)::after { content: ''; position: absolute; left: 14px; top: 32px; bottom: -24px; width: 2px; background: #e2e8f0; }
-            .step-badge { width: 30px; height: 30px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; z-index: 2; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-            .step-text { font-size: 15px; color: var(--text); line-height: 1.6; margin-top: 2px; }
-            .step-text b { color: var(--primary); }
+            .tab-btn {
+                display: inline-block; padding: 10px 16px; margin-right: 8px;
+                border-radius: 12px; font-size: 13px; font-weight: 600;
+                color: var(--text-muted); background: transparent; border: none;
+                cursor: pointer; transition: all 0.2s ease;
+            }
+            .tab-btn.active {
+                background: var(--primary-bg); color: var(--primary);
+            }
 
-            /* PUZZLE GRID */
-            .puzzle-header { padding: 20px 20px 10px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-            .puzzle-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-            .puzzle-subtitle { font-size: 13px; color: var(--text-muted); }
+            /* --- LESSON BODY --- */
+            .lesson-body { 
+                flex: 1; overflow-y: auto; padding: 20px; 
+                padding-bottom: 40px; /* Space for scrolling */
+            }
+
+            .lesson-header { margin-bottom: 20px; }
+            .lesson-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 6px; }
+            .lesson-desc { font-size: 15px; color: var(--text-muted); line-height: 1.5; }
+
+            /* --- FOCUS CHIPS (Zoom Buttons) --- */
+            .focus-chips-container {
+                display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px;
+                scrollbar-width: none; margin-bottom: 10px;
+            }
+            .focus-chip {
+                flex: 0 0 auto;
+                padding: 8px 12px; background: #fff; 
+                border: 1px solid #e2e8f0; border-radius: 50px;
+                font-size: 12px; font-weight: 700; color: var(--text);
+                display: flex; align-items: center; gap: 6px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+                cursor: pointer; transition: transform 0.1s;
+            }
+            .focus-chip:active { transform: scale(0.96); background: #f8fafc; }
+            .focus-icon { color: var(--primary); font-size: 14px; }
+
+            /* --- TIMELINE STEPS --- */
+            .timeline-container { padding-left: 10px; }
+            .step-item { display: flex; gap: 16px; position: relative; padding-bottom: 24px; }
             
-            .puzzle-grid { flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-content: start; }
-            .puzzle-piece { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 12px 4px; text-align: center; cursor: grab; user-select: none; transition: transform 0.1s; touch-action: none; }
-            .puzzle-piece:active { transform: scale(0.95); border-color: var(--primary); }
-            .puzzle-piece.placed { opacity: 0.4; filter: grayscale(1); background: #f0fdf4; border-color: #bbf7d0; pointer-events: none; }
-            .piece-icon { font-size: 28px; display: block; margin-bottom: 6px; }
-            .piece-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+            /* Vertical Line */
+            .step-item:not(:last-child)::after {
+                content: ''; position: absolute; left: 14px; top: 32px; bottom: 0;
+                width: 2px; background: #e2e8f0;
+            }
+            
+            .step-marker {
+                width: 30px; height: 30px; border-radius: 50%;
+                background: var(--primary); color: white;
+                font-size: 13px; font-weight: 700;
+                display: flex; align-items: center; justify-content: center;
+                flex-shrink: 0; z-index: 2; border: 3px solid #fff;
+                box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+            }
+            
+            .step-content {
+                background: #f8fafc; padding: 12px 16px; border-radius: 12px;
+                font-size: 15px; color: var(--text); line-height: 1.6; width: 100%;
+                border: 1px solid #f1f5f9;
+            }
+            .step-content b { color: var(--primary); font-weight: 700; }
 
-            /* UTILS */
-            .drag-ghost { position: fixed; pointer-events: none; z-index: 9999; background: white; border: 2px solid var(--primary); border-radius: 12px; padding: 10px; width: 80px; text-align: center; opacity: 0.95; box-shadow: 0 10px 25px rgba(0,0,0,0.25); transform: translate(-50%, -50%); }
-            .globe-loader { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top:0; left:0; z-index: 20; background: #f0f9ff; }
-            .spinner { width: 30px; height: 30px; border: 3px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+            /* LOADER & TOAST */
+            .globe-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background:#f8fafc; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;}
+            .spinner { width: 32px; height: 32px; border: 3px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom:10px;}
             @keyframes spin { to { transform: rotate(360deg); } }
             
-            .feedback-toast { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); background: white; padding: 12px 20px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 800; font-size: 14px; text-align: center; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display:flex; align-items:center; gap:8px;}
-            .feedback-toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            .feedback-toast.success { color: var(--success); border: 2px solid #bbf7d0; }
-            .feedback-toast.error { color: var(--error); border: 2px solid #fecaca; }
+            .feedback-toast {
+                position: absolute; bottom: 20px; left: 50%; transform: translate(-50%, 20px);
+                background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px;
+                font-weight: 600; opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3); pointer-events: none; z-index: 100;
+            }
+            .feedback-toast.show { opacity: 1; transform: translate(-50%, 0); }
+            .feedback-toast.success { background: #22c55e; }
+            .feedback-toast.error { background: #ef4444; }
         `;
         document.head.appendChild(style);
     },
@@ -568,6 +612,51 @@ initCanvas: () => {
                     }
                 });
             }
+            // --- INSERT THIS BLOCK INSIDE THE draw() FUNCTION ---
+        
+        // 5. FEATURE OVERLAYS (Arrows for Straits, Curves for Gulfs)
+        if (item && item.overlays) {
+            item.overlays.forEach(ov => {
+                
+                // TYPE: ARROW (Good for Straits)
+                if (ov.type === 'arrow') {
+                    const [p1, p2] = ov.coordinates; // [Start Lon,Lat], [End Lon,Lat]
+                    const geoPath = {type: "LineString", coordinates: [p1, p2]};
+                    
+                    // Draw Line
+                    ctx.beginPath(); path(geoPath);
+                    ctx.strokeStyle = ov.color || "#ef4444"; 
+                    ctx.lineWidth = 3; 
+                    ctx.setLineDash([2, 4]); // Dotted look
+                    ctx.stroke(); 
+                    ctx.setLineDash([]);
+                    
+                    // Draw Arrowhead (Simple Dot at end)
+                    const endPos = projection(p2);
+                    if(endPos) {
+                        ctx.beginPath(); ctx.arc(endPos[0], endPos[1], 4, 0, 2*Math.PI); 
+                        ctx.fillStyle = ov.color || "#ef4444"; ctx.fill();
+                    }
+                } 
+                
+                // TYPE: CURVE/CIRCLE (Good for Gulfs)
+                else if (ov.type === 'curve') {
+                    // Uses d3.geoCircle to draw a perfect circle on the sphere surface
+                    // Radius is in degrees (e.g., 5 degrees covers a gulf)
+                    if (window.d3 && d3.geoCircle) {
+                        const circleGenerator = d3.geoCircle().center(ov.center).radius(ov.radius || 5);
+                        const circleJson = circleGenerator();
+                        
+                        ctx.beginPath(); path(circleJson);
+                        ctx.fillStyle = ov.color ? ov.color + "33" : "rgba(14, 165, 233, 0.2)"; // 20% opacity
+                        ctx.fill();
+                        ctx.strokeStyle = ov.color || "#0ea5e9"; 
+                        ctx.lineWidth = 2; 
+                        ctx.stroke();
+                    }
+                }
+            });
+        }
         }
         
         // 5. ATMOSPHERE (Outer Glow)
@@ -580,81 +669,112 @@ initCanvas: () => {
         const mount = document.getElementById('ui-mount');
         mount.innerHTML = '';
 
-        // --- PUZZLE MODE ---
-        if (data.mode === 'puzzle') {
-            mount.innerHTML = `
-                <div class="puzzle-header" style="padding:20px 20px 10px; text-align:center; border-bottom:1px solid #f1f5f9;">
-                    <div style="font-size:18px; font-weight:800; margin-bottom:4px;">Build the World</div>
-                    <div style="font-size:13px; color:#64748b;">Drag items to the globe</div>
+        // -- HANDLE DANGER/LOADING --
+        if(!data) return;
+
+        // 1. SHEET HANDLE (Visual cue)
+        const handle = document.createElement('div');
+        handle.className = 'sheet-handle';
+        mount.appendChild(handle);
+
+        // 2. TABS (Scrollable)
+        if (data.mode === 'lesson') {
+            const tabsDiv = document.createElement('div');
+            tabsDiv.className = 'tabs-wrapper';
+            
+            data.cases.forEach((c, i) => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${i === activeTab ? 'active' : ''}`;
+                btn.innerText = c.tabTitle;
+                btn.onclick = () => UniversalGlobeEngine.switchTab(i);
+                tabsDiv.appendChild(btn);
+            });
+            mount.appendChild(tabsDiv);
+        }
+
+        // 3. MAIN CONTENT BODY
+        const body = document.createElement('div');
+        body.className = 'lesson-body';
+
+        // Decide Content based on Mode
+        if (data.mode === 'lesson') {
+            const cur = data.cases[activeTab];
+            
+            // Header
+            let html = `
+                <div class="lesson-header">
+                    <div class="lesson-title">${cur.title}</div>
+                    <div class="lesson-desc">${cur.description}</div>
+                </div>
+            `;
+
+            // Focus Chips (If available)
+            if (cur.focusPoints) {
+                html += `<div class="focus-chips-container">`;
+                cur.focusPoints.forEach(fp => {
+                    html += `
+                        <button class="focus-chip" onclick="GlobeTimeEngine.focusOn([${fp.rotation}], ${fp.zoom})">
+                            <span class="focus-icon">⌖</span> ${fp.label}
+                        </button>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            // Timeline Steps
+            html += `<div class="timeline-container">`;
+            cur.steps.forEach((s, i) => {
+                html += `
+                    <div class="step-item">
+                        <div class="step-marker">${i+1}</div>
+                        <div class="step-content">${s}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            body.innerHTML = html;
+
+        } else if (data.mode === 'puzzle') {
+            // Puzzle UI (Grid of pieces)
+            body.innerHTML = `
+                <div class="lesson-header" style="text-align:center">
+                    <div class="lesson-title">Map Builder</div>
+                    <div class="lesson-desc">Drag the items below to their correct location on the globe.</div>
                 </div>
                 <div class="puzzle-grid" id="puzzle-grid"></div>
             `;
-            UniversalGlobeEngine.renderPuzzlePieces(document.getElementById('puzzle-grid'));
-            
-            const pill = document.getElementById('status-pill');
-            if(pill) pill.innerText = `0 / ${data.pieces.length}`;
+            // Defer render to ensure element exists
+            setTimeout(() => UniversalGlobeEngine.renderPuzzlePieces(document.getElementById('puzzle-grid')), 0);
 
-        // --- LESSON MODE ---
-        } else if (data.mode === 'lesson') {
-            const tabs = document.createElement('div');
-            tabs.className = 'tabs-wrapper';
-            data.cases.forEach((c, i) => {
-                const btn = document.createElement('button');
-                btn.className = `case-btn ${i === activeTab ? 'active' : ''}`;
-                btn.innerText = c.tabTitle;
-                btn.onclick = () => UniversalGlobeEngine.switchTab(i);
-                tabs.appendChild(btn);
-            });
-            mount.appendChild(tabs);
-            
-            const body = document.createElement('div');
-            body.className = 'lesson-body';
-            const cur = data.cases[activeTab];
-            body.innerHTML = `
-                <div class="lesson-title">${cur.title}</div>
-                <div class="lesson-desc">${cur.description}</div>
-                ${cur.steps.map((s, i) => `<div class="step-card"><div class="step-badge">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}
-            `;
-            mount.appendChild(body);
-
-        // --- GAME (QUIZ) MODE ---
         } else if (data.mode === 'game') {
+            // Quiz UI
             const q = data.questions[activeTab];
-            
-            const body = document.createElement('div');
-            body.className = 'lesson-body';
-            
             let html = `
-                <div class="lesson-title">${q.title}</div>
-                <div class="lesson-desc" style="font-size:16px; color:#1e293b; font-weight:500;">${q.question}</div>
-                <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+                <div class="lesson-header">
+                    <div class="lesson-title">${q.title}</div>
+                    <div class="lesson-desc" style="color:#1e293b; font-weight:500;">${q.question}</div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:12px;">
             `;
 
-            // Render Options
-            if (q.options) {
+            if(q.options) {
                 q.options.forEach(opt => {
-                    // Escape single quotes for the onclick handler
                     const safeOpt = opt.replace(/'/g, "\\'");
                     html += `
-                    <button class="step-card" 
-                        style="width:100%; text-align:left; cursor:pointer; padding:16px; border:2px solid #e2e8f0; background:white; border-radius:12px; transition:all 0.2s;" 
-                        onclick="GlobeTimeEngine.handleQuizAnswer(this, '${safeOpt}')"
-                    >
-                        <div class="step-badge" style="background:#f1f5f9; color:#64748b;">?</div>
-                        <div class="step-text" style="pointer-events:none; font-weight:600;">${opt}</div>
+                    <button class="focus-chip" 
+                        style="width:100%; justify-content:space-between; padding:16px; border-radius:12px;"
+                        onclick="GlobeTimeEngine.handleQuizAnswer(this, '${safeOpt}')">
+                        <span style="font-size:15px;">${opt}</span>
+                        <span class="focus-icon">?</span>
                     </button>`;
                 });
             }
-            
-            html += `</div>
-            <div style="margin-top:15px; text-align:center; font-size:12px; color:#94a3b8;">Question ${activeTab + 1} of ${data.questions.length}</div>`;
-            
+            html += `</div>`;
             body.innerHTML = html;
-            mount.appendChild(body);
-            
-            const pill = document.getElementById('status-pill');
-            if(pill) pill.innerText = "Quiz";
         }
+
+        mount.appendChild(body);
     },
     renderPuzzlePieces: (grid) => {
         const { data, placedPieces } = UniversalGlobeEngine.state;
@@ -679,6 +799,27 @@ initCanvas: () => {
         UniversalGlobeEngine.state.activeTab = i;
         UniversalGlobeEngine.renderUI();
         UniversalGlobeEngine.updateToCurrentData();
+    },
+    // --- NEW: FOCUS ON SPECIFIC FEATURE ---
+    focusOn: (rotation, zoom) => {
+        const { projection, baseScale } = UniversalGlobeEngine.state;
+        if(!projection) return;
+
+        const targetScale = baseScale * zoom;
+
+        d3.transition()
+            .duration(1200)
+            .ease(d3.easeCubicOut)
+            .tween("move", () => {
+                const r = d3.interpolate(projection.rotate(), rotation);
+                const s = d3.interpolate(projection.scale(), targetScale);
+                return (t) => {
+                    projection.rotate(r(t));
+                    projection.scale(s(t));
+                    UniversalGlobeEngine.state.rotation = projection.rotate();
+                    UniversalGlobeEngine.draw();
+                };
+            });
     },
     handleQuizAnswer: (btn, answer) => {
         const { data, activeTab } = UniversalGlobeEngine.state;

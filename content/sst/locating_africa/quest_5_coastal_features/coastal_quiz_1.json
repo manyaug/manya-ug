@@ -2,62 +2,59 @@
   "engineType": "GLOBE_TIME_ENGINE",
   "subject": "SOCIAL_STUDIES",
   "topic": "Coastal Features",
-  "variantTitle": "Quiz: Coastline Challenge",
+  "variantTitle": "Quiz 1: Gulfs of Africa",
   "mode": "game",
   
   "questions": [
     {
       "title": "Question 1",
-      "question": "Which feature is highlighted in Green? It is a piece of land with three sides surrounded by water.",
-      "initialRotation": [-45, -10, 0],
-      "zoomFactor": 1.5,
-      "highlight": ["706", "231"],
-      "highlightColor": "#86efac",
-      "correctAnswer": "Peninsula",
-      "options": ["Island", "Peninsula", "Gulf"]
+      "question": "Which large Gulf is located on the West Coast of Africa, where the Equator meets the Prime Meridian?",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 2.0,
+      "highlight": ["566", "288", "120", "266"],
+      "highlightColor": "#bae6fd",
+      "overlays": [
+        { "type": "curve", "center": [3, 2], "radius": 12, "color": "#0ea5e9" }
+      ],
+      "correctAnswer": "Gulf of Guinea",
+      "options": ["Gulf of Aden", "Gulf of Guinea", "Gulf of Sirte"]
     },
     {
       "title": "Question 2",
-      "question": "What is the name of the Cape located at the furthest Southern tip of Africa?",
-      "initialRotation": [-20, 34, 0],
-      "zoomFactor": 2.0,
+      "question": "Identify the Gulf located between the Horn of Africa (Somalia) and the Arabian Peninsula.",
+      "initialRotation": [-48, -12, 0],
+      "zoomFactor": 2.5,
       "markers": [
-          { "label": "???", "lat": -34.8, "lon": 20, "color": "#ef4444" }
+          { "label": "???", "lat": 12.5, "lon": 48, "color": "#3b82f6" }
       ],
-      "correctAnswer": "Cape Agulhas",
-      "options": ["Cape of Good Hope", "Cape Agulhas", "Cape Verde"]
+      "correctAnswer": "Gulf of Aden",
+      "options": ["Gulf of Gabes", "Gulf of Aden", "Gulf of Aqaba"]
     },
     {
       "title": "Question 3",
-      "question": "Identify the narrow water passage shown that separates Africa from Europe.",
-      "initialRotation": [0, -36, 0],
+      "question": "Which Gulf is found on the northern coast of Libya in the Mediterranean Sea?",
+      "initialRotation": [-18, -31, 0],
       "zoomFactor": 3.0,
-      "lines": [
-          { "type": "lon", "value": -5.5, "color": "#3b82f6", "dashed": true }
+      "highlight": ["434"],
+      "highlightColor": "#fcd34d",
+      "overlays": [
+        { "type": "curve", "center": [18, 31.5], "radius": 4, "color": "#0ea5e9" }
       ],
-      "correctAnswer": "Strait of Gibraltar",
-      "options": ["Suez Canal", "Strait of Gibraltar", "Gulf of Aden"]
+      "correctAnswer": "Gulf of Sirte",
+      "options": ["Gulf of Sirte", "Gulf of Gabes", "Gulf of Suez"]
     },
     {
       "title": "Question 4",
-      "question": "Which of these is an Island Country found in the Atlantic Ocean?",
-      "initialRotation": [10, -5, 0],
-      "zoomFactor": 1.5,
+      "question": "The Gulf of Gabes is located in which North African country?",
+      "initialRotation": [-10, -34, 0],
+      "zoomFactor": 4.0,
+      "highlight": ["788"],
+      "highlightColor": "#86efac",
       "markers": [
-          { "label": "???", "lat": 0, "lon": 6.6, "color": "#facc15" }
+          { "label": "???", "lat": 34, "lon": 10, "color": "#ef4444" }
       ],
-      "correctAnswer": "Sao Tome and Principe",
-      "options": ["Seychelles", "Madagascar", "Sao Tome and Principe"]
-    },
-    {
-      "title": "Question 5",
-      "question": "What is the large body of water partly enclosed by the curve of West Africa?",
-      "initialRotation": [0, -5, 0],
-      "zoomFactor": 1.2,
-      "highlight": ["566", "120", "288"],
-      "highlightColor": "#e0f2fe",
-      "correctAnswer": "Gulf of Guinea",
-      "options": ["Gulf of Aden", "Gulf of Guinea", "Mediterranean Sea"]
+      "correctAnswer": "Tunisia",
+      "options": ["Libya", "Egypt", "Tunisia"]
     }
   ]
 }
