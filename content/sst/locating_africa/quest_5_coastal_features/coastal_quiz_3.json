@@ -1,0 +1,62 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quiz: Shapes of the Coast",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "What is the name of the large Peninsula located in North-Eastern Africa?",
+      "initialRotation": [-45, -10, 0],
+      "zoomFactor": 1.6,
+      "highlight": ["706", "231", "232", "262"],
+      "highlightColor": "#fb923c",
+      "correctAnswer": "Horn of Africa",
+      "options": ["Cape of Good Hope", "Horn of Africa", "Sinai Peninsula"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Which Cape is the most Northern point of Africa?",
+      "initialRotation": [-10, -35, 0],
+      "zoomFactor": 2.5,
+      "markers": [
+          { "label": "???", "lat": 37.3, "lon": 9.8, "color": "#ef4444" }
+      ],
+      "correctAnswer": "Cape Ras Ben",
+      "options": ["Cape Blanc", "Cape Ras Ben", "Cape Guardafui"]
+    },
+    {
+      "title": "Question 3",
+      "question": "Identify the Gulf located between Somalia and Yemen.",
+      "initialRotation": [-45, -12, 0],
+      "zoomFactor": 2.0,
+      "markers": [
+          { "label": "???", "lat": 12, "lon": 48, "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Gulf of Aden",
+      "options": ["Gulf of Guinea", "Gulf of Sirte", "Gulf of Aden"]
+    },
+    {
+      "title": "Question 4",
+      "question": "Which Strait separates Africa from the Arabian Peninsula?",
+      "initialRotation": [-43, -12, 0],
+      "zoomFactor": 4.0,
+      "connection": { "from": [43, 12.5], "to": [43.5, 13] },
+      "correctAnswer": "Bab-el-Mandeb",
+      "options": ["Gibraltar", "Bab-el-Mandeb", "Mozambique Channel"]
+    },
+    {
+      "title": "Question 5",
+      "question": "What do we call a piece of land jutting out into the sea (like the one shown)?",
+      "initialRotation": [17, -14, 0],
+      "zoomFactor": 3.0,
+      "markers": [
+          { "label": "???", "lat": 14.7, "lon": -17.5, "color": "#10b981" }
+      ],
+      "correctAnswer": "Cape",
+      "options": ["Gulf", "Strait", "Cape"]
+    }
+  ]
+}

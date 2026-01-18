@@ -253,12 +253,12 @@ export const UniversalGlobeEngine = {
     },
 
     // --- 5. CANVAS & D3 SETUP ---
-    initCanvas: () => {
+initCanvas: () => {
         const mount = document.getElementById('globe-mount');
         const canvas = document.getElementById('globe-canvas');
         if(!mount || !canvas) return;
 
-        // Apply Locked Cursor
+        // Apply Locked Cursor (Prevent dragging if locked in JSON)
         if(UniversalGlobeEngine.state.data.locked) {
             canvas.classList.add('locked');
         }
@@ -270,6 +270,7 @@ export const UniversalGlobeEngine = {
             const height = entry.contentRect.height;
             if(width === 0) return;
 
+            // Handle High DPI Displays
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
             canvas.width = width * dpr;
             canvas.height = height * dpr;
@@ -281,11 +282,11 @@ export const UniversalGlobeEngine = {
             UniversalGlobeEngine.state.height = height;
             UniversalGlobeEngine.state.ctx = ctx;
 
-            // 1. Calculate Base Scale (Normal View)
+            // 1. Calculate & Store Base Scale (The "Fit to Screen" size)
             const baseScale = Math.min(width, height) / 2.2;
             UniversalGlobeEngine.state.baseScale = baseScale;
 
-            // 2. Determine Initial Zoom from JSON
+            // 2. Determine Initial Zoom from JSON (default to 1)
             const initialZoom = UniversalGlobeEngine.state.data.zoomFactor || 1;
             
             const projection = d3.geoOrthographic()
@@ -300,6 +301,9 @@ export const UniversalGlobeEngine = {
             UniversalGlobeEngine.state.projection = projection;
             UniversalGlobeEngine.state.path = d3.geoPath(projection, ctx);
             
+            // Sync state scale
+            UniversalGlobeEngine.state.scale = projection.scale();
+
             UniversalGlobeEngine.draw();
         };
 
@@ -313,7 +317,7 @@ export const UniversalGlobeEngine = {
                 .on("drag", (event) => {
                     const { projection } = UniversalGlobeEngine.state;
                     const rotate = projection.rotate();
-                    const k = 0.5;
+                    const k = 0.5; // Sensitivity
                     projection.rotate([rotate[0] + event.dx * k, rotate[1] - event.dy * k]);
                     UniversalGlobeEngine.state.rotation = projection.rotate();
                     UniversalGlobeEngine.draw();
@@ -323,34 +327,59 @@ export const UniversalGlobeEngine = {
         }
     },
 
-    // --- 6. CINEMATIC UPDATE FUNCTION ---
+    // --- 6. CINEMATIC UPDATE FUNCTION (Zoom + Rotate) ---
     updateToCurrentData: () => {
-        const { data, activeTab, projection } = UniversalGlobeEngine.state;
+        const { data, activeTab, projection, baseScale, width, height } = UniversalGlobeEngine.state;
         
-        // Determine the target rotation based on the mode
         let targetRot = null;
+        let targetZoom = 1;
 
+        // 1. Determine Target Values based on Mode
         if (data.mode === 'lesson') {
-            targetRot = data.cases[activeTab].initialRotation;
+            const currentCase = data.cases[activeTab];
+            targetRot = currentCase.initialRotation;
+            // Use specific case zoom, or global zoom, or default 1
+            targetZoom = currentCase.zoomFactor || data.zoomFactor || 1;
         } else if (data.mode === 'game') {
-            // QUIZ MODE: Get rotation from the specific question
-            targetRot = data.questions[activeTab].initialRotation;
+            const currentQuestion = data.questions[activeTab];
+            targetRot = currentQuestion.initialRotation;
+            targetZoom = currentQuestion.zoomFactor || data.zoomFactor || 1;
         }
 
-        // Execute Animation
+        // 2. Calculate Actual Scale Value
+        // Fallback for baseScale if resize hasn't fired yet
+        const currentBaseScale = baseScale || Math.min(width, height) / 2.2;
+        const targetScale = currentBaseScale * targetZoom;
+
+        // 3. Execute Animation
         if(targetRot && projection) {
             d3.transition()
-                .duration(1200) // Slightly slower for dramatic effect
+                .duration(1200) // 1.2s Smooth Transition
                 .ease(d3.easeCubicOut)
-                .tween("rotate", () => {
+                .tween("render", () => {
+                    // Interpolate Rotation
                     const r = d3.interpolate(projection.rotate(), targetRot);
+                    // Interpolate Scale (Zoom)
+                    const s = d3.interpolate(projection.scale(), targetScale);
+                    
                     return (t) => {
+                        // Apply updates
                         projection.rotate(r(t));
-                        UniversalGlobeEngine.state.rotation = projection.rotate(); // Sync state
+                        projection.scale(s(t));
+                        
+                        // Sync state for drag continuity
+                        UniversalGlobeEngine.state.rotation = projection.rotate();
+                        UniversalGlobeEngine.state.scale = projection.scale(); 
+                        
                         UniversalGlobeEngine.draw();
                     };
                 });
         } else {
+            // Instant update if no rotation defined
+            if(targetZoom !== 1) {
+                 projection.scale(targetScale);
+                 UniversalGlobeEngine.state.scale = targetScale;
+            }
             UniversalGlobeEngine.draw();
         }
     },

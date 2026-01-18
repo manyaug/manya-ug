@@ -1,0 +1,65 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Location of Africa",
+  "variantTitle": "Quest 4b: Africa's Water Borders",
+  "mode": "lesson",
+  
+  "cases": [
+    {
+      "tabTitle": "North: Med Sea",
+      "title": "The Mediterranean Sea",
+      "description": "The water body separating Africa from Europe.",
+      "initialRotation": [-15, -35, 0],
+      "zoomFactor": 2.2,
+      "highlight": ["818", "434", "788", "012", "504"], 
+      "highlightColor": "#fcd34d",
+      "markers": [
+        { "label": "Mediterranean Sea", "lat": 35, "lon": 15, "color": "#3b82f6" },
+        { "label": "Europe", "lat": 42, "lon": 12, "color": "#94a3b8" }
+      ],
+      "steps": [
+        "<b>Location:</b> To the <b>North</b> of Africa.",
+        "<b>Border:</b> It separates Africa from Europe.",
+        "<b>Countries:</b> Highlighted in yellow are the North African countries bordering it (Egypt, Libya, Tunisia, Algeria, Morocco)."
+      ]
+    },
+    {
+      "tabTitle": "North-East: Red Sea",
+      "title": "The Red Sea",
+      "description": "The water body separating Africa from Asia.",
+      "initialRotation": [-35, -20, 0],
+      "zoomFactor": 2.8,
+      "highlight": ["818", "729", "232", "262"],
+      "highlightColor": "#f87171",
+      "markers": [
+        { "label": "Red Sea", "lat": 20, "lon": 38, "color": "#3b82f6" },
+        { "label": "Asia (Arabia)", "lat": 24, "lon": 45, "color": "#94a3b8" }
+      ],
+      "steps": [
+        "<b>Location:</b> To the <b>North-East</b> of Africa.",
+        "<b>Border:</b> It separates Africa from Asia (Arabian Peninsula).",
+        "<b>Man-made link:</b> It is connected to the Mediterranean Sea by the <b>Suez Canal</b> in Egypt."
+      ]
+    },
+    {
+      "tabTitle": "East & West",
+      "title": "Indian & Atlantic Oceans",
+      "description": "The two vast oceans flanking the continent.",
+      "initialRotation": [-20, -10, 0],
+      "zoomFactor": 1.5,
+      "lines": [
+         { "type": "lon", "value": 20, "color": "#94a3b8", "dashed": true, "label": "Dividing Line" }
+      ],
+      "markers": [
+        { "label": "Atlantic (West)", "lat": 0, "lon": -15, "color": "#2563eb" },
+        { "label": "Indian (East)", "lat": 0, "lon": 60, "color": "#0ea5e9" }
+      ],
+      "steps": [
+        "<b>West:</b> The <b>Atlantic Ocean</b> separates Africa from the Americas.",
+        "<b>East:</b> The <b>Indian Ocean</b> separates Africa from Australia.",
+        "<b>Meeting Point:</b> They meet at the southern tip of Africa (Cape of Good Hope)."
+      ]
+    }
+  ]
+}

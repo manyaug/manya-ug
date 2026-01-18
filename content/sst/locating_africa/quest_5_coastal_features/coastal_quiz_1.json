@@ -1,0 +1,63 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quiz: Coastline Challenge",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "Which feature is highlighted in Green? It is a piece of land with three sides surrounded by water.",
+      "initialRotation": [-45, -10, 0],
+      "zoomFactor": 1.5,
+      "highlight": ["706", "231"],
+      "highlightColor": "#86efac",
+      "correctAnswer": "Peninsula",
+      "options": ["Island", "Peninsula", "Gulf"]
+    },
+    {
+      "title": "Question 2",
+      "question": "What is the name of the Cape located at the furthest Southern tip of Africa?",
+      "initialRotation": [-20, 34, 0],
+      "zoomFactor": 2.0,
+      "markers": [
+          { "label": "???", "lat": -34.8, "lon": 20, "color": "#ef4444" }
+      ],
+      "correctAnswer": "Cape Agulhas",
+      "options": ["Cape of Good Hope", "Cape Agulhas", "Cape Verde"]
+    },
+    {
+      "title": "Question 3",
+      "question": "Identify the narrow water passage shown that separates Africa from Europe.",
+      "initialRotation": [0, -36, 0],
+      "zoomFactor": 3.0,
+      "lines": [
+          { "type": "lon", "value": -5.5, "color": "#3b82f6", "dashed": true }
+      ],
+      "correctAnswer": "Strait of Gibraltar",
+      "options": ["Suez Canal", "Strait of Gibraltar", "Gulf of Aden"]
+    },
+    {
+      "title": "Question 4",
+      "question": "Which of these is an Island Country found in the Atlantic Ocean?",
+      "initialRotation": [10, -5, 0],
+      "zoomFactor": 1.5,
+      "markers": [
+          { "label": "???", "lat": 0, "lon": 6.6, "color": "#facc15" }
+      ],
+      "correctAnswer": "Sao Tome and Principe",
+      "options": ["Seychelles", "Madagascar", "Sao Tome and Principe"]
+    },
+    {
+      "title": "Question 5",
+      "question": "What is the large body of water partly enclosed by the curve of West Africa?",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 1.2,
+      "highlight": ["566", "120", "288"],
+      "highlightColor": "#e0f2fe",
+      "correctAnswer": "Gulf of Guinea",
+      "options": ["Gulf of Aden", "Gulf of Guinea", "Mediterranean Sea"]
+    }
+  ]
+}

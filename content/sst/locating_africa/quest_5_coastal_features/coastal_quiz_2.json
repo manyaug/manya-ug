@@ -1,0 +1,64 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quiz: Islands & Oceans",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "Which ocean is located to the WEST of Africa?",
+      "initialRotation": [20, -10, 0],
+      "zoomFactor": 1.0,
+      "markers": [
+          { "label": "???", "lat": 0, "lon": -20, "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Atlantic Ocean",
+      "options": ["Indian Ocean", "Atlantic Ocean", "Pacific Ocean"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Identify the largest island country in Africa shown on the map.",
+      "initialRotation": [-45, 20, 0],
+      "zoomFactor": 1.5,
+      "highlight": ["450"],
+      "highlightColor": "#22c55e",
+      "correctAnswer": "Madagascar",
+      "options": ["Comoros", "Madagascar", "Seychelles"]
+    },
+    {
+      "title": "Question 3",
+      "question": "Which group of islands is located in the Atlantic Ocean?",
+      "initialRotation": [25, -15, 0],
+      "zoomFactor": 1.5,
+      "markers": [
+          { "label": "???", "lat": 16, "lon": -24, "color": "#facc15" }
+      ],
+      "correctAnswer": "Cape Verde",
+      "options": ["Seychelles", "Mauritius", "Cape Verde"]
+    },
+    {
+      "title": "Question 4",
+      "question": "Zanzibar and Pemba are islands found in which ocean?",
+      "initialRotation": [-40, -5, 0],
+      "zoomFactor": 2.0,
+      "markers": [
+          { "label": "Zanzibar", "lat": -6, "lon": 39.5, "color": "#a855f7" }
+      ],
+      "correctAnswer": "Indian Ocean",
+      "options": ["Atlantic Ocean", "Red Sea", "Indian Ocean"]
+    },
+    {
+      "title": "Question 5",
+      "question": "Which is the smallest country in Africa?",
+      "initialRotation": [-55, 5, 0],
+      "zoomFactor": 2.5,
+      "markers": [
+          { "label": "???", "lat": -4.6, "lon": 55.4, "color": "#ef4444" }
+      ],
+      "correctAnswer": "Seychelles",
+      "options": ["Sao Tome", "Seychelles", "Comoros"]
+    }
+  ]
+}
