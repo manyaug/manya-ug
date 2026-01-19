@@ -40,7 +40,7 @@
       "focusPoints": [
         { "label": "Gulf of Guinea", "rotation": [-5, -2, 0], "zoom": 2.0 },
         { "label": "Gulf of Aden", "rotation": [-48, -12, 0], "zoom": 2.5 },
-        { "label": "Gulf of Sirte", "rotation": [-18, -31, 0], "zoom": 3.0 }
+        { "label": "Gulf of Sirte", "rotation": [-19, -31.5, 0], "zoom": 3.0 }
       ],
       "overlays": [
         { "type": "curve", "center": [3, 1], "radius": 15, "color": "#0ea5e9" },

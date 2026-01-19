@@ -112,7 +112,48 @@ export const UniversalGlobeEngine = {
                 color: var(--text); border: 1px solid rgba(255,255,255,0.4);
                 box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             }
+            /* ... existing styles ... */
 
+            /* NEW: Interactive HUD Button */
+            .hud-btn {
+                cursor: pointer;
+                pointer-events: auto !important; /* Force clicks */
+                transition: transform 0.2s, background 0.2s;
+            }
+            .hud-btn:active { transform: scale(0.95); }
+            .hud-btn:hover { background: rgba(255,255,255,1); }
+
+            /* NEW: Glass Popup Overlay */
+            .globe-popup-overlay {
+                position: absolute; inset: 0;
+                background: rgba(15, 23, 42, 0.4); /* Dim background */
+                backdrop-filter: blur(2px);
+                z-index: 40;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeIn 0.2s ease-out;
+            }
+
+            .globe-popup-card {
+                background: rgba(255, 255, 255, 0.95);
+                width: 80%; max-width: 320px;
+                padding: 20px; border-radius: 20px;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                border: 1px solid rgba(255,255,255,0.6);
+                transform: scale(0.9);
+                animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            }
+
+            .popup-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+            .popup-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+            .popup-close {
+                background: var(--primary); color: white; border: none;
+                padding: 8px 24px; border-radius: 50px; font-weight: 600; cursor: pointer;
+                font-size: 13px; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            }
+
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes popUp { to { transform: scale(1); } }
             /* --- BOTTOM: CONTENT SHEET --- */
             .content-card { 
                 flex: 1; /* Takes remaining space */
@@ -248,7 +289,12 @@ export const UniversalGlobeEngine = {
                     <canvas id="globe-canvas" class="globe-canvas"></canvas>
                     <div class="map-hud">
                         <div class="hud-pill">${data.variantTitle || 'Social Studies'}</div>
-                        <div class="hud-pill" id="status-pill">Loading...</div>
+                        
+                        <!-- UPDATED: Dynamic Button based on Mode -->
+                        ${data.mode === 'game' 
+                            ? `<button class="hud-pill hud-btn" id="hint-btn" onclick="GlobeTimeEngine.toggleHint()">💡 Hint</button>`
+                            : `<div class="hud-pill" id="status-pill">Loading...</div>`
+                        }
                     </div>
                     <div id="feedback-toast" class="feedback-toast"></div>
                     <div class="globe-loader" id="loader">
@@ -755,14 +801,15 @@ initCanvas: () => {
                     <div class="lesson-title">${q.title}</div>
                     <div class="lesson-desc" style="color:#1e293b; font-weight:500;">${q.question}</div>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="options-container" style="display:flex; flex-direction:column; gap:12px;">
             `;
 
             if(q.options) {
                 q.options.forEach(opt => {
+                    // Escape single quotes for the onclick function
                     const safeOpt = opt.replace(/'/g, "\\'");
                     html += `
-                    <button class="focus-chip" 
+                    <button class="focus-chip option-btn" 
                         style="width:100%; justify-content:space-between; padding:16px; border-radius:12px;"
                         onclick="GlobeTimeEngine.handleQuizAnswer(this, '${safeOpt}')">
                         <span style="font-size:15px;">${opt}</span>
@@ -770,7 +817,12 @@ initCanvas: () => {
                     </button>`;
                 });
             }
-            html += `</div>`;
+            
+            // --- NEW: Feedback Area for Hints ---
+            html += `</div>
+            <div id="quiz-feedback-area" style="margin-top:20px; padding:15px; border-radius:12px; display:none;"></div>
+            `;
+            
             body.innerHTML = html;
         }
 
@@ -824,45 +876,99 @@ initCanvas: () => {
     handleQuizAnswer: (btn, answer) => {
         const { data, activeTab } = UniversalGlobeEngine.state;
         const q = data.questions[activeTab];
+        const feedbackEl = document.getElementById('quiz-feedback-area');
         
-        // Disable all buttons to prevent double clicking
-        const allBtns = document.querySelectorAll('.content-card button');
-        allBtns.forEach(b => b.style.pointerEvents = 'none');
+        // 1. Visual Feedback on the clicked button
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.style.pointerEvents = 'none'); // Lock buttons
         
         if (answer === q.correctAnswer) {
-            // Correct Visuals
+            // --- CORRECT ---
             btn.style.borderColor = '#22c55e';
             btn.style.backgroundColor = '#f0fdf4';
-            btn.querySelector('.step-badge').style.background = '#22c55e';
-            btn.querySelector('.step-badge').style.color = 'white';
-            btn.querySelector('.step-badge').innerText = '✓';
+            btn.querySelector('.focus-icon').innerText = '✓';
+            btn.querySelector('.focus-icon').style.color = '#22c55e';
             
             UniversalGlobeEngine.showToast("Correct!", 'success');
             
-            // Auto-advance after 1.5 seconds
+            // Show explanation text (if any) briefly before moving on
+            if(feedbackEl && q.explanation) {
+                const text = typeof q.explanation === 'object' ? q.explanation.text : q.explanation;
+                feedbackEl.style.display = 'block';
+                feedbackEl.style.background = '#f0fdf4';
+                feedbackEl.innerHTML = `<div style="color:#166534; font-size:14px;">${text}</div>`;
+            }
+
+            // Auto-advance
             setTimeout(() => {
                 if (activeTab < data.questions.length - 1) {
                     UniversalGlobeEngine.switchTab(activeTab + 1);
                 } else {
                     UniversalGlobeEngine.showToast("Quiz Complete!", 'success');
-                    // Optional: Show a completion screen here
                 }
-            }, 1500);
+            }, 2000); // Gave a bit more time to read
 
         } else {
-            // Incorrect Visuals
+            // --- INCORRECT ---
             btn.style.borderColor = '#ef4444';
             btn.style.backgroundColor = '#fef2f2';
-            btn.querySelector('.step-badge').style.background = '#ef4444';
-            btn.querySelector('.step-badge').style.color = 'white';
-            btn.querySelector('.step-badge').innerText = '✕';
+            btn.querySelector('.focus-icon').innerText = '✕';
+            btn.querySelector('.focus-icon').style.color = '#ef4444';
             
-            UniversalGlobeEngine.showToast("Try again", 'error');
+            UniversalGlobeEngine.showToast("Not quite. Check the hint below.", 'error');
             
-            // Re-enable buttons
+            // Logic for Explanations / Hints
+            if (feedbackEl && q.explanation) {
+                feedbackEl.style.display = 'block';
+                feedbackEl.style.background = '#f8fafc';
+                feedbackEl.style.border = '1px solid #e2e8f0';
+
+                // CASE A: New Object Format (With Camera/Map Features)
+                if (typeof q.explanation === 'object') {
+                    feedbackEl.innerHTML = `
+                        <div style="margin-bottom:10px; color:#334155; font-size:14px;">
+                            ${q.explanation.text}
+                        </div>
+                        <button id="view-map-hint-btn" 
+                            style="width:100%; padding:10px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                            🌍 View Map Hint
+                        </button>
+                    `;
+
+                    // Bind the Click Event for the Hint Button
+                    document.getElementById('view-map-hint-btn').onclick = () => {
+                        const expl = q.explanation;
+                        
+                        // 1. Move Camera
+                        if (expl.camera) {
+                            UniversalGlobeEngine.focusOn(expl.camera.rotation, expl.camera.zoom);
+                        }
+
+                        // 2. Inject Visuals into current Question state
+                        // We modify the live object so 'draw()' picks it up
+                        if (expl.highlight) q.highlight = expl.highlight;
+                        if (expl.highlightColor) q.highlightColor = expl.highlightColor;
+                        if (expl.markers) q.markers = expl.markers;
+                        
+                        // 3. Re-draw the canvas to show the new markers/highlights
+                        UniversalGlobeEngine.draw();
+                    };
+                } 
+                // CASE B: Old String Format (Backward Compatibility)
+                else {
+                    feedbackEl.innerHTML = `<div style="color:#334155; font-size:14px;">${q.explanation}</div>`;
+                }
+            }
+
+            // Allow trying again after a delay
             setTimeout(() => {
-                allBtns.forEach(b => b.style.pointerEvents = 'auto');
-            }, 500);
+                allBtns.forEach(b => {
+                    // Only re-enable buttons that haven't been marked wrong yet
+                    if (b.style.backgroundColor !== 'rgb(254, 242, 242)') { 
+                        b.style.pointerEvents = 'auto';
+                    }
+                });
+            }, 1000);
         }
     },
     handleDrag: (e, piece) => {
@@ -921,7 +1027,52 @@ initCanvas: () => {
         toast.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`;
         toast.className = `feedback-toast show ${type}`;
         setTimeout(() => toast.classList.remove('show'), 2000);
-    }
+    },
+    // --- NEW: ON-DEMAND HINT POPUP ---
+         toggleHint: () => {
+        const { data, activeTab } = UniversalGlobeEngine.state;
+        const mount = document.getElementById('globe-mount');
+        
+        // 1. Check if popup already exists (Close it)
+        const existing = document.getElementById('active-hint-popup');
+        if (existing) {
+            existing.remove();
+            return;
+        }
+
+        // 2. Get content
+        const q = data.questions[activeTab];
+        
+        // Extract text whether it's a string or the new object format
+        let hintText = "No hint available for this question.";
+        let title = "Hint";
+        
+        if (q.explanation) {
+            if (typeof q.explanation === 'object') {
+                hintText = q.explanation.text;
+                // Optional: You could also trigger camera moves here immediately
+                // if (q.explanation.camera) UniversalGlobeEngine.focusOn(...)
+            } else {
+                hintText = q.explanation;
+            }
+        }
+
+        // 3. Create Popup HTML
+        const overlay = document.createElement('div');
+        overlay.id = 'active-hint-popup';
+        overlay.className = 'globe-popup-overlay';
+        overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); }; // Close on background click
+        
+        overlay.innerHTML = `
+            <div class="globe-popup-card">
+                <div class="popup-title">💡 ${title}</div>
+                <div class="popup-text">${hintText}</div>
+                <button class="popup-close" onclick="document.getElementById('active-hint-popup').remove()">Got it</button>
+            </div>
+        `;
+
+        mount.appendChild(overlay);
+    },
 };
 
 window.GlobeTimeEngine = UniversalGlobeEngine;
