@@ -1,0 +1,45 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Types of Sets",
+  "variantTitle": "Finite vs Infinite Sets",
+  "slides": [
+    {
+      "title": "What is a Set?",
+      "text": "Before we start, remember: A <b>Set</b> is just a collection of distinct objects. <br><br>Imagine a basket. Anything we put inside that basket is a 'member' of the set.",
+      "visualType": "DEFINITION",
+      "visualData": "{ }"
+    },
+    {
+      "title": "1. Finite Sets",
+      "text": "A <b>Finite Set</b> is a set where we can count the members, and the counting <b>comes to an end</b>.<br><br>Example: A set of vowels. We count: a, e, i, o, u. Stop. There are no more.",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["a", "e", "i", "o", "u"]
+    },
+    {
+      "title": "Cardinal Number",
+      "text": "Because a Finite set ends, it has a specific number of members.<br><br>We call this the <b>Cardinal Number</b>, written as <span class='math-term'>n(A)</span>.<br>Here, n(A) = 5.",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["a", "e", "i", "o", "u"],
+      "showCount": true
+    },
+    {
+      "title": "2. Infinite Sets",
+      "text": "An <b>Infinite Set</b> is different. It <b>never ends</b>.<br><br>Imagine counting all the numbers: 1, 2, 3, 4, 5... You could go on forever and never finish!",
+      "visualType": "INFINITE_ROAD",
+      "visualData": ""
+    },
+    {
+      "title": "The Ellipsis (...)",
+      "text": "Since we can't write all the numbers, we use three dots called an <b>Ellipsis</b>.<br><br><center><span class='math-term'>{ 1, 2, 3, ... }</span></center><br>This symbol tells us the set continues forever.",
+      "visualType": "DEFINITION",
+      "visualData": "..."
+    },
+    {
+      "title": "Summary",
+      "text": "<ul><li><b>Finite:</b> Has an end. We can find n(A).</li><li><b>Infinite:</b> Goes on forever. We use '...'</li></ul><br>Next, we will try a quiz to see if you can spot the difference!",
+      "visualType": "DEFINITION",
+      "visualData": "✓"
+    }
+  ]
+}
