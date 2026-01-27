@@ -2,44 +2,44 @@
   "engineType": "MATH_STUDY",
   "mode": "study",
   "topic": "Types of Sets",
-  "variantTitle": "Finite vs Infinite Sets",
+  "variantTitle": "Finite vs Infinite",
   "slides": [
     {
       "title": "What is a Set?",
-      "text": "Before we start, remember: A <b>Set</b> is just a collection of distinct objects. <br><br>Imagine a basket. Anything we put inside that basket is a 'member' of the set.",
-      "visualType": "DEFINITION",
-      "visualData": "{ }"
+      "text": "A <b>Set</b> is just a collection of distinct objects. <br><br>Imagine a basket. Anything we put inside that basket is a 'member' of the set.",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["🍎", "🍌", "🍇"]
     },
     {
       "title": "1. Finite Sets",
-      "text": "A <b>Finite Set</b> is a set where we can count the members, and the counting <b>comes to an end</b>.<br><br>Example: A set of vowels. We count: a, e, i, o, u. Stop. There are no more.",
+      "text": "A <b>Finite Set</b> has a specific number of members. You can count them, and the counting <b>comes to an end</b>.<br><br>Example: Vowels = {a, e, i, o, u}",
       "visualType": "FINITE_BASKET",
       "visualData": ["a", "e", "i", "o", "u"]
     },
     {
       "title": "Cardinal Number",
-      "text": "Because a Finite set ends, it has a specific number of members.<br><br>We call this the <b>Cardinal Number</b>, written as <span class='math-term'>n(A)</span>.<br>Here, n(A) = 5.",
+      "text": "Because a Finite set ends, we can find its <b>Cardinal Number</b>, <span class='sym'>n(A)</span>.<br><br>This is just the total count of members.",
       "visualType": "FINITE_BASKET",
       "visualData": ["a", "e", "i", "o", "u"],
       "showCount": true
     },
     {
       "title": "2. Infinite Sets",
-      "text": "An <b>Infinite Set</b> is different. It <b>never ends</b>.<br><br>Imagine counting all the numbers: 1, 2, 3, 4, 5... You could go on forever and never finish!",
+      "text": "An <b>Infinite Set</b> has no end. It goes on forever!<br><br>Imagine counting numbers: 1, 2, 3, 4... You could never finish.",
       "visualType": "INFINITE_ROAD",
       "visualData": ""
     },
     {
       "title": "The Ellipsis (...)",
-      "text": "Since we can't write all the numbers, we use three dots called an <b>Ellipsis</b>.<br><br><center><span class='math-term'>{ 1, 2, 3, ... }</span></center><br>This symbol tells us the set continues forever.",
-      "visualType": "DEFINITION",
-      "visualData": "..."
+      "text": "Since we can't write all the numbers, we use three dots called an <b>Ellipsis</b>.<br><br><center><span class='sym'>{ 1, 2, 3, ... }</span></center><br>This symbol means 'and so on forever'.",
+      "visualType": "INFINITE_ROAD",
+      "visualData": ""
     },
     {
       "title": "Summary",
-      "text": "<ul><li><b>Finite:</b> Has an end. We can find n(A).</li><li><b>Infinite:</b> Goes on forever. We use '...'</li></ul><br>Next, we will try a quiz to see if you can spot the difference!",
-      "visualType": "DEFINITION",
-      "visualData": "✓"
+      "text": "<ul><li><b>Finite:</b> Ends. Can be counted.</li><li><b>Infinite:</b> Never ends. Uses '...'</li></ul>",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["Done!"]
     }
   ]
 }

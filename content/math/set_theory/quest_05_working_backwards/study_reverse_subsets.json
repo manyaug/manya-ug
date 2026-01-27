@@ -1,0 +1,50 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Finding Number of Elements",
+  "variantTitle": "Working Backwards",
+  "slides": [
+    {
+      "title": "The Mystery",
+      "text": "Usually, we count elements to find the number of subsets.<br><br>But what if we know the <b>Number of Subsets</b> (e.g., 8 subsets) and need to find how many members are in the set?",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["?", "?", "?"],
+      "showCount": false
+    },
+    {
+      "title": "The Pattern (Powers of 2)",
+      "text": "Remember the powers of 2. This is our key:<br><br><b>2¹</b> = 2 subsets (1 member)<br><b>2²</b> = 4 subsets (2 members)<br><b>2³</b> = 8 subsets (3 members)<br><b>2⁴</b> = 16 subsets (4 members)<br><b>2⁵</b> = 32 subsets (5 members)",
+      "visualType": "POWER_SET_TREE",
+      "items": ["a", "b", "c"]
+    },
+    {
+      "title": "Case 1: From Total Subsets",
+      "text": "<b>Question:</b> A set has 8 subsets. Find n(A).<br><br><b>Step 1:</b> Write the formula.<br>2ⁿ = 8<br><br><b>Step 2:</b> Factorize 8 by 2.<br>8 = 2 × 2 × 2 (That is 2³)<br><br><b>Step 3:</b> Compare powers.<br>2ⁿ = 2³<br><b>n(A) = 3</b>.",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["x", "y", "z"],
+      "showCount": true
+    },
+    {
+      "title": "Case 2: From Proper Subsets",
+      "text": "<b>Question:</b> Set M has 15 Proper Subsets. Find n(M).<br><br><b>Step 1:</b> Proper subsets are missing 1 (the improper one). So we must <b>ADD 1</b> back.<br><br>Total Subsets = 15 + 1 = <b>16</b>.",
+      "visualType": "SUBSETS_DIAGRAM",
+      "labels": ["Proper", "Improper"],
+      "elements": { "subset": "15 items", "difference": "1 item" },
+      "highlight": ["subset", "difference"]
+    },
+    {
+      "title": "Solving Case 2",
+      "text": "Now we solve for 16 Subsets.<br><br>2ⁿ = 16<br>2 × 2 × 2 × 2 = 16<br>Count the twos: There are 4.<br><br>So, 2ⁿ = 2⁴.<br><b>n(M) = 4</b>.",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["p", "q", "r", "s"],
+      "showCount": true
+    },
+    {
+      "title": "A Harder Example",
+      "text": "<b>Question:</b> Set K has 63 Proper Subsets.<br><br>1. <b>Add 1:</b> 63 + 1 = 64 Total Subsets.<br>2. <b>Factorize 64:</b><br>2 × 2 × 2 × 2 × 2 × 2 = 64<br>(Count them... there are 6!)<br><br><b>Answer:</b> n(K) = 6.",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["a", "b", "c", "d", "e", "f"],
+      "showCount": true
+    }
+  ]
+}
