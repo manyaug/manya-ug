@@ -22,15 +22,6 @@
       "targetRegion": "symmetric_difference",
       "prompt": "<b>Phase 2:</b> How many read <b>only one</b> type of book?",
       "hint": "News Only (15) + Comics Only (5)"
-    },
-    {
-      "retain_visuals": true,
-      "type": "PROBABILITY",
-      "targetRegion": "universal_only",
-      "total": 40,
-      "expression": "15",
-      "prompt": "What is the probability a pupil reads <b>Neither</b>?",
-      "hint": "n(Neither) / Total = 15/40"
     }
   ]
 }
