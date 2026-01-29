@@ -1,43 +1,22 @@
 {
-  "meta": {
-    "id": "q_sci_t2_01",
-    "subject": "science",
-    "title": "Types of Skeletons",
-    "engine": "variable-slider"
-  },
-  "config": {
-    "visualScript": "content/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/sc7_musklo-skeletal_q1.json"",
-    "tabs": [
-      { "id": "hydro", "label": "HYDRO", "title": "Squishy Water Skeleton" },
-      { "id": "exo", "label": "EXO", "title": "Hard Armor Skeleton" },
-      { "id": "endo", "label": "ENDO", "title": "Inside-Bony Skeleton" }
-    ],
-    "slider": {
-      "min": 0,
-      "max": 100,
-      "start": 0,
-      "labels": ["Infant", "Adult"]
-    },
-    "text": {
-      "instruction": "Step 1: Observe Structural Growth",
-      "subInstruction": "Drag the slider to see how the skeleton responds."
-    }
-  },
-  "quiz": [
+  "engineType": "GALLERY_STUDY",
+  "mode": "study",
+  "topic": "Types of Skeletons",
+  "slides": [
     {
-      "q": "Which friend has a squishy skeleton filled with water?",
-      "options": ["The Worm", "The Grasshopper", "The Human"],
-      "correct": 0
+      "image": "assets/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/hydrostatic.png",
+      "title": "1. Hydrostatic Skeleton",
+      "description": "<p>Found in soft-bodied animals like <b>Earthworms</b> and <b>Slugs</b>.</p><div class='rule-box'><b>How it works:</b> The body is filled with fluid (liquid). The muscles squeeze against this fluid to create movement.</div><p><b>Exam Example:</b> An earthworm moves using circular and longitudinal muscles pushing against its fluid-filled body.</p>"
     },
     {
-      "q": "What does the grasshopper do when its hard shell gets too tight?",
-      "options": ["It shrinks", "It molts (sheds its shell)", "It stays small forever"],
-      "correct": 1
+      "image": "assets/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/exoskeleton.png",
+      "title": "2. Exoskeleton",
+      "description": "<p>Found in <b>Insects</b> (like cockroaches), Crabs, and Spiders.</p><div class='rule-box'><b>Definition:</b> A hard outer covering made of a substance called <b>Chitin</b>.</div><div class='danger-box'><b>Molting:</b> Since the exoskeleton does not grow, the insect must shed it off to grow larger. This process is called Molting (Ecdysis).</div>"
     },
     {
-      "q": "Where is our human skeleton located?",
-      "options": ["On the outside like armor", "We don't have one", "Inside our bodies"],
-      "correct": 2
+      "image": "assets/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/endoskeleton.png",
+      "title": "3. Endoskeleton",
+      "description": "<p>Found in <b>Vertebrates</b> (Humans, Cows, Fish, Birds).</p><div class='rule-box'><b>Definition:</b> A skeleton found <b>inside</b> the body, made of bone and cartilage.</div><p><b>Advantage:</b> It grows with the animal, so no molting is required. It provides a strong framework for large muscles.</p>"
     }
   ]
 }
