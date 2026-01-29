@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "study",
   "topic": "The Axial Skeleton: The Skull",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
@@ -10,10 +11,55 @@
     "The <b>Orbit</b> is the cavity that protects the eyes."
   ],
   "hotspots": [
-    { "id": "1", "label": "Cranium", "pos": "38.66 -25.26 -51.43", "norm": "0.05 0.95 0.28", "info": "Protects the brain from injury." },
-    { "id": "2", "label": "Sutures", "pos": "38.16 -31.47 -63.61", "norm": "-0.02 0.19 -0.98", "info": "Immovable joints joining skull bones." },
-    { "id": "4", "label": "Orbit", "pos": "35.41 -36.51 -49.75", "norm": "0.25 0.40 0.87", "info": "The eye socket that protects the eyes." },
-    { "id": "5", "label": "Mandible", "pos": "42.91 -42.01 -52.04", "norm": "0.88 0.21 0.42", "info": "The only movable bone in the skull." },
-    { "id": "8", "label": "Maxilla", "pos": "36.04 -40.92 -46.54", "norm": "-0.81 0.17 0.54", "info": "The upper jaw bone (immovable)." }
+    { 
+      "id": "1", 
+      "label": "Cranium", 
+      "region": "axial",
+      "pos": "38.66 -25.26 -51.43", 
+      "norm": "0.05 0.95 0.28", 
+      "info": "Protects the brain from injury.",
+      "description": "The <b>Cranium</b> is the dome-shaped part of the skull. It is made of 8 flat bones fused together.<br><br>Its main function is to enclose and protect the delicate brain tissue.",
+      "examTip": "The bones of the cranium are joined by Sutures (immovable joints)."
+    },
+    { 
+      "id": "2", 
+      "label": "Sutures", 
+      "region": "axial",
+      "pos": "38.16 -31.47 -63.61", 
+      "norm": "-0.02 0.19 -0.98", 
+      "info": "Immovable joints joining skull bones.",
+      "description": "Sutures are the zig-zag lines found on the skull. They are fibrous joints that do not allow any movement.",
+      "examTip": "They are a perfect example of Fixed (Immovable) Joints."
+    },
+    { 
+      "id": "4", 
+      "label": "Orbit", 
+      "region": "axial",
+      "pos": "35.41 -36.51 -49.75", 
+      "norm": "0.25 0.40 0.87", 
+      "info": "The eye socket.",
+      "description": "The <b>Orbit</b> is the deep, bony cavity that holds the eye. It protects the eyeball from physical damage.",
+      "examTip": "The back of the orbit has a hole for the Optic Nerve to pass through to the brain."
+    },
+    { 
+      "id": "5", 
+      "label": "Mandible", 
+      "region": "axial",
+      "pos": "42.91 -42.01 -52.04", 
+      "norm": "0.88 0.21 0.42", 
+      "info": "The lower jaw.",
+      "description": "The <b>Mandible</b> holds the lower teeth. It moves up and down to allow chewing (mastication) and speaking.",
+      "examTip": "Important Question: Which is the ONLY movable bone in the skull? Answer: The Mandible."
+    },
+    { 
+      "id": "8", 
+      "label": "Maxilla", 
+      "region": "axial",
+      "pos": "36.04 -40.92 -46.54", 
+      "norm": "-0.81 0.17 0.54", 
+      "info": "The upper jaw.",
+      "description": "The <b>Maxilla</b> holds the upper teeth. Unlike the lower jaw, it is fused to the cranium and does not move.",
+      "examTip": "It forms part of the nose and the roof of the mouth (palate)."
+    }
   ]
 }

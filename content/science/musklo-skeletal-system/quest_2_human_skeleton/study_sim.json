@@ -1,19 +1,124 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "study",
-  "topic": "Human Skeleton",
+  "topic": "The Human Skeleton",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",
-  "intro": "The human backbone is made of 33 small bones called vertebrae. The skeleton has two regions: Axial (Central Axis) and Appendicular (Limbs and Girdles).",
+  "intro": "The human skeleton provides shape, support, and protection. It consists of 206 bones in an adult.",
+  "notes": [
+    "<b>Axial Skeleton:</b> The central part (Skull, Ribs, Vertebrae, Sternum).",
+    "<b>Appendicular Skeleton:</b> The limbs and girdles (Arms, Legs, Pelvis, Shoulders).",
+    "<b>Functions:</b> It manufactures blood cells (in bone marrow) and stores calcium."
+  ],
   "hotspots": [
-    { "id": "2", "label": "Skull", "region": "axial", "pos": "-0.041 17.74 0.73", "norm": "0 1 0", "info": "Protects the brain (Cranium)." },
-    { "id": "4", "label": "Vertebrae", "region": "axial", "pos": "-0.075 13.35 -1.05", "norm": "0 1 0", "info": "Protects the spinal cord." },
-    { "id": "5", "label": "Sternum", "region": "axial", "pos": "0.039 14.06 0.88", "norm": "0 1 0", "info": "The breastbone where ribs attach." },
-    { "id": "6", "label": "Rib Cage", "region": "axial", "pos": "-0.87 12.91 0.79", "norm": "0 1 0", "info": "Protects the heart and lungs." },
-    { "id": "7", "label": "Pectoral Girdle", "region": "appendicular", "pos": "-1.23 14.97 -1.28", "norm": "0 1 0", "info": "Shoulder blades and collar bone." },
-    { "id": "9", "label": "Pelvic Girdle", "region": "appendicular", "pos": "-0.95 10.41 -0.02", "norm": "0 1 0", "info": "Supports the lower trunk." },
-    { "id": "10", "label": "Humerus", "region": "appendicular", "pos": "-2.78 13.81 -0.38", "norm": "0 1 0", "info": "The upper arm bone." },
-    { "id": "11", "label": "Radius & Ulna", "region": "appendicular", "pos": "-4.61 11.22 0.30", "norm": "0 1 0", "info": "The forearm bones." },
-    { "id": "12", "label": "Femur", "region": "appendicular", "pos": "1.35 7.51 0.36", "norm": "0 1 0", "info": "Longest and strongest bone." },
-    { "id": "13", "label": "Patella", "region": "appendicular", "pos": "-1.03 5.27 0.73", "norm": "0 1 0", "info": "Protects the knee joint." },
-    { "id": "14", "label": "Tibia & Fibula", "region": "appendicular", "pos": "1.19 3.22 0.16", "norm": "0 1 0", "info": "The lower leg bones." }
+    { 
+      "id": "2", 
+      "label": "Skull", 
+      "region": "axial", 
+      "pos": "-0.041 17.74 0.73", 
+      "norm": "0 1 0", 
+      "info": "Protects the brain (Cranium).",
+      "description": "The skull is the bony framework of the head. It consists of the <b>Cranium</b> (brain box) and the <b>Facial bones</b>.<br><br>Most joints in the skull are immovable sutures.",
+      "examTip": "The <b>Mandible</b> (lower jaw) is the ONLY movable bone in the skull."
+    },
+    { 
+      "id": "4", 
+      "label": "Vertebral Column", 
+      "region": "axial", 
+      "pos": "-0.075 13.35 -1.05", 
+      "norm": "0 1 0", 
+      "info": "Protects the spinal cord.",
+      "description": "Also known as the backbone or spine. It is made up of <b>33 small bones</b> called vertebrae.<br><br>It protects the delicate spinal cord and supports the head.",
+      "examTip": "Bad posture (slumping) can permanently bend the vertebral column."
+    },
+    { 
+      "id": "5", 
+      "label": "Sternum", 
+      "region": "axial", 
+      "pos": "0.039 14.06 0.88", 
+      "norm": "0 1 0", 
+      "info": "The breastbone.",
+      "description": "The <b>Sternum</b> (breastbone) is a long flat bone located in the center of the chest. It connects to the ribs via cartilage.",
+      "examTip": "It helps form the rib cage which protects the heart and lungs."
+    },
+    { 
+      "id": "6", 
+      "label": "Rib Cage", 
+      "region": "axial", 
+      "pos": "-0.87 12.91 0.79", 
+      "norm": "0 1 0", 
+      "info": "Protects Heart & Lungs.",
+      "description": "There are <b>12 pairs</b> of ribs. They curve around the chest to form a cage-like structure.<br><br>They move up and out during breathing (inhalation).",
+      "examTip": "The last two pairs are called 'Floating Ribs' because they do not attach to the sternum."
+    },
+    { 
+      "id": "7", 
+      "label": "Pectoral Girdle", 
+      "region": "appendicular", 
+      "pos": "-1.23 14.97 -1.28", 
+      "norm": "0 1 0", 
+      "info": "Shoulder blades & Collar bone.",
+      "description": "This connects the arms to the main skeleton. It consists of the <b>Scapula</b> (Shoulder Blade) and the <b>Clavicle</b> (Collar Bone).",
+      "examTip": "The Clavicle is the most commonly broken bone in the body during falls."
+    },
+    { 
+      "id": "9", 
+      "label": "Pelvic Girdle", 
+      "region": "appendicular", 
+      "pos": "-0.95 10.41 -0.02", 
+      "norm": "0 1 0", 
+      "info": "Supports the lower trunk.",
+      "description": "Commonly known as the hips. It supports the weight of the upper body and protects the reproductive organs and bladder.",
+      "examTip": "The Pelvic Girdle is wider in females to allow for childbirth."
+    },
+    { 
+      "id": "10", 
+      "label": "Humerus", 
+      "region": "appendicular", 
+      "pos": "-2.78 13.81 -0.38", 
+      "norm": "0 1 0", 
+      "info": "The upper arm bone.",
+      "description": "The single long bone of the upper arm. It forms a ball-and-socket joint at the shoulder and a hinge joint at the elbow.",
+      "examTip": "It is the longest bone in the upper limb."
+    },
+    { 
+      "id": "11", 
+      "label": "Radius & Ulna", 
+      "region": "appendicular", 
+      "pos": "-4.61 11.22 0.30", 
+      "norm": "0 1 0", 
+      "info": "The forearm bones.",
+      "description": "The forearm has two bones:<br>1. <b>Radius:</b> On the thumb side.<br>2. <b>Ulna:</b> On the little finger side.",
+      "examTip": "The Radius rotates around the Ulna to turn the hand."
+    },
+    { 
+      "id": "12", 
+      "label": "Femur", 
+      "region": "appendicular", 
+      "pos": "1.35 7.51 0.36", 
+      "norm": "0 1 0", 
+      "info": "Longest bone in the body.",
+      "description": "The thigh bone. It is the longest, heaviest, and strongest bone in the human body. It carries most of the body weight.",
+      "examTip": "The head of the femur fits into the Acetabulum (socket) of the hip."
+    },
+    { 
+      "id": "13", 
+      "label": "Patella", 
+      "region": "appendicular", 
+      "pos": "-1.03 5.27 0.73", 
+      "norm": "0 1 0", 
+      "info": "The Kneecap.",
+      "description": "A small, triangular bone that protects the front of the knee joint. It is embedded in a tendon.",
+      "examTip": "It prevents the leg from bending forward (hyper-extension)."
+    },
+    { 
+      "id": "14", 
+      "label": "Tibia & Fibula", 
+      "region": "appendicular", 
+      "pos": "1.19 3.22 0.16", 
+      "norm": "0 1 0", 
+      "info": "The lower leg bones.",
+      "description": "The lower leg has two bones:<br>1. <b>Tibia:</b> The shin bone (inner and thicker).<br>2. <b>Fibula:</b> The outer, thinner bone.",
+      "examTip": "The Tibia bears the weight. The Fibula is mainly for muscle attachment."
+    }
   ]
 }

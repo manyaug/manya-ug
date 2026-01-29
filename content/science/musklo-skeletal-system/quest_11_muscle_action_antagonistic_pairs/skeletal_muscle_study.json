@@ -1,19 +1,55 @@
 {
   "engineType": "3D_SKELETON",
   "mode": "study",
-  "topic": "Anatomy of Voluntary Muscles (3D)",
+  "topic": "Anatomy of Voluntary Muscles",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles.glb",
-  "intro": "Voluntary muscles are attached to the skeleton to allow movement.",
+  "intro": "Voluntary muscles attach to the skeleton to create movement. They work by contracting (shortening).",
   "notes": [
-    "<b>Muscle Belly:</b> The thick part of the muscle that contracts.",
-    "<b>Tendon:</b> Tough, non-elastic fibers that join <b>Muscle to Bone</b>.",
-    "<b>Origin:</b> The point where muscle joins a stationary bone (Humerus).",
-    "<b>Insertion:</b> The point where muscle joins a movable bone (Radius/Ulna)."
+    "<b>Muscle Belly:</b> The thick, fleshy part that contracts.",
+    "<b>Tendon:</b> Tough fibers that join <b>Muscle to Bone</b>.",
+    "<b>Origin:</b> Attachment to the stationary bone (e.g., Shoulder).",
+    "<b>Insertion:</b> Attachment to the moving bone (e.g., Forearm)."
   ],
   "hotspots": [
-    { "id": "1", "label": "Biceps", "region": "appendicular", "pos": "-0.215 1.180 -0.002", "norm": "-0.002 -0.257 0.967", "info": "The flexor muscle on the front of the arm." },
-    { "id": "2", "label": "Triceps", "region": "appendicular", "pos": "-0.207 1.212 -0.082", "norm": "-0.321 0.013 -0.947", "info": "The extensor muscle on the back of the arm." },
-    { "id": "3", "label": "Tendon", "region": "appendicular", "pos": "-0.224 1.101 -0.012", "norm": "-0.200 0.036 0.979", "info": "Connects the biceps muscle to the radius bone." },
-    { "id": "4", "label": "Humerus", "region": "axial", "pos": "-0.195 1.346 -0.021", "norm": "-0.812 0.091 0.577", "info": "The stationary bone (Origin point)." }
+    { 
+      "id": "1", 
+      "label": "Biceps (Flexor)", 
+      "region": "appendicular", 
+      "pos": "-0.215 1.180 -0.002", 
+      "norm": "-0.002 -0.257 0.967", 
+      "info": "Front of the arm.",
+      "description": "The <b>Biceps</b> is the muscle located at the front of the upper arm.<br><br>When it contracts (becomes short and thick), it pulls the radius bone to bend the arm at the elbow.",
+      "examTip": "It is called a <b>Flexor</b> muscle because it flexes (bends) the joint."
+    },
+    { 
+      "id": "2", 
+      "label": "Triceps (Extensor)", 
+      "region": "appendicular", 
+      "pos": "-0.207 1.212 -0.082", 
+      "norm": "-0.321 0.013 -0.947", 
+      "info": "Back of the arm.",
+      "description": "The <b>Triceps</b> is located at the back of the upper arm.<br><br>When it contracts, it pulls the ulna bone to straighten the arm.",
+      "examTip": "It is called an <b>Extensor</b> because it extends (straightens) the joint. Remember: Biceps and Triceps are an Antagonistic Pair (they work in opposites)."
+    },
+    { 
+      "id": "3", 
+      "label": "Tendon", 
+      "region": "appendicular", 
+      "pos": "-0.224 1.101 -0.012", 
+      "norm": "-0.200 0.036 0.979", 
+      "info": "Connects Muscle to Bone.",
+      "description": "Tendons are tough, non-elastic white cords.<br><br><b>Why non-elastic?</b> If they stretched like rubber bands, the muscle would contract but the bone wouldn't move! They must be stiff to transfer the force.",
+      "examTip": "Mnemonic: <b>T-M-B</b> (Tendon connects Muscle to Bone)."
+    },
+    { 
+      "id": "4", 
+      "label": "Origin Point", 
+      "region": "appendicular", 
+      "pos": "-0.195 1.346 -0.021", 
+      "norm": "-0.812 0.091 0.577", 
+      "info": "The stationary anchor.",
+      "description": "Muscles are attached to bones at two points:<br>1. <b>Origin:</b> Where the muscle joins the bone that <i>does not move</i> (here, the Humerus/Scapula).<br>2. <b>Insertion:</b> Where it joins the bone that <i>moves</i> (the forearm).",
+      "examTip": "Muscles always pull the Insertion towards the Origin."
+    }
   ]
 }

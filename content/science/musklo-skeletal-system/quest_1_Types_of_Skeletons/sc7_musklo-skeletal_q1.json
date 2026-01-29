@@ -4,17 +4,17 @@
   "topic": "Types of Skeletons",
   "slides": [
     {
-      "image": "assets/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/hydrostatic.png",
+      "image": "assets/science/musklo-skeletal-system/quest_1_types_skeleton/hydrostatic.png",
       "title": "1. Hydrostatic Skeleton",
       "description": "<p>Found in soft-bodied animals like <b>Earthworms</b> and <b>Slugs</b>.</p><div class='rule-box'><b>How it works:</b> The body is filled with fluid (liquid). The muscles squeeze against this fluid to create movement.</div><p><b>Exam Example:</b> An earthworm moves using circular and longitudinal muscles pushing against its fluid-filled body.</p>"
     },
     {
-      "image": "assets/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/exoskeleton.png",
+      "image": "assets/science/musklo-skeletal-system/quest_1_types_skeleton/exoskeleton.png",
       "title": "2. Exoskeleton",
       "description": "<p>Found in <b>Insects</b> (like cockroaches), Crabs, and Spiders.</p><div class='rule-box'><b>Definition:</b> A hard outer covering made of a substance called <b>Chitin</b>.</div><div class='danger-box'><b>Molting:</b> Since the exoskeleton does not grow, the insect must shed it off to grow larger. This process is called Molting (Ecdysis).</div>"
     },
     {
-      "image": "assets/science/musklo-skeletal-system/quest_1_Types_of_Skeletons/endoskeleton.png",
+      "image": "assets/science/musklo-skeletal-system/quest_1_types_skeleton/endoskeleton.png",
       "title": "3. Endoskeleton",
       "description": "<p>Found in <b>Vertebrates</b> (Humans, Cows, Fish, Birds).</p><div class='rule-box'><b>Definition:</b> A skeleton found <b>inside</b> the body, made of bone and cartilage.</div><p><b>Advantage:</b> It grows with the animal, so no molting is required. It provides a strong framework for large muscles.</p>"
     }
