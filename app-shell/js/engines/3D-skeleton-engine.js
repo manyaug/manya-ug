@@ -1,18 +1,15 @@
 /**
- * Manya Pro 3D Skeleton Engine (v2.0)
- * Features: 
- * 1. Auto-Vector Camera Focus
- * 2. Dual 3D/2D Diagram Toggle
- * 3. Pro Quiz Logic (Labeling Mode)
- * 4. Slide-Out Context Drawer (Notes & Exam Tips) - NEW
+ * Manya Pro 3D Skeleton Engine (v3.0 - Hybrid Context)
+ * 1. Quick Info: Immediate pop-up bubbles on parts.
+ * 2. Deep Dive: "Slide-out" drawer activated ONLY via the side tab.
+ * 3. Mobile Optimized: Touch-friendly targets.
  */
 export const SkeletonQuestEngine = {
     state: {
-        selectedJointId: null,
+        selectedId: null, // Track what is currently clicked
         data: null
     },
 
-    // --- 1. DYNAMIC STYLES (Consolidated) ---
     injectStyles: () => {
         if (document.getElementById('skeleton-sim-styles')) return;
         const style = document.createElement('style');
@@ -20,365 +17,308 @@ export const SkeletonQuestEngine = {
         style.innerHTML = `
             :root {
                 --manya-purple: #7c3aed;
-                --manya-bg: #f8fafc;
-                --drawer-width: 340px;
+                --drawer-w-mobile: 85%;
+                --drawer-w-desktop: 350px;
             }
 
             .manya-3d-root { 
-                display: grid;
-                grid-template-rows: auto 1fr auto; 
-                height: 100dvh; 
-                width: 100%; 
-                background: var(--manya-bg);
-                overflow: hidden;
-                position: relative; /* For absolute positioning of drawer */
-            }
-            
-            /* --- TOP CARD --- */
-            .notes-card-3d { 
-                background: white; padding: 12px 16px; margin: 12px;
-                border-radius: 16px; border-left: 6px solid var(--manya-purple); 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10;
-                position: relative;
-                transition: opacity 0.3s;
+                position: relative; height: 100dvh; width: 100%; 
+                background: #f8fafc; overflow: hidden;
             }
 
-            .dual-mode-btn { 
-                position: absolute; right: 12px; top: 12px; 
-                background: var(--manya-purple); color: white; 
-                border: none; padding: 6px 12px; border-radius: 8px; 
-                font-size: 10px; font-weight: 800; cursor: pointer; 
-                display: flex; align-items: center; gap: 5px; 
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            /* --- 1. SIDE TAB (The Trigger) --- */
+            .side-tab {
+                position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+                background: white;
+                color: var(--manya-purple);
+                padding: 30px 6px;
+                border-radius: 0 12px 12px 0;
+                box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+                cursor: pointer; z-index: 300;
+                font-weight: 800; font-size: 12px;
+                writing-mode: vertical-rl; text-orientation: mixed;
+                border: 1px solid #e2e8f0; border-left: none;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
+            .side-tab:hover { padding-right: 12px; }
+            .side-tab.pulse {
+                animation: tabPulse 1.5s infinite;
+                background: var(--manya-purple); color: white; border: none;
+            }
+            @keyframes tabPulse { 0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(124, 58, 237, 0); } 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); } }
 
-            /* --- SLIDE-OUT DRAWER (NEW) --- */
+            /* --- 2. SLIDE-OUT DRAWER --- */
             .info-drawer {
-                position: absolute;
-                top: 0; left: 0; bottom: 0;
-                width: 85%;
-                max-width: var(--drawer-width);
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(12px); /* Glass effect */
-                z-index: 200;
-                transform: translateX(-105%); /* Hidden by default */
+                position: absolute; top: 0; left: 0; bottom: 0;
+                width: var(--drawer-w-mobile); max-width: var(--drawer-w-desktop);
+                background: rgba(255, 255, 255, 0.96);
+                backdrop-filter: blur(10px);
+                z-index: 250;
+                transform: translateX(-105%);
                 transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-                box-shadow: 10px 0 40px rgba(0,0,0,0.1);
+                box-shadow: 10px 0 50px rgba(0,0,0,0.15);
                 display: flex; flex-direction: column;
                 border-right: 1px solid #e2e8f0;
             }
+            .info-drawer.open { transform: translateX(0); }
+
+            .drawer-header { padding: 20px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+            .drawer-title { font-size: 1.2rem; font-weight: 800; color: #1e293b; margin: 0; }
+            .drawer-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; padding: 0 10px; }
             
-            .info-drawer.open {
-                transform: translateX(0); /* Slide in */
-            }
+            .drawer-content { padding: 20px; overflow-y: auto; flex: 1; font-size: 14px; line-height: 1.6; color: #334155; }
+            .drawer-content h3 { margin-top: 0; font-size: 1rem; color: var(--manya-purple); }
 
-            .drawer-header {
-                padding: 24px;
-                background: var(--manya-purple);
-                color: white;
-                position: relative;
-            }
+            .exam-tip-box { margin-top: 20px; background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 4px; }
 
-            .drawer-close {
-                position: absolute; top: 15px; right: 15px;
-                background: rgba(255,255,255,0.2); border: none;
-                color: white; width: 32px; height: 32px; border-radius: 50%;
-                cursor: pointer; display: flex; align-items: center; justify-content: center;
-                transition: background 0.2s;
+            /* --- 3. QUICK INFO BUBBLES (Restored) --- */
+            .HotspotAnnotation {
+                background: white; padding: 8px 12px; border-radius: 8px;
+                position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+                width: 140px; text-align: center;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+                pointer-events: none; opacity: 0; transition: opacity 0.2s;
+                z-index: 100; font-size: 12px;
             }
-            .drawer-close:hover { background: rgba(255,255,255,0.4); }
-
-            .drawer-content {
-                padding: 24px;
-                overflow-y: auto;
-                flex: 1;
+            .HotspotAnnotation b { display: block; color: var(--manya-purple); margin-bottom: 2px; }
+            /* The caret (triangle) at the bottom */
+            .HotspotAnnotation::after {
+                content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px;
+                border-width: 6px; border-style: solid; border-color: white transparent transparent transparent;
             }
-
-            .drawer-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 5px 0; line-height: 1.1; }
-            .drawer-subtitle { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; margin-bottom: 5px; }
-            .drawer-body { font-size: 0.95rem; color: #334155; line-height: 1.6; margin-top: 15px; }
             
-            /* EXAM TIP BOX */
-            .exam-tip-box {
-                margin-top: 25px;
-                background: #fffbeb;
-                border-left: 4px solid #f59e0b;
-                border-radius: 8px;
-                padding: 16px;
-            }
-            .exam-tip-label { color: #b45309; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 5px; }
-            .exam-tip-text { color: #78350f; font-size: 0.9rem; font-style: italic; }
+            .Hotspot.selected .HotspotAnnotation { opacity: 1; top: -60px; }
 
-            /* --- VIEWER & OVERLAYS --- */
-            .viewer-wrapper {
-                position: relative; width: 100%; height: 100%; min-height: 0;
-            }
-
-            model-viewer { 
-                width: 100%; height: 100%; 
-                background: radial-gradient(circle, #ffffff 0%, #f1f5f9 100%);
-                --min-hotspot-opacity: 0; 
-                outline: none;
-            }
-
-            .diag-overlay { 
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                background: white; z-index: 50; display: none; 
-                align-items: center; justify-content: center;
-            }
-            .diag-overlay img { max-width: 95%; max-height: 95%; object-fit: contain; }
-
-            .reset-view-btn {
-                position: absolute; bottom: 20px; right: 20px;
-                background: white; border: 1px solid #e2e8f0;
-                padding: 10px 16px; border-radius: 30px; font-size: 11px;
-                font-weight: 800; cursor: pointer; z-index: 100;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                color: #475569; display: flex; align-items: center; gap: 6px;
-                transition: transform 0.2s;
-            }
-            .reset-view-btn:active { transform: scale(0.95); }
-
-            /* --- HOTSPOTS --- */
+            /* --- 4. VIEWER & CONTROLS --- */
+            model-viewer { width: 100%; height: 100%; --min-hotspot-opacity: 0; outline: none; }
+            
             .Hotspot { 
-                width: 24px; height: 24px; 
-                border-radius: 50%; border: 3px solid #fff; 
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; transition: 0.3s; 
-                animation: pulse 2s infinite;
+                width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; 
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; 
+                background: var(--manya-purple);
             }
-            @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+            .Hotspot:not(.selected) { animation: pulse 2s infinite; }
+            .Hotspot.selected { border-color: var(--manya-purple); background: white; transform: scale(1.3); z-index: 90; }
 
-            .Hotspot.selected { background-color: var(--manya-purple) !important; border-color: white; transform: scale(1.3); animation: none; }
-            .axial { background-color: #ef4444 !important; } /* Red */
-            .appendicular { background-color: #f59e0b !important; } /* Amber */
-            .quiz-mode { background-color: #3b82f6 !important; } /* Blue */
-            .correct { background-color: #22c55e !important; } /* Green */
+            @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-            /* --- QUIZ SPECIFIC --- */
-            .word-bank-3d {
-                display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 8px; padding: 16px; background: white; border-top: 1px solid #e2e8f0;
-                max-height: 30vh; overflow-y: auto; z-index: 1000;
+            .reset-btn {
+                position: absolute; bottom: 20px; right: 20px;
+                background: white; padding: 10px 16px; border-radius: 20px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-weight: 700; font-size: 12px;
+                cursor: pointer; border: 1px solid #e2e8f0; z-index: 50;
             }
-            .word-btn { padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; color: #334155; }
-            .word-btn.used { opacity: 0.4; pointer-events: none; background: #e2e8f0; text-decoration: line-through; }
+            
+            /* Top Card (Mini) */
+            .top-card {
+                position: absolute; top: 10px; left: 50px; right: 10px;
+                background: rgba(255,255,255,0.9); backdrop-filter: blur(4px);
+                padding: 10px 15px; border-radius: 12px; border: 1px solid #e2e8f0;
+                z-index: 50; pointer-events: none;
+            }
+            .top-card h2 { margin: 0; font-size: 14px; color: #1e293b; }
         `;
         document.head.appendChild(style);
     },
 
-    // --- 2. CAMERA MATH: VECTORS TO ORBIT ---
     calculateOrbit: (normStr) => {
         const parts = normStr.split(' ').map(Number);
         const nx = parts[0], ny = parts[1], nz = parts[2];
         let theta = Math.atan2(nx, nz) * (180 / Math.PI);
         let phi = Math.acos(ny) * (180 / Math.PI);
-        return `${theta}deg ${phi}deg 45%`; // 45% zoom is a good sweet spot
+        return `${theta}deg ${phi}deg 45%`;
     },
 
-    // --- 3. STUDY MODE (With Drawer Logic) ---
     renderStudy: (container, data) => {
         SkeletonQuestEngine.injectStyles();
-        
+        SkeletonQuestEngine.state.data = data;
+        SkeletonQuestEngine.state.selectedId = null;
+
         container.innerHTML = `
             <div class="manya-3d-root">
-                
-                <!-- 1. HEADER CARD -->
-                <div class="notes-card-3d" id="main-intro">
-                    ${data.secondaryImage ? `<button class="dual-mode-btn" id="diag-toggle"><span style="font-size:14px">🖼️</span> DIAGRAM</button>` : ''}
-                    <h2 style="margin:0; font-size:1.1rem; color:#1e293b; padding-right: 80px;">${data.topic}</h2>
-                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--manya-purple); font-weight:700;">
-                        👆 Tap the pulsing dots to explore details.
-                    </p>
+                <!-- TOP INTRO -->
+                <div class="top-card">
+                    <h2>${data.topic}</h2>
                 </div>
 
-                <!-- 2. SLIDE-OUT DRAWER -->
-                <aside class="info-drawer" id="ctx-drawer">
+                <!-- SIDE TAB TRIGGER -->
+                <div class="side-tab" id="drawer-trigger">
+                    <span>📑 NOTES</span>
+                </div>
+
+                <!-- SLIDE-OUT DRAWER (Hidden by default) -->
+                <aside class="info-drawer" id="drawer">
                     <div class="drawer-header">
-                        <button class="drawer-close" id="drawer-close">✕</button>
-                        <div class="drawer-subtitle">Selected Part</div>
-                        <h1 class="drawer-title" id="d-title">...</h1>
+                        <span class="drawer-title" id="d-title">Overview</span>
+                        <button class="drawer-close" id="d-close">✕</button>
                     </div>
-                    <div class="drawer-content">
-                        <div class="drawer-body" id="d-body">...</div>
-                        
-                        <!-- Dynamic Exam Tip Box -->
-                        <div class="exam-tip-box" id="d-tip-box" style="display:none;">
-                            <span class="exam-tip-label">💡 Exam Tip</span>
-                            <span class="exam-tip-text" id="d-tip"></span>
-                        </div>
+                    <div class="drawer-content" id="d-content">
+                        <!-- Dynamic Content Goes Here -->
                     </div>
                 </aside>
 
-                <!-- 3. MAIN VIEWER AREA -->
-                <div class="viewer-wrapper">
-                    <model-viewer id="v3d" src="${data.modelUrl}" camera-controls shadow-intensity="1" bounds="tight" interpolation-decay="200">
-                        ${data.hotspots.map(hs => `
-                            <button class="Hotspot ${hs.region || 'appendicular'}" slot="hotspot-${hs.id}" 
-                                    data-id="${hs.id}"
-                                    data-position="${hs.pos.replace('m','')}" 
-                                    data-normal="${(hs.norm || "0 1 0").replace('m','')}">
-                            </button>`).join('')}
-                    </model-viewer>
-                    
-                    ${data.secondaryImage ? `<div class="diag-overlay" id="diag-overlay"><img src="${data.secondaryImage}"></div>` : ''}
-                    
-                    <button class="reset-view-btn" id="reset-v">
-                        <span>↺</span> RESET VIEW
-                    </button>
-                </div>
+                <!-- 3D VIEWER -->
+                <model-viewer id="v3d" src="${data.modelUrl}" camera-controls shadow-intensity="1" bounds="tight" interpolation-decay="200">
+                    ${data.hotspots.map(hs => `
+                        <button class="Hotspot" slot="hotspot-${hs.id}" 
+                                data-id="${hs.id}"
+                                data-position="${hs.pos.replace('m','')}" 
+                                data-normal="${(hs.norm || "0 1 0").replace('m','')}">
+                            <div class="HotspotAnnotation">
+                                <b>${hs.label}</b>
+                                <span>${hs.info || 'Tap to learn'}</span>
+                            </div>
+                        </button>`).join('')}
+                </model-viewer>
+
+                <button class="reset-btn" id="reset-v">↺ RESET</button>
             </div>
         `;
 
-        // --- INTERACTION LOGIC ---
         const viewer = container.querySelector('#v3d');
-        const drawer = container.querySelector('#ctx-drawer');
+        const drawer = container.querySelector('#drawer');
+        const trigger = container.querySelector('#drawer-trigger');
         const dTitle = container.querySelector('#d-title');
-        const dBody = container.querySelector('#d-body');
-        const dTip = container.querySelector('#d-tip');
-        const dTipBox = container.querySelector('#d-tip-box');
+        const dContent = container.querySelector('#d-content');
         
-        // 1. Hotspot Click Handler
+        // --- 1. DRAWER CONTENT LOGIC ---
+        const updateDrawer = (isGeneral = false, hotspotData = null) => {
+            if (isGeneral) {
+                dTitle.innerText = "General Overview";
+                dContent.innerHTML = `
+                    <h3>${data.topic}</h3>
+                    <p>${data.intro}</p>
+                    ${data.notes ? `<ul style="padding-left:20px;">${data.notes.map(n => `<li>${n}</li>`).join('')}</ul>` : ''}
+                    <div style="margin-top:20px; padding:10px; background:#f1f5f9; border-radius:8px; font-size:12px; text-align:center;">
+                        👈 Tap a part on the 3D model to see specific details here.
+                    </div>
+                `;
+            } else if (hotspotData) {
+                dTitle.innerText = hotspotData.label;
+                dContent.innerHTML = `
+                    <p>${hotspotData.description || hotspotData.info}</p>
+                    ${hotspotData.examTip ? `
+                        <div class="exam-tip-box">
+                            <strong style="color:#b45309; text-transform:uppercase; font-size:11px;">💡 Exam Tip</strong><br>
+                            ${hotspotData.examTip}
+                        </div>
+                    ` : ''}
+                `;
+            }
+        };
+
+        // Initialize Drawer with General Topic Info
+        updateDrawer(true);
+
+        // --- 2. SIDE TAB INTERACTION ---
+        trigger.onclick = () => {
+            drawer.classList.add('open');
+            trigger.classList.remove('pulse'); // Stop pulsing if it was
+        };
+
+        container.querySelector('#d-close').onclick = () => drawer.classList.remove('open');
+
+        // --- 3. HOTSPOT INTERACTION ---
         container.querySelectorAll('.Hotspot').forEach(h => {
             h.onclick = (e) => {
-                e.stopPropagation(); // Prevent clicking through to the model background
-                
-                // Visual State
+                e.stopPropagation(); // Stop click from hitting background
+
+                // Visual Selection (Quick Info Bubble)
                 container.querySelectorAll('.Hotspot').forEach(btn => btn.classList.remove('selected'));
                 h.classList.add('selected');
 
-                // Camera Movement
+                // Camera Move
                 viewer.cameraTarget = h.dataset.position;
                 viewer.cameraOrbit = SkeletonQuestEngine.calculateOrbit(h.dataset.normal);
 
-                // Populate Drawer
-                const pointId = h.dataset.id;
-                const pointData = data.hotspots.find(x => x.id === pointId);
+                // Update Drawer Content (But DO NOT Open it)
+                const hsData = data.hotspots.find(x => x.id === h.dataset.id);
+                updateDrawer(false, hsData);
 
-                if (pointData) {
-                    dTitle.innerText = pointData.label;
-                    // Prefer 'description', fallback to 'info'
-                    dBody.innerHTML = pointData.description || pointData.info || "No details available.";
-                    
-                    // Handle Exam Tips
-                    if (pointData.examTip) {
-                        dTip.innerText = pointData.examTip;
-                        dTipBox.style.display = 'block';
-                    } else {
-                        dTipBox.style.display = 'none';
-                    }
-                }
-
-                // Open Drawer
-                drawer.classList.add('open');
+                // UX Hint: Flash the side tab to say "Hey, details are here!"
+                trigger.classList.add('pulse');
+                trigger.innerText = "READ MORE 👉";
+                
+                // If drawer is ALREADY open, just update it. If closed, keep it closed until requested.
             };
         });
 
-        // 2. Close Drawer Logic
-        const closeDrawer = () => {
-            drawer.classList.remove('open');
-            container.querySelectorAll('.Hotspot').forEach(btn => btn.classList.remove('selected'));
-        };
+        // --- 4. BACKGROUND CLICK ---
+        viewer.addEventListener('mousedown', (e) => {
+            if(e.target === viewer) {
+                // Deselect everything
+                container.querySelectorAll('.Hotspot').forEach(btn => btn.classList.remove('selected'));
+                drawer.classList.remove('open'); // Close drawer
+                trigger.classList.remove('pulse');
+                trigger.innerText = "📑 NOTES";
+                
+                // Reset Drawer to General
+                updateDrawer(true);
+            }
+        });
 
-        container.querySelector('#drawer-close').onclick = closeDrawer;
-
-        // 3. Reset View Logic (Closes drawer + Resets Camera)
+        // --- 5. RESET BUTTON ---
         container.querySelector('#reset-v').onclick = () => {
-            closeDrawer();
             viewer.cameraTarget = "auto auto auto";
             viewer.cameraOrbit = "auto auto auto";
+            container.querySelectorAll('.Hotspot').forEach(btn => btn.classList.remove('selected'));
+            drawer.classList.remove('open');
+            updateDrawer(true);
         };
-
-        // 4. Click Background to Close
-        viewer.addEventListener('mousedown', (e) => {
-            // If clicking the canvas itself (not a hotspot), close drawer
-            if(e.target === viewer) closeDrawer();
-        });
-
-        // 5. Dual Mode Toggle (Image vs 3D)
-        const toggleBtn = container.querySelector('#diag-toggle');
-        const overlay = container.querySelector('#diag-overlay');
-
-        if (toggleBtn) {
-            toggleBtn.onclick = () => {
-                const isHidden = overlay.style.display === 'none' || overlay.style.display === '';
-                overlay.style.display = isHidden ? 'flex' : 'none';
-                toggleBtn.innerHTML = isHidden ? '<span style="font-size:14px">🦴</span> 3D MODEL' : '<span style="font-size:14px">🖼️</span> DIAGRAM';
-            };
-        }
     },
 
-    // --- 4. QUIZ MODE (Preserved functionality) ---
+    // --- QUIZ MODE (Standard) ---
     renderLabeling: (container, data) => {
-        SkeletonQuestEngine.injectStyles();
-        let selectedId = null;
-
+        // Reuse style injection
+        SkeletonQuestEngine.injectStyles(); 
+        
+        // Simple Quiz Layout (No drawer needed, focus on game)
         container.innerHTML = `
             <div class="manya-3d-root">
-                <div class="notes-card-3d" style="text-align:center;">
-                    <h2 style="margin:0; font-size:16px;">${data.variantTitle}</h2>
-                    <p id="q-hint" style="margin:0; font-size:12px; font-weight:600; color:var(--manya-purple);">Tap a blue pin first.</p>
+                <div style="position:absolute; top:10px; left:10px; right:10px; background:white; padding:15px; border-radius:12px; z-index:100; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+                    <h3 style="margin:0; font-size:16px;">${data.variantTitle}</h3>
+                    <p id="q-status" style="margin:5px 0 0 0; color:var(--manya-purple); font-weight:bold; font-size:13px;">Tap a pin to start!</p>
                 </div>
-                <div class="viewer-wrapper">
-                    <model-viewer id="q3d" src="${data.modelUrl}" camera-controls shadow-intensity="1" bounds="tight">
-                        ${data.hotspots.map(hs => `<button class="Hotspot quiz-mode" id="pin-${hs.id}" slot="hotspot-${hs.id}" data-position="${hs.pos.replace('m','')}" data-normal="${(hs.norm || "0 1 0").replace('m','')}"></button>`).join('')}
-                    </model-viewer>
-                </div>
-                <div class="word-bank-3d">
-                    ${data.wordBank.map(w => `<button class="word-btn" onclick="Manya3DQuizHandler(this, '${w}')">${w}</button>`).join('')}
+
+                <model-viewer id="q3d" src="${data.modelUrl}" camera-controls shadow-intensity="1" bounds="tight">
+                    ${data.hotspots.map(hs => `<button class="Hotspot" id="pin-${hs.id}" slot="hotspot-${hs.id}" data-position="${hs.pos.replace('m','')}" data-normal="${(hs.norm || "0 1 0").replace('m','')}"></button>`).join('')}
+                </model-viewer>
+
+                <div style="position:absolute; bottom:0; left:0; right:0; background:white; padding:15px; border-radius:20px 20px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:10px; z-index:100;">
+                    ${data.wordBank.map(w => `<button class="q-btn" style="padding:12px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; font-weight:700; color:#334155;" onclick="ManyaQuiz3D(this, '${w}')">${w}</button>`).join('')}
                 </div>
             </div>
         `;
-        
-        const viewer = container.querySelector('#q3d');
-        const pins = container.querySelectorAll('.Hotspot');
 
-        pins.forEach(pin => {
-            pin.onclick = () => {
-                pins.forEach(p => p.classList.remove('selected'));
-                pin.classList.add('selected');
-                selectedId = pin.id.replace('pin-', '');
-                viewer.cameraTarget = pin.dataset.position;
-                viewer.cameraOrbit = SkeletonQuestEngine.calculateOrbit(pin.dataset.normal);
-                document.getElementById('q-hint').innerText = "Now select the name below 👇";
-                document.getElementById('q-hint').style.color = "#334155";
+        // Logic for Quiz
+        const viewer = container.querySelector('#q3d');
+        let currentPin = null;
+
+        container.querySelectorAll('.Hotspot').forEach(p => {
+            p.onclick = () => {
+                container.querySelectorAll('.Hotspot').forEach(x => x.classList.remove('selected'));
+                p.classList.add('selected');
+                currentPin = p.id.replace('pin-', '');
+                viewer.cameraTarget = p.dataset.position;
+                document.getElementById('q-status').innerText = "Which part is this?";
             };
         });
 
-        // Global handler for the dynamically created buttons
-        window.Manya3DQuizHandler = (btn, word) => {
-            if (!selectedId) {
-                const hint = document.getElementById('q-hint');
-                hint.innerText = "⚠️ Select a pin on the skeleton first!";
-                hint.style.color = "#ef4444";
+        window.ManyaQuiz3D = (btn, word) => {
+            if(!currentPin) {
+                document.getElementById('q-status').innerText = "⚠️ Tap a pin on the skeleton first!";
                 return;
             }
-
-            const target = data.hotspots.find(h => h.id === selectedId);
-            
-            if (word === target.label) {
-                // Correct Answer
-                const activePin = container.querySelector(`#pin-${selectedId}`);
-                activePin.classList.add('correct');
-                activePin.classList.remove('quiz-mode', 'selected');
-                
-                btn.classList.add('used');
-                btn.innerText = "✓ " + word;
-                
-                selectedId = null;
-                document.getElementById('q-hint').innerText = "Correct! Find the next one.";
-                document.getElementById('q-hint').style.color = "#22c55e";
-                
-                // Reset Camera
+            const correct = data.hotspots.find(h => h.id === currentPin);
+            if(correct.label === word) {
+                document.getElementById('q-status').innerHTML = `<span style="color:green">✓ Correct! It is the ${word}</span>`;
+                btn.style.background = "#dcfce7"; btn.style.color = "green"; btn.disabled = true;
+                const pin = document.getElementById('pin-'+currentPin);
+                pin.style.background = "#22c55e"; pin.classList.remove('selected');
+                currentPin = null;
                 viewer.cameraTarget = "auto auto auto";
-                viewer.cameraOrbit = "auto auto auto";
             } else {
-                // Wrong Answer
-                const hint = document.getElementById('q-hint');
-                hint.innerText = "❌ Try again!";
-                hint.style.color = "#ef4444";
-                
-                btn.style.background = "#fee2e2";
-                setTimeout(() => btn.style.background = "#f8fafc", 500);
+                document.getElementById('q-status').innerHTML = `<span style="color:red">✗ Wrong! Try again.</span>`;
             }
         };
     }
