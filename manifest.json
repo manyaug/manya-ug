@@ -8,12 +8,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "assets/icons/icon-mac-128x128.png",
+      "src": "assets/icons/pose_1.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-mac-512x512.png",
+      "src": "assets/icons/pose_1.png",
       "sizes": "512x512",
       "type": "image/png"
     }

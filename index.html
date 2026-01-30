@@ -969,17 +969,102 @@
             <div id="engine-tag" style="font-size:9px; font-weight:800; color:var(--manya-purple); background:var(--manya-purple-light); padding:4px 10px; border-radius:6px; text-transform:uppercase;">Hub Ready</div>
         </header>
 
-        <div id="view-mount">
-            <!-- INTRO SPLASH SCREEN -->
-            <div class="manya-intro">
-                <div class="icon-box">M</div>
-                <h1>Manya Smart Learning</h1>
-                <p>Empowering Ugandan students for PLE success.</p>
-                <div style="margin-top:24px; padding:12px 20px; background:#f1f5f9; border-radius:12px; font-size:13px; font-weight:600; color:var(--text-light);">
-                    ← Select a Topic from the sidebar to begin
-                </div>
-            </div>
+   <div id="view-mount">
+    <!-- INTRO SPLASH SCREEN -->
+    <div class="manya-intro">
+        
+        <!-- Image Container with size limits -->
+        <div class="intro-image-container">
+            <!-- Replace 'duck-image.png' with your actual image path -->
+            <img src="assets\icons\pose_1.png" alt="Manya Mascot" class="manya-mascot">
         </div>
+
+        <h1>Manya Smart Learning</h1>
+        <p>Empowering Ugandan students for PLE success.</p>
+        
+        <div class="instruction-pill">
+            ← Select a Topic from the sidebar to begin
+        </div>
+    </div>
+</div>
+
+<style>
+    .manya-intro {
+        text-align: center;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh; /* Centers everything vertically */
+    }
+
+    /* THE FIX: Controlled Image Sizing */
+    .intro-image-container {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .manya-mascot {
+        /* This keeps the duck at a reasonable size regardless of screen height */
+        max-height: 250px; 
+        width: auto;
+        display: block;
+        margin: 0 auto;
+        
+        /* The "Action": Continuous floating */
+        animation: float 4s ease-in-out infinite;
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Hover effect: Wiggle/Scale */
+    .manya-mascot:hover {
+        transform: scale(1.1) rotate(3deg);
+        cursor: pointer;
+        filter: drop-shadow(0 15px 20px rgba(124, 58, 237, 0.3)); /* Purple glow */
+    }
+
+    /* Keyframes for the floating motion */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Text Styling */
+    h1 {
+        font-size: 1.8rem;
+        margin: 10px 0;
+        color: #1e293b;
+    }
+
+    p {
+        color: #64748b;
+        margin-bottom: 20px;
+    }
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        background: #7c3aed; /* Purple match */
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .instruction-pill {
+        background: #f1f5f9;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+    }
+</style>
     </main>
 
     <script>
