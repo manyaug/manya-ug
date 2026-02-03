@@ -1,0 +1,25 @@
+{
+  "engineType": "SYNTAX_ENGINE",
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Arrange words to form a plan:",
+      "words": ["I", "am", "going", "to", "visit", "my", "grandparents"],
+      "expected": "I am going to visit my grandparents"
+    },
+    {
+      "interaction": "TRANSFORM",
+      "prompt": "Rewrite using 'going to': I shall cook rice for the guests.",
+      "validation": "PATTERN",
+      "pattern": "am going to cook",
+      "hint": "Use the structure 'am going to' + verb."
+    },
+    {
+      "interaction": "TRANSFORM",
+      "prompt": "Supply the Question Tag: You won't stay in town, _______?",
+      "validation": "PATTERN",
+      "pattern": "will you",
+      "hint": "Negative statements take positive tags!"
+    }
+  ]
+}
