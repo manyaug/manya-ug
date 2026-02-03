@@ -1,0 +1,163 @@
+{
+  "engineType": "QUEST_RUNNER",
+  "questId": "ENG-P7-C1-Q2",
+  "topic": "Holiday Activities",
+  "variantTitle": "Quest 2: Fun in the Village",
+  "steps": [
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "text": "Waddle! We have arrived at the <b>rural</b> village. Look at the big <b>farm</b>! There are so many <b>chores</b> and activities to do here."
+      }
+    },
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "text": "Meow! Don't just think about work, Manya. We can <b>tour</b> the forest, go for a <b>youth camp</b>, or even organize a <b>music concert</b>!"
+      }
+    },
+    {
+      "engineType": "ENGLISH_RULE_MASTER",
+      "data": {
+        "type": "VOCABULARY_LIST",
+        "topicTitle": "Village Activity Dictionary",
+        "rules": [
+          { "word": "Chores", "meaning": "Regular small jobs at home like washing plates or milking cows." },
+          { "word": "Tour", "meaning": "A journey to visit different interesting places." },
+          { "word": "Revise", "meaning": "To read through your school notes again during the holiday." },
+          { "word": "Routine", "meaning": "A fixed way of doing things every day." },
+          { "word": "Bash", "meaning": "A large, exciting party or celebration." },
+          { "word": "Farm", "meaning": "An area of land used for growing crops or keeping animals." },
+          { "word": "Camp", "meaning": "A place where young people stay to learn new skills." },
+          { "word": "Scrutiny", "meaning": "A very careful look at something (like checking your report card)." }
+        ]
+      }
+    },
+    {
+      "engineType": "SYNTAX_ENGINE",
+      "data": {
+        "displayMode": "BATCH_6",
+        "repeatOnFail": true,
+        "questions": [
+          { "mode": "CLOZE", "prompt": "Manya helped his parents with <b>_______</b> like fetching water.", "expected": "chores", "options": ["chores", "concerts", "fairs"], "hint": "Think of small house jobs." },
+          { "mode": "CLOZE", "prompt": "We are going to <b>_______</b> the game park to see lions.", "expected": "tour", "options": ["tour", "revise", "commence"], "hint": "To visit interesting places." },
+          { "mode": "CLOZE", "prompt": "It is a <b>_______</b> to clean our feathers every morning.", "expected": "routine", "options": ["routine", "bash", "fare"], "hint": "A regular way of doing things." },
+          { "mode": "CLOZE", "prompt": "Polly needs to <b>_______</b> her English notes for next term.", "expected": "revise", "options": ["revise", "board", "vacate"], "hint": "To study again." },
+          { "mode": "CLOZE", "prompt": "The primary seven <b>_______</b> was held at the community hall.", "expected": "camp", "options": ["camp", "chores", "report"], "hint": "A place for youth activities." },
+          { "mode": "CLOZE", "prompt": "Uncle organized a big <b>_______</b> to welcome us home.", "expected": "bash", "options": ["bash", "routine", "remedial"], "hint": "A synonym for a big party." },
+          { "mode": "CLOZE", "prompt": "Manya is going to <b>_______</b> his sick grandmother.", "expected": "visit", "options": ["visit", "revise", "board"], "hint": "To go and see someone." },
+          { "mode": "CLOZE", "prompt": "We grow maize and beans on our <b>_______</b>.", "expected": "farm", "options": ["farm", "concert", "stationery"], "hint": "Place for crops and animals." },
+          { "mode": "CLOZE", "prompt": "The music <b>_______</b> started at 4:00 PM.", "expected": "concert", "options": ["concert", "chores", "vacation"], "hint": "A public music show." },
+          { "mode": "CLOZE", "prompt": "Manya gave a <b>_______</b> (careful look) to his marks.", "expected": "scrutiny", "options": ["scrutiny", "bash", "tour"], "hint": "A very careful examination." }
+        ]
+      }
+    },
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "text": "SQUAWK! Manya, you look so <b>EXCITED</b>. That's because the trip is <b>EXCITING</b>! Do you see how those words change?"
+      }
+    },
+    {
+      "engineType": "ENGLISH_RULE_MASTER",
+      "data": {
+        "topicTitle": "Rule: Forming Adjectives",
+        "rules": [
+          {
+            "title": "The -ing vs -ed Rule",
+            "formula": "Verb + suffix = Adjective",
+            "toggleA": "-ing (Describing)", "toggleB": "-ed (Feeling)",
+            "exampleA": "The tour is <b>exciting</b>.",
+            "exampleB": "Manya is <b>excited</b>.",
+            "explainA": "Use -ing for the thing that causes the feeling (The Trip).",
+            "explainB": "Use -ed for the person who has the feeling (Manya).",
+            "teacherNote": "The movie is INTERESTING, so the student is INTERESTED."
+          }
+        ]
+      }
+    },
+    {
+      "engineType": "SYNTAX_ENGINE",
+      "data": {
+        "questions": [
+          { "mode": "CLOZE", "prompt": "The football match was very <b>_______</b> (excite).", "expected": "exciting", "hint": "Describe the match, not a person." },
+          { "mode": "CLOZE", "prompt": "Kiki was <b>_______</b> (interest) in learning how to cook.", "expected": "interested", "hint": "Describe Kiki's feeling." },
+          { "mode": "CLOZE", "prompt": "Fetching water every day is <b>_______</b> (tire).", "expected": "tiring", "hint": "Describe the activity." },
+          { "mode": "CLOZE", "prompt": "Manya felt <b>_______</b> (wonder) after swimming.", "expected": "wonderful", "hint": "Describe Manya's state." }
+        ]
+      }
+    },
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "text": "Oh no! I forgot my swimsuit! <b>If I had remembered</b> my swimsuit, <b>I would have gone</b> swimming in the stream."
+      }
+    },
+    {
+      "engineType": "ENGLISH_RULE_MASTER",
+      "data": {
+        "topicTitle": "Rule: If 3 Conditional",
+        "rules": [
+          {
+            "title": "The 'Regret' Formula",
+            "formula": "If + had + V3 ... would have + V3",
+            "toggleA": "The Condition", "toggleB": "The Result",
+            "exampleA": "If Manya <b>had studied</b>...",
+            "exampleB": "...he <b>would have passed</b>.",
+            "explainA": "Use 'had' + the past participle (V3).",
+            "explainB": "Use 'would have' + the past participle (V3).",
+            "teacherNote": "This rule is for things that DID NOT happen in the past."
+          }
+        ]
+      }
+    },
+    {
+      "engineType": "SYNTAX_ENGINE",
+      "data": {
+        "questions": [
+          { "mode": "TRANSFORM", "prompt": "Complete the sentence: <br>If I <b>_______</b> (see) him, I would have given him a gift.", "expected": "had seen", "hint": "Use 'had' + V3 of see." },
+          { "mode": "TRANSFORM", "prompt": "Complete the result: <br>If it had rained, the crops <b>_______</b> (grow) well.", "expected": "would have grown", "hint": "Use 'would have' + V3 of grow." },
+          { "mode": "TRANSFORM", "prompt": "If Manya <b>_______</b> (prepare) well, he would have enjoyed the trip.", "expected": "had prepared", "hint": "Condition side needs 'had' + V3." }
+        ]
+      }
+    },
+    {
+      "engineType": "DEEP_READER",
+      "data": {
+        "media": {
+          "type": "PASSAGE",
+          "content": "<b>THE YOUTH CAMP</b>\nLast December, Kato and Babirye attended a youth camp at Najja Community Hall. They learnt how to appreciate themselves and grow up socially. They also learnt skills like baking, weaving, and tailoring. By the time the camp ended, they had decided to start poultry farming to earn some money."
+        },
+        "questions": [
+          {
+            "text": "Where was the youth camp held?",
+            "options": ["At the village farm", "At Najja Community Hall", "At Manya's Pond"],
+            "answer": "At Najja Community Hall"
+          },
+          {
+            "text": "Mention one skill the children learnt at the camp.",
+            "options": ["Swimming", "Tailoring", "Football"],
+            "answer": "Tailoring"
+          },
+          {
+            "text": "What did the children decide to do to earn money?",
+            "options": ["Start a band", "Start poultry farming", "Sell their books"],
+            "answer": "Start poultry farming"
+          }
+        ]
+      }
+    },
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "text": "Wow! We've learnt so much about activities and grammar today. I’m going to go milk the cows now. See you for the next adventure!",
+        "onComplete": "QUEST_FINISHED"
+      }
+    }
+  ]
+}
