@@ -15,7 +15,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "image": "assets/english/chapter_1/chat_2.png",
+        "image": "assets/english/quest_1/holiday_chat_2.png",
         "text": "It means <b>VACATION</b>, Manya!   I’ve already contacted my <b>pen-pal</b> in London to tell her we are going <b>up-country</b> to the <b>rural</b> village!"
       }
     },
@@ -198,6 +198,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
+         "image": "assets/english/quest_1/holiday_chat_6.png",
         "text": "  While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It’s like a mirror, isn't it?"
       }
     },
@@ -263,6 +264,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
+         "image": "assets/english/quest_1/holiday_chat_7.png",
         "text": "Wait! Polly is telling everyone what the teacher said. She is using <b>Reported Speech</b>! You must shift the tense back in time."
       }
     },
@@ -339,6 +341,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
+         "image": "assets/english/quest_1/holiday_chat_8.png",
         "text": "We are here! The village is so <b>BEAUTIFUL</b>. 'Beautiful' is an <b>ADJECTIVE</b>. I can make more adjectives by adding suffixes like -ful or -ing!"
       }
     },
@@ -404,6 +407,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
+        "image": "assets/english/quest_1/holiday_chat_9.png",
         "text": "We've reached our destination! Goodbye for now. Kiki and Polly are going to help me milk the cows. Let's meet at the stream tomorrow!"
       }
     }
