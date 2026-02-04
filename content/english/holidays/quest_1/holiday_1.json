@@ -7,21 +7,24 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "text": "Waddle! Hello friend! My feathers are vibrating because the school term is finally <b>commencing</b> its end. Do you know what that means?"
+        "image": "assets/english/quest_1/holiday_chat_1.png",
+        "text": "Hello friend! My feathers are vibrating because the school term is finally <b>commencing</b> its end. Do you know what that means?"
       }
     },
     {
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "text": "It means <b>VACATION</b>, Manya! SQUAWK! I’ve already contacted my <b>pen-pal</b> in London to tell her we are going <b>up-country</b> to the <b>rural</b> village!"
+        "image": "assets/english/chapter_1/chat_2.png",
+        "text": "It means <b>VACATION</b>, Manya!   I’ve already contacted my <b>pen-pal</b> in London to tell her we are going <b>up-country</b> to the <b>rural</b> village!"
       }
     },
     {
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "text": "Meow! Hold your whiskers. We need to <b>prepare</b>. We have to check our <b>report cards</b> first. I hope none of us need <b>remedial</b> classes!"
+        "image": "assets/english/quest_1/holiday_chat_3.png",
+        "text": "  Hold your whiskers. We need to <b>prepare</b>. We have to check our <b>report cards</b> first. I hope none of us need <b>remedial</b> classes!"
       }
     },
     {
@@ -94,7 +97,7 @@
           { "mode": "CLOZE", "prompt": "Manya will _______ his grandparents.", "expected": "visit", "options": ["visit", "prepare", "board"], "hint": "To go and see someone." },
           { "mode": "CLOZE", "prompt": "A _______ journey for pleasure is a trip.", "expected": "short", "options": ["short", "long", "boring"], "hint": "Opposite of long." },
           { "mode": "CLOZE", "prompt": "Polly is a very _______ parrot.", "expected": "social", "options": ["social", "wild", "lazy"], "hint": "Enjoys talking to others." },
-          { "mode": "CLOZE", "prompt": "Manya waddled to the _______ park.", "expected": "taxi", "options": ["taxi", "bus", "car"], "hint": "Where you find 14-seater vans." },
+          { "mode": "CLOZE", "prompt": "Manya  d to the _______ park.", "expected": "taxi", "options": ["taxi", "bus", "car"], "hint": "Where you find 14-seater vans." },
           { "mode": "CLOZE", "prompt": "Kiki is _______ to see the village pond.", "expected": "eager", "options": ["eager", "tired", "lazy"], "hint": "Very excited to do something." },
           { "mode": "CLOZE", "prompt": "The _______ for the party is Manya's home.", "expected": "venue", "options": ["venue", "programme", "routine"], "hint": "The place of an event." },
           { "mode": "CLOZE", "prompt": "I enjoy _______ to the village by car.", "expected": "travelling", "options": ["travelling", "boarding", "preparing"], "hint": "Going on a journey." },
@@ -118,7 +121,8 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "text": "Waddle! You are a word master! Should we review the rules once more, or continue our journey to the village?",
+        "text": " You are a word master! Should we review the rules once more, or continue our journey to the village?",
+        "image": "assets/english/quest_1/holiday_chat_4.png",
         "choices": [
           { "text": "Review Rules!", "action": "REPLAY_RULES" },
           { "text": "To the Village!", "action": "NEXT" }
@@ -129,27 +133,40 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "text": "SQUAWK! Look at the bus! I am <u>thinking</u> of traveling, but Manya is <u>planning</u>. He is using the <b>GOING TO</b> structure to show his intent!"
+        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "text": "  Look at the bus! I am <u>thinking</u> of traveling, but Manya is <u>planning</u>. He is using the <b>GOING TO</b> structure to show his intent!"
       }
     },
     {
-      "engineType": "ENGLISH_RULE_MASTER",
-      "data": {
-        "topicTitle": "Future Plans (Going To)",
-        "rules": [
-          {
-            "title": "The Intent Formula",
-            "formula": "Subject + am/is/are + GOING TO + Verb",
-            "toggleA": "I / You", "toggleB": "He / She / They",
-            "exampleA": "I <b>am going to</b> board. You <b>are going to</b> board.",
-            "exampleB": "He <b>is going to</b> board. They <b>are going to</b> board.",
-            "explainA": "Use 'am' for yourself, and 'are' for you/we/they.",
-            "explainB": "Use 'is' for one person or animal.",
-            "teacherNote": "This structure is used for fixed plans!"
-          }
-        ]
+  "engineType": "ENGLISH_RULE_MASTER",
+  "data": {
+    "topicTitle": "The Near Future (Going To)",
+    "rules": [
+      {
+        "title": "The SVA Rule",
+        "formula": "Subject + Correct Helping Verb + GOING TO",
+        "toggleA": "Singular",
+        "toggleB": "Plural",
+        "exampleA": "Kiki <b>is</b> going to cook.",
+        "exampleB": "Polly and Manya <b>are</b> going to cook.",
+        "explainA": "Use 'is' for one person/animal.",
+        "explainB": "Use 'are' for two or more.",
+        "teacherNote": "Always check if the subject is singular or plural before picking the helping verb."
+      },
+      {
+        "title": "Intention vs. Will",
+        "formula": "'Going to' = Decision made",
+        "toggleA": "Plan",
+        "toggleB": "Simple Future",
+        "exampleA": "I <b>am going to</b> visit the rural area.",
+        "exampleB": "I <b>shall</b> visit the rural area.",
+        "explainA": "This means I have already packed my bags.",
+        "explainB": "This is just a general statement.",
+        "teacherNote": "In PLE, 'going to' is often used to show a planned vacation."
       }
-    },
+    ]
+  }
+},
     {
       "engineType": "SYNTAX_ENGINE",
       "data": {
@@ -181,27 +198,50 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It’s like a mirror, isn't it?"
+        "text": "  While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It’s like a mirror, isn't it?"
       }
     },
     {
-      "engineType": "ENGLISH_RULE_MASTER",
-      "data": {
-        "topicTitle": "Rule: Question Tags",
-        "rules": [
-          {
-            "title": "The Mirror Rule",
-            "formula": "Statement (+) -> Tag (-) | Statement (-) -> Tag (+)",
-            "toggleA": "Positive Verb", "toggleB": "Negative Verb",
-            "exampleA": "You <u>will</u> travel, <b>won't</b> you?",
-            "exampleB": "You <u>won't</u> stay, <b>will</b> you?",
-            "explainA": "Will changes to Will Not (Won't).",
-            "explainB": "Won't changes to Will.",
-            "teacherNote": "The tag always ends with a pronoun (he, she, they)!"
-          }
-        ]
+  "engineType": "ENGLISH_RULE_MASTER",
+  "data": {
+    "topicTitle": "Question Tags (Trap Mastery)",
+    "rules": [
+      {
+        "title": "The 'I AM' Trap",
+        "formula": "I am... -> aren't I?",
+        "toggleA": "Positive",
+        "toggleB": "Negative",
+        "exampleA": "I <u>am</u> right, <b>aren't I?</b>",
+        "exampleB": "I <u>am not</u> late, <b>am I?</b>",
+        "explainA": "In a positive tag, 'am' becomes 'aren't'.",
+        "explainB": "In a negative tag, it stays 'am I'.",
+        "teacherNote": "UNEB loves this! NEVER write 'amn't I?'. It is always 'aren't I?'"
+      },
+      {
+        "title": "The 'Let's' Trap",
+        "formula": "Let us / Let's -> shall we?",
+        "toggleA": "Suggestion",
+        "toggleB": "Permission",
+        "exampleA": "Let's go for vacation, <b>shall we?</b>",
+        "exampleB": "Let us go to the pond, <b>shall we?</b>",
+        "explainA": "Suggestions using 'Let's' always use 'shall we'.",
+        "explainB": "It doesn't matter if it's 'Let us' or 'Let's'.",
+        "teacherNote": "This is a fixed rule. Even if the statement is positive, the tag is 'shall we?'"
+      },
+      {
+        "title": "Hidden Negatives",
+        "formula": "Hardly/Seldom = Negative Statement",
+        "toggleA": "Hidden Negative",
+        "toggleB": "Normal Negative",
+        "exampleA": "Manya <b>hardly</b> eats, <u>does he?</u>",
+        "exampleB": "Manya <b>doesn't</b> eat, <u>does he?</u>",
+        "explainA": "Words like 'hardly', 'seldom', and 'rarely' make the sentence negative.",
+        "explainB": "Since the sentence is negative, the tag MUST be positive.",
+        "teacherNote": "If you see 'hardly', do not use a 'not' in the tag!"
       }
-    },
+    ]
+  }
+},
     {
       "engineType": "SYNTAX_ENGINE",
       "data": {
@@ -227,23 +267,57 @@
       }
     },
     {
-      "engineType": "ENGLISH_RULE_MASTER",
-      "data": {
-        "topicTitle": "Reported Speech Shifts",
-        "rules": [
-          {
-            "title": "Tense Shifting",
-            "formula": "is/am -> was | will -> would",
-            "toggleA": "Direct Speech", "toggleB": "Reported Speech",
-            "exampleA": "Manya said, 'I <u>am</u> happy.'",
-            "exampleB": "Manya said that he <u>was</u> happy.",
-            "explainA": "The words spoken at the moment.",
-            "explainB": "Telling someone later what was said.",
-            "teacherNote": "We use the word 'that' to join the sentence parts!"
-          }
-        ]
+  "engineType": "ENGLISH_RULE_MASTER",
+  "data": {
+    "topicTitle": "Reported Speech (Indirect Speech)",
+    "rules": [
+      {
+        "title": "Rule 1: The Tense Shift",
+        "formula": "Present Tense → Past Tense",
+        "toggleA": "Direct (Now)",
+        "toggleB": "Reported (Then)",
+        "exampleA": "Polly said, 'I <u>am</u> ready to board.'",
+        "exampleB": "Polly said that she <u>was</u> ready to board.",
+        "explainA": "The verb 'am' is in the present.",
+        "explainB": "When reporting, 'am' shifts back to the past: 'was'.",
+        "teacherNote": "PLE TRAP: If the speaker is a girl (Polly), 'I' must change to 'she'!"
+      },
+      {
+        "title": "Rule 2: Future & Modals",
+        "formula": "will → would | can → could | must → had to",
+        "toggleA": "Direct",
+        "toggleB": "Reported",
+        "exampleA": "Kiki said, 'I <u>will</u> help with chores.'",
+        "exampleB": "Kiki said that she <u>would</u> help with chores.",
+        "explainA": "The helping verb 'will' shows the future.",
+        "explainB": "'Will' always changes to 'would' in reported speech.",
+        "teacherNote": "Other changes: 'Can' becomes 'Could' and 'Must' becomes 'Had to'."
+      },
+      {
+        "title": "Rule 3: Time & Place Shifts",
+        "formula": "now → then | today → that day | tomorrow → the next day",
+        "toggleA": "Direct",
+        "toggleB": "Reported",
+        "exampleA": "Manya said, 'I am traveling <u>today</u>.'",
+        "exampleB": "Manya said that he was traveling <u>that day</u>.",
+        "explainA": "Words like 'today' or 'now' are specific to the moment.",
+        "explainB": "In reports, we change them to show the time has passed.",
+        "teacherNote": "This is a major PLE target! Students often forget to change 'today' to 'that day'."
+      },
+      {
+        "title": "Rule 4: The 'That' Connector",
+        "formula": "Said + [,] + [\"] → Said + that",
+        "toggleA": "Direct",
+        "toggleB": "Reported",
+        "exampleA": "They said<u>, \"</u>We are going.\"",
+        "exampleB": "They said <b>that</b> they were going.",
+        "explainA": "Direct speech uses a comma and quotation marks.",
+        "explainB": "Reported speech removes the marks and uses 'that' as a bridge.",
+        "teacherNote": "Always remove the exclamation marks or question marks when reporting a statement!"
       }
-    },
+    ]
+  }
+},
     {
       "engineType": "SYNTAX_ENGINE",
       "data": {
@@ -269,23 +343,46 @@
       }
     },
     {
-      "engineType": "ENGLISH_RULE_MASTER",
-      "data": {
-        "topicTitle": "Adjective Formation",
-        "rules": [
-          {
-            "title": "Adding Suffixes",
-            "formula": "Noun/Verb + Suffix (-ful / -ing)",
-            "toggleA": "-ful (Full of)", "toggleB": "-ing (Describing)",
-            "exampleA": "The village has <u>beauty</u>. It is <b>beautiful</b>.",
-            "exampleB": "The trip <u>excites</u> us. It is <b>exciting</b>.",
-            "explainA": "Suffix -ful means 'full of' the quality.",
-            "explainB": "Suffix -ing describes the thing causing the feeling.",
-            "teacherNote": "Use -ing for the activity, and -ed for how YOU feel!"
-          }
-        ]
+  "engineType": "ENGLISH_RULE_MASTER",
+  "data": {
+    "topicTitle": "Adjective Formation (PLE Mastery)",
+    "rules": [
+      {
+        "title": "Suffix -ful (Full of)",
+        "formula": "Noun + -ful = Adjective",
+        "toggleA": "Normal Spelling",
+        "toggleB": "The 'Y' Trap",
+        "exampleA": "Manya is a <b>helpful</b> duck.",
+        "exampleB": "The village is <b>beautiful</b>.",
+        "explainA": "Help + ful = Helpful. Easy!",
+        "explainB": "Beauty + ful = Beautiful. (Change 'y' to 'i')",
+        "teacherNote": "PLE TRAP: Never write 'beautifull'. The adjective suffix -ful has only one 'L'!"
+      },
+      {
+        "title": "Suffix -ing (Describing)",
+        "formula": "Verb + -ing = Adjective",
+        "toggleA": "Normal",
+        "toggleB": "The 'Drop E' Trap",
+        "exampleA": "The news was <b>interesting</b>.",
+        "exampleB": "The trip was <b>exciting</b>.",
+        "explainA": "Interest + ing = Interesting.",
+        "explainB": "Excite + ing = Exciting. (Drop the 'e')",
+        "teacherNote": "Remember: We use -ing for the THING and -ed for the FEELING. (The trip is exciting; Manya is excited)."
+      },
+      {
+        "title": "Suffix -ous & -al",
+        "formula": "Noun + -ous/-al = Adjective",
+        "toggleA": "Suffix -ous",
+        "toggleB": "Suffix -al",
+        "exampleA": "The lion is <b>dangerous</b>.",
+        "exampleB": "Manya lives in a <b>rural</b> area.",
+        "explainA": "Danger + ous = Dangerous.",
+        "explainB": "Rus (Latin root) + al = Rural (Village).",
+        "teacherNote": "Common PLE words: 'Mountainous' (Mountain) and 'National' (Nation)."
       }
-    },
+    ]
+  }
+},
     {
       "engineType": "SYNTAX_ENGINE",
       "data": {
