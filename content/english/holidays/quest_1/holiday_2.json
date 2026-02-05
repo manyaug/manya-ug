@@ -1,21 +1,22 @@
 {
   "engineType": "QUEST_RUNNER",
-  "questId": "ENG-P7-C1-Q2",
+  "questId": "ENG-P7-C1-Q2-ULTIMATE",
   "topic": "Holiday Activities",
-  "variantTitle": "Quest 2: Fun in the Village",
   "steps": [
     {
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "text": "Waddle! We have arrived at the <b>rural</b> village. Look at the big <b>farm</b>! There are so many <b>chores</b> and activities to do here."
+        "image": "/content/assets/images/village_arrival.svg",
+        "text": "Waddle! We are finally at the <b>FARM</b>. The air is so fresh here in the <b>RURAL</b> area. Kiki, what is our first <b>CHORE</b>?"
       }
     },
     {
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "text": "Meow! Don't just think about work, Manya. We can <b>tour</b> the forest, go for a <b>youth camp</b>, or even organize a <b>music concert</b>!"
+        "image": "/content/assets/images/milking_cows.svg",
+        "text": "Meow! We need to help with the milking. It is part of our daily <b>ROUTINE</b>. After that, we can <b>TOUR</b> the banana plantation!"
       }
     },
     {
@@ -24,14 +25,14 @@
         "type": "VOCABULARY_LIST",
         "topicTitle": "Village Activity Dictionary",
         "rules": [
-          { "word": "Chores", "meaning": "Regular small jobs at home like washing plates or milking cows." },
-          { "word": "Tour", "meaning": "A journey to visit different interesting places." },
-          { "word": "Revise", "meaning": "To read through your school notes again during the holiday." },
-          { "word": "Routine", "meaning": "A fixed way of doing things every day." },
-          { "word": "Bash", "meaning": "A large, exciting party or celebration." },
-          { "word": "Farm", "meaning": "An area of land used for growing crops or keeping animals." },
-          { "word": "Camp", "meaning": "A place where young people stay to learn new skills." },
-          { "word": "Scrutiny", "meaning": "A very careful look at something (like checking your report card)." }
+          { "word": "Chores", "meaning": "Regular small jobs at home like cleaning or feeding animals." },
+          { "word": "Routine", "meaning": "A fixed way of doing things at the same time every day." },
+          { "word": "Revise", "meaning": "To study your notes again so you don't forget." },
+          { "word": "Tour", "meaning": "A journey to visit and learn about a new place." },
+          { "word": "Scrutiny", "meaning": "A very careful and detailed look at something." },
+          { "word": "Bash", "meaning": "A large, informal party or celebration." },
+          { "word": "Farm", "meaning": "Land used for growing crops or keeping livestock." },
+          { "word": "Vacate", "meaning": "To leave a building or a place." }
         ]
       }
     },
@@ -41,16 +42,16 @@
         "displayMode": "BATCH_6",
         "repeatOnFail": true,
         "questions": [
-          { "mode": "CLOZE", "prompt": "Manya helped his parents with <b>_______</b> like fetching water.", "expected": "chores", "options": ["chores", "concerts", "fairs"], "hint": "Think of small house jobs." },
-          { "mode": "CLOZE", "prompt": "We are going to <b>_______</b> the game park to see lions.", "expected": "tour", "options": ["tour", "revise", "commence"], "hint": "To visit interesting places." },
-          { "mode": "CLOZE", "prompt": "It is a <b>_______</b> to clean our feathers every morning.", "expected": "routine", "options": ["routine", "bash", "fare"], "hint": "A regular way of doing things." },
-          { "mode": "CLOZE", "prompt": "Polly needs to <b>_______</b> her English notes for next term.", "expected": "revise", "options": ["revise", "board", "vacate"], "hint": "To study again." },
-          { "mode": "CLOZE", "prompt": "The primary seven <b>_______</b> was held at the community hall.", "expected": "camp", "options": ["camp", "chores", "report"], "hint": "A place for youth activities." },
-          { "mode": "CLOZE", "prompt": "Uncle organized a big <b>_______</b> to welcome us home.", "expected": "bash", "options": ["bash", "routine", "remedial"], "hint": "A synonym for a big party." },
-          { "mode": "CLOZE", "prompt": "Manya is going to <b>_______</b> his sick grandmother.", "expected": "visit", "options": ["visit", "revise", "board"], "hint": "To go and see someone." },
-          { "mode": "CLOZE", "prompt": "We grow maize and beans on our <b>_______</b>.", "expected": "farm", "options": ["farm", "concert", "stationery"], "hint": "Place for crops and animals." },
-          { "mode": "CLOZE", "prompt": "The music <b>_______</b> started at 4:00 PM.", "expected": "concert", "options": ["concert", "chores", "vacation"], "hint": "A public music show." },
-          { "mode": "CLOZE", "prompt": "Manya gave a <b>_______</b> (careful look) to his marks.", "expected": "scrutiny", "options": ["scrutiny", "bash", "tour"], "hint": "A very careful examination." }
+          { "mode": "CLOZE", "prompt": "Manya helped his father with the <b>_______</b> on the farm.", "expected": "chores", "options": ["chores", "fairs", "tours"], "hint": "Small jobs at home." },
+          { "mode": "CLOZE", "prompt": "We shall <b>_______</b> the forest to see the rare birds.", "expected": "tour", "options": ["tour", "vacate", "board"], "hint": "To visit a place for pleasure." },
+          { "mode": "CLOZE", "prompt": "It is our <b>_______</b> to wake up at 6:00 AM in the village.", "expected": "routine", "options": ["routine", "bash", "fare"], "hint": "A regular habit or schedule." },
+          { "mode": "CLOZE", "prompt": "Polly must <b>_______</b> her work to pass the next test.", "expected": "revise", "options": ["revise", "commence", "vacate"], "hint": "To study again." },
+          { "mode": "CLOZE", "prompt": "Grandfather owns a large <b>_______</b> with many cows.", "expected": "farm", "options": ["farm", "station", "office"], "hint": "Place for animals and crops." },
+          { "mode": "CLOZE", "prompt": "The headteacher gave a <b>_______</b> to my report card.", "expected": "scrutiny", "options": ["scrutiny", "bash", "fare"], "hint": "A very careful look." },
+          { "mode": "CLOZE", "prompt": "We had a big <b>_______</b> to celebrate the end of term.", "expected": "bash", "options": ["bash", "chores", "routine"], "hint": "A big party." },
+          { "mode": "CLOZE", "prompt": "The family will <b>_______</b> the house for the renovation.", "expected": "vacate", "options": ["vacate", "board", "revise"], "hint": "To leave a place." },
+          { "mode": "CLOZE", "prompt": "Manya is <b>_______</b> a trip to the zoo.", "expected": "planning", "options": ["planning", "boarding", "ending"], "hint": "Deciding a future move." },
+          { "mode": "CLOZE", "prompt": "The <b>_______</b> was very exciting and full of music.", "expected": "concert", "options": ["concert", "fare", "chores"], "hint": "A musical performance." }
         ]
       }
     },
@@ -58,23 +59,25 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "text": "SQUAWK! Manya, you look so <b>EXCITED</b>. That's because the trip is <b>EXCITING</b>! Do you see how those words change?"
+        "image": "/content/assets/images/polly_excited.svg",
+        "text": "SQUAWK! Manya, you look so <b>EXCITED</b>. That's because the village is <b>EXCITING</b>! We must use the right <u>Adjective</u> suffixes."
       }
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
       "data": {
-        "topicTitle": "Rule: Forming Adjectives",
+        "topicTitle": "Adjective Formation (-ing vs -ed)",
         "rules": [
           {
-            "title": "The -ing vs -ed Rule",
-            "formula": "Verb + suffix = Adjective",
-            "toggleA": "-ing (Describing)", "toggleB": "-ed (Feeling)",
-            "exampleA": "The tour is <b>exciting</b>.",
-            "exampleB": "Manya is <b>excited</b>.",
-            "explainA": "Use -ing for the thing that causes the feeling (The Trip).",
-            "explainB": "Use -ed for the person who has the feeling (Manya).",
-            "teacherNote": "The movie is INTERESTING, so the student is INTERESTED."
+            "title": "Feelings vs. Descriptions",
+            "formula": "Person + -ed | Thing + -ing",
+            "toggleA": "Feelings (-ed)",
+            "toggleB": "Descriptions (-ing)",
+            "exampleA": "Manya is <b>interested</b> in the farm.",
+            "exampleB": "The farm is <b>interesting</b>.",
+            "explainA": "Use -ed to describe how a person (or duck!) feels.",
+            "explainB": "Use -ing to describe the thing that causes the feeling.",
+            "teacherNote": "PLE TRAP: Do not say 'The trip was excited'. The trip is EXCITING!"
           }
         ]
       }
@@ -83,10 +86,11 @@
       "engineType": "SYNTAX_ENGINE",
       "data": {
         "questions": [
-          { "mode": "CLOZE", "prompt": "The football match was very <b>_______</b> (excite).", "expected": "exciting", "hint": "Describe the match, not a person." },
-          { "mode": "CLOZE", "prompt": "Kiki was <b>_______</b> (interest) in learning how to cook.", "expected": "interested", "hint": "Describe Kiki's feeling." },
-          { "mode": "CLOZE", "prompt": "Fetching water every day is <b>_______</b> (tire).", "expected": "tiring", "hint": "Describe the activity." },
-          { "mode": "CLOZE", "prompt": "Manya felt <b>_______</b> (wonder) after swimming.", "expected": "wonderful", "hint": "Describe Manya's state." }
+          { "mode": "TRANSFORM", "prompt": "The story was very _______ (interest).", "expected": "interesting", "hint": "Describing the story." },
+          { "mode": "TRANSFORM", "prompt": "Kiki felt _______ (tire) after the chores.", "expected": "tired", "hint": "How Kiki feels." },
+          { "mode": "TRANSFORM", "prompt": "The music concert was _______ (excite).", "expected": "exciting", "hint": "Describing the concert." },
+          { "mode": "TRANSFORM", "prompt": "We were _______ (amuse) by Manya's dance.", "expected": "amused", "hint": "How we feel." },
+          { "mode": "TRANSFORM", "prompt": "Digging in the garden is _______ (exhaust).", "expected": "exhausting", "hint": "Describing the activity." }
         ]
       }
     },
@@ -94,23 +98,25 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "text": "Oh no! I forgot my swimsuit! <b>If I had remembered</b> my swimsuit, <b>I would have gone</b> swimming in the stream."
+        "image": "/content/assets/images/manya_sad.svg",
+        "text": "I forgot my boots in the city! <b>If I had remembered</b> my boots, <b>I would not have dirtied</b> my feet. This is the <u>Conditional Type 3</u>!"
       }
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
       "data": {
-        "topicTitle": "Rule: If 3 Conditional",
+        "topicTitle": "Rule: If 3 (The Regret Rule)",
         "rules": [
           {
-            "title": "The 'Regret' Formula",
+            "title": "The Formula of the Past",
             "formula": "If + had + V3 ... would have + V3",
-            "toggleA": "The Condition", "toggleB": "The Result",
-            "exampleA": "If Manya <b>had studied</b>...",
-            "exampleB": "...he <b>would have passed</b>.",
-            "explainA": "Use 'had' + the past participle (V3).",
-            "explainB": "Use 'would have' + the past participle (V3).",
-            "teacherNote": "This rule is for things that DID NOT happen in the past."
+            "toggleA": "The Condition",
+            "toggleB": "The Result",
+            "exampleA": "If I <b>had studied</b> hard...",
+            "exampleB": "...I <b>would have passed</b>.",
+            "explainA": "The condition uses 'had' plus the past participle.",
+            "explainB": "The result uses 'would have' plus the past participle.",
+            "teacherNote": "We use this for things that DID NOT happen. It is a regret."
           }
         ]
       }
@@ -119,9 +125,48 @@
       "engineType": "SYNTAX_ENGINE",
       "data": {
         "questions": [
-          { "mode": "TRANSFORM", "prompt": "Complete the sentence: <br>If I <b>_______</b> (see) him, I would have given him a gift.", "expected": "had seen", "hint": "Use 'had' + V3 of see." },
-          { "mode": "TRANSFORM", "prompt": "Complete the result: <br>If it had rained, the crops <b>_______</b> (grow) well.", "expected": "would have grown", "hint": "Use 'would have' + V3 of grow." },
-          { "mode": "TRANSFORM", "prompt": "If Manya <b>_______</b> (prepare) well, he would have enjoyed the trip.", "expected": "had prepared", "hint": "Condition side needs 'had' + V3." }
+          { "mode": "TRANSFORM", "prompt": "Complete: If Manya (prepare) _______, he would have enjoyed the trip.", "expected": "had prepared", "hint": "If + had + V3." },
+          { "mode": "TRANSFORM", "prompt": "Complete: If Polly had flown faster, she (reach) _______ early.", "expected": "would have reached", "hint": "Result needs 'would have' + V3." },
+          { "mode": "TRANSFORM", "prompt": "Complete: If we (have) _______ money, we would have bought a gift.", "expected": "had had", "hint": "PLE TRAP: Use 'had had' when the verb is 'have'." },
+          { "mode": "TRANSFORM", "prompt": "Complete: If Kiki (catch) _______ the mouse, she would have eaten it.", "expected": "had caught", "hint": "V3 of catch is 'caught'." },
+          { "mode": "TRANSFORM", "prompt": "Complete: They _______ (be) happy if the bash had commenced.", "expected": "would have been", "hint": "Result side!" }
+        ]
+      }
+    },
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "/content/assets/images/kiki_cooking.svg",
+        "text": "Look at me! <b>I am cooking</b> the food. In the <u>Passive Voice</u>, we say: The food <b>is being cooked</b> by me!"
+      }
+    },
+    {
+      "engineType": "ENGLISH_RULE_MASTER",
+      "data": {
+        "topicTitle": "Rule: Active vs. Passive Voice",
+        "rules": [
+          {
+            "title": "Present Continuous Shift",
+            "formula": "is/are + verb-ing -> is/are BEING + V3",
+            "toggleA": "Active (Doer)",
+            "toggleB": "Passive (Object)",
+            "exampleA": "Manya <b>is milking</b> the cow.",
+            "exampleB": "The cow <b>is being milked</b> by Manya.",
+            "explainA": "Manya is the one doing the action.",
+            "explainB": "The cow is receiving the action. Use 'being' + V3.",
+            "teacherNote": "UNEB loves 'being' in the continuous passive voice!"
+          }
+        ]
+      }
+    },
+    {
+      "engineType": "SYNTAX_ENGINE",
+      "data": {
+        "questions": [
+          { "mode": "TRANSFORM", "prompt": "Change to Passive: Polly is eating a mango.", "expected": "A mango is being eaten by Polly", "hint": "Object + is being + V3." },
+          { "mode": "TRANSFORM", "prompt": "Change to Passive: The boys are playing football.", "expected": "Football is being played by the boys", "hint": "Football + is being + V3." },
+          { "mode": "TRANSFORM", "prompt": "Change to Passive: Kiki is mopping the floor.", "expected": "The floor is being mopped by Kiki", "hint": "Floor + is being + V3." }
         ]
       }
     },
@@ -130,23 +175,28 @@
       "data": {
         "media": {
           "type": "PASSAGE",
-          "content": "<b>THE YOUTH CAMP</b>\nLast December, Kato and Babirye attended a youth camp at Najja Community Hall. They learnt how to appreciate themselves and grow up socially. They also learnt skills like baking, weaving, and tailoring. By the time the camp ended, they had decided to start poultry farming to earn some money."
+          "content": "<b>THE FRUITFUL VISIT</b>\nLast week, Manya visited his grandparents' farm in the rural area of Masaka. He found his relatives busy with various chores. His aunt was peeling matooke while his uncle was vaccinating the cattle. Manya was very interested in the process. He realized that if he had come earlier, he would have helped with the harvest. They ended the day with a small family bash under the big mango tree."
         },
         "questions": [
           {
-            "text": "Where was the youth camp held?",
-            "options": ["At the village farm", "At Najja Community Hall", "At Manya's Pond"],
-            "answer": "At Najja Community Hall"
+            "text": "Where is the grandparents' farm located?",
+            "options": ["In an urban town", "In the rural area of Masaka", "At a youth camp"],
+            "answer": "In the rural area of Masaka"
           },
           {
-            "text": "Mention one skill the children learnt at the camp.",
-            "options": ["Swimming", "Tailoring", "Football"],
-            "answer": "Tailoring"
+            "text": "What chore was Manya's uncle doing?",
+            "options": ["Peeling matooke", "Vaccinating cattle", "Mopping the floor"],
+            "answer": "Vaccinating cattle"
           },
           {
-            "text": "What did the children decide to do to earn money?",
-            "options": ["Start a band", "Start poultry farming", "Sell their books"],
-            "answer": "Start poultry farming"
+            "text": "Why didn't Manya help with the harvest?",
+            "options": ["He was too lazy", "He arrived late", "He was studying"],
+            "answer": "He arrived late"
+          },
+          {
+            "text": "How did the family spend the evening?",
+            "options": ["They went for a tour", "They had a family bash", "They did remedial classes"],
+            "answer": "They had a family bash"
           }
         ]
       }
@@ -155,8 +205,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "text": "Wow! We've learnt so much about activities and grammar today. I’m going to go milk the cows now. See you for the next adventure!",
-        "onComplete": "QUEST_FINISHED"
+        "text": "Waddle! What an adventure. We have mastered our <b>activities</b> and our <b>grammar</b>. Manya is going to sleep now. See you for Quest 3!"
       }
     }
   ]
