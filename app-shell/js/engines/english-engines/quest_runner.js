@@ -1,8 +1,6 @@
 /**
- * Manya Quest Runner v4.0 (Messaging UI Edition)
- * Features: Optional top-images, messaging-style bubbles, attached small mascots.
+ * Manya Quest Runner v6.6 (Stable Edition) - Repaired and Enhanced with Review Feature
  */
-
 const INTERNAL_REGISTRY = {
     "SYNTAX_ENGINE": "/app-shell/js/engines/english-engines/syntax-architect.js",
     "FUNCTIONAL_COMPOSER": "/app-shell/js/engines/english-engines/functional_composer.js",
@@ -11,13 +9,20 @@ const INTERNAL_REGISTRY = {
 };
 
 export const ManyaQuestRunner = {
-    state: { container: null, manifest: null, currentIndex: 0, isTyping: false },
+    state: { container: null, manifest: null, currentIndex: 0, returnIndex: null, isTyping: false, stepMemory: {} },
 
     renderLabeling: async (container, data) => {
-        window.ManyaQuestRunner = ManyaQuestRunner;
+        window.ManyaQuestRunner = ManyaQuestRunner; // Ensure global access for onclicks
         ManyaQuestRunner.state.container = container;
         ManyaQuestRunner.state.manifest = data;
         ManyaQuestRunner.state.currentIndex = 0;
+        ManyaQuestRunner.state.returnIndex = null;
+        ManyaQuestRunner.state.stepMemory = {};
+
+        // Sync Title
+        const titleEl = document.getElementById('quest-title');
+        if (titleEl) titleEl.innerText = data.topic || data.title || "English Quest";
+
         ManyaQuestRunner.injectStyles();
         ManyaQuestRunner.renderShell();
         await ManyaQuestRunner.launchStep();
@@ -25,141 +30,253 @@ export const ManyaQuestRunner = {
 
     renderShell: () => {
         ManyaQuestRunner.state.container.innerHTML = `
-            <div class="manya-shell">
-                <nav class="manya-glass-nav">
-                    <div class="level-indicator">
-                        <span class="level-text">LEVEL 1 DUCKLING</span>
-                        <div class="mini-progress-track"><div class="mini-progress-fill" id="p-fill"></div></div>
+            <div class="manya-pwa-shell">
+                <nav class="manya-pwa-nav">
+                    <div class="manya-pwa-prog-track">
+                        <div class="manya-pwa-prog-fill" id="p-fill">
+                            <div class="manya-pwa-waddler">🦆</div>
+                        </div>
                     </div>
-                    <button class="skip-btn" onclick="window.ManyaQuestRunner.next()">Skip</button>
+                    <button class="manya-pwa-skip" onclick="window.ManyaQuestRunner.next()">SKIP</button>
                 </nav>
                 <div id="engine-stage"></div>
-                <div class="manya-footer">
-                    <button id="main-action-btn" class="pill-button" disabled>CONTINUE</button>
+                <div class="manya-pwa-footer">
+                    <button id="main-action-btn" class="manya-pill-btn" disabled>CONTINUE</button>
                 </div>
             </div>`;
+        // Attach initial button handler
+        document.getElementById('main-action-btn').onclick = ManyaQuestRunner.next;
     },
 
     launchStep: async () => {
         const step = ManyaQuestRunner.state.manifest.steps[ManyaQuestRunner.state.currentIndex];
         const stage = document.getElementById('engine-stage');
         stage.scrollTop = 0;
-        ManyaQuestRunner.enableButton(false);
+        ManyaQuestRunner.enableButton(false); // Disable button by default when launching new step
 
-        const percent = ((ManyaQuestRunner.state.currentIndex + 1) / ManyaQuestRunner.state.manifest.steps.length) * 100;
+        const total = ManyaQuestRunner.state.manifest.steps.length;
+        const percent = ((ManyaQuestRunner.state.currentIndex + 1) / total) * 100;
         document.getElementById('p-fill').style.width = `${percent}%`;
 
         if (step.engineType === "CHAT") {
             ManyaQuestRunner.renderCompanion(stage, step.data);
+        } else if (step.engineType === "RULE_SELECTOR") { // New engine type for rule selection
+            await ManyaQuestRunner.renderRuleSelection(stage, step.data);
         } else {
-            const path = INTERNAL_REGISTRY[step.engineType];
-            const module = await import(path + "?v=" + Date.now());
-            const engine = Object.values(module)[0];
-            await engine.renderLabeling(stage, step.data);
+            try {
+                const path = INTERNAL_REGISTRY[step.engineType];
+                const module = await import(path + "?v=" + Date.now());
+                const engine = Object.values(module)[0];
+                const savedIndex = ManyaQuestRunner.state.stepMemory[step.id] || 0;
+                await engine.renderLabeling(stage, step.data, savedIndex);
+            } catch (err) {
+                console.error(err);
+                stage.innerHTML = `<div class="bento-card" style="color:red">Failed to load ${step.engineType}<br>${err.message}</div>`;
+                ManyaQuestRunner.enableButton(true); // Allow continuing past error
+            }
         }
     },
 
     renderCompanion: (stage, data) => {
-        const charMap = { 
-            manya: { icon: "🦆", color: "#7e22ce" }, 
-            polly: { icon: "🦜", color: "#ef4444" }, 
-            kiki: { icon: "🐱", color: "#f59e0b" } 
-        };
-        const char = charMap[data.speaker || 'manya'];
-
-        // If data.image exists, we show it at the top. Otherwise, stage just holds the bubble.
+        const chars = { manya: "🦆", polly: "🦜", kiki: "🐱" };
         stage.innerHTML = `
-            <div class="messaging-layout">
-                <div class="image-area">
-                    ${data.image ? `<img src="${data.image}" class="chat-image" alt="Scene">` : `<!-- No Image -->`}
-                </div>
-                
-                <div class="chat-row">
-                    <div class="mini-mascot-avatar" style="background:${char.color}">
-                        ${char.icon}
-                    </div>
-                    <div class="chat-message-bubble">
-                        <div class="speech-text" id="type-text"></div>
+            <div class="manya-msg-ui">
+                ${data.image ? `<div class="manya-msg-img-box"><img src="${data.image}" class="manya-chat-img"></div>` : ''}
+                <div class="manya-msg-row ${data.speaker === 'manya' ? 'speaker-manya' : ''}">
+                    <div class="manya-msg-avatar">${chars[data.speaker || 'manya']}</div>
+                    <div class="manya-msg-bubble">
+                        <div id="type-text" class="manya-msg-text"></div>
+                        ${data.choices ? `<div class="manya-msg-choices" id="chat-choices">
+                            ${data.choices.map(c => `<button class="manya-c-btn" onclick="window.ManyaQuestRunner.handleBranch('${c.action || ''}','${c.targetId || ''}','${c.ruleId || ''}')">${c.text}</button>`).join('')}
+                        </div>` : ''}
                     </div>
                 </div>
             </div>`;
-            
-        ManyaQuestRunner.typeEffect(data.text, "type-text");
+        ManyaQuestRunner.typeEffect(data.text, "type-text", !!data.choices);
     },
 
-    typeEffect: async (text, elId) => {
-        ManyaQuestRunner.state.isTyping = true;
-        const el = document.getElementById(elId);
-        if(!el) return;
-        el.innerHTML = text; 
-        const content = el.innerHTML;
-        el.innerHTML = "";
-        let i = 0;
-        const typing = setInterval(() => {
-            if (i < content.length) {
-                if (content[i] === '<') i = content.indexOf('>', i) + 1;
-                else i++;
-                el.innerHTML = content.substring(0, i);
-            } else {
-                clearInterval(typing);
-                ManyaQuestRunner.state.isTyping = false;
-                ManyaQuestRunner.enableButton(true);
-            }
-        }, 15);
+    // NEW METHOD: Renders the rule selection interface
+    renderRuleSelection: async (stage, data) => {
+        const path = INTERNAL_REGISTRY["ENGLISH_RULE_MASTER"];
+        const module = await import(path + "?v=" + Date.now());
+        const engine = Object.values(module)[0];
+
+        // This mode tells EnglishRuleMaster to display a list of rules for selection
+        // We pass all rule steps from the manifest.
+        const ruleSteps = ManyaQuestRunner.state.manifest.steps.filter(s => s.engineType === "ENGLISH_RULE_MASTER");
+        await engine.renderLabeling(stage, { type: "RULE_SELECTION", rules: ruleSteps, currentChapterRules: data.chapterRules || [] });
+        
+        // No auto-continue from here, choices will drive navigation
+        ManyaQuestRunner.enableButton(false);
     },
 
-    enableButton: (enabled, callback, label = "CONTINUE") => {
-        const btn = document.getElementById('main-action-btn');
-        if(!btn) return;
-        btn.disabled = !enabled;
-        btn.innerText = label;
-        btn.onclick = callback || ManyaQuestRunner.next;
+    saveStepProgress: (qIndex) => {
+        const step = ManyaQuestRunner.state.manifest.steps[ManyaQuestRunner.state.currentIndex];
+        ManyaQuestRunner.state.stepMemory[step.id] = qIndex;
     },
 
-    next: () => {
-        if (ManyaQuestRunner.state.currentIndex < ManyaQuestRunner.state.manifest.steps.length - 1) {
-            ManyaQuestRunner.state.currentIndex++;
+    jumpToRule: () => {
+        const currentIdx = ManyaQuestRunner.state.currentIndex;
+        const lastRule = ManyaQuestRunner.state.manifest.steps
+            .slice(0, currentIdx)
+            .reverse()
+            .find(s => s.engineType === "ENGLISH_RULE_MASTER");
+
+        if (lastRule) {
+            ManyaQuestRunner.state.returnIndex = currentIdx;
+            ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.manifest.steps.indexOf(lastRule);
             ManyaQuestRunner.launchStep();
         }
     },
 
+    enableButton: (enabled, callback, label = "CONTINUE") => {
+        const btn = document.getElementById('main-action-btn');
+        if (!btn) return;
+        btn.disabled = !enabled;
+        btn.innerText = ManyaQuestRunner.state.returnIndex !== null ? "RETURN TO TASK" : label;
+        btn.onclick = callback || ManyaQuestRunner.next;
+    },
+
+    next: () => {
+        if (ManyaQuestRunner.state.isTyping) return; // Prevent skipping during typing animation
+        if (ManyaQuestRunner.state.returnIndex !== null) {
+            ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.returnIndex;
+            ManyaQuestRunner.state.returnIndex = null;
+            ManyaQuestRunner.launchStep();
+            return;
+        }
+        if (ManyaQuestRunner.state.currentIndex < ManyaQuestRunner.state.manifest.steps.length - 1) {
+            ManyaQuestRunner.state.currentIndex++;
+            ManyaQuestRunner.launchStep();
+        } else {
+            // End of quest - Show completion message
+            ManyaQuestRunner.state.container.innerHTML = `
+                <div class="manya-pwa-shell" style="justify-content: center; align-items: center;">
+                    <div class="bento-card" style="text-align:center; max-width: 400px; padding: 40px;">
+                        <h1>🏆 Quest Complete!</h1>
+                        <p style="margin-bottom: 20px;">You've mastered this chapter. Well done!</p>
+                        <button class="manya-pill-btn" onclick="location.reload()">BACK TO MENU</button>
+                    </div>
+                </div>`;
+        }
+    },
+
+    typeEffect: async (text, elId, hasChoices) => {
+        ManyaQuestRunner.state.isTyping = true;
+        const el = document.getElementById(elId);
+        const choicesEl = document.getElementById('chat-choices');
+
+        if (!el) return;
+
+        el.innerHTML = ""; // Clear existing text
+        if (choicesEl) choicesEl.style.display = 'none'; // Hide choices while typing
+        ManyaQuestRunner.enableButton(false); // Disable main button while typing
+
+        let i = 0;
+        const typingInterval = 15; // Speed of typing
+        const content = text;
+
+        const typeChar = () => {
+            if (i < content.length) {
+                // Check for HTML tags to skip typing them character by character
+                if (content[i] === '<') {
+                    const endIndex = content.indexOf('>', i);
+                    if (endIndex !== -1) {
+                        el.innerHTML = content.substring(0, endIndex + 1);
+                        i = endIndex + 1;
+                    } else {
+                        // Malformed tag, just treat as normal char
+                        el.innerHTML += content[i];
+                        i++;
+                    }
+                } else {
+                    el.innerHTML += content[i];
+                    i++;
+                }
+                setTimeout(typeChar, typingInterval);
+            } else {
+                clearInterval(typing); // This was missing in the previous version, causing infinite timeouts if no choices.
+                ManyaQuestRunner.state.isTyping = false;
+                if (choicesEl) choicesEl.style.display = 'flex'; // Show choices after typing
+                if (!hasChoices) {
+                    ManyaQuestRunner.enableButton(true); // Enable main button if no choices
+                }
+            }
+        };
+        const typing = setTimeout(typeChar, typingInterval); // Start typing
+    },
+
+    // MODIFIED: handleBranch now accepts an optional ruleId
+    handleBranch: (action, targetId, ruleId) => {
+        if (ManyaQuestRunner.state.isTyping) return; // Prevent multiple clicks during animation
+
+        if (action === "COMPLETE") {
+            ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.manifest.steps.length - 1;
+            ManyaQuestRunner.next();
+            return;
+        }
+
+        if (ruleId) {
+            // This means we're reviewing a specific rule.
+            const targetRuleStep = ManyaQuestRunner.state.manifest.steps.find(s => s.id === ruleId);
+            if (targetRuleStep) {
+                ManyaQuestRunner.state.returnIndex = ManyaQuestRunner.state.currentIndex; // Save current position
+                ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.manifest.steps.indexOf(targetRuleStep);
+                ManyaQuestRunner.launchStep();
+                return;
+            }
+        }
+
+        if (targetId) {
+            const idx = ManyaQuestRunner.state.manifest.steps.findIndex(s => s.id === targetId);
+            if (idx !== -1) { ManyaQuestRunner.state.currentIndex = idx; ManyaQuestRunner.launchStep(); }
+        } else {
+            ManyaQuestRunner.next();
+        }
+    },
+
     injectStyles: () => {
-        if (document.getElementById('manya-messaging-styles')) return;
-        const s = document.createElement('style');
-        s.id = 'manya-messaging-styles';
-        s.innerHTML = `
-            .manya-shell { position: absolute; inset: 0; display: flex; flex-direction: column; background: #fdfbf7; z-index: 10; }
-            .manya-glass-nav { height: 60px; display: flex; align-items: center; padding: 0 20px; gap: 20px; background: white; border-bottom: 1px solid #eef2ff; }
-            .level-indicator { flex: 1; }
-            .level-text { font-size: 9px; font-weight: 900; color: #94a3b8; letter-spacing: 1px; }
-            .mini-progress-track { width: 100%; height: 8px; background: #f1f5f9; border-radius: 10px; margin-top: 2px; }
-            .mini-progress-fill { width: 0%; height: 100%; background: #7e22ce; border-radius: 10px; transition: 0.5s; }
-            .skip-btn { background: #f1f5f9; border: none; color: #94a3b8; font-weight: 800; font-size: 11px; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
-
-            /* Content Stage: Messaging Layout */
-            #engine-stage { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; }
+        if (document.getElementById('manya-v6-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'manya-v6-styles';
+        style.innerHTML = `
+            .manya-pwa-shell { position: absolute; inset: 0; display: flex; flex-direction: column; background: #fdfbf7; z-index: 100; }
+            .manya-pwa-nav { height: 60px; display: flex; align-items: center; padding: 0 20px; background: white; border-bottom: 2px solid #eef2ff; flex-shrink: 0; }
+            .manya-pwa-prog-track { flex: 1; height: 10px; background: #f1f5f9; border-radius: 10px; position: relative; margin-right: 15px; }
+            .manya-pwa-prog-fill { height: 100%; background: #7e22ce; border-radius: 10px; width: 0%; transition: width 0.5s; position: relative; }
+            .manya-pwa-waddler { position: absolute; right: -12px; top: -20px; font-size: 24px; animation: waddle 0.6s infinite alternate; }
+            .manya-pwa-skip { background: #f3e8ff; border: none; color: #7e22ce; font-weight: 800; font-size: 11px; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+            #engine-stage { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; position: relative; }
             
-            .messaging-layout { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+            /* Chat UI Improvements */
+            .manya-msg-ui { width: 100%; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+            .manya-msg-img-box { width: 100%; text-align: center; margin-bottom: 10px; }
+            .manya-chat-img { max-width: 95%; max-height: 280px; border-radius: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); object-fit: cover; }
+            .manya-msg-row { display: flex; align-items: flex-start; gap: 10px; width: 100%; margin: 0 auto; }
+            .manya-msg-row.speaker-manya .manya-msg-avatar { background: #a78bfa; color: white; } /* Manya's avatar distinct */
+            .manya-msg-avatar { width: 40px; height: 40px; background: #f3e8ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid white; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+            .manya-msg-bubble { background: white; border: 2px solid #e5e7eb; border-radius: 20px 20px 20px 4px; padding: 20px; flex: 1; box-shadow: 0 8px 0 #f1f5f9; position: relative; }
+            .manya-msg-text { font-size: 1.15rem; font-weight: 700; color: #1e293b; line-height: 1.4; }
+            .manya-msg-choices { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+            .manya-c-btn { padding: 15px; background: #f5f3ff; border: 2px solid #ddd6fe; border-radius: 12px; color: #7e22ce; font-weight: 800; font-size: 14px; cursor: pointer; text-align: left; transition: background 0.2s, transform 0.1s; }
+            .manya-c-btn:hover { background: #ede9fe; transform: translateY(-1px); }
 
-            /* Top Image Area */
-            .image-area { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 100px; padding-bottom: 20px; }
-            .chat-image { max-width: 100%; max-height: 250px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 4px solid white; object-fit: contain; animation: slideDown 0.4s ease-out; }
+            /* New Rule Selection Styles */
+            .rule-selection-card { max-width: 450px; width: 100%; padding: 30px; }
+            .rule-selection-card h2 { text-align: center; margin-bottom: 25px; color: #1e293b; }
+            .rule-list { display: flex; flex-direction: column; gap: 12px; }
+            .rule-list-item { background: #f5f3ff; border: 2px solid #ddd6fe; border-radius: 12px; padding: 15px 20px; font-weight: 700; color: #7e22ce; cursor: pointer; text-align: left; transition: background 0.2s, transform 0.1s; display: flex; justify-content: space-between; align-items: center; }
+            .rule-list-item:hover { background: #ede9fe; transform: translateY(-1px); }
+            .rule-list-item span { font-size: 0.9em; color: #a78bfa; }
 
-            /* Bottom Chat Row */
-            .chat-row { display: flex; align-items: flex-end; gap: 10px; width: 100%; max-width: 500px; margin: 0 auto; }
-            .mini-mascot-avatar { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); flex-shrink: 0; }
-            
-            .chat-message-bubble { background: white; border: 2px solid #e5e7eb; border-radius: 20px 20px 20px 4px; padding: 18px 22px; flex: 1; box-shadow: 0 8px 0 #f1f5f9; position: relative; animation: popUp 0.3s ease-out; }
-            .speech-text { font-size: 1.15rem; font-weight: 700; color: #1e293b; line-height: 1.4; }
 
-            .manya-footer { height: 100px; padding: 0 20px; background: white; border-top: 2px solid #f1f5f9; display: flex; align-items: center; flex-shrink: 0; }
-            .pill-button { width: 100%; height: 56px; background: #7e22ce; color: white; border: none; border-radius: 50px; font-weight: 900; font-size: 1rem; box-shadow: 0 5px 0 #581c87; cursor: pointer; transition: 0.1s; }
-            .pill-button:active { transform: translateY(3px); box-shadow: 0 2px 0 #581c87; }
-            .pill-button:disabled { background: #e5e5e5; color: #afafaf; box-shadow: 0 5px 0 #d1d5db; }
-
-            @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-            @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+            .manya-pwa-footer { height: 100px; padding: 0 20px; background: white; border-top: 2px solid #f1f5f9; display: flex; align-items: center; flex-shrink: 0; }
+            .manya-pill-btn { width: 100%; height: 56px; background: #7e22ce; color: white; border: none; border-radius: 50px; font-weight: 900; font-size: 1rem; box-shadow: 0 5px 0 #581c87; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; }
+            .manya-pill-btn:hover:not(:disabled) { background: #6d20b6; box-shadow: 0 4px 0 #4a177a; }
+            .manya-pill-btn:disabled { background: #e5e5e5; color: #afafaf; box-shadow: 0 5px 0 #d1d5db; cursor: not-allowed; }
+            .bento-card { background: white; border: 2px solid #e5e7eb; border-radius: 28px; padding: 25px; box-shadow: 0 8px 0 #e5e7eb; width: 100%; box-sizing: border-box; }
+            @keyframes waddle { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
         `;
-        document.head.appendChild(s);
+        document.head.appendChild(style);
     }
 };
