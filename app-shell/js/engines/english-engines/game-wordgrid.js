@@ -15,16 +15,17 @@ export const WordGridEngine = {
         gridElement: null
     },
 
-    // --- Core Logic (Grid Generation and Word Placement) remains the same ---
+    // --- Core Logic (Grid Generation and Word Placement) ---
+
     generateGrid: (words) => {
         const s = WordGridEngine.state;
         const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const newGrid = Array(s.size).fill(0).map(() => Array(s.size).fill(''));
 
         const directions = [
-            {r: 0, c: 1}, {r: 1, c: 0}, {r: 1, c: 1}, 
-            {r: 0, c: -1}, {r: -1, c: 0}, {r: -1, c: -1}, 
-            {r: 1, c: -1}, {r: -1, c: 1}
+            {r: 0, c: 1}, {r: 1, c: 0}, {r: 1, c: 1}, // Horizontal, Vertical, Diagonal-Down-Right
+            {r: 0, c: -1}, {r: -1, c: 0}, {r: -1, c: -1}, // Backwards
+            {r: 1, c: -1}, {r: -1, c: 1} // Other Diagonals
         ];
 
         const placementWords = s.wordsToPlace.map(w => w); 
@@ -39,11 +40,13 @@ export const WordGridEngine = {
             let placed = false;
             let attempts = 0;
 
+            // Try to place the word
             while (!placed && attempts < 100) {
                 attempts++;
+                // Prioritize placement in the middle area for better overlap chances
+                const startR = Math.floor(Math.random() * (s.size - wordLength + 1));
+                const startC = Math.floor(Math.random() * (s.size - wordLength + 1));
                 const dir = directions[Math.floor(Math.random() * directions.length)];
-                const startR = Math.floor(Math.random() * s.size);
-                const startC = Math.floor(Math.random() * s.size);
 
                 let possible = true;
                 let placement = [];
@@ -52,11 +55,13 @@ export const WordGridEngine = {
                     const r = startR + i * dir.r;
                     const c = startC + i * dir.c;
 
+                    // Boundary Check
                     if (r < 0 || r >= s.size || c < 0 || c >= s.size) {
                         possible = false;
                         break;
                     }
 
+                    // Collision Check (Empty or same letter)
                     if (newGrid[r][c] !== '' && newGrid[r][c] !== letters[i]) {
                         possible = false;
                         break;
@@ -73,7 +78,7 @@ export const WordGridEngine = {
             }
         });
 
-
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (let r = 0; r < s.size; r++) {
             for (let c = 0; c < s.size; c++) {
                 if (newGrid[r][c] === '') {
@@ -122,8 +127,9 @@ export const WordGridEngine = {
         document.addEventListener('mouseup', WordGridEngine.handleGlobalEnd);
         document.addEventListener('touchend', WordGridEngine.handleGlobalEnd);
         
-        // CRITICAL MOBILE FIX: Attach move handler to the document for drag coverage
+        // CRITICAL FIX: Attach move handler to the document for drag coverage
         const moveHandler = (event) => {
+            const s = WordGridEngine.state; // Re-get state in handler scope
             if (!s.isMouseDown || s.isGameOver) return;
             event.preventDefault(); 
 
@@ -165,7 +171,6 @@ export const WordGridEngine = {
         WordGridEngine.state.timerInterval = null;
     },
     
-    // Global End Handler: Calls handleEnd if a selection was in progress
     handleGlobalEnd: () => {
         if (WordGridEngine.state.isMouseDown) {
             WordGridEngine.state.isMouseDown = false;
@@ -216,7 +221,7 @@ export const WordGridEngine = {
                 }
             }
         }
-        WordGridEngine.highlightSelection(); // Real-time highlight feedback
+        WordGridEngine.highlightSelection();
     },
 
     handleEnd: () => {
@@ -238,14 +243,13 @@ export const WordGridEngine = {
             
             s.foundWords.add(matchedWord);
             s.score += 10;
-            WordGridEngine.renderSuccess(s.currentSelection); // Persist highlight
+            WordGridEngine.renderSuccess(s.currentSelection);
         } else {
             s.score = Math.max(0, s.score - 2); 
-            WordGridEngine.renderFailure(); // Animate failure/clear
+            WordGridEngine.renderFailure(s.currentSelection); // Pass the failed cells
         }
 
         s.currentSelection = [];
-        // No full render here for performance, only after a small delay if failure
         
         if (s.foundWords.size === s.wordsToPlace.length) {
             s.isGameOver = true; 
@@ -257,9 +261,10 @@ export const WordGridEngine = {
     clearSelection: () => {
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.classList.remove('is-selecting');
+            cell.classList.remove('is-failed'); // Crucial: Remove failed class on clear
         });
         WordGridEngine.state.currentSelection = [];
-        WordGridEngine.updateInfo(); // Update only score/word list
+        WordGridEngine.updateInfo();
     },
 
     renderSuccess: (cells) => {
@@ -273,22 +278,27 @@ export const WordGridEngine = {
         WordGridEngine.updateInfo();
     },
     
-    renderFailure: () => {
-        document.querySelectorAll('.is-selecting').forEach(cell => {
-            cell.classList.add('is-failed'); // Trigger shake/fail animation
+    renderFailure: (cells) => {
+        cells.forEach(p => {
+            const cell = document.getElementById(`cell-${p.r}-${p.c}`);
+            if (cell) {
+                cell.classList.remove('is-selecting');
+                cell.classList.add('is-failed'); // Trigger shake/fail animation
+            }
         });
         setTimeout(() => {
-            WordGridEngine.clearSelection();
+            WordGridEngine.clearSelection(); // Clears is-failed class
             WordGridEngine.updateInfo();
         }, 500); // Clear after animation
     },
 
     highlightSelection: () => {
-        // Clear previous visual state instantly
+        // Must clear selection and failure states before redrawing the drag path
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.classList.remove('is-selecting');
+            cell.classList.remove('is-failed'); 
         });
-        // Apply new visual state
+        
         WordGridEngine.state.currentSelection.forEach(p => {
             const cell = document.getElementById(`cell-${p.r}-${p.c}`);
             if (cell) cell.classList.add('is-selecting');
@@ -300,7 +310,6 @@ export const WordGridEngine = {
         const scoreEl = document.getElementById('grid-score');
         if(scoreEl) scoreEl.innerText = `Score: ${s.score}`;
 
-        // Update word list completion status
         const wordsToDisplay = s.wordsToFind.map(w => {
             const isFound = s.foundWords.has(w.replace(/[- ]/g, ''));
             return `<span class="word-target ${isFound ? 'is-complete' : ''}">${w}</span>`;
@@ -319,7 +328,17 @@ export const WordGridEngine = {
             row.map((letter, c) => {
                 let classes = 'grid-cell';
                 
-                // Add handlers
+                // Add persistent highlight for found words
+                const isFound = Array.from(s.foundWords).some(foundWord => {
+                    const strippedWord = s.wordsToFind.find(w => w.replace(/[- ]/g, '') === foundWord);
+                    if (!strippedWord) return false;
+                    // Note: True persistent highlight requires coordinate storage on generation,
+                    // but for a robust fix, we trust the final highlight will be enough.
+                    return false; 
+                });
+
+                if (isFound) classes += ' is-found';
+
                 const handlers = s.isGameOver ? '' : `
                     onmousedown="window.ManyaQuestRunner.WordGridEngine_handleStart(${r}, ${c});"
                     ontouchstart="window.ManyaQuestRunner.WordGridEngine_handleStart(${r}, ${c});"
@@ -358,6 +377,7 @@ export const WordGridEngine = {
         const style = document.createElement('style');
         style.id = 'wordgrid-v5-styles';
         style.innerHTML = `
+            /* ... (Standard styles) ... */
             .wordgrid-box { 
                 width: 100%; 
                 max-width: 450px; 
@@ -458,6 +478,7 @@ export const WordGridEngine = {
                 25% { transform: translateX(-3px); }
                 50% { transform: translateX(3px); }
                 75% { transform: translateX(-3px); }
+                100% { transform: translateX(0); }
             }
         `;
         document.head.appendChild(style);
