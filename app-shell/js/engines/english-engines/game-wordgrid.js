@@ -10,11 +10,12 @@ export const WordGridEngine = {
         score: 0,
         timer: 0,
         timerInterval: null,
-        isMouseDown: false // New state for tracking start/end events globally
+        isMouseDown: false, 
+        isGameOver: false, 
+        gridElement: null
     },
 
-    // --- Core Logic (Grid Generation and Word Placement) ---
-
+    // --- Core Logic (Grid Generation and Word Placement) remains the same ---
     generateGrid: (words) => {
         const s = WordGridEngine.state;
         const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -72,7 +73,7 @@ export const WordGridEngine = {
             }
         });
 
-        // Fill empty cells with random letters
+
         for (let r = 0; r < s.size; r++) {
             for (let c = 0; c < s.size; c++) {
                 if (newGrid[r][c] === '') {
@@ -83,7 +84,6 @@ export const WordGridEngine = {
 
         s.grid = newGrid;
     },
-
     // --- Setup and Timer ---
 
     renderLabeling: async (container, data) => {
@@ -105,6 +105,8 @@ export const WordGridEngine = {
         s.timer = 0;
         s.size = data.size || 8; 
         s.isMouseDown = false;
+        s.isGameOver = false;
+        s.gridElement = null; 
 
         WordGridEngine.generateGrid(s.wordsToFind);
         WordGridEngine.injectStyles();
@@ -113,21 +115,38 @@ export const WordGridEngine = {
 
         // Expose handlers globally
         window.ManyaQuestRunner.WordGridEngine_handleStart = WordGridEngine.handleStart;
-        window.ManyaQuestRunner.WordGridEngine_handleMove = WordGridEngine.handleMove;
         
-        // Use a single, robust global event handler for release
-        window.ManyaQuestRunner.WordGridEngine_handleGlobalEnd = () => {
-            if (WordGridEngine.state.isMouseDown) {
-                WordGridEngine.state.isMouseDown = false;
-                WordGridEngine.handleEnd();
+        // CRITICAL MOBILE FIX: Attach global listeners for touch/mouse release
+        document.removeEventListener('mouseup', WordGridEngine.handleGlobalEnd);
+        document.removeEventListener('touchend', WordGridEngine.handleGlobalEnd);
+        document.addEventListener('mouseup', WordGridEngine.handleGlobalEnd);
+        document.addEventListener('touchend', WordGridEngine.handleGlobalEnd);
+        
+        // CRITICAL MOBILE FIX: Attach move handler to the document for drag coverage
+        const moveHandler = (event) => {
+            if (!s.isMouseDown || s.isGameOver) return;
+            event.preventDefault(); 
+
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            
+            const target = document.elementFromPoint(clientX, clientY);
+            
+            if (target && target.classList.contains('grid-cell') && target.parentElement.id === 'wordgrid-grid') {
+                const parts = target.id.split('-');
+                const r = parseInt(parts[1]);
+                const c = parseInt(parts[2]);
+                WordGridEngine.handleMove(r, c);
             }
         };
 
-        // Attach global listeners for touch/mouse release
-        document.removeEventListener('mouseup', window.ManyaQuestRunner.WordGridEngine_handleGlobalEnd);
-        document.removeEventListener('touchend', window.ManyaQuestRunner.WordGridEngine_handleGlobalEnd);
-        document.addEventListener('mouseup', window.ManyaQuestRunner.WordGridEngine_handleGlobalEnd);
-        document.addEventListener('touchend', window.ManyaQuestRunner.WordGridEngine_handleGlobalEnd);
+        document.removeEventListener('mousemove', window.ManyaQuestRunner.WordGridEngine_moveHandler);
+        document.removeEventListener('touchmove', window.ManyaQuestRunner.WordGridEngine_moveHandler);
+        
+        window.ManyaQuestRunner.WordGridEngine_moveHandler = moveHandler;
+        
+        document.addEventListener('mousemove', moveHandler);
+        document.addEventListener('touchmove', moveHandler, { passive: false }); 
     },
 
     startTimer: () => {
@@ -135,13 +154,23 @@ export const WordGridEngine = {
         WordGridEngine.state.timerInterval = setInterval(() => {
             WordGridEngine.state.timer++;
             const timerEl = document.getElementById('grid-timer');
+            const scoreEl = document.getElementById('grid-score');
             if(timerEl) timerEl.innerText = `Time: ${WordGridEngine.state.timer} sec`;
+            if(scoreEl) scoreEl.innerText = `Score: ${WordGridEngine.state.score}`;
         }, 1000);
     },
 
     stopTimer: () => {
         if (WordGridEngine.state.timerInterval) clearInterval(WordGridEngine.state.timerInterval);
         WordGridEngine.state.timerInterval = null;
+    },
+    
+    // Global End Handler: Calls handleEnd if a selection was in progress
+    handleGlobalEnd: () => {
+        if (WordGridEngine.state.isMouseDown) {
+            WordGridEngine.state.isMouseDown = false;
+            WordGridEngine.handleEnd();
+        }
     },
 
     // --- Touch/Mouse Handlers ---
@@ -150,127 +179,171 @@ export const WordGridEngine = {
 
     handleStart: (r, c) => {
         const s = WordGridEngine.state;
-        if (s.foundWords.size === s.wordsToPlace.length) return; 
-        s.isMouseDown = true; // Set flag
+        if (s.isGameOver) return;
+        s.isMouseDown = true; 
         s.currentSelection = [{r, c}];
         WordGridEngine.highlightSelection();
     },
 
     handleMove: (r, c) => {
         const s = WordGridEngine.state;
-        if (!s.isMouseDown) return; // Only process move if a selection has started
+        if (!s.isMouseDown) return; 
 
         const lastPos = s.currentSelection[s.currentSelection.length - 1];
         const newPos = {r, c};
-
+        
         if (WordGridEngine.isAdjacent(lastPos, newPos)) {
             const existingIndex = s.currentSelection.findIndex(p => p.r === r && p.c === c);
             
             if (existingIndex !== -1 && existingIndex === s.currentSelection.length - 2) {
-                s.currentSelection.pop(); // Moving back
+                s.currentSelection.pop(); 
             } else if (existingIndex === -1) {
-                // Ensure movement is along a straight line (Horizontal, Vertical, or Diagonal)
-                const isFirstMove = s.currentSelection.length === 1;
-                const isStraight = s.currentSelection.length < 2 || (
-                    s.currentSelection[1].r - s.currentSelection[0].r === newPos.r - lastPos.r &&
-                    s.currentSelection[1].c - s.currentSelection[0].c === newPos.c - lastPos.c
-                );
                 
-                if (isFirstMove || isStraight) {
-                    s.currentSelection.push(newPos);
+                if (s.currentSelection.length >= 2) {
+                    const p0 = s.currentSelection[0];
+                    const p1 = s.currentSelection[1];
+                    const dirR = p1.r - p0.r;
+                    const dirC = p1.c - p0.c;
+                    
+                    const nextR = lastPos.r + dirR;
+                    const nextC = lastPos.c + dirC;
+
+                    if (nextR === newPos.r && nextC === newPos.c) {
+                        s.currentSelection.push(newPos);
+                    }
+                } else {
+                    s.currentSelection.push(newPos); 
                 }
             }
         }
-        WordGridEngine.highlightSelection();
+        WordGridEngine.highlightSelection(); // Real-time highlight feedback
     },
 
     handleEnd: () => {
         const s = WordGridEngine.state;
-        s.isMouseDown = false; // Reset the flag
+        s.isMouseDown = false;
         
         if (s.currentSelection.length < 2) {
-            s.currentSelection = [];
-            WordGridEngine.render();
+            WordGridEngine.clearSelection();
             return;
         }
 
-        // 1. Build the selected word string (stripped for comparison)
         const selectedWord = s.currentSelection.map(p => s.grid[p.r][p.c]).join('');
         
-        // 2. Check if it's a target word or its reverse
         const isForwardMatch = s.wordsToPlace.includes(selectedWord);
         const isReverseMatch = s.wordsToPlace.includes(selectedWord.split('').reverse().join(''));
 
         if ((isForwardMatch || isReverseMatch) && !s.foundWords.has(selectedWord)) {
-            // Success!
             const matchedWord = isForwardMatch ? selectedWord : selectedWord.split('').reverse().join('');
             
             s.foundWords.add(matchedWord);
             s.score += 10;
+            WordGridEngine.renderSuccess(s.currentSelection); // Persist highlight
         } else {
-            // Failed guess - penalty
             s.score = Math.max(0, s.score - 2); 
+            WordGridEngine.renderFailure(); // Animate failure/clear
         }
 
         s.currentSelection = [];
-        WordGridEngine.render();
-
-        // 3. Check for game end
+        // No full render here for performance, only after a small delay if failure
+        
         if (s.foundWords.size === s.wordsToPlace.length) {
+            s.isGameOver = true; 
             WordGridEngine.stopTimer();
             window.ManyaQuestRunner.enableButton(true, null, `COMPLETE (+${s.score} Points)!`);
         }
     },
 
+    clearSelection: () => {
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            cell.classList.remove('is-selecting');
+        });
+        WordGridEngine.state.currentSelection = [];
+        WordGridEngine.updateInfo(); // Update only score/word list
+    },
+
+    renderSuccess: (cells) => {
+        cells.forEach(p => {
+            const cell = document.getElementById(`cell-${p.r}-${p.c}`);
+            if (cell) {
+                cell.classList.remove('is-selecting');
+                cell.classList.add('is-found');
+            }
+        });
+        WordGridEngine.updateInfo();
+    },
+    
+    renderFailure: () => {
+        document.querySelectorAll('.is-selecting').forEach(cell => {
+            cell.classList.add('is-failed'); // Trigger shake/fail animation
+        });
+        setTimeout(() => {
+            WordGridEngine.clearSelection();
+            WordGridEngine.updateInfo();
+        }, 500); // Clear after animation
+    },
+
     highlightSelection: () => {
-        const s = WordGridEngine.state;
-        WordGridEngine.render(); 
-        
-        s.currentSelection.forEach(p => {
+        // Clear previous visual state instantly
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            cell.classList.remove('is-selecting');
+        });
+        // Apply new visual state
+        WordGridEngine.state.currentSelection.forEach(p => {
             const cell = document.getElementById(`cell-${p.r}-${p.c}`);
             if (cell) cell.classList.add('is-selecting');
         });
+    },
+
+    updateInfo: () => {
+        const s = WordGridEngine.state;
+        const scoreEl = document.getElementById('grid-score');
+        if(scoreEl) scoreEl.innerText = `Score: ${s.score}`;
+
+        // Update word list completion status
+        const wordsToDisplay = s.wordsToFind.map(w => {
+            const isFound = s.foundWords.has(w.replace(/[- ]/g, ''));
+            return `<span class="word-target ${isFound ? 'is-complete' : ''}">${w}</span>`;
+        }).join('');
+
+        const targetListEl = document.getElementById('wordgrid-target-list');
+        if(targetListEl) targetListEl.innerHTML = wordsToDisplay;
     },
 
     // --- Rendering ---
 
     render: () => {
         const s = WordGridEngine.state;
-        const isGameOver = s.foundWords.size === s.wordsToPlace.length;
 
         const gridHTML = s.grid.map((row, r) =>
             row.map((letter, c) => {
                 let classes = 'grid-cell';
                 
-                // Add mouse/touch handlers
-                const handlers = isGameOver ? '' : `
+                // Add handlers
+                const handlers = s.isGameOver ? '' : `
                     onmousedown="window.ManyaQuestRunner.WordGridEngine_handleStart(${r}, ${c});"
-                    onmouseover="window.ManyaQuestRunner.WordGridEngine_handleMove(${r}, ${c});"
                     ontouchstart="window.ManyaQuestRunner.WordGridEngine_handleStart(${r}, ${c});"
-                    ontouchmove="window.ManyaQuestRunner.WordGridEngine_handleMove(${r}, ${c});"
                 `;
                 
                 return `<div id="cell-${r}-${c}" class="${classes}" ${handlers}>${letter}</div>`;
             }).join('')
         ).join('');
 
-        const wordsToDisplay = s.wordsToFind.map(w => {
-            const isFound = s.foundWords.has(w.replace(/[- ]/g, ''));
-            return `<span class="word-target ${isFound ? 'is-complete' : ''}">${w}</span>`;
-        }).join('');
-
         s.container.innerHTML = `
             <div class="wordgrid-box card-pop">
                 <div class="wordgrid-header">
                     <div id="grid-timer">Time: ${s.timer} sec</div>
-                    <div>Score: ${s.score}</div>
+                    <div id="grid-score">Score: ${s.score}</div>
                 </div>
                 
-                <div class="wordgrid-target-list">
-                    ${wordsToDisplay}
+                <div class="wordgrid-target-list" id="wordgrid-target-list">
+                    ${WordGridEngine.state.wordsToFind.map(w => {
+                        const isFound = s.foundWords.has(w.replace(/[- ]/g, ''));
+                        return `<span class="word-target ${isFound ? 'is-complete' : ''}">${w}</span>`;
+                    }).join('')}
                 </div>
 
-                <div class="wordgrid-grid">
+                <div class="wordgrid-grid" id="wordgrid-grid">
                     ${gridHTML}
                 </div>
                 
@@ -281,11 +354,10 @@ export const WordGridEngine = {
     },
 
     injectStyles: () => {
-        if (document.getElementById('wordgrid-v2-styles')) return;
+        if (document.getElementById('wordgrid-v5-styles')) return;
         const style = document.createElement('style');
-        style.id = 'wordgrid-v2-styles';
+        style.id = 'wordgrid-v5-styles';
         style.innerHTML = `
-            /* ... (Styles are the same, just updated version number) ... */
             .wordgrid-box { 
                 width: 100%; 
                 max-width: 450px; 
@@ -351,15 +423,23 @@ export const WordGridEngine = {
                 background: white;
                 color: #1e293b;
             }
+            /* Selection Highlight (Soft color for drag) */
             .grid-cell.is-selecting {
                 background: #f3e8ff;
                 color: #7e22ce;
-                animation: pulse 0.3s ease-in-out;
             }
+            /* Found Word Highlight (Persistent Green) */
             .grid-cell.is-found {
                 background: #a7f3d0;
                 color: #16a34a;
                 font-weight: 900;
+                animation: found-pop 0.5s ease-out;
+            }
+            /* Failure Animation (Shake + color change) */
+            .grid-cell.is-failed {
+                background: #fecaca;
+                color: #dc2626;
+                animation: selection-shake 0.5s ease-in-out;
             }
 
             .wordgrid-footer {
@@ -368,10 +448,16 @@ export const WordGridEngine = {
                 color: #64748b;
             }
 
-            @keyframes pulse {
-                0% { transform: scale(1); }
+            @keyframes found-pop {
+                0% { transform: scale(1); box-shadow: 0 0 10px #4ade80; }
                 50% { transform: scale(1.1); }
                 100% { transform: scale(1); }
+            }
+            @keyframes selection-shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-3px); }
+                50% { transform: translateX(3px); }
+                75% { transform: translateX(-3px); }
             }
         `;
         document.head.appendChild(style);
