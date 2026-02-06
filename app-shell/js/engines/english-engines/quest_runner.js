@@ -5,7 +5,9 @@ const INTERNAL_REGISTRY = {
     "SYNTAX_ENGINE": "/app-shell/js/engines/english-engines/syntax-architect.js",
     "FUNCTIONAL_COMPOSER": "/app-shell/js/engines/english-engines/functional_composer.js",
     "DEEP_READER": "/app-shell/js/engines/english-engines/deep_reader.js",
-    "ENGLISH_RULE_MASTER": "/app-shell/js/engines/english-engines/english_rule_master.js"
+    "ENGLISH_RULE_MASTER": "/app-shell/js/engines/english-engines/english_rule_master.js",
+    "HANGMAN_ENGINE": "/app-shell/js/engines/english-engines/game-hangman.js",
+    "WORDGRID_ENGINE": "/app-shell/js/engines/english-engines/game-wordgrid.js"
 };
 
 export const ManyaQuestRunner = {
