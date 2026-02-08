@@ -1,6 +1,6 @@
 {
-  "questId": "ENG-P7-C1-ULTIMATE",
-  "title": "School Holiday Plans",
+  "questId": "ENG-P7-C1-GAMIFIED",
+  "title": "School Holiday Plans: The Game Quest",
   "engineType": "QUEST_RUNNER",
   "steps": [
     {
@@ -9,18 +9,33 @@
       "data": {
         "speaker": "manya",
         "image": "assets/english/quest_1/holiday_chat_1.png",
-        "text": "Waddle! My feathers are vibrating because the school term is finally **COMMENCING** its end. Do you know what that means?"
+        "text": "Waddle! My feathers are vibrating because the school term is finally <b>COMMENCING</b> its end. Do you know what that means?"
       }
     },
     {
-      "id": "q1-game-wordgrid",
+      "id": "q1-chat-02",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "image": "assets/english/quest_1/holiday_chat_2.png",
+        "text": "It means <b>VACATION</b>, Manya! I’ve already contacted my <b>PEN-PAL</b> to tell her we are going <b>UP-COUNTRY</b> to the <b>RURAL</b> village!"
+      }
+    },
+    {
+      "id": "q1-game-wordsearch",
       "engineType": "WORDGRID_ENGINE",
       "data": {
-        "title": "Find the Holiday Words",
+        "title": "Holiday Vocab Hunt",
         "size": 8,
         "words": [
-          "COMMENCE", "VACATION", "RURAL", "URBAN", 
-          "PEN-PAL", "CHORES", "FARE", "BOARD"
+          "COMMENCE",
+          "VACATION",
+          "RURAL",
+          "URBAN",
+          "PEN-PAL",
+          "REMEDIAL",
+          "FARE",
+          "CHORES"
         ]
       }
     },
@@ -43,39 +58,41 @@
       }
     },
     {
-      "id": "q1-game-memory",
-      "engineType": "MEMORY_MATCH",
+      "id": "q1-chat-03",
+      "engineType": "CHAT",
       "data": {
-        "title": "Match Meaning",
-        "pairs": [
-          { "item1": "Commence", "item2": "Start" },
-          { "item1": "Rural", "item2": "Village" },
-          { "item1": "Urban", "item2": "City" },
-          { "item1": "Vacate", "item2": "Leave" },
-          { "item1": "Remedial", "item2": "Extra Help" },
-          { "item1": "Fare", "item2": "Transport Cost" }
-        ]
+        "speaker": "kiki",
+        "image": "assets/english/quest_1/holiday_chat_3.png",
+        "text": "Meow! Hold your whiskers. We need to <b>PREPARE</b>. Let's sort out our duties before we go. Catch the <b>CHORES</b> (Nouns) and <b>ACTIONS</b> (Verbs)!"
       }
     },
     {
-      "id": "q1-game-hangman",
-      "engineType": "HANGMAN_ENGINE",
+      "id": "q1-game-harvest",
+      "engineType": "HARVEST_GAME",
       "data": {
-        "title": "Spelling Challenge",
+        "leftCategory": "NOUN",
+        "rightCategory": "VERB",
         "words": [
-          { "word": "REMEDIAL", "hint": "Extra classes for improvement." },
-          { "word": "STATIONERY", "hint": "Pens, pencils, and paper." }
+          { "text": "Chore", "type": "NOUN" },
+          { "text": "Scrub", "type": "VERB" },
+          { "text": "Farm", "type": "NOUN" },
+          { "text": "Dig", "type": "VERB" },
+          { "text": "Fare", "type": "NOUN" },
+          { "text": "Board", "type": "VERB" },
+          { "text": "Bus", "type": "NOUN" },
+          { "text": "Plan", "type": "VERB" },
+          { "text": "Visit", "type": "VERB" },
+          { "text": "Pen-pal", "type": "NOUN" }
         ]
       }
     },
-
     {
       "id": "q1-chat-05",
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
         "image": "assets/english/quest_1/holiday_chat_5.png",
-        "text": "Great vocabulary! Now, we need to plan our trip. Remember the formula: **Subject + is/am/are + GOING TO + Verb**."
+        "text": "Look at the bus! I am <u>thinking</u> of traveling, but Manya is <u>planning</u>. He is using the <b>GOING TO</b> structure! Let's build some sentences."
       }
     },
     {
@@ -88,8 +105,8 @@
             "title": "The Intent Formula",
             "formula": "Subject + is/am/are + GOING TO + Verb",
             "toggleA": "Singular", "toggleB": "Plural",
-            "exampleA": "Manya **is going to** board.",
-            "exampleB": "We **are going to** board.",
+            "exampleA": "Manya <b>is going to</b> board.",
+            "exampleB": "We <b>are going to</b> board.",
             "explainA": "Use 'is' for Manya, He, or She.",
             "explainB": "Use 'are' for We, They, or You.",
             "teacherNote": "PLE Trap: Always check the subject before picking is/am/are!"
@@ -104,19 +121,19 @@
         "questions": [
           { "sentence": "I am going to cook rice." },
           { "sentence": "Polly is going to fly up-country." },
-          { "sentence": "We are going to revise our books." },
-          { "sentence": "They are going to board the bus." }
+          { "sentence": "We are going to revise books." },
+          { "sentence": "They are going to board the bus." },
+          { "sentence": "Manya is going to visit relatives." }
         ]
       }
     },
-
     {
       "id": "q1-chat-06",
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
         "image": "assets/english/quest_1/holiday_chat_6.png",
-        "text": "Meow! We are lost in the jungle! To find the way, we must choose the correct path using **Question Tags**. Positive needs Negative, doesn't it?"
+        "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It’s like a mirror, isn't it? Can you guess the tags?"
       }
     },
     {
@@ -129,8 +146,8 @@
             "title": "The Mirror Rule",
             "formula": "Positive (+) -> Negative (-) | Negative (-) -> Positive (+)",
             "toggleA": "Positive", "toggleB": "Negative",
-            "exampleA": "You **will** go, **won't** you?",
-            "exampleB": "You **won't** stay, **will** you?",
+            "exampleA": "You <u>will</u> go, <b>won't</b> you?",
+            "exampleB": "You <u>won't</u> stay, <b>will</b> you?",
             "explainA": "Will changes to Will Not (Won't).",
             "explainB": "Won't changes to Will.",
             "teacherNote": "Remember: 'I am' becomes 'aren't I?'"
@@ -139,125 +156,25 @@
       }
     },
     {
-      "id": "q1-game-maze",
-      "engineType": "JUNGLE_MAZE",
+      "id": "q1-game-hangman",
+      "engineType": "HANGMAN_ENGINE",
       "data": {
-        "levels": [
-          {
-            "question": "Manya is happy, _______?",
-            "maze": [
-                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                [1,2,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
-                [1,0,1,1,0,1,0,1,1,1,1,1,1,1,0,1],
-                [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
-                [1,0,1,0,1,1,1,1,1,1,1,1,0,1,0,1],
-                [1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
-                [1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1],
-                [1,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1],
-                [1,0,1,1,1,1,1,1,0,1,0,0,0,1,0,1],
-                [1,0,0,0,0,0,0,1,0,1,1,1,1,1,0,1],
-                [1,1,1,1,1,1,0,1,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,1],
-                [1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
-                [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
-                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-            ],
-            "answers": [ 
-                { "r": 2, "c": 1, "text": "ISN'T HE", "isCorrect": true }, 
-                { "r": 4, "c": 1, "text": "IS HE", "isCorrect": false }, 
-                { "r": 14, "c": 1, "text": "WASN'T HE", "isCorrect": false }
-            ],
-            "obstacles": [
-                { "type": "TIGER", "path": [ { "r": 5, "c": 1 }, { "r": 5, "c": 2 }, { "r": 5, "c": 3 } ], "step": 0 }
-            ]
-          },
-          {
-            "question": "I am a smart duck, _______?",
-            "maze": [
-                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                [1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1], 
-                [1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
-                [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
-                [1,0,1,0,1,1,1,1,1,1,1,1,0,1,0,1],
-                [1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
-                [1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1],
-                [1,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1],
-                [1,0,1,1,1,1,1,1,0,1,0,0,0,1,0,1],
-                [1,0,0,0,0,0,0,1,0,1,1,1,1,1,0,1],
-                [1,1,1,1,1,1,0,1,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,1],
-                [1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
-                [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
-                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-            ],
-            "answers": [ 
-                { "r": 2, "c": 1, "text": "AREN'T I", "isCorrect": true }, 
-                { "r": 4, "c": 1, "text": "AMN'T I", "isCorrect": false }, 
-                { "r": 14, "c": 1, "text": "AM I", "isCorrect": false }
-            ],
-            "obstacles": [
-                { "type": "SNAKE", "path": [ { "r": 1, "c": 4 }, { "r": 2, "c": 4 }, { "r": 3, "c": 4 } ], "step": 0 }
-            ]
-          }
-        ]
-      }
-    },
-
-    {
-      "id": "q1-chat-08",
-      "engineType": "CHAT",
-      "data": {
-        "speaker": "kiki",
-        "image": "assets/english/quest_1/holiday_chat_8.png",
-        "text": "We are here! The village is so **BEAUTIFUL**. But wait, help me harvest the describing words (Adjectives) from the things (Nouns)."
-      }
-    },
-    {
-      "id": "q1-rule-05",
-      "engineType": "ENGLISH_RULE_MASTER",
-      "data": {
-        "topicTitle": "Adjective Formation",
-        "rules": [
-          {
-            "title": "Adding Suffixes",
-            "formula": "Noun + -ful | Verb + -ing",
-            "toggleA": "Beauty", "toggleB": "Excite",
-            "exampleA": "The village has **beauty**. It is **beautiful**.",
-            "exampleB": "The trip **excites** us. It is **exciting**.",
-            "teacherNote": "A trip is exciting, a person is excited!"
-          }
-        ]
-      }
-    },
-    {
-      "id": "q1-game-harvest",
-      "engineType": "HARVEST_GAME",
-      "data": {
-        "leftCategory": "ADJECTIVE",
-        "rightCategory": "NOUN",
         "words": [
-          { "text": "Beautiful", "type": "ADJECTIVE" },
-          { "text": "Beauty", "type": "NOUN" },
-          { "text": "Peaceful", "type": "ADJECTIVE" },
-          { "text": "Peace", "type": "NOUN" },
-          { "text": "Playful", "type": "ADJECTIVE" },
-          { "text": "Play", "type": "NOUN" },
-          { "text": "Success", "type": "NOUN" },
-          { "text": "Successful", "type": "ADJECTIVE" },
-          { "text": "Wonder", "type": "NOUN" },
-          { "text": "Wonderful", "type": "ADJECTIVE" }
+          { "word": "ISN'T HE", "hint": "Tag for: Manya is going to the village..." },
+          { "word": "WILL WE", "hint": "Tag for: We won't stay in town..." },
+          { "word": "DID YOU", "hint": "Tag for: You didn't pay the fare..." },
+          { "word": "AREN'T I", "hint": "Tag for: I am right..." },
+          { "word": "SHALL WE", "hint": "Tag for: Let us go for vacation..." }
         ]
       }
     },
     {
-      "id": "q1-chat-07-post",
+      "id": "q1-chat-07",
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
         "image": "assets/english/quest_1/holiday_chat_7.png",
-        "text": "Great harvesting! Now Polly is telling everyone what we did. She is using **Reported Speech**. We must practice these shifts carefully."
+        "text": "Wait! Polly is telling everyone what the teacher said. She is using <b>Reported Speech</b>! You must shift the tense back in time."
       }
     },
     {
@@ -270,14 +187,16 @@
             "title": "Shifting Back",
             "formula": "is/am -> was | will -> would",
             "toggleA": "Direct", "toggleB": "Reported",
-            "exampleA": "Manya said, 'I **am** happy.'",
-            "exampleB": "Manya said that he **was** happy.",
+            "exampleA": "Manya said, 'I <u>am</u> happy.'",
+            "exampleB": "Manya said that he <u>was</u> happy.",
+            "explainA": "Spoken now.",
+            "explainB": "Reported later.",
             "teacherNote": "We use 'that' as a connector."
           }
         ]
       }
     },
-   {
+    {
       "id": "q1-practice-04",
       "engineType": "SYNTAX_ENGINE",
       "data": {
@@ -290,15 +209,36 @@
         ]
       }
     },
-
-  
+    {
+      "id": "q1-chat-08",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "assets/english/quest_1/holiday_chat_8.png",
+        "text": "We are here! The village is so <b>BEAUTIFUL</b>. I can make better adjectives by adding suffixes. Let's find the matching pairs!"
+      }
+    },
+    {
+      "id": "q1-game-memory",
+      "engineType": "MEMORY_MATCH",
+      "data": {
+        "pairs": [
+          { "item1": "Wonder", "item2": "Wonderful" },
+          { "item1": "Beauty", "item2": "Beautiful" },
+          { "item1": "Play", "item2": "Playful" },
+          { "item1": "Success", "item2": "Successful" },
+          { "item1": "Noise", "item2": "Noisy" },
+          { "item1": "Hope", "item2": "Hopeful" }
+        ]
+      }
+    },
     {
       "id": "q1-chat-09",
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
         "image": "assets/english/quest_1/holiday_chat_9.png",
-        "text": "Waddle! We've reached our destination. We found words, built trains, crossed mazes, and harvested the crops! Let's plan to meet tomorrow at the stream.",
+        "text": "Waddle! We've reached our destination. That was fun! Let's plan to meet tomorrow at the stream to swim together!",
         "choices": [
           { "text": "Revise the Chapter Rules", "targetId": "rule-review-selector" },
           { "text": "Finish and Get Badge", "action": "COMPLETE" }
@@ -306,17 +246,16 @@
       }
     },
     {
-        "id": "rule-review-selector",
-        "engineType": "RULE_SELECTOR",
-        "data": {
-            "chapterRules": [
-                { "id": "q1-rule-01", "topicTitle": "The Holiday Dictionary" },
-                { "id": "q1-rule-02", "topicTitle": "Future Plans (Going To)" },
-                { "id": "q1-rule-03", "topicTitle": "Question Tag Traps" },
-                { "id": "q1-rule-04", "topicTitle": "Reported Speech Tense Shifts" },
-                { "id": "q1-rule-05", "topicTitle": "Adjective Formation" }
-            ]
-        }
+      "id": "rule-review-selector",
+      "engineType": "RULE_SELECTOR",
+      "data": {
+        "chapterRules": [
+          { "id": "q1-rule-01", "topicTitle": "The Holiday Dictionary" },
+          { "id": "q1-rule-02", "topicTitle": "Future Plans (Going To)" },
+          { "id": "q1-rule-03", "topicTitle": "Question Tag Traps" },
+          { "id": "q1-rule-04", "topicTitle": "Reported Speech Tense Shifts" }
+        ]
+      }
     }
   ]
 }
