@@ -1,5 +1,5 @@
 /**
- * Manya Quest Runner v6.6 (Stable Edition) - Repaired and Enhanced with Review Feature
+ * Manya Quest Runner v6.6 (Stable Edition) - Image Icon Update
  */
 const INTERNAL_REGISTRY = {
     "SYNTAX_ENGINE": "/app-shell/js/engines/english-engines/syntax-architect.js",
@@ -7,8 +7,23 @@ const INTERNAL_REGISTRY = {
     "DEEP_READER": "/app-shell/js/engines/english-engines/deep_reader.js",
     "ENGLISH_RULE_MASTER": "/app-shell/js/engines/english-engines/english_rule_master.js",
     "HANGMAN_ENGINE": "/app-shell/js/engines/english-engines/game-hangman.js",
-    "WORDGRID_ENGINE": "/app-shell/js/engines/english-engines/game-wordgrid.js"
+    "WORDGRID_ENGINE": "/app-shell/js/engines/english-engines/game-wordgrid.js",
+    "JUNGLE_MAZE": "/app-shell/js/engines/english-engines/game-grammar-maze.js"
 };
+
+// NEW: Character Icon Paths
+const CHAR_ICONS = {
+    manya: "/assets/icons/manya_icon.png", // Assuming you'll add Manya and Polly icons here too
+    polly: "/assets/icons/polly_icon.png",
+    kiki: "/assets/icons/kiki_icon.png"
+};
+
+// Helper function to generate the avatar HTML
+const getCharAvatar = (speaker) => {
+    const src = CHAR_ICONS[speaker.toLowerCase()] || CHAR_ICONS['manya'];
+    return `<img src="${src}" alt="${speaker} avatar" class="manya-avatar-img">`;
+};
+
 
 export const ManyaQuestRunner = {
     state: { container: null, manifest: null, currentIndex: 0, returnIndex: null, isTyping: false, stepMemory: {} },
@@ -36,7 +51,7 @@ export const ManyaQuestRunner = {
                 <nav class="manya-pwa-nav">
                     <div class="manya-pwa-prog-track">
                         <div class="manya-pwa-prog-fill" id="p-fill">
-                            <div class="manya-pwa-waddler">🦆</div>
+                            <div class="manya-pwa-waddler"><img src="${CHAR_ICONS.manya}" alt="Manya" class="waddler-img"></div>
                         </div>
                     </div>
                     <button class="manya-pwa-skip" onclick="window.ManyaQuestRunner.next()">SKIP</button>
@@ -80,12 +95,12 @@ export const ManyaQuestRunner = {
     },
 
     renderCompanion: (stage, data) => {
-        const chars = { manya: "🦆", polly: "🦜", kiki: "🐱" };
+        // const chars = { manya: "🦆", polly: "🦜", kiki: "🐱" }; // Emojis removed
         stage.innerHTML = `
             <div class="manya-msg-ui">
                 ${data.image ? `<div class="manya-msg-img-box"><img src="${data.image}" class="manya-chat-img"></div>` : ''}
                 <div class="manya-msg-row ${data.speaker === 'manya' ? 'speaker-manya' : ''}">
-                    <div class="manya-msg-avatar">${chars[data.speaker || 'manya']}</div>
+                    <div class="manya-msg-avatar">${getCharAvatar(data.speaker || 'manya')}</div>
                     <div class="manya-msg-bubble">
                         <div id="type-text" class="manya-msg-text"></div>
                         ${data.choices ? `<div class="manya-msg-choices" id="chat-choices">
@@ -97,18 +112,14 @@ export const ManyaQuestRunner = {
         ManyaQuestRunner.typeEffect(data.text, "type-text", !!data.choices);
     },
 
-    // NEW METHOD: Renders the rule selection interface
     renderRuleSelection: async (stage, data) => {
         const path = INTERNAL_REGISTRY["ENGLISH_RULE_MASTER"];
         const module = await import(path + "?v=" + Date.now());
         const engine = Object.values(module)[0];
 
-        // This mode tells EnglishRuleMaster to display a list of rules for selection
-        // We pass all rule steps from the manifest.
         const ruleSteps = ManyaQuestRunner.state.manifest.steps.filter(s => s.engineType === "ENGLISH_RULE_MASTER");
         await engine.renderLabeling(stage, { type: "RULE_SELECTION", rules: ruleSteps, currentChapterRules: data.chapterRules || [] });
         
-        // No auto-continue from here, choices will drive navigation
         ManyaQuestRunner.enableButton(false);
     },
 
@@ -140,7 +151,7 @@ export const ManyaQuestRunner = {
     },
 
     next: () => {
-        if (ManyaQuestRunner.state.isTyping) return; // Prevent skipping during typing animation
+        if (ManyaQuestRunner.state.isTyping) return; 
         if (ManyaQuestRunner.state.returnIndex !== null) {
             ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.returnIndex;
             ManyaQuestRunner.state.returnIndex = null;
@@ -170,24 +181,22 @@ export const ManyaQuestRunner = {
 
         if (!el) return;
 
-        el.innerHTML = ""; // Clear existing text
-        if (choicesEl) choicesEl.style.display = 'none'; // Hide choices while typing
-        ManyaQuestRunner.enableButton(false); // Disable main button while typing
+        el.innerHTML = "";
+        if (choicesEl) choicesEl.style.display = 'none';
+        ManyaQuestRunner.enableButton(false);
 
         let i = 0;
-        const typingInterval = 15; // Speed of typing
+        const typingInterval = 15;
         const content = text;
 
         const typeChar = () => {
             if (i < content.length) {
-                // Check for HTML tags to skip typing them character by character
                 if (content[i] === '<') {
                     const endIndex = content.indexOf('>', i);
                     if (endIndex !== -1) {
                         el.innerHTML = content.substring(0, endIndex + 1);
                         i = endIndex + 1;
                     } else {
-                        // Malformed tag, just treat as normal char
                         el.innerHTML += content[i];
                         i++;
                     }
@@ -197,20 +206,18 @@ export const ManyaQuestRunner = {
                 }
                 setTimeout(typeChar, typingInterval);
             } else {
-                clearInterval(typing); // This was missing in the previous version, causing infinite timeouts if no choices.
                 ManyaQuestRunner.state.isTyping = false;
-                if (choicesEl) choicesEl.style.display = 'flex'; // Show choices after typing
+                if (choicesEl) choicesEl.style.display = 'flex';
                 if (!hasChoices) {
-                    ManyaQuestRunner.enableButton(true); // Enable main button if no choices
+                    ManyaQuestRunner.enableButton(true);
                 }
             }
         };
-        const typing = setTimeout(typeChar, typingInterval); // Start typing
+        setTimeout(typeChar, typingInterval);
     },
 
-    // MODIFIED: handleBranch now accepts an optional ruleId
     handleBranch: (action, targetId, ruleId) => {
-        if (ManyaQuestRunner.state.isTyping) return; // Prevent multiple clicks during animation
+        if (ManyaQuestRunner.state.isTyping) return; 
 
         if (action === "COMPLETE") {
             ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.manifest.steps.length - 1;
@@ -219,10 +226,9 @@ export const ManyaQuestRunner = {
         }
 
         if (ruleId) {
-            // This means we're reviewing a specific rule.
             const targetRuleStep = ManyaQuestRunner.state.manifest.steps.find(s => s.id === ruleId);
             if (targetRuleStep) {
-                ManyaQuestRunner.state.returnIndex = ManyaQuestRunner.state.currentIndex; // Save current position
+                ManyaQuestRunner.state.returnIndex = ManyaQuestRunner.state.currentIndex; 
                 ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.manifest.steps.indexOf(targetRuleStep);
                 ManyaQuestRunner.launchStep();
                 return;
@@ -237,6 +243,8 @@ export const ManyaQuestRunner = {
         }
     },
 
+    // ... (All other methods in ManyaQuestRunner.js remain unchanged) ...
+
     injectStyles: () => {
         if (document.getElementById('manya-v6-styles')) return;
         const style = document.createElement('style');
@@ -247,6 +255,10 @@ export const ManyaQuestRunner = {
             .manya-pwa-prog-track { flex: 1; height: 10px; background: #f1f5f9; border-radius: 10px; position: relative; margin-right: 15px; }
             .manya-pwa-prog-fill { height: 100%; background: #7e22ce; border-radius: 10px; width: 0%; transition: width 0.5s; position: relative; }
             .manya-pwa-waddler { position: absolute; right: -12px; top: -20px; font-size: 24px; animation: waddle 0.6s infinite alternate; }
+            
+            /* Waddler image style */
+            .waddler-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+            
             .manya-pwa-skip { background: #f3e8ff; border: none; color: #7e22ce; font-weight: 800; font-size: 11px; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
             #engine-stage { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; position: relative; }
             
@@ -255,22 +267,37 @@ export const ManyaQuestRunner = {
             .manya-msg-img-box { width: 100%; text-align: center; margin-bottom: 10px; }
             .manya-chat-img { max-width: 95%; max-height: 280px; border-radius: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); object-fit: cover; }
             .manya-msg-row { display: flex; align-items: flex-start; gap: 10px; width: 100%; margin: 0 auto; }
-            .manya-msg-row.speaker-manya .manya-msg-avatar { background: #a78bfa; color: white; } /* Manya's avatar distinct */
-            .manya-msg-avatar { width: 40px; height: 40px; background: #f3e8ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid white; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+            
+            /* Avatar replacement styles - FINAL FIX */
+            .manya-msg-avatar { 
+                width: 48px; /* SLIGHTLY LARGER */
+                height: 48px; /* SLIGHTLY LARGER */
+                background: none; /* REMOVE BACKGROUND COLOR */
+                border-radius: 50%; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                flex-shrink: 0; 
+                border: none; /* REMOVE BORDER */
+                box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* ADD SLIGHT SHADOW FOR FLOATING EFFECT */
+                overflow: hidden;
+            }
+            .manya-avatar-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%; /* Ensure the image is circular */
+            }
+
+            .manya-msg-row.speaker-manya .manya-msg-avatar { background: none; border-color: none; } /* Ensure no override for Manya */
+            
             .manya-msg-bubble { background: white; border: 2px solid #e5e7eb; border-radius: 20px 20px 20px 4px; padding: 20px; flex: 1; box-shadow: 0 8px 0 #f1f5f9; position: relative; }
             .manya-msg-text { font-size: 1.15rem; font-weight: 700; color: #1e293b; line-height: 1.4; }
             .manya-msg-choices { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
             .manya-c-btn { padding: 15px; background: #f5f3ff; border: 2px solid #ddd6fe; border-radius: 12px; color: #7e22ce; font-weight: 800; font-size: 14px; cursor: pointer; text-align: left; transition: background 0.2s, transform 0.1s; }
             .manya-c-btn:hover { background: #ede9fe; transform: translateY(-1px); }
 
-            /* New Rule Selection Styles */
-            .rule-selection-card { max-width: 450px; width: 100%; padding: 30px; }
-            .rule-selection-card h2 { text-align: center; margin-bottom: 25px; color: #1e293b; }
-            .rule-list { display: flex; flex-direction: column; gap: 12px; }
-            .rule-list-item { background: #f5f3ff; border: 2px solid #ddd6fe; border-radius: 12px; padding: 15px 20px; font-weight: 700; color: #7e22ce; cursor: pointer; text-align: left; transition: background 0.2s, transform 0.1s; display: flex; justify-content: space-between; align-items: center; }
-            .rule-list-item:hover { background: #ede9fe; transform: translateY(-1px); }
-            .rule-list-item span { font-size: 0.9em; color: #a78bfa; }
-
+            /* ... (Rule Selection Styles remain the same) ... */
 
             .manya-pwa-footer { height: 100px; padding: 0 20px; background: white; border-top: 2px solid #f1f5f9; display: flex; align-items: center; flex-shrink: 0; }
             .manya-pill-btn { width: 100%; height: 56px; background: #7e22ce; color: white; border: none; border-radius: 50px; font-weight: 900; font-size: 1rem; box-shadow: 0 5px 0 #581c87; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; }

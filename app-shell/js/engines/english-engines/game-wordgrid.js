@@ -78,6 +78,7 @@ export const WordGridEngine = {
             }
         });
 
+
         for (let r = 0; r < s.size; r++) {
             for (let c = 0; c < s.size; c++) {
                 if (newGrid[r][c] === '') {
