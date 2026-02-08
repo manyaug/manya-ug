@@ -8,7 +8,11 @@ const INTERNAL_REGISTRY = {
     "ENGLISH_RULE_MASTER": "/app-shell/js/engines/english-engines/english_rule_master.js",
     "HANGMAN_ENGINE": "/app-shell/js/engines/english-engines/game-hangman.js",
     "WORDGRID_ENGINE": "/app-shell/js/engines/english-engines/game-wordgrid.js",
-    "JUNGLE_MAZE": "/app-shell/js/engines/english-engines/game-grammar-maze.js"
+    "JUNGLE_MAZE": "/app-shell/js/engines/english-engines/game-grammar-maze.js",
+    "SENTENCE_TRAIN": "/app-shell/js/engines/english-engines/game-sentence-train.js",
+    "HARVEST_GAME": "/app-shell/js/engines/english-engines/game-harvest-engine.js",
+    "MEMORY_MATCH": "/app-shell/js/engines/english-engines/game-memory-match.js"
+    
 };
 
 // NEW: Character Icon Paths

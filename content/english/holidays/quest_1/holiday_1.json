@@ -1,5 +1,5 @@
 {
-  "questId": "ENG-P7-C1",
+  "questId": "ENG-P7-C1-ULTIMATE",
   "title": "School Holiday Plans",
   "engineType": "QUEST_RUNNER",
   "steps": [
@@ -8,40 +8,19 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-         "image": "assets/english/quest_1/holiday_chat_1.png",
-          "text": "Waddle! My feathers are vibrating because the school term is finally <b>COMMENCING</b> its end. Do you know what that means?"
+        "image": "assets/english/quest_1/holiday_chat_1.png",
+        "text": "Waddle! My feathers are vibrating because the school term is finally **COMMENCING** its end. Do you know what that means?"
       }
     },
     {
-      "id": "q1-chat-02",
-      "engineType": "CHAT",
+      "id": "q1-game-wordgrid",
+      "engineType": "WORDGRID_ENGINE",
       "data": {
-        "speaker": "polly",
-          "image": "assets/english/quest_1/holiday_chat_2.png",
-        "text": "It means <b>VACATION</b>, Manya! I’ve already contacted my <b>PEN-PAL</b> to tell her we are going <b>UP-COUNTRY</b> to the <b>RURAL</b> village!"
-      }
-    },
-    {
-      "id": "q1-chat-03",
-      "engineType": "CHAT",
-      "data": {
-        "speaker": "kiki",
-          "image": "assets/english/quest_1/holiday_chat_3.png",
-        "text": "Meow! Hold your whiskers. We need to <b>PREPARE</b>. We have to check our <b>REPORT CARDS</b>. I hope no one needs <b>REMEDIAL</b> classes!"
-      }
-    },
-    {
-      "id": "q1-practice-01-pre",
-      "engineType": "SYNTAX_ENGINE",
-      "data": {
-        "questions": [
-          {
-            "mode": "REFLECT",
-            "prompt": "Manya and friends used many new words. Which word do you think describes a 'friend you write to'?",
-            "options": ["Relative", "Pen-pal", "Teacher"],
-            "expected": "Pen-pal",
-            "hint": "Think of a friend you use a pen to write to!"
-          }
+        "title": "Find the Holiday Words",
+        "size": 8,
+        "words": [
+          "COMMENCE", "VACATION", "RURAL", "URBAN", 
+          "PEN-PAL", "CHORES", "FARE", "BOARD"
         ]
       }
     },
@@ -52,90 +31,51 @@
         "type": "VOCABULARY_LIST",
         "topicTitle": "The Holiday Dictionary",
         "rules": [
-          { "word": "Commence", "meaning": "To start or begin officially (like a school term)." },
+          { "word": "Commence", "meaning": "To start or begin officially." },
           { "word": "Vacation", "meaning": "A long holiday between school terms." },
           { "word": "Rural", "meaning": "The quiet countryside or village area." },
-          { "word": "Urban", "meaning": "A busy town or city area like Kampala." },
+          { "word": "Urban", "meaning": "A busy town or city area." },
           { "word": "Pen-pal", "meaning": "A friend you make by writing letters." },
           { "word": "Remedial", "meaning": "Extra classes to help you improve." },
-          { "word": "Up-country", "meaning": "Areas far from the main city." },
           { "word": "Fare", "meaning": "The money you pay for transport." },
-          { "word": "Board", "meaning": "To get onto a bus, train, or plane." },
           { "word": "Chores", "meaning": "Small regular jobs you do at home." }
         ]
       }
     },
     {
-      "id": "q1-practice-01",
-      "engineType": "SYNTAX_ENGINE",
+      "id": "q1-game-memory",
+      "engineType": "MEMORY_MATCH",
       "data": {
-        "displayMode": "BATCH_6",
-        "repeatOnFail": true,
-        "questions": [
-             { "mode": "CLOZE", "prompt": "The school term will _______ on Monday.", "expected": "commence", "options": ["commence", "vacation", "prepare"], "hint": "Another word for 'begin'." },
-          { "mode": "CLOZE", "prompt": "Small jobs we do at home are called _______.", "expected": "chores", "options": ["chores", "programme", "fare"], "hint": "Tasks like washing plates." },
-          { "mode": "CLOZE", "prompt": "The cost of your bus ticket is the _______.", "expected": "fare", "options": ["fare", "route", "station"], "hint": "F _ _ E." },
-          { "mode": "CLOZE", "prompt": "A person who is travelling is a _______.", "expected": "traveller", "options": ["traveller", "relative", "visitor"], "hint": "One who takes a journey." },
-          { "mode": "CLOZE", "prompt": "To get on a bus or train is to _______ it.", "expected": "board", "options": ["board", "pack", "visit"], "hint": "B _ O _ R D." },
-          { "mode": "CLOZE", "prompt": "Family members like uncles are your _______.", "expected": "relatives", "options": ["relatives", "friends", "teachers"], "hint": "People related to you." },
-          { "mode": "CLOZE", "prompt": "To study again is to _______.", "expected": "revise", "options": ["revise", "travel", "visit"], "hint": "R _ V _ S E." },
-          { "mode": "CLOZE", "prompt": "Extra help for slow learners are _______ classes.", "expected": "remedial", "options": ["remedial", "holiday", "evening"], "hint": "R _ M _ D _ A L." },
-          { "mode": "CLOZE", "prompt": "Manya spent his _______ in the village.", "expected": "vacation", "options": ["vacation", "routine", "term"], "hint": "A long holiday." },
-          { "mode": "CLOZE", "prompt": "The anniversary of your birth is your _______.", "expected": "birthday", "options": ["birthday", "holiday", "bash"], "hint": "B _ R _ H _ _ Y." },
-          { "mode": "CLOZE", "prompt": "Manya is _______ to go to the village.", "expected": "planning", "options": ["planning", "boarding", "ending"], "hint": "Making a plan." },
-          { "mode": "CLOZE", "prompt": "We shall _______ (stop) for holidays in April.", "expected": "break off", "options": ["break off", "commence", "prepare"], "hint": "Two words: B_ _ _ _  O_ _." },
-          { "mode": "CLOZE", "prompt": "Polly went to the _______ to buy a success card.", "expected": "stationery", "options": ["stationery", "station", "market"], "hint": "A place that sells pens/paper." },
-          { "mode": "CLOZE", "prompt": "A regular way of doing things is a _______.", "expected": "routine", "options": ["routine", "programme", "fare"], "hint": "R _ O _ T _ N E." },
-          { "mode": "CLOZE", "prompt": "Washing dishes is an example of house _______.", "expected": "work", "options": ["work", "tour", "routine"], "hint": "House w_ _ _." },
-          { "mode": "CLOZE", "prompt": "The birthday _______ was very loud and fun.", "expected": "bash", "options": ["bash", "concert", "tour"], "hint": "B _ S H." },
-          { "mode": "CLOZE", "prompt": "A public performance of music is a _______.", "expected": "concert", "options": ["concert", "bash", "tour"], "hint": "C _ N _ E _ T." },
-          { "mode": "CLOZE", "prompt": "Manya needs to _______ his bag for the trip.", "expected": "prepare", "options": ["prepare", "board", "visit"], "hint": "To get ready." },
-          { "mode": "CLOZE", "prompt": "We saw many _______ animals in the game park.", "expected": "wild", "options": ["wild", "domestic", "urban"], "hint": "Lions are this kind of animal." },
-          { "mode": "CLOZE", "prompt": "The opposite of rural is _______.", "expected": "urban", "options": ["urban", "remote", "village"], "hint": "Town area." },
-          { "mode": "CLOZE", "prompt": "Manya will _______ his grandparents.", "expected": "visit", "options": ["visit", "prepare", "board"], "hint": "To go and see someone." },
-          { "mode": "CLOZE", "prompt": "A _______ journey for pleasure is a trip.", "expected": "short", "options": ["short", "long", "boring"], "hint": "Opposite of long." },
-          { "mode": "CLOZE", "prompt": "Polly is a very _______ parrot.", "expected": "social", "options": ["social", "wild", "lazy"], "hint": "Enjoys talking to others." },
-          { "mode": "CLOZE", "prompt": "Manya  d to the _______ park.", "expected": "taxi", "options": ["taxi", "bus", "car"], "hint": "Where you find 14-seater vans." },
-          { "mode": "CLOZE", "prompt": "Kiki is _______ to see the village pond.", "expected": "eager", "options": ["eager", "tired", "lazy"], "hint": "Very excited to do something." },
-          { "mode": "CLOZE", "prompt": "The _______ for the party is Manya's home.", "expected": "venue", "options": ["venue", "programme", "routine"], "hint": "The place of an event." },
-          { "mode": "CLOZE", "prompt": "I enjoy _______ to the village by car.", "expected": "travelling", "options": ["travelling", "boarding", "preparing"], "hint": "Going on a journey." },
-          { "mode": "CLOZE", "prompt": "A _______ is a list of planned events.", "expected": "programme", "options": ["programme", "routine", "tour"], "hint": "P _ R _ G _ _ _ _ E." },
-          { "mode": "CLOZE", "prompt": "Manya has a new _______ from Canada.", "expected": "pen-pal", "options": ["pen-pal", "relative", "tourist"], "hint": "A writing friend." },
-          { "mode": "CLOZE", "prompt": "The teacher gave us a _______ to study hard.", "expected": "remedy", "options": ["remedy", "routine", "tour"], "hint": "A solution or fix." },
-          { "mode": "CLOZE", "prompt": "We grow _______ on the farm in the village.", "expected": "crops", "options": ["crops", "animals", "houses"], "hint": "Maize and beans are..." },
-          { "mode": "CLOZE", "prompt": "Manya must _______ his handwriting.", "expected": "improve", "options": ["improve", "prepare", "visit"], "hint": "To make better." },
-          { "mode": "CLOZE", "prompt": "I am _______ for my report card.", "expected": "searching", "options": ["searching", "travelling", "boarding"], "hint": "Trying to find." },
-          { "mode": "CLOZE", "prompt": "A _______ is a long trip for pleasure.", "expected": "tour", "options": ["tour", "routine", "fare"], "hint": "T _ U R." },
-          { "mode": "CLOZE", "prompt": "Manya will _______ for two months.", "expected": "vacate", "options": ["vacate", "visit", "prepare"], "hint": "To leave a place." },
-          { "mode": "CLOZE", "prompt": "The _______ card shows Manya's position.", "expected": "report", "options": ["report", "identity", "fare"], "hint": "The end of term card." },
-          { "mode": "CLOZE", "prompt": "Kiki loves the _______ air in the village.", "expected": "fresh", "options": ["fresh", "dirty", "warm"], "hint": "Clean air." },
-          { "mode": "CLOZE", "prompt": "I was _______ to a birthday bash.", "expected": "invited", "options": ["invited", "forced", "ordered"], "hint": "Asked to come." },
-          { "mode": "CLOZE", "prompt": "The holiday is finally _______.", "expected": "commencing", "options": ["commencing", "ending", "boarding"], "hint": "Beginning now." },
-          { "mode": "CLOZE", "prompt": "Wait for the teacher to _______ the lesson.", "expected": "begin", "options": ["begin", "end", "stop"], "hint": "To start." }
- 
+        "title": "Match Meaning",
+        "pairs": [
+          { "item1": "Commence", "item2": "Start" },
+          { "item1": "Rural", "item2": "Village" },
+          { "item1": "Urban", "item2": "City" },
+          { "item1": "Vacate", "item2": "Leave" },
+          { "item1": "Remedial", "item2": "Extra Help" },
+          { "item1": "Fare", "item2": "Transport Cost" }
         ]
       }
     },
     {
-      "id": "q1-chat-04",
-      "engineType": "CHAT",
+      "id": "q1-game-hangman",
+      "engineType": "HANGMAN_ENGINE",
       "data": {
-        "speaker": "manya",
-          "image": "assets/english/quest_1/holiday_chat_4.png",
-        "text": "Waddle! You are a word master! Should we review the rules once more, or continue our journey to the village?",
-        "choices": [
-          { "text": "Review Vocabulary Rules", "targetId": "q1-rule-01" },
-          { "text": "Continue the Journey", "action": "NEXT" }
+        "title": "Spelling Challenge",
+        "words": [
+          { "word": "REMEDIAL", "hint": "Extra classes for improvement." },
+          { "word": "STATIONERY", "hint": "Pens, pencils, and paper." }
         ]
       }
     },
+
     {
       "id": "q1-chat-05",
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-          "image": "assets/english/quest_1/holiday_chat_5.png",
-        "text": "Look at the bus! I am <u>thinking</u> of traveling, but Manya is <u>planning</u>. He is using the <b>GOING TO</b> structure!"
+        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "text": "Great vocabulary! Now, we need to plan our trip. Remember the formula: **Subject + is/am/are + GOING TO + Verb**."
       }
     },
     {
@@ -148,8 +88,8 @@
             "title": "The Intent Formula",
             "formula": "Subject + is/am/are + GOING TO + Verb",
             "toggleA": "Singular", "toggleB": "Plural",
-            "exampleA": "Manya <b>is going to</b> board.",
-            "exampleB": "We <b>are going to</b> board.",
+            "exampleA": "Manya **is going to** board.",
+            "exampleB": "We **are going to** board.",
             "explainA": "Use 'is' for Manya, He, or She.",
             "explainB": "Use 'are' for We, They, or You.",
             "teacherNote": "PLE Trap: Always check the subject before picking is/am/are!"
@@ -158,41 +98,25 @@
       }
     },
     {
-      "id": "q1-practice-02",
-      "engineType": "SYNTAX_ENGINE",
+      "id": "q1-game-train",
+      "engineType": "SENTENCE_TRAIN",
       "data": {
         "questions": [
-           { "mode": "TRANSFORM", "prompt": "I shall cook rice. (Use: going to)", "expected": "I am going to cook rice", "hint": "am + going to" },
-          { "mode": "TRANSFORM", "prompt": "Polly will fly up-country. (Use: going to)", "expected": "Polly is going to fly up-country", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "We shall revise our books. (Use: going to)", "expected": "We are going to revise our books", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "They will board the bus. (Use: going to)", "expected": "They are going to board the bus", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "Manya will visit relatives. (Use: going to)", "expected": "Manya is going to visit relatives", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "You will enjoy the bash. (Use: going to)", "expected": "You are going to enjoy the bash", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "Kiki will mop the house. (Use: going to)", "expected": "Kiki is going to mop the house", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "The holiday will commence. (Use: going to)", "expected": "The holiday is going to commence", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "We shall pay the fare. (Use: going to)", "expected": "We are going to pay the fare", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "He will find his pen-pal. (Use: going to)", "expected": "He is going to find his pen-pal", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "The girls will fetch water. (Use: going to)", "expected": "The girls are going to fetch water", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "I shall see my grandparents. (Use: going to)", "expected": "I am going to see my grandparents", "hint": "am + going to" },
-          { "mode": "TRANSFORM", "prompt": "Kiki will catch a mouse. (Use: going to)", "expected": "Kiki is going to catch a mouse", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "We shall eat mangoes. (Use: going to)", "expected": "We are going to eat mangoes", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "They will reach the village. (Use: going to)", "expected": "They are going to reach the village", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "I shall pack my bag. (Use: going to)", "expected": "I am going to pack my bag", "hint": "am + going to" },
-          { "mode": "TRANSFORM", "prompt": "Polly will talk to friends. (Use: going to)", "expected": "Polly is going to talk to friends", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "The bus will stop. (Use: going to)", "expected": "The bus is going to stop", "hint": "is + going to" },
-          { "mode": "TRANSFORM", "prompt": "We shall help with chores. (Use: going to)", "expected": "We are going to help with chores", "hint": "are + going to" },
-          { "mode": "TRANSFORM", "prompt": "The sun will shine. (Use: going to)", "expected": "The sun is going to shine", "hint": "is + going to" }
-        
+          { "sentence": "I am going to cook rice." },
+          { "sentence": "Polly is going to fly up-country." },
+          { "sentence": "We are going to revise our books." },
+          { "sentence": "They are going to board the bus." }
         ]
       }
     },
+
     {
       "id": "q1-chat-06",
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
         "image": "assets/english/quest_1/holiday_chat_6.png",
-        "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It’s like a mirror, isn't it?"
+        "text": "Meow! We are lost in the jungle! To find the way, we must choose the correct path using **Question Tags**. Positive needs Negative, doesn't it?"
       }
     },
     {
@@ -205,8 +129,8 @@
             "title": "The Mirror Rule",
             "formula": "Positive (+) -> Negative (-) | Negative (-) -> Positive (+)",
             "toggleA": "Positive", "toggleB": "Negative",
-            "exampleA": "You <u>will</u> go, <b>won't</b> you?",
-            "exampleB": "You <u>won't</u> stay, <b>will</b> you?",
+            "exampleA": "You **will** go, **won't** you?",
+            "exampleB": "You **won't** stay, **will** you?",
             "explainA": "Will changes to Will Not (Won't).",
             "explainB": "Won't changes to Will.",
             "teacherNote": "Remember: 'I am' becomes 'aren't I?'"
@@ -215,79 +139,79 @@
       }
     },
     {
-      "id": "q1-practice-03",
-      "engineType": "SYNTAX_ENGINE",
+      "id": "q1-game-maze",
+      "engineType": "JUNGLE_MAZE",
       "data": {
-        "questions": [
-          { "mode": "TAGGER", "prompt": "Manya is going to the village, _______?", "expected": "isn't he", "hint": "Is -> Isn't" },
-          { "mode": "TAGGER", "prompt": "We won't stay in town, _______?", "expected": "will we", "hint": "Won't -> Will" },
-          { "mode": "TAGGER", "prompt": "The holiday has commenced, _______?", "expected": "hasn't it", "hint": "Has -> Hasn't" },
-          { "mode": "TAGGER", "prompt": "Polly can fly very fast, _______?", "expected": "can't she", "hint": "Can -> Can't" },
-          { "mode": "TAGGER", "prompt": "You didn't pay the fare, _______?", "expected": "did you", "hint": "Didn't -> Did" },
-          { "mode": "TAGGER", "prompt": "Let us go for vacation, _______?", "expected": "shall we", "hint": "'Let us' always takes 'shall we'." },
-          { "mode": "TAGGER", "prompt": "I am right, _______?", "expected": "aren't I", "hint": "'I am' always takes 'aren't I?'" },
-          { "mode": "TAGGER", "prompt": "The bus will arrive late, _______?", "expected": "won't it", "hint": "Will -> Won't" },
-          { "mode": "TAGGER", "prompt": "They don't have a plan, _______?", "expected": "do they", "hint": "Don't -> Do" },
-          { "mode": "TAGGER", "prompt": "Kiki is a clever cat, _______?", "expected": "isn't she", "hint": "Is -> Isn't" }
-       
-        ]
-      }
-    },
-    {
-      "id": "q1-chat-07",
-      "engineType": "CHAT",
-      "data": {
-        "speaker": "manya",
-          "image": "assets/english/quest_1/holiday_chat_7.png",
-        "text": "Wait! Polly is telling everyone what the teacher said. She is using <b>Reported Speech</b>! You must shift the tense back in time."
-      }
-    },
-    {
-      "id": "q1-rule-04",
-      "engineType": "ENGLISH_RULE_MASTER",
-      "data": {
-        "topicTitle": "Reported Speech Tense Shifts",
-        "rules": [
+        "levels": [
           {
-            "title": "Shifting Back",
-            "formula": "is/am -> was | will -> would",
-            "toggleA": "Direct", "toggleB": "Reported",
-            "exampleA": "Manya said, 'I <u>am</u> happy.'",
-            "exampleB": "Manya said that he <u>was</u> happy.",
-            "explainA": "Spoken now.",
-            "explainB": "Reported later.",
-            "teacherNote": "We use 'that' as a connector."
+            "question": "Manya is happy, _______?",
+            "maze": [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,2,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+                [1,0,1,1,0,1,0,1,1,1,1,1,1,1,0,1],
+                [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
+                [1,0,1,0,1,1,1,1,1,1,1,1,0,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
+                [1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1],
+                [1,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1],
+                [1,0,1,1,1,1,1,1,0,1,0,0,0,1,0,1],
+                [1,0,0,0,0,0,0,1,0,1,1,1,1,1,0,1],
+                [1,1,1,1,1,1,0,1,0,0,0,0,0,0,0,1],
+                [1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,1],
+                [1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,1],
+                [1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ],
+            "answers": [ 
+                { "r": 2, "c": 1, "text": "ISN'T HE", "isCorrect": true }, 
+                { "r": 4, "c": 1, "text": "IS HE", "isCorrect": false }, 
+                { "r": 14, "c": 1, "text": "WASN'T HE", "isCorrect": false }
+            ],
+            "obstacles": [
+                { "type": "TIGER", "path": [ { "r": 5, "c": 1 }, { "r": 5, "c": 2 }, { "r": 5, "c": 3 } ], "step": 0 }
+            ]
+          },
+          {
+            "question": "I am a smart duck, _______?",
+            "maze": [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1], 
+                [1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+                [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
+                [1,0,1,0,1,1,1,1,1,1,1,1,0,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
+                [1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1],
+                [1,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1],
+                [1,0,1,1,1,1,1,1,0,1,0,0,0,1,0,1],
+                [1,0,0,0,0,0,0,1,0,1,1,1,1,1,0,1],
+                [1,1,1,1,1,1,0,1,0,0,0,0,0,0,0,1],
+                [1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,1],
+                [1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,1],
+                [1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ],
+            "answers": [ 
+                { "r": 2, "c": 1, "text": "AREN'T I", "isCorrect": true }, 
+                { "r": 4, "c": 1, "text": "AMN'T I", "isCorrect": false }, 
+                { "r": 14, "c": 1, "text": "AM I", "isCorrect": false }
+            ],
+            "obstacles": [
+                { "type": "SNAKE", "path": [ { "r": 1, "c": 4 }, { "r": 2, "c": 4 }, { "r": 3, "c": 4 } ], "step": 0 }
+            ]
           }
         ]
       }
     },
-    {
-      "id": "q1-practice-04",
-      "engineType": "SYNTAX_ENGINE",
-      "data": {
-        "questions": [
-          { "mode": "TRANSFORM", "prompt": "Direct: 'I am going home.' <br>Reported: He said that he _______ going home.", "expected": "was", "hint": "Am -> Was" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'We will enjoy.' <br>Reported: They said that they _______ enjoy.", "expected": "would", "hint": "Will -> Would" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'The fare is high.' <br>Reported: She said the fare _______ high.", "expected": "was", "hint": "Is -> Was" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'I can swim.' <br>Reported: Manya said that he _______ swim.", "expected": "could", "hint": "Can -> Could" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'The trip has begun.' <br>Reported: They said the trip _______ begun.", "expected": "had", "hint": "Has -> Had" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'I shall travel.' <br>Reported: He said that he _______ travel.", "expected": "should", "hint": "Shall -> Should/Would" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'It is a bash.' <br>Reported: Polly said it _______ a bash.", "expected": "was", "hint": "Is -> Was" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'I love rural life.' <br>Reported: Kiki said that she _______ rural life.", "expected": "loved", "hint": "Love -> Loved" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'The bus is slow.' <br>Reported: They said the bus _______ slow.", "expected": "was", "hint": "Is -> Was" },
-          { "mode": "TRANSFORM", "prompt": "Direct: 'We must prepare.' <br>Reported: She said they _______ to prepare.", "expected": "had", "hint": "Must -> Had to" }
-       
-        ]
-      }
-    },
+
     {
       "id": "q1-chat-08",
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
         "image": "assets/english/quest_1/holiday_chat_8.png",
-        
-        "text": "We are here! The village is so <b>BEAUTIFUL</b>. I can make better adjectives by adding suffixes like -ful or -ing!"
+        "text": "We are here! The village is so **BEAUTIFUL**. But wait, help me harvest the describing words (Adjectives) from the things (Nouns)."
       }
     },
     {
@@ -300,41 +224,81 @@
             "title": "Adding Suffixes",
             "formula": "Noun + -ful | Verb + -ing",
             "toggleA": "Beauty", "toggleB": "Excite",
-            "exampleA": "The village has <b>beauty</b>. It is <b>beautiful</b>.",
-            "exampleB": "The trip <b>excites</b> us. It is <b>exciting</b>.",
-            "explainA": "Suffix -ful means 'full of'.",
-            "explainB": "Suffix -ing describes the cause.",
+            "exampleA": "The village has **beauty**. It is **beautiful**.",
+            "exampleB": "The trip **excites** us. It is **exciting**.",
             "teacherNote": "A trip is exciting, a person is excited!"
           }
         ]
       }
     },
     {
-      "id": "q1-practice-05",
-      "engineType": "SYNTAX_ENGINE",
+      "id": "q1-game-harvest",
+      "engineType": "HARVEST_GAME",
       "data": {
-        "questions": [
-          { "mode": "CLOZE", "prompt": "Manya had a _______ (wonder) time.", "expected": "wonderful", "hint": "Noun: Wonder" },
-          { "mode": "CLOZE", "prompt": "The movie was very _______ (interest).", "expected": "interesting", "hint": "Verb: Interest" },
-          { "mode": "CLOZE", "prompt": "Polly is a _______ (help) parrot.", "expected": "helpful", "hint": "Noun: Help" },
-          { "mode": "CLOZE", "prompt": "Rural life is very _______ (peace).", "expected": "peaceful", "hint": "Noun: Peace" },
-          { "mode": "CLOZE", "prompt": "The bus ride was _______ (tire).", "expected": "tiring", "hint": "Verb: Tire" },
-          { "mode": "CLOZE", "prompt": "Kiki is a _______ (play) cat.", "expected": "playful", "hint": "Noun: Play" },
-          { "mode": "CLOZE", "prompt": "Manya saw _______ (beauty) flowers.", "expected": "beautiful", "hint": "Noun: Beauty" },
-          { "mode": "CLOZE", "prompt": "The bash was very _______ (noise).", "expected": "noisy", "hint": "Noun: Noise" },
-          { "mode": "CLOZE", "prompt": "The vacation was _______ (excite).", "expected": "exciting", "hint": "Verb: Excite" },
-          { "mode": "CLOZE", "prompt": "He is a _______ (success) student.", "expected": "successful", "hint": "Noun: Success" }
-      
+        "leftCategory": "ADJECTIVE",
+        "rightCategory": "NOUN",
+        "words": [
+          { "text": "Beautiful", "type": "ADJECTIVE" },
+          { "text": "Beauty", "type": "NOUN" },
+          { "text": "Peaceful", "type": "ADJECTIVE" },
+          { "text": "Peace", "type": "NOUN" },
+          { "text": "Playful", "type": "ADJECTIVE" },
+          { "text": "Play", "type": "NOUN" },
+          { "text": "Success", "type": "NOUN" },
+          { "text": "Successful", "type": "ADJECTIVE" },
+          { "text": "Wonder", "type": "NOUN" },
+          { "text": "Wonderful", "type": "ADJECTIVE" }
         ]
       }
     },
+    {
+      "id": "q1-chat-07-post",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "image": "assets/english/quest_1/holiday_chat_7.png",
+        "text": "Great harvesting! Now Polly is telling everyone what we did. She is using **Reported Speech**. We must practice these shifts carefully."
+      }
+    },
+    {
+      "id": "q1-rule-04",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "data": {
+        "topicTitle": "Reported Speech Tense Shifts",
+        "rules": [
+          {
+            "title": "Shifting Back",
+            "formula": "is/am -> was | will -> would",
+            "toggleA": "Direct", "toggleB": "Reported",
+            "exampleA": "Manya said, 'I **am** happy.'",
+            "exampleB": "Manya said that he **was** happy.",
+            "teacherNote": "We use 'that' as a connector."
+          }
+        ]
+      }
+    },
+   {
+      "id": "q1-practice-04",
+      "engineType": "SYNTAX_ENGINE",
+      "data": {
+        "questions": [
+          { "mode": "TRANSFORM", "prompt": "Direct: 'I am going home.' <br>Reported: He said that he _______ going home.", "expected": "was", "hint": "Am -> Was" },
+          { "mode": "TRANSFORM", "prompt": "Direct: 'We will enjoy.' <br>Reported: They said that they _______ enjoy.", "expected": "would", "hint": "Will -> Would" },
+          { "mode": "TRANSFORM", "prompt": "Direct: 'The fare is high.' <br>Reported: She said the fare _______ high.", "expected": "was", "hint": "Is -> Was" },
+          { "mode": "TRANSFORM", "prompt": "Direct: 'I can swim.' <br>Reported: Manya said that he _______ swim.", "expected": "could", "hint": "Can -> Could" },
+          { "mode": "TRANSFORM", "prompt": "Direct: 'The trip has begun.' <br>Reported: They said the trip _______ begun.", "expected": "had", "hint": "Has -> Had" }
+        ]
+      }
+    },
+
+  
     {
       "id": "q1-chat-09",
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
         "image": "assets/english/quest_1/holiday_chat_9.png",
-        "text": "Waddle! We've reached our destination. Let's plan to meet tomorrow at the stream to swim together!",
+        "text": "Waddle! We've reached our destination. We found words, built trains, crossed mazes, and harvested the crops! Let's plan to meet tomorrow at the stream.",
         "choices": [
           { "text": "Revise the Chapter Rules", "targetId": "rule-review-selector" },
           { "text": "Finish and Get Badge", "action": "COMPLETE" }
