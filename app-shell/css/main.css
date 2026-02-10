@@ -216,7 +216,24 @@
     padding-bottom: env(safe-area-inset-bottom); /* Fix for iPhone notches */
     z-index: 1000;
 }
+#view-mount {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers cards horizontally */
+    width: 100%;
+    padding-bottom: 100px;
+}
 
+.animate-in {
+    width: 100%;
+    max-width: 400px; /* Keeps it looking like a phone app on desktop */
+}
+
+.section-title {
+    width: 100%;
+    text-align: left;
+    padding-left: 25px;
+}
 .nav-item {
     display: flex;
     flex-direction: column;
@@ -251,20 +268,18 @@
 }
 
 .nav-item.active svg {
-    transform: translateY(-4px); /* Slick lift effect */
-    stroke-width: 3; /* Make icon thicker when active */
+    transform: translateY(-5px);
 }
 
 /* Simple Active Glow Indicator */
-.nav-item.active::before {
+.nav-item.active::after {
     content: '';
     position: absolute;
-    top: -15px;
-    width: 20px;
-    height: 4px;
-    background: #7c3aed;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.4);
+    bottom: -12px;
+    width: 6px;
+    height: 6px;
+    background: var(--manya-purple);
+    border-radius: 50%;
 }
 
 /* Touch feedback for mobile */

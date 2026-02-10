@@ -1013,6 +1013,7 @@
     renderRankings() {
     this.mount.innerHTML = `
         <div class="stats-view animate-in">
+            <!-- 1. TOP STATS BAR -->
             <div class="stat-grid-pro">
                 <div class="stat-pill-pro accuracy">
                     <h5>Accuracy</h5>
@@ -1024,21 +1025,49 @@
                 </div>
             </div>
 
+            <!-- 2. MINI PERFORMANCE STRIP -->
+            <div class="manya-card-pro" style="display:flex; justify-content:space-around; padding:12px; margin-top:10px;">
+                <div style="text-align:center;">
+                    <span style="display:block; font-size:10px; color:#94a3b8;">STARS</span>
+                    <b style="color:#f59e0b">⭐ 1,240</b>
+                </div>
+                <div style="border-left:1px solid #eee;"></div>
+                <div style="text-align:center;">
+                    <span style="display:block; font-size:10px; color:#94a3b8;">TIME</span>
+                    <b>12.5h</b>
+                </div>
+                <div style="border-left:1px solid #eee;"></div>
+                <div style="text-align:center;">
+                    <span style="display:block; font-size:10px; color:#94a3b8;">RANK</span>
+                    <b style="color:var(--manya-purple)">#24</b>
+                </div>
+            </div>
+
             <h4 class="section-title">Achievements</h4>
             <div class="badge-wall-pro">
                 <div class="badge-item-pro"><i>🏆</i><span>TOP 10</span></div>
                 <div class="badge-item-pro"><i>🧬</i><span>GENIUS</span></div>
+                <div class="badge-item-pro"><i>📚</i><span>P7 ACE</span></div>
                 <div class="badge-item-pro locked"><i>🔒</i><span>LOCKED</span></div>
             </div>
 
-            <h4 class="section-title">Hall of Fame</h4>
+            <h4 class="section-title">National Leaderboard</h4>
             <div class="leaderboard-pro">
                 <div class="board-row-pro gold">
                     <span><b style="color:#f59e0b">#1</b> John D. (Kampala)</span>
                     <b>2,400</b>
                 </div>
+                <div class="board-row-pro silver">
+                    <span><b style="color:#94a3b8">#2</b> Sarah K. (Jinja)</span>
+                    <b>2,150</b>
+                </div>
+                <div class="board-row-pro">
+                    <span><b style="color:#b45309">#3</b> Moses A. (Gulu)</span>
+                    <b>1,900</b>
+                </div>
+                <!-- USER POSITION -->
                 <div class="board-row-pro user-me">
-                    <span><b>#24</b> You</span>
+                    <span><b>#24</b> You (Wakiso)</span>
                     <b>850</b>
                 </div>
             </div>
@@ -1051,25 +1080,51 @@ renderProfile() {
             <div class="profile-avatar-wrap">
                 <div class="profile-avatar-pro">🦆</div>
                 <h3 style="margin:0">Manya Student</h3>
-                <p style="color:#64748b; font-weight:700">Class of P.7</p>
+                <p style="color:#64748b; font-weight:700">Primary Seven (P.7)</p>
+                <div style="margin-top:10px; font-size:11px; background:#eef2ff; color:#6366f1; padding:4px 12px; border-radius:20px; display:inline-block;">
+                    Joined Oct 2023
+                </div>
             </div>
 
+            <!-- 1. SYLLABUS MASTERY OVERVIEW -->
+            <div class="manya-card-pro" style="padding:15px;">
+                <h5 style="margin:0 0 10px 0; font-size:11px; color:#94a3b8;">TOTAL SYLLABUS PROGRESS</h5>
+                <div style="height:12px; background:#f1f5f9; border-radius:10px; overflow:hidden;">
+                    <div style="width:35%; height:100%; background:linear-gradient(to right, var(--manya-purple), var(--manya-pink));"></div>
+                </div>
+                <p style="margin:8px 0 0 0; font-size:12px; font-weight:800; color:#475569;">35% Mastery <span style="font-weight:400; opacity:0.6;">(Target: 100% by Nov)</span></p>
+            </div>
+
+            <!-- 2. PARENT CONTACT -->
             <div class="manya-card-pro">
-                <h5 style="margin:0 0 15px 0; color:#94a3b8">PARENT CONTACT</h5>
-                <input type="text" class="manya-input-pro" value="Robert Mukasa">
-                <input type="tel" class="manya-input-pro" value="0772 123 456">
-                <input type="email" class="manya-input-pro" placeholder="Parent Email">
+                <h5 style="margin:0 0 15px 0; color:#94a3b8">PARENT / GUARDIAN CONTACT</h5>
+                <input type="text" class="manya-input-pro" placeholder="Parent Name" value="Robert Mukasa">
+                <input type="tel" class="manya-input-pro" placeholder="Phone Number" value="0772 123 456">
+                <input type="text" class="manya-input-pro" placeholder="School Name" value="Kampala Junior Academy">
             </div>
 
+            <!-- 3. PREMIUM CARD -->
             <div class="pro-card-pro">
-                <h3 style="margin:0">Upgrade to Pro</h3>
-                <p style="font-size:13px; opacity:0.7; margin:10px 0 20px 0">Unlock the full 3,000 question bank and 3D skeleton models.</p>
-                <button class="momo-btn-pro mtn">Pay with MTN MoMo</button>
-                <button class="momo-btn-pro airtel">Pay with Airtel Money</button>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <h3 style="margin:0">Manya Pro</h3>
+                        <span style="font-size:10px; color:#fbbf24; font-weight:800;">STATUS: FREE VERSION</span>
+                    </div>
+                    <div style="font-size:30px;">⭐</div>
+                </div>
+                <p style="font-size:12px; opacity:0.7; margin:15px 0 20px 0">Upgrade to get full access to all PLE topics and parent email reports.</p>
+                
+                <div class="momo-grid">
+                    <button class="momo-btn-pro mtn">Pay with MTN MoMo</button>
+                    <button class="momo-btn-pro airtel">Pay with Airtel Money</button>
+                </div>
             </div>
+            
+            <button style="width:calc(100% - 30px); margin:0 15px; padding:15px; border:none; background:none; color:#ef4444; font-weight:800; cursor:pointer;">
+                LOGOUT ACCOUNT
+            </button>
         </div>`;
-}
-};
+}       };
 
 ViewManager.init();
     </script>
