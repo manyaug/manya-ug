@@ -8,6 +8,7 @@
     <!-- Core Dependencies for offline use -->
     
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
+    <link rel="stylesheet" href="./app-shell/css/main.css">
     <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
  
     <!-- 3. MANIFEST (For PWA Install) -->
@@ -17,205 +18,8 @@
     <!--<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>-->
 
-    <style>
-        :root {
-            --manya-purple: #7c3aed;
-            --manya-purple-light: #ede9fe;
-            --manya-pink: #db2777;
-            --manya-pink-light: #fce7f3;
-            --manya-green: #059669;
-            --manya-bg: #f8fafc;
-            --text-dark: #0f172a;
-            --text-light: #64748b;
-            --sidebar-width: 320px;
-            
-            /* Global Engine Theme Variables */
-            --axial-color: #ef4444;
-            --appendicular-color: #3b82f6;
-            --quiz-color: #f59e0b;
-            --success-color: #22c55e;
-        }
+    
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0; background: var(--manya-bg); color: var(--text-dark);
-            height: 95vh; display: grid; grid-template-columns: var(--sidebar-width) 1fr;
-            overflow: hidden;
-        }
-
-        /* --- SIDEBAR NAVIGATION --- */
-        aside {
-            background: #ffffff;
-            border-right: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow-y: auto;
-            position: relative;
-            z-index: 1001;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        aside::-webkit-scrollbar { width: 5px; }
-        aside::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-
-        .logo { 
-            padding: 24px;
-            font-size: 28px; font-weight: 800; color: var(--manya-purple); 
-            letter-spacing: -1.5px; cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .logo span { color: var(--text-dark); }
-
-        .dev-badge {
-            font-size: 9px; background: #fee2e2; color: #ef4444;
-            padding: 2px 8px; border-radius: 10px; font-weight: 800;
-            text-transform: uppercase; margin-left: 10px;
-        }
-
-        /* SUBJECT HEADERS */
-        /* --- SUBJECT HEADERS (Collapsible) --- */
-.subject-wrapper {
-    margin-bottom: 10px;
-}
-
-.subject-header {
-    font-size: 11px; 
-    font-weight: 800; 
-    letter-spacing: 1px;
-    padding: 16px 20px; 
-    text-transform: uppercase; 
-    border-bottom: 1px solid #f1f5f9;
-    cursor: pointer;
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    background: white;
-    transition: background 0.2s;
-}
-
-.subject-header:hover {
-    background: #f8fafc;
-}
-
-.subject-chevron {
-    font-size: 10px; 
-    transition: transform 0.3s ease;
-    opacity: 0.5;
-}
-
-/* State: Open (Default) */
-.subject-header.open .subject-chevron {
-    transform: rotate(180deg);
-}
-
-/* Content Container */
-.subject-content-body {
-    display: none; /* Hidden by default */
-    padding-top: 5px;
-}
-
-.subject-header.open + .subject-content-body {
-    display: block; /* Show when header has 'open' class */
-    animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-        /* COLLAPSIBLE ACCORDION */
-        .nav-container { padding: 0 16px 40px 16px; }
-        .nav-group { margin-bottom: 8px; border-radius: 12px; overflow: hidden; background: transparent; transition: 0.3s; }
-        .nav-group.open { background: #f8fafc; padding-bottom: 8px; }
-        
-        .nav-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 16px; cursor: pointer; border-radius: 12px;
-            transition: 0.2s;
-        }
-        .nav-header:hover { background: #f1f5f9; }
-        .nav-group.open .nav-header { background: var(--manya-purple-light); }
-        
-        .nav-label { font-size: 13px; font-weight: 700; color: var(--text-dark); }
-        .nav-group.open .nav-label { color: var(--manya-purple); }
-
-        .chevron { font-size: 10px; transition: transform 0.3s; color: #94a3b8; }
-        .nav-group.open .chevron { transform: rotate(180deg); color: var(--manya-purple); }
-
-        .nav-content { display: none; flex-direction: column; padding: 4px 8px; gap: 2px; }
-        .nav-group.open .nav-content { display: flex; }
-
-        .quest-btn {
-            display: flex; align-items: center; width: 100%; padding: 10px 16px;
-            background: transparent; border: none; border-radius: 10px;
-            text-align: left; font-weight: 600; font-size: 13px;
-            cursor: pointer; color: var(--text-light); transition: 0.2s;
-        }
-        .quest-btn:hover { background: #ffffff; color: var(--manya-purple); transform: translateX(4px); }
-        .quest-btn.active { background: var(--manya-purple); color: white !important; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
-
-        hr { border: 0; border-top: 1px solid #e2e8f0; margin: 8px 0; opacity: 0.5; }
-
-        /* --- MAIN VIEWPORT --- */
-        main { display: flex; flex-direction: column; overflow: hidden; position: relative; background: white; }
-        
-        header { 
-            background: white; padding: 14px 24px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid #e2e8f0; height: 64px;
-        }
-
-        #view-mount { flex-grow: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
-
-        /* --- INTRO / SPLASH SCREEN --- */
-        .manya-intro {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; text-align: center; background: white; padding: 40px;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .manya-intro .icon-box {
-            width: 80px; height: 80px; background: var(--manya-purple); 
-            border-radius: 24px; margin-bottom: 24px; display: flex;
-            align-items: center; justify-content: center; color: white;
-            font-size: 40px; font-weight: 800;
-            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .manya-intro h1 { font-size: 32px; font-weight: 800; margin: 0; color: var(--text-dark); letter-spacing: -1px; }
-        .manya-intro p { font-size: 16px; color: var(--text-light); margin-top: 8px; }
-
-        /* --- MOBILE OVERLAYS & CONTROLS --- */
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);
-            z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s;
-        }
-        body.sidebar-open .sidebar-overlay { opacity: 1; pointer-events: auto; }
-
-        .mobile-toggle { 
-            display: none; background: #f1f5f9; color: var(--text-dark); 
-            border: none; width: 40px; height: 40px; border-radius: 10px; 
-            font-size: 20px; cursor: pointer;
-        }
-
-        @media (max-width: 900px) {
-            body { grid-template-columns: 1fr; }
-            aside { position: fixed; left: 0; transform: translateX(-100%); width: 290px; }
-            body.sidebar-open aside { transform: translateX(0); }
-            .mobile-toggle { display: flex; align-items: center; justify-content: center; }
-            header { padding: 0 16px; }
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .manya-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 0.6; }
-    </style>
 </head>
 <body>
 
@@ -1013,19 +817,22 @@
 
 
     </div>
-</aside>
+    </aside>
 
     <!-- MAIN INTERFACE -->
     <main>
+        <!-- PERSISTENT HEADER -->
         <header>
             <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
             <h3 id="quest-title" style="margin:0; font-size:16px; font-weight:700;">Manya Prep Hub</h3>
             <div id="engine-tag" style="font-size:9px; font-weight:800; color:var(--manya-purple); background:var(--manya-purple-light); padding:4px 10px; border-radius:6px; text-transform:uppercase;">Hub Ready</div>
         </header>
 
-<div id="view-mount">
+    
+    <!-- CONTENT MOUNT (Where the magic happens) -->
+    <div id="view-mount">
     <div class="manya-hub">
-        <!-- TOP SECTION: THE PERSONALIZED FLOW -->
+    
         <div class="daily-goal-card">
             <div class="goal-content">
                 <span class="goal-tag">RECOMMENDED FOR YOU</span>
@@ -1038,11 +845,11 @@
             <img src="assets/icons/pose_1.png" class="mini-manya">
         </div>
 
-        <!-- MIDDLE SECTION: SUBJECT WORLDS -->
+
         <h3 class="section-title">Explore Your Worlds</h3>
         <div class="subject-grid">
     
-    <!-- Mathematics -->
+ 
     <div class="world-card math" onclick="ManyaRouter.load('math', 'overview', this)">
         <div class="world-img-box">
             <div class="glow-aura"></div>
@@ -1057,7 +864,7 @@
         </div>
     </div>
 
-    <!-- Science -->
+
     <div class="world-card science" onclick="ManyaRouter.load('science', 'overview', this)">
         <div class="world-img-box">
             <div class="glow-aura"></div>
@@ -1072,7 +879,7 @@
         </div>
     </div>
 
-    <!-- SST -->
+
     <div class="world-card sst" onclick="ManyaRouter.load('sst', 'overview', this)">
         <div class="world-img-box">
             <div class="glow-aura"></div>
@@ -1087,7 +894,7 @@
         </div>
     </div>
 
-    <!-- English -->
+
     <div class="world-card english" onclick="ManyaRouter.load('english', 'overview', this)">
         <div class="world-img-box">
             <div class="glow-aura"></div>
@@ -1104,227 +911,168 @@
 
 </div>
     </div>
-</div>
+    </div>
 
-<style>
-    .manya-hub { padding: 20px; animation: fadeIn 0.5s ease; }
+    <!-- BOTTOM NAVIGATION -->
+   <nav class="bottom-nav">
+    <div class="nav-item active" onclick="ViewManager.show('home', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+    </div>
     
-    /* DAILY GOAL CARD */
-    .daily-goal-card {
-        background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-        border-radius: 24px; padding: 20px; color: white;
-        position: relative; overflow: hidden; margin-bottom: 25px;
-        box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
-    }
-    .goal-tag { font-size: 9px; font-weight: 800; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; }
-    .daily-goal-card h2 { margin: 8px 0; font-size: 20px; }
-    .daily-goal-card p { font-size: 12px; opacity: 0.9; margin-bottom: 15px; max-width: 60%; }
-    .start-flow-btn { background: white; color: #7c3aed; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 800; font-size: 12px; cursor: pointer; }
-    .mini-manya { position: absolute; right: -10px; bottom: -10px; width: 120px; transform: rotate(-5deg); pointer-events: none; }
-
-    /* SUBJECT GRID */
-    .section-title { font-size: 16px; font-weight: 800; margin-bottom: 15px; color: #1e293b; }
-    .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    <div class="nav-item" onclick="ViewManager.show('rankings', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <span>Rankings</span>
+    </div>
     
-    .world-card {
-        background: white; border-radius: 20px; padding: 10px;
-        border: 2px solid #f1f5f9; transition: 0.3s; cursor: pointer;
-    }
-    .world-card:active { transform: scale(0.95); }
-    .world-img-box { 
-        background: #f8fafc; border-radius: 14px; height: 100px; 
-        display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
-        overflow: hidden;
-    }
-    .world-img-box img { width: 90%; height: 90%; object-fit: contain; transition: 0.3s; }
-    .world-card:hover img { transform: scale(1.1) rotate(3deg); }
-    
-    .world-info h4 { margin: 0; font-size: 13px; color: #1e293b; }
-    
-    /* PROGRESS BARS */
-    .prog-bar { height: 6px; background: #f1f5f9; border-radius: 10px; margin-top: 8px; overflow: hidden; }
-    .fill { height: 100%; border-radius: 10px; }
-    
-    .math .fill { background: #db2777; }
-    .science .fill { background: #059669; }
-    .sst .fill { background: #0ea5e9; }
-    .english .fill { background: #7c3aed; }
-    /* HUB LAYOUT */
-.manya-hub { padding: 15px; background: #fdfbff; }
+    <div class="nav-item" onclick="ViewManager.show('profile', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profile</span>
+    </div>
+</nav>
 
-/* DYNAMIC GLOWS */
-.world-img-box {
-    position: relative;
-    height: 130px; /* Taller for the float room */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible; /* Let the glow leak out */
-}
 
-.glow-aura {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    filter: blur(35px);
-    opacity: 0.6;
-    z-index: 1;
-    transition: 0.5s;
-}
 
-/* Custom Glow Colors per Subject */
-.math .glow-aura { background: radial-gradient(#db2777, transparent); }
-.science .glow-aura { background: radial-gradient(#22c55e, transparent); }
-.sst .glow-aura { background: radial-gradient(#0ea5e9, transparent); }
-.english .glow-aura { background: radial-gradient(#7c3aed, transparent); }
 
-/* FLOATING ANIMATION */
-.floating-island {
-    width: 90%;
-    z-index: 2;
-    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
-    animation: floatIsland 4s ease-in-out infinite;
-}
 
-@keyframes floatIsland {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(2deg); }
-}
 
-/* CARD ENHANCEMENTS */
-.world-card {
-    background: white;
-    border-radius: 28px;
-    padding: 15px;
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
-    text-align: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.world-card:active {
-    transform: scale(0.92);
-}
-
-.world-card h4 {
-    font-size: 14px;
-    font-weight: 800;
-    color: #1e293b;
-    margin-bottom: 5px;
-}
-
-/* PROGRESS UI */
-.prog-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.prog-bar {
-    flex: 1;
-    height: 8px;
-    background: #f1f5f9;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.prog-text {
-    font-size: 10px;
-    font-weight: 900;
-    color: #94a3b8;
-}
-
-/* DAILY PATH BUTTON PULSE */
-.start-flow-btn {
-    animation: pulseBtn 2s infinite;
-}
-
-@keyframes pulseBtn {
-    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-}
-</style>
-
-<style>
-    .manya-intro {
-        text-align: center;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 80vh; /* Centers everything vertically */
-    }
-
-    /* THE FIX: Controlled Image Sizing */
-    .intro-image-container {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .manya-mascot {
-        /* This keeps the duck at a reasonable size regardless of screen height */
-        max-height: 250px; 
-        width: auto;
-        display: block;
-        margin: 0 auto;
-        
-        /* The "Action": Continuous floating */
-        animation: float 4s ease-in-out infinite;
-        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    /* Hover effect: Wiggle/Scale */
-    .manya-mascot:hover {
-        transform: scale(1.1) rotate(3deg);
-        cursor: pointer;
-        filter: drop-shadow(0 15px 20px rgba(124, 58, 237, 0.3)); /* Purple glow */
-    }
-
-    /* Keyframes for the floating motion */
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-15px); }
-        100% { transform: translateY(0px); }
-    }
-
-    /* Text Styling */
-    h1 {
-        font-size: 1.8rem;
-        margin: 10px 0;
-        color: #1e293b;
-    }
-
-    p {
-        color: #64748b;
-        margin-bottom: 20px;
-    }
-
-    .icon-box {
-        width: 40px;
-        height: 40px;
-        background: #7c3aed; /* Purple match */
-        color: white;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-
-    .instruction-pill {
-        background: #f1f5f9;
-        padding: 10px 20px;
-        border-radius: 50px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #475569;
-    }
-</style>
     </main>
+        <!-- LOAD THE VIEW MANAGER -->
+    <script>
+    const ViewManager = {
+    mount: null,
+    init() {
+        this.mount = document.getElementById('view-mount');
+        this.show('home');
+    },
+
+    show(tab, navEl) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        if(navEl) navEl.classList.add('active');
+
+        if(tab === 'home') this.renderHome();
+        if(tab === 'rankings') this.renderRankings();
+        if(tab === 'profile') this.renderProfile();
+    },
+
+    renderHome() {
+    this.mount.innerHTML = `
+        <div class="manya-hub animate-in">
+            <div class="daily-goal-card">
+                <h2>Manya's Daily Path</h2>
+                <p>Finish 3 mini-quests to reach your daily goal!</p>
+                <button class="start-btn" onclick="alert('Starting Path...')">START LEARNING →</button>
+                <img src="assets/icons/pose_1.png" class="mascot-img">
+            </div>
+
+            <h3 class="section-title">Explore Your Worlds</h3>
+            
+            <div class="subject-grid">
+                <!-- Math -->
+                <div class="world-card math" onclick="ManyaRouter.load('math/set_theory', 'quest_01_finite', 'study_finite', this)">
+                    <div class="world-img-box">
+                        <div class="glow-aura"></div>
+                        <img src="assets/icons/math_island.png">
+                    </div>
+                    <h4>Mathematics</h4>
+                    <div class="prog-bar"><div class="fill" style="width: 45%;"></div></div>
+                </div>
+
+                <!-- Science -->
+                <div class="world-card science" onclick="ManyaRouter.load('science/skeletal', 'quest_2', 'study_sim', this)">
+                    <div class="world-img-box">
+                        <div class="glow-aura"></div>
+                        <img src="assets/icons/science_island.png">
+                    </div>
+                    <h4>Science</h4>
+                    <div class="prog-bar"><div class="fill" style="width: 20%;"></div></div>
+                </div>
+
+                <!-- SST -->
+                <div class="world-card sst">
+                    <div class="world-img-box">
+                        <div class="glow-aura"></div>
+                        <img src="assets/icons/sst_island.png">
+                    </div>
+                    <h4>Social Studies</h4>
+                    <div class="prog-bar"><div class="fill" style="width: 10%;"></div></div>
+                </div>
+
+                <!-- English -->
+                <div class="world-card english">
+                    <div class="world-img-box">
+                        <div class="glow-aura"></div>
+                        <img src="assets/icons/english_island.png">
+                    </div>
+                    <h4>English</h4>
+                    <div class="prog-bar"><div class="fill" style="width: 80%;"></div></div>
+                </div>
+            </div>
+        </div>`;
+},
+    renderRankings() {
+    this.mount.innerHTML = `
+        <div class="stats-view animate-in">
+            <div class="stat-grid-pro">
+                <div class="stat-pill-pro accuracy">
+                    <h5>Accuracy</h5>
+                    <p style="color:var(--manya-purple)">82%</p>
+                </div>
+                <div class="stat-pill-pro streak">
+                    <h5>Streak</h5>
+                    <p style="color:var(--manya-pink)">🔥 5</p>
+                </div>
+            </div>
+
+            <h4 class="section-title">Achievements</h4>
+            <div class="badge-wall-pro">
+                <div class="badge-item-pro"><i>🏆</i><span>TOP 10</span></div>
+                <div class="badge-item-pro"><i>🧬</i><span>GENIUS</span></div>
+                <div class="badge-item-pro locked"><i>🔒</i><span>LOCKED</span></div>
+            </div>
+
+            <h4 class="section-title">Hall of Fame</h4>
+            <div class="leaderboard-pro">
+                <div class="board-row-pro gold">
+                    <span><b style="color:#f59e0b">#1</b> John D. (Kampala)</span>
+                    <b>2,400</b>
+                </div>
+                <div class="board-row-pro user-me">
+                    <span><b>#24</b> You</span>
+                    <b>850</b>
+                </div>
+            </div>
+        </div>`;
+},
+
+renderProfile() {
+    this.mount.innerHTML = `
+        <div class="profile-view animate-in">
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar-pro">🦆</div>
+                <h3 style="margin:0">Manya Student</h3>
+                <p style="color:#64748b; font-weight:700">Class of P.7</p>
+            </div>
+
+            <div class="manya-card-pro">
+                <h5 style="margin:0 0 15px 0; color:#94a3b8">PARENT CONTACT</h5>
+                <input type="text" class="manya-input-pro" value="Robert Mukasa">
+                <input type="tel" class="manya-input-pro" value="0772 123 456">
+                <input type="email" class="manya-input-pro" placeholder="Parent Email">
+            </div>
+
+            <div class="pro-card-pro">
+                <h3 style="margin:0">Upgrade to Pro</h3>
+                <p style="font-size:13px; opacity:0.7; margin:10px 0 20px 0">Unlock the full 3,000 question bank and 3D skeleton models.</p>
+                <button class="momo-btn-pro mtn">Pay with MTN MoMo</button>
+                <button class="momo-btn-pro airtel">Pay with Airtel Money</button>
+            </div>
+        </div>`;
+}
+};
+
+ViewManager.init();
+    </script>
 
     <script>
 
