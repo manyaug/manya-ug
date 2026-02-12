@@ -1,6 +1,7 @@
 export const renderHome = (mount) => {
     mount.innerHTML = `
         <div class="manya-hub animate-in">
+
             
             <!-- NEW HERO: LIBRARY / SELF STUDY MODE -->
             <div class="library-hero-card" onclick="ViewManager.show('library')">
@@ -10,6 +11,18 @@ export const renderHome = (mount) => {
                     <p>Browse the full syllabus and pick any topic to study.</p>
                 </div>
                 <div class="lib-icon">📚</div>
+            </div>
+
+
+            <!-- THE DYNAMIC QUEST HERO -->
+            <div class="daily-goal-card" onclick="window.launchDynamicQuest('science', 'musklo-skeletal-system')">
+                <div class="goal-content">
+                    <span class="goal-tag">DASH INTO ACTION</span>
+                    <h2>Start Daily Journey</h2>
+                    <p>Manya has picked 10 questions to help you improve in Science today.</p>
+                    <button class="start-flow-btn">GO NOW →</button>
+                </div>
+                <img src="assets/icons/pose_1.png" class="mascot-img">
             </div>
 
             <h3 class="section-title">Your Daily Adventure</h3>
@@ -80,5 +93,9 @@ export const renderHome = (mount) => {
 
             </div>
         </div>
+
+
     `;
+
+    
 };

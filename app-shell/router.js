@@ -115,5 +115,24 @@ export const ManyaRouter = {
                     <button onclick="ViewManager.show('library')" style="padding:12px 24px; border:none; background:#1e293b; color:white; border-radius:12px; font-weight:bold; cursor:pointer;">Back to Library</button>
                 </div>`;
         }
+    },
+
+    /**
+     * loadInline: For use by the QuestRunner
+     * Loads an engine into a specific sub-container
+     */
+    loadInline: async (engineKey, data, targetContainer) => {
+        const enginePath = ENGINE_REGISTRY[engineKey];
+        if (!enginePath) return;
+
+        const module = await import(enginePath);
+        const engine = Object.values(module)[0];
+
+        // Most engines use renderLabeling for interaction
+        if (data.mode === 'study' && engine.renderStudy) {
+            engine.renderStudy(targetContainer, data);
+        } else {
+            engine.renderLabeling(targetContainer, data);
+        }
     }
 };

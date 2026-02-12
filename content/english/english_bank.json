@@ -1,0 +1,3992 @@
+[
+  {
+    "id": "PQ-ENG7-T1-00001",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "I _________ going to visit my grandmother.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "was"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00002",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Kato _________ going to board the bus.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "were"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00003",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We _________ going to have a big bash.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "was"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00004",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Identify the correct structure for a future plan.",
+    "options": [
+      "I going to travel",
+      "I am go to travel",
+      "I am going to travel",
+      "I shall going to travel"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00005",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The holiday _________ going to commence in August.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00006",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Babirye and Kato _________ going to help their parents.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "was"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00007",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "It _________ going to rain this afternoon.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "will"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00008",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "You _________ going to enjoy the rural area.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00009",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "They _________ going to vacate the house.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00010",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "My relatives _________ going to arrive tomorrow.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "was"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00011",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Choose the correct verb form: We are going to _________ our notes.",
+    "options": [
+      "revise",
+      "revises",
+      "revising",
+      "revised"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00012",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Kiki is going to _________ a delicious cake.",
+    "options": [
+      "bake",
+      "bakes",
+      "baking",
+      "baked"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00013",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The travellers are _________ to board the train.",
+    "options": [
+      "go",
+      "goes",
+      "gone",
+      "going"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00014",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Is she _________ to pay the bus fare?",
+    "options": [
+      "go",
+      "going",
+      "gone",
+      "will"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00015",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Which sentence describes a plan that has already been decided?",
+    "options": [
+      "I shall visit the farm.",
+      "I will visit the farm.",
+      "I am going to visit the farm.",
+      "I visit the farm."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00016",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Complete: Polly is going to _________ to London.",
+    "options": [
+      "fly",
+      "flies",
+      "flying",
+      "flown"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00017",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Complete: Are you _________ to help mother?",
+    "options": [
+      "go",
+      "goes",
+      "going",
+      "will"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00018",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I _________ going to prepare for my vacation.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00019",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The headteacher is going to _________ the pupils.",
+    "options": [
+      "address",
+      "addresses",
+      "addressing",
+      "addressed"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00020",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Manya and friends are _________ to spend the holiday together.",
+    "options": [
+      "go",
+      "going",
+      "will",
+      "shall"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00021",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': I shall visit my parents.",
+    "options": [
+      "I am visit my parents.",
+      "I am going to visit my parents.",
+      "I going to visit my parents.",
+      "I am going visit my parents."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00022",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': The girls will fetch water.",
+    "options": [
+      "The girls is going to fetch water.",
+      "The girls are going to fetch water.",
+      "The girls going to fetch water.",
+      "The girls will going to fetch water."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00023",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': She will spend the holidays with relatives.",
+    "options": [
+      "She going to spend the holidays.",
+      "She is going to spend the holidays with relatives.",
+      "She am going to spend the holidays.",
+      "She are going to spend the holidays."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00024",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': We shall revise our books.",
+    "options": [
+      "We are going to revise our books.",
+      "We is going to revise our books.",
+      "We going to revise our books.",
+      "We shall going to revise our books."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00025",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': He will help his parents on the farm.",
+    "options": [
+      "He is going to help his parents on the farm.",
+      "He are going to help his parents.",
+      "He am going to help his parents.",
+      "He going to help his parents."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00026",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': They will write to their pen-pals.",
+    "options": [
+      "They are going to write to their pen-pals.",
+      "They is going to write to their pen-pals.",
+      "They am going to write to their pen-pals.",
+      "They will going to write to their pen-pals."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00027",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': The new term will commence next week.",
+    "options": [
+      "The new term is going to commence next week.",
+      "The new term are going to commence.",
+      "The new term am going to commence.",
+      "The new term going to commence."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00028",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': Nambi will travel to Kigali.",
+    "options": [
+      "Nambi are going to travel.",
+      "Nambi am going to travel.",
+      "Nambi is going to travel to Kigali.",
+      "Nambi going to travel to Kigali."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00029",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': I shall enjoy my brother's birthday party.",
+    "options": [
+      "I is going to enjoy the party.",
+      "I am going to enjoy my brother's birthday party.",
+      "I are going to enjoy the party.",
+      "I going to enjoy the party."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00030",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite using 'going to': The children will go to the zoo.",
+    "options": [
+      "The children are going to go to the zoo.",
+      "The children is going to go to the zoo.",
+      "The children am going to go to the zoo.",
+      "The children going to go to the zoo."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00031",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Manya is a clever duck, ________?",
+    "options": [
+      "is he",
+      "isn't he",
+      "was he",
+      "is not he"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00032",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Kiki cannot bark, ________?",
+    "options": [
+      "can she",
+      "can't she",
+      "is she",
+      "does she"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00033",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We are going to the village, ________?",
+    "options": [
+      "are we",
+      "aren't we",
+      "shall we",
+      "will we"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00034",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "You are not a teacher, ________?",
+    "options": [
+      "aren't you",
+      "are you",
+      "do you",
+      "is you"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00035",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Polly can fly high, ________?",
+    "options": [
+      "can she",
+      "could she",
+      "can't she",
+      "isn't she"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00036",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The holiday is enjoyable, ________?",
+    "options": [
+      "is it",
+      "isn't it",
+      "wasn't it",
+      "does it"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00037",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "It is not raining, ________?",
+    "options": [
+      "isn't it",
+      "is it",
+      "was it",
+      "does it"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00038",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "They are our relatives, ________?",
+    "options": [
+      "are they",
+      "aren't they",
+      "do they",
+      "were they"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00039",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The bus is slow, ________?",
+    "options": [
+      "is it",
+      "wasn't it",
+      "isn't it",
+      "does it"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00040",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "You have a pen-pal, ________?",
+    "options": [
+      "haven't you",
+      "have you",
+      "do you",
+      "don't you"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00041",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "They went to the farm, ________?",
+    "options": [
+      "did they",
+      "didn't they",
+      "go they",
+      "don't they"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00042",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Kato will visit London, ________?",
+    "options": [
+      "will he",
+      "won't he",
+      "shall he",
+      "can't he"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00043",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "We shall pass the exam, ________?",
+    "options": [
+      "shall we",
+      "shan't we",
+      "won't we",
+      "will we"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00044",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The term hasn't ended yet, ________?",
+    "options": [
+      "has it",
+      "hasn't it",
+      "is it",
+      "did it"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00045",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "You didn't pay the fare, ________?",
+    "options": [
+      "didn't you",
+      "did you",
+      "do you",
+      "have you"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00046",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "He always comes here, ________?",
+    "options": [
+      "does he",
+      "doesn't he",
+      "is he",
+      "hasn't he"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00047",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Manya waddles nicely, ________?",
+    "options": [
+      "does he",
+      "doesn't he",
+      "is he",
+      "did he"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00048",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The kittens were playing, ________?",
+    "options": [
+      "were they",
+      "weren't they",
+      "did they",
+      "aren't they"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00049",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "You don't like sugar, ________?",
+    "options": [
+      "do you",
+      "don't you",
+      "are you",
+      "did you"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00050",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The trip was very long, ________?",
+    "options": [
+      "was it",
+      "wasn't it",
+      "is it",
+      "did it"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00051",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "I am in Primary Seven, ________?",
+    "options": [
+      "amn't I",
+      "am I",
+      "aren't I",
+      "are I"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00052",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Let's go for vacation, ________?",
+    "options": [
+      "shall we",
+      "will we",
+      "won't we",
+      "don't we"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00053",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Manya hardly eats meat, ________?",
+    "options": [
+      "does he",
+      "doesn't he",
+      "is he",
+      "isn't he"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00054",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Open the classroom, ________?",
+    "options": [
+      "do you",
+      "shall you",
+      "will you",
+      "won't you"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00055",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "I am not slow, ________?",
+    "options": [
+      "am I",
+      "aren't I",
+      "are I",
+      "don't I"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00056",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "You'd rather stay, ________?",
+    "options": [
+      "wouldn't you",
+      "hadn't you",
+      "shouldn't you",
+      "won't you"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00057",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "You'd better go, ________?",
+    "options": [
+      "wouldn't you",
+      "hadn't you",
+      "shouldn't you",
+      "won't you"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00058",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "There is a kitten in the kitchen, ________?",
+    "options": [
+      "is there",
+      "isn't there",
+      "is it",
+      "isn't it"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00059",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Let us help our parents, ________?",
+    "options": [
+      "will we",
+      "shall we",
+      "won't we",
+      "don't we"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00060",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "He rarely comes here, ________?",
+    "options": [
+      "does he",
+      "doesn't he",
+      "is he",
+      "isn't he"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00061",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Complete the rule: Having + _________ participle.",
+    "options": [
+      "Present",
+      "Past",
+      "Future",
+      "Simple"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00062",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Having _________ our hands, we ate the food.",
+    "options": [
+      "wash",
+      "washing",
+      "washed",
+      "washes"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00063",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "_________ through the window, I saw a thief.",
+    "options": [
+      "Look",
+      "Looking",
+      "Looked",
+      "Looks"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00064",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Having _________ my bag, I boarded the bus.",
+    "options": [
+      "pack",
+      "packing",
+      "packed",
+      "packs"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00065",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "_________ said her prayers, the old woman lay down.",
+    "options": [
+      "Have",
+      "Has",
+      "Having",
+      "Had"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00066",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Having _________ the letter, I went to the post office.",
+    "options": [
+      "write",
+      "writing",
+      "wrote",
+      "written"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00067",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Having _________ the snake, the children ran away.",
+    "options": [
+      "see",
+      "saw",
+      "seen",
+      "seeing"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00068",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "_________ the bell, the pupils ran for assembly.",
+    "options": [
+      "Hear",
+      "Hearing",
+      "Heard",
+      "Hears"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00069",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Having _________ the chores, Kato went to play.",
+    "options": [
+      "do",
+      "did",
+      "done",
+      "doing"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00070",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Having _________ the bus fare, I entered the coach.",
+    "options": [
+      "pay",
+      "paid",
+      "paying",
+      "pays"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00071",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Which sentence is grammatically correct?",
+    "options": [
+      "Having eat lunch, I slept.",
+      "Having eaten lunch, I slept.",
+      "Having eating lunch, I slept.",
+      "Having ate lunch, I slept."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00072",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Choose the correct V3 form: Having _________ (take) my report card, I left.",
+    "options": [
+      "took",
+      "take",
+      "taken",
+      "taking"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00073",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Complete the sentence: _________ for the journey, we said goodbye.",
+    "options": [
+      "Prepare",
+      "Preparing",
+      "Prepared",
+      "Having prepared"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00074",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Having _________ (begin) the holiday, Manya felt happy.",
+    "options": [
+      "begin",
+      "began",
+      "begun",
+      "beginning"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00075",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Having _________ (buy) the stamps, she posted the letter.",
+    "options": [
+      "buyed",
+      "bought",
+      "buying",
+      "boughten"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00076",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Identify the participle in: 'Shouting loudly, the parrot flew away.'",
+    "options": [
+      "Loudly",
+      "The",
+      "Shouting",
+      "Flew"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00077",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Having _________ (find) the pen-pal, he wrote a letter.",
+    "options": [
+      "finded",
+      "found",
+      "finding",
+      "founden"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00078",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Having _________ (speak) to Otim, I understood the plan.",
+    "options": [
+      "speak",
+      "spoke",
+      "spoken",
+      "speaking"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00079",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Complete: _________ the bus, the driver started the engine.",
+    "options": [
+      "Board",
+      "Boarding",
+      "Boarded",
+      "Having boarded"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00080",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Having _________ (spend) all my money, I walked home.",
+    "options": [
+      "spended",
+      "spent",
+      "spending",
+      "spend"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00081",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: He finished the chores. He went to the zoo. (Begin: Having...)",
+    "options": [
+      "Having finish the chores, he went to the zoo.",
+      "Having finished the chores, he went to the zoo.",
+      "Having finishing the chores, he went to the zoo.",
+      "Having did the chores, he went to the zoo."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00082",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: She saw the teacher. She hid under the desk. (Begin: Seeing...)",
+    "options": [
+      "Seeing the teacher, she hid under the desk.",
+      "See the teacher, she hid under the desk.",
+      "Seen the teacher, she hid under the desk.",
+      "Having see the teacher, she hid under the desk."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00083",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: Manya wrote the letter. He bought an envelope. (Begin: Having...)",
+    "options": [
+      "Having wrote the letter, he bought an envelope.",
+      "Having writing the letter, he bought an envelope.",
+      "Having written the letter, he bought an envelope.",
+      "Having written the letter he bought an envelope."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00084",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: Kiki ate the fish. She felt sleepy. (Begin: Having...)",
+    "options": [
+      "Having eaten the fish, she felt sleepy.",
+      "Having ate the fish, she felt sleepy.",
+      "Having eat the fish, she felt sleepy.",
+      "Eating the fish she felt sleepy."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00085",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: The term ended. We went up-country. (Begin: Having...)",
+    "options": [
+      "Having end the term, we went up-country.",
+      "Having ended the term we went up-country.",
+      "Having ending the term, we went up-country.",
+      "Having ended the term, we went up-country."
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00086",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: He received his report card. He showed it to dad. (Begin: After...)",
+    "options": [
+      "After receive his report card, he showed it to dad.",
+      "After receiving his report card, he showed it to dad.",
+      "After he have received his report card, he showed it to dad.",
+      "After received his report card, he showed it to dad."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00087",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: Polly reached the village. She visited her relatives. (Begin: Having...)",
+    "options": [
+      "Having reaching the village, she visited her relatives.",
+      "Having reached the village she visited her relatives.",
+      "Having reached the village, she visited her relatives.",
+      "Having reach the village, she visited her relatives."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00088",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: They cleaned the compound. They started the party. (Begin: Having...)",
+    "options": [
+      "Having clean the compound, they started the party.",
+      "Having cleaned the compound, they started the party.",
+      "Having cleaning the compound, they started the party.",
+      "Having cleaned the compound they started the party."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00089",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: He found the money. He took it to the teacher. (Begin: Having...)",
+    "options": [
+      "Having found the money, he took it to the teacher.",
+      "Having find the money, he took it to the teacher.",
+      "Having finded the money, he took it to the teacher.",
+      "Finding the money he took it to the teacher."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00090",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: She woke up early. She caught the bus. (Begin: Having...)",
+    "options": [
+      "Having woken up early, she caught the bus.",
+      "Having woke up early, she caught the bus.",
+      "Having wake up early, she caught the bus.",
+      "Having waking up early, she caught the bus."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00091",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "In reported speech, the word \"now\" changes to ________.",
+    "options": [
+      "today",
+      "then",
+      "that time",
+      "before"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00092",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "In reported speech, \"today\" changes to ________.",
+    "options": [
+      "that day",
+      "yesterday",
+      "this day",
+      "the next day"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00093",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The word \"tomorrow\" shifts to ________.",
+    "options": [
+      "the day before",
+      "the following day",
+      "that day",
+      "yesterday"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00094",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "In reported speech, the verb \"am\" or \"is\" changes to ________.",
+    "options": [
+      "was",
+      "were",
+      "be",
+      "been"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00095",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The word \"here\" changes to ________.",
+    "options": [
+      "there",
+      "where",
+      "home",
+      "inside"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00096",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "If the speaker is a boy, the pronoun \"I\" usually changes to ________.",
+    "options": [
+      "she",
+      "it",
+      "he",
+      "they"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00097",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The quotation marks ( \" \" ) are ________ in reported speech.",
+    "options": [
+      "kept",
+      "doubled",
+      "dropped",
+      "changed to dots"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00098",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We in direct speech often changes to ________ in reported speech.",
+    "options": [
+      "us",
+      "them",
+      "they",
+      "ours"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00099",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Shall or \"will\" shifts to ________.",
+    "options": [
+      "can",
+      "would",
+      "must",
+      "was"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00100",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Yesterday changes to ________.",
+    "options": [
+      "the day before",
+      "the following day",
+      "that day",
+      "tomorrow"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00101",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Kato said, \"I am happy.\" Kato said that he ________ happy.",
+    "options": [
+      "is",
+      "was",
+      "has been",
+      "being"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00102",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I will travel, said Polly. Polly said that she ________ travel.",
+    "options": [
+      "shall",
+      "will",
+      "would",
+      "can"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00103",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "They said, \"We are digging.\" They said that they ________ digging.",
+    "options": [
+      "are",
+      "were",
+      "was",
+      "have been"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00104",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I have finished, said Kiki. Kiki said that she ________ finished.",
+    "options": [
+      "has",
+      "have",
+      "had",
+      "having"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00105",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Manya said, \"I am busy now.\" Manya said that he was busy ________.",
+    "options": [
+      "today",
+      "then",
+      "now",
+      "that day"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00106",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The teacher said, \"Water boils at 100°C.\" The teacher said that water ________ at 100°C.",
+    "options": [
+      "boiled",
+      "boils",
+      "had boiled",
+      "was boiling"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00107",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "We can swim, they said. They said that they ________ swim.",
+    "options": [
+      "can",
+      "could",
+      "would",
+      "might"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00108",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "It is raining today, said mom. Mom said that it was raining ________.",
+    "options": [
+      "today",
+      "that day",
+      "the next day",
+      "then"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00109",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I must go, said Ali. Ali said that he ________ to go.",
+    "options": [
+      "must",
+      "has",
+      "had",
+      "had to"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00110",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I saw a lion, said the boy. The boy said that he ________ a lion.",
+    "options": [
+      "saw",
+      "has seen",
+      "had seen",
+      "sees"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00111",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"I shall visit you tomorrow,\" said Kato.",
+    "options": [
+      "Kato said that he will visit me tomorrow.",
+      "Kato said that he would visit me the following day.",
+      "Kato said that I should visit him the following day.",
+      "Kato said he shall visit me the next day."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00112",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"Are you coming?\" asked Otim.",
+    "options": [
+      "Otim asked if I was coming.",
+      "Otim asked that am I coming.",
+      "Otim asked whether are you coming.",
+      "Otim wanted to know am I coming."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00113",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"Go to the garden,\" said mother.",
+    "options": [
+      "Mother said I go to the garden.",
+      "Mother told me to go to the garden.",
+      "Mother said to me go to the garden.",
+      "Mother ordered that I go to the garden."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00114",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"Where is your report card?\" asked dad.",
+    "options": [
+      "Dad asked where my report card was.",
+      "Dad asked where was my report card.",
+      "Dad wanted to know where is my report card.",
+      "Dad asked that where my report card was."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00115",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"We have been playing here,\" said the boys.",
+    "options": [
+      "The boys said they had been playing there.",
+      "The boys said that we have been playing there.",
+      "The boys said that they were playing here.",
+      "The boys said they have been playing there."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00116",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"Don't make noise,\" said the teacher.",
+    "options": [
+      "The teacher said don't make noise.",
+      "The teacher told us not to make noise.",
+      "The teacher said that we don't make noise.",
+      "The teacher asked us to not make noise."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00117",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"I didn't see the bus,\" said Mary.",
+    "options": [
+      "Mary said that she didn't see the bus.",
+      "Mary said that she hadn't seen the bus.",
+      "Mary said that I hadn't seen the bus.",
+      "Mary said that she hasn't seen the bus."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00118",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"I am late,\" said the boy. (Begin: The boy said... )",
+    "options": [
+      "The boy said he is late.",
+      "The boy said that he was late.",
+      "The boy said I was late.",
+      "The boy said that he is late."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00119",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"We shall leave next week,\" said the aunt.",
+    "options": [
+      "The aunt said that they should leave the following week.",
+      "The aunt said that we would leave next week.",
+      "The aunt said that they will leave the next week.",
+      "The aunt said she would leave the following week."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00120",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: \"The sun rises in the East,\" said the man.",
+    "options": [
+      "The man said that the sun rose in the East.",
+      "The man said that the sun rises in the East.",
+      "The man said the sun was rising in the East.",
+      "The man said that the sun had risen in the East."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00121",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Which adjective comes first in the NOSHACOMPAN rule?",
+    "options": [
+      "Size",
+      "Opinion",
+      "Number",
+      "Colour"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00122",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Choose the correct order: He bought _________ mangoes.",
+    "options": [
+      "sweet three",
+      "three sweet",
+      "sweetest three",
+      "three sweetest"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00123",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Manya has a _________ bag.",
+    "options": [
+      "Ugandan big",
+      "big Ugandan",
+      "Ugandan biggest",
+      "big Ugandan's"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00124",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "She wore a _________ dress.",
+    "options": [
+      "beautiful red",
+      "red beautiful",
+      "beautifully red",
+      "red beautifully"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00125",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Identify the material adjective in this list: _________.",
+    "options": [
+      "Small",
+      "Wooden",
+      "Beautiful",
+      "Kenyan"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00126",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Which word describes an 'Opinion'?",
+    "options": [
+      "Large",
+      "Round",
+      "Smart",
+      "Old"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00127",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We used a _________ table.",
+    "options": [
+      "plastic white",
+      "white plastic",
+      "plastic white's",
+      "whitish plastic"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00128",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "I saw _________ boys.",
+    "options": [
+      "two smart",
+      "smart two",
+      "two smartly",
+      "smartly two"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00129",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The dog is _________.",
+    "options": [
+      "black big",
+      "big black",
+      "blackish big",
+      "bigly black"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00130",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Kiki has a _________ kitten.",
+    "options": [
+      "new small",
+      "small new",
+      "newly small",
+      "small newly"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00131",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Choose the correct order: She bought _________ shoes.",
+    "options": [
+      "new black leather",
+      "black new leather",
+      "leather black new",
+      "new leather black"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00132",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "It was a _________ day.",
+    "options": [
+      "hot sunny June",
+      "sunny hot June",
+      "June sunny hot",
+      "hot June sunny"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00133",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Manya found a _________ coin.",
+    "options": [
+      "round small gold",
+      "small round gold",
+      "gold small round",
+      "round gold small"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00134",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The teacher used a _________ stick.",
+    "options": [
+      "long wooden walking",
+      "walking wooden long",
+      "wooden long walking",
+      "long walking wooden"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00135",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "We visited a _________ village.",
+    "options": [
+      "quiet small rural",
+      "small quiet rural",
+      "rural small quiet",
+      "small rural quiet"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00136",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "She carried a _________ basket.",
+    "options": [
+      "large Ugandan woven",
+      "Ugandan large woven",
+      "woven large Ugandan",
+      "large woven Ugandan"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00137",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Choose the best arrangement: _________.",
+    "options": [
+      "A fat old black cow",
+      "A black old fat cow",
+      "An old black fat cow",
+      "A fat black old cow"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00138",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "He is a _________ player.",
+    "options": [
+      "tall young Kenyan",
+      "young tall Kenyan",
+      "Kenyan tall young",
+      "tall Kenyan young"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00139",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "They live in a _________ house.",
+    "options": [
+      "modern big stone",
+      "big modern stone",
+      "stone big modern",
+      "big stone modern"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00140",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Which category does 'British' fall under in NOSHACOMPAN?",
+    "options": [
+      "Opinion",
+      "Age",
+      "Origin",
+      "Material"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00141",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Arrange these adjectives: (Ugandan, two, beautiful, small, new).",
+    "options": [
+      "Two beautiful small new Ugandan",
+      "Two small beautiful new Ugandan",
+      "Beautiful two small new Ugandan",
+      "Two new beautiful small Ugandan"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00142",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite as a single sentence: I have a ruler. It is plastic. It is nice. It is long.",
+    "options": [
+      "I have a long plastic nice ruler.",
+      "I have a nice long plastic ruler.",
+      "I have a plastic nice long ruler.",
+      "I have a nice plastic long ruler."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00143",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join these: The girl is brown. She is beautiful. She is tall. She is Ugandan.",
+    "options": [
+      "The beautiful tall brown Ugandan girl.",
+      "The Ugandan beautiful tall brown girl.",
+      "The tall beautiful brown Ugandan girl.",
+      "The beautiful brown tall Ugandan girl"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00144",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "What is the correct sequence for: (square, blue, large, wooden, one).",
+    "options": [
+      "One large square blue wooden",
+      "One square large blue wooden",
+      "One blue large square wooden",
+      "One large blue square wooden"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00145",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Correct the order: He bought a (cooking, new, metal, small) pot.",
+    "options": [
+      "A new small metal cooking pot",
+      "A small new metal cooking pot",
+      "A metal small new cooking pot",
+      "A small metal new cooking pot"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00146",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Which sentence uses the correct order of adjectives?",
+    "options": [
+      "The old three big trucks.",
+      "The three big old trucks.",
+      "The three old big trucks.",
+      "The big three old trucks."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00147",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Identify the 'Purpose' adjective in: 'A heavy brown leather traveling bag'.",
+    "options": [
+      "Heavy",
+      "Brown",
+      "Leather",
+      "Traveling"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00148",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: I saw a snake. It was thin. It was long. It was green. It was scary.",
+    "options": [
+      "I saw a scary long thin green snake.",
+      "I saw a long thin green scary snake.",
+      "I saw a green long thin scary snake.",
+      "I saw a scary green long thin snake."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00149",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Arrange these: (rectangular, Holland, multicolored, the) mat.",
+    "options": [
+      "The multicolored rectangular Holland mat.",
+      "The Holland multicolored rectangular mat.",
+      "The rectangular multicolored Holland mat.",
+      "The multicolored Holland rectangular mat."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00150",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Correct the order: (small, oval, pink, five) tablets.",
+    "options": [
+      "Five small pink oval tablets",
+      "Five oval small pink tablets",
+      "Five small oval pink tablets",
+      "Five pink small oval tablets"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00151",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "In the passive voice for continuous actions, we must add the word ________.",
+    "options": [
+      "been",
+      "being",
+      "be",
+      "was"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00152",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "What is the past participle (V3) of the verb 'sweep'?",
+    "options": [
+      "sweeped",
+      "swept",
+      "sweeping",
+      "sweeps"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00153",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Identify the object in: 'The girls are peeling matooke.'",
+    "options": [
+      "The girls",
+      "are",
+      "peeling",
+      "matooke"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00154",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The cow is ________ milked by Manya.",
+    "options": [
+      "be",
+      "been",
+      "being",
+      "was"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00155",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Complete: The floor is being ________ (mop) by Kiki.",
+    "options": [
+      "mop",
+      "mopped",
+      "mopping",
+      "mops"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00156",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Active: Tom helps me. Passive: I ________ helped by Tom.",
+    "options": [
+      "am",
+      "is",
+      "are",
+      "being"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00157",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Which word shows that a person is doing the action?",
+    "options": [
+      "By",
+      "With",
+      "At",
+      "For"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00158",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "What is the V3 of 'eat'?",
+    "options": [
+      "ate",
+      "eaten",
+      "eating",
+      "eats"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00159",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Passive: The compound is ________ cleaned.",
+    "options": [
+      "be",
+      "being",
+      "been",
+      "was"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00160",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Complete: Biko ________ eating mangoes. (Active)",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00161",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The room is ________ swept by the boys.",
+    "options": [
+      "is",
+      "are",
+      "being",
+      "be"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00162",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Mangoes ________ being eaten by the children.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "was"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00163",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Identify the correct passive sentence.",
+    "options": [
+      "The bell is ringed.",
+      "The bell is being rung.",
+      "The bell is being ring.",
+      "The bell being rung."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00164",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The cows are being ________ (milk) now.",
+    "options": [
+      "milk",
+      "milked",
+      "milking",
+      "milks"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00165",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Active: We are reading books. Passive: Books are ________ read.",
+    "options": [
+      "been",
+      "being",
+      "be",
+      "was"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00166",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The teacher ________ marking our books.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00167",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Passive: New skills are being ________ (learn) by pupils.",
+    "options": [
+      "learn",
+      "learnt",
+      "learning",
+      "learns"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00168",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Active: Mother is cooking rice. Passive: Rice is being ________ by mother.",
+    "options": [
+      "cook",
+      "cooked",
+      "cooking",
+      "cooks"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00169",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Which sentence is in the passive voice?",
+    "options": [
+      "The boy is wailing.",
+      "Manya is waddling.",
+      "The car is being driven.",
+      "Polly is flying."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00170",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The letters are being ________ (send) by pen-pals.",
+    "options": [
+      "send",
+      "sent",
+      "sending",
+      "sends"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00171",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'The maid is peeling matooke.'",
+    "options": [
+      "Matooke is peeling by the maid.",
+      "Matooke is being peeled by the maid.",
+      "Matooke are being peeled by the maid.",
+      "The maid is being peeled by matooke."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00172",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'The boys are cleaning the compound.'",
+    "options": [
+      "The compound is being cleaned by the boys.",
+      "The compound are being cleaned by the boys.",
+      "The boys are being cleaned by the compound.",
+      "The compound is cleaned by the boys."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00173",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'Someone is ringing the bell.'",
+    "options": [
+      "Someone is being rung by the bell.",
+      "The bell is being rung by someone.",
+      "The bell is being rung.",
+      "The bell is rung by someone."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00174",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'The herdsman milks the cows.'",
+    "options": [
+      "The cows is being milked.",
+      "The cows are being milked by the herdsman.",
+      "The cows are milked by the herdsman.",
+      "The cows are being milked."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00175",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Active: 'A letter is being written by Jane.'",
+    "options": [
+      "Jane is write a letter.",
+      "Jane is writing a letter.",
+      "Jane was writing a letter.",
+      "Jane writes a letter."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00176",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'The girls are weaving nice baskets.'",
+    "options": [
+      "Nice baskets are being woven by the girls.",
+      "Nice baskets is being woven by the girls.",
+      "The girls are being woven into baskets.",
+      "Nice baskets were being woven by the girls."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00177",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'Our parents are organizing birthday parties.'",
+    "options": [
+      "Birthday parties is being organized.",
+      "Birthday parties are being organized by our parents.",
+      "Birthday parties were organized by our parents.",
+      "Our parents are being organized."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00178",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Which sentence correctly drops the vague subject?",
+    "options": [
+      "Bread is being eaten by people.",
+      "Bread is being eaten.",
+      "People are being eaten by bread.",
+      "Bread is eaten by people."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00179",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Change to Passive: 'They are reading newspapers.'",
+    "options": [
+      "Newspapers is being read.",
+      "Newspapers were being read by them.",
+      "Newspapers are being read.",
+      "Newspapers are being reading."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00180",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "What happens to the verb 'is' when the object is plural?",
+    "options": [
+      "It stays 'is'",
+      "It changes to 'am'",
+      "It changes to 'are'",
+      "It changes to 'be'"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00181",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We use \"since\" to show ________.",
+    "options": [
+      "a period of time",
+      "the end of an action",
+      "a specific starting point in time",
+      "a future date"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00182",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We use \"for\" to show ________.",
+    "options": [
+      "a starting point",
+      "a period or length of time",
+      "the date today",
+      "a holiday name"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00183",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Manya has been in the village ________ Monday.",
+    "options": [
+      "for",
+      "since",
+      "during",
+      "until"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00184",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Kiki has slept ________ three hours.",
+    "options": [
+      "for",
+      "since",
+      "at",
+      "by"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00185",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "I haven't written to my pen-pal ________ January.",
+    "options": [
+      "for",
+      "at",
+      "since",
+      "on"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00186",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "They have stayed up-country ________ a month.",
+    "options": [
+      "since",
+      "at",
+      "during",
+      "for"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00187",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "The holiday has lasted ________ two weeks.",
+    "options": [
+      "since",
+      "for",
+      "ago",
+      "from"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00188",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "Polly has lived here ________ 2020.",
+    "options": [
+      "for",
+      "since",
+      "on",
+      "in"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00189",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "We have been waiting for the bus ________ morning.",
+    "options": [
+      "for",
+      "at",
+      "since",
+      "by"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00190",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "E",
+    "type": "MCQ",
+    "text": "It has been raining ________ a long time.",
+    "options": [
+      "since",
+      "at",
+      "for",
+      "on"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00191",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "He has not visited the post office ________ five years.",
+    "options": [
+      "since",
+      "for",
+      "during",
+      "ago"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00192",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Manya has been waddling ________ he was a duckling.",
+    "options": [
+      "for",
+      "since",
+      "at",
+      "when"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00193",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The teacher has been in the classroom ________ 9:00 AM.",
+    "options": [
+      "for",
+      "at",
+      "since",
+      "on"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00194",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I have known my pen-pal ________ many years.",
+    "options": [
+      "for",
+      "since",
+      "during",
+      "at"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00195",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "Kiki has been on the farm ________ a fortnight.",
+    "options": [
+      "for",
+      "since",
+      "at",
+      "by"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00196",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "The candidates have been revising ________ last term.",
+    "options": [
+      "for",
+      "since",
+      "during",
+      "at"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00197",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "I have been in this school ________ three years.",
+    "options": [
+      "for",
+      "since",
+      "at",
+      "ago"
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00198",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "It is a year ________ I last saw Mr. Musoke.",
+    "options": [
+      "for",
+      "when",
+      "since",
+      "at"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00199",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "We have played football ________ midday.",
+    "options": [
+      "for",
+      "on",
+      "at",
+      "since"
+    ],
+    "answer": "Option_D",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00200",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "M",
+    "type": "MCQ",
+    "text": "She has been cooking ________ an hour.",
+    "options": [
+      "since",
+      "for",
+      "at",
+      "by"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00201",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: I joined this school in 2020. I am still here. (Use: ...since...)",
+    "options": [
+      "I am in this school for 2020.",
+      "I have been in this school since 2020.",
+      "I joined this school since 2020.",
+      "I am being in this school since 2020."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00202",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: It is a year since I saw him. (Begin: I haven't...)",
+    "options": [
+      "I haven't seen him since a year.",
+      "I haven't seen him for a year.",
+      "I haven't seen him since last year.",
+      "I haven't seen him for last year."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00203",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: We started the party at 2:00 PM. It is now 5:00 PM.",
+    "options": [
+      "We have had the party since three hours.",
+      "We have had the party since 2:00 PM.",
+      "We have the party for 2:00 PM.",
+      "We had the party since 2:00 PM."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00204",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: Okello visited the post office five years ago. (Use: ...for...)",
+    "options": [
+      "Okello has not visited the post office for five years.",
+      "Okello visited the post office for five years.",
+      "Okello is not at the post office since five years.",
+      "Okello has visited the post office since five years."
+    ],
+    "answer": "Option_A",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00205",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Which sentence is punctuated correctly?",
+    "options": [
+      "I haven't met him, since January.",
+      "I haven't met him since January.",
+      "I haven't met him; since January.",
+      "I haven't, met him since January."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00206",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: The rain started in the morning. It is still raining. (Use: ...since...)",
+    "options": [
+      "It has rained for morning.",
+      "It is raining since morning.",
+      "It has been raining since morning.",
+      "It was raining since morning."
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00207",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Rewrite: I last wrote a letter in 2010. (Begin: I haven't...)",
+    "options": [
+      "I haven't written a letter for 2010.",
+      "I haven't written a letter since 2010.",
+      "I haven't wrote a letter since 2010.",
+      "I haven't been writing a letter for 2010."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00208",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "The post master has been talking to us ________ 2:00 PM.",
+    "options": [
+      "for",
+      "since",
+      "at",
+      "until"
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00209",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Which word is the opposite of 'commenced'?",
+    "options": [
+      "started",
+      "began",
+      "ended",
+      "vacated"
+    ],
+    "answer": "Option_C",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  },
+  {
+    "id": "PQ-ENG7-T1-00210",
+    "topic": "School Holidays",
+    "sub_topic": "",
+    "difficulty": "H",
+    "type": "MCQ",
+    "text": "Join: He began singing at 6:00 AM. It is now midday. (Use: ...for...)",
+    "options": [
+      "He has been singing since six hours.",
+      "He has been singing for six hours.",
+      "He is singing for six hours.",
+      "He was singing for six hours."
+    ],
+    "answer": "Option_B",
+    "hint": "",
+    "engine": "",
+    "mode": "",
+    "simData": null
+  }
+]

@@ -56,6 +56,30 @@
     window.ViewManager = ViewManager;
     window.ManyaRouter = ManyaRouter;
 
+    import { QuestFactory } from './app-shell/quest-factory.js';
+    import { QuestRunner } from './app-shell/quest_runner.js';
+
+        // EXPOSE THE ACTION TO THE WINDOW SO THE BUTTON CAN SEE IT
+        window.launchDynamicQuest = async (subject, topic) => {
+            try {
+                // 1. Tell ViewManager to prep the screen (remove engine-mode, etc.)
+                ViewManager.mount.innerHTML = '<div class="manya-loader">Preparing Journey...</div>';
+                
+                // 2. Factory builds the steps based on your Excel-derived JSON bank
+                const manifest = await QuestFactory.buildQuest(subject, topic);
+                
+                // 3. Runner takes over the screen
+                QuestRunner.renderQuest(ViewManager.mount, manifest);
+                
+                // 4. Add the engine-mode class so it fits perfectly
+                ViewManager.mount.classList.add('engine-mode');
+                
+            } catch (err) {
+                console.error("Factory Error:", err);
+                alert("Could not build quest. Make sure your bank.json exists!");
+            }
+        };
+
     // Start App
     ViewManager.init();
 </script>
