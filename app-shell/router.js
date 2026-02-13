@@ -24,7 +24,9 @@ const ENGINE_REGISTRY = {
     "ENGLISH_RULE_MASTER": "./js/engines/english-engines/english_rule_master.js",
     "CHAT": "./js/engines/english-engines/chat_engine.js",
     "QUEST_RUNNER": "./js/engines/english-engines/quest_runner.js",
-    "MORPH_SPEECH": "./js/engines/english-engines/morph_game.js"
+    "MORPH_SPEECH": "./js/engines/english-engines/morph_game.js",
+    "CHAT-STANDALONE": "./js/engines/chat-engine.js",
+    "MCQ_STANDALONE": "./js/engines/mcq-standalone.js"
 };
 
 export const ManyaRouter = {
@@ -123,16 +125,35 @@ export const ManyaRouter = {
      */
     loadInline: async (engineKey, data, targetContainer) => {
         const enginePath = ENGINE_REGISTRY[engineKey];
-        if (!enginePath) return;
+        if (!enginePath) {
+            targetContainer.innerHTML = `<p style="color:red">Engine ${engineKey} not registered</p>`;
+            return;
+        }
 
-        const module = await import(enginePath);
-        const engine = Object.values(module)[0];
+        try {
+            const module = await import(enginePath);
+            
+            // FIX: Find the first exported object that contains our functions
+            const engine = Object.values(module).find(obj => 
+                typeof obj === 'object' && (obj.renderLabeling || obj.renderStudy)
+            );
 
-        // Most engines use renderLabeling for interaction
-        if (data.mode === 'study' && engine.renderStudy) {
-            engine.renderStudy(targetContainer, data);
-        } else {
-            engine.renderLabeling(targetContainer, data);
+            if (!engine) {
+                throw new Error(`Exported engine object in ${engineKey} is missing render functions.`);
+            }
+
+            if (data.mode === 'study' && engine.renderStudy) {
+                engine.renderStudy(targetContainer, data);
+            } else if (engine.renderLabeling) {
+                engine.renderLabeling(targetContainer, data);
+            } else {
+                // Fallback if mode doesn't match
+                engine.renderStudy ? engine.renderStudy(targetContainer, data) : engine.renderLabeling(targetContainer, data);
+            }
+
+        } catch (err) {
+            console.error("Inline Load Error:", err);
+            targetContainer.innerHTML = `<div style="color:red; padding:20px;">Failed to load step: ${engineKey}<br><small>${err.message}</small></div>`;
         }
     }
 };

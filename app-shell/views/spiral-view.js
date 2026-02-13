@@ -1,84 +1,117 @@
+import { QuestFactory } from '../quest-factory.js';
+import { QuestRunner } from '../quest-runner.js';
+import { ViewManager } from '../view-manager.js';
+
 export const renderSpiral = (mount, subject) => {
-    const themes = {
-        math: { color: '#db2777', bg: '#fdf2f8', accent: '#be185d', label: 'Mathematics' },
-        science: { color: '#16a34a', bg: '#f0fdf4', accent: '#15803d', label: 'Science' },
-        sst: { color: '#0ea5e9', bg: '#f0f9ff', accent: '#0369a1', label: 'Social Studies' },
-        english: { color: '#7c3aed', bg: '#f5f3ff', accent: '#6d28d9', label: 'English' }
-    };
-    const theme = themes[subject] || themes.math;
+    
+    // 1. DATA: List topics in order (1 to 14)
+    const scienceSyllabus = [
+        { id: "quest_1_types_of_skeletons", title: "Skeleton Types" },
+        { id: "quest_2_human_skeleton", title: "Human Framework" },
+        { id: "quest_3_axial_skull_spine", title: "Skull & Backbone" },
+        { id: "quest_4_axial_rib_cage", title: "The Rib Cage" },
+        { id: "quest_5_appendicular_limbs", title: "The Limbs" }
+    ];
 
-    // GENERATE 20 LEVELS
-    const levels = [];
-    for(let i=1; i<=20; i++) {
-        let status = 'locked';
-        if(i < 8) status = 'completed';
-        if(i === 8) status = 'active'; // Manya is here
-        
-        let type = 'star';
-        if(i % 5 === 0) type = 'chest'; // Boss Level every 5
-        else if(i % 2 === 0) type = 'book';
-        
-        levels.push({ id: i, type, status });
-    }
+    // 2. GENERATE NODES: 4 per sub-topic
+    let nodes = [];
+    scienceSyllabus.forEach(topic => {
+        nodes.push({ id: topic.id, type: 'WARMUP', label: '1. Warm-Up', icon: '🌱' });
+        nodes.push({ id: topic.id, type: 'STUDY', label: '2. Research', icon: '🔬' });
+        nodes.push({ id: topic.id, type: 'PRACTICE', label: '3. Lab Drill', icon: '⚡' });
+        nodes.push({ id: topic.id, type: 'MASTERY', label: '4. Lab Mastery', icon: '🏆' });
+    });
 
-    const icons = { star:'⭐', book:'📖', chest:'🎁' };
-    const svgHeight = levels.length * 100 + 150; // Dynamic height
+    // REVERSE THE ENTIRE LIST: Now Node 0 is visually at the bottom, but logic is standard
+    nodes = nodes.reverse();
+
+    // 3. PROGRESS LOGIC
+    // We need to know which index is "Active" in the REVERSED list
+    const actualProgress = parseInt(localStorage.getItem(`manya_prog_${subject}`) || 0);
+    // Convert actual progress to the index in the reversed array
+    const activeIndexInUI = (nodes.length - 1) - actualProgress;
+
+    const points = localStorage.getItem('manya_points') || 0;
 
     mount.innerHTML = `
-        <div class="spiral-view animate-in" style="background:${theme.bg}; --theme-color:${theme.color}; --theme-accent:${theme.accent}">
-            
-            <div class="spiral-header sticky">
-                <div class="header-row">
-                    <button class="nav-back-btn" onclick="ViewManager.show('home')">←</button>
-                    <div class="subject-capsule">
-                        <span class="s-name">${theme.label}</span>
-                    </div>
-                    <div class="currency-capsule">💎 120</div>
-                </div>
-            </div>
+        <div class="spiral-view animate-in">
+            <div class="lab-grid"></div>
 
-            <div class="spiral-map-container">
-                <div class="bg-pattern"></div>
-                
-                <!-- THE INFINITE CURVE -->
-                <svg class="spiral-svg" width="100%" height="${svgHeight}px" preserveAspectRatio="none">
-                    <path d="M 50 20 
-                             Q 90 80 50 140 T 50 260 T 50 380 T 50 500 T 50 620 T 50 740 T 50 860 T 50 980 T 50 1100 T 50 1220 T 50 1340 T 50 1460 T 50 1580 T 50 1700 T 50 1820 T 50 1940 T 50 2060" 
-                          stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
-                    <path d="M 50 20 
-                             Q 90 80 50 140 T 50 260 T 50 380 T 50 500 T 50 620 T 50 740 T 50 860 T 50 980 T 50 1100 T 50 1220 T 50 1340 T 50 1460 T 50 1580 T 50 1700 T 50 1820 T 50 1940 T 50 2060" 
-                          stroke="${theme.color}" stroke-width="6" stroke-dasharray="15 15" stroke-linecap="round" fill="none" opacity="0.4"/>
+            <header class="pro-header">
+                <button class="icon-btn" onclick="ViewManager.show('home')">←</button>
+                <div class="header-pill points">⭐ <span id="display-points">${points}</span></div>
+                <div class="header-pill active-tag">SCIENCE HUB</div>
+            </header>
+
+            <div class="spiral-map-container" id="scroll-frame">
+                <svg id="road-svg" class="road-svg-layer">
+                    <path id="road-line" d="" fill="none" stroke="#e2e8f0" stroke-width="20" stroke-linecap="round"/>
+                    <path id="road-dots" d="" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="1, 20" stroke-linecap="round" opacity="0.5"/>
                 </svg>
 
-                <div class="nodes-wrapper">
-                    ${levels.map((lvl, index) => {
-                        let pos = 'center';
-                        if(index % 4 === 1) pos = 'right';
-                        if(index % 4 === 3) pos = 'left';
+                <div class="nodes-column">
+                    ${nodes.map((n, i) => {
+                        // Correctly identify status based on original index
+                        const originalIdx = (nodes.length - 1) - i;
+                        const status = originalIdx < actualProgress ? 'completed' : (originalIdx === actualProgress ? 'active' : 'locked');
+                        const side = i % 2 === 0 ? 'node-right' : 'node-left';
                         
                         return `
-                        <div class="node-row ${pos}" style="z-index: ${50 - index}">
-                            ${lvl.status === 'active' ? 
-                                `<div class="manya-container">
-                                    <img src="assets/icons/pose_1.png" class="manya-3d-float">
-                                 </div>` : ''}
-                            
-                            <div class="game-node ${lvl.status} ${lvl.type === 'chest' ? 'boss-node' : ''}" 
-                                 onclick="alert('Start Quest ${lvl.id}')">
-                                <div class="node-cap"><span class="n-icon">${icons[lvl.type]}</span></div>
+                        <div class="node-row ${side}">
+                            <div id="node-${originalIdx}" class="game-node ${status}" 
+                                 onclick="window.launchLabNode('${subject}', '${n.id}', '${n.type}', ${originalIdx})">
+                                <div class="node-cap">${status === 'completed' ? '✅' : n.icon}</div>
                                 <div class="node-base"></div>
-                                ${lvl.status === 'completed' && lvl.type !== 'chest' ? '<div class="star-rating">⭐⭐⭐</div>' : ''}
+                                <div class="node-label-pro">${n.label}</div>
                             </div>
                         </div>`;
                     }).join('')}
                 </div>
-                <div style="height: 100px;"></div>
             </div>
-        </div>
-    `;
+        </div>`;
 
-    setTimeout(() => {
-        const activeNode = document.querySelector('.game-node.active');
-        if(activeNode) activeNode.scrollIntoView({behavior: "smooth", block: "center"});
-    }, 100);
+    // 4. THE POSITIONING ENGINE (The Fix)
+    const locateCurrentLevel = () => {
+        const frame = document.getElementById('scroll-frame');
+        const activeNode = document.getElementById(`node-${actualProgress}`);
+        const roadSvg = document.getElementById('road-svg');
+        const roadLine = document.getElementById('road-line');
+        const roadDots = document.getElementById('road-dots');
+
+        if (!activeNode || !frame) return;
+
+        // A. Draw Road
+        roadSvg.setAttribute('height', frame.scrollHeight);
+        roadSvg.setAttribute('width', frame.clientWidth);
+        
+        let d = "";
+        for (let i = 0; i < nodes.length; i++) {
+            const originalIdx = (nodes.length - 1) - i;
+            const el = document.getElementById(`node-${originalIdx}`);
+            const nx = el.offsetLeft + (el.offsetWidth / 2);
+            const ny = el.offsetTop + (el.offsetHeight / 2);
+            d += (i === 0 ? "M" : "L") + ` ${nx} ${ny} `;
+        }
+        roadLine.setAttribute('d', d);
+        roadDots.setAttribute('d', d);
+
+        // B. SCROLL TO NODE (Center Camera)
+        const offsetTop = activeNode.offsetTop;
+        const frameHeight = frame.offsetHeight;
+        frame.scrollTop = offsetTop - (frameHeight / 2) + 40;
+    };
+
+    // Trigger three times to ensure images and animations don't block the scroll
+    locateCurrentLevel(); 
+    setTimeout(locateCurrentLevel, 100);
+    setTimeout(locateCurrentLevel, 500);
+};
+
+window.launchLabNode = async (sub, tid, type, idx) => {
+    if(idx > parseInt(localStorage.getItem(`manya_prog_${sub}`) || 0)) return;
+    const manifest = await QuestFactory.build(sub, tid, type);
+    localStorage.setItem('last_sub', sub);
+    localStorage.setItem('last_idx', idx);
+    QuestRunner.start(document.getElementById('view-mount'), manifest);
+    document.getElementById('view-mount').classList.add('engine-mode');
 };

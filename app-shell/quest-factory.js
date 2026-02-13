@@ -1,61 +1,56 @@
-/**
- * QUEST FACTORY
- * The "Brain" that turns raw Question Banks (Excel rows) into Game Quests.
- */
+import { cleanData } from './js/utils.js';
+
 export const QuestFactory = {
-    
-    // 1. Fetch the big subject bank (The converted Excel)
-    async getBank(subject) {
-        const res = await fetch(`content/${subject}/${subject}-p7-question-bank.json`);
-        return await res.json();
+    // Convert Windows paths to web paths
+    resolvePath(winPath) {
+        if (!winPath || winPath === "null") return null;
+        const index = winPath.toLowerCase().indexOf('content');
+        if (index === -1) return null;
+        return '/' + winPath.substring(index).replace(/\\/g, '/');
     },
 
-    /**
-     * Build a Quest dynamically
-     * @param {string} subject - 'math', 'science', etc.
-     * @param {string} subTopic - 'finite_sets', 'skull', etc.
-     */
-    async buildQuest(subject, subTopic) {
-        const bank = await this.getBank(subject);
+    async build(subject, subTopicId, nodeType) {
+        const res = await fetch(`/content/${subject}/${subject}_bank.json`);
+        const rawBank = await res.json();
         
-        // 2. Filter rows from your Excel data
-        const pool = bank.filter(q => q.sub_topic === subTopic);
+        const pool = rawBank.map(row => cleanData(row)).filter(q => q['sub-topic'] === subTopicId);
 
-        // 3. Select Ingredients (Logic)
-        const introSim = pool.find(q => q.Question_Type === 'SIM' && q.Mode_sim === 'study');
-        const mcqs = pool.filter(q => q.Question_Type === 'MCQ').sort(() => 0.5 - Math.random()).slice(0, 5);
-        const recap = pool.find(q => q.Engine_Type_sim === 'READER_STUDY');
+        let steps = [];
 
-        // 4. Create the "Quest Manifest" (What the QuestRunner will play)
+        if (nodeType === 'WARMUP') {
+            const easy = pool.filter(q => q.Question_Type === 'MCQ' && q.Difficulty === 'E').slice(0, 4);
+            steps = easy.map(q => this.mapMCQ(q, true));
+        } 
+        else if (nodeType === 'STUDY') {
+            const sims = pool.filter(q => q.Question_Type === 'SIM' && q.Mode_sim === 'study');
+            for (let s of sims) {
+                const data = await (await fetch(this.resolvePath(s.File_Path_sim))).json();
+                steps.push({ engine: s.Engine_Type_sim, data, mode: 'study' });
+            }
+        }
+        else if (nodeType === 'PRACTICE') {
+            const med = pool.filter(q => q.Question_Type === 'MCQ' && q.Difficulty === 'M').slice(0, 5);
+            steps = med.map(q => this.mapMCQ(q, true));
+        }
+        else if (nodeType === 'MASTERY') {
+            const hard = pool.filter(q => q.Question_Type === 'MCQ' && q.Difficulty === 'H').slice(0, 4);
+            steps = hard.map(q => this.mapMCQ(q, false)); // Hard = No hints
+        }
+
+        return steps;
+    },
+
+    mapMCQ(q, allowHint) {
         return {
-            title: subTopic.toUpperCase().replace('_', ' '),
-            steps: [
-                // Step 1: Character Greeting
-                { 
-                    engineType: "CHAT", 
-                    data: { speaker: "manya", text: `Ready to master ${subTopic}? Let's go!` } 
-                },
-                // Step 2: The Interactive Lesson (The SIM row in Excel)
-                { 
-                    engineType: introSim?.Engine_Type_sim || "3D_SKELETON", 
-                    data: JSON.parse(introSim?.Simulation_Data_sim || "{}") 
-                },
-                // Steps 3-7: The Questions (The MCQ rows in Excel)
-                ...mcqs.map(q => ({
-                    engineType: "MCQ_STANDALONE",
-                    data: { 
-                        text: q.Question_Text, 
-                        options: [q.Option_A, q.Option_B, q.Option_C, q.Option_D], 
-                        answer: q.Correct_Answer, // e.g., "Option_B"
-                        hint: q.Hint 
-                    }
-                })),
-                // Step 8: The Summary (The READER row in Excel)
-                {
-                    engineType: "READER_STUDY",
-                    data: JSON.parse(recap?.Simulation_Data_sim || "{}")
-                }
-            ]
+            engine: "MCQ_STANDALONE",
+            data: { 
+                text: q.Question_Text, 
+                options: { "Option_A":q.Option_A, "Option_B":q.Option_B, "Option_C":q.Option_C, "Option_D":q.Option_D },
+                correct: q.Correct_Answer,
+                hint: allowHint ? q.Hint : null,
+                solution: q.Detailed_Solution,
+                points: q.Difficulty === 'E' ? 1 : (q.Difficulty === 'M' ? 2 : 3)
+            }
         };
     }
 };

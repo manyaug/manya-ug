@@ -14,16 +14,7 @@ export const renderHome = (mount) => {
             </div>
 
 
-            <!-- THE DYNAMIC QUEST HERO -->
-            <div class="daily-goal-card" onclick="window.launchDynamicQuest('science', 'musklo-skeletal-system')">
-                <div class="goal-content">
-                    <span class="goal-tag">DASH INTO ACTION</span>
-                    <h2>Start Daily Journey</h2>
-                    <p>Manya has picked 10 questions to help you improve in Science today.</p>
-                    <button class="start-flow-btn">GO NOW →</button>
-                </div>
-                <img src="assets/icons/pose_1.png" class="mascot-img">
-            </div>
+           
 
             <h3 class="section-title">Your Daily Adventure</h3>
             <p style="padding:0 20px; font-size:12px; opacity:0.7; margin-top:-5px; margin-bottom:15px;">Pick a world to continue your path!</p>
@@ -93,6 +84,18 @@ export const renderHome = (mount) => {
 
             </div>
         </div>
+
+
+         <!-- THE DYNAMIC QUEST HERO -->
+            <div class="daily-goal-card">
+                <div class="goal-content">
+                    <span class="goal-tag">PLE SUCCESS with Manaya</span>
+                    <h2>Start Daily Journey</h2>
+                    <p>Manya has picked 10 questions to help you improve in Science today.</p>
+        
+                </div>
+                <img src="assets/icons/pose_1.png" class="mascot-img">
+            </div>
 
 
     `;
