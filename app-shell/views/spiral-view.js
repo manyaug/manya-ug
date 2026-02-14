@@ -1,117 +1,93 @@
-import { QuestFactory } from '../quest-factory.js';
-import { QuestRunner } from '../quest-runner.js';
-import { ViewManager } from '../view-manager.js';
-
 export const renderSpiral = (mount, subject) => {
+    // 1. DATA: Your 11 path points
+    const rawCoords = [
+        { x: 53.06, y: 95.93 }, { x: 45.58, y: 86.76 }, { x: 39.45, y: 77.4 },
+        { x: 52.04, y: 69.01 }, { x: 51.02, y: 58.68 }, { x: 50.68, y: 47.95 },
+        { x: 54.76, y: 38.59 }, { x: 44.9,  y: 29.82 }, { x: 43.19, y: 22.21 },
+        { x: 52.38, y: 14.61 }, { x: 54.08, y: 6.61 }
+    ];
     
-    // 1. DATA: List topics in order (1 to 14)
+    // SKIP EVERY OTHER POINT for breathing room
+    const pathTemplate = rawCoords.filter((_, i) => i % 2 === 0);
+
     const scienceSyllabus = [
-        { id: "quest_1_types_of_skeletons", title: "Skeleton Types" },
-        { id: "quest_2_human_skeleton", title: "Human Framework" },
-        { id: "quest_3_axial_skull_spine", title: "Skull & Backbone" },
-        { id: "quest_4_axial_rib_cage", title: "The Rib Cage" },
-        { id: "quest_5_appendicular_limbs", title: "The Limbs" }
+        { id: "q1", title: "Skeletons" }, { id: "q2", title: "Overview" },
+        { id: "q3", title: "Backbone" }, { id: "q4", title: "Rib Cage" },
+        { id: "q5", title: "Limbs" }, { id: "q6", title: "Joints" }
     ];
 
-    // 2. GENERATE NODES: 4 per sub-topic
     let nodes = [];
     scienceSyllabus.forEach(topic => {
-        nodes.push({ id: topic.id, type: 'WARMUP', label: '1. Warm-Up', icon: '🌱' });
-        nodes.push({ id: topic.id, type: 'STUDY', label: '2. Research', icon: '🔬' });
-        nodes.push({ id: topic.id, type: 'PRACTICE', label: '3. Lab Drill', icon: '⚡' });
-        nodes.push({ id: topic.id, type: 'MASTERY', label: '4. Lab Mastery', icon: '🏆' });
+        nodes.push({ tid: topic.id, type: 'WARMUP', label: 'WARMUP', icon: '🌱' });
+        nodes.push({ tid: topic.id, type: 'STUDY', label: 'RESEARCH', icon: '🔬' });
+        nodes.push({ tid: topic.id, type: 'PRACTICE', label: 'DRILL', icon: '⚡' });
+        nodes.push({ tid: topic.id, type: 'MASTERY', label: 'MASTERY', icon: '🏆' });
     });
 
-    // REVERSE THE ENTIRE LIST: Now Node 0 is visually at the bottom, but logic is standard
-    nodes = nodes.reverse();
-
-    // 3. PROGRESS LOGIC
-    // We need to know which index is "Active" in the REVERSED list
-    const actualProgress = parseInt(localStorage.getItem(`manya_prog_${subject}`) || 0);
-    // Convert actual progress to the index in the reversed array
-    const activeIndexInUI = (nodes.length - 1) - actualProgress;
-
+    const progress = parseInt(localStorage.getItem(`manya_prog_${subject}`) || 0);
     const points = localStorage.getItem('manya_points') || 0;
+
+    // --- TILING ENGINE ---
+    const tileHeight = 850; 
+    // We add +1 extra tile at the bottom as a "Start zone" to remove the green block
+    const totalTiles = Math.ceil(nodes.length / pathTemplate.length) + 1;
+    const totalHeight = totalTiles * tileHeight;
 
     mount.innerHTML = `
         <div class="spiral-view animate-in">
-            <div class="lab-grid"></div>
-
-            <header class="pro-header">
+            <header class="pro-header" style="z-index: 100;">
                 <button class="icon-btn" onclick="ViewManager.show('home')">←</button>
-                <div class="header-pill points">⭐ <span id="display-points">${points}</span></div>
-                <div class="header-pill active-tag">SCIENCE HUB</div>
+                <div class="header-pill points-badge" style="background:#1e293b; color:white;">⭐ <span>${points}</span></div>
+                <div class="header-pill" style="color:#16a34a; border-color:#16a34a;">SCIENCE WORLD</div>
             </header>
 
             <div class="spiral-map-container" id="scroll-frame">
-                <svg id="road-svg" class="road-svg-layer">
-                    <path id="road-line" d="" fill="none" stroke="#e2e8f0" stroke-width="20" stroke-linecap="round"/>
-                    <path id="road-dots" d="" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="1, 20" stroke-linecap="round" opacity="0.5"/>
-                </svg>
+                <!-- THE GROUND LAYER (Stacked Images) -->
+                <div class="map-bg-stack">
+                    ${Array(totalTiles).fill(0).map(() => `
+                        <img src="../../assets/icons/way-3.png" class="map-tile">
+                    `).join('')}
+                </div>
 
-                <div class="nodes-column">
+                <!-- THE NODES LAYER -->
+                <div class="nodes-overlay" style="height: ${totalHeight}px">
                     ${nodes.map((n, i) => {
-                        // Correctly identify status based on original index
-                        const originalIdx = (nodes.length - 1) - i;
-                        const status = originalIdx < actualProgress ? 'completed' : (originalIdx === actualProgress ? 'active' : 'locked');
-                        const side = i % 2 === 0 ? 'node-right' : 'node-left';
+                        const status = i < progress ? 'completed' : (i === progress ? 'active' : 'locked');
                         
+                        const tileIdx = Math.floor(i / pathTemplate.length);
+                        const pointIdx = i % pathTemplate.length;
+                        const point = pathTemplate[pointIdx];
+
+                        // Calculate Y starting from the bottom of the map
+                        const tileOffset = (totalTiles - 1 - tileIdx) * tileHeight;
+                        const topPos = tileOffset + (point.y * tileHeight / 100);
+
                         return `
-                        <div class="node-row ${side}">
-                            <div id="node-${originalIdx}" class="game-node ${status}" 
-                                 onclick="window.launchLabNode('${subject}', '${n.id}', '${n.type}', ${originalIdx})">
-                                <div class="node-cap">${status === 'completed' ? '✅' : n.icon}</div>
-                                <div class="node-base"></div>
-                                <div class="node-label-pro">${n.label}</div>
+                        <div id="node-${i}" class="game-node ${status}" 
+                             style="top: ${topPos}px; left: ${point.x}%;">
+                            <div class="node-cap" onclick="window.handleLabClick('${subject}', '${n.tid}', '${n.type}', ${i})">
+                                ${status === 'completed' ? '✔' : n.icon}
                             </div>
+                            <div class="node-base"></div>
+                            
+                            <!-- Star Holder -->
+                            <div class="star-holder">
+                                <span class="star-mini">★</span>
+                                <span class="star-mini">★</span>
+                                <span class="star-mini">★</span>
+                            </div>
+
+                            <div class="node-label-pro">${n.label}</div>
                         </div>`;
                     }).join('')}
                 </div>
             </div>
         </div>`;
 
-    // 4. THE POSITIONING ENGINE (The Fix)
-    const locateCurrentLevel = () => {
+    // AUTO-FOCUS CAMERA
+    setTimeout(() => {
         const frame = document.getElementById('scroll-frame');
-        const activeNode = document.getElementById(`node-${actualProgress}`);
-        const roadSvg = document.getElementById('road-svg');
-        const roadLine = document.getElementById('road-line');
-        const roadDots = document.getElementById('road-dots');
-
-        if (!activeNode || !frame) return;
-
-        // A. Draw Road
-        roadSvg.setAttribute('height', frame.scrollHeight);
-        roadSvg.setAttribute('width', frame.clientWidth);
-        
-        let d = "";
-        for (let i = 0; i < nodes.length; i++) {
-            const originalIdx = (nodes.length - 1) - i;
-            const el = document.getElementById(`node-${originalIdx}`);
-            const nx = el.offsetLeft + (el.offsetWidth / 2);
-            const ny = el.offsetTop + (el.offsetHeight / 2);
-            d += (i === 0 ? "M" : "L") + ` ${nx} ${ny} `;
-        }
-        roadLine.setAttribute('d', d);
-        roadDots.setAttribute('d', d);
-
-        // B. SCROLL TO NODE (Center Camera)
-        const offsetTop = activeNode.offsetTop;
-        const frameHeight = frame.offsetHeight;
-        frame.scrollTop = offsetTop - (frameHeight / 2) + 40;
-    };
-
-    // Trigger three times to ensure images and animations don't block the scroll
-    locateCurrentLevel(); 
-    setTimeout(locateCurrentLevel, 100);
-    setTimeout(locateCurrentLevel, 500);
-};
-
-window.launchLabNode = async (sub, tid, type, idx) => {
-    if(idx > parseInt(localStorage.getItem(`manya_prog_${sub}`) || 0)) return;
-    const manifest = await QuestFactory.build(sub, tid, type);
-    localStorage.setItem('last_sub', sub);
-    localStorage.setItem('last_idx', idx);
-    QuestRunner.start(document.getElementById('view-mount'), manifest);
-    document.getElementById('view-mount').classList.add('engine-mode');
+        const activeNode = document.getElementById(`node-${progress}`);
+        if(activeNode) frame.scrollTop = activeNode.offsetTop - 250;
+    }, 150);
 };

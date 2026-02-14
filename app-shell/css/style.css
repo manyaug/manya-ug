@@ -20,6 +20,10 @@
             --bg-app: #f0f4f8;
             --card-shadow: 0 8px 0px rgba(226, 232, 240, 0.8);
             --inner-glow: inset 0 2px 4px rgba(255,255,255,0.4);
+
+            --zone-bg: #f8fafc;
+            --zone-road: #e2e8f0;
+            --zone-accent: #64748b;
                 }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -1438,89 +1442,80 @@ canvas {
 .msg-box.error { background: #fef2f2; color: #b91c1c; border: 2px solid #fecaca; }
 
 
-/* SPIRAL LAYOUT FOR TOPIC MAP */
-/* --- THE CLEAN SCIENCE HUB --- */
+/* --- ELITE FOREST SPIRAL --- */
 .spiral-view {
     position: relative; height: 100vh; display: flex; flex-direction: column;
-    background-color: #f8fafc; overflow: hidden;
+    background-color: #5c823d; /* Fallback green matches image */
+    overflow: hidden;
 }
 
 .spiral-map-container {
     flex: 1; overflow-y: auto; position: relative;
-    scrollbar-width: none;
-    background: #f8fafc;
-}
-.spiral-map-container::-webkit-scrollbar { display: none; }
-
-.road-svg-layer {
-    position: absolute; top: 0; left: 0; width: 100%;
-    pointer-events: none; z-index: 1;
+    scrollbar-width: none; scroll-behavior: smooth;
 }
 
-/* Standard Column - Math is easier here */
-.nodes-column {
-    display: flex; 
-    flex-direction: column; 
-    padding: 150px 0; 
-    gap: 100px; /* Space between steps */
-    position: relative; 
-    z-index: 5;
+/* THE FLOOR */
+.map-bg-stack { display: flex; flex-direction: column; width: 100%; position: relative; }
+.map-tile { width: 100%; height: auto; display: block; }
+
+.nodes-overlay { position: absolute; top: 0; left: 0; width: 100%; z-index: 10; pointer-events: none; }
+
+/* THE "JUICY" MINI NODE */
+.game-node {
+    position: absolute; width: 65px; height: 65px; /* SMALLER SIZE */
+    pointer-events: auto; transform: translate(-50%, -50%);
+    cursor: pointer;
 }
 
-.node-row { display: flex; width: 100%; justify-content: center; }
-.node-left { transform: translateX(-75px); }
-.node-right { transform: translateX(75px); }
-
-/* The Nodes */
-.game-node { width: 85px; height: 85px; position: relative; cursor: pointer; }
 .node-cap {
-    width: 85px; height: 75px; background: white; border-radius: 50%;
+    width: 65px; height: 60px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 30px; border: 4px solid #e2e8f0;
-    box-shadow: inset 0 -8px 0 rgba(0,0,0,0.05);
-    position: relative; z-index: 2;
+    font-size: 24px; border: 3px solid #fff;
+    /* 3D Depth + Inner Gloss */
+    box-shadow: 
+        0 8px 15px rgba(0,0,0,0.3), 
+        inset 0 -6px 0 rgba(0,0,0,0.1),
+        inset 0 2px 8px rgba(255,255,255,1);
+    position: relative; z-index: 5;
 }
 
+/* Active State: Glow */
 .game-node.active .node-cap {
-    background: #10b981; border-color: white; color: white;
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.4), inset 0 -6px 0 rgba(0,0,0,0.2);
-    transform: scale(1.1);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-color: #fffbeb; color: white;
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.6), 0 8px 15px rgba(0,0,0,0.2);
 }
 
+/* Completed State: Green Finish */
 .game-node.completed .node-cap {
-    background: #fbbf24; border-color: white; color: #b45309;
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    border-color: #ecfdf5; color: white;
 }
 
 .node-base {
-    position: absolute; bottom: -8px; left: 0;
-    width: 85px; height: 75px; border-radius: 50%;
-    background: #cbd5e1; z-index: 1;
+    position: absolute; bottom: -6px; left: 0;
+    width: 65px; height: 60px; border-radius: 50%;
+    background: rgba(0,0,0,0.35); /* Shadow on the path */
+    z-index: 1;
 }
-.game-node.active .node-base { background: #059669; }
-.game-node.completed .node-base { background: #d97706; }
 
+/* STAR HOLDER: Underneath the Node */
+.star-holder {
+    position: absolute; top: 62px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 2px; background: rgba(0,0,0,0.4);
+    padding: 2px 8px; border-radius: 20px; backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.star-mini { font-size: 8px; color: #94a3b8; } /* Grey by default */
+.game-node.completed .star-mini { color: #fbbf24; } /* Gold when done */
+
+/* Professional Glass Labels */
 .node-label-pro {
-    position: absolute; top: 85px; left: 50%; transform: translateX(-50%);
-    background: white; padding: 4px 12px; border-radius: 12px;
-    font-size: 10px; font-weight: 800; color: #64748b;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #f1f5f9;
-}
-/* --- 4. HEADER --- */
-.pro-header {
-    background: white; padding: 12px 20px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid #f1f5f9; 
-    position: sticky; top: 0; z-index: 1000;
-}
-
-.header-pill {
-    background: #f8fafc; border: 1px solid #e2e8f0;
-    padding: 6px 16px; border-radius: 50px;
-    font-weight: 900; font-size: 13px; color: #1e293b;
-    display: flex; align-items: center; gap: 8px;
-}
-/* Gold Points Pill */
-.header-pill.points { 
-    background: #1e293b; color: white; border: none; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: absolute; top: 82px; left: 50%; transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.8);
+    color: white; padding: 2px 10px; border-radius: 50px;
+    font-size: 8px; font-weight: 800; text-transform: uppercase;
+    white-space: nowrap; backdrop-filter: blur(8px);
 }
