@@ -74,24 +74,23 @@ export const AudioManager = {
      */
     fade(audio, targetVolume, duration, callback) {
         if (!audio) return;
-
         const startVolume = audio.volume;
         const diff = targetVolume - startVolume;
-        const startTime = performance.now();
+        const steps = 25; // More steps for smoother transition
+        const stepTime = duration / steps;
+        let currentStep = 0;
 
-        const tick = (now) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            audio.volume = startVolume + (diff * progress);
+        const interval = setInterval(() => {
+            currentStep++;
+            // FIXED: Clamp volume between 0.0 and 1.0 to prevent IndexSizeError
+            const nextVol = startVolume + (diff * (currentStep / steps));
+            audio.volume = Math.max(0, Math.min(1, nextVol)); 
 
-            if (progress < 1) {
-                requestAnimationFrame(tick);
-            } else {
+            if (currentStep >= steps) {
+                clearInterval(interval);
+                audio.volume = Math.max(0, Math.min(1, targetVolume));
                 if (callback) callback();
             }
-        };
-
-        requestAnimationFrame(tick);
+        }, stepTime);
     }
 };
