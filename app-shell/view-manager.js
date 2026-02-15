@@ -9,6 +9,9 @@ import { renderLibrary } from './views/library-view.js';
 import { renderRankings } from './views/rankings-view.js';
 import { renderProfile } from './views/profile-view.js';
 
+// Import Audio Service (Make sure you created services/audio-manager.js)
+import { AudioManager } from '../app-shell/js/audio-manager.js';
+
 export const ViewManager = {
     mount: null,
     currentView: 'home',
@@ -18,92 +21,73 @@ export const ViewManager = {
      */
     init() {
         this.mount = document.getElementById('view-mount');
+        
+        // 1. ATTACH TO WINDOW: Crucial for making onclick="ViewManager.show()" work in HTML
+        window.ViewManager = this; 
+
+        // 2. INIT AUDIO: Setup forest ambiance tracks
+        if (AudioManager && AudioManager.init) {
+            AudioManager.init();
+        }
+
         this.show('home');
     },
 
     /**
      * Primary Navigation Function
-     * @param {string} viewName - Name of the view to load
-     * @param {HTMLElement} navEl - The nav item clicked (to update active state)
-     * @param {any} params - Extra data (like 'math' for the spiral)
      */
-    show(viewName, navEl = null, params = null) {
-        this.currentView = viewName;
+   show(viewName, navEl = null, params = null) {
+    this.currentView = viewName;
 
-        // 1. UPDATE HEADER NAVIGATION (Menu vs Back Arrow)
-        const backBtn = document.getElementById('back-btn');
-        const menuBtn = document.getElementById('menu-btn');
-        const titleEl = document.getElementById('app-title');
+    // 1. FULLSCREEN CONTROL
+    // If we go to the spiral, add 'fullscreen-mode' to the body to hide the white bars
+    if (viewName === 'spiral') {
+        document.body.classList.add('fullscreen-mode');
+        // Start forest sounds
+        AudioManager.playAmbient();
+    } else {
+        document.body.classList.remove('fullscreen-mode');
+        // Stop forest sounds
+        AudioManager.stopAmbient();
+    }
 
-        if (viewName === 'home') {
-            backBtn?.classList.add('hidden');
-            menuBtn?.classList.remove('hidden');
-            if (titleEl) titleEl.innerText = "Manya Prep Hub";
-        } else {
-            backBtn?.classList.remove('hidden');
-            menuBtn?.classList.add('hidden');
-        }
+    // 2. UPDATE BOTTOM NAV ACTIVE STATE (If not in spiral)
+    if (navEl && viewName !== 'spiral') {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        navEl.classList.add('active');
+    }
 
-        // 2. UPDATE BOTTOM NAV ACTIVE STATE
-        if (navEl) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            navEl.classList.add('active');
-        }
+    // 3. CLEANUP & RENDER
+    this.mount.innerHTML = '';
+    
+    switch (viewName) {
+        case 'home': renderHome(this.mount); break;
+        case 'spiral': renderSpiral(this.mount, params); break;
+        case 'library': renderLibrary(this.mount); break;
+        case 'rankings': renderRankings(this.mount); break;
+        case 'profile': renderProfile(this.mount); break;
+    }
 
-        // 3. ENGINE CLEANUP
-        // Always remove engine-mode when switching views to prevent scroll locking
-        this.mount.classList.remove('engine-mode');
-        this.mount.innerHTML = '';
-
-        // 4. RENDER THE REQUESTED VIEW
-        switch (viewName) {
-            case 'home':
-                renderHome(this.mount);
-                break;
-            case 'spiral':
-                // params = the subject string ('math', 'science', etc)
-                renderSpiral(this.mount, params);
-                break;
-            case 'library':
-                renderLibrary(this.mount);
-                break;
-            case 'rankings':
-                renderRankings(this.mount);
-                break;
-            case 'profile':
-                renderProfile(this.mount);
-                break;
-            default:
-                console.error("View not found:", viewName);
-                renderHome(this.mount);
-        }
-
-        // 5. UX: Scroll to top on page change
-        window.scrollTo(0, 0);
-    },
+    window.scrollTo(0, 0);
+},
 
     /**
      * SMART BACK LOGIC
      * Handles the back button click contextually
      */
     goBack() {
-        // A. If we are currently inside a Quest/Sim (Engine Mode is active)
+        // A. If inside a Quest (Engine Mode), return to the specific chapter map
         if (this.mount.classList.contains('engine-mode')) {
             this.mount.classList.remove('engine-mode');
-            // If the user came from the Library, take them back there
-            this.show('library');
+            this.show('spiral', null, localStorage.getItem('last_subject') || 'science');
             return;
         }
 
-        // B. If we are in the Spiral, Library, or Profile
+        // B. If in the Spiral/Library, return to the Home Hub
         if (this.currentView !== 'home') {
-            this.show('home');
-            // Reset the bottom nav highlight to Home
+            // Find the Home Nav Item to reset the bottom dock highlight
             const homeNav = document.querySelector('.nav-item:first-child');
-            if (homeNav) {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                homeNav.classList.add('active');
-            }
+            this.show('home', homeNav);
         }
     }
 };

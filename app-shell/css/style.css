@@ -38,6 +38,25 @@
             flex-direction: column;
             }
 
+                    /* --- UI TOGGLES --- */
+            /* This hides the main app header and bottom nav when we want full immersion */
+            body.fullscreen-mode .app-header,
+            body.fullscreen-mode aside,
+            body.fullscreen-mode .bottom-nav {
+                display: none !important;
+            }
+
+            /* Ensure the mount takes the full screen when the bars are gone */
+            body.fullscreen-mode #view-mount {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw;
+                height: 100vh;
+                padding: 0;
+                margin: 0;
+                z-index: 5000;
+            }
+
         /* --- SIDEBAR NAVIGATION --- */
         aside {
             background: #ffffff;

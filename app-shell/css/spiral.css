@@ -1,0 +1,214 @@
+/* ==========================================================================
+   1. GLOBAL NATIVE SETUP & TYPOGRAPHY
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap');
+
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; /* Removes blue flash on tap */
+    user-select: none; /* Prevents text selection for a game-like feel */
+}
+
+body, html { 
+    margin: 0; padding: 0; 
+    height: 100%; width: 100%; 
+    overflow: hidden; 
+    background-color: #0f172a;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* ==========================================================================
+   2. IMMERSIVE LAYOUT
+   ========================================================================== */
+.spiral-view {
+    position: absolute; top: 0; left: 0;
+    height: 100vh; width: 100vw;
+    background: #1e3311; /* Dark forest green fallback */
+    overflow: hidden;
+}
+
+.spiral-map-container {
+    height: 100%; width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background: #1e3311; /* Matches the bottom of your forest way-1 image */
+    scrollbar-width: none; /* Firefox hide scrollbar */
+}
+.spiral-map-container::-webkit-scrollbar { display: none; /* Chrome hide scrollbar */ }
+
+/* ==========================================================================
+   3. FLOATING GLASS HUD (Header & Dock)
+   ========================================================================== */
+.glass-header {
+    position: fixed; top: 12px; left: 12px; right: 12px; height: 62px;
+    background: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 16px; z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.floating-dock {
+    position: fixed; bottom: 20px; left: 20px; right: 20px; height: 74px;
+    background: rgba(255, 255, 255, 0.85); 
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 26px;
+    display: flex; justify-content: space-around; align-items: center;
+    z-index: 1000;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* HUD Components */
+.back-btn {
+    width: 38px; height: 38px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;
+}
+.header-center { display: flex; flex-direction: column; align-items: center; }
+.subject-label { font-size: 10px; color: #64748b; font-weight: 800; letter-spacing: 1px; }
+.subject-title { font-size: 18px; color: #0f172a; font-weight: 900; line-height: 1; }
+.currency-pill {
+    background: #fff; padding: 6px 12px; border-radius: 30px;
+    display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800;
+}
+
+/* Nav Items */
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; }
+.nav-icon { font-size: 24px; opacity: 0.5; filter: grayscale(1); }
+.nav-label { font-size: 9px; font-weight: 800; text-transform: uppercase; opacity: 0.6; }
+.nav-item.active { transform: translateY(-8px); }
+.nav-item.active .nav-icon { opacity: 1; filter: grayscale(0); transform: scale(1.1); }
+.nav-item.active .nav-label { color: #4f46e5; opacity: 1; }
+
+/* ==========================================================================
+   4. THE GAME WORLD (Map & Layers)
+   ========================================================================== */
+.map-canvas { position: relative; width: 100%; overflow: hidden; }
+
+.image-stack {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; z-index: 1;
+}
+
+.physical-tile {
+    width: 101%; /* Slight overshoot to hide edge cracks */
+    height: 850px; /* JS tileHeight variable */
+    object-fit: cover;
+    display: block;
+    margin-left: -0.5%;
+    /* HIGH END GAMING FILTER */
+    filter: saturate(1.4) contrast(1.1) brightness(1.05); 
+}
+
+/* Spacers to prevent UI overlap */
+.spacer-top { height: 100px; width: 100%; pointer-events: none; }
+.spacer-bottom { height: 140px; width: 100%; pointer-events: none; }
+
+/* ==========================================================================
+   5. BIOME ANIMATIONS (Butterflies, Leaves, Light)
+   ========================================================================== */
+.god-rays {
+    position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.08) 0deg 15deg, transparent 15deg 30deg);
+    animation: rotateRays 90s linear infinite;
+    pointer-events: none; z-index: 2; mix-blend-mode: overlay;
+}
+
+.butterfly-container {
+    position: absolute; width: 24px; height: 24px; z-index: 25;
+    animation: driftPath 18s linear infinite; pointer-events: none;
+}
+.butterfly-wings {
+    width: 100%; height: 100%;
+    background: url('https://cdn-icons-png.flaticon.com/512/2909/2909778.png') center/contain no-repeat;
+    animation: wingFlap 0.15s infinite alternate;
+}
+
+.leaf {
+    position: absolute; width: 12px; height: 12px;
+    background: #bef264; border-radius: 0 10px 0 10px;
+    opacity: 0.7; pointer-events: none; z-index: 4;
+    animation: leafFall 14s linear infinite, leafSway 3s ease-in-out infinite alternate;
+}
+
+.firefly {
+    position: absolute; width: 5px; height: 5px;
+    background: #fbbf24; border-radius: 50%;
+    box-shadow: 0 0 10px #fbbf24, 0 0 20px #f59e0b;
+    opacity: 0.8; animation: floatUp 8s ease-in-out infinite;
+    pointer-events: none; z-index: 5;
+}
+
+/* ==========================================================================
+   6. GAME NODES (Interactive levels)
+   ========================================================================== */
+.nodes-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+
+.game-node {
+    position: absolute; transform: translate(-50%, -50%);
+    width: 60px; height: 60px; display: flex; flex-direction: column; align-items: center; 
+    pointer-events: auto; z-index: 20;
+}
+
+.node-cap {
+    width: 58px; height: 58px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; position: relative;
+    background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-node.active .node-cap {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border: 3px solid #fff; color: white;
+    box-shadow: 0 0 35px rgba(251, 191, 36, 0.7);
+    animation: heartbeat 2s infinite; z-index: 50;
+}
+
+.game-node.locked .node-cap {
+    background: rgba(15, 23, 42, 0.6); border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255,255,255,0.2);
+}
+
+.node-title {
+    position: absolute; top: 64px; background: rgba(0, 0, 0, 0.7);
+    color: #fff; padding: 4px 10px; border-radius: 12px;
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    backdrop-filter: blur(4px); white-space: nowrap;
+}
+
+.mascot-marker {
+    position: absolute; top: -75px; left: 50%; width: 70px; height: 70px;
+    background-size: contain; background-repeat: no-repeat; background-position: center bottom;
+    transform: translateX(-50%); filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
+    animation: floatMascot 3s ease-in-out infinite; z-index: 30;
+}
+
+/* ==========================================================================
+   7. KEYFRAME ANIMATIONS
+   ========================================================================== */
+@keyframes rotateRays { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes wingFlap { 0% { transform: scaleX(1); } 100% { transform: scaleX(0.3); } }
+@keyframes driftPath {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(60px, -60px) rotate(15deg); }
+    50% { transform: translate(-40px, -140px) rotate(-10deg); }
+    100% { transform: translate(30px, -350px) rotate(0deg); opacity: 0; }
+}
+@keyframes leafFall { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+@keyframes leafSway { from { transform: translateX(0); } to { transform: translateX(40px) rotate(45deg); } }
+@keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-120px); opacity: 0; } }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } }
+@keyframes floatMascot { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-12px); } }
+
+/* Initial load animation for the whole view */
+.animate-in { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1); } }
