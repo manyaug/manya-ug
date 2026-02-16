@@ -14,3 +14,17 @@ export const SCIENCE_MAP = [
     { id: "quest_13_disorders_and_first_aid", title: "First Aid", zone: "health" },
     { id: "quest_14_bone_diseases", title: "Diseases", zone: "health" }
 ];
+
+
+export const MATH_MAP = [
+    { id: "math_q1_finite_infinite", title: "Finite vs Infinite", zone: "intro" },
+    { id: "math_q2_notation_regions", title: "Notation & Regions", zone: "intro" },
+    { id: "math_q3_subsets", title: "Calculating Subsets", zone: "subsets" },
+    { id: "math_q4_proper_subsets", title: "Proper Subsets", zone: "subsets" },
+    { id: "math_q5_backwards", title: "Working Backwards", zone: "subsets" },
+    { id: "math_q6_venn_intro", title: "Venn Diagrams", zone: "venn" },
+    { id: "math_q7_unknowns", title: "Solving Unknowns", zone: "venn" },
+    { id: "math_q8_applications", title: "Application of Sets", zone: "venn" },
+    { id: "math_q9_complements", title: "Complements", zone: "operations" },
+    { id: "math_q10_probability", title: "Probability", zone: "operations" }
+];
