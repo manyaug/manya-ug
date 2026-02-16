@@ -50,7 +50,7 @@ export const renderSpiral = (mount, subject) => {
 
             <div class="glass-header">
                 <div class="header-left">
-                    <button class="back-btn" onclick="AudioManager.playSFX('https://www.soundjay.com/buttons/sounds/button-16.mp3'); ViewManager.goBack()">
+                    <button class="back-btn" onclick="ViewManager.goBack()">
                         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round"/></svg>
                     </button>
                     <div class="header-center">
