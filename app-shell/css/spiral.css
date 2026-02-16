@@ -4,138 +4,106 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap');
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
-
-body, html { 
-    margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; 
-    background-color: #0a1105; font-family: 'Nunito', sans-serif;
-}
-
-body.fullscreen-mode .app-header, body.fullscreen-mode aside, body.fullscreen-mode .bottom-nav { 
-    display: none !important; 
-}
+body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #0a1105; font-family: 'Nunito', sans-serif; }
+body.fullscreen-mode .app-header, body.fullscreen-mode aside, body.fullscreen-mode .bottom-nav { display: none !important; }
 
 /* ==========================================================================
-   2. THE BIOLUMINESCENT STAGE
+   2. IMMERSIVE STAGE & DAY/NIGHT ENGINE
    ========================================================================== */
 .spiral-view {
     position: fixed; inset: 0; width: 100vw; height: 100vh;
     background: #0a1105; overflow: hidden; z-index: 5000;
-    transition: filter 2s ease;
+    transition: filter 2.5s ease-in-out;
 }
+.spiral-view.day { filter: saturate(1.3) brightness(1.1); }
+.spiral-view.night { filter: saturate(1.18) brightness(0.65) contrast(1.3); }
 
-/* DAY/NIGHT FILTERS */
-.spiral-view.day { filter: saturate(1.4) brightness(1.4); }
-.spiral-view.night { filter: saturate(1.2) brightness(0.7) contrast(1.5); }
-
-/* --- PREVENT PULL GLITCH --- */
-/* --- CRITICAL: PERFORMANCE BOOSTS --- */
-.firefly, .leaf, .mascot-marker, .god-rays {
-    will-change: transform; /* Pre-optimizes for the GPU */
-    backface-visibility: hidden;
+.time-overlay {
+    position: fixed; inset: 0; pointer-events: none; z-index: 6;
+    transition: background 2.5s ease;
 }
+.spiral-view.night .time-overlay { background: rgba(15, 23, 42, 0.45); mix-blend-mode: multiply; }
 
-/* Simplify God Rays - Conic gradients are very heavy. 
-   We switch to a simpler Opacity Shimmer to stop the glitch. */
-.god-rays {
-    position: fixed; inset: 0;
-    background: linear-gradient(125deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
-    z-index: 2;
-    pointer-events: none;
-    animation: raysPulsate 10s ease-in-out infinite alternate;
-}
-
-@keyframes raysPulsate {
-    0% { opacity: 0.3; transform: scale(1); }
-    100% { opacity: 0.6; transform: scale(1.1); }
-}
-
-/* Optimized Fireflies - Using translate3d for smoothness */
-.firefly {
-    position: absolute; width: 6px; height: 6px;
-    background: #fff; border-radius: 50%;
-    box-shadow: 0 0 15px #fbbf24, 0 0 30px #f59e0b;
-    opacity: 0.9; z-index: 25; pointer-events: none;
-    animation: floatUpHardware 8s linear infinite;
-}
-
-@keyframes floatUpHardware {
-    0% { transform: translate3d(0, 0, 0); opacity: 0; }
-    20% { opacity: 1; }
-    100% { transform: translate3d(-40px, -200px, 0); opacity: 0; }
-}
-
-/* Optimization for the Map Container */
+/* ==========================================================================
+   3. SEAMLESS FOREST ENGINE (THE VOID KILLER)
+   ========================================================================== */
 .spiral-map-container {
-    height: 100%; width: 100%;
-    overflow-y: scroll;
-    scrollbar-width: none;
-    background: #0a1105;
-    position: relative;
-    -webkit-overflow-scrolling: touch; /* Smoother scrolling for iOS */
-}
-
-/* Add a fixed "Forest Floor" texture to the container itself */
-.spiral-map-container::before {
-    content: '';
-    position: fixed; inset: 0;
-    /* Replace with your darkest forest tile or a dark green noise */
-    background: linear-gradient(to bottom, #1e3311, #0a1105);
-    z-index: 0;
-}
-
-.map-canvas { 
-    position: relative; 
-    width: 100%; 
-    z-index: 1; /* Sits above the fixed background */
-    /* Remove any hidden padding that creates the void */
-    display: flex;
-    flex-direction: column;
-}
-
-/* SEAMLESS TILES */
-.image-stack {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    /* Ensure no gaps */
-    line-height: 0;
-}
-
-.physical-tile {
-    width: 100%;
-    height: 850px;
-    object-fit: cover;
-    display: block;
-    /* Ensure images touch perfectly */
-    margin-bottom: -1px; 
+    height: 100%; width: 100%; overflow-y: scroll;
+    background: #0a1105; position: relative;
+    scrollbar-width: none; overscroll-behavior: none;
 }
 .spiral-map-container::-webkit-scrollbar { display: none; }
 
-/* VIGNETTE: Makes the edges fade into darkness for "Infinite" look */
+/* VIGNETTE: This is what makes the app look World-Class. 
+   It fades the edges into darkness so you never see "Ends" of images. */
 .spiral-map-container::after {
     content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 30;
-    background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 100%);
+    background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.5) 100%);
 }
 
+.map-canvas {
+    position: relative; width: 100%;
+    /* Let the relative image stack below push this height automatically */
+}
 
+.image-stack {
+    display: flex; flex-direction: column; width: 100%;
+    line-height: 0; position: relative; /* CRITICAL: Pushes container height */
+}
+
+.physical-tile {
+    width: 100.5%; height: 850px; object-fit: cover; display: block;
+    margin-bottom: -40px; /* Pulls tiles together */
+    
+    /* FEATHERED EDGES: Blends the colors between images */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+    
+    /* GPU OPTIMIZATION */
+    image-rendering: -webkit-optimize-contrast;
+    will-change: transform;
+}
+
+.image-stack img:last-child { margin-bottom: 0 !important; }
+
+.seam-mist {
+    position: absolute; width: 100%; height: 140px; left: 0; pointer-events: none; z-index: 4;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.06) 0%, transparent 80%);
+    filter: blur(25px); opacity: 0.5;
+}
 
 /* ==========================================================================
-   3. THE FOREST & LIGHTING
+   4. NODES, PARTICLES & WEATHER (GPU ACCELERATED)
    ========================================================================== */
-
-
-
-
-.leaf {
-    position: absolute; width: 14px; height: 14px;
-    background: #365314; border-radius: 0 12px 0 12px;
-    opacity: 0.5; z-index: 24; pointer-events: none;
-    animation: leafFall 15s linear infinite;
+.firefly, .leaf, .shooting-star, .mascot-marker { 
+    will-change: transform; 
+    transform: translateZ(0); /* Forces GPU Layer */
 }
 
+.firefly {
+    position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%;
+    box-shadow: 0 0 15px #fbbf24, 0 0 30px #f59e0b;
+    opacity: 0.9; z-index: 25; pointer-events: none;
+    animation: floatUpHardware 10s linear infinite;
+}
+@keyframes floatUpHardware {
+    0% { transform: translate3d(0, 0, 0); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translate3d(-40px, -250px, 0); opacity: 0; }
+}
+
+/* Rain streak look */
+.rain-layer {
+    position: fixed; inset: 0; pointer-events: none; z-index: 50;
+    background: repeating-linear-gradient(to bottom, transparent 0%, transparent 95%, rgba(255,255,255,0.4) 100%);
+    background-size: 2px 80px; opacity: 0; transition: opacity 2s;
+}
+.raining .rain-layer { opacity: 0.8; animation: fastRain 0.3s linear infinite; }
+@keyframes fastRain { from { transform: translateY(-80px); } to { transform: translateY(0); } }
+
 /* ==========================================================================
-   4. GLASS HUD & NODES
-   ========================================================================= */
+   5. GLASS HUD COMPONENTS
+   ========================================================================== */
 .glass-header {
     position: fixed; top: 12px; left: 12px; right: 12px; height: 64px;
     background: rgba(255, 255, 255, 0.85);
@@ -146,36 +114,22 @@ body.fullscreen-mode .app-header, body.fullscreen-mode aside, body.fullscreen-mo
 }
 
 .back-btn {
-    width: 44px; height: 44px; flex: 0 0 44px; background: #fff; border-radius: 50%;
+    width: 44px; height: 44px; flex: 0 0 44px; /* Anti-squish */
+    background: #ffffff; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    color: #1e293b; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; cursor: pointer;
+    color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; cursor: pointer;
 }
 
-.subject-title { align-items: center;font-size: 14px; font-weight: 900; color: #0f172a; line-height: 1; }
+.subject-title { font-size: 19px; font-weight: 700; color: #0f172a; line-height: 1; padding-left: 55px;}
 .currency-pill { background: #fff; padding: 7px 14px; border-radius: 50px; font-weight: 800; font-size: 14px; }
 
-.game-node { position: absolute; transform: translate(-50%, -50%); width: 64px; height: 64px; z-index: 20; }
-.node-cap {
-    width: 60px; height: 60px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 26px;
-    background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(8px);
-    border: 2px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-}
+.nodes-overlay { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+.game-node { position: absolute; transform: translate(-50%, -50%); width: 64px; height: 64px; pointer-events: auto; }
+.node-cap { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(8px); border: 2px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
+.game-node.active .node-cap { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 0 40px rgba(251, 191, 36, 0.6); animation: heartbeat 2s infinite; border-color: #fff; }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.15); } }
 
-.game-node.active .node-cap {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    box-shadow: 0 0 30px #fbbf24, 0 0 60px rgba(251, 191, 36, 0.4);
-    animation: heartbeat 2s infinite; border-color: #fff;
-}
-
-/* ==========================================================================
-   5. KEYFRAMES
-   ========================================================================== */
-@keyframes rotateRays { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes floatUp {
-    0% { transform: translate(0,0) scale(1); opacity: 0; }
-    20% { opacity: 0.9; }
-    100% { transform: translate(-40px, -250px) scale(0.4); opacity: 0; }
-}
-@keyframes leafFall { 0% { top: -5%; opacity: 0; } 10% { opacity: 0.6; } 100% { top: 105%; opacity: 0; } }
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } }
+/* SHOOTING STAR */
+.shooting-star { position: fixed; width: 2px; height: 2px; background: #fff; z-index: 100; box-shadow: 0 0 10px #fff; border-radius: 50%; opacity: 0; }
+.star-active { animation: starShoot 1.2s ease-out forwards; }
+@keyframes starShoot { 0% { transform: translate(0,0); opacity: 1; } 100% { transform: translate(400px, 300px); opacity: 0; } }

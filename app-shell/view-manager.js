@@ -39,26 +39,25 @@ export const ViewManager = {
    show(viewName, navEl = null, params = null) {
     this.currentView = viewName;
 
-    // 1. FULLSCREEN CONTROL
-    // If we go to the spiral, add 'fullscreen-mode' to the body to hide the white bars
+    // FULLSCREEN TOGGLE
     if (viewName === 'spiral') {
         document.body.classList.add('fullscreen-mode');
-        // Start forest sounds
-        AudioManager.playAmbient();
+        // No error anymore because we added playAmbient back
+        AudioManager.playAmbient(); 
     } else {
         document.body.classList.remove('fullscreen-mode');
-        // Stop forest sounds
-        AudioManager.stopAmbient();
+        // No error anymore because we added stopAmbient back
+        AudioManager.stopAmbient(); 
     }
 
-    // 2. UPDATE BOTTOM NAV ACTIVE STATE (If not in spiral)
+    // Standard Nav Highlight
     if (navEl && viewName !== 'spiral') {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         navEl.classList.add('active');
     }
 
-    // 3. CLEANUP & RENDER
     this.mount.innerHTML = '';
+
     
     switch (viewName) {
         case 'home': renderHome(this.mount); break;
