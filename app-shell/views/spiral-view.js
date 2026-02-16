@@ -115,7 +115,7 @@ export const renderSpiral = (mount, subject) => {
 
                             return `
                             <div id="node-${i}" class="game-node ${status}" style="top: ${topPos}px; left: ${point.x + 3}%;">
-                                ${status === 'active' ? `<div class="mascot-marker" style="background-image: url('../../assets/avatars/student_mascot.png')"></div>` : ''}
+                                ${status === 'active' ? `<div class="mascot-marker" style="background-image: url('../../assets/icons/polly_icon.png')"></div>` : ''}
                                 <div class="node-cap" onclick="AudioManager.playSFX()">
                                     ${status === 'completed' ? '✔' : (status === 'locked' ? '🔒' : n.icon)}
                                 </div>

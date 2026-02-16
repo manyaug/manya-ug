@@ -397,7 +397,7 @@ canvas {
     transform: translateY(-4px);
 }
 
-.subject-title { text-align: center; margin: 5px 0 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;padding-left: 50px; }
+.subject-title { text-align: center; margin: 5px 0 0; font-weight: bolder;font-size: 16px; text-transform: uppercase; letter-spacing: 1px; padding-left: 80px; }
 
 .bg-pattern {
     position: absolute; inset: 0;
