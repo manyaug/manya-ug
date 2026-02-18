@@ -10,9 +10,9 @@ export const AudioManager = {
 
     init() {
         // Paths are relative to your audio folder structure
-        this.dayTrack = new Audio('../../assets/audios/day.mp3');
-        this.nightTrack = new Audio('../../assets/audios/night.mp3');
-        this.rainTrack = new Audio('../../assets/audios/rain.mp3');
+        this.dayTrack = new Audio('../../assets/shared/audios/day.mp3');
+        this.nightTrack = new Audio('../../assets/shared/audios/night.mp3');
+        this.rainTrack = new Audio('../../assets/shared/audios/rain.mp3');
         
         [this.dayTrack, this.nightTrack, this.rainTrack].forEach(t => {
             t.loop = true; 
@@ -59,7 +59,7 @@ export const AudioManager = {
 
     playSFX(url, vol = 0.6) {
         // Default fallback if no URL is provided in the onclick
-        const path = url || '../../assets/audios/click.mp3';
+        const path = url || '../../assets/shared/audios/ui-click.mp3';
         const sfx = new Audio(path);
         sfx.volume = Math.max(0, Math.min(1, vol));
         sfx.play().catch(() => {});

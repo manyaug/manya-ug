@@ -8,6 +8,7 @@ import { renderSpiral } from './views/spiral-view.js';
 import { renderLibrary } from './views/library-view.js';
 import { renderRankings } from './views/rankings-view.js';
 import { renderProfile } from './views/profile-view.js';
+import { renderSplash } from './views/splash-view.js';
 
 // Import Audio Service (Make sure you created services/audio-manager.js)
 import { AudioManager } from '../app-shell/js/audio-manager.js';
@@ -24,6 +25,15 @@ export const ViewManager = {
         
         // 1. ATTACH TO WINDOW: Crucial for making onclick="ViewManager.show()" work in HTML
         window.ViewManager = this; 
+
+
+        // 1. Repair: Start with Splash instead of Home
+        renderSplash(this.mount, () => {
+            // 2. When splash finishes (onComplete), show Home Hub
+            this.show('home');
+        });
+
+   
 
         // 2. INIT AUDIO: Setup forest ambiance tracks
         if (AudioManager && AudioManager.init) {

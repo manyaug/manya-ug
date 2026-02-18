@@ -75,3 +75,44 @@ body.fullscreen-mode .app-header, body.fullscreen-mode aside, body.fullscreen-mo
 .shooting-star { position: fixed; width: 2px; height: 2px; background: #fff; z-index: 100; box-shadow: 0 0 10px #fff; border-radius: 50%; opacity: 0; }
 .star-active { animation: starShoot 1.2s ease-out forwards; }
 @keyframes starShoot { 0% { transform: translate(0,0); opacity: 1; } 100% { transform: translate(400px, 300px); opacity: 0; } }
+
+
+
+/* ==========================================================================
+   SST THEME: GOLDEN SAVANNAH
+   ========================================================================== */
+.spiral-view.sst { background: #3d2b1f; } /* Earthy Brown */
+
+/* Day: Golden Sun Hue | Night: Deep Indigo/Purple Safari */
+.spiral-view.sst.day { filter: saturate(1.4) brightness(1.1) sepia(0.2); }
+.spiral-view.sst.night { filter: saturate(1.2) brightness(0.6) contrast(1.3) hue-rotate(20deg); }
+
+/* SST Night Overlay */
+.spiral-view.sst.night .time-overlay {
+    background: radial-gradient(circle at center, rgba(79, 70, 229, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+/* --- DUST/SANDSTORM ENGINE (For SST) --- */
+.dust-mote {
+    position: absolute; background: #d97706; border-radius: 50%;
+    opacity: 0; filter: blur(2px); will-change: transform;
+    animation: dustFly linear infinite;
+}
+@keyframes dustFly {
+    0% { transform: translate3d(0, 110vh, 0) scale(0); opacity: 0; }
+    50% { opacity: 0.4; }
+    100% { transform: translate3d(-150px, -100px, 0) scale(1.5); opacity: 0; }
+}
+
+/* HEAT HAZE (Daytime Visual) */
+.heat-haze {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9;
+    background: linear-gradient(rgba(251, 191, 36, 0.05), transparent);
+    opacity: 0; transition: 3s;
+}
+.active-weather .heat-haze { opacity: 1; animation: hazeWobble 4s ease-in-out infinite; }
+@keyframes hazeWobble { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05) skewX(1deg); } }
+
+/* SST Nodes: Earthy Clay style */
+.sst .node-cap { background: rgba(251, 191, 36, 0.2); border-color: rgba(251, 191, 36, 0.5); }
+.sst .game-node.active .node-cap { background: linear-gradient(135deg, #f59e0b, #b45309); box-shadow: 0 0 40px #f59e0b; }

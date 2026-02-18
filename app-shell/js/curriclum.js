@@ -28,3 +28,13 @@ export const MATH_MAP = [
     { id: "math_q9_complements", title: "Complements", zone: "operations" },
     { id: "math_q10_probability", title: "Probability", zone: "operations" }
 ];
+
+export const SST_MAP = [
+    { id: "sst_q1_world_stage", title: "The World Stage", zone: "geography" },
+    { id: "sst_q2_grid_master", title: "Grid Master (Latitudes)", zone: "geography" },
+    { id: "sst_q3_time_traveller", title: "Time Traveller", zone: "geography" },
+    { id: "sst_q4_water_borders", title: "Water Borders", zone: "features" },
+    { id: "sst_q5_coastal_features", title: "Coastal Features", zone: "features" },
+    { id: "sst_q6_regions_capitals", title: "Regions & Capitals", zone: "civics" },
+    { id: "sst_q7_landlocked_challenge", title: "Landlocked Challenge", zone: "civics" }
+];
