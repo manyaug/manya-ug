@@ -9,21 +9,48 @@
     <link rel="manifest" href="manifest.json">
     <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
+
+    <style>
+        #manya-splash-overlay {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at center, #2e1065 0%, #0f172a 100%);
+            z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: all;
+        }
+        .splash-portal {
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            background: #000;
+            box-shadow: 0 0 80px rgba(124, 58, 237, 0.3);
+            overflow: hidden;
+            animation: portalPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #splash-vid { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); }
+        .splash-brand { margin-top: 30px; text-align: center; color: white; font-family: sans-serif; }
+        .splash-loader { width: 140px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 15px auto; overflow: hidden; }
+        .splash-loader .fill { width: 0%; height: 100%; background: linear-gradient(90deg, #7c3aed, #db2777); animation: load 3s forwards; }
+        @keyframes load { to { width: 100%; } }
+        @keyframes portalPop { from { transform: scale(0); } to { transform: scale(1); } }
+    </style>
     <!-- Load Font -->
 </head>
 <body>
-<div id="manya-splash-overlay">
-    <div class="splash-portal">
-        <video id="splash-vid" autoplay muted playsinline loop>
-            <source src="assets/shared/videos/mascot_blink.mp4" type="video/mp4">
-        </video>
+ <div id="manya-splash-overlay">
+        <div class="splash-portal">
+            <!-- Added preload="auto" and fixed the path -->
+            <video id="splash-vid" autoplay muted playsinline loop preload="auto">
+                <source src="assets/shared/videos/mascot_blink.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="splash-brand">
+            <h1 style="font-size: 28px; font-weight: 900; margin:0;">Manya Prep Hub</h1>
+            <p style="font-size: 10px; letter-spacing: 3px; color: #94a3b8; text-transform: uppercase;">Elite PLE Preparation</p>
+            <div class="splash-loader"><div class="fill"></div></div>
+        </div>
     </div>
-    <div class="splash-brand">
-        <h1>Manya Prep Hub</h1>
-        <p class="splash-tagline">Elite PLE Preparation</p> <!-- Added Tagline -->
-        <div class="splash-loader"><div class="fill"></div></div>
-    </div>
-</div>
 
     <!-- HEADER -->
     <header class="app-header">
@@ -71,30 +98,32 @@
     window.ViewManager = ViewManager;
     window.ManyaRouter = ManyaRouter;
 
-    // 2. WORLD-CLASS SPLASH SEQUENCE
-    const handleSplashTransition = () => {
-        const splash = document.getElementById('manya-splash-overlay');
-        const video = document.getElementById('splash-vid');
+    const overlay = document.getElementById('manya-splash-overlay');
+    const video = document.getElementById('splash-vid');
 
-        // Play video immediately
-        video.play().catch(err => console.log("Autoplay blocked, waiting for interaction"));
+    // 2. THE HANDOVER LOGIC
+    const startAppSequence = () => {
+        // Force video play (in case browser blocked it)
+        video.play().catch(() => {});
 
-        // Wait 3.5 seconds (Mascot blinks), then fade out
+        // Wait 3 seconds for the "World Class" entrance
         setTimeout(() => {
-            splash.style.opacity = '0';
-            splash.style.transform = 'scale(1.1)'; // Slight zoom out effect
-            splash.style.pointerEvents = 'none';
-
-            // Initialize the actual App content
+            overlay.style.opacity = '0';
+            
+            // Start the App Engine ONLY AFTER the splash starts fading
             ViewManager.init();
 
-            // Completely remove splash from memory after fade finishes
-            setTimeout(() => splash.remove(), 1000);
-        }, 3500); 
+            // Remove overlay from memory after fade-out
+            setTimeout(() => overlay.remove(), 1000);
+        }, 3200);
     };
 
-    // Run transition when page is ready
-    window.addEventListener('load', handleSplashTransition);
+    // Trigger as soon as the page is "Ready"
+    if (document.readyState === 'complete') {
+        startAppSequence();
+    } else {
+        window.addEventListener('load', startAppSequence);
+    }
 
     // 3. QUEST LAUNCHER
     window.launchDynamicQuest = async (subject, topic) => {
