@@ -12,6 +12,19 @@
     <!-- Load Font -->
 </head>
 <body>
+<div id="manya-splash-overlay">
+    <div class="splash-portal">
+        <video id="splash-vid" autoplay muted playsinline loop>
+            <source src="assets/shared/videos/mascot_blink.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="splash-brand">
+        <h1>Manya Prep Hub</h1>
+        <p class="splash-tagline">Elite PLE Preparation</p> <!-- Added Tagline -->
+        <div class="splash-loader"><div class="fill"></div></div>
+    </div>
+</div>
+
     <!-- HEADER -->
     <header class="app-header">
     <div class="header-left">
@@ -49,40 +62,52 @@
 
     <!-- LOAD MODULES -->
 <script type="module">
-    // IMPORTANT: Note the './' at the start of the paths
     import { ViewManager } from './app-shell/view-manager.js';
     import { ManyaRouter } from './app-shell/router.js';
-
-    // EXPOSE TO GLOBAL WINDOW (Fixes "ManyaRouter is not defined")
-    window.ViewManager = ViewManager;
-    window.ManyaRouter = ManyaRouter;
-
     import { QuestFactory } from './app-shell/quest-factory.js';
     import { QuestRunner } from './app-shell/quest-runner.js';
 
-        // EXPOSE THE ACTION TO THE WINDOW SO THE BUTTON CAN SEE IT
-        window.launchDynamicQuest = async (subject, topic) => {
-            try {
-                // 1. Tell ViewManager to prep the screen (remove engine-mode, etc.)
-                ViewManager.mount.innerHTML = '<div class="manya-loader">Preparing Journey...</div>';
-                
-                // 2. Factory builds the steps based on your Excel-derived JSON bank
-                const manifest = await QuestFactory.buildQuest(subject, topic);
-                
-                // 3. Runner takes over the screen
-                QuestRunner.renderQuest(ViewManager.mount, manifest);
-                
-                // 4. Add the engine-mode class so it fits perfectly
-                ViewManager.mount.classList.add('engine-mode');
-                
-            } catch (err) {
-                console.error("Factory Error:", err);
-                alert("Could not build quest. Make sure your bank.json exists!");
-            }
-        };
+    // 1. EXPOSE TO GLOBAL WINDOW
+    window.ViewManager = ViewManager;
+    window.ManyaRouter = ManyaRouter;
 
-    // Start App
-    ViewManager.init();
+    // 2. WORLD-CLASS SPLASH SEQUENCE
+    const handleSplashTransition = () => {
+        const splash = document.getElementById('manya-splash-overlay');
+        const video = document.getElementById('splash-vid');
+
+        // Play video immediately
+        video.play().catch(err => console.log("Autoplay blocked, waiting for interaction"));
+
+        // Wait 3.5 seconds (Mascot blinks), then fade out
+        setTimeout(() => {
+            splash.style.opacity = '0';
+            splash.style.transform = 'scale(1.1)'; // Slight zoom out effect
+            splash.style.pointerEvents = 'none';
+
+            // Initialize the actual App content
+            ViewManager.init();
+
+            // Completely remove splash from memory after fade finishes
+            setTimeout(() => splash.remove(), 1000);
+        }, 3500); 
+    };
+
+    // Run transition when page is ready
+    window.addEventListener('load', handleSplashTransition);
+
+    // 3. QUEST LAUNCHER
+    window.launchDynamicQuest = async (subject, topic) => {
+        try {
+            ViewManager.mount.innerHTML = '<div class="manya-loader">Preparing Journey...</div>';
+            const manifest = await QuestFactory.buildQuest(subject, topic);
+            QuestRunner.renderQuest(ViewManager.mount, manifest);
+            ViewManager.mount.classList.add('engine-mode');
+        } catch (err) {
+            console.error("Factory Error:", err);
+            alert("Could not build quest.");
+        }
+    };
 </script>
 
 

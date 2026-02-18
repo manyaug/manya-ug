@@ -27,11 +27,8 @@ export const ViewManager = {
         window.ViewManager = this; 
 
 
-        // 1. Repair: Start with Splash instead of Home
-        renderSplash(this.mount, () => {
-            // 2. When splash finishes (onComplete), show Home Hub
-            this.show('home');
-        });
+        // Directly show home now, because HTML is handling the splash
+        this.show('home');
 
    
 

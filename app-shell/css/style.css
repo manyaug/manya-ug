@@ -1142,67 +1142,87 @@ canvas {
 
 
 /* =========================================
-   REPAIRED SPLASH SCREEN (World Class)
+   WORLD-CLASS SPLASH OVERLAY (Final Polish)
    ========================================= */
-.splash-stage {
+#manya-splash-overlay {
     position: fixed; inset: 0;
-    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-    display: flex; align-items: center; justify-content: center;
+    /* Deep Gradient for depth */
+    background: radial-gradient(circle at center, #2e1065 0%, #0f172a 100%);
     z-index: 9999;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s ease-in-out;
 }
 
-.splash-content {
-    display: flex; flex-direction: column; align-items: center;
-}
-
-.mascot-portal {
+/* THE PORTAL: Fixes the 'cut' look */
+.splash-portal {
+    width: 220px; height: 220px;
     position: relative;
-    width: 200px; height: 200px;
     border-radius: 50%;
-    background: rgba(124, 58, 237, 0.1);
-    box-shadow: 0 0 80px rgba(124, 58, 237, 0.2);
-    display: flex; align-items: center; justify-content: center;
-    animation: mascotEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    /* Heavy Frosted Glass Border to hide video edges */
+    border: 8px solid rgba(255, 255, 255, 0.1);
+    background: #000; /* Backdrop for the video */
+    box-shadow: 
+        0 0 0 1px rgba(255,255,255,0.2), /* Thin outer ring */
+        0 20px 50px rgba(0,0,0,0.5),      /* Ground shadow */
+        0 0 80px rgba(124, 58, 237, 0.3); /* Purple Glow */
+    overflow: hidden; /* CRITICAL: Clips the video perfectly */
+    animation: portalBreathe 4s ease-in-out infinite;
 }
 
-.mascot-video {
-    width: 180px; height: 180px;
-    border-radius: 50%;
-    object-fit: cover;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+/* Glowing Halo behind the Portal */
+.splash-portal::before {
+    content: ''; position: absolute; inset: -20px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, transparent 70%);
+    z-index: -1;
+    filter: blur(20px);
 }
 
-.brand-box {
-    margin-top: 30px; text-align: center;
-    animation: fadeIn 1s ease forwards 0.5s; opacity: 0;
+#splash-vid {
+    width: 100%; height: 100%;
+    object-fit: cover; /* Ensures mascot fills the circle */
+    transform: scale(1.05); /* Slight zoom to hide any edge pixels */
 }
 
-.brand-name {
-    font-size: 28px; font-weight: 900; color: white; margin: 0;
-    letter-spacing: -0.5px;
+/* TYPOGRAPHY: High Contrast */
+.splash-brand {
+    margin-top: 40px; text-align: center;
 }
 
-.brand-tagline {
-    font-size: 11px; font-weight: 700; color: #94a3b8;
-    text-transform: uppercase; letter-spacing: 3px; margin-top: 10px;
+.splash-brand h1 {
+    font-size: 32px; font-weight: 900; color: white;
+    letter-spacing: -0.5px; margin: 0;
+    /* Glow effect on text */
+    text-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
 }
 
-/* LOADING BAR */
-.loading-bar {
-    width: 140px; height: 4px; background: rgba(255,255,255,0.1);
-    border-radius: 10px; margin: 15px auto; overflow: hidden;
+.splash-tagline {
+    color: #94a3b8; font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 4px;
+    margin-top: 8px; opacity: 0.8;
 }
-.loading-progress {
+
+/* LOADING BAR: Premium Glow */
+.splash-loader {
+    width: 140px; height: 6px; background: rgba(255,255,255,0.05);
+    border-radius: 10px; margin: 25px auto; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.splash-loader .fill {
     width: 0%; height: 100%;
-    background: linear-gradient(90deg, #7c3aed, #db2777);
-    animation: loadProgress 3s ease-in-out forwards;
+    background: linear-gradient(90deg, #7c3aed, #db2777, #7c3aed);
+    background-size: 200% 100%;
+    animation: splashLoad 3s ease-in-out forwards, shimmerFill 2s linear infinite;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.8);
 }
 
 /* ANIMATIONS */
-@keyframes mascotEntrance {
-    from { transform: scale(0) rotate(-15deg); }
-    to { transform: scale(1) rotate(0deg); }
+@keyframes portalBreathe {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 80px rgba(124, 58, 237, 0.3); }
+    50% { transform: scale(1.03); box-shadow: 0 0 100px rgba(124, 58, 237, 0.5); }
 }
-@keyframes loadProgress { from { width: 0%; } to { width: 100%; } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@keyframes shimmerFill {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
