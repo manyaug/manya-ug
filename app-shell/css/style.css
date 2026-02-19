@@ -1010,47 +1010,103 @@ canvas {
     background: #f1f5f9;
 }
 
-/* --- ELITE QUEST RUNNER SHELL --- */
+/* =========================================
+   CLASSIC QUEST RUNNER SHELL
+   ========================================= */
 .quest-runner-shell {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    background: #fdfbff; z-index: 5000;
+    position: fixed; inset: 0;
+    background: white;
+    display: flex;
+    flex-direction: column; /* FORCES VERTICAL STACKING */
+    z-index: 6000;
 }
 
-.qr-header {
-    height: 70px; padding: 0 20px;
-    display: flex; align-items: center; gap: 15px;
-    background: white; border-bottom: 1px solid #f1f5f9;
+/* THE SOLID HEADER */
+.qr-classic-header {
+    height: 68px;
+    width: 100%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    position: relative;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.qr-progress { 
-    flex: 1; height: 12px; background: #f1f5f9; 
-    border-radius: 20px; overflow: hidden; 
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-}
-.qr-progress .fill { 
-    height: 100%; background: linear-gradient(90deg, #22c55e, #10b981); 
-    border-radius: 20px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-}
-
-.qr-exit-btn {
-    background: #fee2e2; color: #ef4444; border: none;
-    padding: 8px 16px; border-radius: 12px; font-weight: 800;
-    font-size: 11px; cursor: pointer;
+.qr-back-btn {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #7c3aed;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
 }
 
-.qr-content-area { 
-    flex: 1; position: relative; overflow-y: auto; 
-    padding-bottom: 40px;
+.qr-title-box {
+    flex: 1; text-align: center;
 }
 
-.qr-footer {
-    height: 110px; padding: 20px;
-    background: white; border-top: 1px solid #f1f5f9;
-    display: flex; align-items: center;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+.qr-subject-tag {
+    font-size: 13px; font-weight: 900;
+    color: #1e293b; text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+/* THE SIGNATURE PROGRESS LINE */
+.qr-progress-bar {
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 3px; background: #f1f5f9;
+}
+.qr-progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7c3aed, #db2777); /* Purple to Pink */
+    transition: width 0.5s ease-in-out;
+}
+
+/* THE CONTENT AREA (The scrollable box) */
+.qr-content-area {
+    flex: 1; /* Takes ALL remaining space */
+    width: 100%;
+    overflow-y: auto;
+    background: #fff;
+    /* This padding ensures the engine content doesn't touch the header */
+    padding: 10px 0; 
+}
+
+/* CLEANER FOOTER */
+.qr-classic-footer {
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #f1f5f9;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.02);
+}
+
+/* FORCING ENGINES TO OBEY THE HEADER */
+.set-root, .manya-3d-root, .reader-root {
+    position: relative !important;
+    top: 0 !important;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+}
+/* PRACTICE GRID */
+.practice-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px; padding: 10px 0;
+}
+
+.res-chip.practice {
+    justify-content: center;
+    height: 42px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    font-weight: 800;
+    color: var(--theme);
+    border-radius: 12px;
+}
 /* THE JUICY CONTINUE BUTTON */
 .manya-btn-pro {
     width: 100%; height: 56px; 

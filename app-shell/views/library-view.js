@@ -1,21 +1,26 @@
+import { AudioManager } from '../../app-shell/js/audio-manager.js';
+
 export const renderLibrary = async (mount) => {
     let activeSubject = localStorage.getItem('manya_lib_sub') || 'math';
 
-    // 1. FETCH THE AUTOMATED MANIFEST
+    // 1. Fetch the automated manifest
     const res = await fetch('../curriculum-master.json');
     const curriculum = await res.json();
 
     const render = () => {
-        const subjectData = curriculum[activeSubject];
-        if (!subjectData) {
-            mount.innerHTML = `<div class="manya-loader">Subject ${activeSubject} coming soon!</div>`;
+        // FIX: Variable name must match what the template uses
+        const data = curriculum[activeSubject]; 
+        
+        if (!data) {
+            mount.innerHTML = `<div class="manya-loader">Subject coming soon!</div>`;
             return;
         }
 
         mount.innerHTML = `
             <div class="library-view animate-in">
-                <div class="library-header">
-                    <h3 class="lib-title">Self-Study Library</h3>
+                <!-- SUBJECT THEMED HEADER -->
+                <div class="library-header" style="background: ${data.theme};">
+                    <h3 class="lib-title">Syllabus Library</h3>
                     <div class="lib-tabs">
                         ${Object.keys(curriculum).map(sub => `
                             <button class="lib-tab ${activeSubject === sub ? 'active' : ''}" 
@@ -24,8 +29,8 @@ export const renderLibrary = async (mount) => {
                     </div>
                 </div>
 
-                <div class="library-content" style="--theme: ${subjectData.theme}">
-                    ${subjectData.units.map(unit => `
+                <div class="library-content" style="--theme: ${data.theme}">
+                    ${data.units.map(unit => `
                         <h5 class="unit-title">${unit.title}</h5>
                         ${unit.quests.map((quest, i) => `
                             <div class="lib-topic-card">
@@ -65,6 +70,12 @@ export const renderLibrary = async (mount) => {
         `;
     };
 
-    window.switchLib = (sub) => { activeSubject = sub; localStorage.setItem('manya_lib_sub', sub); render(); };
+    window.switchLib = (sub) => { 
+        if (AudioManager.playSFX) AudioManager.playSFX();
+        activeSubject = sub; 
+        localStorage.setItem('manya_lib_sub', sub); 
+        render(); 
+    };
+    
     render();
 };
