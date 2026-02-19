@@ -1,10 +1,10 @@
 {
-  "name": "Manya Uganda PLE Exam Prep Hub",
-  "short_name": "Manya UG",
+  "name": "Manya Prep Hub",
+  "short_name": "Manya",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#941cb3",  
-  "theme_color": "#941cb3",
+  "theme_color": "#941cb3",      
   "orientation": "portrait",
   "icons": [
     {

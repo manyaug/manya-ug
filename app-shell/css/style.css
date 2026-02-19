@@ -9,6 +9,7 @@
             --text-dark: #0f172a;
             --text-light: #64748b;
             --sidebar-width: 320px;
+            --manya-purple-fur: #941cb3;
             
             /* Global Engine Theme Variables */
             --axial-color: #ef4444;
@@ -30,7 +31,9 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0; background: var(--manya-bg); color: var(--text-dark);
+            margin: 0;
+             padding: 0;
+             background: var(--manya-bg); color: var(--text-dark);
             height: 100vh; display: grid; grid-template-columns: var(--sidebar-width) 1fr;
             overflow: hidden;
             background-color: var(--bg-app);
@@ -87,10 +90,19 @@
             text-transform: uppercase; margin-left: 10px;
         }
 
-        .app-header {
-    flex: 0 0 70px; /* Fixed Header Height */
-    z-index: 2000;
+       /* Fix the Header from being hidden */
+.app-header {
+    position: sticky;
+    top: 0;
+    /* We increase the height to account for the notch */
+    height: calc(64px + env(safe-area-inset-top)); 
+    background: white;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding: env(safe-area-inset-top) 15px 0 15px;
 }
+
 
 .bottom-nav {
     /* Nav sits on top, doesn't push content */

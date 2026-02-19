@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Manya Prep Hub</title>
     
-    <!-- Core Stylesheets -->
+    <!-- CSS Dependencies -->
     <link rel="stylesheet" href="./app-shell/css/style.css">
     <link rel="stylesheet" href="./app-shell/css/spiral.css">
     <link rel="manifest" href="manifest.json">
@@ -13,54 +13,92 @@
     
     <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
 
-    <!-- WORLD-CLASS SPLASH STYLES (Inline for Instant Paint) -->
+    <!-- WORLD-CLASS "INFINITE FUR" SPLASH STYLES -->
     <style>
-       #manya-splash-overlay {
+        #manya-splash-overlay {
             position: fixed; inset: 0;
-            /* Use the fuzzy image as the static background */
-            background: #941cb3 url('../../assets/icons/splash-1.png') no-repeat center center;
-            background-size: cover;
+            background: #941cb3; /* Exact match to fur color */
             z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: all;
+            overflow: hidden;
         }
 
-        /* Hide the portal circle initially so we only see the full-screen fuzzy face */
-        .splash-portal {
-            width: 260px; height: 260px;
-            border-radius: 50%;
-            overflow: hidden;
-            opacity: 0; /* Hidden until video is ready */
-            transition: opacity 0.5s ease;
+        .full-screen-mascot {
+            position: absolute; inset: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
         }
 
         #splash-vid {
             width: 100%; height: 100%;
-            object-fit: cover;
-            transform: scale(1.1); /* Hides video edge artifacts */
+            object-fit: cover; /* Ensures fur fills any screen size */
         }
 
-        .splash-brand { margin-top: 35px; text-align: center; color: white; font-family: 'Nunito', sans-serif; }
-        .splash-brand h1 { font-size: 30px; font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(124,58,237,0.5); }
-        .splash-tagline { font-size: 10px; letter-spacing: 3px; color: #94a3b8; text-transform: uppercase; margin-top: 8px; }
-
-        .splash-loader { width: 140px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 20px auto; overflow: hidden; }
-        .splash-loader .fill { 
-            width: 0%; height: 100%; 
-            background: linear-gradient(90deg, #7c3aed, #db2777); 
-            animation: loadProgress 3s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        .splash-brand {
+            position: relative; z-index: 2;
+            margin-top: 240px; /* Pushes text BELOW the duck's beak */
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+            animation: brandEnter 1s ease-out forwards;
         }
 
-        /* Hide UI bars while splash is active to prevent flickering */
-        .app-header, .bottom-nav { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
-        .app-live .app-header, .app-live .bottom-nav { opacity: 1; pointer-events: all; }
+        .brand-glow {
+            color: white; font-size: 34px; font-weight: 900; margin: 0;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            letter-spacing: -1px;
+        }
 
-        @keyframes loadProgress { to { width: 100%; } }
-        @keyframes portalPop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .brand-sub {
+            color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 4px; margin: 10px 0;
+        }
+
+        .splash-loader {
+            width: 150px; height: 4px; background: rgba(255,255,255,0.2);
+            border-radius: 10px; margin: 20px auto; overflow: hidden;
+        }
+
+        .splash-loader .fill {
+            width: 0%; height: 100%;
+            background: white;
+            animation: splashLoad 3.5s linear forwards;
+        }
+
+        /* HIDE UI BARS UNTIL APP IS LIVE */
+        .app-header, .bottom-nav { 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.5s ease; 
+        }
+        body.app-live .app-header, body.app-live .bottom-nav { 
+            opacity: 1; 
+            pointer-events: all; 
+        }
+
+        @keyframes brandEnter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes splashLoad { from { width: 0%; } to { width: 100%; } }
     </style>
 </head>
-<body>
-<!-- 2. MAIN APP HEADER -->
+<body class="fullscreen-mode">
+
+    <!-- 1. SPLASH OVERLAY -->
+    <div id="manya-splash-overlay">
+        <div class="full-screen-mascot">
+            <video id="splash-vid" autoplay muted playsinline loop preload="auto" poster="assets/icons/splash-1.png"> 
+            <source src="assets/shared/videos/full-screen-splash.mp4" type="video/mp4">
+            </video>
+        </div>
+        
+        <div class="splash-brand">
+            <h1 class="brand-glow">Manya Prep Hub</h1>
+            <p class="brand-sub">Elite PLE Preparation</p>
+            <div class="splash-loader"><div class="fill"></div></div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER -->
     <header class="app-header">
         <div class="header-left">
             <button id="back-btn" class="nav-icon-btn hidden" onclick="ViewManager.goBack()">
@@ -70,25 +108,6 @@
         <h3 id="app-title">Manya Prep Hub</h3>
         <div class="user-coins">💎 120</div>
     </header>
-    <!-- 1. SPLASH OVERLAY -->
-    <div id="manya-splash-overlay">
-    <div class="splash-portal" id="portal-mount">
-        <video 
-            id="splash-vid" 
-            autoplay muted playsinline loop 
-            preload="auto"
-            poster="assets/icons/splash-1.png"> <!-- YOUR NEW IMAGE HERE -->
-            <source src="assets/shared/videos/mascot_blink.mp4" type="video/mp4">
-        </video>
-    </div>
-    
-    <div class="splash-brand">
-        <h1 style="color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.3);">Manya Prep Hub</h1>
-        <div class="splash-loader"><div class="fill"></div></div>
-    </div>
-</div>
-
-    
 
     <!-- 3. CONTENT MOUNT -->
     <div id="view-mount"></div>
@@ -100,7 +119,7 @@
             <span>Home</span>
         </div>
         <div class="nav-item" onclick="ViewManager.show('rankings', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
             <span>Rankings</span>
         </div>
         <div class="nav-item" onclick="ViewManager.show('profile', this)">
@@ -110,65 +129,64 @@
     </nav>
 
     <!-- 5. APP LOGIC ENGINE -->
-   <script type="module">
-    import { ViewManager } from './app-shell/view-manager.js';
-    import { ManyaRouter } from './app-shell/router.js';
-    import { QuestFactory } from './app-shell/quest-factory.js';
-    import { QuestRunner } from './app-shell/quest-runner.js';
-    import { AudioManager } from './app-shell/js/audio-manager.js';
+    <script type="module">
+        import { ViewManager } from './app-shell/view-manager.js';
+        import { ManyaRouter } from './app-shell/router.js';
+        import { QuestFactory } from './app-shell/quest-factory.js';
+        import { QuestRunner } from './app-shell/quest-runner.js';
+        import { AudioManager } from './app-shell/js/audio-manager.js';
 
-    window.ViewManager = ViewManager;
-    window.ManyaRouter = ManyaRouter;
-    window.AudioManager = AudioManager;
+        // Bindings
+        window.ViewManager = ViewManager;
+        window.ManyaRouter = ManyaRouter;
+        window.AudioManager = AudioManager;
+        window.QuestFactory = QuestFactory;
+        window.QuestRunner = QuestRunner;
 
-   const video = document.getElementById('splash-vid');
-const portal = document.getElementById('portal-mount');
+        const splashOverlay = document.getElementById('manya-splash-overlay');
+        const splashVid = document.getElementById('splash-vid');
 
-// When the video is ready, fade the circle in over the static background
-video.onplay = () => {
-    portal.style.opacity = '1';
-};
+        const startAppHandover = () => {
+            splashVid.play().catch(() => {});
 
-const startAppSequence = () => {
-    video.play().catch(() => {});
-    
-    setTimeout(() => {
-        const overlay = document.getElementById('manya-splash-overlay');
-        overlay.style.opacity = '0';
-        
-        // Start the actual app logic
-        ViewManager.init();
+            // Display for 3.5s (Blink loop)
+            setTimeout(() => {
+                try {
+                    ViewManager.init();
+                    document.body.classList.add('app-live');
+                } catch (e) { console.error("App Init Crash:", e); }
 
-        setTimeout(() => overlay.remove(), 1000);
-    }, 3500); // Give it 3.5 seconds of glory
-};
+                // Smooth fade
+                splashOverlay.style.opacity = '0';
+                splashOverlay.style.pointerEvents = 'none';
 
-window.addEventListener('load', startAppSequence);
+                // Cleanup
+                setTimeout(() => { if(splashOverlay.parentNode) splashOverlay.remove(); }, 1000);
+            }, 3500);
+        };
 
-    // --- REPAIRED LIBRARY STEP LAUNCHER ---
-    
-    window.launchLibraryStep = async (subject, unit, quest, step) => {
-    // Correct path construction
-    const path = `../content/${subject}/${unit}/${quest}/${step}.json`;
-    
-    try {
-        const response = await fetch(path);
-        if (!response.ok) throw new Error(`File not found: ${path}`);
-        const data = await response.json();
+        // Fire as soon as possible
+        if (document.readyState === 'complete') startAppHandover();
+        else window.addEventListener('load', startAppHandover);
 
-        localStorage.setItem('last_sub', subject);
-        localStorage.setItem('last_idx', -1); // Library mode
-
-        // Start QuestRunner with an array containing the single step
-        QuestRunner.start(ViewManager.mount, [data]);
-        
-        ViewManager.mount.classList.add('engine-mode');
-        document.body.classList.add('fullscreen-mode');
-    } catch (err) {
-        alert("This specific lesson is currently under maintenance.");
-        console.error(err);
-    }
-};
-</script>
+        // Global Launchers
+        window.launchLibraryStep = async (sub, unit, quest, step) => {
+            try {
+                if (AudioManager.playSFX) AudioManager.playSFX();
+                const res = await fetch(`../content/${sub}/${unit}/${quest}/${step}.json`);
+                const data = await res.json();
+                localStorage.setItem('last_sub', sub);
+                localStorage.setItem('last_idx', -1);
+                QuestRunner.start(ViewManager.mount, [data]);
+                ViewManager.mount.classList.add('engine-mode');
+                document.body.classList.add('fullscreen-mode');
+            } catch (err) { alert("Lesson content loading error."); }
+        };
+    </script>
 </body>
 </html>
+
+
+
+
+
