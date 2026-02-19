@@ -123,37 +123,25 @@ export const ManyaRouter = {
      * loadInline: For use by the QuestRunner
      * Loads an engine into a specific sub-container
      */
-    loadInline: async (engineKey, data, targetContainer) => {
+    // Add this inside your window.ManyaRouter object
+loadInline: async (engineKey, data, mount) => {
+    try {
         const enginePath = ENGINE_REGISTRY[engineKey];
-        if (!enginePath) {
-            targetContainer.innerHTML = `<p style="color:red">Engine ${engineKey} not registered</p>`;
-            return;
+        if (!enginePath) throw new Error(`Engine ${engineKey} not registered.`);
+
+        const module = await import(enginePath);
+        // Get the first exported object (the engine)
+        const engine = Object.values(module)[0]; 
+
+        // Choose render method based on JSON mode
+        if (data.mode === 'study' || engineKey.includes('READER')) {
+            engine.renderStudy(mount, data);
+        } else {
+            engine.renderLabeling(mount, data);
         }
-
-        try {
-            const module = await import(enginePath);
-            
-            // FIX: Find the first exported object that contains our functions
-            const engine = Object.values(module).find(obj => 
-                typeof obj === 'object' && (obj.renderLabeling || obj.renderStudy)
-            );
-
-            if (!engine) {
-                throw new Error(`Exported engine object in ${engineKey} is missing render functions.`);
-            }
-
-            if (data.mode === 'study' && engine.renderStudy) {
-                engine.renderStudy(targetContainer, data);
-            } else if (engine.renderLabeling) {
-                engine.renderLabeling(targetContainer, data);
-            } else {
-                // Fallback if mode doesn't match
-                engine.renderStudy ? engine.renderStudy(targetContainer, data) : engine.renderLabeling(targetContainer, data);
-            }
-
-        } catch (err) {
-            console.error("Inline Load Error:", err);
-            targetContainer.innerHTML = `<div style="color:red; padding:20px;">Failed to load step: ${engineKey}<br><small>${err.message}</small></div>`;
-        }
+    } catch (err) {
+        console.error("Router Inline Error:", err);
+        mount.innerHTML = `<div style="color:red; padding:20px;">Engine ${engineKey} failed to load.</div>`;
     }
+}
 };

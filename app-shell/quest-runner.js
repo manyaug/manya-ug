@@ -3,8 +3,8 @@ import { ManyaRouter } from './router.js';
 export const QuestRunner = {
     state: { steps: [], index: 0, mount: null },
 
-    async start(mount, manifest) {
-        this.state.steps = manifest;
+    async start(mount, stepsArray) {
+        this.state.steps = stepsArray;
         this.state.mount = mount;
         this.state.index = 0;
         this.loadStep();
@@ -17,7 +17,6 @@ export const QuestRunner = {
         this.state.mount.innerHTML = `
             <div class="quest-runner-shell animate-in">
                 <div class="qr-header">
-                    <button class="skip-dev-btn" onclick="QuestRunner.next()">[DEV] SKIP</button>
                     <div class="qr-progress"><div class="fill" style="width:${progress}%"></div></div>
                     <button class="qr-exit-btn" onclick="QuestRunner.exit()">EXIT</button>
                 </div>
@@ -27,18 +26,22 @@ export const QuestRunner = {
                 </div>
             </div>`;
 
-        await ManyaRouter.loadInline(step.engine, step.data, document.getElementById('qr-content'));
+        // FIX: Use 'engineType' instead of 'engine'
+        // FIX: Pass the whole 'step' as the data
+        const engineKey = step.engineType || "MCQ_STANDALONE"; 
         
-        // Button Logic
-        if (step.engine !== "MCQ_STANDALONE") {
+        await ManyaRouter.loadInline(engineKey, step, document.getElementById('qr-content'));
+        
+        // Auto-enable button for study modes
+        if (engineKey.includes("STUDY") || engineKey.includes("READER")) {
             document.getElementById('next-step-btn').disabled = false;
-        } else {
-            document.getElementById('next-step-btn').disabled = true;
         }
     },
 
     exit() {
-        ViewManager.show('spiral', null, localStorage.getItem('last_sub'));
+        const isLibrary = localStorage.getItem('last_idx') === "-1";
+        window.ViewManager.show(isLibrary ? 'library' : 'spiral', null, localStorage.getItem('last_sub'));
+        document.body.classList.remove('fullscreen-mode');
     },
 
     next() {
@@ -52,19 +55,12 @@ export const QuestRunner = {
 
     finish() {
         const sub = localStorage.getItem('last_sub');
-        const idx = parseInt(localStorage.getItem('last_idx'));
-        const saved = parseInt(localStorage.getItem(`manya_prog_${sub}`) || 0);
-
-        // Unlock next node
-        if(idx === saved) localStorage.setItem(`manya_prog_${sub}`, saved + 1);
-
         this.state.mount.innerHTML = `
             <div class="quest-finish-screen animate-in">
                 <div class="finish-card">
-                    <div style="font-size:100px;">🎉</div>
-                    <h2>Experiment Complete!</h2>
-                    <p>Next node on the path is now unlocked.</p>
-                    <button class="manya-btn-pro" onclick="ViewManager.show('spiral', null, '${sub}')">VIEW MAP</button>
+                    <div style="font-size:80px;">🏆</div>
+                    <h2>Topic Mastered!</h2>
+                    <button class="manya-btn-pro" onclick="QuestRunner.exit()">BACK TO LIBRARY</button>
                 </div>
             </div>`;
     }

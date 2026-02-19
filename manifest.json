@@ -3,19 +3,15 @@
   "short_name": "Manya UG",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#7c3aed",
+  "background_color": "#941cb3",  
+  "theme_color": "#941cb3",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "assets/icons/pose_1_cut.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/pose_1_cut.png",
+      "src": "assets/icons/pose_1_cut.png", 
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

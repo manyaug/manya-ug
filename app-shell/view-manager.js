@@ -8,7 +8,6 @@ import { renderSpiral } from './views/spiral-view.js';
 import { renderLibrary } from './views/library-view.js';
 import { renderRankings } from './views/rankings-view.js';
 import { renderProfile } from './views/profile-view.js';
-import { renderSplash } from './views/splash-view.js';
 
 // Import Audio Service (Make sure you created services/audio-manager.js)
 import { AudioManager } from '../app-shell/js/audio-manager.js';
@@ -22,22 +21,17 @@ export const ViewManager = {
      */
     init() {
         this.mount = document.getElementById('view-mount');
-        
-        // 1. ATTACH TO WINDOW: Crucial for making onclick="ViewManager.show()" work in HTML
-        window.ViewManager = this; 
+        window.ViewManager = this;
 
-
-        // Directly show home now, because HTML is handling the splash
-        this.show('home');
-
-   
-
-        // 2. INIT AUDIO: Setup forest ambiance tracks
-        if (AudioManager && AudioManager.init) {
-            AudioManager.init();
+        // 1. Initialize Audio
+        if (window.AudioManager && window.AudioManager.init) {
+            window.AudioManager.init();
         }
 
+        // 2. Just show the home hub. 
+        // The index.html script will handle fading the splash overlay on top of this.
         this.show('home');
+        console.log("Manya: ViewManager Ready.");
     },
 
     /**

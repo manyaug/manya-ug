@@ -65,22 +65,28 @@ export const AudioManager = {
         sfx.play().catch(() => {});
     },
 
-    fade(audio, target, duration) {
-        if (!audio) return;
-        const start = audio.volume;
-        const diff = target - start;
-        const startTime = performance.now();
-        const tick = (now) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // Clamp volume to stop IndexSizeError
-            audio.volume = Math.max(0, Math.min(1, start + (diff * progress)));
-            if (progress < 1) {
-                requestAnimationFrame(tick);
-            } else if (target === 0) {
-                audio.pause();
-            }
-        };
-        requestAnimationFrame(tick);
-    }
+    // Inside audio-manager.js
+fade(audio, target, duration) {
+    if (!audio) return;
+    const start = audio.volume;
+    const diff = target - start;
+    const startTime = performance.now();
+
+    const tick = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // CLAMP: Ensures volume is never less than 0 or more than 1
+        const nextVol = start + (diff * progress);
+        audio.volume = Math.max(0, Math.min(1, nextVol)); 
+
+        if (progress < 1) {
+            requestAnimationFrame(tick);
+        } else if (target === 0) {
+            audio.pause();
+        }
+    };
+    requestAnimationFrame(tick);
+}
+        
 };
