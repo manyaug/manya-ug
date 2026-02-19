@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- THE HOME SCREEN ICON -->
+    <link rel="apple-touch-icon" href="assets/icons/pose_1_cut.png">
+
+    <!-- THE SYSTEM SPLASH (Fuzzy Purple Face) -->
+    <!-- This shows ONLY while the app is loading, before your video starts -->
+    <link rel="apple-touch-startup-image" href="assets/icons/splash-1.png">
     <title>Manya Prep Hub</title>
     
     <!-- CSS Dependencies -->
@@ -15,40 +21,58 @@
 
     <!-- WORLD-CLASS "INFINITE FUR" SPLASH STYLES -->
     <style>
-        #manya-splash-overlay {
-            position: fixed; inset: 0;
-            background: #941cb3; /* Exact match to fur color */
-            z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: all;
-            overflow: hidden;
-        }
+        /* =========================================
+   WORLD-CLASS SPLASH OVERLAY (Anti-Logo Fix)
+   ========================================= */
+#manya-splash-overlay {
+    position: fixed; inset: 0;
+    background: #941cb3; 
+    z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: all;
+    overflow: hidden; /* CRITICAL: Clips the zoomed-in logos */
+}
 
-        .full-screen-mascot {
-            position: absolute; inset: 0;
-            width: 100vw; height: 100vh;
-            z-index: 1;
-        }
+/* THE CROP ENGINE */
+.full-screen-mascot {
+    position: absolute; inset: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+}
 
-        #splash-vid {
-            width: 100%; height: 100%;
-            object-fit: cover; /* Ensures fur fills any screen size */
-        }
+#splash-vid {
+    width: 100%; height: 100%;
+    object-fit: cover; 
+    /* THE FIX: Scale up by 15% to push corner logos off-screen */
+    transform: scale(1.15); 
+    transform-origin: center; /* Keeps the eyes centered while zooming */
+    filter: brightness(1.05); /* Slight pop */
+}
 
-        .splash-brand {
-            position: relative; z-index: 2;
-            margin-top: 240px; /* Pushes text BELOW the duck's beak */
-            text-align: center;
-            font-family: 'Nunito', sans-serif;
-            animation: brandEnter 1s ease-out forwards;
-        }
+/* VIGNETTE: Adds a soft dark shadow around the screen edges 
+   to make the "infinite fur" feel deeper and high-end. */
+#manya-splash-overlay::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at center, transparent 40%, rgba(15, 23, 42, 0.4) 100%);
+    z-index: 2;
+    pointer-events: none;
+}
 
-        .brand-glow {
-            color: white; font-size: 34px; font-weight: 900; margin: 0;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            letter-spacing: -1px;
-        }
+.splash-brand {
+    position: relative; 
+    z-index: 10; /* Sits above the vignette */
+    margin-top: 260px;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+}
+
+.brand-glow {
+    color: white; font-size: 34px; font-weight: 900; margin: 0;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
 
         .brand-sub {
             color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 700;
@@ -86,7 +110,7 @@
     <!-- 1. SPLASH OVERLAY -->
     <div id="manya-splash-overlay">
         <div class="full-screen-mascot">
-            <video id="splash-vid" autoplay muted playsinline loop preload="auto" poster="assets/icons/splash-1.png"> 
+            <video  id="splash-vid" autoplay muted playsinline loop preload="auto"  poster="assets/icons/splash-1.png"> 
             <source src="assets/shared/videos/full-screen-splash.mp4" type="video/mp4">
             </video>
         </div>
