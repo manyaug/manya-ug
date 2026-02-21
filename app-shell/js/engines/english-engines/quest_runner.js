@@ -70,30 +70,84 @@ export const ManyaQuestRunner = {
     },
 
     launchStep: async () => {
-        const step = ManyaQuestRunner.state.manifest.steps[ManyaQuestRunner.state.currentIndex];
+        const s = ManyaQuestRunner.state;
+        const step = s.manifest.steps[s.currentIndex];
         const stage = document.getElementById('engine-stage');
+        
+        // 1. SAFETY GUARD: Stop if stage is missing
+        if (!stage) return;
+        
         stage.scrollTop = 0;
-        ManyaQuestRunner.enableButton(false); // Disable button by default when launching new step
+        ManyaQuestRunner.enableButton(false);
 
-        const total = ManyaQuestRunner.state.manifest.steps.length;
-        const percent = ((ManyaQuestRunner.state.currentIndex + 1) / total) * 100;
-        document.getElementById('p-fill').style.width = `${percent}%`;
+        // 2. UPDATE PROGRESS UI
+        const total = s.manifest.steps.length;
+        const percent = ((s.currentIndex + 1) / total) * 100;
+        const pFill = document.getElementById('p-fill');
+        if (pFill) pFill.style.width = `${percent}%`;
 
+        // --- 3. DYNAMIC REFERENCE LOADING (THE BRAIN) ---
+        // This allows a Quest to call a separate Rule or Dict JSON from the /vault/
+        if (step.referencePath) {
+            try {
+                // Get context: e.g., 'content/english/holidays/quest_1'
+                const currentQuestDir = localStorage.getItem('manya_current_quest_dir') || 'content/english/holidays/quest_1';
+                
+                // Build the full path and clean double slashes
+                const fullRefPath = `./${currentQuestDir}/${step.referencePath}`.replace(/\/+/g, '/');
+                
+                console.log("Manya Engine: Fetching External Reference ->", fullRefPath);
+                
+                const res = await fetch(fullRefPath);
+                if (!res.ok) throw new Error(`Could not find ${step.referencePath}`);
+                const refData = await res.json();
+                
+                // INTEGRATION: Inject the vault data into the step
+                step.data = refData;
+                // If the vault file has its own engineType (it should), update the step
+                if (refData.engineType) step.engineType = refData.engineType;
+
+            } catch (err) {
+                console.error("Manya Reference Error:", err);
+                stage.innerHTML = `<div class="bento-card" style="color:red">Failed to load ${step.referencePath}</div>`;
+                ManyaQuestRunner.enableButton(true, null, "SKIP ERROR");
+                return; // Stop here if reference failed
+            }
+        }
+
+        // --- 4. ENGINE DISPATCHER ---
+        // Route the step to the correct specialized engine
         if (step.engineType === "CHAT") {
             ManyaQuestRunner.renderCompanion(stage, step.data);
-        } else if (step.engineType === "RULE_SELECTOR") { // New engine type for rule selection
+        } 
+        else if (step.engineType === "RULE_SELECTOR") {
             await ManyaQuestRunner.renderRuleSelection(stage, step.data);
-        } else {
+        } 
+        else {
             try {
-                const path = INTERNAL_REGISTRY[step.engineType];
-                const module = await import(path + "?v=" + Date.now());
-                const engine = Object.values(module)[0];
-                const savedIndex = ManyaQuestRunner.state.stepMemory[step.id] || 0;
+                // A. Find the engine in the registry
+                const enginePath = INTERNAL_REGISTRY[step.engineType];
+                if (!enginePath) throw new Error(`Engine '${step.engineType}' not registered.`);
+
+                // B. Dynamic Import with Cache Busting
+                const module = await import(enginePath + "?v=" + Date.now());
+                const engine = Object.values(module)[0]; 
+
+                // C. Restore progress if user is coming back to this specific step
+                const savedIndex = s.stepMemory[step.id] || 0;
+
+                // D. EXECUTE: All specialized engines must have a 'renderLabeling' function
                 await engine.renderLabeling(stage, step.data, savedIndex);
+
             } catch (err) {
-                console.error(err);
-                stage.innerHTML = `<div class="bento-card" style="color:red">Failed to load ${step.engineType}<br>${err.message}</div>`;
-                ManyaQuestRunner.enableButton(true); // Allow continuing past error
+                console.error("Manya Engine Load Error:", err);
+                stage.innerHTML = `
+                    <div class="bento-card" style="text-align:center; padding:30px;">
+                        <h3 style="color:#ef4444; margin:0;">Engine Error</h3>
+                        <p style="font-size:13px; color:#64748b;">${step.engineType} failed to start.</p>
+                        <div style="font-family:monospace; font-size:10px; background:#f1f5f9; padding:10px; border-radius:8px; margin-top:10px;">${err.message}</div>
+                    </div>`;
+                ManyaQuestRunner.enableButton(true); // Allow skipping broken steps
             }
         }
     },
@@ -154,27 +208,20 @@ export const ManyaQuestRunner = {
         btn.onclick = callback || ManyaQuestRunner.next;
     },
 
-    next: () => {
-        if (ManyaQuestRunner.state.isTyping) return; 
-        if (ManyaQuestRunner.state.returnIndex !== null) {
-            ManyaQuestRunner.state.currentIndex = ManyaQuestRunner.state.returnIndex;
-            ManyaQuestRunner.state.returnIndex = null;
-            ManyaQuestRunner.launchStep();
+    next() {
+        if (window.AudioManager) window.AudioManager.playSFX();
+        
+        // If it's a library single-step, just exit when they click continue
+        if (localStorage.getItem('last_idx') === "-1") {
+            this.exit();
             return;
         }
-        if (ManyaQuestRunner.state.currentIndex < ManyaQuestRunner.state.manifest.steps.length - 1) {
-            ManyaQuestRunner.state.currentIndex++;
-            ManyaQuestRunner.launchStep();
+
+        if (this.state.index < this.state.steps.length - 1) {
+            this.state.index++;
+            this.loadStep();
         } else {
-            // End of quest - Show completion message
-            ManyaQuestRunner.state.container.innerHTML = `
-                <div class="manya-pwa-shell" style="justify-content: center; align-items: center;">
-                    <div class="bento-card" style="text-align:center; max-width: 400px; padding: 40px;">
-                        <h1>🏆 Quest Complete!</h1>
-                        <p style="margin-bottom: 20px;">You've mastered this chapter. Well done!</p>
-                        <button class="manya-pill-btn" onclick="location.reload()">BACK TO MENU</button>
-                    </div>
-                </div>`;
+            this.finish();
         }
     },
 

@@ -1,0 +1,17 @@
+{
+  "engineType": "ENGLISH_RULE_MASTER",
+  "topicTitle": "Active vs. Passive Voice",
+  "rules": [
+    {
+      "title": "THE 'BEING' CONTINUOUS SHIFT",
+      "formula": "is/are + V-ing -> is/are + BEING + V3",
+      "toggleA": "Active (Doer)",
+      "toggleB": "Passive (Object)",
+      "exampleA": "Kiki <b>is cooking</b> the food.",
+      "exampleB": "The food <b>is being cooked</b> by Kiki.",
+      "explainA": "Focus on the person doing the action.",
+      "explainB": "Focus on the object receiving the action.",
+      "teacherNote": "Always remember: BEING is for continuous, BEEN is for perfect."
+    }
+  ]
+}

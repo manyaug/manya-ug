@@ -879,25 +879,149 @@
         "title": "Holidays",
         "quests": [
           {
-            "folder": "quest_1",
-            "title": "1",
+            "folder": "quest_01_holiday_kickoff",
+            "title": "01 Holiday Kickoff",
             "prefix": "",
             "resources": [
               {
-                "label": "Garage",
-                "file": "garage"
+                "label": "01 Holiday Kickoff",
+                "file": "01_holiday_kickoff"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_02_going_to_mastery",
+            "title": "02 Going To Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "02 Going To Mastery",
+                "file": "02_going_to_mastery"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_03_question_tags_mastery",
+            "title": "03 Question Tags Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "03 Question Tags Mastery",
+                "file": "03_question_tags_mastery"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_04_reported_speech_mastery",
+            "title": "04 Reported Speech Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "04 Reported Speech Mastery",
+                "file": "04_reported_speech_mastery"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_05_village_arrival",
+            "title": "05 Village Arrival",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "05 Village Arrival",
+                "file": "05_village_arrival"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_06_feeling_and_facts",
+            "title": "06 Feeling And Facts",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "06 Feeling And Facts",
+                "file": "06_feeling_and_facts"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_07_past_regrets",
+            "title": "07 Past Regrets",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "07 Past Regrets",
+                "file": "07_past_regrets"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_08_voice_mastery",
+            "title": "08 Voice Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "08 Voice Mastery",
+                "file": "08_voice_mastery"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_09_final_review",
+            "title": "09 Final Review",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "09 Final Review",
+                "file": "09_final_review"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_10_vault",
+            "title": "10 Vault",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "Dict Activities",
+                "file": "dict_activities"
               },
               {
-                "label": "Holiday 1",
-                "file": "holiday_1"
+                "label": "Dict Holidays",
+                "file": "dict_holidays"
               },
               {
-                "label": "Holiday 2",
-                "file": "holiday_2"
+                "label": "Rule Active Passive",
+                "file": "rule_active_passive"
               },
               {
-                "label": "Reported Speech Game",
-                "file": "reported_speech_game"
+                "label": "Rule Adj Ing Ed",
+                "file": "rule_adj_ing_ed"
+              },
+              {
+                "label": "Rule Going To",
+                "file": "rule_going_to"
+              },
+              {
+                "label": "Rule If Type 3",
+                "file": "rule_if_type_3"
+              },
+              {
+                "label": "Rule Question Tags",
+                "file": "rule_question_tags"
+              },
+              {
+                "label": "Rule Reported Speech",
+                "file": "rule_reported_speech"
               }
             ],
             "practiceCount": 0

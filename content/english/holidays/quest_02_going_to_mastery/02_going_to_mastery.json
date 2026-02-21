@@ -1,0 +1,34 @@
+{
+  "questId": "ENG-C1-Q2",
+  "title": "Planning the Journey",
+  "engineType": "QUEST_RUNNER",
+  "steps": [
+    {
+      "id": "q1-chat-05",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "text": "Look at the bus! I am <u>thinking</u> of traveling, but Manya is <u>planning</u>. He is using the <b>GOING TO</b> structure! Let's build some sentences."
+      }
+    },
+    {
+      "id": "q1-rule-going-to",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "referencePath": "../vault/rule_going_to.json"
+    },
+    {
+      "id": "q1-game-train",
+      "engineType": "SENTENCE_TRAIN",
+      "data": {
+        "questions": [
+          { "sentence": "I am going to cook rice." },
+          { "sentence": "Polly is going to fly up-country." },
+          { "sentence": "We are going to revise books." },
+          { "sentence": "They are going to board the bus." },
+          { "sentence": "Manya is going to visit relatives." }
+        ]
+      }
+    }
+  ]
+}

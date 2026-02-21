@@ -1,0 +1,28 @@
+{
+  "questId": "ENG-P7-C1-Q2",
+  "title": "Planning the Journey",
+  "engineType": "QUEST_RUNNER",
+  "steps": [
+    {
+      "id": "chat-05",
+      "engineType": "CHAT",
+      "data": { "speaker": "polly", "image": "assets/english/quest_1/holiday_chat_5.png", "text": "Manya is <u>planning</u>. He is using the <b>GOING TO</b> structure!" }
+    },
+    {
+      "id": "ref-rule-future",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "referenceFile": "vault/rule_going_to.json",
+      "data": {}
+    },
+    {
+      "id": "game-02",
+      "engineType": "SENTENCE_TRAIN",
+      "data": {
+        "questions": [
+          { "sentence": "I am going to cook rice." },
+          { "sentence": "Polly is going to fly up-country." }
+        ]
+      }
+    }
+  ]
+}

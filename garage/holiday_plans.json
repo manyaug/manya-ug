@@ -1,0 +1,180 @@
+{
+  "questId": "ENG-P7-C1-Q1",
+  "title": "School Holiday Plans",
+  "engineType": "QUEST_RUNNER",
+  "steps": [
+    {
+      "id": "q1-chat-01",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "image": "assets/english/quest_1/holiday_chat_1.png",
+        "text": "Waffle! My feathers are vibrating because the school term is finally <b>COMMENCING</b> its end. Do you know what that means?"
+      }
+    },
+    {
+      "id": "q1-chat-02",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "image": "assets/english/quest_1/holiday_chat_2.png",
+        "text": "It means <b>VACATION</b>, Manya! I’ve already contacted my <b>PEN-PAL</b> to tell her we are going <b>UP-COUNTRY</b>!"
+      }
+    },
+    {
+      "id": "q1-game-wordsearch",
+      "engineType": "WORDGRID_ENGINE",
+      "data": {
+        "title": "Holiday Vocab Hunt",
+        "size": 8,
+        "words": ["COMMENCE", "VACATION", "RURAL", "URBAN", "PEN-PAL", "FARE"]
+      }
+    },
+    {
+      "id": "q1-dictionary",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "referencePath": "vault/dict_holidays.json"
+    },
+    {
+      "id": "q1-chat-03",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "assets/english/quest_1/holiday_chat_3.png",
+        "text": "Meow! Hold your whiskers. We need to <b>PREPARE</b>. Catch the <b>CHORES</b> (Nouns) and <b>ACTIONS</b> (Verbs)!"
+      }
+    },
+    {
+      "id": "q1-game-harvest",
+      "engineType": "HARVEST_GAME",
+      "data": {
+        "leftCategory": "NOUN",
+        "rightCategory": "VERB",
+        "words": [
+          { "text": "Chore", "type": "NOUN" }, { "text": "Scrub", "type": "VERB" },
+          { "text": "Farm", "type": "NOUN" }, { "text": "Dig", "type": "VERB" },
+          { "text": "Board", "type": "VERB" }, { "text": "Pen-pal", "type": "NOUN" }
+        ]
+      }
+    },
+    {
+      "id": "q1-chat-05",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "text": "Look at the bus! I am <u>thinking</u> of traveling, but Manya is <u>planning</u> using <b>GOING TO</b>!"
+      }
+    },
+    {
+      "id": "q1-rule-going-to",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "referencePath": "vault/rule_going_to.json"
+    },
+    {
+      "id": "q1-game-train",
+      "engineType": "SENTENCE_TRAIN",
+      "data": {
+        "questions": [
+          { "sentence": "I am going to cook rice." },
+          { "sentence": "Polly is going to fly up-country." },
+          { "sentence": "Manya is going to visit relatives." }
+        ]
+      }
+    },
+    {
+      "id": "q1-chat-06",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "assets/english/quest_1/holiday_chat_6.png",
+        "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. Can you guess them?"
+      }
+    },
+    {
+      "id": "q1-rule-tags",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "referencePath": "vault/rule_question_tags.json"
+    },
+    {
+      "id": "q1-game-hangman",
+      "engineType": "HANGMAN_ENGINE",
+      "data": {
+        "words": [
+          { "word": "ISN'T HE", "hint": "Tag for: Manya is going to the village..." },
+          { "word": "WILL WE", "hint": "Tag for: We won't stay in town..." },
+          { "word": "AREN'T I", "hint": "Tag for: I am right..." }
+        ]
+      }
+    },
+    {
+      "id": "q1-chat-07",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "image": "assets/english/quest_1/holiday_chat_7.png",
+        "text": "Wait! Polly is telling everyone what the teacher said. She is using <b>Reported Speech</b>!"
+      }
+    },
+    {
+      "id": "q1-rule-reported",
+      "engineType": "ENGLISH_RULE_MASTER",
+      "referencePath": "vault/rule_reported_speech.json"
+    },
+    {
+      "id": "q1-practice-reported",
+      "engineType": "SYNTAX_ENGINE",
+      "data": {
+        "questions": [
+          { "mode": "TRANSFORM", "prompt": "Direct: 'I am going home.' <br>Reported: He said that he _______ going home.", "expected": "was", "hint": "Am -> Was" },
+          { "mode": "TRANSFORM", "prompt": "Direct: 'We will enjoy.' <br>Reported: They said that they _______ enjoy.", "expected": "would", "hint": "Will -> Would" }
+        ]
+      }
+    },
+    {
+      "id": "q1-chat-08",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "assets/english/quest_1/holiday_chat_8.png",
+        "text": "We are here! The village is so <b>BEAUTIFUL</b>. Let's match the suffixes!"
+      }
+    },
+    {
+      "id": "q1-game-memory",
+      "engineType": "MEMORY_MATCH",
+      "data": {
+        "pairs": [
+          { "item1": "Wonder", "item2": "Wonderful" },
+          { "item1": "Beauty", "item2": "Beautiful" },
+          { "item1": "Success", "item2": "Successful" }
+        ]
+      }
+    },
+    {
+      "id": "q1-chat-final",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "image": "assets/english/quest_1/holiday_chat_9.png",
+        "text": "Waddle! What a journey. Let's check our mastery before we head to the stream!",
+        "choices": [
+          { "text": "Revise Chapter Rules", "targetId": "rule-review-selector" },
+          { "text": "Finish and Get Badge", "action": "COMPLETE" }
+        ]
+      }
+    },
+    {
+      "id": "rule-review-selector",
+      "engineType": "RULE_SELECTOR",
+      "data": {
+        "chapterRules": [
+          { "id": "q1-dictionary", "topicTitle": "The Holiday Dictionary" },
+          { "id": "q1-rule-going-to", "topicTitle": "Future Plans (Going To)" },
+          { "id": "q1-rule-tags", "topicTitle": "Question Tag Traps" },
+          { "id": "q1-rule-reported", "topicTitle": "Reported Speech Tense Shifts" }
+        ]
+      }
+    }
+  ]
+}
