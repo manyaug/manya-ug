@@ -26,7 +26,7 @@ export const renderHome = (mount) => {
                 <div class="world-card math" onclick="ViewManager.show('spiral', null, 'math')">
                     <div class="world-img-box">
                         <div class="glow-aura"></div>
-                        <img src="assets/icons/math_island.png" class="floating-island">
+                        <img src="assets/icons/math_land.png" class="floating-island">
                     </div>
                     <div class="world-info">
                         <h4>Mathematics</h4>

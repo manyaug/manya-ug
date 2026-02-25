@@ -23,7 +23,7 @@ const ENGINE_REGISTRY = {
     "DEEP_READER": "./js/engines/english-engines/deep_reader.js",
     "ENGLISH_RULE_MASTER": "./js/engines/english-engines/english_rule_master.js",
     "CHAT": "./js/engines/english-engines/chat_engine.js",
-    "QUEST_RUNNER": "./js/engines/english-engines/quest_runner.js",
+    "QUEST_RUNNER": "./js/engines/english-engines/eng_quest_manager.js",
     "MORPH_SPEECH": "./js/engines/english-engines/morph_game.js",
     "CHAT-STANDALONE": "./js/engines/chat-engine.js",
     "MCQ_STANDALONE": "./js/engines/mcq-standalone.js"

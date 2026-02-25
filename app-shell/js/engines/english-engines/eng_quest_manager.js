@@ -207,24 +207,38 @@ export const ManyaQuestRunner = {
         btn.innerText = ManyaQuestRunner.state.returnIndex !== null ? "RETURN TO TASK" : label;
         btn.onclick = callback || ManyaQuestRunner.next;
     },
+next: () => {
+    console.log("Manya Engine: Continue clicked.");
+    
+    // 1. Force typing to stop if the user clicks continue early
+    if (ManyaQuestRunner.state.isTyping) {
+        ManyaQuestRunner.state.isTyping = false;
+        // The typeEffect logic will handle the rest
+        return; 
+    }
 
-    next() {
-        if (window.AudioManager) window.AudioManager.playSFX();
-        
-        // If it's a library single-step, just exit when they click continue
-        if (localStorage.getItem('last_idx') === "-1") {
-            this.exit();
-            return;
-        }
+    // 2. Standard navigation
+    if (ManyaQuestRunner.state.currentIndex < ManyaQuestRunner.state.manifest.steps.length - 1) {
+        ManyaQuestRunner.state.currentIndex++;
+        ManyaQuestRunner.launchStep();
+    } else {
+        // 3. Quest Finished
+        ManyaQuestRunner.finishQuest();
+    }
+},
 
-        if (this.state.index < this.state.steps.length - 1) {
-            this.state.index++;
-            this.loadStep();
-        } else {
-            this.finish();
-        }
-    },
-
+finishQuest: () => {
+    ManyaQuestRunner.state.container.innerHTML = `
+        <div class="manya-pwa-shell" style="justify-content: center; align-items: center; background: white;">
+            <div class="bento-card" style="text-align:center; max-width: 400px; padding: 40px; box-shadow:none; border:none;">
+                <div style="font-size:80px; margin-bottom:20px;">🏆</div>
+                <h1 style="margin:0; font-weight:900; color:#1e293b;">Adventure Complete!</h1>
+                <p style="color:#64748b; margin:10px 0 30px 0;">You've mastered this chapter of English!</p>
+                <button class="manya-pill-btn" onclick="location.reload()">BACK TO HUB</button>
+            </div>
+        </div>
+`;
+},
     typeEffect: async (text, elId, hasChoices) => {
         ManyaQuestRunner.state.isTyping = true;
         const el = document.getElementById(elId);
