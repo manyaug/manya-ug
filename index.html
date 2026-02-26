@@ -194,57 +194,30 @@
         else window.addEventListener('load', startAppHandover);
 
         // Global Launchers
-window.launchLibraryStep = async (subject, unit, questFolder, stepFile) => {
+window.launchLibraryStep = async (subject, unit, quest, step) => {
     try {
-        if (window.AudioManager && AudioManager.playSFX) AudioManager.playSFX();
+        const path = `./content/${subject}/${unit}/${quest}/${step}.json`;
+        const res = await fetch(path);
+        const data = await res.json();
 
-        // 1. SMART PATH LOGIC (Anti-Double Vault)
-        const isVaultFile = stepFile.startsWith('rule_') || stepFile.startsWith('dict_');
-        const folderAlreadyHasVault = questFolder.toLowerCase().includes('vault');
-
-        // Only append '/vault' if it's a vault file AND the folder isn't already a vault folder
-        let folderPath = questFolder;
-        if (isVaultFile && !folderAlreadyHasVault) {
-            folderPath = `${questFolder}/vault`;
-        }
-        
-        // Construct the final path and clean up slashes
-        const path = `./content/${subject}/${unit}/${folderPath}/${stepFile}.json`.replace(/\/+/g, '/');
-        
-        console.log("Manya Engine: Attempting to launch ->", path);
-
-        const response = await fetch(path);
-        
-        if (!response.ok) {
-            // If the first guess failed, try without the /vault subfolder as a fallback
-            console.warn("Manya: Path failed, trying fallback...");
-            const fallbackPath = `./content/${subject}/${unit}/${questFolder}/${stepFile}.json`.replace(/\/+/g, '/');
-            const fallbackRes = await fetch(fallbackPath);
-            
-            if (!fallbackRes.ok) throw new Error(`404: ${path}`);
-            
-            var data = await fallbackRes.json();
-        } else {
-            var data = await response.json();
-        }
-
-        // 2. Setup Environment
         localStorage.setItem('last_sub', subject);
         localStorage.setItem('last_idx', -1); 
-        localStorage.setItem('manya_current_quest_dir', `content/${subject}/${unit}/${questFolder}`);
+        localStorage.setItem('last_topic_name', data.title || "Lesson");
 
-        // 3. Launch
-        QuestRunner.start(ViewManager.mount, [data]);
+        // --- THE MASTER FIX ---
+        // If it's an English flow (has steps), play the steps. 
+        // If it's a single Math/Science file, wrap it in an array.
+        const stepsToPlay = data.steps ? data.steps : [data];
 
-        // 4. Transitions
+        // CALL THE MASTER RUNNER (NOT the English one)
+        QuestRunner.start(ViewManager.mount, stepsToPlay);
+        
         ViewManager.mount.classList.add('engine-mode');
         document.body.classList.add('fullscreen-mode');
-
     } catch (err) {
-        console.error("Library Launcher Error:", err);
-        alert(`Resource Error!\nCheck your filename: ${stepFile}\nFolder: ${questFolder}`);
+        console.error(err);
     }
-};
+};       
         </script>
 </body>
 </html>

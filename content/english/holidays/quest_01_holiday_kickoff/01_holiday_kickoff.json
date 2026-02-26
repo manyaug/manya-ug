@@ -27,13 +27,13 @@
       "data": {
         "title": "Holiday Vocab Hunt",
         "size": 8,
-        "words": ["COMMENCE", "VACATION", "RURAL", "PEN-PAL", "FARE", "CHORES"]
+        "words": ["COMMENCE", "RURAL", "PEN-PAL", "FARE", "CHORES"]
       }
     },
     {
       "id": "q1-dictionary",
       "engineType": "ENGLISH_RULE_MASTER",
-      "referencePath": "../vault/dict_holidays.json"
+      "referencePath": "../quest_10_vault/dict_activities.json"
     },
     {
       "id": "q1-chat-03",

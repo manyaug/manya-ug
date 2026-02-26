@@ -17,7 +17,7 @@
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
-      "referencePath": "../vault/dict_activities.json"
+      "referencePath": "../quest_10_vault/dict_activities.json"
     },
     {
       "engineType": "HANGMAN_ENGINE",

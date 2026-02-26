@@ -23,18 +23,6 @@
           { "text": "Finish and Get Badge", "action": "COMPLETE" }
         ]
       }
-    },
-    {
-        "id": "rule-review-selector-2",
-        "engineType": "RULE_SELECTOR",
-        "data": {
-            "chapterRules": [
-                { "id": "ref-1", "topicTitle": "Activity Dictionary", "referencePath": "vault/dict_activities.json" },
-                { "id": "ref-2", "topicTitle": "Adjectives", "referencePath": "vault/rule_adj_ing_ed.json" },
-                { "id": "ref-3", "topicTitle": "If Type 3", "referencePath": "vault/rule_if_type_3.json" },
-                { "id": "ref-4", "topicTitle": "Active/Passive", "referencePath": "vault/rule_active_passive.json" }
-            ]
-        }
     }
   ]
 }

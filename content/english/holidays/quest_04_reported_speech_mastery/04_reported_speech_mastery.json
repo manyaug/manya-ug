@@ -15,7 +15,7 @@
     {
       "id": "q1-rule-reported",
       "engineType": "ENGLISH_RULE_MASTER",
-      "referencePath": "../vault/rule_reported_speech.json"
+      "referencePath": "../quest_10_vault/rule_reported_speech.json"
     },
     {
       "id": "q1-practice-reported",
@@ -61,18 +61,6 @@
         "choices": [
           { "text": "Revise Chapter Rules", "targetId": "rule-review-selector" },
           { "text": "Finish and Get Badge", "action": "COMPLETE" }
-        ]
-      }
-    },
-    {
-      "id": "rule-review-selector",
-      "engineType": "RULE_SELECTOR",
-      "data": {
-        "chapterRules": [
-          { "id": "q1-dictionary", "topicTitle": "The Holiday Dictionary" },
-          { "id": "q1-rule-going-to", "topicTitle": "Future Plans (Going To)" },
-          { "id": "q1-rule-tags", "topicTitle": "Question Tag Traps" },
-          { "id": "q1-rule-reported", "topicTitle": "Reported Speech Tense Shifts" }
         ]
       }
     }

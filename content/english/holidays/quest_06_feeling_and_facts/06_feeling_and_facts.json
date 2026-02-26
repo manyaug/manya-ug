@@ -9,7 +9,7 @@
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
-      "referencePath": "../vault/rule_adj_ing_ed.json"
+      "referencePath": "../quest_10_vault/rule_adj_ing_ed.json"
     },
     {
       "engineType": "HARVEST_GAME",

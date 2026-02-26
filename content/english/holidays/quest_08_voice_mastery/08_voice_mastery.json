@@ -9,7 +9,7 @@
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
-      "referencePath": "../vault/rule_active_passive.json"
+      "referencePath": "../quest_10_vault/rule_active_passive.json"
     },
     {
       "engineType": "JUNGLE_MAZE",

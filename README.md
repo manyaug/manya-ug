@@ -86,7 +86,7 @@ graph TD
 
 ### The Vault Reference System
 To prevent duplicating grammar rules across hundreds of JSONs, English uses a **Vault Reference System**.
-If the JSON contains a `referencePath`, the Runner pauses, fetches the external JSON from the `/vault/`, and injects it seamlessly into the story.
+If the JSON contains a `referencePath`, the Runner pauses, fetches the external JSON from the `/quest_10_vault/`, and injects it seamlessly into the story.
 
 **Example English JSON Manifest:**
 ```json
@@ -102,7 +102,7 @@ If the JSON contains a `referencePath`, the Runner pauses, fetches the external 
     {
       "id": "q1-dictionary",
       "engineType": "ENGLISH_RULE_MASTER",
-      "referencePath": "../vault/dict_holidays.json" 
+      "referencePath": "../quest_10_vault/dict_holidays.json" 
     }
   ]
 }
@@ -239,7 +239,7 @@ To maximize student retention, the next development phase includes rolling out t
 │   ├── math/                  # Set Theory, Subsets. Includes Excel DB.
 │   ├── science/               # Human Body, 3D Hotspot mappings.
 │   ├── sst/                   # Geography coords, Time calculations.
-│   └── english/               # Narratives. Includes /vault/ for rules.
+│   └── english/               # Narratives. Includes /quest_10_vault/ for rules.
 │
 └── assets/                    # STATIC MEDIA
     ├── icons/                 # Map tiles, avatars, UI graphics
