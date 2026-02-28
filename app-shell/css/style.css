@@ -350,80 +350,6 @@ canvas {
     opacity: 0.7;
 }
 
-   /* --- FIXED HUB LAYOUT --- */
-.manya-hub { 
-    padding: 16px; 
-    padding-bottom: 100px; /* Space for bottom nav */
-}
-
-.daily-goal-card {
-    background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-    border-radius: 24px; 
-    padding: 20px; 
-    color: white;
-    position: relative; 
-    min-height: 160px;
-    margin-bottom: 24px;
-    margin: 5%;
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
-    overflow: hidden; /* Clips the mascot if it's too big */
-}
-
-.daily-goal-card h2 { margin: 0 0 8px 0; font-size: 18px; max-width: 60%; }
-.daily-goal-card p { margin: 0 0 16px 0; font-size: 13px; opacity: 0.9; max-width: 60%; color: white; }
-
-
-.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.icon-btn { background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 12px; font-weight: 900; cursor: pointer; }
-
-/* SUBJECT TABS */
-.subject-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-.s-tab {
-    width: 50px; height: 50px; border-radius: 16px;
-    background: #f8fafc; border: 2px solid #e2e8f0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; cursor: pointer; transition: 0.2s;
-}
-.s-tab.active {
-    background: white;
-    border-color: var(--theme);
-    box-shadow: 0 8px 0 var(--theme);
-    transform: translateY(-4px);
-}
-
-.subject-title { text-align: center; margin: 5px 0 0; font-weight: bolder;font-size: 16px; text-transform: uppercase; letter-spacing: 1px; padding-left: 80px; }
-
-.bg-pattern {
-    position: absolute; inset: 0;
-    background-image: radial-gradient(var(--theme-color) 1px, transparent 1px);
-    background-size: 20px 20px;
-    opacity: 0.1;
-    z-index: 0;
-}
-
-
-.nav-back-btn {
-    background: white; border: 1px solid #e2e8f0; 
-    border-radius: 12px; width: 40px; height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    color: #64748b; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.subject-capsule {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--theme-bg); border: 2px solid var(--theme-color);
-    padding: 6px 16px; border-radius: 20px;
-}
-.s-name { font-weight: 800; color: var(--theme-accent); text-transform: uppercase; font-size: 12px; }
-
-.currency-capsule { font-weight: 800; font-size: 13px; color: #475569; }
-
-/* Progress Bar in Header */
-.level-progress-bar { display: flex; flex-direction: column; gap: 4px; }
-.lp-text { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
-.lp-track { height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
-.lp-fill { height: 100%; background: var(--theme-color); border-radius: 10px; }
-
 
 /* 3D LEVEL BUTTONS */
 .level-btn {
@@ -507,258 +433,6 @@ canvas {
     z-index: 5;
     pointer-events: none; /* User can click through it */
 }
-
-/* --- SUBJECT GRID FIX --- */
-.subject-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 12px; 
-}
-
-.world-card {
-    background: white; border-radius: 20px; padding: 12px;
-    border: 1px solid #f1f5f9; text-align: center;
-}
-
-.world-img-box {
-    position: relative; height: 100px; 
-    display: flex; align-items: center; justify-content: center;
-}
-
-.world-img-box img { width: 90px; height: auto; z-index: 2; }
-
-.glow-aura {
-    position: absolute; width: 60px; height: 60px;
-    border-radius: 50%; filter: blur(25px); opacity: 0.5;
-}
-
-.math .glow-aura { background: #db2777; }
-.science .glow-aura { background: #22c55e; }
-.sst .glow-aura { background: #0ea5e9; }
-.english .glow-aura { background: #7c3aed; }
-
-/* FLOATING ANIMATION */
-.floating-island {
-    width: 90%;
-    z-index: 2;
-    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
-    animation: floatIsland 4s ease-in-out infinite;
-}
-
-@keyframes floatIsland {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(2deg); }
-}
-
-/* CARD ENHANCEMENTS */
-.world-card {
-    background: white;
-    border-radius: 28px;
-    padding: 15px;
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
-    text-align: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.world-card:active {
-    transform: scale(0.92);
-}
-
-.world-card h4 {
-    font-size: 14px;
-    font-weight: 800;
-    color: #1e293b;
-    margin-bottom: 5px;
-}
-
-/* PROGRESS UI */
-.prog-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-
-.prog-text {
-    font-size: 10px;
-    font-weight: 900;
-    color: #94a3b8;
-}
-/* Container to put bar and text side-by-side */
-.prog-flex {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Space between bar and percentage */
-    margin-top: 8px;
-}
-
-/* Ensure the bar takes up the remaining space */
-.prog-bar {
-    flex: 1; 
-    height: 8px;
-    background: #f1f5f9;
-    border-radius: 10px;
-    overflow: hidden;
-    /* Subtle inner shadow for depth */
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-}
-
-/* Styling the percentage text */
-.prog-number {
-    font-size: 11px;
-    font-weight: 800;
-    color: #64748b; /* Sleek slate gray */
-    min-width: 30px; /* Prevents layout jump if % changes */
-    text-align: right;
-}
-
-/* Optional: Match text color to the subject theme on active */
-.math .prog-number { color: #db2777; }
-.science .prog-number { color: #059669; }
-.sst .prog-number { color: #0ea5e9; }
-.english .prog-number { color: #7c3aed; }
-
-/* DAILY PATH BUTTON PULSE */
-.start-flow-btn {
-    animation: pulseBtn 2s infinite;
-}
-
-@keyframes pulseBtn {
-    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-}
-
-    .manya-intro {
-        text-align: center;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 80vh; /* Centers everything vertically */
-    }
-
-    /* THE FIX: Controlled Image Sizing */
-    .intro-image-container {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .manya-mascot {
-        /* This keeps the duck at a reasonable size regardless of screen height */
-        max-height: 250px; 
-        width: auto;
-        display: block;
-        margin: 0 auto;
-        
-        /* The "Action": Continuous floating */
-        animation: float 4s ease-in-out infinite;
-        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    /* Hover effect: Wiggle/Scale */
-    .manya-mascot:hover {
-        transform: scale(1.1) rotate(3deg);
-        cursor: pointer;
-        filter: drop-shadow(0 15px 20px rgba(124, 58, 237, 0.3)); /* Purple glow */
-    }
-
-    /* Keyframes for the floating motion */
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-15px); }
-        100% { transform: translateY(0px); }
-    }
-
-    /* Text Styling */
-    h1 {
-        font-size: 1.8rem;
-        margin: 10px 0;
-        color: #1e293b;
-    }
-
-    p {
-        color: #64748b;
-        margin-bottom: 20px;
-    }
-
-    .icon-box {
-        width: 40px;
-        height: 40px;
-        background: #7c3aed; /* Purple match */
-        color: white;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-
-    .instruction-pill {
-        background: #f1f5f9;
-        padding: 10px 20px;
-        border-radius: 50px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #475569;
-    }
-   
-
-
-
-/* animation for floation of islands */
-/* THE FLOATING ANIMATION */
-@keyframes floatingIsland {
-    0% {
-        transform: translateY(0px) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-8px) rotate(1.5deg); /* Bob up and tilt slightly */
-    }
-    100% {
-        transform: translateY(0px) rotate(0deg);
-    }
-}
-
-/* Apply it to the images inside the boxes */
-.world-img-box img {
-    width: 85px;
-    height: auto;
-    z-index: 2;
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); /* Soft shadow that stays under the island */
-    animation: floatingIsland 4s ease-in-out infinite;
-    transition: transform 0.3s ease; /* For the hover effect below */
-}
-
-/* HOVER EFFECT: Scale up when the student touches the card */
-.world-card:hover .world-img-box img {
-    transform: scale(1.1);
-    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15));
-}
-
-
-
-/* LIBRARY HERO CARD */
-.library-hero-card {
-    background: #1e293b;
-    color: white;
-    padding: 20px;
-    border-radius: 24px;
-    margin: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3);
-}
-.library-hero-card:active { transform: scale(0.98); }
-
-.lib-content h2 { margin: 5px 0; font-size: 20px; }
-.lib-content p { font-size: 12px; opacity: 0.7; margin: 0; max-width: 200px; }
-.lib-icon { font-size: 40px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; }
 
 /* TOPIC ROW STYLES */
 .topic-row {
@@ -1334,3 +1008,127 @@ canvas {
 .tap-zone { flex: 1; cursor: pointer; }
 
 .win-pop { position: absolute; inset: 0; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
+
+
+/* --- GLOBAL THEME UPGRADE --- */
+body {
+    background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    font-family: 'Nunito', sans-serif;
+}
+
+.manya-hub {
+    padding: 20px;
+    padding-bottom: 120px;
+}
+
+/* --- THE "COOL" LIBRARY CARD FIX --- */
+.library-hero-card {
+    /* Mesh Gradient: Purple to Pink to Deep Blue */
+    background: linear-gradient(135deg, #7c3aed 0%, #db2777 50%, #1e1b4b 100%);
+    border-radius: 32px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    /* Massive soft shadow for depth */
+    box-shadow: 0 20px 40px rgba(219, 39, 119, 0.3);
+    border: 2px solid rgba(255,255,255,0.1);
+    margin-bottom: 35px;
+}
+
+/* Glass highlight inside the card */
+.library-hero-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.lib-content h2 { 
+    font-size: 26px; font-weight: 900; margin: 5px 0; 
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.lib-btn-glass {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white; padding: 10px 18px;
+    border-radius: 15px; font-weight: 800; font-size: 12px;
+    margin-top: 15px; cursor: pointer;
+}
+
+/* --- BIGGER GLOWING ISLANDS --- */
+.subject-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; /* More breathing room */
+}
+
+.world-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    border-radius: 35px; /* Softer corners */
+    padding: 20px;
+    text-align: center;
+    border: 1px solid white;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.island-box {
+    height: 140px; /* Taller area for bigger islands */
+    display: flex; align-items: center; justify-content: center;
+}
+
+.floating-island {
+    width: 110px; /* Increased size */
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+    z-index: 5;
+}
+
+/* THE GLOW ENGINE */
+.glow-aura {
+    position: absolute; width: 100px; height: 100px;
+    border-radius: 50%; filter: blur(35px); opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+/* Subject Specific Glow Colors */
+.math { box-shadow: 0 15px 35px rgba(219, 39, 119, 0.15); } /* Pink Glow */
+.math .glow-aura { background: #db2777; }
+.math .fill { background: #db2777; box-shadow: 0 0 10px #db2777; }
+
+.science { box-shadow: 0 15px 35px rgba(22, 163, 74, 0.15); }
+.science .glow-aura { background: #22c55e; }
+.science .fill { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+
+.world-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    background: white;
+}
+
+.world-card:hover .glow-aura {
+    opacity: 0.8;
+}
+
+/* --- PREMIUM PROGRESS BARS --- */
+.prog-bar-container {
+    background: #e2e8f0; height: 10px; /* Thicker */
+    border-radius: 20px; margin-top: 15px; position: relative;
+    overflow: hidden;
+}
+
+.prog-bar-container .fill {
+    height: 100%; border-radius: 20px;
+    transition: width 1s ease-in-out;
+}
+
+.prog-label {
+    display: flex; justify-content: space-between;
+    font-weight: 900; font-size: 11px; margin-top: 5px;
+    color: #475569;
+}
