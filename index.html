@@ -15,223 +15,14 @@
     <link rel="stylesheet" href="./app-shell/css/style.css">
     <link rel="stylesheet" href="./app-shell/css/spiral.css">
     <link rel="stylesheet" href="./app-shell/css/boarding.css">
+    <link rel="stylesheet" href="./app-shell/css/home.css">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
     
     <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
 
     <!-- WORLD-CLASS "INFINITE FUR" SPLASH STYLES -->
-    <style>
-      /* --- THE HUD CONTAINER --- */
-.app-header-master {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    padding: calc(15px + env(safe-area-inset-top)) 20px 15px 20px;
-    background: rgba(255, 255, 255, 0.75); /* High-end transparency */
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    z-index: 2000;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.header-shell {
-    max-width: 500px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-}
-
-/* 1. THE AVATAR: Circular and Dimensional */
-.hud-avatar {
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.avatar-ring {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: white;
-    padding: 2px;
-    box-shadow: 
-        0 4px 10px rgba(0,0,0,0.1),
-        inset 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #f1f5f9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.avatar-ring img {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.online-indicator {
-    position: absolute;
-    bottom: 2px; right: 2px;
-    width: 11px; height: 11px;
-    background: #22c55e;
-    border: 2px solid white;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* 2. THE LOGO: Clean, Spaced, and Intentional */
-.hud-logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 18px;
-    font-weight: 900;
-    color: #1e293b;
-    letter-spacing: 1.5px; /* Modern kerning */
-    pointer-events: none;
-}
-
-.logo-dot { color: #e2e8f0; margin: 0 1px; }
-.logo-p7 { color: #db2777; font-weight: 700; opacity: 0.9; }
-
-/* 3. THE STAT PILL: Tactile 3D Shape */
-.hud-stats {
-    display: flex;
-    align-items: center;
-}
-
-.stat-pill-diamond {
-    background: white;
-    padding: 6px 14px 6px 10px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border: 1px solid #f1f5f9;
-    /* Soft glowing shadow instead of hard gray */
-    box-shadow: 
-        0 4px 12px rgba(219, 39, 119, 0.08),
-        0 1px 2px rgba(0,0,0,0.05);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.diamond-sparkle {
-    font-size: 16px;
-    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));
-    animation: sparkle 3s infinite;
-}
-
-.stat-pill-diamond .count {
-    font-size: 14px;
-    font-weight: 900;
-    color: #334155;
-    font-variant-numeric: tabular-nums; /* Prevents numbers jumping */
-}
-
-/* INTERACTIONS */
-.hud-avatar:active, .stat-pill-diamond:active {
-    transform: scale(0.92);
-}
-
-@keyframes sparkle {
-    0%, 100% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.1); filter: brightness(1.3) saturate(1.2); }
-}
-/* Active Press Effect */
-.user-profile-trigger:active, .currency-pill-elite:active {
-    transform: scale(0.92);
-}
-/* Transition for the Hub Content when header is sticky */
-.manya-hub {
-    margin-top: 5px;
-}
-        /* =========================================
-   WORLD-CLASS SPLASH OVERLAY (Anti-Logo Fix)
-   ========================================= */
-#manya-splash-overlay {
-    position: fixed; inset: 0;
-    background: #941cb3; 
-    z-index: 9999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: all;
-    overflow: hidden; /* CRITICAL: Clips the zoomed-in logos */
-}
-
-/* THE CROP ENGINE */
-.full-screen-mascot {
-    position: absolute; inset: 0;
-    width: 100vw; height: 100vh;
-    z-index: 1;
-    overflow: hidden;
-}
-
-#splash-vid {
-    width: 100%; height: 100%;
-    object-fit: cover; 
-    /* THE FIX: Scale up by 15% to push corner logos off-screen */
-    transform: scale(1.15); 
-    transform-origin: center; /* Keeps the eyes centered while zooming */
-    filter: brightness(1.05); /* Slight pop */
-}
-
-/* VIGNETTE: Adds a soft dark shadow around the screen edges 
-   to make the "infinite fur" feel deeper and high-end. */
-#manya-splash-overlay::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(circle at center, transparent 40%, rgba(15, 23, 42, 0.4) 100%);
-    z-index: 2;
-    pointer-events: none;
-}
-
-.splash-brand {
-    position: relative; 
-    z-index: 10; /* Sits above the vignette */
-    margin-top: 260px;
-    text-align: center;
-    font-family: 'Nunito', sans-serif;
-}
-
-.brand-glow {
-    color: white; font-size: 34px; font-weight: 900; margin: 0;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.6);
-}
-
-        .brand-sub {
-            color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 4px; margin: 10px 0;
-        }
-
-        .splash-loader {
-            width: 150px; height: 4px; background: rgba(255,255,255,0.2);
-            border-radius: 10px; margin: 20px auto; overflow: hidden;
-        }
-
-        .splash-loader .fill {
-            width: 0%; height: 100%;
-            background: white;
-            animation: splashLoad 3.5s linear forwards;
-        }
-
-        /* HIDE UI BARS UNTIL APP IS LIVE */
-        .app-header, .bottom-nav { 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.5s ease; 
-        }
-        body.app-live .app-header, body.app-live .bottom-nav { 
-            opacity: 1; 
-            pointer-events: all; 
-        }
-
-        @keyframes brandEnter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes splashLoad { from { width: 0%; } to { width: 100%; } }
-    </style>
+   
 </head>
 <body class="fullscreen-mode">
 
@@ -255,7 +46,7 @@
         <!-- 1. USER IDENTITY (Floating Circle) -->
         <div class="hud-avatar" onclick="ViewManager.show('profile')">
             <div class="avatar-ring">
-                <img src="assets/icons/mascot_head.png" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzdjM2FlZDtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2RiMjc3NztzdG9wLW9wYWNpdHk6MSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjIwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TTwvdGV4dD48L3N2Zz4='">
+                <img src="assets/icons/manya_icon.png" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzdjM2FlZDtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2RiMjc3NztzdG9wLW9wYWNpdHk6MSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjIwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TTwvdGV4dD48L3N2Zz4='">
             </div>
             <div class="online-indicator"></div>
         </div>
@@ -349,20 +140,31 @@
     else window.addEventListener('load', startAppHandover);
 
     // Global Launchers (Preserved)
+    // Global Launchers (Preserved)
     window.launchLibraryStep = async (subject, unit, quest, step) => {
         try {
-            const path = `./content/${subject}/${unit}/${quest}/${step}.json`;
+            // FIX: Ensure path starts with content/
+            const path = `content/${subject}/${unit}/${quest}/${step}.json`;
+            console.log("Fetching step:", path); // Debug log
+            
             const res = await fetch(path);
+            if (!res.ok) throw new Error(`HTTP ${res.status} - File not found: ${path}`);
+            
             const data = await res.json();
             localStorage.setItem('last_sub', subject);
             localStorage.setItem('last_idx', -1); 
             localStorage.setItem('last_topic_name', data.title || "Lesson");
+            
             const stepsToPlay = data.steps ? data.steps : [data];
             QuestRunner.start(ViewManager.mount, stepsToPlay);
+            
             ViewManager.mount.classList.add('engine-mode');
             document.body.classList.add('fullscreen-mode');
-        } catch (err) { console.error(err); }
-    };       
+        } catch (err) { 
+            console.error("Launch Error:", err);
+            alert("Could not load this lesson. Please check the file path.");
+        }
+    };            
 </script>
 </body>
 </html>
