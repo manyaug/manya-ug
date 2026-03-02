@@ -19,7 +19,7 @@ export const ManyaRouter = {
         // --- 2. SCIENCE ENGINES (Based on your tree structure) ---
         '3D_SKELETON': './js/engines/3D-skeleton-engine.js',
         'PROCEDURAL_CANVAS': './js/engines/procedural-canvas-engine.js',
-        'IMAGE_HOTSPOTS': './js/engines/image-hotspots-engine.js',
+        '2D_HOTSPOTS': './js/engines/image-hotspots-engine.js',
         'GALLERY_STUDY': './js/engines/gallery-study-engine.js',
         'READER_STUDY': './js/engines/reader-study-engine.js',
         'MCQ_STANDALONE': './js/engines/mcq-standalone.js',

@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "labeling",
   "variantTitle": "Spine: Anatomy & Bone Counts",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/the_human_spinal_column.glb",

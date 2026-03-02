@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "labeling",
   "variantTitle": "Arm Anatomy Challenge",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",

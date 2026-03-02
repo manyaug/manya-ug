@@ -38,7 +38,7 @@ export const renderHome = (mount) => {
                     <button class="lib-action-btn">OPEN VAULT →</button>
                 </div>
                 <div class="lib-mascot-glow">
-                    <span style="font-size:32px; font-weight:900; color:#DB2777;">M</span>
+                    <img src="assets/icons/manya_icon.png" class="lib-mascot">
                 </div>
             </div>
 

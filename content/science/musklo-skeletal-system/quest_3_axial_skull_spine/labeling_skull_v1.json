@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "labeling",
   "variantTitle": "Skull Anatomy Quiz",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",

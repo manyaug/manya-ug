@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "labeling",
   "variantTitle": "Rib Cage: Bone Identification",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_4_axial_rib_cage/rib-cage-heart.glb",

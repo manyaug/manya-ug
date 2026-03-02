@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "labeling",
   "variantTitle": "Full Skeleton Master Challenge",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",

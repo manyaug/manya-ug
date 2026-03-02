@@ -1,4 +1,5 @@
 {
+  "engineType": "3D_SKELETON",
   "mode": "labeling",
   "variantTitle": "Leg Bones: Primary Structure",
   "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/Lower_limb.glb",
