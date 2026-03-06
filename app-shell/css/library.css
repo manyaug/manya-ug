@@ -1,20 +1,19 @@
 /* ==========================================================================
    LIBRARY VIEW ELITE (VIBRANT & SEAMLESS)
    ========================================================================== */
+/* FIX: Ensures Library View respects the floating Top HUD */
 .library-view {
     width: 100%;
-    padding-bottom: 30px;
+    /* Pushes content down so the Syllabus Vault title is visible */
+    padding-top: 10px; 
 }
 
-/* --- THE HEADER & TABS --- */
 .library-header-elite {
-    background: var(--bg-cream); /* Solid background to hide cards sliding under */
-    padding: 15px 20px 15px 20px;
-    position: sticky; 
-    top: -1px; /* CRITICAL FIX: Locks exactly to the top of the scroll view */
-    z-index: 900; /* CRITICAL FIX: Forces it to stay above the scrolling cards */
-    margin: 0;
-    width: 100%;
+    background: #FDFBF7; /* Matches the cream background */
+    padding: 15px 25px;
+    position: sticky;
+    top: -1px; /* Locks to the top of the scroll area */
+    z-index: 1000; /* Stays above the scrolling cards */
 }
 
 .lib-title { 
