@@ -1,240 +1,269 @@
 /* ==========================================================================
-   MANYA HOME VIEW: VIBRANT KIDTOPIA (2-COLUMN GRID)
+   MANYA HOME MASTER: VIBRANT KIDTOPIA (v12.0)
    ========================================================================== */
 
-/* Main Container spacing - Keeps exact center alignment */
+/* 1. GLOBAL WRAPPER & BACKGROUND */
 .manya-hub {
     width: 100%;
-    max-width: 450px; /* Constrains it perfectly to mobile width */
+    max-width: 450px;
     margin: 0 auto;
-    padding: 10px 0 120px 0; /* Space for the bottom nav */
-}
-
-/* --- THE NEW VIBRANT LIBRARY VAULT CARD --- */
-.library-hero-card-elite {
-    margin: 15px 20px 30px 20px;
-    background: linear-gradient(135deg, #7C3AED, #DB2777); /* Vibrant Purple to Pink Gradient */
-    border-radius: 32px; 
-    padding: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: none;
-    box-shadow: 0 15px 35px rgba(219, 39, 119, 0.25); /* Glowing shadow */
-    cursor: pointer;
+    padding: 10px 0;
     position: relative;
-    overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Soft Cream Canvas background makes neon colors pop */
+    background: #FDFBF7; 
 }
 
-/* Adds a subtle shiny orb effect inside the card */
-.library-hero-card-elite::after {
-    content: '';
-    position: absolute;
-    top: -50px; right: -20px;
-    width: 150px; height: 150px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    filter: blur(20px);
+/* DECORATIVE AMBIENT ORBS (Mesh Depth) */
+.bg-orb { 
+    position: absolute; 
+    width: 300px; height: 300px; 
+    border-radius: 50%; 
+    filter: blur(100px); 
+    z-index: -1; 
+    opacity: 0.12; 
     pointer-events: none;
 }
+.orb-1 { top: 5%; right: -100px; background: #DB2777; }
+.orb-2 { bottom: 15%; left: -100px; background: #7C3AED; }
 
-.library-hero-card-elite:active { transform: scale(0.96); }
-
-.lib-content { position: relative; z-index: 2; }
-
-.lib-content h2 { 
-    font-size: 24px; 
-    font-weight: 900; 
-    margin: 10px 0 5px; 
-    color: #FFFFFF; 
-}
-
-.lib-content p { 
-    font-size: 13px; 
-    color: rgba(255, 255, 255, 0.9); 
-    font-weight: 600; 
-    line-height: 1.4; 
-    max-width: 180px; 
-    margin: 0;
-}
-
-.lib-badge {
-    background: rgba(255, 255, 255, 0.25); /* Glass effect */
-    color: #FFFFFF;
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.lib-action-btn {
-    background: #FFFFFF;
-    color: #DB2777; /* Pops against the white */
-    border: none;
-    padding: 12px 24px;
-    border-radius: 15px;
-    font-weight: 900;
-    font-size: 12px;
-    margin-top: 15px;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    text-transform: uppercase;
-}
-
-/* The floating M Icon */
-.lib-mascot-glow {
-    width: 64px; height: 64px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 3px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 2;
-}
-
-/* --- SECTION HEADERS (Matches Screenshot perfectly) --- */
+/* 2. SECTION HEADERS */
 .section-header-flex {
     display: flex; 
     justify-content: space-between; 
     align-items: center;
     padding: 0 25px; 
-    margin: 30px 0 20px;
+    margin: 30px 0 15px;
 }
-
 .section-title { 
     font-size: 1.25rem; 
     font-weight: 900; 
-    margin: 0; 
-    color: #1E293B;
+    color: #1E293B; 
+    letter-spacing: -0.5px;
 }
-
-.new-content-pill { 
+.live-now-badge {
     font-size: 10px; 
     font-weight: 900; 
-    background: #DB2777; /* Solid Pink */
-    color: #FFFFFF; 
-    padding: 6px 14px; 
+    background: #DB2777; 
+    color: white; 
+    padding: 6px 12px; 
     border-radius: 50px; 
-    text-transform: uppercase;
     box-shadow: 0 4px 10px rgba(219, 39, 119, 0.3);
 }
 
-/* ==========================================================================
-   THE 2-COLUMN VIBRANT GRID (ISLAND CARDS)
-   ========================================================================== */
+/* 3. THE 2-COLUMN SUBJECT GRID */
 .subject-grid-elite {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* FORCES 2 COLUMNS */
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 45px 18px; /* High vertical gap for the island breakout */
     padding: 0 20px;
+    margin-top: 35px; /* Spacing for the first row's islands */
 }
 
 .world-card-elite {
     background: white;
-    border-radius: 32px;
-    padding: 20px 15px; /* Tighter padding for grid */
-    box-shadow: 0 15px 35px rgba(226, 232, 240, 0.8); /* Deep, soft 3D shadow */
-    border: 2px solid #ffffff;
+    border-radius: 35px;
+    box-shadow: 0 12px 35px rgba(30, 41, 59, 0.05);
+    border: 1.5px solid #F1EFE9;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    position: relative;
+    height: 190px;
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.world-card-elite:active {
-    transform: scale(0.95);
-}
+.world-card-elite:active { transform: scale(0.95); }
 
-/* Island 3D Art Stage */
+/* --- ISLAND BREAKOUT MATH --- */
 .island-stage { 
-    height: 110px; /* Scaled down slightly to fit the grid */
-    width: 100%;
+    height: 100px;
+    width: 100%; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
     position: relative; 
-    margin-bottom: 10px;
+    margin-top: -35px; /* POPS above the card top */
+    z-index: 2;
 }
 
-/* Make the island itself look 3D and floating */
 .floating-island { 
-    width: 105px; 
-    z-index: 2; 
-    animation: floatIsland 4s ease-in-out infinite; 
-    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.15)); /* Adds massive depth */
+    width: 110px; 
+    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.1));
 }
 
-/* HUGE INTENSE GLOWS BEHIND ISLANDS */
+/* SUBJECT GLOWS */
 .glow-aura {
     position: absolute; 
-    width: 90px; height: 90px;
+    width: 85px; height: 85px;
     border-radius: 50%; 
-    filter: blur(30px); 
-    opacity: 0.5; /* Cranked up the opacity for vibrance */
+    filter: blur(35px); 
+    opacity: 0.5;
 }
 .math .glow-aura { background: #DB2777; }
 .science .glow-aura { background: #10B981; }
-.sst .glow-aura { background: #3B82F6; } /* Vibrant Blue */
+.sst .glow-aura { background: #3B82F6; }
 .english .glow-aura { background: #7C3AED; }
 
-/* Card Typography */
-.world-card-elite h4 {
-    font-size: 1.05rem;
-    font-weight: 900;
-    margin: 5px 0 15px 0;
-    color: #1E293B;
-}
-
-/* --- THE CHUNKY PROGRESS BARS (Restored from Screenshot) --- */
-.mini-progress-track {
-    width: 100%;
-    height: 10px; /* Chunky and round */
-    background: #F1F5F9;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 8px;
-    display: block; /* Forced to show */
-}
-
-.mini-progress-track .fill {
-    height: 100%;
-    border-radius: 10px;
-    transition: width 1s ease;
-}
-
-/* Specific Progress Bar Colors */
-.math .mini-progress-track .fill { background: #DB2777; }
-.science .mini-progress-track .fill { background: #10B981; }
-.sst .mini-progress-track .fill { background: #3B82F6; }
-.english .mini-progress-track .fill { background: #7C3AED; }
-
-/* Progress Text Below Bar */
-.prog-stats {
-    width: 100%;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: space-between;
-}
-
-.prog-stats span:first-child { color: #64748B; } /* "PROGRESS" label */
-
-/* Color matched percentages */
-.math .prog-stats .count { color: #DB2777; }
-.science .prog-stats .count { color: #10B981; }
-.sst .prog-stats .count { color: #3B82F6; }
-.english .prog-stats .count { color: #7C3AED; }
+/* STAGGERED FLOATING PHYSICS */
+.math .floating-island { animation: floatIsland 4.2s infinite ease-in-out; }
+.science .floating-island { animation: floatIsland 5.1s infinite ease-in-out; }
+.sst .floating-island { animation: floatIsland 4.6s infinite ease-in-out; }
+.english .floating-island { animation: floatIsland 5.8s infinite ease-in-out; }
 
 @keyframes floatIsland {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-12px); }
+}
+
+/* TYPOGRAPHY (BOTTOM LEFT) */
+.card-footer-info {
+    padding: 0 18px 22px 18px;
+    margin-top: auto;
+    text-align: left;
+}
+
+.world-card-elite h4 { 
+    font-size: 1.1rem; 
+    font-weight: 900; 
+    color: #1E293B; 
+    margin: 0;
+}
+
+.prog-stats { 
+    font-size: 10px; 
+    font-weight: 900; 
+    color: #DB2777; /* Manya Pink */
+    margin-top: 2px;
+}
+
+/* CHUNKY EDGE-ANCHORED PROGRESS BARS */
+.mini-progress-track {
+    width: 100%; 
+    height: 10px; 
+    background: #F1F5F9;
+    border-radius: 0 0 35px 35px; /* Matches card corners */
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.mini-progress-track .fill { 
+    height: 100%; 
+    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.math .fill { background: #DB2777; }
+.science .fill { background: #10B981; }
+.sst .fill { background: #3B82F6; }
+.english .fill { background: #7C3AED; }
+
+
+/* 4. THE ASTRO-LIBRARY (ELECTRIC PURPLE STATION) */
+.astro-library-outer {
+    position: relative;
+    margin: 60px 20px 20px 20px;
+    z-index: 50;
+}
+
+/* THE NEON AURA GLOW (Behind the card) */
+.astro-library-outer::after {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    background: #7C3AED; /* Electric Purple */
+    filter: blur(45px);
+    opacity: 0.35;
+    z-index: -1;
+    border-radius: 45px;
+    animation: auraBreath 4s infinite ease-in-out;
+}
+
+.astro-library-card {
+    background: #1E1B4B; /* Deep Space Indigo */
+    border-radius: 35px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.astro-library-card:active { transform: scale(0.96); }
+
+/* Internal Animated Mesh Gradient */
+.astro-mesh {
+    position: absolute; inset: 0;
+    background: radial-gradient(at top left, #4F46E5 0%, transparent 60%),
+                radial-gradient(at bottom right, #DB2777 0%, transparent 60%);
+    opacity: 0.6;
+}
+
+/* FULLY VISIBLE MASCOT */
+.lib-mascot-full {
+    position: absolute;
+    right: -10px;
+    bottom: -15px;
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    z-index: 10;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    animation: mascotBob 5s infinite ease-in-out;
+}
+
+.astro-content-wrapper { 
+    display: flex; 
+    align-items: center; 
+    width: 100%; 
+    padding: 0 30px; 
+    position: relative; 
+    z-index: 20; 
+}
+
+.astro-text-box h2 { 
+    color: white; 
+    font-size: 1.45rem; 
+    font-weight: 900; 
+    margin: 4px 0; 
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.astro-text-box p { 
+    color: rgba(255,255,255,0.7); 
+    font-size: 11px; 
+    font-weight: 800; 
+    margin: 0; 
+    letter-spacing: 0.5px;
+}
+
+.astro-badge {
+    background: rgba(255,255,255,0.2); 
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; 
+    padding: 4px 12px; 
+    border-radius: 50px; 
+    font-size: 8px; 
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+/* 5. ANIMATIONS */
+@keyframes auraBreath {
+    0%, 100% { opacity: 0.25; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(1.04); }
+}
+
+@keyframes mascotBob {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* 6. BOTTOM SPACING */
+.manya-hub::after {
+    content: '';
+    display: block;
+    height: 140px; /* Space for the floating dock */
 }

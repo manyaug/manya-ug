@@ -19,24 +19,24 @@ export const ManyaRouter = {
         // --- 2. SCIENCE ENGINES (Based on your tree structure) ---
         '3D_SKELETON': './js/engines/3D-skeleton-engine.js',
         'PROCEDURAL_CANVAS': './js/engines/procedural-canvas-engine.js',
-        '2D_HOTSPOTS': './js/engines/image-hotspots-engine.js',
+        '2D_HOTSPOT': './js/engines/image-hotspots-engine.js',
         'GALLERY_STUDY': './js/engines/gallery-study-engine.js',
         'READER_STUDY': './js/engines/reader-study-engine.js',
         'MCQ_STANDALONE': './js/engines/mcq-standalone.js',
 
         // --- 3. SST ENGINES ---
-        'UNIVERSAL_GLOBE': './js/engines/sst-engines/universal-globe-engine.js',
+        'GLOBE_TIME_ENGINE': './js/engines/sst-engines/universal-globe-engine.js',
 
         // --- 4. ENGLISH ENGINES ---
-        'CHAT_ENGINE': './js/engines/english-engines/chat_engine.js',
-        'RULE_MASTER': './js/engines/english-engines/english_rule_master.js',
+        'CHAT': './js/engines/english-engines/chat_engine.js',
+        'ENGLISH_RULE_MASTER': './js/engines/english-engines/english_rule_master.js',
         'SYNTAX_ARCHITECT': './js/engines/english-engines/syntax-architect.js',
         'HARVEST_GAME': './js/engines/english-engines/game-harvest-engine.js',
         'MEMORY_MATCH': './js/engines/english-engines/game-memory-match.js',
         'GRAMMAR_MAZE': './js/engines/english-engines/game-grammar-maze.js',
         'HANGMAN_GAME': './js/engines/english-engines/game-hangman.js',
         'SENTENCE_TRAIN': './js/engines/english-engines/game-sentence-train.js',
-        'WORDGRID_GAME': './js/engines/english-engines/game-wordgrid.js',
+        'WORDGRID_ENGINE': './js/engines/english-engines/game-wordgrid.js',
         'MORPH_GAME': './js/engines/english-engines/morph_game.js',
         'DEEP_READER': './js/engines/english-engines/deep_reader.js',
         'FUNCTIONAL_COMPOSER': './js/engines/english-engines/functional_composer.js'
@@ -45,47 +45,60 @@ export const ManyaRouter = {
     /**
      * Dynamically imports and RENDERS the engine
      */
+    /**
+     * MANYA ROUTER v3.0 - STRICT MODE ROUTING
+     */
     async loadInline(engineType, data, container) {
         const path = this.registry[engineType];
 
         if (!path) {
             console.error(`🚨 Manya Router Error: Engine ${engineType} not registered.`);
-            container.innerHTML = `<div style="padding:20px; color:red; font-weight:bold;">Error: Engine ${engineType} not found in Registry.</div>`;
+            container.innerHTML = `<div style="padding:20px; color:red;">Error: Engine ${engineType} not found.</div>`;
             return;
         }
 
         try {
-            // 1. Import
             const module = await import(path);
             const Engine = module.default || Object.values(module)[0];
 
-            if (!Engine) throw new Error(`Module loaded from ${path} but no object was exported.`);
+            if (!Engine) throw new Error(`Module at ${path} is empty.`);
 
-            // 2. SMART AUTO-RENDER (RELAXED LOGIC)
-            // We check if the function exists on the engine, regardless of JSON "mode" tags.
+            // --- THE STRICT LOGIC START ---
             
-            if (typeof Engine.renderLabeling === 'function') {
-                console.log(`🚀 Launching ${engineType} (Labeling/Interactive)`);
-                Engine.renderLabeling(container, data);
-            } 
-            else if (typeof Engine.renderStudy === 'function') {
-                console.log(`📖 Launching ${engineType} (Study/Reading)`);
+            // 1. Define exactly what constitutes a "Quiz/Labeling" task
+            const isQuiz = (
+                data.mode === 'labeling' || 
+                data.mode === 'quiz' || 
+                !!data.wordBank || 
+                !!data.interaction
+            );
+
+            // 2. Define exactly what constitutes a "Study/Simulation" task
+            const isStudy = (data.mode === 'study');
+
+            // 3. Route based on the findings
+            if (isStudy && typeof Engine.renderStudy === 'function') {
+                console.log(`📖 [ROUTER] Route to: renderStudy (${engineType})`);
                 Engine.renderStudy(container, data);
             } 
-            else if (typeof Engine.render === 'function') {
-                Engine.render(container, data);
-            } 
-            else if (typeof Engine.init === 'function') {
-                Engine.init(container, data);
+            else if (isQuiz && typeof Engine.renderLabeling === 'function') {
+                console.log(`🚀 [ROUTER] Route to: renderLabeling (${engineType})`);
+                Engine.renderLabeling(container, data);
             } 
             else {
-                console.error("❌ Engine loaded but has no known render method (renderLabeling, renderStudy, render, or init):", Engine);
-                container.innerHTML = `<div style="padding:20px;">Technical Error: Engine ${engineType} has no render method.</div>`;
+                // Fallback: If the JSON is missing a mode, try to find ANY working method
+                console.warn(`⚠️ [ROUTER] No strict mode match for ${engineType}. Using fallback.`);
+                if (typeof Engine.renderStudy === 'function') {
+                    Engine.renderStudy(container, data);
+                } else if (typeof Engine.renderLabeling === 'function') {
+                    Engine.renderLabeling(container, data);
+                }
             }
+            // --- THE STRICT LOGIC END ---
 
         } catch (err) {
-            console.error(`🚨 Failed to load/render engine at ${path}`, err);
-            container.innerHTML = `<div style="padding:20px; color:red;">Failed to load lesson module.<br><small>${err.message}</small></div>`;
+            console.error(`🚨 Failed to render engine at ${path}`, err);
+            container.innerHTML = `<div style="padding:20px; color:red;">Failed to load module.</div>`;
         }
     }
 };

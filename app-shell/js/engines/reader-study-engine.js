@@ -1,137 +1,224 @@
 /**
- * Manya General Study Engine (v6.0 - Quest-Ready)
+ * MANYA GENERAL STUDY ENGINE (v7.0 - THE UNABRIDGED MASTER)
+ * --------------------------------------------------------
+ * FEATURES:
+ * - HANDHELD CARD: Centered layout that fits inside the app frame.
+ * - QUEST AWARENESS: Automatically hides internal UI if QuestRunner is present.
+ * - MULTI-LAYOUT: Supports Bullets, Comparison Tables, Tips, and Flashcards.
+ * - THEME: Manya Pink/Purple accents.
  */
+
 export const GeneralStudyEngine = {
     state: {
         data: null,
         currentCard: 0,
-        theme: '#6366f1'
+        theme: '#7C3AED' // Default Manya Purple
     },
 
+    // --- 1. PREMIUM STUDY STYLES (ISOLATED) ---
     injectStyles: () => {
-        if (document.getElementById('manya-study-styles')) return;
+        if (document.getElementById('manya-gen-study-styles')) return;
         const style = document.createElement('style');
-        style.id = 'manya-study-styles';
+        style.id = 'manya-gen-study-styles';
         style.innerHTML = `
-            :root { --t-color: #6366f1; --t-dark: #4338ca; --t-light: rgba(99, 102, 241, 0.1); }
-            
-            .study-root { 
-                position: absolute; inset: 0; 
-                display: flex; flex-direction: column; 
-                font-family: 'Plus Jakarta Sans', sans-serif; 
-                overflow: hidden; 
+            /* ROOT: Centers the card within view-mount */
+            .manya-gen-study-actor { 
+                width: 100%; height: 100%; 
+                display: flex; justify-content: center; align-items: flex-start; 
+                background: #FDFBF7; padding: 20px 15px; box-sizing: border-box; 
+                font-family: 'Nunito', sans-serif;
+                overflow-y: auto;
             }
 
-            /* HIDE HEADER/NAV IF IN QUEST MODE */
-            .study-root.in-quest .study-header,
-            .study-root.in-quest .study-nav { display: none !important; }
-
-            .study-content { 
-                flex: 1; overflow-y: auto; padding: 20px; 
-                display: flex; flex-direction: column; gap: 20px; 
-                scroll-behavior: smooth;
+            /* THE HANDHELD CARD */
+            .study-card-embedded {
+                width: 100%; max-width: 420px;
+                background: white; border-radius: 35px;
+                box-shadow: 0 15px 40px rgba(30, 41, 59, 0.05);
+                border: 2px solid #F1EFE9;
+                display: flex; flex-direction: column;
+                overflow: hidden; padding: 25px;
+                animation: studyCardPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
 
-            .study-section-card {
-                background: white; border-radius: 24px; padding: 22px;
-                border: 1px solid #f1f5f9; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            @keyframes studyCardPop {
+                from { opacity: 0; transform: translateY(30px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
             }
-            .study-section-title { 
-                font-size: 0.9rem; font-weight: 800; color: var(--t-color); 
-                margin-bottom: 15px; border-left: 4px solid var(--t-color); padding-left: 12px;
-                text-transform: uppercase;
+
+            /* CONTENT ELEMENTS */
+            .study-section { margin-bottom: 25px; }
+            .study-section:last-child { margin-bottom: 0; }
+
+            .study-title-pill { 
+                font-size: 0.85rem; font-weight: 900; color: #DB2777; 
+                margin-bottom: 12px; border-left: 4px solid #DB2777; padding-left: 12px;
+                text-transform: uppercase; letter-spacing: 1px;
             }
+
             .study-list { padding: 0; margin: 0; list-style: none; }
             .study-list li { 
-                margin-bottom: 12px; line-height: 1.6; font-size: 0.95rem; color: #475569;
-                position: relative; padding-left: 20px;
+                margin-bottom: 14px; line-height: 1.6; font-size: 1rem; color: #334155;
+                position: relative; padding-left: 22px; font-weight: 600;
             }
             .study-list li::before {
-                content: "•"; position: absolute; left: 0; color: var(--t-color); font-weight: 900;
+                content: "•"; position: absolute; left: 0; color: #7C3AED; font-weight: 900; font-size: 1.4rem; line-height: 1;
             }
 
-            .study-table-wrapper { border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
-            .study-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-            .study-table th { background: #1e293b; color: white; padding: 12px; text-align: left; }
-            .study-table td { padding: 12px; border-top: 1px solid #f1f5f9; color: #475569; }
+            /* TABLES (Comparisons) */
+            .study-table-container { border-radius: 20px; overflow: hidden; border: 2px solid #F1F5F9; margin: 10px 0; }
+            .study-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+            .study-table th { background: #1E293B; color: white; padding: 14px; text-align: left; font-weight: 800; }
+            .study-table td { padding: 12px 14px; border-top: 1.5px solid #F1F5F9; color: #475569; font-weight: 600; }
+            .study-table tr:nth-child(even) { background: #F8FAFC; }
 
-            .study-box-tip { 
-                background: #fffbeb; border: 1px solid #fde68a; 
-                padding: 16px; border-radius: 20px; color: #92400e; font-size: 0.85rem;
+            /* BOXED TIPS */
+            .study-exam-tip { 
+                background: #FFFBEB; border: 2px solid #FEF3C7; 
+                padding: 18px; border-radius: 24px; color: #92400E; 
+                font-size: 0.9rem; line-height: 1.5; font-weight: 700;
+                display: flex; gap: 12px; align-items: flex-start;
             }
+            .tip-icon { font-size: 1.2rem; }
 
-            /* Flashcards (Teller Mode) */
-            .study-flash-card { 
-                background: white; border-radius: 32px; padding: 40px 25px; 
-                border: 2px solid #f1f5f9; width: 100%; text-align: center;
-                box-shadow: 0 15px 30px rgba(0,0,0,0.05);
-                animation: slideUp 0.4s ease-out;
+            /* FLASHCARDS */
+            .study-flash { 
+                padding: 40px 20px; text-align: center; display: flex; flex-direction: column; gap: 15px;
             }
-            .study-card-term { font-size: 1.8rem; font-weight: 800; color: #1e293b; margin-bottom: 10px; }
-            .study-card-fact { font-size: 1rem; color: #64748b; line-height: 1.5; }
+            .flash-term { font-size: 1.8rem; font-weight: 900; color: #1E293B; }
+            .flash-fact { font-size: 1.1rem; color: #64748B; line-height: 1.5; font-weight: 600; }
+            .flash-mnemonic { margin-top: 15px; padding: 12px; background: #F3E8FF; border-radius: 15px; color: #7C3AED; font-size: 14px; font-weight: 800; font-style: italic; }
+
+            /* INTERNAL NAV (Only shown outside of Quest Runner) */
+            .internal-nav { margin-top: 20px; }
+            .btn-full { width: 100%; padding: 16px; border-radius: 18px; border: none; background: #7C3AED; color: white; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 0 #5B21B6; }
         `;
         document.head.appendChild(style);
     },
 
-    // Standard Render (Called by Router)
-    renderLabeling: (container, data) => {
+    // --- 2. RENDER LOGIC ---
+    renderStudy: (container, data) => {
         GeneralStudyEngine.state.data = data;
         GeneralStudyEngine.state.currentCard = 0;
         GeneralStudyEngine.injectStyles();
         
-        const baseColor = data.themeColor || '#7c3aed';
-        document.documentElement.style.setProperty('--t-color', baseColor);
+        // Detect context: If container is inside the app mount, we hide internal header/nav
+        const isQuestMode = !!document.querySelector('.quest-runner-shell');
         
-        // Detect if we are inside the Quest Runner
-        const isInsideQuest = !!container.closest('.quest-runner-shell');
-        
-        GeneralStudyEngine.updateUI(container, isInsideQuest);
+        GeneralStudyEngine.updateUI(container, isQuestMode);
     },
 
-    // Added for compatibility with study nodes in library
-    renderStudy: (container, data) => GeneralStudyEngine.renderLabeling(container, data),
+    // Labeling alias (Standard for Manya Routers)
+    renderLabeling: (container, data) => GeneralStudyEngine.renderStudy(container, data),
 
-    updateUI: (container, inQuest = false) => {
+    // --- 3. UI BUILDER ---
+    updateUI: (container, isQuestMode = false) => {
         const { data, currentCard } = GeneralStudyEngine.state;
-        let contentHtml = '';
+        let innerHtml = '';
 
+        // Layout A: Structured Sections
         if (data.sections) {
-            contentHtml = data.sections.map(sec => {
+            innerHtml = data.sections.map(sec => {
                 if (sec.type === 'bullets') {
-                    return `<div class="study-section-card"><div class="study-section-title">${sec.title}</div><ul class="study-list">${sec.points.map(p => `<li>${p}</li>`).join('')}</ul></div>`;
+                    return `
+                        <div class="study-section">
+                            <div class="study-title-pill">${sec.title}</div>
+                            <ul class="study-list">
+                                ${sec.points.map(p => `<li>${p}</li>`).join('')}
+                            </ul>
+                        </div>`;
                 }
                 if (sec.type === 'comparison') {
-                    return `<div class="study-section-card"><div class="study-section-title">${sec.title}</div><div class="study-table-wrapper"><table class="study-table"><thead><tr><th>Feature</th><th>${sec.itemA}</th><th>${sec.itemB}</th></tr></thead><tbody>${sec.rows.map(r => `<tr><td><b>${r.feature}</b></td><td>${r.valA}</td><td>${r.valB}</td></tr>`).join('')}</tbody></table></div></div>`;
+                    return `
+                        <div class="study-section">
+                            <div class="study-title-pill">${sec.title}</div>
+                            <div class="study-table-container">
+                                <table class="study-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Feature</th>
+                                            <th>${sec.itemA}</th>
+                                            <th>${sec.itemB}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${sec.rows.map(r => `
+                                            <tr>
+                                                <td><b>${r.feature}</b></td>
+                                                <td>${r.valA}</td>
+                                                <td>${r.valB}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>`;
                 }
-                if (sec.type === 'warning') {
-                    return `<div class="study-box-tip"><b>💡 EXAM TIP:</b><br/>${sec.text}</div>`;
+                if (sec.type === 'warning' || sec.type === 'tip') {
+                    return `
+                        <div class="study-section">
+                            <div class="study-exam-tip">
+                                <span class="tip-icon">💡</span>
+                                <div><b>PLE EXAM TIP:</b><br>${sec.text}</div>
+                            </div>
+                        </div>`;
                 }
             }).join('');
-        } else if (data.cards) {
+        } 
+        
+        // Layout B: Flashcards
+        else if (data.cards) {
             const card = data.cards[currentCard];
-            contentHtml = `
-                <div class="study-flash-card">
-                    <div class="study-card-term">${card.term}</div>
-                    <div class="study-card-fact">${card.fact}</div>
-                    <div style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:15px; font-style:italic; font-size:14px; color:var(--t-color);">
-                        Mnemonic: ${card.mnemonic}
-                    </div>
+            innerHtml = `
+                <div class="study-flash">
+                    <div class="flash-term">${card.term}</div>
+                    <div class="flash-fact">${card.fact}</div>
+                    ${card.mnemonic ? `<div class="flash-mnemonic">Mnemonic: ${card.mnemonic}</div>` : ''}
                 </div>
             `;
         }
 
+        // --- FINAL RENDER ASSEMBLY ---
         container.innerHTML = `
-            <div class="study-root ${inQuest ? 'in-quest' : ''}">
-                <div class="study-header">
-                    <div class="study-title-box">
-                        <h1>${data.variantTitle || 'Topic Recap'}</h1>
+            <div class="manya-gen-study-actor">
+                <div class="study-card-embedded">
+                    
+                    <!-- Internal Header: Only show if NOT in a Quest -->
+                    ${!isQuestMode ? `
+                        <div style="margin-bottom:20px; text-align:center;">
+                            <h2 style="margin:0; font-weight:900; color:#1E293B;">${data.topic || 'Review'}</h2>
+                        </div>
+                    ` : ''}
+
+                    <div class="card-content-scroll">
+                        ${innerHtml}
                     </div>
-                </div>
-                <div class="study-content">${contentHtml}</div>
-                <div class="study-nav">
-                    <button class="btn-study btn-study-next" style="width:100%; grid-column: span 2;" onclick="QuestRunner.next()">CONTINUE QUEST</button>
+
+                    <!-- Internal Nav: Only show if NOT in a Quest -->
+                    ${(!isQuestMode && data.cards) ? `
+                        <div class="internal-nav">
+                            <button class="btn-full" onclick="GeneralStudyEngine.nextCard()">NEXT CARD</button>
+                        </div>
+                    ` : ''}
+
                 </div>
             </div>
         `;
+    },
+
+    // --- 4. ENGINE HELPERS ---
+    nextCard: () => {
+        const s = GeneralStudyEngine.state;
+        if (s.data.cards && s.currentCard < s.data.cards.length - 1) {
+            s.currentCard++;
+            // Re-render into the current mount point
+            const mount = document.querySelector('.manya-gen-study-actor').parentElement;
+            GeneralStudyEngine.updateUI(mount, !!document.querySelector('.quest-runner-shell'));
+        } else {
+            if (window.QuestRunner) window.QuestRunner.next();
+        }
     }
 };
+
+// Global Registration
+window.GeneralStudyEngine = GeneralStudyEngine;

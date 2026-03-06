@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="./app-shell/css/spiral.css">
     <link rel="stylesheet" href="./app-shell/css/boarding.css">
     <link rel="stylesheet" href="./app-shell/css/home.css">
+    <link rel="stylesheet" href="./app-shell/css/engines.css">
+    <link rel="stylesheet" href="./app-shell/css/library.css">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
     
@@ -41,22 +43,22 @@
         </div>
     </div>
 
-  <header class="app-header-master">
+<header class="app-header-master">
     <div class="header-shell">
-        <!-- 1. USER IDENTITY (Floating Circle) -->
-        <div class="hud-avatar" onclick="ViewManager.show('profile')">
-            <div class="avatar-ring">
-                <img src="assets/icons/manya_icon.png" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzdjM2FlZDtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2RiMjc3NztzdG9wLW9wYWNpdHk6MSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjIwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TTwvdGV4dD48L3N2Zz4='">
+        <!-- THE 3D PEAKING MASCOT -->
+        <div class="hud-avatar-peek" onclick="ViewManager.show('profile')">
+            <div class="peek-circle">
+                <img src="assets/icons/manya_icon.png" class="mascot-img">
             </div>
             <div class="online-indicator"></div>
         </div>
 
-        <!-- 2. NATIVE LOGO (Centered & Weighted) -->
+        <!-- THE DEAD-CENTER LOGO -->
         <div class="hud-logo">
-            MANYA<span class="logo-dot">.</span><span class="logo-p7">P7</span>
+            MANYA<span class="logo-p7">.P7</span>
         </div>
 
-        <!-- 3. CURRENCY HUB (Glass Pill) -->
+        <!-- THE TACTILE CURRENCY HUB -->
         <div class="hud-stats">
             <div class="stat-pill-diamond">
                 <span class="diamond-sparkle">💎</span>
@@ -94,7 +96,7 @@
     import { AudioManager } from './app-shell/js/audio-manager.js';
 
     // --- CONFIGURATION ---
-    const DEV_MODE = true; // Set to TRUE to force Onboarding on every refresh
+    const DEV_MODE = false; // Set to TRUE to force Onboarding on every refresh
     // ---------------------
 
     window.ViewManager = ViewManager;
