@@ -1,0 +1,64 @@
+/* MANYA BADGE VAULT - WORLD CLASS V20 */
+.achievements-page { padding: 10px 20px 140px; background: #FDFBF7; }
+
+/* COLLECTION PROGRESS */
+.collection-progress-card {
+    background: #1E1B4B; border-radius: 30px; padding: 25px;
+    margin-bottom: 35px; color: white; border: 2px solid #4338CA;
+    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.3);
+}
+.progress-meta { display: flex; justify-content: space-between; font-weight: 900; font-size: 12px; margin-bottom: 10px; }
+
+/* CATEGORY HEADERS */
+.badge-category-title {
+    font-size: 11px; font-weight: 900; color: #94A3B8;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin: 30px 0 15px 10px; display: block;
+}
+
+/* THE BADGE GRID */
+.badge-grid-elite {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+
+/* BADGE CARD BASE */
+.badge-card-pro {
+    background: white; border-radius: 24px; padding: 15px 10px;
+    text-align: center; border: 2.5px solid #F1F5F9;
+    position: relative; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+/* LOCKED STATE */
+.badge-locked { opacity: 0.4; background: #F8FAFC; border-style: dashed; }
+.badge-locked .badge-icon-elite { filter: grayscale(1); opacity: 0.3; }
+
+/* UNLOCKED SHINE EFFECT */
+.badge-unlocked {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+.badge-unlocked::after {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.6) 50%, transparent 55%);
+    animation: badge-shine 4s infinite;
+}
+
+@keyframes badge-shine {
+    0% { transform: translate(-30%, -30%) rotate(0deg); }
+    20%, 100% { transform: translate(30%, 30%) rotate(0deg); }
+}
+
+/* BADGE TIERS (Glows) */
+.tier-gold { border-color: #FBBF24; background: #FFFBEB; }
+.tier-silver { border-color: #94A3B8; background: #F8FAFC; }
+.tier-diamond { border-color: #6366F1; background: #EEF2FF; }
+
+.badge-icon-elite { font-size: 32px; margin-bottom: 8px; display: block; }
+.badge-name-elite { font-size: 10px; font-weight: 900; color: #1E293B; line-height: 1.2; }
+
+/* CATEGORY COLORS */
+.cat-math { border-bottom: 4px solid #6366F1; }
+.cat-science { border-bottom: 4px solid #10B981; }
+.cat-sst { border-bottom: 4px solid #F59E0B; }
+.cat-english { border-bottom: 4px solid #DB2777; }

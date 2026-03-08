@@ -1,0 +1,70 @@
+/* MANYA ELITE MEMBERSHIP - WORLD CLASS UI */
+.membership-page { 
+    padding: 10px 20px 14px; /* Offset for HUD */
+    background: #FDFBF7; 
+}
+
+/* BACK BUTTON POSITIONING */
+.view-header-back {
+    display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
+}
+.manya-back-btn {
+    width: 45px; height: 45px; border-radius: 15px;
+    background: white; border: 2.5px solid #F1F5F9;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--manya-purple); cursor: pointer;
+    box-shadow: 0 4px 0 #F1F5F9;
+}
+
+/* TIER CARDS */
+.tier-container { display: flex; flex-direction: column; gap: 15px; }
+
+.tier-card {
+    background: white; border-radius: 35px; padding: 25px;
+    border: 3px solid #F1F5F9; position: relative;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+/* THE ELITE GLOW (Manya Purple) */
+.tier-card.selected {
+    border-color: #7c3aed;
+    background: #F5F3FF;
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+}
+
+.best-value-ribbon {
+    position: absolute; top: -12px; right: 25px;
+    background: #db2777; color: white; padding: 6px 14px;
+    border-radius: 100px; font-size: 10px; font-weight: 900;
+    box-shadow: 0 5px 15px rgba(219, 39, 119, 0.4);
+}
+
+.tier-label { font-size: 11px; font-weight: 900; color: #94A3B8; letter-spacing: 1px; }
+.tier-price { font-size: 32px; font-weight: 900; color: #1E293B; margin: 5px 0; }
+.tier-price span { font-size: 14px; color: #94A3B8; }
+
+/* PAYMENT PROVIDERS */
+.payment-methods-box {
+    margin-top: 40px; padding: 30px 20px;
+    background: #1E1B4B; border-radius: 40px;
+    box-shadow: 0 25px 50px rgba(30, 27, 75, 0.3);
+}
+
+.provider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+
+.provider-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px; padding: 20px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    cursor: pointer; transition: 0.2s;
+}
+
+.provider-card.mtn { border-bottom: 5px solid #FFCC00; }
+.provider-card.airtel { border-bottom: 5px solid #FF0000; }
+.provider-card:active { transform: translateY(4px); background: rgba(255, 255, 255, 0.1); }
+
+.momo-img { width: 50px; height: 50px; border-radius: 12px; }
+.provider-name { color: white; font-weight: 900; font-size: 12px; }

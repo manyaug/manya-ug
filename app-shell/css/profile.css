@@ -1,0 +1,72 @@
+/* MANYA ELITE DASHBOARD V17 */
+.profile-page { padding: 10px 20px 14px; background: #FDFBF7; }
+
+/* 1. HERO HEADER */
+.hero-banner { text-align: center; margin-bottom: 30px; }
+.hero-banner h2 { font-size: 26px; font-weight: 900; color: #1E293B; margin: 10px 0 2px; }
+.hero-banner p { font-size: 13px; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
+
+/* 2. ACTIVITY CHART (Bento Card Style) */
+.activity-card {
+    background: white; border-radius: 32px; padding: 25px;
+    border: 1.5px solid #F1F5F9; margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+
+.bar-chart-container {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    height: 120px; margin-top: 30px; padding: 0 5px;
+}
+
+.chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
+
+.bar-fill {
+    width: 24px; border-radius: 12px; background: #F1F5F9;
+    position: relative; transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bar-fill.active {
+    background: linear-gradient(to top, #7c3aed, #db2777);
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* Tooltip Bubble */
+.bar-tooltip {
+    position: absolute; top: -35px; left: 50%; transform: translateX(-50%);
+    background: #1E293B; color: white; font-size: 9px; font-weight: 900;
+    padding: 4px 8px; border-radius: 8px; white-space: nowrap;
+}
+.bar-tooltip::after {
+    content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid #1E293B;
+}
+
+.bar-day { font-size: 10px; font-weight: 900; color: #94A3B8; text-transform: uppercase; }
+
+/* 3. SUBJECT STRIPED BARS */
+.subject-bar-card {
+    background: white; border-radius: 28px; padding: 20px;
+    border: 1.5px solid #F1F5F9; margin-bottom: 12px;
+}
+
+.sub-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.sub-title { display: flex; align-items: center; gap: 10px; font-weight: 900; color: #1E293B; }
+.sub-percent { font-weight: 900; font-size: 18px; color: #1E293B; }
+
+.striped-track { height: 14px; background: #F1F5F9; border-radius: 50px; overflow: hidden; }
+.striped-fill {
+    height: 100%; border-radius: 50px; transition: width 1.5s ease;
+    background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 4px, transparent 0, transparent 10px);
+}
+
+/* 4. SERVICE LIST */
+.service-item {
+    background: white; border-radius: 24px; padding: 15px 20px;
+    display: flex; align-items: center; border: 1.5px solid #F1F5F9; margin-bottom: 10px;
+    cursor: pointer; transition: 0.2s;
+}
+.service-item:active { transform: scale(0.97); }
+.service-icon-box { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
+.service-info { flex: 1; }
+.service-title { display: block; font-weight: 900; font-size: 15px; color: #1E293B; }
+.service-sub { display: block; font-size: 11px; color: #94A3B8; font-weight: 700; }

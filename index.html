@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">    <!-- THE HOME SCREEN ICON -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="apple-touch-icon" href="assets/icons/pose_1_cut.png">
-
-    <!-- THE SYSTEM SPLASH (Fuzzy Purple Face) -->
-    <!-- This shows ONLY while the app is loading, before your video starts -->
     <link rel="apple-touch-startup-image" href="assets/icons/splash-1.png">
     <title>Manya Prep Hub</title>
     
@@ -17,24 +14,26 @@
     <link rel="stylesheet" href="./app-shell/css/home.css">
     <link rel="stylesheet" href="./app-shell/css/engines.css">
     <link rel="stylesheet" href="./app-shell/css/library.css">
+    <link rel="stylesheet" href="./app-shell/css/profile.css">
+    <link rel="stylesheet" href="./app-shell/css/ranking.css">
+    <link rel="stylesheet" href="./app-shell/css/achievement.css">
+    <link rel="stylesheet" href="./app-shell/css/membership.css">
+    <link rel="stylesheet" href="./app-shell/css/notify.css">
+    <link rel="stylesheet" href="./app-shell/css/setting.css">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
     
     <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
-
-    <!-- WORLD-CLASS "INFINITE FUR" SPLASH STYLES -->
-   
 </head>
 <body class="fullscreen-mode">
 
     <!-- 1. SPLASH OVERLAY -->
     <div id="manya-splash-overlay">
         <div class="full-screen-mascot">
-            <video  id="splash-vid" autoplay muted playsinline loop preload="auto"  poster="assets/icons/splash-1.png"> 
-            <source src="assets/shared/videos/full-screen-splash.mp4" type="video/mp4">
+            <video id="splash-vid" autoplay muted playsinline loop preload="auto" poster="assets/icons/splash-1.png"> 
+                <source src="assets/shared/videos/full-screen-splash.mp4" type="video/mp4">
             </video>
         </div>
-        
         <div class="splash-brand">
             <h1 class="brand-glow">Manya Prep Hub</h1>
             <p class="brand-sub">Elite PLE Preparation</p>
@@ -42,39 +41,51 @@
         </div>
     </div>
 
-<header class="app-header-master">
-    <div class="header-shell">
-        <!-- THE 3D PEAKING MASCOT -->
-        <div class="hud-avatar-peek" onclick="ViewManager.show('profile')">
-            <div class="peek-circle">
-                <img src="assets/icons/manya_icon.png" class="mascot-img">
+    <!-- 2. DYNAMIC APP HEADER -->
+    <header class="app-header-master">
+        <div class="header-shell">
+            <!-- THE DYNAMIC PEAKING AVATAR -->
+            <div class="hud-avatar-peek" onclick="ViewManager.show('profile')">
+                <div class="peek-circle">
+                    <!-- This image src is controlled by JS below -->
+                    <img id="hud-user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Manya" class="mascot-img">
+                </div>
+                <div class="online-indicator"></div>
             </div>
-            <div class="online-indicator"></div>
-        </div>
 
-        <!-- THE DEAD-CENTER LOGO -->
-        <div class="hud-logo">
-            MANYA<span class="logo-p7">.P7</span>
-        </div>
-
-        <!-- THE TACTILE CURRENCY HUB -->
-        <div class="hud-stats">
-            <div class="stat-pill-diamond">
-                <span class="diamond-sparkle">💎</span>
-                <span class="count">120</span>
+            <!-- THE DYNAMIC NICKNAME -->
+            <div class="hud-logo" id="hud-nickname-display">
+                MANYA<span class="logo-p7">.P7</span>
             </div>
-        </div>
+
+            <div class="hud-stats">
+                    <div class="stat-pill-diamond" onclick="ViewManager.show('achievements')" 
+                    style="cursor: pointer; transition: transform 0.1s;" 
+                    onmousedown="this.style.transform='scale(0.95)'" 
+                    onmouseup="this.style.transform='scale(1)'">
+                    <span class="diamond-sparkle">💎</span>    
+                    <span class="count" id="hud-diamond-count">150</span>
+                
     </div>
-</header>
+        </div>
+    </header>
 
     <!-- 3. CONTENT MOUNT -->
     <div id="view-mount"></div>
 
     <!-- 4. BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
+         <div class="nav-indicator"></div>
         <div class="nav-item active" onclick="ViewManager.show('home', this)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="ViewManager.show('library', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3a3 3 0 0 0-3 3v1a3 3 0 0 0 0 6v1a3 3 0 0 0 6 0"/>
+            <path d="M15 3a3 3 0 0 1 3 3v1a3 3 0 0 1 0 6v1a3 3 0 0 1-6 0"/>
+            </svg>            
+            <span>Library</span>
         </div>
         <div class="nav-item" onclick="ViewManager.show('rankings', this)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
@@ -86,17 +97,16 @@
         </div>
     </nav>
 
-    <!-- 5. APP LOGIC ENGINE -->
 <script type="module">
     import { ViewManager } from './app-shell/view-manager.js';
     import { ManyaRouter } from './app-shell/router.js';
     import { QuestFactory } from './app-shell/quest-factory.js';
     import { QuestRunner } from './app-shell/quest-runner.js';
     import { AudioManager } from './app-shell/js/audio-manager.js';
+    import { ManyaDB } from './app-shell/manya-db.js';
 
-    // --- CONFIGURATION ---
-    const DEV_MODE = false; // Set to TRUE to force Onboarding on every refresh
-    // ---------------------
+    // DEV_MODE: Set to true to force onboarding for testing
+    const DEV_MODE = true; 
 
     window.ViewManager = ViewManager;
     window.ManyaRouter = ManyaRouter;
@@ -104,73 +114,58 @@
     window.QuestFactory = QuestFactory;
     window.QuestRunner = QuestRunner;
 
-    const splashOverlay = document.getElementById('manya-splash-overlay');
-    const splashVid = document.getElementById('splash-vid');
+    // HUD REFRESHER
+    const refreshHUD = async () => {
+        const user = await ManyaDB.getCurrentUser();
+        if (!user || !user.onboarded) return;
 
-    const startAppHandover = () => {
+        document.getElementById('hud-user-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`;
+        document.getElementById('hud-nickname-display').innerHTML = `${user.nickname.toUpperCase()}<span class="logo-p7">.P7</span>`;
+        document.getElementById('hud-diamond-count').innerText = user.diamonds;
+    };
+
+    // Listen for database changes
+    window.addEventListener('db_updated', refreshHUD);
+
+    // APP LAUNCH SEQUENCER
+    const startApp = async () => {
+        const splashVid = document.getElementById('splash-vid');
+        const splashOverlay = document.getElementById('manya-splash-overlay');
         splashVid.play().catch(() => {});
 
+        // THE DATABASE CHECK (SQL-STYLE)
+        const user = await ManyaDB.getCurrentUser();
+
         setTimeout(() => {
-            try {
-                const userProfile = localStorage.getItem('manya_user_profile');
-
-                // Logic Gate: If DEV_MODE is on OR no profile exists, show onboarding
-                if (DEV_MODE || !userProfile) {
-                    console.log("Manya: Entering Onboarding (Dev Mode Active)");
-                    ViewManager.mount = document.getElementById('view-mount');
-                    ViewManager.show('onboarding'); 
-                } else {
-                    console.log("Manya: Welcome back! Starting Hub...");
-                    ViewManager.init();
-                }
-
-                document.body.classList.add('app-live');
-            } catch (e) { 
-                console.error("App Init Crash:", e); 
+            if (user && user.onboarded) {
+                console.log("Manya DB: Record found. Pass to Hub.");
+                refreshHUD();
                 ViewManager.init(); 
+            } else {
+                console.log("Manya DB: No user. Redirect to Onboarding.");
+                ViewManager.mount = document.getElementById('view-mount');
+                ViewManager.show('onboarding');
             }
 
+            document.body.classList.add('app-live');
             splashOverlay.style.opacity = '0';
-            splashOverlay.style.pointerEvents = 'none';
-
-            setTimeout(() => { if(splashOverlay.parentNode) splashOverlay.remove(); }, 1000);
+            setTimeout(() => splashOverlay.remove(), 1000);
         }, 3500);
     };
 
-    if (document.readyState === 'complete') startAppHandover();
-    else window.addEventListener('load', startAppHandover);
-
-    // Global Launchers (Preserved)
-    // Global Launchers (Preserved)
+    window.addEventListener('load', startApp);
+    // Global Launcher for Lessons
     window.launchLibraryStep = async (subject, unit, quest, step) => {
         try {
-            // FIX: Ensure path starts with content/
             const path = `content/${subject}/${unit}/${quest}/${step}.json`;
-            console.log("Fetching step:", path); // Debug log
-            
             const res = await fetch(path);
-            if (!res.ok) throw new Error(`HTTP ${res.status} - File not found: ${path}`);
-            
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
-            localStorage.setItem('last_sub', subject);
-            localStorage.setItem('last_idx', -1); 
-            localStorage.setItem('last_topic_name', data.title || "Lesson");
-            
             const stepsToPlay = data.steps ? data.steps : [data];
             QuestRunner.start(ViewManager.mount, stepsToPlay);
-            
             ViewManager.mount.classList.add('engine-mode');
-            document.body.classList.add('fullscreen-mode');
-        } catch (err) { 
-            console.error("Launch Error:", err);
-            alert("Could not load this lesson. Please check the file path.");
-        }
+        } catch (err) { console.error("Launch Error:", err); }
     };            
 </script>
 </body>
 </html>
-
-
-
-
-

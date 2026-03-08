@@ -1,148 +1,144 @@
-/**
- * MANYA ONBOARDING VIEW (v7.0)
- * Fixed: Button visibility, 3D selection logic, and animations.
- */
+import { ManyaDB } from '../manya-db.js';
+import { ManyaNotify } from './manya-notify.js';
+
 export const renderOnboarding = (mount) => {
     let currentStep = 1;
-    let currentAvatarIdx = 0;
+    let avatarOptions = [];
+    const profile = ManyaDB.createDefaultRecord();
 
-   const avatarList = [
-    { id: "barbarian", name: "Barbarian", file: "Barbarian.glb", trait: "Brute Strength" },
-    { id: "knight", name: "Knight", file: "Knight.glb", trait: "Iron Defender" },
-    { id: "mage", name: "Mage", file: "Mage.glb", trait: "Arcane Master" },
-    { id: "ranger", name: "Ranger", file: "Ranger.glb", trait: "Forest Archer" },
-    { id: "rogue", name: "Rogue", file: "Rogue.glb", trait: "Silent Assassin" },
-
-    { id: "skeleton_mage", name: "Skeleton Mage", file: "Skeleton_Mage.glb", trait: "Undead Sorcerer" },
-    { id: "skeleton_minion", name: "Skeleton Minion", file: "Skeleton_Minion.glb", trait: "Undead Servant" },
-    { id: "skeleton_rogue", name: "Skeleton Rogue", file: "Skeleton_Rogue.glb", trait: "Cursed Shadow" },
-    { id: "skeleton_warrior", name: "Skeleton Warrior", file: "Skeleton_Warrior.glb", trait: "Bone Fighter" }
-];
-
-    // --- MANYA ICON (SVG Data) ---
-
-const profile = { 
-        fullName: "", nickname: "", avatarId: avatarList[0].id, school: "", 
-        parentName: "", parentWhatsApp: "", parentEmail: "", likes: [], hates: [] 
-    };
-
-    const render = () => {
-        mount.innerHTML = `
-            <div class="ob-stage animate-in">
-                <div class="ob-nav">
-                    <span class="progress-label">Journey Progress</span>
-                    <div class="ob-progress-track"><div class="fill" id="p-bar"></div></div>
-                </div>
-
-                <div class="ob-chat">
-                    <div class="manya-card-bubble">
-                        <img src="assets/icons/manya_icon.png" class="manya-head-icon">
-                        <h2 id="ob-question">Waddle! Let's build your profile.</h2>
-                    </div>
-                </div>
-
-                <!-- Grouping inputs for a tighter center look -->
-                <div id="ob-input-mount" class="ob-inputs animate-up"></div>
-
-                <div class="ob-footer">
-                    <button id="ob-next-btn" class="manya-btn-primary">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                    </button>
-                </div>
-            </div>`;
-        
-        document.getElementById('ob-next-btn').onclick = handleNext;
-        updateStep();
+    const generateSeeds = () => {
+        const base = profile.nickname || "Hero";
+        avatarOptions = Array.from({length: 6}, () => `${base}_${Math.floor(Math.random()*99999)}`);
+        if(!profile.avatarSeed || profile.avatarSeed === "Manya") profile.avatarSeed = avatarOptions[0];
     };
 
     const updateStep = () => {
         const iMount = document.getElementById('ob-input-mount');
         const qText = document.getElementById('ob-question');
-        const pBar = document.getElementById('p-bar');
+        const pFill = document.getElementById('p-fill');
         const nextBtn = document.getElementById('ob-next-btn');
+        const stepLabel = document.getElementById('ob-step-label');
         
-        pBar.style.width = `${(currentStep / 5) * 100}%`;
+        pFill.style.width = `${(currentStep / 5) * 100}%`;
+        stepLabel.innerText = `PHASE ${currentStep} OF 5`;
 
         if (currentStep === 1) {
-            qText.innerText = "What is your full name and hero nickname?";
+            qText.innerText = "What is your Target PLE Aggregate?";
             iMount.innerHTML = `
-                <input type="text" id="fn" class="elite-input" placeholder="Your Full Name" value="${profile.fullName}">
-                <input type="text" id="nn" class="elite-input" placeholder="Hero Nickname" value="${profile.nickname}">
-            `;
+                <div class="ob-goal-card ${profile.goal === 'Agg 4-8' ? 'active' : ''}" onclick="window.setObGoal('Agg 4-8')">
+                    <div class="goal-icon">🏆</div>
+                    <div class="goal-text"><h4>Elite Scholar</h4><p>Targeting Aggregate 4 - 8</p></div>
+                </div>
+                <div class="ob-goal-card ${profile.goal === 'Agg 9-12' ? 'active' : ''}" onclick="window.setObGoal('Agg 9-12')">
+                    <div class="goal-icon">⭐</div>
+                    <div class="goal-text"><h4>Solid Success</h4><p>Targeting Aggregate 9 - 12</p></div>
+                </div>`;
         } 
         else if (currentStep === 2) {
-            qText.innerText = "Choose your 3D Hero Companion!";
-            const hero = avatarList[currentAvatarIdx];
+            qText.innerText = "What shall we call you, Hero?";
             iMount.innerHTML = `
-                <div class="avatar-3d-stage">
-                    <model-viewer id="hero-viewer" src="assets/shared/models/${hero.file}" autoplay shadow-intensity="1" camera-orbit="0deg 75deg 105%" disable-zoom style="width: 100%; height: 300px;"></model-viewer>
-                    <div class="avatar-selector-hud">
-                        <button class="nav-arrow" id="btn-prev">◀</button>
-                        <div style="text-align:center; flex:1">
-                            <div class="hero-name-tag">${hero.name}</div>
-                            <div class="hero-trait-tag">${hero.trait}</div>
-                        </div>
-                        <button class="nav-arrow" id="btn-next">▶</button>
-                    </div>
+                <div class="input-wrapper">
+                    <input type="text" id="ob-nn" class="elite-input" placeholder="Hero Nickname" value="${profile.nickname}">
+                </div>
+                <div class="input-wrapper">
+                    <input type="text" id="ob-sch" class="elite-input" placeholder="Primary School Name" value="${profile.school}">
                 </div>`;
-            document.getElementById('btn-prev').onclick = () => cycleHero(-1);
-            document.getElementById('btn-next').onclick = () => cycleHero(1);
         }
         else if (currentStep === 3) {
-            qText.innerText = "Which Primary School do you attend?";
-            iMount.innerHTML = `<input type="text" id="sch" class="elite-input" placeholder="Primary School Name" value="${profile.school}">`;
-        }
-        else if (currentStep === 4) {
-            qText.innerText = "What are your Super Powers and Monsters?";
+            qText.innerText = "Which subjects are your Superpowers?";
             const subs = ['Math', 'Science', 'SST', 'English'];
             iMount.innerHTML = `
-                <div class="progress-label" style="color: #16A34A">I LOVE... ❤️</div>
-                <div class="chip-box">${subs.map(s => `<button class="sub-chip ${profile.likes.includes(s)?'active-love':''}" onclick="window.toggleOnboardingPref('likes','${s}',this)">${s}</button>`).join('')}</div>
-                <div class="progress-label" style="margin-top:15px; color: #DC2626">I WANT TO BEAT... ⚔️</div>
-                <div class="chip-box">${subs.map(s => `<button class="sub-chip ${profile.hates.includes(s)?'active-hate':''}" onclick="window.toggleOnboardingPref('hates','${s}',this)">${s}</button>`).join('')}</div>
-            `;
+                <div class="chip-box">
+                    ${subs.map(s => `<button class="sub-chip ${profile.preferences.likes.includes(s)?'active-love':''}" onclick="window.toggleObPref('${s}')">${s}</button>`).join('')}
+                </div>`;
+        }
+        else if (currentStep === 4) {
+            qText.innerText = "Select your Hero DNA Sequence";
+            if(avatarOptions.length === 0) generateSeeds();
+            iMount.innerHTML = `
+                <div class="shuffle-vault" style="width:100%">
+                    <div class="lab-grid">
+                        ${avatarOptions.map(seed => `
+                            <div class="lab-item ${profile.avatarSeed === seed ? 'active' : ''}" onclick="window.setObAvatar('${seed}')">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}" style="width:100%">
+                            </div>`).join('')}
+                    </div>
+                    <button class="btn-shuffle-mega" onclick="window.shuffleObDNA()">🔄 SHUFFLE DNA</button>
+                </div>`;
         }
         else if (currentStep === 5) {
-            qText.innerText = "Almost done! Enter Parent Info:";
+            qText.innerText = "Final Step: Connect your Guardian";
             iMount.innerHTML = `
-                <input type="text" id="pn" class="elite-input" placeholder="Parent's Name" value="${profile.parentName}">
-                <input type="tel" id="pwa" class="elite-input" placeholder="WhatsApp Number" value="${profile.parentWhatsApp}">
-                <input type="email" id="pem" class="elite-input" placeholder="Parent's Email" value="${profile.parentEmail}">
-            `;
+                <div class="input-wrapper">
+                    <input type="text" id="ob-pn" class="elite-input" placeholder="Guardian's Name">
+                </div>
+                <div class="input-wrapper">
+                    <input type="tel" id="ob-pwa" class="elite-input" placeholder="WhatsApp Number (07...)">
+                </div>
+                <p style="text-align:center; font-size:11px; color:#94A3B8; margin-top:15px; font-weight:700;">
+                    Guardian receives weekly PLE progress reports.
+                </p>`;
             nextBtn.classList.add('finish');
-            nextBtn.innerText = "START ADVENTURE →";
+            nextBtn.innerHTML = "BEGIN ADVENTURE →";
         }
     };
 
-    const cycleHero = (dir) => {
-        currentAvatarIdx = (currentAvatarIdx + dir + avatarList.length) % avatarList.length;
-        profile.avatarId = avatarList[currentAvatarIdx].id;
+    window.setObGoal = (g) => { profile.goal = g; updateStep(); };
+    window.toggleObPref = (s) => {
+        const idx = profile.preferences.likes.indexOf(s);
+        if (idx > -1) profile.preferences.likes.splice(idx, 1);
+        else profile.preferences.likes.push(s);
+        updateStep();
+    };
+    window.setObAvatar = (s) => { profile.avatarSeed = s; updateStep(); };
+    window.shuffleObDNA = () => { generateSeeds(); updateStep(); };
+
+    const handleNext = async () => {
+        if (currentStep === 2) {
+            const nn = document.getElementById('ob-nn').value;
+            const sch = document.getElementById('ob-sch').value;
+            if(!nn) return ManyaNotify.show("Hero needs a nickname!", "error");
+            profile.nickname = nn;
+            profile.school = sch;
+            generateSeeds();
+        }
+        if (currentStep === 5) {
+            const pn = document.getElementById('ob-pn').value;
+            const pwa = document.getElementById('ob-pwa').value;
+            if(!pn || !pwa) return ManyaNotify.show("Please enter Guardian info", "error");
+            
+            profile.parent.name = pn;
+            profile.parent.whatsapp = pwa;
+            profile.onboarded = true;
+            profile.xp = 150; 
+
+            await ManyaDB.saveUser(profile);
+            ManyaNotify.show("Welcome, Hero!", "success");
+            window.ViewManager.init(); 
+            return;
+        }
+        currentStep++;
         updateStep();
     };
 
-    const handleNext = () => {
-        if (currentStep === 1) { profile.fullName = document.getElementById('fn').value; profile.nickname = document.getElementById('nn').value; }
-        if (currentStep === 3) profile.school = document.getElementById('sch').value;
-        if (currentStep === 5) {
-            profile.parentName = document.getElementById('pn').value;
-            profile.parentWhatsApp = document.getElementById('pwa').value;
-            profile.parentEmail = document.getElementById('pem').value;
-        }
+    mount.innerHTML = `
+        <div class="ob-stage animate-in">
+            <div class="ob-nav">
+                <span class="ob-step-indicator" id="ob-step-label">PHASE 1 OF 5</span>
+                <div class="ob-progress-track"><div class="ob-progress-fill" id="p-fill"></div></div>
+            </div>
+            <div class="ob-chat">
+                <div class="manya-bubble">
+                    <img src="assets/icons/manya_icon.png">
+                    <h2 id="ob-question">Waddle!</h2>
+                </div>
+            </div>
+            <div id="ob-input-mount" class="ob-inputs"></div>
+            <div class="ob-footer">
+                <button id="ob-next-btn" class="manya-btn-primary">▶</button>
+            </div>
+        </div>`;
 
-        if (currentStep < 5) { currentStep++; updateStep(); } 
-        else { localStorage.setItem('manya_user_profile', JSON.stringify(profile)); window.ViewManager.init(); }
-    };
-
-    window.toggleOnboardingPref = (list, sub, el) => {
-        const idx = profile[list].indexOf(sub);
-        if (idx > -1) { 
-            profile[list].splice(idx, 1); 
-            el.classList.remove(list==='likes'?'active-love':'active-hate'); 
-        } else { 
-            profile[list].push(sub); 
-            el.classList.add(list==='likes'?'active-love':'active-hate'); 
-        }
-    };
-
-    render();
+    document.getElementById('ob-next-btn').onclick = handleNext;
+    updateStep();
 };

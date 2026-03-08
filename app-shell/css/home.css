@@ -1,269 +1,106 @@
-/* ==========================================================================
-   MANYA HOME MASTER: VIBRANT KIDTOPIA (v12.0)
-   ========================================================================== */
-
-/* 1. GLOBAL WRAPPER & BACKGROUND */
+/* ELITE HUB MASTER STYLE v30.0 */
 .manya-hub {
-    width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    padding: 10px 0;
-    position: relative;
-    /* Soft Cream Canvas background makes neon colors pop */
-    background: #FDFBF7; 
+    padding: 5px 20px 150px; /* Offset for HUD and Bottom Nav */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
 }
 
-/* DECORATIVE AMBIENT ORBS (Mesh Depth) */
-.bg-orb { 
-    position: absolute; 
-    width: 300px; height: 300px; 
-    border-radius: 50%; 
-    filter: blur(100px); 
-    z-index: -1; 
-    opacity: 0.12; 
-    pointer-events: none;
-}
-.orb-1 { top: 5%; right: -100px; background: #DB2777; }
-.orb-2 { bottom: 15%; left: -100px; background: #7C3AED; }
-
-/* 2. SECTION HEADERS */
-.section-header-flex {
-    display: flex; 
-    justify-content: space-between; 
+/* 1. RESUME MISSION CARD */
+.resume-mission-card {
+    background: #1E1B4B; 
+    border-radius: 30px;
+    padding: 25px;
+    display: flex;
     align-items: center;
-    padding: 0 25px; 
-    margin: 30px 0 15px;
+    justify-content: space-between;
+    color: white;
+    border: 2px solid #312E81;
+    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.3);
 }
-.section-title { 
-    font-size: 1.25rem; 
-    font-weight: 900; 
-    color: #1E293B; 
-    letter-spacing: -0.5px;
-}
-.live-now-badge {
-    font-size: 10px; 
-    font-weight: 900; 
-    background: #DB2777; 
-    color: white; 
-    padding: 6px 12px; 
-    border-radius: 50px; 
-    box-shadow: 0 4px 10px rgba(219, 39, 119, 0.3);
+.mission-tag { font-size: 10px; font-weight: 900; color: #818CF8; letter-spacing: 2px; }
+.resume-mission-card h3 { margin: 5px 0; font-size: 20px; font-weight: 900; }
+.mission-subtext { font-size: 11px; font-weight: 700; color: #94A3B8; }
+
+.play-btn-circle {
+    width: 55px; height: 55px; border-radius: 50%;
+    background: #7c3aed; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
 }
 
-/* 3. THE 2-COLUMN SUBJECT GRID */
+/* 2. SUBJECT GRID & ISLANDS */
 .subject-grid-elite {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 45px 18px; /* High vertical gap for the island breakout */
-    padding: 0 20px;
-    margin-top: 35px; /* Spacing for the first row's islands */
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .world-card-elite {
-    background: white;
-    border-radius: 35px;
-    box-shadow: 0 12px 35px rgba(30, 41, 59, 0.05);
-    border: 1.5px solid #F1EFE9;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
+    background: white; border-radius: 35px;
+    padding: 15px; border: 2px solid #F1F5F9;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.island-stage {
+    height: 110px; width: 100%;
+    display: flex; align-items: center; justify-content: center;
     position: relative;
-    height: 190px;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.world-card-elite:active { transform: scale(0.95); }
-
-/* --- ISLAND BREAKOUT MATH --- */
-.island-stage { 
-    height: 100px;
-    width: 100%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    position: relative; 
-    margin-top: -35px; /* POPS above the card top */
-    z-index: 2;
+/* THE GLOWING HALO */
+.island-halo {
+    position: absolute; width: 70px; height: 70px;
+    border-radius: 50%; filter: blur(25px); opacity: 0.3;
 }
+.math .island-halo    { background: #6366F1; }
+.science .island-halo { background: #10B981; }
+.sst .island-halo     { background: #F59E0B; }
+.english .island-halo { background: #DB2777; }
 
-.floating-island { 
-    width: 110px; 
-    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.1));
+.floating-island {
+    width: 90px; z-index: 5;
+    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
+    animation: floatIsland 4s infinite ease-in-out;
 }
-
-/* SUBJECT GLOWS */
-.glow-aura {
-    position: absolute; 
-    width: 85px; height: 85px;
-    border-radius: 50%; 
-    filter: blur(35px); 
-    opacity: 0.5;
-}
-.math .glow-aura { background: #DB2777; }
-.science .glow-aura { background: #10B981; }
-.sst .glow-aura { background: #3B82F6; }
-.english .glow-aura { background: #7C3AED; }
-
-/* STAGGERED FLOATING PHYSICS */
-.math .floating-island { animation: floatIsland 4.2s infinite ease-in-out; }
-.science .floating-island { animation: floatIsland 5.1s infinite ease-in-out; }
-.sst .floating-island { animation: floatIsland 4.6s infinite ease-in-out; }
-.english .floating-island { animation: floatIsland 5.8s infinite ease-in-out; }
 
 @keyframes floatIsland {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
+    50% { transform: translateY(-10px); }
 }
 
-/* TYPOGRAPHY (BOTTOM LEFT) */
-.card-footer-info {
-    padding: 0 18px 22px 18px;
-    margin-top: auto;
-    text-align: left;
+/* STYLED FOOTER */
+.card-footer-info h4 { margin: 10px 0 8px; font-size: 15px; font-weight: 900; color: #1E293B; }
+.prog-stats-row { display: flex; align-items: center; gap: 10px; width: 100%; font-size: 10px; font-weight: 900; color: #94A3B8; }
+
+.mini-striped-track { flex: 1; height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden; }
+.mini-striped-fill {
+    height: 100%; border-radius: 10px;
+    background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 2px, transparent 0, transparent 8px);
 }
 
-.world-card-elite h4 { 
-    font-size: 1.1rem; 
-    font-weight: 900; 
-    color: #1E293B; 
-    margin: 0;
-}
-
-.prog-stats { 
-    font-size: 10px; 
-    font-weight: 900; 
-    color: #DB2777; /* Manya Pink */
-    margin-top: 2px;
-}
-
-/* CHUNKY EDGE-ANCHORED PROGRESS BARS */
-.mini-progress-track {
-    width: 100%; 
-    height: 10px; 
-    background: #F1F5F9;
-    border-radius: 0 0 35px 35px; /* Matches card corners */
-    overflow: hidden;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-}
-.mini-progress-track .fill { 
-    height: 100%; 
-    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.math .fill { background: #DB2777; }
-.science .fill { background: #10B981; }
-.sst .fill { background: #3B82F6; }
-.english .fill { background: #7C3AED; }
-
-
-/* 4. THE ASTRO-LIBRARY (ELECTRIC PURPLE STATION) */
-.astro-library-outer {
-    position: relative;
-    margin: 60px 20px 20px 20px;
-    z-index: 50;
-}
-
-/* THE NEON AURA GLOW (Behind the card) */
-.astro-library-outer::after {
-    content: '';
-    position: absolute;
-    inset: -15px;
-    background: #7C3AED; /* Electric Purple */
-    filter: blur(45px);
-    opacity: 0.35;
-    z-index: -1;
-    border-radius: 45px;
-    animation: auraBreath 4s infinite ease-in-out;
-}
-
+/* 3. PREMIUM LIBRARY CARD */
 .astro-library-card {
-    background: #1E1B4B; /* Deep Space Indigo */
-    border-radius: 35px;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, #7c3aed, #db2777);
+    border-radius: 35px; padding: 25px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; overflow: hidden; color: white;
+    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.3);
 }
 
-.astro-library-card:active { transform: scale(0.96); }
+.astro-content h2 { margin: 0; font-size: 20px; font-weight: 900; }
+.astro-content p { margin: 5px 0 0; font-size: 12px; font-weight: 700; opacity: 0.8; }
 
-/* Internal Animated Mesh Gradient */
-.astro-mesh {
-    position: absolute; inset: 0;
-    background: radial-gradient(at top left, #4F46E5 0%, transparent 60%),
-                radial-gradient(at bottom right, #DB2777 0%, transparent 60%);
-    opacity: 0.6;
+.lib-mascot-float {
+    position: absolute; right: -10px; bottom: -15px;
+    width: 110px; filter: drop-shadow(-10px 0 20px rgba(0,0,0,0.2));
 }
 
-/* FULLY VISIBLE MASCOT */
-.lib-mascot-full {
-    position: absolute;
-    right: -10px;
-    bottom: -15px;
-    width: 140px;
-    height: 140px;
-    object-fit: contain;
-    z-index: 10;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-    animation: mascotBob 5s infinite ease-in-out;
-}
-
-.astro-content-wrapper { 
-    display: flex; 
-    align-items: center; 
-    width: 100%; 
-    padding: 0 30px; 
-    position: relative; 
-    z-index: 20; 
-}
-
-.astro-text-box h2 { 
-    color: white; 
-    font-size: 1.45rem; 
-    font-weight: 900; 
-    margin: 4px 0; 
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-.astro-text-box p { 
-    color: rgba(255,255,255,0.7); 
-    font-size: 11px; 
-    font-weight: 800; 
-    margin: 0; 
-    letter-spacing: 0.5px;
-}
-
-.astro-badge {
-    background: rgba(255,255,255,0.2); 
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff; 
-    padding: 4px 12px; 
-    border-radius: 50px; 
-    font-size: 8px; 
-    font-weight: 900;
-    text-transform: uppercase;
-}
-
-/* 5. ANIMATIONS */
-@keyframes auraBreath {
-    0%, 100% { opacity: 0.25; transform: scale(1); }
-    50% { opacity: 0.45; transform: scale(1.04); }
-}
-
-@keyframes mascotBob {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-8px) rotate(2deg); }
-}
-
-/* 6. BOTTOM SPACING */
-.manya-hub::after {
-    content: '';
-    display: block;
-    height: 140px; /* Space for the floating dock */
+.lib-go-arrow {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900;
 }

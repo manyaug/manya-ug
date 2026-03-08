@@ -7,9 +7,15 @@
 import { renderHome } from './views/home-view.js';
 import { renderSpiral } from './views/spiral-view.js';
 import { renderLibrary } from './views/library-view.js';
-import { renderRankings } from './views/rankings-view.js';
+import { renderRankings } from './views/rankings-view.js'; // Check this file
 import { renderProfile } from './views/profile-view.js';
 import { renderOnboarding } from './views/onboarding-view.js';
+import { renderAchievements } from './views/achievements-view.js'; // Add this line
+import { renderMembership } from './views/membership-view.js';
+import { renderSettings } from './views/settings-view.js'; // Import ManyaNotify for notifications
+import { ManyaNotify } from './views/manya-notify.js'; // Import ManyaNotify for notifications
+// Inside switch(viewName)
+
 
 // Import Audio Service
 import { AudioManager } from '../app-shell/js/audio-manager.js';
@@ -82,6 +88,10 @@ export const ViewManager = {
             case 'rankings': renderRankings(this.mount); break;
             case 'profile': renderProfile(this.mount); break;
             case 'onboarding': renderOnboarding(this.mount); break;
+            case 'achievements': renderAchievements(this.mount); break; 
+            case 'membership': renderMembership(this.mount); break;
+            case 'settings': renderSettings(this.mount); break;
+            case 'notifications': ManyaNotify.show("This is a notification!", "info"); break;
             default: renderHome(this.mount);
         }
 
@@ -105,4 +115,17 @@ export const ViewManager = {
             this.show('home', homeNav);
         }
     }
+
+    
+};
+
+// Logic to handle Locking/Scrolling per view
+const updateScrollLock = (viewName) => {
+    const mount = document.getElementById('view-mount');
+    if (viewName === 'home') {
+        mount.style.overflowY = 'hidden'; // Lock Home Page
+    } else {
+        mount.style.overflowY = 'auto';   // Allow scrolling for others
+    }
+    mount.scrollTop = 0; // Always start at the top
 };

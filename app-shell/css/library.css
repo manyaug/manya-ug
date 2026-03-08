@@ -2,19 +2,27 @@
    LIBRARY VIEW ELITE (VIBRANT & SEAMLESS)
    ========================================================================== */
 /* FIX: Ensures Library View respects the floating Top HUD */
+/* library.css - MASTER SCROLL master v30.0 */
+
 .library-view {
     width: 100%;
-    /* Pushes content down so the Syllabus Vault title is visible */
-    padding-top: 10px; 
+    /* Remove any fixed heights or hidden overflows here */
+    display: block; 
 }
 
 .library-header-elite {
-    background: #FDFBF7; /* Matches the cream background */
-    padding: 15px 25px;
-    position: sticky;
+    background: var(--bg-cream);
+    padding: 10px 0 20px 0;
+     position: sticky;
     top: -1px; /* Locks to the top of the scroll area */
     z-index: 1000; /* Stays above the scrolling cards */
 }
+
+/* Add a large spacer at the end of the Library content */
+.library-content-elite {
+    padding-bottom: 120px; /* IMPORTANT: Prevents Nav from covering last items */
+}
+
 
 .lib-title { 
     margin: 0; 

@@ -1,258 +1,205 @@
-/* ==========================================================================
-   1. GLOBAL VARIABLES & THEME
-   ========================================================================== */
+/* style.css - MASTER BUILD v31.0 (SCROLL FIX) */
 :root {
-    /* Manya Brand Colors */
     --manya-purple: #7c3aed;
-    --manya-purple-light: #ede9fe;
-    --manya-purple-dark: #5b21b6;
-    --manya-purple-fur: #941cb3;
     --manya-pink: #db2777;
-    --manya-pink-light: #fce7f3;
-    --manya-green: #059669;
-    --manya-orange: #f59e0b;
-    
-    /* Kidtopia Seamless Colors */
-    --bg-cream: #FDFBF7; 
-    --text-slate: #1E293B;
-    --text-muted: #94A3B8;
-
-    /* Onboarding / Galactic Theme */
-    --primary-indigo: #6366F1;
-    --accent-cyan: #06B6D4;
-    --deep-glow: rgba(15, 23, 241, 0.15);
-
-    /* Engine Themes */
-    --axial-color: #ef4444;
-    --appendicular-color: #3b82f6;
-    --quiz-color: #f59e0b;
-    --success-color: #22c55e;
-    
-    /* Global Spacing */
-    --app-max-width: 450px;
+    --bg-cream: #FDFBF7;
 }
 
-/* ==========================================================================
-   2. CORE RESET & BODY
-   ========================================================================== */
-* { 
-    box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent; 
-}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 
-/* 1. FORCE NO-SCROLL ON BODY */
+/* 1. THE 3-SLOT MASTER GRID */
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
-    overflow: hidden !important; /* STOPS PAGE SCROLLING */
-    position: fixed;
-    background-color: #FDFBF7 !important; /* THE CREAM CANVAS */
+    overflow: hidden !important; /* Prevents the whole browser from bouncing */
+    background-color: var(--bg-cream) !important;
     font-family: 'Nunito', sans-serif;
-}
-
-/* UI TOGGLES (Fullscreen Engine Mode) */
-body.fullscreen-mode aside,
-body.fullscreen-mode .bottom-nav,
-body.fullscreen-mode .app-header-master {
-    display: none !important;
-}
-
-body.fullscreen-mode #view-mount {
     position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    padding: 0;
-    margin: 0;
-    z-index: 5000;
+    display: grid;
+    /* Slot 1: Header (75px), Slot 2: Content (Flexible), Slot 3: Nav (85px) */
+    grid-template-rows: 75px 1fr 85px; 
 }
 
-/* ==========================================================================
-   2. THE FLOATING GLASS HUD (TOP BAR)
-   ========================================================================== */
-
-/* 3. THE FLOATING GLASS HUD (TOP BAR) */
+/* --- SLOT 1: THE HUD (TOP) --- */
 .app-header-master {
-    position: fixed;
-    top: calc(15px + env(safe-area-inset-top)); 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 92%;
-    max-width: 420px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1.5px solid rgba(255, 255, 255, 0.6);
-    border-radius: 100px;
-    box-shadow: 0 12px 35px rgba(30, 41, 59, 0.1);
-    z-index: 10000;
     display: flex;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 5px;
+    z-index: 10000;
 }
 
 .header-shell {
-    width: 100%;
-    padding: 0 15px;
+    width: 90%;
+    max-width: 380px;
+    height: 52px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 100px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     position: relative;
+    border: 1.5px solid white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
 }
 
-/* --- THE PEEPING MASCOT --- */
 .hud-avatar-peek {
-    position: relative;
-    margin-top: -28px; /* Breaks the top of the pill */
-    cursor: pointer;
-    z-index: 10;
+    position: absolute;
+    left: 6px;
+    top: -18px;
+    width: 56px;
+    height: 56px;
 }
 
 .peek-circle {
-    width: 64px; height: 64px;
-    background: white; border-radius: 50%;
-    border: 2px solid white; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .mascot-img {
-    width: 110%; height: 110%;
-    transform: translateY(12px) rotate(-5deg); /* PEEPING LOGIC */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-/* --- LOGO: ABSOLUTE CENTER --- */
 .hud-logo {
-    position: absolute;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 17px; font-weight: 900; color: #1e293b;
-    letter-spacing: 1.2px; pointer-events: none;
+    margin-left: 70px;
+    font-size: 15px;
+    font-weight: 900;
+    color: #1e293b;
+    letter-spacing: 0.5px;
 }
-.logo-p7 { color: #db2777; }
+.hud-stats {
+    margin-left: auto;
+    margin-right: 15px;
+}
 
-/* --- DIAMONDS (RIGHT) --- */
 .stat-pill-diamond {
-    background: white; padding: 6px 12px;
-    border-radius: 100px; display: flex; align-items: center; gap: 5px;
-    border: 1px solid #f1f5f9;
-}
-.count { font-size: 13px; font-weight: 900; color: #334155; }
-/* ==========================================================================
-   4. THE FLOATING DOCK NAV
-   ========================================================================== */
-.bottom-nav {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 380px;
-    height: 75px;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(20px);
+    background: white; /* High contrast against the cream background */
+    padding: 10px 20px; /* Larger tactile area */
     border-radius: 100px;
+    font-weight: 900;
+    font-size: 16px; /* Larger text */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #F1F5F9;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Soft depth */
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.stat-pill-diamond:active {
+    transform: scale(0.92);
+}
+
+/* THE GLOWING DIAMOND */
+.diamond-sparkle {
+    display: inline-block;
+    font-size: 20px;
+    /* Cyan glow that matches the diamond color */
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)); 
+    animation: diamondPulse 2s infinite ease-in-out;
+}
+
+.count {
+    color: #1E293B;
+    letter-spacing: 0.5px;
+}
+
+/* ANIMATION: Makes the diamond look alive */
+@keyframes diamondPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.6));
+    }
+    50% {
+        transform: scale(1.15) rotate(5deg);
+        filter: drop-shadow(0 0 15px rgba(6, 182, 212, 1));
+    }
+}
+
+/* --- SLOT 2: THE CONTENT VIEWPORT (FIXED SCROLL) --- */
+#view-mount {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    /* THE FIX: Changed from hidden to auto */
+    overflow-y: auto !important; 
+    overflow-x: hidden;
+    padding: 10px 20px;
+    /* Smooth scrolling for iOS */
+    -webkit-overflow-scrolling: touch; 
+}
+
+/* Hide scrollbar for a clean app look */
+#view-mount::-webkit-scrollbar {
+    display: none;
+}
+
+/* --- SLOT 3: THE BOTTOM NAV --- */
+.bottom-nav {
+    background: white;
+    border-top: 1.5px solid #F1F5F9;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0 10px;
-    box-shadow: 0 20px 40px rgba(30, 41, 59, 0.15);
-    z-index: 9999;
-    border: 1.5px solid #F1EFE9;
+    z-index: 10000;
+    position: relative;
 }
 
 .nav-item {
-    display: flex; align-items: center; justify-content: center;
-    height: 55px; width: 55px; border-radius: 50%;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    color: #94A3B8; cursor: pointer;
-}
-
-.nav-item.active {
-    background: var(--manya-purple); color: white;
-    transform: translateY(-8px);
-    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
-}
-
-.nav-item svg { width: 26px; height: 26px; stroke-width: 2.5; }
-.nav-item span { display: none; } /* Hide labels for the dock look */
-
-/* ==========================================================================
-   5. VIEW MOUNT & ANIMATIONS
-   ========================================================================== */
-/* 2. THE CONTENT VIEWPORT */
-#view-mount {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    text-decoration: none;
+    width: 30%;
     height: 100%;
-    overflow-y: auto; /* Allow scrolling ONLY here */
-    overflow-x: hidden;
-    padding: 95px 0 120px 0; /* Space for Floating Header & Nav */
-    box-sizing: border-box;
-}
-   
-.animate-in {
-    width: 100%;
-    max-width: var(--app-max-width); 
-    margin: 0 auto;
-    animation: slideUpFade 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes slideUpFade { 
-    from { opacity: 0; transform: translateY(30px) scale(0.95); } 
-    to { opacity: 1; transform: translateY(0) scale(1); } 
+.nav-item svg {
+    width: 22px;
+    height: 22px;
+    transition: 0.3s;
 }
 
-/* ==========================================================================
-   6. SPLASH OVERLAY
-   ========================================================================== */
-#manya-splash-overlay {
-    position: fixed; inset: 0; background: var(--manya-purple-fur); z-index: 10000;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: all; overflow: hidden;
-}
-.full-screen-mascot { position: absolute; inset: 0; width: 100vw; height: 100vh; z-index: 1; overflow: hidden; }
-#splash-vid { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); filter: brightness(1.05); }
-
-.splash-brand { position: relative; z-index: 10; margin-top: 260px; text-align: center; }
-.brand-glow { color: white; font-size: 34px; font-weight: 900; margin: 0; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
-.brand-sub { color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 4px; margin: 10px 0; }
-.splash-loader { width: 150px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 20px auto; overflow: hidden; }
-.splash-loader .fill { width: 0%; height: 100%; background: white; animation: splashLoad 3.5s linear forwards; }
-
-@keyframes splashLoad { from { width: 0%; } to { width: 100%; } }
-
-/* ==========================================================================
-   7. ENGINE NORMALIZATION & UTILITIES
-   ========================================================================== */
-/* Fix: Removed !important position from engines to allow card layouts */
-.manya-3d-root, .gallery-root, .globe-root, .reader-root {
-    width: 100%; height: 100%; background: white;
+.nav-item span {
+    font-size: 10px;
+    font-weight: 800;
+    margin-top: 4px;
 }
 
-canvas { display: block; width: 100%; height: 100%; }
-
-.topic-badge { 
-    background: #FCE7F3; color: #DB2777; font-size: 0.75rem; font-weight: 900; 
-    padding: 6px 14px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px;
+/* --- THE ACTIVE POP-UP STATE --- */
+.nav-item.active {
+    color: var(--manya-pink);
 }
 
-/* ==========================================================================
-   8. MISSING ENGINE STYLES (Reading/Study Mode)
-   ========================================================================== */
-.study-content-wrapper { padding: 25px; width: 100%; max-width: 600px; margin: 0 auto; }
-.study-header { font-size: 1.6rem; font-weight: 900; color: var(--manya-purple); margin-bottom: 20px; line-height: 1.3; }
-.study-text { font-size: 1.15rem; font-weight: 600; line-height: 1.7; margin-bottom: 20px; color: #475569; }
-.study-text strong { color: var(--manya-pink); font-weight: 900; }
-
-.concept-box { background: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 20px; border-radius: 12px; margin: 25px 0; }
-.concept-title { font-size: 0.9rem; font-weight: 900; color: #0284c7; text-transform: uppercase; margin-bottom: 5px; }
-
-/* THE JUICY CONTINUE BUTTON (Global) */
-.manya-btn-pro {
-    width: 100%; height: 60px; background: var(--manya-purple); color: white;
-    border: none; border-radius: 20px; font-weight: 900; font-size: 1.1rem;
-    box-shadow: 0 6px 0 var(--manya-purple-dark); cursor: pointer; transition: transform 0.1s;
-    text-transform: uppercase; letter-spacing: 1.5px;
+.nav-item.active svg {
+    background: var(--manya-pink);
+    color: white !important;
+    padding: 12px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    transform: translateY(-24px); 
+    /* The 6px border creates the dip effect */
+    border: 6px solid var(--bg-cream); 
+    box-shadow: 0 10px 20px rgba(219, 39, 119, 0.3);
 }
-.manya-btn-pro:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--manya-purple-dark); }
+
+.nav-item.active span {
+    transform: translateY(-14px);
+    font-weight: 900;
+}
