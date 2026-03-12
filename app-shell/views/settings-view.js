@@ -19,7 +19,9 @@ export const renderSettings = async (mount) => {
         <div class="settings-page animate-in">
             <!-- HEADER -->
             <div class="lab-header-row">
-                <button class="manya-back-btn" onclick="window.ViewManager.show('profile')">←</button>
+                <button class="manya-back-btn" onclick="window.ViewManager.show('profile')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 18l-6-6 6-6"/>
+</svg></button>
                 <div class="lab-title-text">
                     <h2>Hero Lab</h2>
                 </div>

@@ -3,6 +3,7 @@
     --manya-purple: #7c3aed;
     --manya-pink: #db2777;
     --bg-cream: #FDFBF7;
+    --nav-bg: rgba(255, 255, 255, 0.95);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -28,7 +29,18 @@ html, body {
     padding-bottom: 5px;
     z-index: 10000;
 }
+/* GLOBAL HUD TAKEOVER LOGIC */
+body.in-spiral .app-header-master:not(.spiral-header-unified) {
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+/* Ensure the game fits perfectly between the bars */
+body.in-spiral #view-mount {
+    padding-top: 0 !important;
+}
 .header-shell {
     width: 90%;
     max-width: 380px;
@@ -127,6 +139,46 @@ html, body {
         filter: drop-shadow(0 0 15px rgba(6, 182, 212, 1));
     }
 }
+
+
+/* 1. TOP HUD: NEON GLASSMORPHISM */
+body.in-spiral .header-shell {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 2.5px solid var(--biome-color) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 
+                inset 0 0 15px var(--biome-color-alpha);
+    transition: all 0.8s ease;
+}
+
+/* 2. BOTTOM NAV: THEMATIC MUTATION */
+body.in-spiral .bottom-nav {
+    background: rgba(15, 23, 42, 0.9) !important; /* Darker console feel */
+    border-top: 3px solid var(--biome-color);
+    box-shadow: 0 -10px 40px var(--biome-color-alpha);
+    transition: all 0.8s ease;
+}
+
+body.in-spiral .nav-item { color: rgba(255,255,255,0.4); }
+body.in-spiral .nav-item.active { color: var(--biome-color); }
+
+/* THEME INDICATOR (The floating circle) */
+body.in-spiral .nav-indicator {
+    background: var(--biome-color);
+    box-shadow: 0 0 25px var(--biome-color);
+    border-color: var(--biome-bg); /* Assimilates with the foggy world */
+}
+
+/* 3. TACTILE HUD COMPONENTS */
+.hud-back-container button {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.hud-back-container button:hover { transform: scale(1.1) rotate(-5deg); }
+
+.stat-pill-diamond {
+    border: 1.5px solid var(--biome-color) !important;
+}
+
 
 /* --- SLOT 2: THE CONTENT VIEWPORT (FIXED SCROLL) --- */
 #view-mount {

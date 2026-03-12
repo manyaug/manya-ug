@@ -1,224 +1,256 @@
 /**
- * MANYA GENERAL STUDY ENGINE (v7.0 - THE UNABRIDGED MASTER)
+ * MANYA GENERAL STUDY ENGINE v8.0 (ELITE MASTER)
  * --------------------------------------------------------
  * FEATURES:
- * - HANDHELD CARD: Centered layout that fits inside the app frame.
- * - QUEST AWARENESS: Automatically hides internal UI if QuestRunner is present.
- * - MULTI-LAYOUT: Supports Bullets, Comparison Tables, Tips, and Flashcards.
- * - THEME: Manya Pink/Purple accents.
+ * - HUD TAKEOVER: Matches Spiral/Globe engine for seamless navigation.
+ * - BENTO LAYOUT: Content organized into high-fidelity tactile cards.
+ * - THEMED ADAPTATION: Uses --biome-color for subject-specific accents.
+ * - DYNAMIC COMPONENTS: Bullets, Comparison Tables, Glowing Tips, Flashcards.
  */
+
+import { ManyaDB } from '/app-shell/manya-db.js';
+import { ManyaNotify } from '/app-shell/views/manya-notify.js';
+
 
 export const GeneralStudyEngine = {
     state: {
         data: null,
         currentCard: 0,
-        theme: '#7C3AED' // Default Manya Purple
+        isQuestMode: false
     },
 
-    // --- 1. PREMIUM STUDY STYLES (ISOLATED) ---
+    // --- 1. THE NUCLEAR CSS REPAIR ---
     injectStyles: () => {
-        if (document.getElementById('manya-gen-study-styles')) return;
+        if (document.getElementById('manya-gen-study-v9-styles')) return;
         const style = document.createElement('style');
-        style.id = 'manya-gen-study-styles';
+        style.id = 'manya-gen-study-v9-styles';
         style.innerHTML = `
-            /* ROOT: Centers the card within view-mount */
-            .manya-gen-study-actor { 
-                width: 100%; height: 100%; 
-                display: flex; justify-content: center; align-items: flex-start; 
-                background: #FDFBF7; padding: 20px 15px; box-sizing: border-box; 
-                font-family: 'Nunito', sans-serif;
-                overflow-y: auto;
+            .study-wrapper { 
+                position: fixed; inset: 0; background: #FDFBF7; 
+                display: flex; flex-direction: column; z-index: 5000;
+                overflow: hidden; font-family: 'Plus Jakarta Sans', sans-serif;
             }
 
-            /* THE HANDHELD CARD */
-            .study-card-embedded {
-                width: 100%; max-width: 420px;
-                background: white; border-radius: 35px;
-                box-shadow: 0 15px 40px rgba(30, 41, 59, 0.05);
-                border: 2px solid #F1EFE9;
-                display: flex; flex-direction: column;
-                overflow: hidden; padding: 25px;
-                animation: studyCardPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* DYNAMIC HUD TAKEOVER */
+            .study-hud-top {
+                position: fixed; top: 15px; left: 0; width: 100%; z-index: 10000;
+                display: flex; justify-content: center;
+            }
+            .study-hud-top .header-shell {
+                width: 92%; max-width: 400px; height: 54px;
+                background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px);
+                border-radius: 100px; display: flex; align-items: center; padding: 0 8px;
+                border: 2px solid var(--biome-color, #7c3aed);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             }
 
-            @keyframes studyCardPop {
-                from { opacity: 0; transform: translateY(30px) scale(0.95); }
-                to { opacity: 1; transform: translateY(0) scale(1); }
+            /* CONTENT CONTAINER */
+            .study-content-scroll {
+                flex: 1; overflow-y: auto; padding: 85px 20px 140px;
+                scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
             }
 
-            /* CONTENT ELEMENTS */
-            .study-section { margin-bottom: 25px; }
-            .study-section:last-child { margin-bottom: 0; }
+            /* CONCEPT CARDS (Bento Style) */
+            .concept-card {
+                background: white; border-radius: 30px; padding: 25px;
+                border: 1.5px solid #F1F5F9; margin-bottom: 20px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.02);
+                width: 100%; box-sizing: border-box;
+                animation: conceptFadeIn 0.5s ease-out both;
+            }
 
-            .study-title-pill { 
-                font-size: 0.85rem; font-weight: 900; color: #DB2777; 
-                margin-bottom: 12px; border-left: 4px solid #DB2777; padding-left: 12px;
+            @keyframes conceptFadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            /* TITLES & LABELS */
+            .concept-tag {
+                display: inline-flex; align-items: center; gap: 6px;
+                padding: 6px 12px; border-radius: 10px;
+                background: var(--biome-color, #7c3aed); color: white;
+                font-size: 10px; font-weight: 900; text-transform: uppercase;
+                letter-spacing: 1px; margin-bottom: 15px;
+            }
+
+            .concept-title { font-size: 1.25rem; font-weight: 900; color: #1E293B; margin-bottom: 12px; line-height: 1.3; }
+
+            /* POINT ROWS (Replaces messy bullets) */
+            .point-row {
+                display: flex; gap: 15px; padding: 18px; background: #F8FAFC;
+                border-radius: 20px; margin-bottom: 10px; border: 1px solid #F1F5F9;
+            }
+            .point-marker {
+                width: 28px; height: 28px; border-radius: 50%;
+                background: white; color: var(--biome-color, #7c3aed);
+                display: flex; align-items: center; justify-content: center;
+                font-weight: 900; font-size: 12px; flex-shrink: 0;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            }
+            .point-text { font-size: 14px; font-weight: 600; color: #475569; line-height: 1.5; }
+            .point-text b { color: #1E293B; font-weight: 800; }
+
+            /* COMPARISON BENTO (Scroll-Safe) */
+            .comparison-container { overflow-x: auto; border-radius: 20px; border: 1.5px solid #F1F5F9; margin-top: 10px; }
+            .comparison-table { width: 100%; border-collapse: collapse; min-width: 280px; }
+            .comparison-table th { background: #1E293B; color: white; padding: 12px; font-size: 11px; text-align: left; }
+            .comparison-table td { padding: 12px; font-size: 13px; font-weight: 700; color: #475569; border-top: 1.5px solid #F1F5F9; }
+            .comparison-table tr:nth-child(even) { background: #F8FAFC; }
+
+            /* NEON EXAM TIPS */
+            .exam-tip-box {
+                background: #FFFBEB; border: 2.5px solid #FBBF24;
+                border-radius: 24px; padding: 20px; display: flex; gap: 15px;
+                box-shadow: 0 10px 20px rgba(251, 191, 36, 0.1);
+            }
+            .tip-icon { font-size: 24px; filter: drop-shadow(0 0 10px #FBBF24); }
+
+            /* NAV BUTTONS */
+            .study-btn-next {
+                width: 100%; height: 65px; border-radius: 22px; border: none;
+                background: var(--biome-color, #7c3aed); color: white;
+                font-weight: 900; font-size: 1.1rem; cursor: pointer;
+                box-shadow: 0 6px 0 rgba(0,0,0,0.15); transition: 0.1s;
                 text-transform: uppercase; letter-spacing: 1px;
             }
-
-            .study-list { padding: 0; margin: 0; list-style: none; }
-            .study-list li { 
-                margin-bottom: 14px; line-height: 1.6; font-size: 1rem; color: #334155;
-                position: relative; padding-left: 22px; font-weight: 600;
-            }
-            .study-list li::before {
-                content: "•"; position: absolute; left: 0; color: #7C3AED; font-weight: 900; font-size: 1.4rem; line-height: 1;
-            }
-
-            /* TABLES (Comparisons) */
-            .study-table-container { border-radius: 20px; overflow: hidden; border: 2px solid #F1F5F9; margin: 10px 0; }
-            .study-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-            .study-table th { background: #1E293B; color: white; padding: 14px; text-align: left; font-weight: 800; }
-            .study-table td { padding: 12px 14px; border-top: 1.5px solid #F1F5F9; color: #475569; font-weight: 600; }
-            .study-table tr:nth-child(even) { background: #F8FAFC; }
-
-            /* BOXED TIPS */
-            .study-exam-tip { 
-                background: #FFFBEB; border: 2px solid #FEF3C7; 
-                padding: 18px; border-radius: 24px; color: #92400E; 
-                font-size: 0.9rem; line-height: 1.5; font-weight: 700;
-                display: flex; gap: 12px; align-items: flex-start;
-            }
-            .tip-icon { font-size: 1.2rem; }
-
-            /* FLASHCARDS */
-            .study-flash { 
-                padding: 40px 20px; text-align: center; display: flex; flex-direction: column; gap: 15px;
-            }
-            .flash-term { font-size: 1.8rem; font-weight: 900; color: #1E293B; }
-            .flash-fact { font-size: 1.1rem; color: #64748B; line-height: 1.5; font-weight: 600; }
-            .flash-mnemonic { margin-top: 15px; padding: 12px; background: #F3E8FF; border-radius: 15px; color: #7C3AED; font-size: 14px; font-weight: 800; font-style: italic; }
-
-            /* INTERNAL NAV (Only shown outside of Quest Runner) */
-            .internal-nav { margin-top: 20px; }
-            .btn-full { width: 100%; padding: 16px; border-radius: 18px; border: none; background: #7C3AED; color: white; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 0 #5B21B6; }
+            .study-btn-next:active { transform: translateY(4px); box-shadow: none; }
         `;
         document.head.appendChild(style);
     },
 
-    // --- 2. RENDER LOGIC ---
-    renderStudy: (container, data) => {
+    // --- 2. THE RENDER ENGINE ---
+    renderStudy: async (container, data) => {
         GeneralStudyEngine.state.data = data;
-        GeneralStudyEngine.state.currentCard = 0;
         GeneralStudyEngine.injectStyles();
         
-        // Detect context: If container is inside the app mount, we hide internal header/nav
+        const user = await ManyaDB.getCurrentUser();
         const isQuestMode = !!document.querySelector('.quest-runner-shell');
-        
-        GeneralStudyEngine.updateUI(container, isQuestMode);
-    },
+        GeneralStudyEngine.state.isQuestMode = isQuestMode;
 
-    // Labeling alias (Standard for Manya Routers)
-    renderLabeling: (container, data) => GeneralStudyEngine.renderStudy(container, data),
+        // HUD Mutation: Apply subject color if specified
+        if(data.themeColor) document.documentElement.style.setProperty('--biome-color', data.themeColor);
 
-    // --- 3. UI BUILDER ---
-    updateUI: (container, isQuestMode = false) => {
-        const { data, currentCard } = GeneralStudyEngine.state;
-        let innerHtml = '';
-
-        // Layout A: Structured Sections
-        if (data.sections) {
-            innerHtml = data.sections.map(sec => {
-                if (sec.type === 'bullets') {
-                    return `
-                        <div class="study-section">
-                            <div class="study-title-pill">${sec.title}</div>
-                            <ul class="study-list">
-                                ${sec.points.map(p => `<li>${p}</li>`).join('')}
-                            </ul>
-                        </div>`;
-                }
-                if (sec.type === 'comparison') {
-                    return `
-                        <div class="study-section">
-                            <div class="study-title-pill">${sec.title}</div>
-                            <div class="study-table-container">
-                                <table class="study-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Feature</th>
-                                            <th>${sec.itemA}</th>
-                                            <th>${sec.itemB}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${sec.rows.map(r => `
-                                            <tr>
-                                                <td><b>${r.feature}</b></td>
-                                                <td>${r.valA}</td>
-                                                <td>${r.valB}</td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>`;
-                }
-                if (sec.type === 'warning' || sec.type === 'tip') {
-                    return `
-                        <div class="study-section">
-                            <div class="study-exam-tip">
-                                <span class="tip-icon">💡</span>
-                                <div><b>PLE EXAM TIP:</b><br>${sec.text}</div>
-                            </div>
-                        </div>`;
-                }
-            }).join('');
-        } 
-        
-        // Layout B: Flashcards
-        else if (data.cards) {
-            const card = data.cards[currentCard];
-            innerHtml = `
-                <div class="study-flash">
-                    <div class="flash-term">${card.term}</div>
-                    <div class="flash-fact">${card.fact}</div>
-                    ${card.mnemonic ? `<div class="flash-mnemonic">Mnemonic: ${card.mnemonic}</div>` : ''}
-                </div>
-            `;
-        }
-
-        // --- FINAL RENDER ASSEMBLY ---
         container.innerHTML = `
-            <div class="manya-gen-study-actor">
-                <div class="study-card-embedded">
+            <div class="study-wrapper animate-in">
+                <!-- ELITE HUD TAKEOVER (Only if library mode) -->
+                ${!isQuestMode ? `
+                    <header class="study-hud-top">
+                        <div class="header-shell">
+                            <button class="uni-back-btn" onclick="ViewManager.goBack()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                            </button>
+                            <div class="uni-title-box" style="margin-left:15px">
+                                <span class="uni-main-title">${(data.topic || 'Review').toUpperCase()}</span>
+                                <span class="uni-sub-title">ELITE STUDY LAB</span>
+                            </div>
+                            <div class="uni-stats">
+                                <span class="diamond-sparkle">💎</span>
+                                <span class="uni-count">${user.diamonds}</span>
+                            </div>
+                        </div>
+                    </header>
+                ` : ''}
+
+                <div class="study-content-scroll">
+                    ${GeneralStudyEngine.buildSections(data)}
                     
-                    <!-- Internal Header: Only show if NOT in a Quest -->
-                    ${!isQuestMode ? `
-                        <div style="margin-bottom:20px; text-align:center;">
-                            <h2 style="margin:0; font-weight:900; color:#1E293B;">${data.topic || 'Review'}</h2>
-                        </div>
-                    ` : ''}
-
-                    <div class="card-content-scroll">
-                        ${innerHtml}
+                    <!-- Completion Reward Action -->
+                    <div style="margin-top: 20px; width: 100%; max-width: 420px;">
+                        <button class="study-btn-next" onclick="GeneralStudyEngine.finishLesson()">
+                            Complete Lesson +10 💎
+                        </button>
                     </div>
-
-                    <!-- Internal Nav: Only show if NOT in a Quest -->
-                    ${(!isQuestMode && data.cards) ? `
-                        <div class="internal-nav">
-                            <button class="btn-full" onclick="GeneralStudyEngine.nextCard()">NEXT CARD</button>
-                        </div>
-                    ` : ''}
-
                 </div>
             </div>
         `;
     },
 
-    // --- 4. ENGINE HELPERS ---
-    nextCard: () => {
-        const s = GeneralStudyEngine.state;
-        if (s.data.cards && s.currentCard < s.data.cards.length - 1) {
-            s.currentCard++;
-            // Re-render into the current mount point
-            const mount = document.querySelector('.manya-gen-study-actor').parentElement;
-            GeneralStudyEngine.updateUI(mount, !!document.querySelector('.quest-runner-shell'));
+    // Standardization Alias
+    renderLabeling: (container, data) => GeneralStudyEngine.renderStudy(container, data),
+
+    // --- 3. THE UI BUILDER (LITERAL RECONSTRUCTION) ---
+    buildSections: (data) => {
+        if (!data.sections) return '<p>No content available.</p>';
+
+        return data.sections.map((sec, idx) => {
+            // A. BULLET LISTS (Bento)
+            if (sec.type === 'bullets') {
+                return `
+                    <div class="concept-card" style="animation-delay: ${idx * 0.1}s">
+                        <span class="concept-tag">Concept #${idx + 1}</span>
+                        <div class="concept-title">${sec.title}</div>
+                        <div class="point-list">
+                            ${sec.points.map((p, i) => `
+                                <div class="point-row">
+                                    <div class="point-marker">${i + 1}</div>
+                                    <div class="point-text">${p}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            // B. COMPARISON TABLES (Responsive)
+            if (sec.type === 'comparison') {
+                return `
+                    <div class="concept-card" style="animation-delay: ${idx * 0.1}s">
+                        <span class="concept-tag" style="background:#1E293B">Comparison</span>
+                        <div class="concept-title">${sec.title}</div>
+                        <div class="comparison-container">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>FEATURE</th>
+                                        <th>${sec.itemA.toUpperCase()}</th>
+                                        <th>${sec.itemB.toUpperCase()}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sec.rows.map(r => `
+                                        <tr>
+                                            <td>${r.feature}</td>
+                                            <td>${r.valA}</td>
+                                            <td>${r.valB}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
+            }
+
+            // C. NEON EXAM TIPS
+            if (sec.type === 'tip' || sec.type === 'warning') {
+                return `
+                    <div class="concept-card" style="padding:0; border:none; background:none; animation-delay: ${idx * 0.1}s">
+                        <div class="exam-tip-box">
+                            <div class="tip-icon">💡</div>
+                            <div>
+                                <div style="font-weight:900; font-size:11px; color:#92400E; margin-bottom:5px;">PLE SUCCESS TIP</div>
+                                <div style="font-weight:700; font-size:14px; color:#B45309; line-height:1.4">${sec.text}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            return '';
+        }).join('');
+    },
+
+    // --- 4. ENGINE COMPLETION ---
+    finishLesson: async () => {
+        const user = await ManyaDB.getCurrentUser();
+        user.diamonds += 10;
+        await ManyaDB.saveUser(user);
+        
+        ManyaNotify.show("Lesson Complete! +10 Diamonds", "success");
+        
+        if (window.QuestRunner && GeneralStudyEngine.state.isQuestMode) {
+            window.QuestRunner.next();
         } else {
-            if (window.QuestRunner) window.QuestRunner.next();
+            ViewManager.goBack();
         }
     }
 };
 
-// Global Registration
 window.GeneralStudyEngine = GeneralStudyEngine;

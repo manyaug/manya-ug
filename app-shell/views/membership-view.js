@@ -10,7 +10,9 @@ export const renderMembership = async (mount) => {
         <div class="membership-page animate-in">
             <!-- HEADER -->
             <div class="view-header-back">
-                <button class="manya-back-btn" onclick="window.ViewManager.show('profile')">←</button>
+                <button class="manya-back-btn" onclick="window.ViewManager.show('profile')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 18l-6-6 6-6"/>
+</svg></button>
                 <h2 style="font-weight:900; margin:0;">Manya Elite</h2>
             </div>
 

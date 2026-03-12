@@ -72,7 +72,9 @@ export const renderAchievements = async (mount) => {
         
         <!-- BACK NAV -->
         <div class="view-header-back">
-            <button class="manya-back-btn" onclick="window.ViewManager.show('profile')">←</button>
+            <button class="manya-back-btn" onclick="window.ViewManager.show('profile')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 18l-6-6 6-6"/>
+</svg></button>
             <h2 style="font-weight:900; margin:0;">Badge Vault</h2>
         </div>
 
