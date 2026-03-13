@@ -1,34 +1,31 @@
-/* style.css - MASTER BUILD v31.0 (SCROLL FIX) */
+
 :root {
     --manya-purple: #7c3aed;
     --manya-pink: #db2777;
     --bg-cream: #FDFBF7;
-    --nav-bg: rgba(255, 255, 255, 0.95);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 
-/* 1. THE 3-SLOT MASTER GRID */
 html, body {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden !important; /* Prevents the whole browser from bouncing */
-    background-color: var(--bg-cream) !important;
-    font-family: 'Nunito', sans-serif;
+    width: 100%; height: 100vh;
+    overflow: hidden !important;
+    background-color: var(--bg-cream);
+    font-family: 'Plus Jakarta Sans', sans-serif;
     position: fixed;
     display: grid;
-    /* Slot 1: Header (75px), Slot 2: Content (Flexible), Slot 3: Nav (85px) */
-    grid-template-rows: 75px 1fr 85px; 
+    /* HUD (80px) | Content (Flexible) | Nav (95px) */
+    grid-template-rows: 80px 1fr 95px; 
 }
 
+
 /* --- SLOT 1: THE HUD (TOP) --- */
+/* GLOBAL HUD (SLOT 1) */
 .app-header-master {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    padding-bottom: 5px;
-    z-index: 10000;
+    grid-row: 1; display: flex; justify-content: center; align-items: center; z-index: 10000;
 }
+
+
 /* GLOBAL HUD TAKEOVER LOGIC */
 body.in-spiral .app-header-master:not(.spiral-header-unified) {
     transform: translateY(-120%);
@@ -41,19 +38,31 @@ body.in-spiral .app-header-master:not(.spiral-header-unified) {
 body.in-spiral #view-mount {
     padding-top: 0 !important;
 }
+
+/* --- ONBOARDING FULLSCREEN TAKEOVER --- */
+
+/* When the body has this class, hide the global shell elements */
+body.onboarding-active .app-header-master,
+body.onboarding-active .bottom-nav {
+    display: none !important;
+}
+
+/* Remove the 3-slot grid restrictions during onboarding */
+body.onboarding-active {
+    grid-template-rows: 1fr !important;
+}
+
+body.onboarding-active #view-mount {
+    grid-row: 1;
+    padding: 0;
+    max-width: 100%;
+}
+
 .header-shell {
-    width: 90%;
-    max-width: 380px;
-    height: 52px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 100px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    border: 1.5px solid white;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    width: 92%; max-width: 400px; height: 54px;
+    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+    border-radius: 100px; display: flex; align-items: center; position: relative;
+    border: 2px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .hud-avatar-peek {
@@ -181,32 +190,23 @@ body.in-spiral .nav-indicator {
 
 
 /* --- SLOT 2: THE CONTENT VIEWPORT (FIXED SCROLL) --- */
+/* CONTENT AREA (SLOT 2) */
 #view-mount {
-    width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    /* THE FIX: Changed from hidden to auto */
-    overflow-y: auto !important; 
-    overflow-x: hidden;
-    padding: 10px 20px;
-    /* Smooth scrolling for iOS */
-    -webkit-overflow-scrolling: touch; 
+    grid-row: 2;
+    width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
 }
-
 /* Hide scrollbar for a clean app look */
-#view-mount::-webkit-scrollbar {
-    display: none;
-}
+#view-mount::-webkit-scrollbar { display: none; }
 
 /* --- SLOT 3: THE BOTTOM NAV --- */
+
+/* GLOBAL NAV (SLOT 3) */
 .bottom-nav {
-    background: white;
-    border-top: 1.5px solid #F1F5F9;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 10000;
-    position: relative;
+    grid-row: 3; background: white; border-top: 2px solid #F1F5F9;
+    display: flex; justify-content: space-around; align-items: center; z-index: 10000;
 }
 
 .nav-item {

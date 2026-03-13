@@ -34,6 +34,16 @@ export const ViewManager = {
     show(viewName, navEl = null, params = null) {
     this.currentView = viewName;
 
+
+    // --- FULLSCREEN GATING ---
+    if (viewName === 'onboarding') {
+        document.body.classList.add('onboarding-active');
+    } else {
+        document.body.classList.remove('onboarding-active');
+    }
+
+
+
     // 1. HUD TOGGLE: Add/Remove the takeover class
     if (viewName === 'spiral') {
         document.body.classList.add('in-spiral');

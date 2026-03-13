@@ -6,8 +6,8 @@ import { ManyaDB } from '../manya-db.js';
 import { AudioManager } from '../js/audio-manager.js';
 import { ManyaNotify } from './manya-notify.js';
  
+
 export const renderSpiral = async (mount, subject) => {
-    // 1. DATA & BIOME SETUP
     const user = await ManyaDB.getCurrentUser();
     if (!user) return ViewManager.show('onboarding');
 
@@ -20,48 +20,44 @@ export const renderSpiral = async (mount, subject) => {
     };
     const biome = biomes[sub] || biomes.math;
     
-    // Inject Theme into Global CSS Variables
-    const root = document.documentElement;
-    root.style.setProperty('--biome-color', biome.color);
-    root.style.setProperty('--biome-color-alpha', biome.alpha);
-    root.style.setProperty('--biome-bg', biome.bg);
+    document.documentElement.style.setProperty('--biome-color', biome.color);
+    document.documentElement.style.setProperty('--biome-color-alpha', biome.alpha);
+    document.documentElement.style.setProperty('--biome-bg', biome.bg);
     document.body.classList.add('in-spiral');
 
     const progress = user[`prog_${sub}`] || 0;
-    const isNight = new Date().getHours() >= 18 || new Date().getHours() < 6;
+    const isNightInitial = new Date().getHours() >= 18 || new Date().getHours() < 6;
 
-    // 2. PRECISION HOTSPOTS (Bottom-Up Mapping)
+    // YOUR PRECISION HOTSPOTS (Restored)
     const roadPath = [
-        { x: 54.42, y: 97.68 }, { x: 42.85, y: 80.13 }, { x: 55.78, y: 64.14 },
-        { x: 56.47, y: 39.37 }, { x: 45.92, y: 21.43 }, { x: 56.81, y: 7.78  }
+        { x: 53.4,  y: 99.44 }, { x: 48.98, y: 85.98 }, { x: 45.24, y: 73.31 },
+        { x: 55.44, y: 61.8  }, { x: 54.76, y: 34.89 }, { x: 45.92, y: 19.87 },
+        { x: 58.51, y: 8.95  }
     ];
 
     const nodes = [];
-    const labels = ['Warmup', 'Research', 'Drill', 'Mastery'];
-    for(let i=0; i<18; i++) { // 3 tiles worth
-        nodes.push({ id: i, label: labels[i % 4], icon: i % 4 === 3 ? '🏆' : biome.icon });
+    for(let i=0; i<21; i++) {
+        nodes.push({ id: i, label: ['Warmup','Research','Drill','Mastery'][i%4], icon: i%4===3 ? '🏆' : biome.icon });
     }
 
-    const tileHeight = 850;
-    const overlap = 85; 
-    const nodesPerTile = roadPath.length;
+    const tileHeight = 850, overlap = 85, nodesPerTile = roadPath.length;
     const totalTiles = Math.ceil(nodes.length / nodesPerTile);
     const totalHeight = (totalTiles * (tileHeight - overlap)) + overlap;
 
-    const spawnFireflies = () => {
+    const generateParticles = (type, count) => {
         let h = '';
-        if(!isNight) return '';
-        for (let i = 0; i < 40; i++) {
-            h += `<div class="firefly" style="left:${Math.random()*90+5}%; top:${Math.random()*totalHeight}px; animation-delay:-${Math.random()*10}s"></div>`;
+        for (let i = 0; i < count; i++) {
+            h += `<div class="${type}" style="left:${Math.random()*120-10}%; animation-duration:${Math.random()*2+2}s; animation-delay:-${Math.random()*5}s;"></div>`;
         }
         return h;
     };
 
-    // 3. RENDER THE WORLD
     mount.innerHTML = `
-        <div id="spiral-stage" class="spiral-view animate-in ${sub} ${isNight ? 'night' : 'day'}">
+        <div id="spiral-stage" class="spiral-view animate-in ${sub} ${isNightInitial ? 'night' : 'day'}">
             
-            <!-- WORLD-CLASS UNIFIED HUD -->
+            <!-- THE SHARP VIGNETTE -->
+            <div class="spiral-mist-vignette"></div>
+
             <header class="spiral-header-unified">
                 <div class="unified-shell">
                     <button class="uni-back-btn" onclick="ViewManager.show('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -78,69 +74,42 @@ export const renderSpiral = async (mount, subject) => {
                 </div>
             </header>
 
-            <div id="firefly-layer" class="weather-mount">${spawnFireflies()}</div>
+            <div id="weather-layer" class="weather-mount weather-active">${generateParticles(biome.weather, 60)}</div>
 
             <div class="spiral-map-container" id="scroll-frame">
                 <div class="map-canvas" style="height:${totalHeight}px">
-                    
                     <div class="image-stack">
-                        ${Array(totalTiles).fill(0).map((_, i) => `
-                            <img src="assets/icons/${biome.folder}/way-${(i % 8) + 1}.png" 
-                                 class="physical-tile" style="z-index:${i};">
-                        `).join('')}
+                        ${Array(totalTiles).fill(0).map((_, i) => `<img src="assets/icons/${biome.folder}/way-${(i % 8) + 1}.png" class="physical-tile" style="z-index:${i};">`).join('')}
                     </div>
-
                     <div class="nodes-overlay">
                         ${nodes.map((n, i) => {
                             const status = i < progress ? 'completed' : (i === progress ? 'active' : 'locked');
-                            const coord = roadPath[i % nodesPerTile]; 
-                            const tileIdx = Math.floor(i / nodesPerTile);
-                            
+                            const coord = roadPath[i % roadPath.length];
+                            const tileIdx = Math.floor(i / roadPath.length);
                             const yOnTile = (100 - coord.y) * (tileHeight - overlap) / 100;
                             const topPos = totalHeight - (tileIdx * (tileHeight - overlap) + yOnTile) - 180;
-
                             return `
                             <div class="game-node ${status}" style="top: ${topPos}px; left: ${coord.x}%;">
-                                ${status === 'active' ? `
-                                    <div class="player-marker">
-                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}">
-                                    </div>` : ''}
-                                <div class="node-cap" onclick="handleSpiralClick(${i}, '${status}')">
+                                ${status === 'active' ? `<div class="player-marker"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}"></div>` : ''}
+                                <div class="node-cap" onclick="handleQuestClick(${i}, '${status}')">
                                     ${status === 'completed' ? '✔' : (status === 'locked' ? '🔒' : n.icon)}
                                 </div>
-                                <div class="node-label-vibrant">${n.label}</div>
+                                <div class="node-title-bubble">${n.label}</div>
                             </div>`;
                         }).join('')}
                     </div>
-                    
-                    <!-- BOTTOM NAV SPACE BUFFER -->
                     <div style="height: 250px;"></div>
                 </div>
             </div>
         </div>`;
 
-    window.handleSpiralClick = (id, status) => {
-        if(status === 'locked') return ManyaNotify.show("Area Locked!", "info");
+    window.handleQuestClick = (id, status) => {
+        if(status === 'locked') return ManyaNotify.show("Unlock previous areas first!", "info");
         AudioManager.playSFX();
         window.launchLibraryStep(sub, 'unit1', 'quest_'+id, 'step1');
     };
 
-    // Cleanup when leaving
-    const originalShow = ViewManager.show;
-    ViewManager.show = function(view) {
-        if (view !== 'spiral') {
-            document.body.classList.remove('in-spiral');
-            root.style.removeProperty('--biome-color');
-            root.style.removeProperty('--biome-bg');
-            root.style.removeProperty('--biome-color-alpha');
-        }
-        originalShow.apply(this, arguments);
-    };
-
-    // Auto-Focus Camera
-    setTimeout(() => {
-        const frame = document.getElementById('scroll-frame');
-        const activeNode = document.querySelector('.game-node.active');
-        if (frame && activeNode) frame.scrollTo({ top: activeNode.offsetTop - 350, behavior: 'auto' });
-    }, 150);
+    const frame = document.getElementById('scroll-frame');
+    const activeNode = document.querySelector('.game-node.active');
+    if (frame && activeNode) frame.scrollTo({ top: activeNode.offsetTop - 380, behavior: 'auto' });
 };
