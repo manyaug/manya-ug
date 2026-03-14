@@ -19,7 +19,7 @@ export const HarvestGameEngine = {
                 </div>
 
                 <div id="harvest-player" class="basket pos-left">
-                    <img src="assets/icons/manya_icon.png" class="manya-pilot">
+                    <img src="assets/images/manya_icon.png" class="manya-pilot">
                 </div>
 
                 <div class="harvest-controls">

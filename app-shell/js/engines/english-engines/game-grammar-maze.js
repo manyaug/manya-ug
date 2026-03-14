@@ -389,7 +389,7 @@ export const JungleMazeEngine = {
         JungleMazeEngine.state.container = container;
         JungleMazeEngine.state.questData = data.levels;
         // Fix for missing image: fallback to Manya icon or emoji if icon missing
-        JungleMazeEngine.state.playerIcon = window.ManyaQuestRunner?.CHAR_ICONS?.manya || "assets/icons/manya_icon.png";
+        JungleMazeEngine.state.playerIcon = window.ManyaQuestRunner?.CHAR_ICONS?.manya || "assets/images/manya_icon.png";
         
         JungleMazeEngine.injectStyles();
         JungleMazeEngine.startGame();

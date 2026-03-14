@@ -79,7 +79,7 @@ export const renderSpiral = async (mount, subject) => {
             <div class="spiral-map-container" id="scroll-frame">
                 <div class="map-canvas" style="height:${totalHeight}px">
                     <div class="image-stack">
-                        ${Array(totalTiles).fill(0).map((_, i) => `<img src="assets/icons/${biome.folder}/way-${(i % 8) + 1}.png" class="physical-tile" style="z-index:${i};">`).join('')}
+                        ${Array(totalTiles).fill(0).map((_, i) => `<img src="assets/images/${biome.folder}/way-${(i % 8) + 1}.png" class="physical-tile" style="z-index:${i};">`).join('')}
                     </div>
                     <div class="nodes-overlay">
                         ${nodes.map((n, i) => {

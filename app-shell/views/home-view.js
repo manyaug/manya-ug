@@ -24,10 +24,10 @@ export const renderHome = async (mount) => {
     if (!user) return;
 
     const subjects = [
-        { id: 'math', name: 'Mathematics', progress: user.prog_math || 45, icon: 'assets/icons/math_island.png', color: '#6366F1' },
-        { id: 'science', name: 'Science', progress: user.prog_science || 20, icon: 'assets/icons/science_island.png', color: '#10B981' },
-        { id: 'sst', name: 'SST', progress: user.prog_sst || 10, icon: 'assets/icons/sst_island.png', color: '#F59E0B' },
-        { id: 'english', name: 'English', progress: user.prog_english || 80, icon: 'assets/icons/english_island.png', color: '#DB2777' }
+        { id: 'math', name: 'Mathematics', progress: user.prog_math || 45, icon: 'assets/images/math_island.png', color: '#6366F1' },
+        { id: 'science', name: 'Science', progress: user.prog_science || 20, icon: 'assets/images/science_island.png', color: '#10B981' },
+        { id: 'sst', name: 'SST', progress: user.prog_sst || 10, icon: 'assets/images/sst_island.png', color: '#F59E0B' },
+        { id: 'english', name: 'English', progress: user.prog_english || 80, icon: 'assets/images/english_island.png', color: '#DB2777' }
     ];
 
     mount.innerHTML = `

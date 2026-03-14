@@ -4373,7 +4373,7 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   ├── 📄 plus-jakarta-sans-v12-latin-700.woff2
     │   │   ├── 📄 plus-jakarta-sans-v12-latin-800.woff2
     │   │   └── 📄 plus-jakarta-sans-v12-latin-regular.woff2
-    │   ├── 📁 icons/
+    │   ├── 📁 images/
     │   │   ├── 📁 math_path/
     │   │   │   ├── 📄 way-1.png
     │   │   │   ├── 📄 way-10.png

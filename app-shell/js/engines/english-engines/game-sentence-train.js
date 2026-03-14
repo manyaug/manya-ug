@@ -8,8 +8,8 @@ export const SentenceTrainEngine = {
         poolWords: [],       
         trackWords: [],      
         isAnimating: false,
-        playerIcon: "/assets/icons/manya_icon.png",
-        pollyIcon: "/assets/icons/polly_icon.png"
+        playerIcon: "/assets/images/manya_icon.png",
+        pollyIcon: "/assets/images/polly_icon.png"
     },
 
     renderLabeling: async (container, data) => {

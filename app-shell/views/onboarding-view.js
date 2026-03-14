@@ -139,7 +139,7 @@ export const renderOnboarding = (mount) => {
             </div>
             <div class="ob-chat">
                 <div class="manya-bubble-ob">
-                    <img src="assets/icons/manya_icon.png">
+                    <img src="assets/images/manya_icon.png">
                     <h2 id="ob-question">Waddle!</h2>
                 </div>
             </div>

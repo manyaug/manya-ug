@@ -22,10 +22,10 @@ export const renderProfile = async (mount) => {
     const stats = xpToLevel(user.xp || 150);
 
     const subjectProgress = [
-        { name: 'Mathematics', val: 78, color: '#7c3aed', icon: 'assets/icons/math_island.png' },
-        { name: 'Science', val: 45, color: '#10b981', icon: 'assets/icons/science_island.png' },
-        { name: 'SST', val: 62, color: '#f59e0b', icon: 'assets/icons/sst_island.png' },
-        { name: 'English', val: 90, color: '#db2777', icon: 'assets/icons/english_island.png' }
+        { name: 'Mathematics', val: 78, color: '#7c3aed', icon: 'assets/images/math_island.png' },
+        { name: 'Science', val: 45, color: '#10b981', icon: 'assets/images/science_island.png' },
+        { name: 'SST', val: 62, color: '#f59e0b', icon: 'assets/images/sst_island.png' },
+        { name: 'English', val: 90, color: '#db2777', icon: 'assets/images/english_island.png' }
     ];
 
     mount.innerHTML = `
@@ -126,7 +126,7 @@ export const renderProfile = async (mount) => {
         </div>
 
         <div style="text-align:center; margin-top:40px; opacity:0.2; padding-bottom:50px;">
-            <img src="assets/icons/manya_icon.png" style="width:50px">
+            <img src="assets/images/manya_icon.png" style="width:50px">
         </div>
     </div>
     `;

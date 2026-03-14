@@ -158,7 +158,7 @@ The `library-view.js` reads the manifest and builds the accordion UI and the 5-c
 │   └── english/               # Stories & /vault/ Reference Rules
 │
 └── assets/                    # STATIC ASSETS
-    ├── icons/                 # Map tiles, Avatars, Island graphics
+    ├── images/                 # Map tiles, Avatars, Island graphics
     ├── shared/                # Mascot MP4, Fur Poster, Global SFX
     └── fonts/                 # Nunito, Plus Jakarta Sans
 ```

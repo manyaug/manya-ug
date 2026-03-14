@@ -93,7 +93,7 @@ export const renderLibrary = async (mount) => {
                 </div>
 
                 <div style="text-align:center; margin-top:50px; opacity:0.1">
-                    <img src="assets/icons/manya_icon.png" style="width:60px">
+                    <img src="assets/images/manya_icon.png" style="width:60px">
                 </div>
             </div>
             `;

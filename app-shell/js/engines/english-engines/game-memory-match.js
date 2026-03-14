@@ -7,7 +7,7 @@ export const MemoryMatchEngine = {
         totalPairs: 0,
         score: 0,
         lockBoard: false,   // Prevent clicking while animating
-        playerIcon: "/assets/icons/manya_icon.png"
+        playerIcon: "/assets/images/manya_icon.png"
     },
 
     renderLabeling: async (container, data) => {

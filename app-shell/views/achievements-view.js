@@ -124,7 +124,7 @@ const subjectGems = [
         `).join('')}
 
         <div style="text-align:center; margin-top:60px; opacity:0.1;">
-            <img src="assets/icons/manya_icon.png" style="width:80px">
+            <img src="assets/images/manya_icon.png" style="width:80px">
         </div>
     </div>
     `;

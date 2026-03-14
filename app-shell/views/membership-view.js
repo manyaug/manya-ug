@@ -22,7 +22,7 @@ export const renderMembership = async (mount) => {
 
             <!-- 2. SOCIAL PROOF -->
             <div class="testimonial-card">
-                <img src="assets/icons/manya_icon.png" class="test-av">
+                <img src="assets/images/manya_icon.png" class="test-av">
                 <div class="test-text">
                     "Upgrading to Elite was the best decision for my PLE prep. I love the offline mode!"
                     <span class="test-name">Meda, P.7 Scholar</span>
@@ -77,7 +77,7 @@ export const renderMembership = async (mount) => {
             </div>
             
             <div style="text-align:center; margin-top:50px; opacity:0.3;">
-                <img src="assets/icons/manya_icon.png" style="width:50px">
+                <img src="assets/images/manya_icon.png" style="width:50px">
             </div>
         </div>
         `;

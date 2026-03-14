@@ -17,7 +17,7 @@ export const ManyaNotify = {
         toast.className = `manya-toast ${type}`;
         
         // Pick an emoji based on type if needed, or keep the icon
-        const iconSrc = 'assets/icons/manya_icon.png';
+        const iconSrc = 'assets/images/manya_icon.png';
 
         toast.innerHTML = `
             <img src="${iconSrc}" alt="Manya">

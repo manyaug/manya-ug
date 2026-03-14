@@ -4,9 +4,9 @@
 export const ChatEngine = {
     renderLabeling: (container, data) => {
         const charMap = {
-            manya: { icon: "assets/icons/manya_icon.png", name: "MANYA", color: "#7e22ce" },
-            polly: { icon: "assets/icons/polly_icon.png", name: "POLLY", color: "#10b981" },
-            kiki: { icon: "assets/icons/kiki_icon.png", name: "KIKI", color: "#f472b6" }
+            manya: { icon: "assets/images/manya_icon.png", name: "MANYA", color: "#7e22ce" },
+            polly: { icon: "assets/images/polly_icon.png", name: "POLLY", color: "#10b981" },
+            kiki: { icon: "assets/images/kiki_icon.png", name: "KIKI", color: "#f472b6" }
         };
         const char = charMap[data.speaker] || charMap.manya;
 

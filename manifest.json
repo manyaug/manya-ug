@@ -1,19 +1,31 @@
 {
   "name": "Manya Prep Hub",
   "short_name": "Manya",
-  "start_url": "./index.html",
+  "description": "Elite PLE Prep",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#941cb3", 
-  "theme_color": "#941cb3",
+  "orientation": "portrait",
+  "background_color": "#FDFBF7",
+  "theme_color": "#7c3aed",
   "icons": [
     {
-      "src": "assets/icons/pose_1_cut.png", 
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any" 
+      "src": "assets/icons/pwa-64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
     },
     {
-      "src": "assets/icons/pose_1_cut.png",
+      "src": "assets/icons/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/maskable-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

@@ -106,7 +106,7 @@ export const renderRankings = async (mount) => {
             </div>
             
             <div style="text-align:center; padding: 40px 0; opacity:0.1;">
-                <img src="assets/icons/manya_icon.png" style="width:80px">
+                <img src="assets/images/manya_icon.png" style="width:80px">
             </div>
         </div>
         `;
