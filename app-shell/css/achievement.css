@@ -1,64 +1,125 @@
-/* MANYA BADGE VAULT - WORLD CLASS V20 */
-.achievements-page { padding: 10px 20px 140px; background: #FDFBF7; }
-
-/* COLLECTION PROGRESS */
-.collection-progress-card {
-    background: #1E1B4B; border-radius: 30px; padding: 25px;
-    margin-bottom: 35px; color: white; border: 2px solid #4338CA;
-    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.3);
-}
-.progress-meta { display: flex; justify-content: space-between; font-weight: 900; font-size: 12px; margin-bottom: 10px; }
-
-/* CATEGORY HEADERS */
-.badge-category-title {
-    font-size: 11px; font-weight: 900; color: #94A3B8;
-    text-transform: uppercase; letter-spacing: 2px;
-    margin: 30px 0 15px 10px; display: block;
+/* MANYA BADGE VAULT - ELITE V22.0 */
+.achievements-page { 
+    padding: 110px 20px 140px; 
+    background: var(--bg-main);
+    transition: background 0.5s ease;
 }
 
-/* THE BADGE GRID */
-.badge-grid-elite {
+/* 1. PROGRESS HUD (GLASSMORPHISM) */
+.collection-card-elite {
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+    border-radius: 35px; padding: 25px;
+    margin-bottom: 35px; color: white;
+    border: 2px solid #4338CA;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    position: relative; overflow: hidden;
+}
+
+.collection-card-elite::after {
+    content: ''; position: absolute; top: -50px; right: -50px;
+    width: 120px; height: 120px; background: rgba(99, 102, 241, 0.2);
+    border-radius: 50%; filter: blur(30px);
+}
+
+.prog-label-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 11px; margin-bottom: 12px; letter-spacing: 1.5px; }
+
+/* ZEBRA COLLECTION BAR */
+.vault-bar-track { height: 12px; background: rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; }
+.vault-bar-fill {
+    height: 100%; background: #fbbf24;
+    background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 4px, transparent 0, transparent 8px);
+    transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 2. CATEGORY TYPOGRAPHY */
+.badge-cat-header {
+    display: block; font-size: 11px; font-weight: 900; 
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 2.5px; margin: 35px 0 15px 10px;
+}
+
+/* 3. THE BADGE GRID */
+.badge-grid-vault {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
 }
 
-/* BADGE CARD BASE */
-.badge-card-pro {
-    background: white; border-radius: 24px; padding: 15px 10px;
-    text-align: center; border: 2.5px solid #F1F5F9;
+.badge-item-elite {
+    background: var(--bg-card); border-radius: 24px;
+    padding: 18px 10px; text-align: center;
+    border: 2.5px solid var(--border-color);
     position: relative; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
 }
 
+/* HOVER/ACTIVE EFFECT */
+.badge-item-elite:active { transform: scale(0.9); }
+
 /* LOCKED STATE */
-.badge-locked { opacity: 0.4; background: #F8FAFC; border-style: dashed; }
-.badge-locked .badge-icon-elite { filter: grayscale(1); opacity: 0.3; }
+.badge-is-locked { opacity: 0.3; border-style: dashed; filter: grayscale(1); }
 
-/* UNLOCKED SHINE EFFECT */
-.badge-unlocked {
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+/* UNLOCKED SHINE */
+.badge-is-unlocked { 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04); 
+    border-color: var(--manya-purple); 
 }
-.badge-unlocked::after {
-    content: ''; position: absolute; top: -50%; left: -50%;
+
+.badge-is-unlocked::before {
+    content: ''; position: absolute; top: -100%; left: -100%;
     width: 200%; height: 200%;
-    background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.6) 50%, transparent 55%);
-    animation: badge-shine 4s infinite;
+    background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.4) 50%, transparent 55%);
+    animation: badge-sweep 4s infinite;
 }
 
-@keyframes badge-shine {
-    0% { transform: translate(-30%, -30%) rotate(0deg); }
-    20%, 100% { transform: translate(30%, 30%) rotate(0deg); }
+@keyframes badge-sweep {
+    0% { transform: translate(-20%, -20%) rotate(0deg); }
+    15% { transform: translate(20%, 20%) rotate(0deg); }
+    100% { transform: translate(20%, 20%) rotate(0deg); }
 }
 
-/* BADGE TIERS (Glows) */
-.tier-gold { border-color: #FBBF24; background: #FFFBEB; }
-.tier-silver { border-color: #94A3B8; background: #F8FAFC; }
-.tier-diamond { border-color: #6366F1; background: #EEF2FF; }
+/* TIER GLOWS */
+.tier-bronze { border-color: #CD7F32; }
+.tier-silver { border-color: #94A3B8; }
+.tier-gold { border-color: #FBBF24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.2); }
+.tier-diamond { border-color: #6366F1; box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
 
-.badge-icon-elite { font-size: 32px; margin-bottom: 8px; display: block; }
-.badge-name-elite { font-size: 10px; font-weight: 900; color: #1E293B; line-height: 1.2; }
+.b-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+.b-name { font-size: 10px; font-weight: 900; color: var(--text-main); line-height: 1.2; }
 
-/* CATEGORY COLORS */
-.cat-math { border-bottom: 4px solid #6366F1; }
-.cat-science { border-bottom: 4px solid #10B981; }
-.cat-sst { border-bottom: 4px solid #F59E0B; }
-.cat-english { border-bottom: 4px solid #DB2777; }
+/* SUBJECT ACCENTS */
+.cat-math { border-bottom: 4px solid var(--manya-purple); }
+.cat-science { border-bottom: 4px solid var(--manya-green); }
+.cat-sst { border-bottom: 4px solid var(--manya-gold); }
+.cat-english { border-bottom: 4px solid var(--manya-pink); }
+
+/* GEM TREASURY UI */
+.gem-treasury-card {
+    background: #0F172A; /* Dark space theme */
+    border-radius: 35px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 3px solid #1E293B;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.gem-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.gem-item { text-align: center; }
+
+.gem-stone {
+    font-size: 28px;
+    margin-bottom: 5px;
+    animation: gemFloat 3s infinite ease-in-out;
+}
+
+.gem-count { font-weight: 900; font-size: 16px; color: white; }
+.gem-label { font-size: 9px; font-weight: 800; color: #94A3B8; text-transform: uppercase; }
+
+@keyframes gemFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}

@@ -1,212 +1,138 @@
+/* ==========================================================================
+   MANYA PREP HUB - MASTER GLOBAL SHELL v35.0 (THE NUCLEAR FIX)
+   ========================================================================== */
 
 :root {
+    /* Manya Brand DNA */
     --manya-purple: #7c3aed;
+    --manya-purple-dark: #5b21b6;
     --manya-pink: #db2777;
-    --bg-cream: #FDFBF7;
+    --manya-gold: #f59e0b;
+    --manya-green: #10B981;
+    
+    /* Light Mode Palette */
+    --bg-main: #FDFBF7;
+    --bg-card: #FFFFFF;
+    --text-main: #1E293B;
+    --text-muted: #94A3B8;
+    --border-color: #F1F5F9;
+    
+    /* Transitions */
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+/* DARK MODE OVERRIDES */
+[data-theme='dark'] {
+    --bg-main: #0F172A;
+    --bg-card: #1E293B;
+    --text-main: #F8FAFC;
+    --text-muted: #64748B;
+    --border-color: #334155;
+}
 
+/* 1. NUCLEAR RESET */
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+    margin: 0; padding: 0; 
+    user-select: none;
+}
+
+/* 2. THE 3-SLOT MASTER GRID (Fixes the Overlap) */
 html, body {
-    width: 100%; height: 100vh;
-    overflow: hidden !important;
-    background-color: var(--bg-cream);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden !important; /* Prevents whole screen scrolling */
+    background-color: var(--bg-main) !important;
+    font-family: 'Plus Jakarta Sans', 'Nunito', sans-serif;
     position: fixed;
     display: grid;
-    /* HUD (80px) | Content (Flexible) | Nav (95px) */
-    grid-template-rows: 80px 1fr 95px; 
+    /* SLOT 1: HUD (80px) | SLOT 2: CONTENT (Fills remaining) | SLOT 3: NAV (95px) */
+    grid-template-rows: 80px 1fr 95px;
+    transition: background 0.5s ease;
 }
 
-
-/* --- SLOT 1: THE HUD (TOP) --- */
-/* GLOBAL HUD (SLOT 1) */
+/* 3. SLOT 1: THE GLOBAL HUD (TOP) */
 .app-header-master {
-    grid-row: 1; display: flex; justify-content: center; align-items: center; z-index: 10000;
-}
-
-
-/* GLOBAL HUD TAKEOVER LOGIC */
-body.in-spiral .app-header-master:not(.spiral-header-unified) {
-    transform: translateY(-120%);
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Ensure the game fits perfectly between the bars */
-body.in-spiral #view-mount {
-    padding-top: 0 !important;
-}
-
-/* --- ONBOARDING FULLSCREEN TAKEOVER --- */
-
-/* When the body has this class, hide the global shell elements */
-body.onboarding-active .app-header-master,
-body.onboarding-active .bottom-nav {
-    display: none !important;
-}
-
-/* Remove the 3-slot grid restrictions during onboarding */
-body.onboarding-active {
-    grid-template-rows: 1fr !important;
-}
-
-body.onboarding-active #view-mount {
     grid-row: 1;
-    padding: 0;
-    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
 }
 
 .header-shell {
-    width: 92%; max-width: 400px; height: 54px;
-    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-    border-radius: 100px; display: flex; align-items: center; position: relative;
-    border: 2px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    width: 92%;
+    max-width: 400px;
+    height: 54px;
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border: 2px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .hud-avatar-peek {
-    position: absolute;
-    left: 6px;
-    top: -18px;
-    width: 56px;
-    height: 56px;
-}
-
-.peek-circle {
-    width: 100%;
-    height: 100%;
-    background: white;
-    border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    position: absolute; left: 8px; top: -16px;
+    width: 54px; height: 54px;
+    border-radius: 50%; border: 3px solid white;
+    
+    background: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1);
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.mascot-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
+.mascot-img { width: 100%; height: 100%; object-fit: cover; }
 
 .hud-logo {
-    margin-left: 70px;
-    font-size: 15px;
+    margin-left: 120px;
+    font-size: 14px;
     font-weight: 900;
-    color: #1e293b;
+    color: var(--text-main);
     letter-spacing: 0.5px;
-}
-.hud-stats {
-    margin-left: auto;
-    margin-right: 15px;
 }
 
 .stat-pill-diamond {
-    background: white; /* High contrast against the cream background */
-    padding: 10px 20px; /* Larger tactile area */
+    margin-left: 60px;
+    margin-right: 10px;
+    background: var(--bg-main);
+    padding: 8px 16px;
     border-radius: 100px;
-    font-weight: 900;
-    font-size: 16px; /* Larger text */
     display: flex;
     align-items: center;
     gap: 8px;
-    border: 2px solid #F1F5F9;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Soft depth */
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1.5px solid var(--border-color);
     cursor: pointer;
 }
+.stat-pill-diamond .count { font-weight: 900; font-size: 15px; color: var(--text-main); }
 
-.stat-pill-diamond:active {
-    transform: scale(0.92);
-}
-
-/* THE GLOWING DIAMOND */
-.diamond-sparkle {
-    display: inline-block;
-    font-size: 20px;
-    /* Cyan glow that matches the diamond color */
-    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)); 
-    animation: diamondPulse 2s infinite ease-in-out;
-}
-
-.count {
-    color: #1E293B;
-    letter-spacing: 0.5px;
-}
-
-/* ANIMATION: Makes the diamond look alive */
-@keyframes diamondPulse {
-    0%, 100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.6));
-    }
-    50% {
-        transform: scale(1.15) rotate(5deg);
-        filter: drop-shadow(0 0 15px rgba(6, 182, 212, 1));
-    }
-}
-
-
-/* 1. TOP HUD: NEON GLASSMORPHISM */
-body.in-spiral .header-shell {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 2.5px solid var(--biome-color) !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 
-                inset 0 0 15px var(--biome-color-alpha);
-    transition: all 0.8s ease;
-}
-
-/* 2. BOTTOM NAV: THEMATIC MUTATION */
-body.in-spiral .bottom-nav {
-    background: rgba(15, 23, 42, 0.9) !important; /* Darker console feel */
-    border-top: 3px solid var(--biome-color);
-    box-shadow: 0 -10px 40px var(--biome-color-alpha);
-    transition: all 0.8s ease;
-}
-
-body.in-spiral .nav-item { color: rgba(255,255,255,0.4); }
-body.in-spiral .nav-item.active { color: var(--biome-color); }
-
-/* THEME INDICATOR (The floating circle) */
-body.in-spiral .nav-indicator {
-    background: var(--biome-color);
-    box-shadow: 0 0 25px var(--biome-color);
-    border-color: var(--biome-bg); /* Assimilates with the foggy world */
-}
-
-/* 3. TACTILE HUD COMPONENTS */
-.hud-back-container button {
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.hud-back-container button:hover { transform: scale(1.1) rotate(-5deg); }
-
-.stat-pill-diamond {
-    border: 1.5px solid var(--biome-color) !important;
-}
-
-
-/* --- SLOT 2: THE CONTENT VIEWPORT (FIXED SCROLL) --- */
-/* CONTENT AREA (SLOT 2) */
+/* 4. SLOT 2: THE CONTENT VIEWPORT (CENTER) */
 #view-mount {
     grid-row: 2;
-    width: 100%; height: 100%;
-    overflow-y: auto; overflow-x: hidden;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow-y: auto; /* Allow scrolling ONLY inside this slot */
+    overflow-x: hidden;
     position: relative;
+    padding: 10px 20px;
     -webkit-overflow-scrolling: touch;
 }
-/* Hide scrollbar for a clean app look */
 #view-mount::-webkit-scrollbar { display: none; }
 
-/* --- SLOT 3: THE BOTTOM NAV --- */
-
-/* GLOBAL NAV (SLOT 3) */
+/* 5. SLOT 3: THE BOTTOM NAVIGATION (BOTTOM) */
 .bottom-nav {
-    grid-row: 3; background: white; border-top: 2px solid #F1F5F9;
-    display: flex; justify-content: space-around; align-items: center; z-index: 10000;
+    grid-row: 3;
+    background: var(--bg-card);
+    border-top: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10000;
+    position: relative;
 }
 
 .nav-item {
@@ -214,26 +140,30 @@ body.in-spiral .nav-indicator {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #94A3B8;
+    color: var(--text-muted);
     text-decoration: none;
-    width: 30%;
+    width: 25%;
     height: 100%;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: var(--transition-bounce);
+    cursor: pointer;
 }
 
+/* THE ICON FIX: Forces icons in your screenshot to shrink */
 .nav-item svg {
-    width: 22px;
-    height: 22px;
-    transition: 0.3s;
+    width: 24px !important;
+    height: 24px !important;
+    transition: var(--transition-bounce);
 }
 
 .nav-item span {
     font-size: 10px;
-    font-weight: 800;
-    margin-top: 4px;
+    font-weight: 900;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* --- THE ACTIVE POP-UP STATE --- */
+/* THE ACTIVE POP-UP STATE (Duolingo/Elite Style) */
 .nav-item.active {
     color: var(--manya-pink);
 }
@@ -242,16 +172,79 @@ body.in-spiral .nav-indicator {
     background: var(--manya-pink);
     color: white !important;
     padding: 12px;
-    width: 54px;
-    height: 54px;
+    width: 58px !important; /* Larger active circle */
+    height: 58px !important;
     border-radius: 50%;
-    transform: translateY(-24px); 
-    /* The 6px border creates the dip effect */
-    border: 6px solid var(--bg-cream); 
+    transform: translateY(-28px);
+    border: 6px solid var(--bg-main); /* The "cut-out" effect */
     box-shadow: 0 10px 20px rgba(219, 39, 119, 0.3);
 }
 
 .nav-item.active span {
-    transform: translateY(-14px);
-    font-weight: 900;
+    transform: translateY(-16px);
+}
+
+/* 6. SUBJECT MUTATION LOGIC (HUD TAKEOVER) */
+body.in-spiral, body.onboarding-active {
+    grid-template-rows: 0px 1fr 95px; /* Removes global HUD space */
+}
+
+body.in-spiral .app-header-master,
+body.onboarding-active .app-header-master {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 7. GLOBAL UTILITIES */
+.animate-in {
+    animation: slideUpFade 0.5s var(--transition-bounce) both;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 8. DIAMOND PULSE */
+.diamond-sparkle {
+    display: inline-block;
+    filter: drop-shadow(0 0 5px #06B6D4);
+    animation: diamondPulse 2s infinite ease-in-out;
+}
+
+@keyframes diamondPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(10deg); }
+}
+
+/* 9. FOGGY MIST COMPATIBILITY */
+#view-mount::after {
+    content: ''; position: fixed; bottom: 95px; left: 0; right: 0;
+    height: 40px; background: linear-gradient(to top, var(--bg-main), transparent);
+    pointer-events: none; z-index: 500;
+}
+
+
+/* --- ONBOARDING FULLSCREEN TAKEOVER --- */
+
+/* 1. Hide the HUD and Nav when Onboarding is active */
+body.onboarding-active .app-header-master,
+body.onboarding-active .bottom-nav {
+    display: none !important;
+}
+
+/* 2. Reset the 3-Slot Grid to a single slot */
+body.onboarding-active {
+    grid-template-rows: 1fr !important;
+    background-color: #FDFBF7 !important;
+}
+
+/* 3. Ensure the mount fills every pixel */
+body.onboarding-active #view-mount {
+    grid-row: 1;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    height: 100vh;
 }

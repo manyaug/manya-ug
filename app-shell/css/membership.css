@@ -1,70 +1,106 @@
-/* MANYA ELITE MEMBERSHIP - WORLD CLASS UI */
+/* MANYA ELITE HUB v17.0 - THE NEON UPGRADE */
 .membership-page { 
-    padding: 10px 20px 14px; /* Offset for HUD */
-    background: #FDFBF7; 
+    padding: 110px 20px 140px; 
+    background: var(--bg-main); 
+    transition: background 0.5s ease;
 }
 
-/* BACK BUTTON POSITIONING */
-.view-header-back {
-    display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
-}
-.manya-back-btn {
-    width: 45px; height: 45px; border-radius: 15px;
-    background: white; border: 2.5px solid #F1F5F9;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; color: var(--manya-purple); cursor: pointer;
-    box-shadow: 0 4px 0 #F1F5F9;
+/* 1. TESTIMONIAL: THE "HERO QUOTE" */
+.testimonial-card {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(219, 39, 119, 0.1) 100%);
+    border-radius: 30px; padding: 22px;
+    display: flex; gap: 15px; align-items: center;
+    border: 2px solid var(--manya-purple);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+    margin-bottom: 30px;
 }
 
-/* TIER CARDS */
-.tier-container { display: flex; flex-direction: column; gap: 15px; }
+.test-av { width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.test-text { font-size: 13px; font-weight: 700; color: var(--text-main); font-style: italic; line-height: 1.4; }
+.test-name { display: block; font-size: 10px; font-weight: 900; color: var(--manya-pink); margin-top: 5px; font-style: normal; text-transform: uppercase; }
 
-.tier-card {
-    background: white; border-radius: 35px; padding: 25px;
-    border: 3px solid #F1F5F9; position: relative;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* 2. TIER CARDS: "THE BATTLE PASS" */
+.tier-stack { display: flex; flex-direction: column; gap: 15px; }
+
+.tier-card-elite {
+    background: var(--bg-card);
+    border-radius: 28px; padding: 25px;
+    border: 2px solid var(--border-color);
+    position: relative;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
 }
 
-/* THE ELITE GLOW (Manya Purple) */
-.tier-card.selected {
-    border-color: #7c3aed;
-    background: #F5F3FF;
+.tier-card-elite.selected {
+    border-color: var(--manya-purple);
+    background: linear-gradient(to right, var(--bg-card), rgba(124, 58, 237, 0.05));
     transform: scale(1.03);
-    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+    box-shadow: 0 15px 40px rgba(124, 58, 237, 0.25);
 }
 
 .best-value-ribbon {
     position: absolute; top: -12px; right: 25px;
-    background: #db2777; color: white; padding: 6px 14px;
-    border-radius: 100px; font-size: 10px; font-weight: 900;
+    background: var(--manya-pink); color: white;
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 10px; font-weight: 900;
     box-shadow: 0 5px 15px rgba(219, 39, 119, 0.4);
+    z-index: 10;
 }
 
-.tier-label { font-size: 11px; font-weight: 900; color: #94A3B8; letter-spacing: 1px; }
-.tier-price { font-size: 32px; font-weight: 900; color: #1E293B; margin: 5px 0; }
-.tier-price span { font-size: 14px; color: #94A3B8; }
+.tier-title-small { font-size: 10px; font-weight: 900; color: var(--manya-purple); letter-spacing: 1.5px; text-transform: uppercase; }
+.tier-cost { font-size: 28px; font-weight: 900; color: var(--text-main); margin: 6px 0; }
+.tier-cost span { font-size: 14px; color: var(--text-muted); }
 
-/* PAYMENT PROVIDERS */
-.payment-methods-box {
-    margin-top: 40px; padding: 30px 20px;
-    background: #1E1B4B; border-radius: 40px;
-    box-shadow: 0 25px 50px rgba(30, 27, 75, 0.3);
+/* 3. FEATURES BENTO */
+.feature-compare-card {
+    background: var(--bg-card);
+    border-radius: 35px; padding: 30px;
+    border: 2px solid var(--border-color);
+    margin: 30px 0;
 }
 
-.provider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+.feature-compare-card h4 {
+    font-size: 11px; font-weight: 900; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;
+}
 
-.provider-card {
+.feature-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 0; border-bottom: 1px solid var(--border-color);
+}
+.feature-row:last-child { border: none; }
+.feature-row span { font-weight: 800; font-size: 14px; color: var(--text-main); }
+.check-elite { color: #10B981; font-weight: 900; font-size: 18px; }
+
+/* 4. PAYMENT DOCK: "THE CHECKOUT" */
+.momo-dock {
+    background: #1E1B4B; /* Deep Blue always for contrast */
+    border-radius: 40px; padding: 35px 25px;
+    border: 3px solid #312E81;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+}
+
+.momo-dock h4 { color: #818CF8; font-size: 11px; font-weight: 900; text-align: center; letter-spacing: 2px; margin-bottom: 25px; }
+
+.momo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+.momo-btn-elite {
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 25px; padding: 20px 10px;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    border-radius: 24px; padding: 22px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
     cursor: pointer; transition: 0.2s;
 }
 
-.provider-card.mtn { border-bottom: 5px solid #FFCC00; }
-.provider-card.airtel { border-bottom: 5px solid #FF0000; }
-.provider-card:active { transform: translateY(4px); background: rgba(255, 255, 255, 0.1); }
+.momo-btn-elite:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.1); }
+.provider-logo { width: 45px; height: 45px; border-radius: 12px; }
 
-.momo-img { width: 50px; height: 50px; border-radius: 12px; }
-.provider-name { color: white; font-weight: 900; font-size: 12px; }
+/* PROMO BOX */
+.promo-box {
+    background: var(--bg-card); border: 2px dashed var(--manya-purple);
+    border-radius: 25px; padding: 20px; margin-bottom: 25px;
+}
+.promo-input {
+    width: 100%; background: var(--bg-main); border: 1.5px solid var(--border-color);
+    padding: 15px; border-radius: 15px; color: var(--text-main); font-weight: 800;
+}

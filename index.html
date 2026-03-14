@@ -30,8 +30,8 @@
     <!-- 1. SPLASH OVERLAY -->
     <div id="manya-splash-overlay">
         <div class="full-screen-mascot">
-            <video id="splash-vid" autoplay muted playsinline loop preload="auto" poster="assets/icons/splash-1.png"> 
-                <source src="assets/shared/videos/full-screen-splash.mp4" type="video/mp4">
+            <video id="splash-vid" autoplay muted playsinline loop preload="auto" poster="assets/icons/splash.png"> 
+                <source src="assets/shared/videos/splash_vid.mp4" type="video/mp4">
             </video>
         </div>
         <div class="splash-brand">
@@ -104,68 +104,99 @@
     import { QuestRunner } from './app-shell/quest-runner.js';
     import { AudioManager } from './app-shell/js/audio-manager.js';
     import { ManyaDB } from './app-shell/manya-db.js';
+    import { ThemeEngine } from './app-shell/js/theme-engine.js';
 
-    // DEV_MODE: Set to true to force onboarding for testing
-    const DEV_MODE = true; 
 
-    window.ViewManager = ViewManager;
-    window.ManyaRouter = ManyaRouter;
-    window.AudioManager = AudioManager;
-    window.QuestFactory = QuestFactory;
-    window.QuestRunner = QuestRunner;
-
-    // HUD REFRESHER
-    const refreshHUD = async () => {
+    // --- 1. DEFINE & EXPOSE HUD REFRESHER ---
+    // We attach it to window so it's globally accessible by other views
+    window.refreshManyaHUD = async () => {
         const user = await ManyaDB.getCurrentUser();
         if (!user || !user.onboarded) return;
 
-        document.getElementById('hud-user-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`;
-        document.getElementById('hud-nickname-display').innerHTML = `${user.nickname.toUpperCase()}<span class="logo-p7">.P7</span>`;
-        document.getElementById('hud-diamond-count').innerText = user.diamonds;
+        // Update Avatar
+        const avatarImg = document.getElementById('hud-user-avatar');
+        if (avatarImg) {
+            avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`;
+        }
+
+        // Update Nickname
+        const nicknameEl = document.getElementById('hud-nickname-display');
+        if (nicknameEl) {
+            nicknameEl.innerHTML = `${user.nickname.toUpperCase()}<span class="logo-p7">.P7</span>`;
+        }
+
+        // Update Diamonds
+        const diamondEl = document.getElementById('hud-diamond-count');
+        if (diamondEl) {
+            diamondEl.innerText = user.diamonds || 0;
+        }
     };
 
-    // Listen for database changes
-    window.addEventListener('db_updated', refreshHUD);
+    // Listen for database updates to refresh HUD automatically
+    window.addEventListener('db_updated', window.refreshManyaHUD);
 
-    // APP LAUNCH SEQUENCER
+    // --- 2. MAIN APP LAUNCHER ---
     const startApp = async () => {
         const splashVid = document.getElementById('splash-vid');
         const splashOverlay = document.getElementById('manya-splash-overlay');
-        splashVid.play().catch(() => {});
 
-        // THE DATABASE CHECK (SQL-STYLE)
-        const user = await ManyaDB.getCurrentUser();
+        // Play splash video
+        if (splashVid) splashVid.play().catch(() => {});
 
-        setTimeout(() => {
-            if (user && user.onboarded) {
-                console.log("Manya DB: Record found. Pass to Hub.");
-                refreshHUD();
-                ViewManager.init(); 
-            } else {
-                console.log("Manya DB: No user. Redirect to Onboarding.");
-                ViewManager.mount = document.getElementById('view-mount');
-                ViewManager.show('onboarding');
-            }
+        try {
+            // Initialize Theme (Dark/Light)
+            await ThemeEngine.init();
 
-            document.body.classList.add('app-live');
-            splashOverlay.style.opacity = '0';
-            setTimeout(() => splashOverlay.remove(), 1000);
-        }, 3500);
+            // Check Database for User
+            const user = await ManyaDB.getCurrentUser();
+
+            // World-Class Handover Timing (Wait for video to show)
+            setTimeout(async () => {
+                if (user && user.onboarded) {
+                    console.log("Manya DB: Record found. Loading Hub...");
+                    await window.refreshManyaHUD();
+                    ViewManager.init(); // Starts Home Hub
+                } else {
+                    console.log("Manya DB: No user. Starting Onboarding...");
+                    ViewManager.mount = document.getElementById('view-mount');
+                    ViewManager.show('onboarding');
+                }
+
+                // Smooth Fade Out of Splash
+                document.body.classList.add('app-live');
+                if (splashOverlay) {
+                    splashOverlay.style.opacity = '0';
+                    splashOverlay.style.pointerEvents = 'none';
+                    setTimeout(() => splashOverlay.remove(), 1000);
+                }
+            }, 3500);
+
+        } catch (err) {
+            console.error("Critical Launch Error:", err);
+            // Emergency fallback to onboarding if DB fails
+            ViewManager.show('onboarding');
+        }
     };
 
-    window.addEventListener('load', startApp);
-    // Global Launcher for Lessons
+    // --- 3. GLOBAL LESSON LAUNCHER ---
     window.launchLibraryStep = async (subject, unit, quest, step) => {
         try {
             const path = `content/${subject}/${unit}/${quest}/${step}.json`;
             const res = await fetch(path);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            if (!res.ok) throw new Error("File not found");
+            
             const data = await res.json();
-            const stepsToPlay = data.steps ? data.steps : [data];
-            QuestRunner.start(ViewManager.mount, stepsToPlay);
-            ViewManager.mount.classList.add('engine-mode');
-        } catch (err) { console.error("Launch Error:", err); }
-    };            
+            // Assuming QuestRunner is globally available
+            if (window.QuestRunner) {
+                QuestRunner.start(ViewManager.mount, data.steps || [data]);
+                ViewManager.mount.classList.add('engine-mode');
+            }
+        } catch (err) { 
+            console.error("Launch Error:", err); 
+        }
+    };
+
+    window.addEventListener('load', startApp);
 </script>
 </body>
 </html>

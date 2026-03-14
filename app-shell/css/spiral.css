@@ -1,86 +1,48 @@
-/* MANYA SPIRAL ENGINE v13.0 - CRYSTAL CLEAR EDITION */
-.spiral-view { 
-    position: fixed; inset: 0; z-index: 5000; 
-    background: var(--biome-bg); 
-    transition: background 3s ease; 
-}
+/* spiral.css - v12.0 Master */
+.spiral-view { position: fixed; inset: 0; z-index: 5000; background: var(--biome-bg); transition: background 3s ease, filter 3s ease; }
+.spiral-view.day { filter: saturate(1.2) contrast(1.05); }
+.spiral-view.night { filter: brightness(0.6) saturate(0.85) contrast(1.2); }
 
-/* 1. SHARP FILTERS (Removed excess blur) */
-.spiral-view.day { filter: saturate(1.1) contrast(1.05); }
-.spiral-view.night { filter: brightness(0.6) saturate(0.85); }
-
-/* 2. REFINED MIST VIGNETTE (Removed Blur, Tightened Edges) */
-.spiral-mist-vignette {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    pointer-events: none;
-    /* Reduced to 6% on sides and 10% on top for maximum clarity */
-    background: 
-        linear-gradient(to bottom, var(--biome-bg) 0%, transparent 10%),
-        linear-gradient(to right, var(--biome-bg) 0%, transparent 6%),
-        linear-gradient(to left, var(--biome-bg) 0%, transparent 6%);
-    transition: background 3s ease;
+/* FOGGY SIDE BORDERS */
+.spiral-view::before, .spiral-view::after {
+    content: ''; position: fixed; top: 0; bottom: 0; width: 12%; 
+    z-index: 1000; pointer-events: none; backdrop-filter: blur(2px); transition: background 2s ease;
 }
+.spiral-view::before { left: 0; background: linear-gradient(to right, var(--biome-bg) 20%, transparent); }
+.spiral-view::after { right: 0; background: linear-gradient(to left, var(--biome-bg) 20%, transparent); }
 
-/* 3. HUD TAKEOVER STYLES */
-.spiral-header-unified { 
-    position: fixed; top: 15px; left: 0; width: 100%; z-index: 20000; 
-    display: flex; justify-content: center; 
-}
+/* SPIRAL HUD TAKEOVER */
+.spiral-header-unified { position: fixed; top: 15px; left: 0; width: 100%; z-index: 20000; display: flex; justify-content: center; }
 .unified-shell {
-    width: 92%; max-width: 380px; height: 52px;
-    background: rgba(255, 255, 255, 0.98); 
-    backdrop-filter: blur(10px);
-    border-radius: 100px; display: flex; align-items: center; padding: 0 8px;
-    border: 2.5px solid var(--biome-color);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    width: 92%; max-width: 380px; height: 52px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
+    border-radius: 100px; display: flex; align-items: center; padding: 0 8px; border: 2.5px solid var(--biome-color); box-shadow: 0 12px 30px rgba(0,0,0,0.1);
 }
-.uni-back-btn { 
-    width: 38px; height: 38px; border-radius: 50%; border: none; 
-    background: var(--biome-color); color: white; font-size: 18px; 
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.uni-title-box { flex: 1; margin-left: 12px; }
-.uni-main-title { font-weight: 900; padding-left: 80px; font-size: 14px; color: #1E293B; display: block; line-height: 1.1; letter-spacing: 0.5px; }
-.uni-sub-title { font-weight: 800; padding-left: 65px;font-size: 8px; color: var(--biome-color); text-transform: uppercase; }
-.uni-stats { margin-right: 10px; font-weight: 900; font-size: 15px; display: flex; align-items: center; gap: 5px; }
+.uni-back-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: var(--biome-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px var(--biome-color-alpha); }
 
-/* 4. TILING ENGINE (Tightened Masking for Sharpness) */
+/* TILING & MIST */
 .spiral-map-container { height: 100vh; width: 100%; overflow-y: scroll; scrollbar-width: none; }
 .map-canvas { position: relative; width: 100%; display: flex; flex-direction: column; }
 .image-stack { display: flex; flex-direction: column-reverse; line-height: 0; }
 .physical-tile { 
     width: 100%; height: 850px; object-fit: cover; margin-top: -85px; 
-    /* Mask tightened from 12% to 4% to stop the "Fuzzy" road look */
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 4%, black 96%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 4%, black 96%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
-/* 5. WEATHER & ATMOSPHERE */
-.weather-mount { position: fixed; inset: 0; pointer-events: none; z-index: 101; }
-.snowflake { position: absolute; background: white; border-radius: 50%; width: 4px; height: 4px; animation: w-fall linear infinite; }
-.rain-drop { position: absolute; background: rgba(0,0,0,0.15); width: 1px; height: 35px; animation: w-fall linear infinite; }
-.dust-particle { position: absolute; background: var(--biome-color); border-radius: 50%; width: 3px; height: 3px; opacity: 0.3; animation: w-drift linear infinite; }
-.firefly { position: absolute; width: 4px; height: 4px; background: #fbbf24; border-radius: 50%; box-shadow: 0 0 15px #fbbf24; animation: firefly 4s infinite ease-in-out; }
-
-@keyframes w-fall { from { transform: translateY(-100px); } to { transform: translateY(110vh); } }
-@keyframes w-drift { from { transform: translate(0, 110vh); } to { transform: translate(200px, -100px); } }
-
-/* 6. NODES & AVATAR */
+/* NODES */
 .nodes-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 100;}
 .game-node { position: absolute; transform: translate(-50%, -50%); width: 75px; height: 75px; pointer-events: auto; }
-.node-cap { 
-    width: 62px; height: 62px; border-radius: 50%; background: white; 
-    display: flex; align-items: center; justify-content: center; font-size: 24px; 
-    border: 4px solid var(--biome-color); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; 
-}
-.game-node.active .node-cap { background: var(--biome-color); color: white; transform: scale(1.1); box-shadow: 0 0 20px var(--biome-color); }
-.node-title-bubble {
-    position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
-    background: white; padding: 4px 10px; border-radius: 100px;
-    font-size: 11px; font-weight: 900; color: #1E293B; border: 1.5px solid var(--biome-color); white-space: nowrap;
-}
+.node-cap { width: 62px; height: 62px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 4px solid var(--biome-color); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; }
+.game-node.active .node-cap { background: var(--biome-color); color: white; border-color: white; transform: scale(1.1); box-shadow: 0 0 20px var(--biome-color); }
+.node-title-bubble { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); background: white; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 900; color: #1E293B; border: 2px solid var(--biome-color); white-space: nowrap; }
+
+/* PLAYER */
 .player-marker { position: absolute; top: -85px; left: 50%; transform: translateX(-50%); width: 75px; height: 75px; z-index: 200; animation: markerFloat 3s infinite ease-in-out; }
-.player-marker img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid white; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.player-marker img { width: 100%; border-radius: 50%; border: 4px solid white; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 @keyframes markerFloat { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -15px); } }
+
+/* WEATHER */
+.weather-mount { position: fixed; inset: 0; pointer-events: none; z-index: 101; }
+.snowflake { position: absolute; background: white; border-radius: 50%; width: 5px; height: 5px; animation: w-fall 5s linear infinite; }
+.rain-drop { position: absolute; background: rgba(0,0,0,0.15); width: 1px; height: 35px; animation: w-fall 0.6s linear infinite; }
+@keyframes w-fall { from { transform: translateY(-100px); } to { transform: translateY(110vh); } }

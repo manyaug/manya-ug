@@ -1,36 +1,27 @@
-/* ELITE HUB MASTER STYLE v30.0 */
+/* home.css - MASTER HUB v43.0 (NIGHT GLASS UPDATE) */
+
 .manya-hub {
-    padding: 5px 20px 150px; /* Offset for HUD and Bottom Nav */
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    height: 100%;
+    gap: 25px;
+    padding: 10px 0 40px 0;
 }
 
-/* 1. RESUME MISSION CARD */
+/* --- 1. RESUME MISSION CARD --- */
 .resume-mission-card {
-    background: #1E1B4B; 
-    border-radius: 30px;
-    padding: 25px;
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+    border-radius: 35px;
+    padding: 22px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    color: white;
-    border: 2px solid #312E81;
-    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.3);
-}
-.mission-tag { font-size: 10px; font-weight: 900; color: #818CF8; letter-spacing: 2px; }
-.resume-mission-card h3 { margin: 5px 0; font-size: 20px; font-weight: 900; }
-.mission-subtext { font-size: 11px; font-weight: 700; color: #94A3B8; }
-
-.play-btn-circle {
-    width: 55px; height: 55px; border-radius: 50%;
-    background: #7c3aed; color: white;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+    border: 2px solid #4338CA;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* 2. SUBJECT GRID & ISLANDS */
+/* --- 2. THE 2x2 WORLD GRID --- */
 .subject-grid-elite {
     display: grid; 
     grid-template-columns: 1fr 1fr;
@@ -38,69 +29,101 @@
 }
 
 .world-card-elite {
-    background: white; border-radius: 35px;
-    padding: 15px; border: 2px solid #F1F5F9;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex; flex-direction: column; align-items: center;
-}
-
-.island-stage {
-    height: 110px; width: 100%;
-    display: flex; align-items: center; justify-content: center;
+    border-radius: 35px;
+    padding: 22px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2.5px solid transparent;
+    transition: 0.4s var(--transition-bounce);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     position: relative;
+    overflow: hidden;
 }
 
-/* THE GLOWING HALO */
+/* LIGHT MODE TINTS */
+.world-card-elite.math { background: #EEF2FF; border-color: #E0E7FF; }
+.world-card-elite.science { background: #F0FDF4; border-color: #DCFCE7; }
+.world-card-elite.sst { background: #FFFBEB; border-color: #FEF3C7; }
+.world-card-elite.english { background: #FDF2F8; border-color: #FCE7F3; }
+
+/* --- DARK MODE: THE "THOR" GLASS EFFECT --- */
+[data-theme='dark'] .world-card-elite {
+    /* Transparent dark navy instead of white */
+    background: rgba(15, 23, 42, 0.6) !important;
+    /* Frosted glass effect */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    /* Subtle neon border */
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.island-stage { 
+    height: 100px; width: 100%; 
+    display: flex; align-items: center; justify-content: center; 
+    position: relative; 
+}
+
+/* THE "THOR" GLOW (HALO) */
 .island-halo {
-    position: absolute; width: 70px; height: 70px;
-    border-radius: 50%; filter: blur(25px); opacity: 0.3;
+    position: absolute;
+    width: 75px; height: 75px;
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: 0.3;
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.math .island-halo    { background: #6366F1; }
-.science .island-halo { background: #10B981; }
-.sst .island-halo     { background: #F59E0B; }
-.english .island-halo { background: #DB2777; }
 
+/* Make glows more intense in Dark Mode */
+[data-theme='dark'] .island-halo {
+    opacity: 0.6;
+    filter: blur(25px);
+}
+
+.world-card-elite:hover .island-halo { 
+    opacity: 1; 
+    transform: scale(1.4); 
+}
+
+/* FLOATING PHYSICS */
 .floating-island {
-    width: 90px; z-index: 5;
-    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
-    animation: floatIsland 4s infinite ease-in-out;
+    width: 85px; z-index: 5;
+    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.15));
+    animation: floatMaster 4s infinite ease-in-out;
 }
+.math .floating-island { animation-duration: 4.2s; }
+.science .floating-island { animation-duration: 3.5s; animation-delay: 0.4s; }
+.sst .floating-island { animation-duration: 4.8s; animation-delay: 0.2s; }
+.english .floating-island { animation-duration: 3.9s; animation-delay: 0.6s; }
 
-@keyframes floatIsland {
+@keyframes floatMaster {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-12px); }
 }
 
-/* STYLED FOOTER */
-.card-footer-info h4 { margin: 10px 0 8px; font-size: 15px; font-weight: 900; color: #1E293B; }
-.prog-stats-row { display: flex; align-items: center; gap: 10px; width: 100%; font-size: 10px; font-weight: 900; color: #94A3B8; }
-
-.mini-striped-track { flex: 1; height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden; }
-.mini-striped-fill {
-    height: 100%; border-radius: 10px;
-    background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 2px, transparent 0, transparent 8px);
+/* TYPOGRAPHY RECOVERY */
+.card-footer-info h4 { 
+    margin: 12px 0 8px; 
+    font-size: 15px; 
+    font-weight: 900; 
+    color: #1E293B; /* Light mode color */
 }
 
-/* 3. PREMIUM LIBRARY CARD */
-.astro-library-card {
-    background: linear-gradient(135deg, #7c3aed, #db2777);
-    border-radius: 35px; padding: 25px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: relative; overflow: hidden; color: white;
-    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.3);
+/* Force text to white in Dark Mode */
+[data-theme='dark'] .card-footer-info h4 { 
+    color: #F8FAFC !important; 
 }
 
-.astro-content h2 { margin: 0; font-size: 20px; font-weight: 900; }
-.astro-content p { margin: 5px 0 0; font-size: 12px; font-weight: 700; opacity: 0.8; }
-
-.lib-mascot-float {
-    position: absolute; right: -10px; bottom: -15px;
-    width: 110px; filter: drop-shadow(-10px 0 20px rgba(0,0,0,0.2));
+.mini-striped-track { 
+    width: 100%; height: 10px; 
+    background: rgba(0,0,0,0.05); 
+    border-radius: 20px; overflow: hidden; 
 }
 
-.lib-go-arrow {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; font-weight: 900;
+[data-theme='dark'] .mini-striped-track {
+    background: rgba(255,255,255,0.1);
 }
+
+.mini-striped-fill { height: 100%; border-radius: 20px; transition: 1.5s; }
+.pct-text { font-size: 10px; font-weight: 900; color: #94A3B8; margin-top: 5px; display: block; }

@@ -1,7 +1,3 @@
-/**
- * MANYA SYSTEM DATABASE (SQL-LIKE)
- * Path: app-shell/js/manya-db.js
- */
 export const ManyaDB = {
     DB_NAME: 'ManyaSystemDB',
     VERSION: 1,
@@ -17,7 +13,7 @@ export const ManyaDB = {
                 }
             };
             request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
+            request.onerror = () => resolve(null);
         });
     },
 
@@ -25,30 +21,39 @@ export const ManyaDB = {
         const uid = localStorage.getItem('manya_session_id');
         if (!uid) return null;
         const db = await this.connect();
+        if (!db) return null;
         return new Promise((resolve) => {
-            const transaction = db.transaction(this.STORE_NAME, 'readonly');
-            const store = transaction.objectStore(this.STORE_NAME);
-            const request = store.get(uid);
-            request.onsuccess = () => resolve(request.result || null);
-            request.onerror = () => resolve(null);
+            try {
+                const transaction = db.transaction(this.STORE_NAME, 'readonly');
+                const store = transaction.objectStore(this.STORE_NAME);
+                const request = store.get(uid);
+                request.onsuccess = () => resolve(request.result || null);
+                request.onerror = () => resolve(null);
+            } catch(e) { resolve(null); }
         });
     },
 
     async saveUser(userData) {
         const db = await this.connect();
+        if (!db) return false;
         return new Promise((resolve, reject) => {
-            const transaction = db.transaction(this.STORE_NAME, 'readwrite');
-            const store = transaction.objectStore(this.STORE_NAME);
-            const request = store.put(userData);
-            request.onsuccess = () => {
+            try {
+                const transaction = db.transaction(this.STORE_NAME, 'readwrite');
+                const store = transaction.objectStore(this.STORE_NAME);
+                
+                // Set session ID immediately
                 localStorage.setItem('manya_session_id', userData.uid);
-                // Trigger HUD update
-                window.dispatchEvent(new Event('db_updated'));
-                resolve(true);
-            };
-            request.onerror = () => reject(request.error);
+                
+                const request = store.put(userData);
+                request.onsuccess = () => {
+                    window.dispatchEvent(new Event('db_updated'));
+                    resolve(true);
+                };
+                request.onerror = () => resolve(false);
+            } catch(e) { resolve(false); }
         });
     },
+
 
     createDefaultRecord() {
         return {
@@ -59,14 +64,17 @@ export const ManyaDB = {
             avatarSeed: "Manya",
             school: "",
             goal: "Agg 4-8",
-            xp: 0,
-            diamonds: 150,
+            diamonds: 150, // Global currency
+            mathGems: 25, 
+            scienceGems: 12,
+            sstGems: 40,
+            englishGems: 18,
+            league: 'Bronze', // Bronze, Silver, Gold, Amethyst, Diamond
+            xp: 150,
+            theme: 'light',
             preferences: { likes: [], hates: [] },
             parent: { name: "", whatsapp: "" },
-            created_at: new Date().toISOString(),
-            status: 'Free Scholar', // Options: 'Free Scholar', 'Elite Hero'
-            expiryDate: null,
-            diamonds: 150,
-    };
+            created_at: new Date().toISOString()
+        };
     }
 };

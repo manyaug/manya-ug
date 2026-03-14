@@ -1,75 +1,129 @@
-/* ELITE RANKINGS ARENA V12 */
-.rank-view { padding: 10px 20px 14px; background: #FDFBF7; }
-
-/* SUBJECT TABS (Gamified Filter) */
-.rank-tabs {
-    display: flex; gap: 8px; overflow-x: auto;
-    padding: 10px 0 25px; scrollbar-width: none;
-}
-.rank-tabs::-webkit-scrollbar { display: none; }
-.tab-pill {
-    white-space: nowrap; padding: 10px 20px; border-radius: 100px;
-    background: white; border: 1.5px solid #F1F5F9;
-    font-size: 11px; font-weight: 900; color: #94A3B8; cursor: pointer;
-    transition: 0.3s;
-}
-.tab-pill.active {
-    background: #1E293B; color: white; border-color: #1E293B;
-    box-shadow: 0 10px 20px rgba(30, 41, 59, 0.2);
+/* MANYA RANKINGS ARENA - WORLD CLASS v19.0 */
+.rank-view { 
+    padding: 10px 0 140px; 
+    background: var(--bg-main);
+    transition: background 0.5s ease;
 }
 
-/* THE GLOWING PODIUM */
-.podium-arena {
+/* 1. SUBJECT FILTERS (SCROLLABLE TABS) */
+.rank-tabs-row {
+    display: flex; gap: 10px; overflow-x: auto;
+    padding: 10px 20px 25px; scrollbar-width: none;
+}
+.rank-tabs-row::-webkit-scrollbar { display: none; }
+
+.rank-tab-pill {
+    white-space: nowrap; padding: 10px 22px; border-radius: 100px;
+    background: var(--bg-card); border: 2px solid var(--border-color);
+    font-size: 11px; font-weight: 900; color: var(--text-muted);
+    cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.rank-tab-pill.active {
+    background: var(--manya-purple); color: white; border-color: var(--manya-purple);
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 2. THE ELITE PODIUM */
+.podium-section {
     display: flex; align-items: flex-end; justify-content: center;
-    gap: 10px; height: 240px; margin-bottom: 40px; padding-top: 40px;
+    gap: 12px; height: 220px; margin-bottom: 40px; padding: 0 10px;
 }
 
 .pod-card {
-    flex: 1; background: white; border-radius: 30px 30px 20px 20px;
+    flex: 1; background: var(--bg-card); border-radius: 30px 30px 20px 20px;
     display: flex; flex-direction: column; align-items: center;
-    position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.03);
-    border: 2px solid white;
+    position: relative; border: 2px solid var(--border-color);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+    transition: 0.5s ease;
 }
 
-.pod-avatar {
+.pod-avatar-wrap {
     width: 60px; height: 60px; border-radius: 50%;
-    background: #F8FAFC; margin-top: -30px; margin-bottom: 12px;
-    border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    background: var(--bg-main); margin-top: -30px; margin-bottom: 12px;
+    border: 4px solid var(--bg-card); box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    position: relative; overflow: hidden;
 }
 
-.pod-card p { font-size: 12px; font-weight: 900; color: #1E293B; margin: 0; }
-.pod-card .xp { font-size: 10px; font-weight: 800; color: #6366F1; margin-top: 2px; }
+.pod-name { font-size: 12px; font-weight: 900; color: var(--text-main); margin: 0; }
+.pod-xp { font-size: 10px; font-weight: 800; color: var(--manya-purple); margin-top: 2px; }
 
-/* PODIUM RANKS */
-.rank-1 { height: 180px; z-index: 3; border-top: 6px solid #FBBF24; transform: scale(1.1); }
-.rank-1 .pod-avatar { width: 80px; height: 80px; margin-top: -40px; border-color: #FBBF24; }
-.rank-1::before { content: '👑'; position: absolute; top: -70px; font-size: 30px; animation: crownFloat 2s infinite ease-in-out; }
+/* RANK SPECIFIC GLOWS */
+.pod-rank-1 { 
+    height: 180px; z-index: 3; border-top: 6px solid var(--manya-gold); transform: scale(1.05); 
+    box-shadow: 0 20px 40px rgba(245, 158, 11, 0.1);
+}
+.pod-rank-1 .pod-avatar-wrap { width: 85px; height: 85px; margin-top: -45px; border-color: var(--manya-gold); }
+.pod-rank-1::before { content: '👑'; position: absolute; top: -85px; font-size: 32px; animation: crownFloat 2s infinite ease-in-out; }
 
-.rank-2 { height: 140px; border-top: 6px solid #94A3B8; }
-.rank-3 { height: 120px; border-top: 6px solid #B45309; }
+.pod-rank-2 { height: 140px; border-top: 6px solid #94A3B8; }
+.pod-rank-3 { height: 120px; border-top: 6px solid #B45309; }
 
-@keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
+@keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-12px) rotate(5deg); } }
 
-/* PREMIUM LIST */
-.elite-list-container {
-    background: white; border-radius: 35px; padding: 10px 20px;
-    border: 2px solid #F1F5F9;
+/* 3. LEADERBOARD LIST */
+.leaderboard-container {
+    background: var(--bg-card); border-radius: 40px; 
+    padding: 10px 20px; margin: 0 15px;
+    border: 2.5px solid var(--border-color);
 }
 
-.elite-rank-row {
+.rank-row-elite {
     display: flex; align-items: center; padding: 18px 0;
-    border-bottom: 1.5px solid #F8FAFC;
+    border-bottom: 1.5px solid var(--border-color);
 }
-.elite-rank-row:last-child { border: none; }
+.rank-row-elite:last-child { border: none; }
 
-.r-num { width: 35px; font-weight: 900; color: #CBD5E1; font-size: 13px; }
-.r-av { width: 40px; height: 40px; border-radius: 50%; background: #F1F5F9; margin-right: 15px; }
+.r-pos { width: 35px; font-weight: 900; color: var(--text-muted); font-size: 13px; }
+.r-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--bg-inner); margin-right: 15px; border: 2px solid white; }
 .r-info { flex: 1; }
-.r-name { display: block; font-weight: 800; color: #1E293B; font-size: 14px; }
-.r-xp { font-weight: 900; color: #6366F1; font-size: 13px; }
+.r-name { display: block; font-weight: 800; color: var(--text-main); font-size: 14px; }
+.r-score { font-weight: 900; color: var(--manya-purple); font-size: 13px; }
 
-/* "YOU" HIGHLIGHT */
-.elite-rank-row.is-user {
-    background: #EEF2FF; margin: 0 -20px; padding: 18px 20px;
-    border-left: 5px solid #6366F1;
+/* THE "YOU" HIGHLIGHT */
+.rank-row-elite.is-user {
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%);
+    margin: 0 -20px; padding: 18px 20px; border-left: 5px solid var(--manya-purple);
+}
+
+/* 4. NIGHT VISION OVERRIDES */
+[data-theme='dark'] .pod-card { box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+[data-theme='dark'] .pod-avatar-wrap { border-color: var(--bg-card); }
+[data-theme='dark'] .leaderboard-container { box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+
+
+/* LEAGUE BANNER UI */
+.league-banner-card {
+    background: var(--bg-card);
+    margin: 10px 15px 25px;
+    padding: 20px;
+    border-radius: 30px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+}
+
+.league-icon-box {
+    width: 60px; height: 60px;
+    background: var(--bg-inner);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    border: 2px solid var(--border-color);
+}
+
+.league-info { flex: 1; }
+.league-name { font-weight: 900; font-size: 18px; color: var(--text-main); }
+.league-timer { font-size: 10px; font-weight: 800; color: var(--manya-pink); }
+.league-status-msg { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
+
+.league-rank-pill {
+    padding: 8px 15px;
+    background: var(--manya-purple);
+    color: white;
+    border-radius: 15px;
+    font-weight: 900;
+    font-size: 14px;
 }
