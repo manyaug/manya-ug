@@ -1,48 +1,90 @@
-/* spiral.css - v12.0 Master */
-.spiral-view { position: fixed; inset: 0; z-index: 5000; background: var(--biome-bg); transition: background 3s ease, filter 3s ease; }
-.spiral-view.day { filter: saturate(1.2) contrast(1.05); }
-.spiral-view.night { filter: brightness(0.6) saturate(0.85) contrast(1.2); }
-
-/* FOGGY SIDE BORDERS */
-.spiral-view::before, .spiral-view::after {
-    content: ''; position: fixed; top: 0; bottom: 0; width: 12%; 
-    z-index: 1000; pointer-events: none; backdrop-filter: blur(2px); transition: background 2s ease;
+/* MANYA WORLD ENGINE - FULL ELITE VERSION */
+.spiral-view { 
+    position: fixed; inset: 0; z-index: 5000; 
+    background: var(--biome-bg); 
+    transition: background 3s ease; 
+    overflow: hidden;
 }
-.spiral-view::before { left: 0; background: linear-gradient(to right, var(--biome-bg) 20%, transparent); }
-.spiral-view::after { right: 0; background: linear-gradient(to left, var(--biome-bg) 20%, transparent); }
 
-/* SPIRAL HUD TAKEOVER */
-.spiral-header-unified { position: fixed; top: 15px; left: 0; width: 100%; z-index: 20000; display: flex; justify-content: center; }
-.unified-shell {
-    width: 92%; max-width: 380px; height: 52px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
-    border-radius: 100px; display: flex; align-items: center; padding: 0 8px; border: 2.5px solid var(--biome-color); box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-}
-.uni-back-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: var(--biome-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px var(--biome-color-alpha); }
-
-/* TILING & MIST */
 .spiral-map-container { height: 100vh; width: 100%; overflow-y: scroll; scrollbar-width: none; }
-.map-canvas { position: relative; width: 100%; display: flex; flex-direction: column; }
-.image-stack { display: flex; flex-direction: column-reverse; line-height: 0; }
+.spiral-map-container::-webkit-scrollbar { display: none; }
+.map-canvas { position: relative; width: 100%; }
+
+/* TILES - FIXED */
 .physical-tile { 
-    width: 100%; height: 850px; object-fit: cover; margin-top: -85px; 
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+    position: absolute; /* Changed from relative flex items to strict absolute */
+    left: 0;
+    width: 100%; 
+    height: 850px; 
+    object-fit: fill; /* CRITICAL: Forces image to fill width exactly, ensuring % coords align */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
 }
 
 /* NODES */
-.nodes-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 100;}
-.game-node { position: absolute; transform: translate(-50%, -50%); width: 75px; height: 75px; pointer-events: auto; }
-.node-cap { width: 62px; height: 62px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 4px solid var(--biome-color); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; }
-.game-node.active .node-cap { background: var(--biome-color); color: white; border-color: white; transform: scale(1.1); box-shadow: 0 0 20px var(--biome-color); }
-.node-title-bubble { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); background: white; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 900; color: #1E293B; border: 2px solid var(--biome-color); white-space: nowrap; }
+.game-node { position: absolute; transform: translate(-50%, -50%); width: 75px; z-index: 20; }
 
-/* PLAYER */
-.player-marker { position: absolute; top: -85px; left: 50%; transform: translateX(-50%); width: 75px; height: 75px; z-index: 200; animation: markerFloat 3s infinite ease-in-out; }
-.player-marker img { width: 100%; border-radius: 50%; border: 4px solid white; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-@keyframes markerFloat { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -15px); } }
+.node-cap { 
+    width: 62px; height: 62px; border-radius: 50%; background: white; 
+    display: flex; align-items: center; justify-content: center; font-size: 24px; 
+    border: 4.5px solid var(--biome-color); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; 
+}
+.game-node.active .node-cap { background: var(--biome-color); color: white; border-color: white; transform: scale(1.1); box-shadow: 0 0 25px var(--biome-color); }
+.game-node.locked { opacity: 0.6; }
 
-/* WEATHER */
+/* HORIZONTAL HERO BUBBLE */
+.hero-speech-bubble {
+    position: absolute; 
+    top: 50%;                 /* Center vertically with the node */
+    left: 85px;               /* Position to the right side of the node */
+    transform: translateY(-50%);
+    width: 65px; height: 65px; background: white;
+    border: 4px solid var(--biome-color); border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;
+    animation: markerFloatSide 3s infinite ease-in-out;
+    z-index: 30;              
+}
+
+.hero-speech-bubble::after {
+    content: ''; position: absolute; 
+    top: 50%; left: -14px; transform: translateY(-50%);
+    border-top: 10px solid transparent; 
+    border-bottom: 10px solid transparent; 
+    border-right: 14px solid var(--biome-color);
+}
+.hero-speech-bubble img { width: 100%; height: 100%; border-radius: 13px; }
+
+/* LABELS & STARS */
+.node-label-elite {
+    position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%);
+    background: white; padding: 4px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 900; color: #1E293B; border: 2.5px solid var(--biome-color);
+    white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.node-star-rating {
+    position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 2px;
+}
+.node-star-rating span { font-size: 14px; color: #CBD5E1; }
+.node-star-rating span.earned { color: #FBBF24; filter: drop-shadow(0 0 5px #FBBF24); }
+.node-star-rating .big { font-size: 18px; margin-bottom: 4px; }
+
+/* WEATHER & FOG */
 .weather-mount { position: fixed; inset: 0; pointer-events: none; z-index: 101; }
-.snowflake { position: absolute; background: white; border-radius: 50%; width: 5px; height: 5px; animation: w-fall 5s linear infinite; }
-.rain-drop { position: absolute; background: rgba(0,0,0,0.15); width: 1px; height: 35px; animation: w-fall 0.6s linear infinite; }
-@keyframes w-fall { from { transform: translateY(-100px); } to { transform: translateY(110vh); } }
+.snowflake { position: absolute; background: white; border-radius: 50%; width: 4px; height: 4px; animation: wf 5s linear infinite; }
+.rain-drop { position: absolute; background: rgba(0,0,0,0.1); width: 1px; height: 35px; animation: wf 0.7s linear infinite; }
+@keyframes wf { from { transform: translateY(-100px); } to { transform: translateY(110vh); } }
+
+.spiral-mist-vignette {
+    position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+    background: 
+        linear-gradient(to bottom, var(--biome-bg) 0%, transparent 12%),
+        linear-gradient(to right, var(--biome-bg) 0%, transparent 8%),
+        linear-gradient(to left, var(--biome-bg) 0%, transparent 8%);
+}
+
+@keyframes markerFloatSide { 
+    0%, 100% { transform: translateY(-50%) translateX(0); } 
+    50% { transform: translateY(-50%) translateX(10px); } 
+}

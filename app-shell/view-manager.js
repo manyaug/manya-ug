@@ -7,61 +7,75 @@ import { renderOnboarding } from './views/onboarding-view.js';
 import { renderAchievements } from './views/achievements-view.js';
 import { renderMembership } from './views/membership-view.js';
 import { renderSettings } from './views/settings-view.js';
+import { HUDManager } from './js/hud-manager.js';
 import { ManyaDB } from './manya-db.js';
+import { renderQuestPath } from './views/quest-path-view.js';
+
 
 export const ViewManager = {
     mount: null,
     currentView: 'home',
 
     async init() {
-        window.ViewManager = this; // SET GLOBAL REFERENCE FIRST
+        window.ViewManager = this; 
         this.mount = document.getElementById('view-mount');
-        
         const user = await ManyaDB.getCurrentUser();
-
         if (!user || !user.onboarded) {
             this.show('onboarding');
         } else {
-            if(window.refreshManyaHUD) await window.refreshManyaHUD();
             this.show('home');
         }
     },
 
-    show(viewName, navEl = null, params = null) {
-        window.ViewManager = this; // Ensure reference exists
+    async show(viewName, navEl = null, params = null) {
+        // 1. CLEANUP PREVIOUS ENGINE (Stops intervals)
+        if (typeof cleanupSpiral === 'function') cleanupSpiral();
+        
         this.currentView = viewName;
 
-        // Reset Modes
-        document.body.classList.remove('onboarding-active', 'in-spiral');
+        // 2. LAYOUT MODES
+        document.body.classList.remove('onboarding-active', 'in-spiral', 'view-has-own-hud');
+        if (viewName === 'onboarding') document.body.classList.add('onboarding-active');
+        if (viewName === 'spiral' || viewName === 'questPath') document.body.classList.add('in-spiral');
 
-        if (viewName === 'onboarding') {
-            document.body.classList.add('onboarding-active');
-        } else if (viewName === 'spiral') {
-            document.body.classList.add('in-spiral');
-        }
+        const customHudViews = ['spiral', 'onboarding', 'settings', 'membership', 'achievements', 'questPath'];
+        if (customHudViews.includes(viewName)) document.body.classList.add('view-has-own-hud');
 
-        // Highlights Nav bar
-        if (navEl) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            navEl.classList.add('active');
-        }
+        // 3. NAV BAR UPDATE
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            const label = item.querySelector('span')?.innerText.toLowerCase();
+            if (label === viewName) item.classList.add('active');
+        });
 
+        // 4. RENDER VIEW
         this.mount.innerHTML = '';
-
         switch (viewName) {
-            case 'home': renderHome(this.mount); break;
-            case 'spiral': renderSpiral(this.mount, params); break;
-            case 'library': renderLibrary(this.mount); break;
-            case 'rankings': renderRankings(this.mount); break;
-            case 'profile': renderProfile(this.mount); break;
+            case 'home': await renderHome(this.mount); break;
+            case 'spiral': await renderSpiral(this.mount, params); break;
+            case 'questPath': await renderQuestPath(this.mount, params); break;
+            case 'library': await renderLibrary(this.mount); break;
+            case 'rankings': await renderRankings(this.mount); break;
+            case 'profile': await renderProfile(this.mount); break;
             case 'onboarding': renderOnboarding(this.mount); break;
-            case 'achievements': renderAchievements(this.mount); break; 
-            case 'membership': renderMembership(this.mount); break;
-            case 'settings': renderSettings(this.mount); break;
-            default: renderHome(this.mount);
+            case 'achievements': await renderAchievements(this.mount); break; 
+            case 'membership': await renderMembership(this.mount); break;
+            case 'settings': await renderSettings(this.mount); break;
+            default: await renderHome(this.mount);
         }
+
+        // 5. UPDATE GLOBAL HUD
+        await HUDManager.render(params);
         window.scrollTo(0, 0);
+    },
+
+    goBack() {
+        if (this.currentView === 'questPath') {
+            this.show('spiral', null, localStorage.getItem('last_sub') || 'math');
+        } else {
+            this.show('home');
+        }
     }
 };
-
-window.ViewManager = ViewManager; // SET GLOBAL REFERENCE FOR EXPORT
+window.ViewManager = ViewManager;

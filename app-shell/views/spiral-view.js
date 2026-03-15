@@ -1,17 +1,21 @@
 /**
  * MANYA SPIRAL MASTER ENGINE - FINAL UNIFIED VERSION
- * Features: Seamless Blending, Biome-Aware HUD, Weather/Time Director, Precision Hotspots
+ * Features: Absolute Coordinate Mapping, Biome-Aware HUD, Precision Hotspots
  */
 import { ManyaDB } from '../manya-db.js';
 import { AudioManager } from '../js/audio-manager.js';
 import { ManyaNotify } from './manya-notify.js';
- 
+import { SCIENCE_MAP, MATH_MAP, SST_MAP } from '/app-shell/js/curriclum.js';
+
+let spiralIntervals = [];
 
 export const renderSpiral = async (mount, subject) => {
     const user = await ManyaDB.getCurrentUser();
     if (!user) return ViewManager.show('onboarding');
 
     const sub = subject.toLowerCase();
+    localStorage.setItem('last_sub', sub);
+
     const biomes = {
         math: { color: '#7c3aed', alpha: 'rgba(124, 58, 237, 0.3)', bg: '#e0f2fe', icon: '❄️', folder: 'math_path', weather: 'snowflake' },
         science: { color: '#10B981', alpha: 'rgba(16, 185, 129, 0.3)', bg: '#dcfce7', icon: '🌱', folder: 'science_path', weather: 'rain-drop' },
@@ -21,28 +25,38 @@ export const renderSpiral = async (mount, subject) => {
     const biome = biomes[sub] || biomes.math;
     
     document.documentElement.style.setProperty('--biome-color', biome.color);
-    document.documentElement.style.setProperty('--biome-color-alpha', biome.alpha);
     document.documentElement.style.setProperty('--biome-bg', biome.bg);
+    document.documentElement.style.setProperty('--biome-color-alpha', biome.alpha);
     document.body.classList.add('in-spiral');
 
     const progress = user[`prog_${sub}`] || 0;
     const isNightInitial = new Date().getHours() >= 18 || new Date().getHours() < 6;
 
-    // YOUR PRECISION HOTSPOTS (Restored)
+    // --- YOUR EXACT HOTSPOTS ---
     const roadPath = [
-        { x: 53.4,  y: 99.44 }, { x: 48.98, y: 85.98 }, { x: 45.24, y: 73.31 },
-        { x: 55.44, y: 61.8  }, { x: 54.76, y: 34.89 }, { x: 45.92, y: 19.87 },
-        { x: 58.51, y: 8.95  }
+        { id: "point_1", x: 47.28, y: 85.79 },
+        { id: "point_2", x: 50.68, y: 69.21 },
+        { id: "point_3", x: 49.32, y: 54.19 },
+        { id: "point_4", x: 57.15, y: 39.96 },
+        { id: "point_5", x: 43.19, y: 25.92 },
+        { id: "point_6", x: 56.47, y: 10.9  }
     ];
 
-    const nodes = [];
-    for(let i=0; i<21; i++) {
-        nodes.push({ id: i, label: ['Warmup','Research','Drill','Mastery'][i%4], icon: i%4===3 ? '🏆' : biome.icon });
-    }
+    const curriculumData = { math: MATH_MAP, science: SCIENCE_MAP, sst: SST_MAP };
+    const units = curriculumData[sub] || [];
+    
+    const tileHeight = 850;
+    const overlap = 85; 
+    const effectiveHeight = tileHeight - overlap; 
+    const nodesPerTile = roadPath.length;
+    const totalTiles = Math.ceil(units.length / nodesPerTile);
 
-    const tileHeight = 850, overlap = 85, nodesPerTile = roadPath.length;
-    const totalTiles = Math.ceil(nodes.length / nodesPerTile);
-    const totalHeight = (totalTiles * (tileHeight - overlap)) + overlap;
+    // Buffers at top and bottom
+    const topBuffer = 20; 
+    const bottomBuffer = 120;
+    
+    // MATHEMATICALLY PERFECT CANVAS HEIGHT
+    const totalHeight = bottomBuffer + tileHeight + ((totalTiles > 1 ? totalTiles - 1 : 0) * effectiveHeight) + topBuffer;
 
     const generateParticles = (type, count) => {
         let h = '';
@@ -52,64 +66,94 @@ export const renderSpiral = async (mount, subject) => {
         return h;
     };
 
+    // 1. GENERATE BACKGROUND TILES (Absolute Positioning)
+    const mappedTiles = Array(totalTiles).fill(0).map((_, i) => {
+        const bottomPos = bottomBuffer + (i * effectiveHeight);
+        return `<img src="assets/images/${biome.folder}/way-${(i % 8) + 1}.png" 
+                     class="physical-tile" 
+                     style="z-index:${i}; bottom: ${bottomPos}px;">`;
+    }).join('');
+
+    // 2. GENERATE NODES (Using exact same bottom mapping logic)
+    const mappedNodes = units.map((unit, i) => {
+        const coord = roadPath[i % nodesPerTile]; 
+        const tileIdx = Math.floor(i / nodesPerTile);
+        
+        // Pixels from bottom of THIS specific tile
+        const yPxFromTileBottom = ((100 - coord.y) / 100) * tileHeight;
+        
+        // Absolute bottom position combining buffer + previous tiles + local tile Y
+        const bottomOffset = bottomBuffer + (tileIdx * effectiveHeight) + yPxFromTileBottom;
+
+        const isUnlocked = i <= progress; 
+        const isActive = i === progress;
+
+        return `
+        <div class="game-node ${isUnlocked ? 'unlocked' : 'locked'} ${isActive ? 'active' : ''}" 
+             style="bottom: ${bottomOffset}px; left: ${coord.x}%; pointer-events: auto;">
+            
+            ${isActive ? `
+                <div class="hero-speech-bubble">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}">
+                </div>` : ''}
+
+            <div class="node-star-rating">
+                <span class="${i < progress ? 'earned' : ''}">⭐</span>
+                <span class="${i < progress ? 'earned' : ''} big">⭐</span>
+                <span class="${i < progress ? 'earned' : ''}">⭐</span>
+            </div>
+
+            <div class="node-cap" onclick="window.handleUnitTap(${i}, ${isUnlocked}, '${unit.id}', '${unit.title}')">
+                ${isUnlocked ? (i < progress ? '✔' : biome.icon) : '🔒'}
+            </div>
+
+            <div class="node-label-elite">${unit.title}</div>
+        </div>`;
+    }).join('');
+
     mount.innerHTML = `
         <div id="spiral-stage" class="spiral-view animate-in ${sub} ${isNightInitial ? 'night' : 'day'}">
-            
-            <!-- THE SHARP VIGNETTE -->
             <div class="spiral-mist-vignette"></div>
-
-            <header class="spiral-header-unified">
-                <div class="unified-shell">
-                    <button class="uni-back-btn" onclick="ViewManager.show('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M15 18l-6-6 6-6"/>
-</svg></button>
-                    <div class="uni-title-box">
-                        <span class="uni-main-title">${subject.toUpperCase()}</span>
-                        <span class="uni-sub-title">ROAD TO AGGREGATE 4</span>
-                    </div>
-                    <div class="uni-stats">
-                        <span class="diamond-sparkle" style="font-size:16px" onclick="ViewManager.show('achievements')">💎</span>
-                        <span class="uni-count">${user.diamonds}</span>
-                    </div>
-                </div>
-            </header>
-
-            <div id="weather-layer" class="weather-mount weather-active">${generateParticles(biome.weather, 60)}</div>
+            <div id="weather-layer" class="weather-mount weather-active">${generateParticles(biome.weather, 70)}</div>
 
             <div class="spiral-map-container" id="scroll-frame">
                 <div class="map-canvas" style="height:${totalHeight}px">
-                    <div class="image-stack">
-                        ${Array(totalTiles).fill(0).map((_, i) => `<img src="assets/images/${biome.folder}/way-${(i % 8) + 1}.png" class="physical-tile" style="z-index:${i};">`).join('')}
+                    
+                    <!-- TILES LAYER -->
+                    <div class="tiles-overlay" style="position: absolute; inset: 0; width: 100%;">
+                        ${mappedTiles}
                     </div>
-                    <div class="nodes-overlay">
-                        ${nodes.map((n, i) => {
-                            const status = i < progress ? 'completed' : (i === progress ? 'active' : 'locked');
-                            const coord = roadPath[i % roadPath.length];
-                            const tileIdx = Math.floor(i / roadPath.length);
-                            const yOnTile = (100 - coord.y) * (tileHeight - overlap) / 100;
-                            const topPos = totalHeight - (tileIdx * (tileHeight - overlap) + yOnTile) - 180;
-                            return `
-                            <div class="game-node ${status}" style="top: ${topPos}px; left: ${coord.x}%;">
-                                ${status === 'active' ? `<div class="player-marker"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}"></div>` : ''}
-                                <div class="node-cap" onclick="handleQuestClick(${i}, '${status}')">
-                                    ${status === 'completed' ? '✔' : (status === 'locked' ? '🔒' : n.icon)}
-                                </div>
-                                <div class="node-title-bubble">${n.label}</div>
-                            </div>`;
-                        }).join('')}
+
+                    <!-- NODES LAYER -->
+                    <div class="nodes-overlay" style="position: absolute; inset: 0; pointer-events: none;">
+                        ${mappedNodes}
                     </div>
-                    <div style="height: 250px;"></div>
+
                 </div>
             </div>
         </div>`;
 
-    window.handleQuestClick = (id, status) => {
-        if(status === 'locked') return ManyaNotify.show("Unlock previous areas first!", "info");
+    window.handleUnitTap = (index, unlocked, unitId, title) => {
+        if(!unlocked) return ManyaNotify.show("This area is still locked!", "info");
         AudioManager.playSFX();
-        window.launchLibraryStep(sub, 'unit1', 'quest_'+id, 'step1');
+        window.ViewManager.show('questPath', null, { unitId, subject, index, title });
     };
 
-    const frame = document.getElementById('scroll-frame');
-    const activeNode = document.querySelector('.game-node.active');
-    if (frame && activeNode) frame.scrollTo({ top: activeNode.offsetTop - 380, behavior: 'auto' });
+    const originalShow = ViewManager.show;
+    ViewManager.show = function(view) {
+        if (view !== 'spiral') {
+            document.body.classList.remove('in-spiral');
+            // FIXED: Using document.documentElement instead of undefined 'root'
+            document.documentElement.style.removeProperty('--biome-color');
+            document.documentElement.style.removeProperty('--biome-bg');
+            document.documentElement.style.removeProperty('--biome-color-alpha');
+        }
+        originalShow.apply(this, arguments);
+    };
+
+    // CENTER CAMERA ON PLAYER
+    setTimeout(() => {
+        const activeNode = document.querySelector('.game-node.active');
+        if (activeNode) activeNode.scrollIntoView({ block: 'center', behavior: 'auto' });
+    }, 150);
 };

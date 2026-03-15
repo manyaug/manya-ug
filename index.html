@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="./app-shell/css/membership.css">
     <link rel="stylesheet" href="./app-shell/css/notify.css">
     <link rel="stylesheet" href="./app-shell/css/setting.css">
+    <link rel="stylesheet" href="app-shell/css/quest-path.css">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
     
@@ -43,32 +44,10 @@
         </div>
     </div>
 
-    <!-- 2. DYNAMIC APP HEADER -->
-    <header class="app-header-master">
-        <div class="header-shell">
-            <!-- THE DYNAMIC PEAKING AVATAR -->
-            <div class="hud-avatar-peek" onclick="ViewManager.show('profile')">
-                <div class="peek-circle">
-                    <!-- This image src is controlled by JS below -->
-                    <img id="hud-user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Manya" class="mascot-img">
-                </div>
-                <div class="online-indicator"></div>
-            </div>
-
-            <!-- THE DYNAMIC NICKNAME -->
-            <div class="hud-logo" id="hud-nickname-display">
-                MANYA<span class="logo-p7">.P7</span>
-            </div>
-
-            <div class="hud-stats">
-                    <div class="stat-pill-diamond" onclick="ViewManager.show('achievements')" 
-                    style="cursor: pointer; transition: transform 0.1s;" 
-                    onmousedown="this.style.transform='scale(0.95)'" 
-                    onmouseup="this.style.transform='scale(1)'">
-                    <span class="diamond-sparkle">💎</span>    
-                    <span class="count" id="hud-diamond-count">150</span>
-                
-    </div>
+    <!-- Replace your current <header> with this simple version -->
+    <header class="app-header-master" id="global-hud">
+        <div class="header-shell" id="hud-content">
+            <!-- HUDManager will inject content here -->
         </div>
     </header>
 

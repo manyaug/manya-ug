@@ -1,5 +1,5 @@
 Directory Tree for: D:\manya_app
-Generated on: 2026-03-01 12:26:49.957091
+Generated on: 2026-03-15 08:28:09.550688
 ==================================================
 
 📁 manya_app/
@@ -4285,8 +4285,16 @@ Generated on: 2026-03-01 12:26:49.957091
     │   └── 📄 pyvenv.cfg
     ├── 📁 app-shell/
     │   ├── 📁 css/
+    │   │   ├── 📄 achievement.css
     │   │   ├── 📄 boarding.css
+    │   │   ├── 📄 engines.css
     │   │   ├── 📄 home.css
+    │   │   ├── 📄 library.css
+    │   │   ├── 📄 membership.css
+    │   │   ├── 📄 notify.css
+    │   │   ├── 📄 profile.css
+    │   │   ├── 📄 ranking.css
+    │   │   ├── 📄 setting.css
     │   │   ├── 📄 spiral.css
     │   │   └── 📄 style.css
     │   ├── 📁 js/
@@ -4327,21 +4335,24 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   │   ├── 📄 d3.v7.min.js
     │   │   │   ├── 📄 model-viewer.min.js
     │   │   │   └── 📄 topojson.min.js
-    │   │   ├── 📄 app.js
     │   │   ├── 📄 audio-manager.js
     │   │   ├── 📄 curriclum.js
-    │   │   ├── 📄 db.js
     │   │   ├── 📄 model-viewer-engine.js
     │   │   ├── 📄 sync-curriculum.js
+    │   │   ├── 📄 theme-engine.js
     │   │   └── 📄 utils.js
     │   ├── 📁 views/
     │   │   ├── 📄 achievements-view.js
     │   │   ├── 📄 home-view.js
     │   │   ├── 📄 library-view.js
+    │   │   ├── 📄 manya-notify.js
+    │   │   ├── 📄 membership-view.js
     │   │   ├── 📄 onboarding-view.js
     │   │   ├── 📄 profile-view.js
     │   │   ├── 📄 rankings-view.js
+    │   │   ├── 📄 settings-view.js
     │   │   └── 📄 spiral-view.js
+    │   ├── 📄 manya-db.js
     │   ├── 📄 quest-factory.js
     │   ├── 📄 quest-runner.js
     │   ├── 📄 router.js
@@ -4373,6 +4384,16 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   ├── 📄 plus-jakarta-sans-v12-latin-700.woff2
     │   │   ├── 📄 plus-jakarta-sans-v12-latin-800.woff2
     │   │   └── 📄 plus-jakarta-sans-v12-latin-regular.woff2
+    │   ├── 📁 icons/
+    │   │   ├── 📁 icon/
+    │   │   │   └── 📄 pwa-assets.config.js
+    │   │   ├── 📄 apple-touch-icon-180x180.png
+    │   │   ├── 📄 favicon.ico
+    │   │   ├── 📄 manya_master.png
+    │   │   ├── 📄 maskable-icon-512x512.png
+    │   │   ├── 📄 pwa-192x192.png
+    │   │   ├── 📄 pwa-512x512.png
+    │   │   └── 📄 pwa-64x64.png
     │   ├── 📁 images/
     │   │   ├── 📁 math_path/
     │   │   │   ├── 📄 way-1.png
@@ -4413,19 +4434,20 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   │   ├── 📄 way-7.png
     │   │   │   ├── 📄 way-8.png
     │   │   │   └── 📄 way-9.png
+    │   │   ├── 📄 airtel_money.png
     │   │   ├── 📄 english_island.png
     │   │   ├── 📄 kiki.png
     │   │   ├── 📄 kiki_icon.png
-    │   │   ├── 📄 MANYA-STUDIO-DASHBOARD.webp
     │   │   ├── 📄 manya-studio.png
     │   │   ├── 📄 manya_icon.png
     │   │   ├── 📄 math_island.png
+    │   │   ├── 📄 mtn_momo.png
     │   │   ├── 📄 polly.jpeg
     │   │   ├── 📄 polly_icon.png
     │   │   ├── 📄 pose_1.png
     │   │   ├── 📄 pose_1_cut.png
     │   │   ├── 📄 science_island.png
-    │   │   ├── 📄 splash-1.png
+    │   │   ├── 📄 splash.png
     │   │   ├── 📄 sst_island.png
     │   │   └── 📄 WhatsApp Image 2025-12-12 at 12.43.44 AM.jpeg
     │   ├── 📁 math/
@@ -4547,6 +4569,7 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   │   ├── 📄 Barbarian.glb
     │   │   │   ├── 📄 Knight.glb
     │   │   │   ├── 📄 Mage.glb
+    │   │   │   ├── 📄 Offensive.fbx
     │   │   │   ├── 📄 Ranger.glb
     │   │   │   ├── 📄 Rig.glb
     │   │   │   ├── 📄 Rogue.glb
@@ -4555,8 +4578,7 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   │   ├── 📄 Skeleton_Rogue.glb
     │   │   │   └── 📄 Skeleton_Warrior.glb
     │   │   └── 📁 videos/
-    │   │       ├── 📄 full-screen-splash.mp4
-    │   │       └── 📄 mascot_blink.mp4
+    │   │       └── 📄 splash_vid.mp4
     │   ├── 📁 sst/
     │   │   └── 📁 locating_africa/
     │   │       └── 📄 countries-50m.json
@@ -4917,6 +4939,8 @@ Generated on: 2026-03-01 12:26:49.957091
     │   │   │       ├── 📄 recap_quest_9.json
     │   │   │       └── 📄 wrist_gliding_study.json
     │   │   ├── 📄 ple-science.xlsx
+    │   │   ├── 📄 raw-csv-science-p7-question-bank.csv
+    │   │   ├── 📄 rephrased-csv-science-p7-question-bank.csv
     │   │   ├── 📄 science-p7-question-bank.xlsx
     │   │   ├── 📄 syllabus-science-P4-P7.xlsx
     │   │   └── 📄 ~$science-p7-question-bank.xlsx
@@ -4982,10 +5006,15 @@ Generated on: 2026-03-01 12:26:49.957091
     │       ├── 📄 ple-sst.xlsx
     │       ├── 📄 sst_p7_question_bank.xlsx
     │       ├── 📄 sst_syllabus-p4-p7.xlsx
+    │       ├── 📄 ~$sst_p7_question_bank.xlsx
     │       └── 📄 ~$sst_question_bank_p7.xlsx
     ├── 📄 .gitignore
     ├── 📄 curriculum-master.json
     ├── 📄 index.html
     ├── 📄 manifest.json
+    ├── 📄 manya_app.txt
+    ├── 📄 package-lock.json
+    ├── 📄 package.json
+    ├── 📄 pwa-assets.config.js
     ├── 📄 README.md
     └── 📄 tree_crawler.py

@@ -4,14 +4,13 @@ export const renderAchievements = async (mount) => {
     const user = await ManyaDB.getCurrentUser();
     if (!user) return;
 
-const subjectGems = [
-        { name: 'Math', val: user.mathGems || 0, icon: '💎', color: '#6366F1', glow: 'rgba(99, 102, 241, 0.5)' },
-        { name: 'Science', val: user.scienceGems || 0, icon: '💎', color: '#10B981', glow: 'rgba(16, 185, 129, 0.5)' },
-        { name: 'SST', val: user.sstGems || 0, icon: '💎', color: '#F59E0B', glow: 'rgba(245, 158, 11, 0.5)' },
-        { name: 'English', val: user.englishGems || 0, icon: '💎', color: '#DB2777', glow: 'rgba(219, 39, 119, 0.5)' }
+    // Custom SVGs mapped to subjects
+    const subjectGems = [
+        { name: 'Math', val: user.mathGems || 0, file: 'math_gem.svg', color: 'var(--manya-purple)', glow: 'rgba(124, 58, 237, 0.6)' },
+        { name: 'Science', val: user.scienceGems || 0, file: 'science_svg.svg', color: 'var(--manya-green)', glow: 'rgba(16, 185, 129, 0.6)' },
+        { name: 'SST', val: user.sstGems || 0, file: 'sst_gem.svg', color: 'var(--manya-gold)', glow: 'rgba(245, 158, 11, 0.6)' },
+        { name: 'English', val: user.englishGems || 0, file: 'english_gem.svg', color: 'var(--manya-pink)', glow: 'rgba(219, 39, 119, 0.6)' }
     ];
-    
-
 
     const badgeGroups = [
         {
@@ -67,59 +66,67 @@ const subjectGems = [
         }
     ];
 
-    const totalBadges = 31; // Adjusted for full list
+    const totalBadges = 31; 
     const unlockedCount = badgeGroups.flatMap(g => g.badges).filter(b => b.unlocked).length;
     const pct = (unlockedCount / totalBadges) * 100;
 
     mount.innerHTML = `
     <div class="achievements-page animate-in">
-       <div class="view-header-back">
+       
+        <div class="view-header-back">
             <button class="manya-back-btn" onclick="ViewManager.show('profile')">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <h2 style="font-weight:900; margin:0; color:var(--text-main);">Badge Vault</h2>
+            <h2 class="page-title-elite">Trophy Room</h2>
         </div>
 
-        <!-- NEW: GEM TREASURY -->
+        <!-- NEW: GEM TREASURY (CUSTOM SVGS) -->
         <div class="gem-treasury-card">
-            <span class="vault-label" style="color: rgba(255,255,255,0.6)">Subject Gem Bank</span>
+            <span class="vault-label">THE GEM VAULT</span>
             <div class="gem-grid">
                 ${subjectGems.map(gem => `
                     <div class="gem-item">
-                        <div class="gem-stone" style="color: ${gem.color}; filter: drop-shadow(0 0 10px ${gem.glow});">${gem.icon}</div>
-                        <div class="gem-count">${gem.val}</div>
+                        <div class="gem-stone" style="filter: drop-shadow(0 8px 15px ${gem.glow});">
+                            <img src="assets/images/gems/${gem.file}" alt="${gem.name}">
+                        </div>
+                        <div class="gem-count" style="color: ${gem.color}">${gem.val}</div>
                         <div class="gem-label">${gem.name}</div>
                     </div>
                 `).join('')}
             </div>
         </div>
 
-
-
         <!-- COLLECTION PROGRESS -->
         <div class="collection-card-elite">
             <div class="prog-label-row">
-                <span>COLLECTION STATUS</span>
-                <span>${unlockedCount}/${totalBadges}</span>
+                <span class="prog-title">BADGE MASTERY</span>
+                <span class="prog-count">${unlockedCount} / ${totalBadges}</span>
             </div>
             <div class="vault-bar-track">
                 <div class="vault-bar-fill" style="width: ${pct}%;"></div>
             </div>
-            <p style="font-size:10px; margin-top:10px; color:rgba(255,255,255,0.6); font-weight:700;">
-                Keep studying to unlock the Diamond Collection!
-            </p>
+            <p class="prog-subtext">Unlock all badges to earn the Diamond Crown!</p>
         </div>
 
-        <!-- RENDER GROUPS -->
+        <!-- RENDER GROUPS WITH MEDAL STYLING -->
         ${badgeGroups.map(group => `
-            <span class="badge-cat-header">${group.title}</span>
-            <div class="badge-grid-vault">
-                ${group.badges.map(badge => `
-                    <div class="badge-item-elite ${badge.unlocked ? 'badge-is-unlocked tier-' + badge.tier : 'badge-is-locked'} ${badge.cat || ''}">
-                        <span class="b-icon">${badge.unlocked ? badge.icon : '🔒'}</span>
-                        <span class="b-name">${badge.name}</span>
-                    </div>
-                `).join('')}
+            <div class="badge-category-wrap">
+                <div class="badge-cat-header">
+                    <span>${group.title}</span>
+                    <div class="cat-line"></div>
+                </div>
+                
+                <div class="badge-grid-vault">
+                    ${group.badges.map(badge => `
+                        <div class="badge-item-elite ${badge.unlocked ? 'badge-is-unlocked tier-' + badge.tier : 'badge-is-locked'} ${badge.cat || ''}">
+                            <div class="medal-ring">
+                                <span class="b-icon">${badge.unlocked ? badge.icon : '🔒'}</span>
+                            </div>
+                            <span class="b-name">${badge.name}</span>
+                            ${badge.unlocked ? `<div class="tier-label">${badge.tier}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         `).join('')}
 
