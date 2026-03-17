@@ -49,7 +49,8 @@ self.addEventListener('fetch', (event) => {
       if (cached) return cached
       return fetch(request).then((response) => {
         // Cache successful responses for static assets
-        if (response.ok && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/legacy/'))) {
+        // SKIP caching for Partial Content (206) as it breaks cache.put
+        if (response.ok && response.status !== 206 && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/legacy/'))) {
           const clone = response.clone()
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
         }

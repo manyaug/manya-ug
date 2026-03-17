@@ -153,7 +153,7 @@ function OnboardingView() {
         <div className="ob-stage">
             <div className="ob-card-container">
                 <div className="ob-nav">
-                    <span className="ob-step-indicator">PHASE {step} OF 5</span>
+                    <span className="ob-step-indicator">Step {step} of 5</span>
                     <div className="ob-progress-track">
                         <div className="ob-progress-fill" style={{ width: `${(step / 5) * 100}%` }}></div>
                     </div>
@@ -172,7 +172,7 @@ function OnboardingView() {
                 
                 <div className="ob-footer">
                     <button className={`manya-btn-primary-ob ${step === 5 ? 'finish' : ''}`} onClick={handleNext}>
-                        {step === 5 ? "BEGIN ADVENTURE →" : "▶"}
+                        {step === 5 ? "GIVE ME MY POWER →" : "→"}
                     </button>
                 </div>
             </div>

@@ -1,79 +1,95 @@
 .app-header-master {
   grid-row: 1; display: flex; justify-content: center; align-items: center; z-index: 10000;
+  padding-top: 10px;
 }
 
 .header-shell {
     width: 94%;
-    max-width: 420px;
-    height: 46px; /* Optimized height */
-    
-    /* GLASSMORPHISM */
-    background: rgba(255, 255, 255, 0.05); 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    
+    max-width: 440px;
+    height: 54px;
+    background: rgba(30, 41, 59, 0.85); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 100px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
-    
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    transition: all 0.4s ease;
+    padding: 0 12px 0 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
-.hud-avatar-peek { display: flex; align-items: center; }
-
-/* AVATAR PEEK REFINEMENT */
-.peek-circle {
-    width: 34px; height: 34px;
+/* BRAND PEEK BADGE */
+.hud-brand-peek {
+    width: 44px;
+    height: 44px;
+    background: white;
     border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.8);
-    background: #1e293b;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
-}
-.peek-circle img {
-    width: 100%; height: 100%; object-fit: cover;
-}
-
-/* LOGO / TEXT WRAP */
-.hud-logo-wrap { margin-left: 12px; display: flex; flex-direction: column; flex-grow: 1; }
-.manya-brand-text { 
-    font-weight: 900; font-size: 13px; 
-    color: white; /* Force white for the dark theme */
-    letter-spacing: 0.5px; 
-    line-height: 1; 
-}
-.manya-p7-tag { 
-    font-size: 10px; font-weight: 900; 
-    color: var(--manya-purple); 
-    opacity: 0.9;
-    letter-spacing: 1.2px; margin-top: 2px; 
-}
-
-/* THE GEM PILL (SLEEK) */
-.hud-pill-diamond {
-    background: rgba(0, 0, 0, 0.3); /* Dark pill for contrast */
-    padding: 4px 10px 4px 5px;
-    border-radius: 100px;
-    display: flex; align-items: center; gap: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.hud-brand-peek:hover { transform: scale(1.1) rotate(-5deg); }
+.brand-logo-img { width: 80%; height: 80%; object-fit: contain; }
+
+/* CENTER STACK */
+.hud-center-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
 }
 
-.hud-gem-img {
-    width: 18px; height: 18px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.hud-pill-diamond .count {
-    font-weight: 900; font-size: 13px;
+.manya-brand-text {
+    font-weight: 900;
+    font-size: 14px;
     color: white;
+    letter-spacing: 0.8px;
+    line-height: 1;
 }
+
+.hero-status-p7 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.manya-p7-tag {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--manya-purple); 
+    letter-spacing: 1px;
+}
+
+.pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: #22C55E;
+    border-radius: 50%;
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* THE GEM PILL */
+.hud-pill-diamond {
+    background: rgba(15, 23, 42, 0.6);
+    padding: 6px 12px 6px 8px;
+    border-radius: 100px;
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.hud-gem-img { width: 20px; height: 20px; }
+.hud-pill-diamond .count { font-weight: 900; font-size: 14px; color: white; }

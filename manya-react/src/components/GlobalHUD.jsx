@@ -11,21 +11,19 @@ function GlobalHUD() {
 
   return (
     <header className="app-header-master">
-      <div className="header-shell" id="hud-content" style={{ borderColor: 'white' }}>
+      <div className="header-shell" id="hud-content">
         
-        <div className="hud-avatar-peek">
-          <div className="peek-circle">
-            <img 
-               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} 
-               alt="Avatar" 
-               style={{ width: '100%', height: '100%' }}
-            />
-          </div>
+        {/* Brand Logo/Badge */}
+        <div className="hud-brand-peek" onClick={() => navigate('/home')}>
+          <img src="/assets/images/manya_icon.png" alt="Manya" className="brand-logo-img" />
         </div>
 
-        <div className="hud-logo-wrap">
+        <div className="hud-center-stack">
           <span className="manya-brand-text">{user.nickname.toUpperCase()}</span>
-          <span className="manya-p7-tag">P.7 HERO</span>
+          <div className="hero-status-p7">
+            <div className="pulse-dot"></div>
+            <span className="manya-p7-tag">P.7 HERO</span>
+          </div>
         </div>
 
         <div className="hud-pill-diamond" onClick={() => navigate('/achievements')} style={{ cursor: 'pointer' }}>
