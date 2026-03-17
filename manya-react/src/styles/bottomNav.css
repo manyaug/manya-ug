@@ -1,0 +1,114 @@
+/* ============================================================
+   MANYA BOTTOM NAV - PROFESSIONAL MOBILE v3.0
+   Floating frosted-glass bar with indicator dot on active tab
+   ============================================================ */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  padding: 0 8px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: transparent;
+  pointer-events: none;
+}
+
+/* The actual nav shell — floating frosted glass card */
+.bottom-nav-shell {
+  max-width: 480px;
+  margin: 0 auto 10px;
+  height: 62px;
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  pointer-events: all;
+  overflow: hidden;
+}
+
+/* NAV ITEM */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 6px 0;
+  gap: 3px;
+  flex: 1;
+  height: 100%;
+  cursor: pointer;
+  position: relative;
+  color: var(--text-muted);
+  transition: color 0.25s ease;
+}
+
+.nav-item span {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  transition: color 0.25s ease;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+  z-index: 1;
+}
+
+/* Active indicator dot above label */
+.nav-item-dot {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--manya-purple);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ACTIVE STATE */
+.nav-item.active {
+  color: var(--manya-purple);
+}
+
+.nav-item.active span {
+  color: var(--manya-purple);
+}
+
+.nav-item.active .nav-item-dot {
+  transform: translateX(-50%) scale(1);
+}
+
+.nav-item.active svg {
+  transform: translateY(-2px) scale(1.12);
+  filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.45));
+}
+
+/* Hover (non-active) */
+.nav-item:hover:not(.active) svg {
+  transform: translateY(-2px);
+  color: var(--text-main);
+}
+
+/* Dark mode glass */
+[data-theme='dark'] .bottom-nav-shell {
+  background: rgba(30, 30, 46, 0.9);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}

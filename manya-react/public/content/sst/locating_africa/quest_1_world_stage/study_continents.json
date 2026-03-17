@@ -1,0 +1,128 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "The Continents of the World",
+  "variantTitle": "Quest 1: World Explorer",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "Asia",
+      "title": "1. Asia (The Giant)",
+      "description": "The largest continent in the world, covering 30% of Earth's land area.",
+      "initialRotation": [-90, -30, 0],
+      "highlightContinent": "asia",
+      "highlightColor": "#fb923c",
+      "markers": [
+         { "label": "Suez Canal", "lat": 30, "lon": 32, "color": "#1e293b" },
+         { "label": "Bering Strait", "lat": 65, "lon": 169, "color": "#1e293b" }
+      ],
+      "steps": [
+        "<b>Size:</b> 1st Largest (approx 44.5 million km²).",
+        "<b>Key Boundary:</b> Separated from Africa by the <b>Red Sea</b> and the <b>Suez Canal</b>.",
+        "<b>Key Boundary:</b> Separated from North America by the <b>Bering Strait</b>.",
+        "<b>PLE Fact:</b> It is the most populated continent (China & India have the highest populations).",
+        "<b>Economy:</b> Historically known for the trade of Silk and Spices."
+      ]
+    },
+    {
+      "tabTitle": "Africa",
+      "title": "2. Africa (Our Home)",
+      "description": "The most central continent, often called the 'Cradle of Mankind'.",
+      "initialRotation": [-20, 0, 0],
+      "highlightContinent": "africa",
+      "highlightColor": "#4ade80",
+      "markers": [
+         { "label": "Strait of Gibraltar", "lat": 36, "lon": -5, "color": "#1e293b" },
+         { "label": "Cape Guardafui", "lat": 11, "lon": 51, "color": "#ffffff" },
+         { "label": "Cape Verde", "lat": 14, "lon": -17, "color": "#ffffff" }
+      ],
+      "steps": [
+        "<b>Size:</b> 2nd Largest (approx 30.3 million km²).",
+        "<b>Position:</b> Crossed by the Equator, Tropic of Cancer, and Tropic of Capricorn.",
+        "<b>Water Borders:</b> Mediterranean Sea (North), Red Sea (North-East), Indian Ocean (East), Atlantic Ocean (West).",
+        "<b>Strategic Point:</b> Separated from Europe by the <b>Strait of Gibraltar</b> (only 14km apart).",
+        "<b>Extreme Points:</b> Ras Ben Sakka (North), Cape Agulhas (South), Cape Guardafui (East), Cape Verde (West)."
+      ]
+    },
+    {
+      "tabTitle": "N. America",
+      "title": "3. North America",
+      "description": "The continent found entirely in the Northern Hemisphere.",
+      "initialRotation": [100, -40, 0],
+      "highlightContinent": "namerica",
+      "highlightColor": "#f472b6",
+      "markers": [
+        { "label": "Panama Canal", "lat": 9, "lon": -79, "color": "#1e293b" }
+      ],
+      "steps": [
+        "<b>Size:</b> 3rd Largest continent.",
+        "<b>Key Boundary:</b> Separated from South America by the <b>Panama Canal</b> (a man-made waterway).",
+        "<b>Major Countries:</b> USA, Canada, and Mexico.",
+        "<b>Discovery:</b> Christopher Columbus is often credited with 'discovering' it for Europe in 1492 (The New World).",
+        "<b>Economy:</b> Highly industrialized and advanced in technology."
+      ]
+    },
+    {
+      "tabTitle": "S. America",
+      "title": "4. South America",
+      "description": "The continent with the largest rainforest (The Amazon).",
+      "initialRotation": [60, 15, 0],
+      "highlightContinent": "samerica",
+      "highlightColor": "#a78bfa",
+      "steps": [
+        "<b>Size:</b> 4th Largest continent.",
+        "<b>Geography:</b> Crossed by the Equator and the Tropic of Capricorn.",
+        "<b>Key Feature:</b> The Amazon Rainforest is called the 'Lungs of the Earth'.",
+        "<b>Economy:</b> Famous for coffee growing (Brazil is the leading producer).",
+        "<b>Rivers:</b> Home to the Amazon River (Largest volume of water in the world)."
+      ]
+    },
+    {
+      "tabTitle": "Antarctica",
+      "title": "5. Antarctica",
+      "description": "The frozen continent located at the South Pole.",
+      "initialRotation": [0, 90, 0],
+      "highlightContinent": "antarctica",
+      "highlightColor": "#94a3b8",
+      "steps": [
+        "<b>Size:</b> 5th Largest continent.",
+        "<b>Climate:</b> It is a cold desert. It is the coldest, driest, and windiest continent.",
+        "<b>Population:</b> It has no permanent human population. Only scientists live there temporarily for research.",
+        "<b>PLE Fact:</b> It is not a country, but a continent governed by international treaty."
+      ]
+    },
+    {
+      "tabTitle": "Europe",
+      "title": "6. Europe",
+      "description": "Attached to Asia (forming Eurasia), but politically distinct.",
+      "initialRotation": [-15, -50, 0],
+      "highlightContinent": "europe",
+      "highlightColor": "#60a5fa",
+      "markers": [
+        { "label": "Greenwich", "lat": 51.5, "lon": 0, "color": "#ef4444" }
+      ],
+      "steps": [
+        "<b>Size:</b> 6th Largest (Second smallest).",
+        "<b>Key Feature:</b> The <b>Prime Meridian</b> (0° longitude) passes through London (Greenwich).",
+        "<b>History:</b> The source of colonialists (British, French, Germans) who partitioned Africa.",
+        "<b>Geography:</b> Separated from Asia by the Ural Mountains and the Caspian Sea."
+      ]
+    },
+    {
+      "tabTitle": "Australia",
+      "title": "7. Australia (Oceania)",
+      "description": "The smallest continent, lying entirely in the Southern Hemisphere.",
+      "initialRotation": [-135, 25, 0],
+      "highlightContinent": "australia",
+      "highlightColor": "#facc15",
+      "steps": [
+        "<b>Size:</b> Smallest continent.",
+        "<b>Type:</b> It is an 'Island Continent' because it is surrounded by water on all sides.",
+        "<b>Geography:</b> Located between the Indian Ocean and the Pacific Ocean.",
+        "<b>Economy:</b> Famous for <b>Merino Sheep</b> rearing (Wool production).",
+        "<b>PLE Fact:</b> It is the only continent that is also a single country."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Musculo-Skeletal Diseases",
+  "variantTitle": "Quest 14 Master Recap",
+  "themeColor": "#dc2626",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Disease Summary Table",
+      "points": [
+        "<b>Polio:</b> Caused by a <b>Virus</b> in contaminated water. Causes paralysis/lameness.",
+        "<b>Rickets:</b> Caused by lack of <b>Vitamin D/Calcium</b>. Causes bowlegs/knock-knees.",
+        "<b>TB of Spine:</b> Caused by <b>Mycobacterium</b> bacteria. Causes backache and a lump on the spine.",
+        "<b>Tetanus:</b> Caused by soil bacteria entering cuts. Causes <b>stiff muscles</b> (Lockjaw).",
+        "<b>Leprosy:</b> Caused by bacteria spread by direct contact. Causes <b>loss of feeling</b> in skin."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Critical Vaccines",
+      "itemA": "BCG Vaccine",
+      "itemB": "DPT Vaccine",
+      "rows": [
+        { "feature": "Prevents", "valA": "<b>Tuberculosis</b>", "valB": "Diphtheria, Pertussis, <b>Tetanus</b>" },
+        { "feature": "Location", "valA": "Right upper arm", "valB": "Left upper thigh" },
+        { "feature": "Timing", "valA": "At birth", "valB": "6, 10, and 14 weeks" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Prevention & Control",
+      "points": [
+        "<b>Polio:</b> Boil drinking water and use latrines properly.",
+        "<b>TB:</b> Drink <b>pasteurized/boiled milk</b> (to kill bacteria from infected cows).",
+        "<b>Leprosy:</b> Avoid sharing towels/beddings with infected people."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>Osteoporosis</b> is common in women after menopause; it causes thinning of bones, making them brittle and easy to break!"
+    }
+  ],
+  "cards": [
+    {
+      "term": "Mycobacterium",
+      "fact": "The specific bacterium that causes Tuberculosis.",
+      "mnemonic": "Think: <b>My-Back-Bacteria</b> (TB of the spine)."
+    },
+    {
+      "term": "Polio Drops",
+      "fact": "Immunization against Polio is given through the mouth.",
+      "mnemonic": "A small <b>Drop</b> stops the <b>Polio</b>!"
+    }
+  ]
+}

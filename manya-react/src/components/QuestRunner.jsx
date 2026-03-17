@@ -1,0 +1,341 @@
+/**
+ * MANYA QUEST RUNNER - v2.0
+ * ==========================
+ * React wrapper around the vanilla JS engine pipeline.
+ * 
+ * Receives via location.state:
+ *   Option A (from Library direct launch):
+ *     { subject, unitId, questFolder, file, label }
+ *
+ *   Option B (from QuestFactory / QuestPath node tap):
+ *     { steps: [...], title, subject, gemFile, biomeColor }
+ *
+ * State machine: idle → loading → running(N) → finished → exit
+ *
+ * The vanilla engines run inside mountRef.current (a plain <div>).
+ * React only handles the shell: header, progress, footer button, finish screen.
+ */
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { ChevronLeft, X } from 'lucide-react';
+import { addToast } from '../store/toastSlice';
+import { updateProfile } from '../store/userSlice';
+import { loadQuestSteps } from '../utils/questLoader';
+import '../styles/engines.css';
+
+// Engines that handle their own "done" — hide the footer CONTINUE button
+const IMMERSIVE_ENGINES = new Set([
+    'PROCEDURAL_CANVAS', 'SET_THEORY', 'JUNGLE_MAZE', 'HARVEST_GAME',
+    'HANGMAN_GAME', 'SET_CLASSIFIER', 'SUBSET_GAME', 'PIZZA_GAME',
+    'BINARY_GAME', 'VENN_SPOTLIGHT', 'MEMORY_MATCH', 'GRAMMAR_MAZE',
+    'SENTENCE_TRAIN', 'WORDGRID_ENGINE', 'MORPH_GAME'
+]);
+
+// Engines where the CONTINUE button is disabled until user interacts (chat/typing)
+const WAIT_ENGINES = new Set(['CHAT', 'ENGLISH_RULE_MASTER', 'SYNTAX_ARCHITECT']);
+
+// ── Subject → biome color map (fallback) ────────────────────────────────────
+const SUBJECT_COLOR = {
+    math: '#7c3aed', science: '#16a34a', sst: '#0ea5e9', english: '#db2777'
+};
+
+export default function QuestRunner() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user     = useSelector(s => s.user.data);
+
+    const mountRef     = useRef(null);
+    const engineRef    = useRef(null);   // holds { router, cleanup }
+
+    const [phase,    setPhase]    = useState('loading'); // loading | running | finished
+    const [steps,    setSteps]    = useState([]);
+    const [stepIdx,  setStepIdx]  = useState(0);
+    const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE' });
+    const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
+
+    // ── Derive biome color ────────────────────────────────────────────────────
+    const biomeColor = location.state?.biomeColor || SUBJECT_COLOR[meta.subject] || '#7c3aed';
+    const gemFile    = location.state?.gemFile    || `${meta.subject}_gem.svg`;
+
+    // ── Cleanup helper — kills all engine side-effects ────────────────────────
+    const cleanupEngine = useCallback(() => {
+        if (window.ManyaIntervals) {
+            window.ManyaIntervals.forEach(clearInterval);
+            window.ManyaIntervals = [];
+        }
+        document.onmousemove  = null;
+        document.ontouchmove  = null;
+        document.onmouseup    = null;
+        document.ontouchend   = null;
+        window.removeEventListener('stop-typing', null);
+    }, []);
+
+    // ── Expose next() so vanilla engines can call window.QuestRunner.next() ──
+    useEffect(() => {
+        window.QuestRunner = { 
+            next: () => advanceStep(),
+            enableButton: (label) => setBtnState(s => ({ ...s, enabled: true, label: label || s.label })),
+            disableButton: () => setBtnState(s => ({ ...s, enabled: false })),
+            setIsTyping: (val) => {
+                window.__manyaIsTyping = val; 
+                setBtnState(s => ({ ...s, enabled: !val }));
+            }
+        };
+        // Legacy support mapping
+        window.ManyaQuestRunner = window.QuestRunner;
+        
+        return () => { 
+            delete window.QuestRunner; 
+            delete window.ManyaQuestRunner;
+        };
+    });
+
+    // ── Initial load: resolve steps from location.state ───────────────────────
+    useEffect(() => {
+        const state = location.state;
+        if (!state) { navigate('/library'); return; }
+
+        async function init() {
+            try {
+                let resolvedSteps, resolvedMeta;
+
+                if (state.steps && Array.isArray(state.steps)) {
+                    // Option B: pre-built steps from QuestFactory
+                    resolvedSteps = state.steps;
+                    resolvedMeta  = { title: state.title || 'Quest', subject: state.subject || 'math' };
+                } else {
+                    // Option A: direct launch from Library
+                    const { steps: s, meta: m } = await loadQuestSteps(
+                        state.subject, state.unitId, state.questFolder, state.file
+                    );
+                    resolvedSteps = s;
+                    resolvedMeta  = { title: state.label || m.topic || 'Quest', subject: state.subject || 'math' };
+                }
+
+                if (resolvedSteps.length === 0) throw new Error('No steps in quest');
+
+                setSteps(resolvedSteps);
+                setMeta(resolvedMeta);
+                setStepIdx(0);
+                setPhase('running');
+
+            } catch (err) {
+                console.error('[QuestRunner] init failed:', err);
+                dispatch(addToast({ message: 'Could not load quest content.', type: 'error' }));
+                navigate('/library');
+            }
+        }
+        init();
+        return cleanupEngine;
+    }, []); // run once on mount
+
+    // ── Render a step whenever stepIdx changes and phase === 'running' ────────
+    useEffect(() => {
+        if (phase !== 'running' || steps.length === 0) return;
+        renderStep(steps[stepIdx]);
+    }, [phase, stepIdx, steps]);
+
+    // ── RENDER STEP ───────────────────────────────────────────────────────────
+    async function renderStep(step) {
+        if (!mountRef.current) return;
+        cleanupEngine();
+
+        const { engineType, data, mode } = step;
+        const isImmersive = IMMERSIVE_ENGINES.has(engineType);
+        const isWait      = WAIT_ENGINES.has(engineType);
+
+        // Set footer button state
+        setBtnState({
+            enabled: !isWait,
+            label: stepIdx === steps.length - 1 ? 'FINISH' : 'CONTINUE',
+        });
+
+        // Hide footer for immersive engines
+        // Hide footer for some immersive engines, but show for English ones if they need a "Continue"
+        const footer = document.getElementById('qr-footer-mount');
+        if (footer) {
+            // If it's an English engine but marked immersive, we still might want the button for flow
+            const isEnglish = meta.subject === 'english';
+            footer.style.display = (isImmersive && !isEnglish) ? 'none' : '';
+        }
+
+        // Load the engine via the legacy router (served as a static file)
+        try {
+            // Hide the dynamic import from Vite's bundler analysis
+            const importFn = new Function('url', 'return import(url)');
+            const routerMod = await importFn('/legacy/router.js');
+            const { ManyaRouter } = routerMod;
+
+            // The vanilla engines write innerHTML into this container
+            const contentBox = mountRef.current;
+            contentBox.innerHTML = '';  // clear previous
+
+            await ManyaRouter.loadInline(engineType, data, contentBox);
+
+        } catch (err) {
+            console.error(`[QuestRunner] engine load error (${engineType}):`, err);
+            if (mountRef.current) {
+                mountRef.current.innerHTML = `
+                    <div style="padding:30px;text-align:center;color:#ef4444;font-weight:800">
+                        ⚠️ Engine "${engineType}" failed to load.<br>
+                        <small style="font-size:12px;opacity:0.7">${err.message}</small><br><br>
+                        <button onclick="window.QuestRunner.next()" style="padding:10px 20px;background:#7c3aed;color:white;border:none;border-radius:12px;font-weight:900;cursor:pointer">
+                            Skip →
+                        </button>
+                    </div>`;
+            }
+        }
+    }
+
+    // ── ADVANCE ───────────────────────────────────────────────────────────────
+    function advanceStep() {
+        // If user is in a typing animation, stop-typing first
+        if (btnState.label === 'CONTINUE' && window.__manyaIsTyping) {
+            window.dispatchEvent(new CustomEvent('stop-typing'));
+            return;
+        }
+
+        const nextIdx = stepIdx + 1;
+        if (nextIdx < steps.length) {
+            setStepIdx(nextIdx);
+        } else {
+            finishQuest();
+        }
+    }
+
+    // ── FINISH ────────────────────────────────────────────────────────────────
+    function finishQuest() {
+        cleanupEngine();
+        setPhase('finished');
+
+        // Award gems — 3 gems per quest completion
+        const gemsEarned = 3;
+        dispatch(updateProfile({ diamonds: (user?.diamonds || 0) + gemsEarned }));
+        dispatch(addToast({ message: `🏆 Quest complete! +${gemsEarned} gems earned`, type: 'success' }));
+    }
+
+    // ── PROGRESS ──────────────────────────────────────────────────────────────
+    const progressPct = steps.length > 0
+        ? Math.round(((stepIdx + 1) / steps.length) * 100)
+        : 0;
+
+    // ── RENDER ────────────────────────────────────────────────────────────────
+    return (
+        <div className="quest-runner-shell" style={{ '--biome-color': biomeColor }}>
+
+            {/* ── HEADER ── */}
+            <div className="qr-classic-header">
+                <button
+                    className="qr-back-btn"
+                    onClick={() => { cleanupEngine(); navigate(-1); }}
+                    title="Exit quest"
+                >
+                    <X size={20} strokeWidth={2.5} />
+                </button>
+
+                <div className="qr-subject-tag" style={{ flex: 1, paddingLeft: 12 }}>
+                    {meta.title.length > 28 ? meta.title.slice(0, 26) + '…' : meta.title}
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6,
+                              background: 'rgba(0,0,0,0.05)', borderRadius: 12,
+                              padding: '4px 10px', fontSize: 12, fontWeight: 900 }}>
+                    <img
+                        src={`/assets/images/gems/${gemFile}`}
+                        style={{ width: 20, height: 20 }}
+                        alt="gem"
+                        onError={e => { e.target.style.display = 'none'; }}
+                    />
+                    <span style={{ color: 'var(--text-main)' }}>
+                        {stepIdx + 1}/{steps.length}
+                    </span>
+                </div>
+
+                {/* Progress bar */}
+                <div className="qr-progress-bar">
+                    <div className="fill" style={{ width: `${progressPct}%`,
+                        background: `linear-gradient(90deg, ${biomeColor}, ${biomeColor}aa)` }} />
+                </div>
+            </div>
+
+            {/* ── CONTENT AREA (engine renders here) ── */}
+            {phase === 'loading' && (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+                    <div style={{ fontSize: 40 }}>⚡</div>
+                    <div style={{ fontWeight: 900, color: 'var(--text-muted)',
+                                  fontSize: 13, letterSpacing: 2, textTransform: 'uppercase' }}>
+                        Loading Engine…
+                    </div>
+                </div>
+            )}
+
+            {phase === 'running' && (
+                <div
+                    ref={mountRef}
+                    className="qr-content-area"
+                    id="qr-content"
+                />
+            )}
+
+            {phase === 'finished' && (
+                <div className="quest-finish-screen animate-in" style={{ background: `linear-gradient(135deg, ${biomeColor}, ${biomeColor}dd)` }}>
+                    <div className="finish-card bento-card-premium" style={{ border: `3px solid ${biomeColor}22` }}>
+                        <div className="confetti-bubble">🎊</div>
+                        <h1 style={{ fontWeight: 900, fontSize: '2rem', color: '#1e293b', marginBottom: '8px' }}>
+                            Mastery Achieved!
+                        </h1>
+                        <p style={{ color: '#64748b', fontWeight: 700, fontSize: '1.1rem', marginBottom: '32px' }}>
+                             {meta.title}
+                        </p>
+                        
+                        <div className="finish-stats-grid">
+                            <div className="stat-bento">
+                                <span className="stat-label">Subject</span>
+                                <span className="stat-value" style={{ color: biomeColor }}>{meta.subject.toUpperCase()}</span>
+                            </div>
+                            <div className="stat-bento">
+                                <span className="stat-label">Steps</span>
+                                <span className="stat-value">{steps.length} / {steps.length}</span>
+                            </div>
+                        </div>
+
+                        <div className="reward-reveal">
+                            <img src={`/assets/images/gems/${gemFile}`} className="floating-gem" alt="" />
+                            <div className="reward-text">
+                                <span className="plus">+</span>
+                                <span className="amount">3</span>
+                                <span className="unit">GEMS</span>
+                            </div>
+                        </div>
+
+                        <button 
+                            className="manya-btn-pro" 
+                            onClick={() => navigate(-1)}
+                            style={{ background: '#1e293b', boxShadow: '0 6px 0 #00000033', marginTop: '40px' }}
+                        >
+                            CLAIM REWARD
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* ── FOOTER (CONTINUE button) ── */}
+            {phase === 'running' && (
+                <div className="qr-classic-footer" id="qr-footer-mount">
+                    <button
+                        className="manya-btn-pro"
+                        disabled={!btnState.enabled}
+                        onClick={advanceStep}
+                        style={{ background: biomeColor,
+                                 boxShadow: `0 6px 0 ${biomeColor}88` }}
+                    >
+                        {btnState.label}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}

@@ -1,0 +1,102 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Latitudes and Longitudes",
+  "variantTitle": "Quest 2: The Grid Master",
+   "mode": "study",
+  "locked": true,
+
+  "cases": [
+    {
+      "tabTitle": "The Equator",
+      "title": "Latitude 0° (The Equator)",
+      "description": "The most important line of Latitude. It divides the world into the Northern and Southern Hemispheres.",
+      "initialRotation": [-25, 0, 0],
+      "zoomFactor": 1.5,
+      "hideDefaultLines": true,
+      
+      "lines": [
+        { "type": "lat", "value": 0, "color": "#ef4444", "label": "Equator (0°)", "dashed": false }
+      ],
+      
+      "highlight": ["800", "404", "706", "180", "178", "266", "678"],
+      "highlightColor": "#4ade80",
+      
+      "steps": [
+        "<b>Definition:</b> The Equator is the line marked <b>0° Latitude</b>.",
+        "<b>Hemispheres:</b> It divides the Earth into North and South.",
+        "<b>In Africa:</b> It crosses 7 countries: <b>Uganda</b>, Kenya, Somalia, DRC, Congo, Gabon, and Sao Tome.",
+        "<b>Climate:</b> Areas near this line are usually hot and wet throughout the year (Equatorial Climate)."
+      ]
+    },
+    {
+      "tabTitle": "The Tropics",
+      "title": "The Tropical Zone",
+      "description": "The area between the Tropic of Cancer and the Tropic of Capricorn.",
+      "initialRotation": [-20, -10, 0],
+      "zoomFactor": 1.3,
+      "hideDefaultLines": true,
+
+      "lines": [
+        { "type": "lat", "value": 23.5, "color": "#facc15", "label": "Tropic of Cancer (23½°N)", "dashed": true },
+        { "type": "lat", "value": -23.5, "color": "#facc15", "label": "Tropic of Capricorn (23½°S)", "dashed": true }
+      ],
+
+      "zones": [
+        { "fromLat": -23.5, "toLat": 23.5, "color": "rgba(250, 204, 21, 0.2)" }
+      ],
+
+      "steps": [
+        "<b>Tropic of Cancer (23½°N):</b> Passes through North Africa (Egypt, Libya, Algeria).",
+        "<b>Tropic of Capricorn (23½°S):</b> Passes through South Africa, Botswana, Namibia, Mozambique.",
+        "<b>The Tropics:</b> The shaded yellow area is the hottest part of the world.",
+        "<b>Africa's Position:</b> Africa is the only continent crossed by both tropics and the Equator."
+      ]
+    },
+    {
+      "tabTitle": "Prime Meridian",
+      "title": "Longitude 0° (Greenwich)",
+      "description": "The main line of Longitude. It helps us calculate time.",
+      "initialRotation": [0, -10, 0],
+      "zoomFactor": 1.6,
+      "hideDefaultLines": true,
+
+      "lines": [
+        { "type": "lon", "value": 0, "color": "#3b82f6", "label": "Prime Meridian (0°)", "dashed": false }
+      ],
+
+      "highlight": ["288", "854", "466", "012"],
+      "highlightColor": "#60a5fa",
+      
+      "markers": [
+          { "label": "Accra", "lat": 5.6, "lon": 0, "color": "#1e293b" },
+          { "label": "Greenwich", "lat": 51.5, "lon": 0, "color": "#ef4444" }
+      ],
+
+      "steps": [
+        "<b>Definition:</b> Longitudes run from North to South (Vertical).",
+        "<b>The Prime Meridian:</b> It is marked <b>0° Longitude</b>.",
+        "<b>In Africa:</b> It crosses <b>Ghana</b> (Accra), Burkina Faso, Mali, and Algeria.",
+        "<b>Function:</b> It determines International Time (GMT)."
+      ]
+    },
+    {
+      "tabTitle": "Global Grid",
+      "title": "Grid Reference",
+      "description": "Using Latitudes and Longitudes to find places.",
+      "initialRotation": [-15, -5, 0],
+      "zoomFactor": 1.2,
+      "hideDefaultLines": false, 
+
+      "markers": [
+          { "label": "Center (0°, 0°)", "lat": 0, "lon": 0, "color": "#ffffff" }
+      ],
+
+      "steps": [
+        "<b>Grid Reference:</b> The method of locating places using lines of Latitude and Longitude.",
+        "<b>Intersection:</b> The Equator and Prime Meridian meet in the <b>Gulf of Guinea</b> (Atlantic Ocean), just south of Ghana.",
+        "<b>Uganda's Location:</b> Uganda is crossed by the Equator and is East of the Prime Meridian."
+      ]
+    }
+  ]
+}

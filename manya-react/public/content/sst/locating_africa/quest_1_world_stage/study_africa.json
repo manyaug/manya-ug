@@ -1,0 +1,141 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Location of Africa",
+  "variantTitle": "Study: Africa in Detail (PLE Focus)",
+   "mode": "study",
+  "locked": true,
+
+  "cases": [
+    {
+      "tabTitle": "Major Latitudes",
+      "title": "Position & Latitude",
+      "description": "Africa is the only continent crossed by these 3 major lines.",
+      "initialRotation": [-20, -5, 0],
+      "zoomFactor": 1.4,
+      "highlight": "africa",
+      "highlightColor": "#4ade80",
+      "markers": [
+          { "label": "Tropic of Cancer (23½°N)", "lat": 23.5, "lon": 20, "color": "#facc15" },
+          { "label": "Equator (0°)", "lat": 0, "lon": 32, "color": "#ef4444" },
+          { "label": "Tropic of Capricorn (23½°S)", "lat": -23.5, "lon": 20, "color": "#facc15" }
+      ],
+      "steps": [
+        "<b>The Equator (0°):</b> Crosses Uganda, Kenya, DRC, Congo, Gabon, and Somalia.",
+        "<b>Tropic of Cancer (23½°N):</b> Passes through North Africa (Egypt, Libya, Algeria, etc.).",
+        "<b>Tropic of Capricorn (23½°S):</b> Passes through Southern Africa (Namibia, Botswana, S. Africa, Mozambique).",
+        "<b>PLE Fact:</b> Because of these lines, most of Africa lies in the <b>Tropical Zone</b> (Hot climate)."
+      ]
+    },
+    {
+      "tabTitle": "Extreme Points",
+      "title": "The Four Corners of Africa",
+      "description": "The furthest points North, South, East, and West.",
+      "initialRotation": [-18, 0, 0],
+      "zoomFactor": 1.4,
+      "highlight": "africa",
+      "highlightColor": "#e2e8f0",
+      "markers": [
+          { "label": "N: Ras Ben Sakka", "lat": 37.3, "lon": 9.8, "color": "#3b82f6" },
+          { "label": "S: Cape Agulhas", "lat": -34.8, "lon": 20, "color": "#3b82f6" },
+          { "label": "E: Cape Guardafui", "lat": 11.8, "lon": 51.2, "color": "#3b82f6" },
+          { "label": "W: Cape Verde", "lat": 14.7, "lon": -17.5, "color": "#3b82f6" }
+      ],
+      "steps": [
+        "<b>North:</b> Ras Ben Sakka (Tunisia).",
+        "<b>South:</b> Cape Agulhas (South Africa). <i>Note: It is NOT Cape Town.</i>",
+        "<b>East:</b> Cape Guardafui (Somalia). Located on the Horn of Africa.",
+        "<b>West:</b> Cape Verde Peninsula (Senegal)."
+      ]
+    },
+    {
+      "tabTitle": "Water Borders",
+      "title": "Oceans, Seas & Canals",
+      "description": "Africa is almost an island, separated from other continents by water.",
+      "initialRotation": [-40, -10, 0],
+      "zoomFactor": 1.5,
+      "highlight": "africa",
+      "highlightColor": "#f1f5f9",
+      "markers": [
+          { "label": "Strait of Gibraltar", "lat": 36, "lon": -5.3, "color": "#ef4444" },
+          { "label": "Suez Canal", "lat": 30.5, "lon": 32.3, "color": "#ef4444" },
+          { "label": "Bab-el-Mandeb", "lat": 12.5, "lon": 43.3, "color": "#ef4444" }
+      ],
+      "steps": [
+        "<b>Strait of Gibraltar:</b> Separates Africa (Morocco) from Europe (Spain).",
+        "<b>Suez Canal:</b> Man-made waterway separating Africa from Asia. Connects Red Sea to Mediterranean.",
+        "<b>Strait of Bab-el-Mandeb:</b> Separates Africa (Djibouti) from Asia (Yemen).",
+        "<b>PLE Fact:</b> The Suez Canal shortens the trade route to Europe."
+      ]
+    },
+    {
+      "tabTitle": "East Africa (EAC)",
+      "title": "East African Community",
+      "description": "Our home region.",
+      "initialRotation": [-34, -2, 0],
+      "zoomFactor": 3.8,
+      "highlight": "east_africa",
+      "highlightColor": "#facc15",
+      "markers": [
+          { "label": "Mombasa Port", "lat": -4, "lon": 39.6, "color": "#0f172a" },
+          { "label": "Dar es Salaam", "lat": -6.7, "lon": 39.2, "color": "#0f172a" }
+      ],
+      "steps": [
+        "<b>Members:</b> Uganda, Kenya, Tanzania, Rwanda, Burundi, South Sudan, DRC, and Somalia.",
+        "<b>Ports:</b> Uganda relies on <b>Mombasa</b> (Kenya) and <b>Dar es Salaam</b> (Tanzania) for overseas trade because it is landlocked.",
+        "<b>Feature:</b> Home to Lake Victoria (Largest fresh water lake in Africa)."
+      ]
+    },
+    {
+      "tabTitle": "North & West",
+      "title": "North & West Africa",
+      "description": "Deserts and Deltas.",
+      "initialRotation": [0, -20, 0],
+      "zoomFactor": 1.8,
+      "highlight": ["north_africa", "west_africa"],
+      "highlightColor": "#fb923c",
+      "markers": [
+          { "label": "Nile Delta", "lat": 30, "lon": 31, "color": "#2563eb" },
+          { "label": "Niger Delta", "lat": 4.5, "lon": 6, "color": "#2563eb" }
+      ],
+      "steps": [
+        "<b>Nigeria (West):</b> Most populated country in Africa. Major Oil producer (OPEC member).",
+        "<b>Egypt (North):</b> Gift of the Nile. Famous for the Aswan High Dam and Pyramids.",
+        "<b>Libya (North):</b> Major Oil producer. Large parts are Sahara Desert.",
+        "<b>Ghana (West):</b> Crossed by the Prime Meridian. Famous for Cocoa and Gold."
+      ]
+    },
+    {
+      "tabTitle": "Southern Africa",
+      "title": "Southern Africa",
+      "description": "Minerals and History.",
+      "initialRotation": [-25, 25, 0],
+      "zoomFactor": 2.5,
+      "highlight": "southern_africa",
+      "highlightColor": "#a78bfa",
+      "markers": [
+          { "label": "The Rand", "lat": -26, "lon": 28, "color": "#fbbf24" }
+      ],
+      "steps": [
+        "<b>South Africa:</b> The most industrialized country in Africa.",
+        "<b>Minerals:</b> Famous for Gold and Diamond mining (The Rand).",
+        "<b>History:</b> Known for the struggle against Apartheid (Separation by race).",
+        "<b>Environment:</b> Home to the Kalahari and Namib deserts."
+      ]
+    },
+    {
+      "tabTitle": "Central Africa",
+      "title": "Central Africa",
+      "description": "The heart of the continent, covered by the Congo Rainforest.",
+      "initialRotation": [-15, 0, 0],
+      "zoomFactor": 2.5,
+      "highlight": "central_africa",
+      "highlightColor": "#22c55e",
+      "steps": [
+        "<b>Key Countries:</b> DRC (Kinshasa), Congo (Brazzaville), Gabon, and Equatorial Guinea.",
+        "<b>Forest:</b> Home to the world's second largest rainforest.",
+        "<b>River:</b> The Congo River crosses the Equator twice."
+      ]
+    }
+  ]
+}

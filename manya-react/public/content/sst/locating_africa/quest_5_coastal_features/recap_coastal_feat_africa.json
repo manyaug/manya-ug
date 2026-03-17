@@ -1,0 +1,105 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Coastal Features of Africa",
+  "variantTitle": "Shaping the African Coast",
+  "themeColor": "#9333ea",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "1. What are Coastal Features?",
+      "points": [
+        "Coastal features are physical landforms found where the land meets the sea or ocean.",
+        "<b>A Coast:</b> The narrow zone between the land and the sea.",
+        "<b>A Coastline:</b> The boundary line where the land actually touches the water.",
+        "Africa's coastline is relatively straight, meaning it has fewer natural harbors compared to other continents."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "2. The Four Extreme Capes",
+      "points": [
+        "A <b>Cape</b> is a piece of land that juts out (pokes out) into the sea.",
+        "<b>North:</b> Cape Ras Ben (Tunisia) - Also known as Cape Blanc.",
+        "<b>South:</b> Cape Agulhas (South Africa) - The actual southernmost tip.",
+        "<b>West:</b> Cape Verde (Senegal) - Located on the Verde Peninsula.",
+        "<b>East:</b> Cape Guardafui (Somalia) - Located on the Horn of Africa."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "3. Gulfs and Peninsulas",
+      "points": [
+        "<b>Gulf:</b> A large area of the sea that is partly enclosed by land.",
+        "• <i>Gulf of Guinea:</i> The large curve on the West African coast.",
+        "• <i>Gulf of Aden:</i> Located between Somalia and Yemen (Asia).",
+        "• <i>Gulf of Sirte:</i> Found on the northern coast of Libya.",
+        "<b>Peninsula:</b> A piece of land with three sides surrounded by water.",
+        "• <i>Horn of Africa:</i> The most famous peninsula in the East containing Somalia, Ethiopia, Djibouti, and Eritrea."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "4. Africa's 6 Island Countries",
+      "points": [
+        "An <b>Island</b> is land completely surrounded by water. Africa has 6 sovereign island nations:",
+        "<b>Indian Ocean (East):</b>",
+        "• 1. <b>Madagascar:</b> The largest island in Africa.",
+        "• 2. <b>Seychelles:</b> The smallest country in Africa.",
+        "• 3. <b>Mauritius:</b> Famous for its volcanic landscape and tourism.",
+        "• 4. <b>Comoros:</b> Located between Mozambique and Madagascar.",
+        "<b>Atlantic Ocean (West):</b>",
+        "• 5. <b>Cape Verde:</b> Found off the coast of Senegal.",
+        "• 6. <b>Sao Tome and Principe:</b> Located in the Gulf of Guinea on the Equator."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Strategic Water Passages",
+      "itemA": "Straits (Natural)",
+      "itemB": "Canals (Man-made)",
+      "rows": [
+        { "feature": "Definition", "valA": "Narrow natural water passage", "valB": "Man-made water channel" },
+        { "feature": "Separation", "valA": "Strait of Gibraltar (Africa & Europe)", "valB": "Suez Canal (Africa & Asia)" },
+        { "feature": "Connection", "valA": "Bab-el-Mandeb (Red Sea & Indian Ocean)", "valB": "Suez (Med. Sea & Red Sea)" },
+        { "feature": "Economic Use", "valA": "Natural navigation routes", "valB": "Shortening trade distances" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "5. Importance of Coastal Features",
+      "points": [
+        "<b>Trade:</b> Strategic passages like the <b>Suez Canal</b> shorten the distance for ships traveling between Europe and Asia.",
+        "<b>Tourism:</b> Island nations and capes (like the Cape of Good Hope) attract tourists.",
+        "<b>Resources:</b> The <b>Gulf of Guinea</b> is famous for offshore oil and gas deposits.",
+        "<b>Spices:</b> The islands of <b>Zanzibar and Pemba</b> (Tanzania) are the world's leading producers of Cloves."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>PLE Exam Tip:</b> Many students confuse an <u>Isthmus</u> with a <u>Strait</u>. Remember: An <b>Isthmus</b> is a bridge of <b>LAND</b> connecting two continents, while a <b>Strait</b> is a passage of <b>WATER</b> between two continents."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Mozambique Channel",
+      "fact": "The wide body of water separating Madagascar from the African mainland.",
+      "mnemonic": "The <b>Channel</b> between the <b>Mainland</b> and Madagascar."
+    },
+    {
+      "term": "Cape Verde",
+      "fact": "Both the name of the westernmost point of Africa and the name of an island country in the Atlantic.",
+      "mnemonic": "<b>Verde</b> = Green. The Green Cape."
+    },
+    {
+      "term": "Suez Canal",
+      "fact": "The man-made waterway in Egypt that connects the Mediterranean Sea to the Red Sea.",
+      "mnemonic": "Suez = <b>S</b>hortens <b>U</b>nder-way <b>E</b>xit to <b>Z</b>ones of trade."
+    },
+    {
+      "term": "Zinjanthropus",
+      "fact": "The skull of the early man found in East Africa, giving Africa the name 'Cradle of Mankind'.",
+      "mnemonic": "Found by <b>Leakey</b> in the <b>Cradle</b>."
+    }
+  ]
+}

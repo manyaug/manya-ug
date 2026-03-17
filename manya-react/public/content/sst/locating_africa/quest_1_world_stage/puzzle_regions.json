@@ -1,0 +1,54 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "mode": "puzzle",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Divisions",
+  "variantTitle": "Quest 7: The Regional Puzzle",
+ 
+  "initialRotation": [-20, -5, 0],
+  
+  "pieces": [
+    { 
+      "id": "east_africa", 
+      "label": "East Africa", 
+      "icon": "🦁", 
+      "target": [35, 0],
+      "color": "#4ade80" 
+    },
+    { 
+      "id": "west_africa", 
+      "label": "West Africa", 
+      "icon": "🥁", 
+      "target": [0, 10], 
+      "color": "#facc15" 
+    },
+    { 
+      "id": "north_africa", 
+      "label": "North Africa", 
+      "icon": "🐪", 
+      "target": [20, 25], 
+      "color": "#f87171" 
+    },
+    { 
+      "id": "southern_africa", 
+      "label": "Southern Africa", 
+      "icon": "💎", 
+      "target": [25, -25], 
+      "color": "#60a5fa" 
+    },
+    { 
+      "id": "central_africa", 
+      "label": "Central Africa", 
+      "icon": "🦍", 
+      "target": [20, 0], 
+      "color": "#a78bfa" 
+    },
+    { 
+      "id": "horn_africa", 
+      "label": "Horn of Africa", 
+      "icon": "🦏", 
+      "target": [45, 8], 
+      "color": "#fb923c" 
+    }
+  ]
+}

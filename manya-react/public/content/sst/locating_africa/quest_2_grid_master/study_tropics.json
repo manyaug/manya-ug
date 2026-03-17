@@ -1,0 +1,94 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "The Grid Master",
+  "variantTitle": "Quest 2: Latitudes & Climate",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "The Equator",
+      "title": "The Equator (0°)",
+      "description": "The Equator divides the world into Northern and Southern Hemispheres.",
+      "initialRotation": [-20, -5, 0],
+      "highlight": ["uganda", "kenya", "266", "178", "180", "706"], 
+      "highlightColor": "#86efac",
+      "lines": [
+         { "type": "lat", "value": 0, "color": "#16a34a", "label": "The Equator (0°)", "dashed": false }
+      ],
+      "markers": [
+        { "label": "Uganda", "lat": 0, "lon": 32, "color": "#15803d" },
+        { "label": "Gabon", "lat": 0, "lon": 11, "color": "#15803d" }
+      ],
+      "steps": [
+        "<b>Definition:</b> Latitude is the distance North or South of the Equator in degrees.",
+        "The Equator is marked <b>0°</b>.",
+        "<b>PLE Fact:</b> In Africa, it crosses 7 countries: <b>Gabon, Congo, DRC, Uganda, Kenya, Somalia, and Sao Tome</b>.",
+        "<b>Climate:</b> Places on this line experience the <b>Equinox</b> (Sun overhead) on March 21st and September 23rd."
+      ]
+    },
+    {
+      "tabTitle": "Tropic of Cancer",
+      "title": "Tropic of Cancer (23½°N)",
+      "description": "The Northern limit of the overhead sun.",
+      "initialRotation": [-15, -20, 0],
+      "highlight": ["818", "434", "012", "478", "466", "562", "732"],
+      "highlightColor": "#fca5a5",
+      "lines": [
+         { "type": "lat", "value": 0, "color": "#22c55e", "dashed": true },
+         { "type": "lat", "value": 23.5, "color": "#ef4444", "label": "Tropic of Cancer (23½°N)", "dashed": false }
+      ],
+      "markers": [
+        { "label": "Egypt", "lat": 26, "lon": 30, "color": "#b91c1c" },
+        { "label": "Libya", "lat": 27, "lon": 17, "color": "#b91c1c" }
+      ],
+      "steps": [
+        "This line is located <b>23½° North</b> of the Equator.",
+        "It passes through North African countries: <b>Egypt, Libya, Algeria, Mali, Mauritania, Western Sahara</b>.",
+        "<b>Solstice:</b> The sun is directly overhead here on <b>June 21st</b>.",
+        "Areas North of this line never see the sun directly overhead."
+      ]
+    },
+    {
+      "tabTitle": "Tropic of Capricorn",
+      "title": "Tropic of Capricorn (23½°S)",
+      "description": "The Southern limit of the overhead sun.",
+      "initialRotation": [-20, 10, 0],
+      "highlight": ["516", "072", "710", "508", "450"],
+      "highlightColor": "#93c5fd",
+      "lines": [
+         { "type": "lat", "value": 0, "color": "#22c55e", "dashed": true },
+         { "type": "lat", "value": -23.5, "color": "#3b82f6", "label": "Tropic of Capricorn (23½°S)", "dashed": false }
+      ],
+      "markers": [
+        { "label": "Namibia", "lat": -22, "lon": 17, "color": "#1d4ed8" },
+        { "label": "Madagascar", "lat": -20, "lon": 47, "color": "#1d4ed8" }
+      ],
+      "steps": [
+        "This line is located <b>23½° South</b> of the Equator.",
+        "It passes through: <b>Namibia, Botswana, South Africa, Mozambique, Madagascar</b>.",
+        "<b>Solstice:</b> The sun is directly overhead here on <b>December 22nd</b>.",
+        "<b>Fact:</b> Africa is the only continent crossed by all 3 major latitudes (Equator, Cancer, Capricorn)."
+      ]
+    },
+    {
+      "tabTitle": "Climatic Zones",
+      "title": "The Torrid (Tropical) Zone",
+      "description": "Why Africa is the hottest continent.",
+      "initialRotation": [-20, -5, 0],
+      "zones": [
+        { "fromLat": -23.5, "toLat": 23.5, "color": "rgba(249, 115, 22, 0.4)" }
+      ],
+      "lines": [
+         { "type": "lat", "value": 23.5, "color": "#ef4444" },
+         { "type": "lat", "value": -23.5, "color": "#ef4444" }
+      ],
+      "steps": [
+        "The orange shaded area is the <b>Torrid Zone</b> (Tropical Zone).",
+        "It lies between 23½°N and 23½°S.",
+        "This area receives <b>Direct Sunlight</b> throughout the year.",
+        "Since 75% of Africa lies in this zone, it is the hottest continent."
+      ]
+    }
+  ]
+}

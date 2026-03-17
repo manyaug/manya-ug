@@ -1,0 +1,98 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "The Landlocked Challenge",
+  "variantTitle": "Africa's Interior Nations",
+  "themeColor": "#f43f5e",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "1. What is a Landlocked Country?",
+      "points": [
+        "A <b>landlocked country</b> is a country that is entirely surrounded by land and has no direct access to the sea or ocean.",
+        "Africa has <b>16 landlocked countries</b>, which is more than any other continent.",
+        "Because they lack their own sea ports, these countries must rely on their coastal neighbors for international trade."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "2. Regional List of Landlocked Nations",
+      "points": [
+        "<b>East Africa:</b> Uganda, Rwanda, Burundi, and South Sudan.",
+        "<b>The Horn:</b> Ethiopia (became landlocked in 1993 after Eritrea separated).",
+        "<b>West Africa (Sahel):</b> Mali, Niger, and Burkina Faso.",
+        "<b>Central Africa:</b> Chad and Central African Republic (CAR).",
+        "<b>Southern Africa:</b> Zambia, Zimbabwe, Malawi, Botswana, Eswatini, and Lesotho."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "3. Vital Trade Routes and Ports",
+      "points": [
+        "<b>Uganda:</b> Uses the 'Northern Corridor' to reach the <b>Port of Mombasa</b> in Kenya.",
+        "<b>Rwanda & Burundi:</b> Use the 'Central Corridor' to reach the <b>Port of Dar es Salaam</b> in Tanzania.",
+        "<b>Ethiopia:</b> Uses the <b>Port of Djibouti</b> (connected by a modern railway).",
+        "<b>Mali:</b> Relies on the <b>Port of Dakar</b> in Senegal.",
+        "<b>Zambia:</b> Uses <b>Dar es Salaam</b> (via TAZARA railway) and <b>Durban</b> in South Africa.",
+        "<b>Zimbabwe:</b> Uses the <b>Port of Beira</b> in Mozambique (its shortest route to the sea)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "4. Major Challenges faced by Landlocked Countries",
+      "points": [
+        "<b>High Transport Costs:</b> Goods are expensive because they travel long distances through multiple countries.",
+        "<b>Dependence:</b> If a neighboring coastal country has a strike or civil war, the landlocked country's trade is blocked.",
+        "<b>Delays:</b> Goods spend a long time at borders for clearing and taxes.",
+        "<b>Smuggling:</b> Illegal trade is common due to many porous land borders."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Geographic Comparison",
+      "itemA": "Landlocked Country",
+      "itemB": "Coastal Country",
+      "rows": [
+        { "feature": "Sea Access", "valA": "Indirect (via neighbors)", "valB": "Direct (has own ports)" },
+        { "feature": "Transport Cost", "valA": "Very High", "valB": "Lower" },
+        { "feature": "Security", "valA": "Dependent on neighbors", "valB": "Controls own borders/ports" },
+        { "feature": "Examples", "valA": "Uganda, Ethiopia, Mali", "valB": "Kenya, Nigeria, Egypt" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "5. Special Case: The Enclave State",
+      "points": [
+        "An <b>Enclave</b> is a country that is completely surrounded by only <u>one</u> other country.",
+        "<b>Lesotho:</b> The most famous enclave in Africa, located entirely inside <b>South Africa</b>.",
+        "Lesotho is highly dependent on South Africa for all its electricity, transport, and economic needs."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>PLE Exam Fact:</b> <u>Ethiopia</u> is the most populated landlocked country in the world, while <u>South Sudan</u> is the newest landlocked nation in Africa (2011)."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Enclave",
+      "fact": "A country surrounded by only one neighbor.",
+      "mnemonic": "<b>En</b>clave = <b>En</b>closed like a letter in an envelope."
+    },
+    {
+      "term": "Hinterland",
+      "fact": "The inland region far from the coast that a port serves.",
+      "mnemonic": "The land <b>behind</b> the port."
+    },
+    {
+      "term": "TAZARA",
+      "fact": "The railway connecting landlocked Zambia to the Tanzanian port of Dar es Salaam.",
+      "mnemonic": "<b>TA</b>nzania + <b>ZA</b>mbia <b>RA</b>ilway."
+    },
+    {
+      "term": "Northern Corridor",
+      "fact": "The transport route from landlocked Uganda/Rwanda to Mombasa port.",
+      "mnemonic": "Uganda's <b>North</b>ern road to the sea."
+    }
+  ]
+}

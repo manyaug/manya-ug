@@ -1,0 +1,49 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Complex Time Zones",
+  "variantTitle": "Quiz 3: Expert Calculations",
+  "mode": "quiz",
+  
+  "questions": [
+    {
+      "title": "East to East (Cairo to Dhaka)",
+      "question": "Cairo is 30°E. Dhaka is 90°E. If it is 10:00 AM in Cairo, what time is it in Dhaka?",
+      "initialRotation": [-60, -20, 0],
+      "options": ["2:00 PM", "6:00 AM", "2:00 AM", "6:00 PM"],
+      "correctAnswer": "2:00 PM",
+      "explanation": "<b>Step 1:</b> Both are East. Subtract degrees: 90° - 30° = 60°.<br><b>Step 2:</b> 60 ÷ 15 = 4 Hours.<br><b>Step 3:</b> Dhaka is ahead. 10:00 + 4 = 14:00 (2:00 PM).",
+      "markers": [{ "label": "Cairo (10AM)", "lat": 30, "lon": 30, "color": "#3b82f6" }, { "label": "Dhaka (?)", "lat": 23, "lon": 90, "color": "#ef4444" }],
+      "connection": { "from": [30, 30], "to": [90, 23] }
+    },
+    {
+      "title": "Crossing the Line (West to East)",
+      "question": "City A is 30°W. City B is 30°E. If it is 8:00 AM in City A, what time is it in City B?",
+      "initialRotation": [0, 0, 0],
+      "options": ["12:00 Noon", "4:00 AM", "12:00 Midnight", "8:00 PM"],
+      "correctAnswer": "12:00 Noon",
+      "explanation": "<b>Step 1:</b> West to East (Cross 0). Add degrees: 30° + 30° = 60°.<br><b>Step 2:</b> 60 ÷ 15 = 4 Hours.<br><b>Step 3:</b> East is ahead. 8:00 + 4 = 12:00.",
+      "markers": [{ "label": "City A (8AM)", "lat": 0, "lon": -30, "color": "#3b82f6" }, { "label": "City B (?)", "lat": 0, "lon": 30, "color": "#ef4444" }],
+      "connection": { "from": [-30, 0], "to": [30, 0] }
+    },
+    {
+      "title": "The Football Match",
+      "question": "A match starts at 4:00 PM in London (0°). What time should a fan in Baghdad (45°E) watch it?",
+      "initialRotation": [-25, -10, 0],
+      "options": ["7:00 PM", "1:00 PM", "8:00 PM", "6:00 PM"],
+      "correctAnswer": "7:00 PM",
+      "explanation": "<b>Step 1:</b> 45° ÷ 15 = 3 Hours.<br><b>Step 2:</b> Baghdad is East (Ahead). Add time.<br><b>Step 3:</b> 4:00 PM + 3 hours = 7:00 PM.",
+      "markers": [{ "label": "London (4PM)", "lat": 51, "lon": 0, "color": "#3b82f6" }, { "label": "Baghdad (?)", "lat": 33, "lon": 45, "color": "#ef4444" }],
+      "connection": { "from": [0, 51], "to": [45, 33] }
+    },
+    {
+      "title": "Reverse: Finding West",
+      "question": "It is 2:00 PM at GMT. City Z is at 11:00 AM. What is the longitude of City Z?",
+      "initialRotation": [20, 0, 0],
+      "options": ["45° West", "45° East", "30° West", "30° East"],
+      "correctAnswer": "45° West",
+      "explanation": "<b>Step 1:</b> Time diff: 14:00 - 11:00 = 3 Hours.<br><b>Step 2:</b> 3 × 15 = 45°.<br><b>Step 3:</b> Time is Behind (AM < PM), so it is West.<br><b>Answer:</b> 45° West.",
+      "markers": [{ "label": "GMT (2PM)", "lat": 51, "lon": 0, "color": "#3b82f6" }, { "label": "City Z (11AM)", "lat": 0, "lon": -45, "color": "#ef4444" }]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Africa and the Grid",
+  "variantTitle": "Africa's Global Address",
+  "themeColor": "#2563eb",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "The Most Central Continent",
+      "points": [
+        "Africa is the only continent crossed by the <b>Equator</b>, <b>Tropic of Cancer</b>, <b>Tropic of Capricorn</b>, and the <b>Prime Meridian</b>.",
+        "Because of this, Africa is located in all <b>four hemispheres</b>: Northern, Southern, Eastern, and Western.",
+        "The Equator and Prime Meridian meet in the <b>Gulf of Guinea</b> off the coast of West Africa."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "African Countries on the Prime Meridian (0°)",
+      "points": [
+        "The Prime Meridian crosses four main countries in Africa:",
+        "1. <b>Algeria</b> (North Africa)",
+        "2. <b>Mali</b> (West Africa)",
+        "3. <b>Burkina Faso</b> (West Africa)",
+        "4. <b>Ghana</b> (West Africa - specifically the city of <b>Accra</b>)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "African Countries on the Equator (0°)",
+      "points": [
+        "The Equator crosses <b>seven</b> African countries:",
+        "<b>East Africa:</b> Uganda, Kenya, Somalia.",
+        "<b>Central/West:</b> DRC, Congo, Gabon, Sao Tome and Principe."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Africa's Exact Grid Location",
+      "points": [
+        "<b>Latitudes:</b> 37°N to 35°S.",
+        "<b>Longitudes:</b> 17°W to 52°E.",
+        "Because 75% of Africa lies between the two Tropics, it is the hottest continent."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "The Tropics in Africa",
+      "itemA": "Tropic of Cancer",
+      "itemB": "Tropic of Capricorn",
+      "rows": [
+        { "feature": "Location", "valA": "North Africa", "valB": "Southern Africa" },
+        { "feature": "Degree", "valA": "23½° North", "valB": "23½° South" },
+        { "feature": "Countries", "valA": "Egypt, Libya, Algeria", "valB": "Namibia, Botswana, S. Africa" }
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>PLE Fact:</b> The only African city famously crossed by the Prime Meridian is <b>Accra</b>, the capital of Ghana."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Equatorial Countries",
+      "fact": "Countries in Africa that the 0° latitude line passes through.",
+      "mnemonic": "Remember: <b>G</b>abon, <b>C</b>ongo, <b>D</b>RC, <b>U</b>ganda, <b>K</b>enya, <b>S</b>omalia (GCD-UKS)."
+    },
+    {
+      "term": "Greenwich",
+      "fact": "Another name for the Prime Meridian because it passes through Greenwich in London.",
+      "mnemonic": "Think of <b>Green</b>land + <b>Time</b>."
+    }
+  ]
+}

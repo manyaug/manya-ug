@@ -1,0 +1,63 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Drainage Features",
+  "variantTitle": "Quest 4: The Water Borders",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "The Two Oceans",
+      "title": "Atlantic & Indian Oceans",
+      "description": "Africa is sandwiched between two major oceans.",
+      "initialRotation": [-20, -10, 0],
+      "zoomFactor": 0.9,
+      "markers": [
+        { "label": "Atlantic Ocean", "lat": 0, "lon": -20, "color": "#3b82f6" },
+        { "label": "Indian Ocean", "lat": -10, "lon": 70, "color": "#3b82f6" }
+      ],
+      "steps": [
+        "<b>West:</b> The <b>Atlantic Ocean</b> separates Africa from the Americas.",
+        "<b>East:</b> The <b>Indian Ocean</b> separates Africa from Australasia.",
+        "They meet at the <b>Cape of Good Hope</b> in South Africa."
+      ]
+    },
+    {
+      "tabTitle": "The Seas",
+      "title": "Mediterranean & Red Sea",
+      "description": "The water bodies to the North and North-East.",
+      "initialRotation": [-30, -20, 0],
+      "zoomFactor": 1.5,
+      "highlight": ["818", "788", "434", "012", "504"],
+      "highlightColor": "#fcd34d",
+      "markers": [
+        { "label": "Mediterranean Sea", "lat": 35, "lon": 18, "color": "#0ea5e9" },
+        { "label": "Red Sea", "lat": 22, "lon": 38, "color": "#0ea5e9" }
+      ],
+      "steps": [
+        "<b>North:</b> The <b>Mediterranean Sea</b> separates Africa from Europe.",
+        "<b>North-East:</b> The <b>Red Sea</b> separates Africa from Asia (Arabia).",
+        "These seas have been important for trade for thousands of years."
+      ]
+    },
+    {
+      "tabTitle": "Suez Canal",
+      "title": "The Suez Canal",
+      "description": "The most famous man-made waterway in Africa.",
+      "initialRotation": [-32, -30, 0],
+      "zoomFactor": 3.0,
+      "highlight": ["818"],
+      "highlightColor": "#fca5a5",
+      "connection": { "from": [32.5, 31], "to": [32.5, 29.5] },
+      "markers": [
+         { "label": "Suez Canal", "lat": 30.5, "lon": 32.5, "color": "#ef4444" }
+      ],
+      "steps": [
+        "<b>Location:</b> Egypt.",
+        "<b>Function:</b> It connects the <b>Red Sea</b> to the <b>Mediterranean Sea</b>.",
+        "<b>Importance:</b> It provides the shortest route from Europe to Asia without going around South Africa.",
+        "It is artificial (man-made)."
+      ]
+    }
+  ]
+}

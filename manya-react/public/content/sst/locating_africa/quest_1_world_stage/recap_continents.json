@@ -1,0 +1,82 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "The 7 Continents",
+  "variantTitle": "World Map Mastery",
+  "themeColor": "#2563eb",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "What is a Continent?",
+      "points": [
+        "A <b>continent</b> is a very large mass of land on the earth's surface.",
+        "There are <b>seven</b> continents in the world.",
+        "They are separated by large water bodies called <b>Oceans</b>.",
+        "<b>Pangea:</b> Before they separated by continental drifting, all continents were once one large supercontinent called Pangea."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "1. Asia (The Giant)",
+      "points": [
+        "<b>Size:</b> 1st Largest continent (approx. 43 million km²).",
+        "<b>Population:</b> It has the highest population in the world.",
+        "<b>Key Fact:</b> It is home to the highest mountain peak, <b>Mt. Everest</b>."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "2. Africa (Our Continent)",
+      "points": [
+        "<b>Size:</b> 2nd Largest continent (approx. 30 million km²).",
+        "<b>Position:</b> It is the most <b>central</b> continent on the globe.",
+        "<b>Fact:</b> It has the most number of countries (55)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "3. The Americas",
+      "points": [
+        "<b>North America:</b> 3rd Largest. Contains USA and Canada.",
+        "<b>South America:</b> 4th Largest. Contains the Amazon Rainforest.",
+        "They are separated by the <b>Panama Canal</b>."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "4. The Unique Continents",
+      "points": [
+        "<b>Antarctica (5th):</b> The only continent <b>uninhabited</b> by permanent residents because it is too cold (frozen desert).",
+        "<b>Europe (6th):</b> Attached to Asia. Together they are called <b>Eurasia</b>.",
+        "<b>Australia (7th):</b> The <b>Smallest</b> continent. It is also an island country."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Extremes of Continents",
+      "itemA": "Asia",
+      "itemB": "Australia",
+      "rows": [
+        { "feature": "Rank", "valA": "1st (Largest)", "valB": "7th (Smallest)" },
+        { "feature": "Population", "valA": "Most Populated", "valB": "Least Populated (inhabited)" },
+        { "feature": "Hemisphere", "valA": "Mostly Northern", "valB": "Entirely Southern" }
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>Greenland</b> is a very large island, but it is <u>NOT</u> a continent! It is geographically part of North America."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Eurasia",
+      "fact": "The combined landmass of Europe and Asia.",
+      "mnemonic": "<b>Eur</b>ope + <b>Asia</b> = Eurasia."
+    },
+    {
+      "term": "Continental Drift",
+      "fact": "The process by which the earth's continents move relative to each other over geological time.",
+      "mnemonic": "Think of <b>'Drifting'</b> boats moving apart in the ocean."
+    }
+  ]
+}

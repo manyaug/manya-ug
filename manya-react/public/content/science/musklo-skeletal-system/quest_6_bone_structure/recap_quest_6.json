@@ -1,0 +1,68 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Internal Bone Structure",
+  "variantTitle": "Quest 6 Master Recap",
+  "themeColor": "#10b981",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Bone Composition",
+      "points": [
+        "Bones are <b>living tissues</b>. They have blood vessels, nerves, and living cells.",
+        "They are the <b>hardest tissue</b> in the body because they store <b>Calcium</b> and <b>Phosphorus</b>.",
+        "Bones need <b>proper feeding</b> and nutrients to stay strong."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Internal Parts of a Bone",
+      "points": [
+        "<b>Hard Bone:</b> The outer layer that provides strength and protects the marrow.",
+        "<b>Spongy Bone:</b> The porous part found at the ends. It is filled with <b>Red Bone Marrow</b>.",
+        "<b>Cartilage:</b> A smooth, slippery tissue covering the ends. It acts as a <b>shock absorber</b> and reduces friction."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Red vs. Yellow Marrow",
+      "itemA": "Red Bone Marrow",
+      "itemB": "Yellow Bone Marrow",
+      "rows": [
+        { "feature": "Primary Role", "valA": "Makes Red Blood Cells", "valB": "Makes White Blood Cells" },
+        { "feature": "Storage", "valA": "None (Active Factory)", "valB": "Stores Fat cells" },
+        { "feature": "Location", "valA": "Pores of spongy bone", "valB": "Central cavity of long bones" },
+        { "feature": "Extra Task", "valA": "Destroys old blood cells", "valB": "Can turn into Red marrow during blood loss" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Why do bones have nerves?",
+      "points": [
+        "Nerves allow the bone to <b>feel pain</b> if it is injured or fractured.",
+        "This warns the body to stop moving and protect the injured area."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "Bones act as a <b>Mineral Bank</b>. If your blood levels of <b>Calcium</b> drop too low, the bones release calcium into the bloodstream to help other organs!"
+    }
+  ],
+  "cards": [
+    {
+      "term": "Red Marrow",
+      "fact": "The factory for Red Blood Cells.",
+      "mnemonic": "<b>Red</b> makes <b>Red</b>!"
+    },
+    {
+      "term": "Yellow Marrow",
+      "fact": "Stores fat and makes White Blood Cells.",
+      "mnemonic": "Fat is <b>Yellow</b>. Yellow marrow handles the fat!"
+    },
+    {
+      "term": "Cartilage",
+      "fact": "The slippery 'cap' on the ends of bones.",
+      "mnemonic": "Cartilage is a <b>Cushion</b> for your bones!"
+    }
+  ]
+}

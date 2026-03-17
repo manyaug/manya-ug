@@ -1,0 +1,71 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Locating Africa",
+  "variantTitle": "Africa's Address",
+  "themeColor": "#16a34a",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Global Position",
+      "points": [
+        "Africa is the <b>most central</b> continent.",
+        "It is the only continent crossed by both the <b>Equator (0°)</b> and the <b>Prime Meridian (0°)</b>.",
+        "It is crossed by three major latitudes: Equator, Tropic of Cancer, and Tropic of Capricorn.",
+        "Because of these lines, Africa lies in all <b>four hemispheres</b> (North, South, East, West)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Mathematical Location (Lat/Long)",
+      "points": [
+        "Africa stretches from Latitude <b>37°N</b> to <b>35°S</b>.",
+        "It stretches from Longitude <b>17°W</b> to <b>51°E</b>.",
+        "This means the equator divides Africa almost into two equal halves."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Water Borders (The Neighbors)",
+      "points": [
+        "<b>North:</b> Mediterranean Sea (Separates Africa from Europe).",
+        "<b>North-East:</b> Red Sea (Separates Africa from Asia).",
+        "<b>East:</b> Indian Ocean.",
+        "<b>West:</b> Atlantic Ocean."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Crucial Water Passages",
+      "itemA": "Suez Canal",
+      "itemB": "Strait of Gibraltar",
+      "rows": [
+        { "feature": "Location", "valA": "North East (Egypt)", "valB": "North West (Morocco)" },
+        { "feature": "Separates", "valA": "Africa from Asia", "valB": "Africa from Europe" },
+        { "feature": "Connects", "valA": "Red Sea to Med. Sea", "valB": "Atlantic to Med. Sea" },
+        { "feature": "Type", "valA": "Man-made Canal", "valB": "Natural Strait" }
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>Note:</b> The <b>Prime Meridian</b> crosses Ghana (Accra), but the <b>International Date Line</b> (180°) is on the opposite side of the world and does NOT cross Africa."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Equator",
+      "fact": "The imaginary line (0° Latitude) that divides the earth into Northern and Southern hemispheres.",
+      "mnemonic": "<b>Equa</b>tor = <b>Equal</b> halves."
+    },
+    {
+      "term": "Prime Meridian",
+      "fact": "The imaginary line (0° Longitude) used to calculate international time.",
+      "mnemonic": "Also called the <b>Greenwich</b> Meridian."
+    },
+    {
+      "term": "Peninsula",
+      "fact": "A piece of land surrounded by water on three sides (e.g., The Horn of Africa).",
+      "mnemonic": "Almost an island, but attached!"
+    }
+  ]
+}

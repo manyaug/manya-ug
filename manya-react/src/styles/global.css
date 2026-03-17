@@ -1,0 +1,65 @@
+:root {
+  /* Manya Brand DNA */
+  --manya-purple: #7c3aed;
+  --manya-purple-dark: #5b21b6;
+  --manya-pink: #db2777;
+  --manya-gold: #f59e0b;
+  --manya-green: #10B981;
+  
+  /* Light Mode Palette */
+  --bg-main: #FDFBF7;
+  --bg-card: #FFFFFF;
+  --text-main: #1E293B;
+  --text-muted: #94A3B8;
+  --border-color: #F1F5F9;
+  
+  /* Transitions */
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+[data-theme='dark'] {
+  --bg-main: #0F172A;
+  --bg-card: #1E293B;
+  --text-main: #F8FAFC;
+  --text-muted: #64748B;
+  --border-color: #334155;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.fullscreen-mode {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden !important; 
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.5s ease;
+}
+
+#view-mount {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  padding: 8px 16px 90px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#view-mount::-webkit-scrollbar { display: none; }
+
+.view-container {
+  padding-top: 20px;
+}

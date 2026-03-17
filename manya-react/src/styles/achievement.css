@@ -1,0 +1,149 @@
+/* MANYA TROPHY ROOM - ELITE V3.0 (THEME COMPLIANT) */
+.achievements-page { 
+    padding: 15px 20px 140px; 
+    background: var(--bg-main);
+    transition: background var(--transition-smooth);
+    min-height: 100vh;
+}
+
+.view-header-back { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+.page-title-elite { font-weight: 900; margin: 0; color: var(--text-main); font-size: 22px; letter-spacing: -0.5px; }
+
+/* 1. GEM TREASURY VAULT */
+.gem-treasury-card {
+    background: var(--bg-card);
+    border-radius: 30px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+    position: relative; overflow: hidden;
+    transition: all var(--transition-smooth);
+}
+
+.vault-label {
+    display: block; text-align: center;
+    font-size: 11px; font-weight: 900; color: var(--text-muted);
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
+}
+
+.gem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.gem-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+
+.gem-stone {
+    width: 45px; height: 45px;
+    margin-bottom: 12px;
+    animation: vaultGemFloat 3s infinite ease-in-out;
+}
+.gem-stone img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Stagger floating animations so they look organic */
+.gem-item:nth-child(2) .gem-stone { animation-delay: -1s; }
+.gem-item:nth-child(3) .gem-stone { animation-delay: -2s; }
+.gem-item:nth-child(4) .gem-stone { animation-delay: -1.5s; }
+
+.gem-count { font-weight: 900; font-size: 18px; margin-bottom: 2px; }
+.gem-label { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+
+@keyframes vaultGemFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* 2. PROGRESS HUD */
+.collection-card-elite {
+    background: linear-gradient(135deg, var(--manya-purple) 0%, var(--manya-purple-dark, #4c1d95) 100%);
+    border-radius: 25px; padding: 25px;
+    margin-bottom: 35px; color: white;
+    box-shadow: 0 15px 30px rgba(124, 58, 237, 0.25);
+    position: relative; overflow: hidden;
+}
+
+.prog-label-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 12px; margin-bottom: 12px; letter-spacing: 1px; }
+.prog-count { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 100px; }
+
+/* ZEBRA COLLECTION BAR */
+.vault-bar-track { height: 12px; background: rgba(0,0,0,0.2); border-radius: 20px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+.vault-bar-fill {
+    height: 100%; background: var(--manya-gold);
+    background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 6px, transparent 0, transparent 12px);
+    transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.prog-subtext { font-size: 11px; margin-top: 12px; color: rgba(255,255,255,0.8); font-weight: 700; text-align: center; }
+
+/* 3. CATEGORY TYPOGRAPHY */
+.badge-category-wrap { margin-bottom: 35px; }
+.badge-cat-header {
+    display: flex; align-items: center; gap: 15px;
+    font-size: 13px; font-weight: 900; 
+    color: var(--text-main); text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 20px;
+}
+.cat-line { flex: 1; height: 2px; background: var(--border-color); border-radius: 5px; }
+
+/* 4. THE BADGE GRID (MEDAL MOUNTS) */
+.badge-grid-vault {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+
+.badge-item-elite {
+    background: var(--bg-card); border-radius: 24px;
+    padding: 20px 10px 15px; text-align: center;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+    position: relative; transition: var(--transition-bounce, 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275));
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.badge-item-elite:active { transform: scale(0.95); }
+
+/* The Physical Medal Ring */
+.medal-ring {
+    width: 55px; height: 55px; border-radius: 50%;
+    background: var(--bg-main);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+    border: 4px solid var(--border-color);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.4s ease;
+}
+.b-icon { font-size: 26px; z-index: 2; transition: transform 0.3s; }
+.b-name { font-size: 11px; font-weight: 900; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
+.tier-label { font-size: 8px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); background: var(--bg-main); padding: 3px 8px; border-radius: 10px; }
+
+/* --- LOCKED STATE (Empty Slot) --- */
+.badge-is-locked { background: transparent; border: 2px dashed var(--border-color); box-shadow: none; }
+.badge-is-locked .medal-ring { background: transparent; border-color: var(--border-color); box-shadow: none; opacity: 0.5; }
+.badge-is-locked .b-icon { filter: grayscale(100%); opacity: 0.3; }
+.badge-is-locked .b-name { opacity: 0.4; }
+
+/* --- UNLOCKED TIER GLOWS --- */
+.badge-is-unlocked:hover .b-icon { transform: scale(1.1) rotate(5deg); }
+
+.tier-bronze .medal-ring { border-color: #CD7F32; background: #FFF6ED; box-shadow: 0 5px 15px rgba(205, 127, 50, 0.3); }
+.tier-silver .medal-ring { border-color: #94A3B8; background: #F8FAFC; box-shadow: 0 5px 15px rgba(148, 163, 184, 0.3); }
+.tier-gold .medal-ring { border-color: #FBBF24; background: #FFFBEB; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); }
+.tier-diamond .medal-ring { border-color: #06B6D4; background: #ECFEFF; box-shadow: 0 5px 20px rgba(6, 182, 212, 0.5); animation: diamondPulse 2s infinite alternate; }
+
+/* Subject Accents (Tiny colored dot on the card) */
+.badge-item-elite::before { content: ''; position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; border-radius: 50%; opacity: 0; transition: 0.3s; }
+.badge-is-unlocked::before { opacity: 1; }
+.cat-math::before { background: var(--manya-purple); }
+.cat-science::before { background: var(--manya-green, #10B981); }
+.cat-sst::before { background: var(--manya-gold); }
+.cat-english::before { background: var(--manya-pink); }
+
+/* --- DARK MODE OVERRIDES --- */
+[data-theme='dark'] .gem-treasury-card { background: #1E293B; border-color: #334155; box-shadow: inset 0 0 40px rgba(0,0,0,0.5); }
+[data-theme='dark'] .badge-item-elite { background: var(--bg-card); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+[data-theme='dark'] .badge-is-locked { background: rgba(30, 41, 59, 0.3); }
+[data-theme='dark'] .medal-ring { background: var(--bg-main); }
+[data-theme='dark'] .tier-bronze .medal-ring { background: rgba(205, 127, 50, 0.1); }
+[data-theme='dark'] .tier-silver .medal-ring { background: rgba(148, 163, 184, 0.1); }
+[data-theme='dark'] .tier-gold .medal-ring { background: rgba(251, 191, 36, 0.1); }
+[data-theme='dark'] .tier-diamond .medal-ring { background: rgba(6, 182, 212, 0.1); }
+
+@keyframes diamondPulse {
+    0% { box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3); }
+    100% { box-shadow: 0 5px 30px rgba(6, 182, 212, 0.6); }
+}

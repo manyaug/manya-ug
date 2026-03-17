@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "mode": "puzzle",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Project Genesis",
+  "variantTitle": "Quest 1.1: The World Stage",
+  
+  "initialRotation": [-20, -10, 0],
+  
+  "pieces": [
+    { "id": "africa", "label": "Africa", "icon": "🌍", "target": [20, 0], "color": "#4ade80" },
+    { "id": "asia", "label": "Asia", "icon": "🏯", "target": [90, 40], "color": "#fb923c" },
+    { "id": "europe", "label": "Europe", "icon": "🏰", "target": [15, 50], "color": "#60a5fa" },
+    { "id": "namerica", "label": "N. America", "icon": "🦅", "target": [-100, 40], "color": "#f472b6" },
+    { "id": "samerica", "label": "S. America", "icon": "🦜", "target": [-60, -15], "color": "#a78bfa" },
+    { "id": "australia", "label": "Australia", "icon": "🦘", "target": [135, -25], "color": "#facc15" },
+    { "id": "antarctica", "label": "Antarctica", "icon": "❄️", "target": [0, -85], "color": "#94a3b8" }
+  ]
+}

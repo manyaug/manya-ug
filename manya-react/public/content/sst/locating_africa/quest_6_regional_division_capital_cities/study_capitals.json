@@ -1,0 +1,238 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Geography",
+  "variantTitle": "Quest 8: Capital City Sprint",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "Horn & East",
+      "title": "East & Horn of Africa",
+      "description": "Capitals of the EAC and the Horn.",
+      "initialRotation": [-40, -5, 0],
+      "zoomFactor": 2.2,
+      "highlight": ["east_africa", "horn_africa"],
+      "highlightColor": "#86efac",
+      
+      "focusPoints": [
+        { "label": "Kampala (UG)", "rotation": [-32.5, -0.3, 0], "zoom": 5.0 },
+        { "label": "Addis Ababa (ET)", "rotation": [-38.7, -9.0, 0], "zoom": 4.5 },
+        { "label": "Dodoma (TZ)", "rotation": [-35.7, 6.1, 0], "zoom": 4.5 }
+      ],
+
+      "markers": [
+        { "label": "Kampala", "lat": 0.3, "lon": 32.5, "color": "#16a34a" },
+        { "label": "Nairobi", "lat": -1.2, "lon": 36.8, "color": "#16a34a" },
+        { "label": "Dodoma", "lat": -6.1, "lon": 35.7, "color": "#16a34a" },
+        { "label": "Kigali", "lat": -1.9, "lon": 30.1, "color": "#16a34a" },
+        { "label": "Gitega", "lat": -3.4, "lon": 29.9, "color": "#16a34a" },
+        { "label": "Juba", "lat": 4.8, "lon": 31.5, "color": "#16a34a" },
+        { "label": "Addis Ababa", "lat": 9.0, "lon": 38.7, "color": "#16a34a" },
+        { "label": "Asmara", "lat": 15.3, "lon": 38.9, "color": "#16a34a" },
+        { "label": "Djibouti", "lat": 11.6, "lon": 43.1, "color": "#16a34a" },
+        { "label": "Mogadishu", "lat": 2.0, "lon": 45.3, "color": "#16a34a" }
+      ],
+
+      "steps": [
+        "<b>Uganda:</b> Kampala.",
+        "<b>Kenya:</b> Nairobi.",
+        "<b>Tanzania:</b> Dodoma.",
+        "<b>Rwanda:</b> Kigali.",
+        "<b>Burundi:</b> Gitega.",
+        "<b>South Sudan:</b> Juba.",
+        "<b>Ethiopia:</b> Addis Ababa (HQ of the AU).",
+        "<b>Eritrea:</b> Asmara.",
+        "<b>Djibouti:</b> Djibouti City.",
+        "<b>Somalia:</b> Mogadishu."
+      ]
+    },
+    {
+      "tabTitle": "North Africa",
+      "title": "North Africa",
+      "description": "The capitals along the Mediterranean and Sahara.",
+      "initialRotation": [-15, -28, 0],
+      "zoomFactor": 1.8,
+      "highlight": ["north_africa"],
+      "highlightColor": "#fcd34d",
+
+      "focusPoints": [
+        { "label": "Cairo (EG)", "rotation": [-31, -30, 0], "zoom": 3.5 },
+        { "label": "Algiers (DZ)", "rotation": [-3, -36, 0], "zoom": 3.5 }
+      ],
+
+      "markers": [
+        { "label": "Cairo", "lat": 30.0, "lon": 31.2, "color": "#c2410c" },
+        { "label": "Tripoli", "lat": 32.8, "lon": 13.1, "color": "#c2410c" },
+        { "label": "Tunis", "lat": 36.8, "lon": 10.1, "color": "#c2410c" },
+        { "label": "Algiers", "lat": 36.7, "lon": 3.0, "color": "#c2410c" },
+        { "label": "Rabat", "lat": 34.0, "lon": -6.8, "color": "#c2410c" },
+        { "label": "Khartoum", "lat": 15.5, "lon": 32.5, "color": "#c2410c" }
+      ],
+
+      "steps": [
+        "<b>Egypt:</b> Cairo (Largest city in North Africa).",
+        "<b>Libya:</b> Tripoli.",
+        "<b>Tunisia:</b> Tunis.",
+        "<b>Algeria:</b> Algiers.",
+        "<b>Morocco:</b> Rabat.",
+        "<b>Sudan:</b> Khartoum."
+      ]
+    },
+    {
+      "tabTitle": "West Africa",
+      "title": "West Africa",
+      "description": "Capitals of the ECOWAS region.",
+      "initialRotation": [5, -10, 0],
+      "zoomFactor": 1.9,
+      "highlight": ["west_africa"],
+      "highlightColor": "#fb923c",
+
+      "focusPoints": [
+        { "label": "Abuja (NG)", "rotation": [-7.4, -9, 0], "zoom": 4.0 },
+        { "label": "Dakar (SN)", "rotation": [17.4, -14.7, 0], "zoom": 4.0 }
+      ],
+
+      "markers": [
+        { "label": "Abuja", "lat": 9.0, "lon": 7.4, "color": "#b45309" },
+        { "label": "Accra", "lat": 5.6, "lon": -0.1, "color": "#b45309" },
+        { "label": "Dakar", "lat": 14.7, "lon": -17.4, "color": "#b45309" },
+        { "label": "Bamako", "lat": 12.6, "lon": -8.0, "color": "#b45309" },
+        { "label": "Ouagadougou", "lat": 12.3, "lon": -1.5, "color": "#b45309" },
+        { "label": "Niamey", "lat": 13.5, "lon": 2.1, "color": "#b45309" },
+        { "label": "Freetown", "lat": 8.4, "lon": -13.2, "color": "#b45309" },
+        { "label": "Yamoussoukro", "lat": 6.8, "lon": -5.3, "color": "#b45309" },
+        { "label": "Monrovia", "lat": 6.3, "lon": -10.7, "color": "#b45309" },
+        { "label": "Conakry", "lat": 9.6, "lon": -13.5, "color": "#b45309" },
+        { "label": "Bissau", "lat": 11.8, "lon": -15.5, "color": "#b45309" },
+        { "label": "Banjul", "lat": 13.4, "lon": -16.5, "color": "#b45309" },
+        { "label": "Nouakchott", "lat": 18.0, "lon": -15.9, "color": "#b45309" },
+        { "label": "Lome", "lat": 6.1, "lon": 1.2, "color": "#b45309" },
+        { "label": "Porto-Novo", "lat": 6.4, "lon": 2.6, "color": "#b45309" }
+      ],
+
+      "steps": [
+        "<b>Nigeria:</b> Abuja.",
+        "<b>Ghana:</b> Accra.",
+        "<b>Senegal:</b> Dakar.",
+        "<b>Mali:</b> Bamako.",
+        "<b>Burkina Faso:</b> Ouagadougou.",
+        "<b>Niger:</b> Niamey.",
+        "<b>Cote d'Ivoire:</b> Yamoussoukro.",
+        "<b>Liberia:</b> Monrovia.",
+        "<b>Sierra Leone:</b> Freetown.",
+        "<b>Guinea:</b> Conakry.",
+        "<b>Gambia:</b> Banjul.",
+        "<b>Togo:</b> Lome.",
+        "<b>Benin:</b> Porto-Novo.",
+        "<b>Mauritania:</b> Nouakchott."
+      ]
+    },
+    {
+      "tabTitle": "Central Africa",
+      "title": "Central Africa",
+      "description": "Capitals of the Central Region.",
+      "initialRotation": [-18, -2, 0],
+      "zoomFactor": 2.0,
+      "highlight": ["central_africa"],
+      "highlightColor": "#ec4899",
+
+      "focusPoints": [
+        { "label": "Kinshasa (DRC)", "rotation": [-15.2, 4.4, 0], "zoom": 4.0 },
+        { "label": "Yaounde (CM)", "rotation": [-11.5, -3.8, 0], "zoom": 4.0 }
+      ],
+
+      "markers": [
+        { "label": "Kinshasa", "lat": -4.4, "lon": 15.2, "color": "#db2777" },
+        { "label": "Brazzaville", "lat": -4.2, "lon": 15.2, "color": "#db2777" },
+        { "label": "Yaounde", "lat": 3.8, "lon": 11.5, "color": "#db2777" },
+        { "label": "Bangui", "lat": 4.3, "lon": 18.5, "color": "#db2777" },
+        { "label": "Libreville", "lat": 0.4, "lon": 9.4, "color": "#db2777" },
+        { "label": "Malabo", "lat": 3.7, "lon": 8.7, "color": "#db2777" },
+        { "label": "N'Djamena", "lat": 12.1, "lon": 15.0, "color": "#db2777" }
+      ],
+
+      "steps": [
+        "<b>DR Congo:</b> Kinshasa.",
+        "<b>Congo Republic:</b> Brazzaville.",
+        "<b>Cameroon:</b> Yaounde.",
+        "<b>Central African Rep:</b> Bangui.",
+        "<b>Gabon:</b> Libreville.",
+        "<b>Eq. Guinea:</b> Malabo.",
+        "<b>Chad:</b> N'Djamena."
+      ]
+    },
+    {
+      "tabTitle": "Southern Africa",
+      "title": "Southern Africa",
+      "description": "Capitals of the SADC region.",
+      "initialRotation": [-25, 25, 0],
+      "zoomFactor": 1.8,
+      "highlight": ["southern_africa"],
+      "highlightColor": "#60a5fa",
+
+      "focusPoints": [
+        { "label": "Pretoria (ZA)", "rotation": [-28.2, 25.7, 0], "zoom": 3.5 },
+        { "label": "Lusaka (ZM)", "rotation": [-28.3, 15.3, 0], "zoom": 3.5 }
+      ],
+
+      "markers": [
+        { "label": "Pretoria", "lat": -25.7, "lon": 28.2, "color": "#1d4ed8" },
+        { "label": "Harare", "lat": -17.8, "lon": 31.0, "color": "#1d4ed8" },
+        { "label": "Lusaka", "lat": -15.3, "lon": 28.3, "color": "#1d4ed8" },
+        { "label": "Gaborone", "lat": -24.6, "lon": 25.9, "color": "#1d4ed8" },
+        { "label": "Windhoek", "lat": -22.5, "lon": 17.0, "color": "#1d4ed8" },
+        { "label": "Luanda", "lat": -8.8, "lon": 13.2, "color": "#1d4ed8" },
+        { "label": "Lilongwe", "lat": -13.9, "lon": 33.7, "color": "#1d4ed8" },
+        { "label": "Maputo", "lat": -25.9, "lon": 32.5, "color": "#1d4ed8" },
+        { "label": "Mbabane", "lat": -26.3, "lon": 31.1, "color": "#1d4ed8" },
+        { "label": "Maseru", "lat": -29.3, "lon": 27.4, "color": "#1d4ed8" }
+      ],
+
+      "steps": [
+        "<b>South Africa:</b> Pretoria.",
+        "<b>Angola:</b> Luanda.",
+        "<b>Zambia:</b> Lusaka.",
+        "<b>Zimbabwe:</b> Harare.",
+        "<b>Malawi:</b> Lilongwe.",
+        "<b>Namibia:</b> Windhoek.",
+        "<b>Mozambique:</b> Maputo.",
+        "<b>Botswana:</b> Gaborone.",
+        "<b>Eswatini:</b> Mbabane.",
+        "<b>Lesotho:</b> Maseru."
+      ]
+    },
+    {
+      "tabTitle": "Islands",
+      "title": "Island Capitals",
+      "description": "Capitals of the Island Nations.",
+      "initialRotation": [-55, -15, 0],
+      "zoomFactor": 1.4,
+      "highlight": ["450", "480", "174", "690", "132", "678"],
+      "highlightColor": "#a78bfa",
+      
+      "focusPoints": [
+        { "label": "Antananarivo", "rotation": [-47.5, 18.8, 0], "zoom": 3.0 },
+        { "label": "Port Louis", "rotation": [-57.5, 20.1, 0], "zoom": 4.0 }
+      ],
+
+      "markers": [
+        { "label": "Antananarivo", "lat": -18.8, "lon": 47.5, "color": "#7c3aed" },
+        { "label": "Port Louis", "lat": -20.1, "lon": 57.5, "color": "#7c3aed" },
+        { "label": "Victoria", "lat": -4.6, "lon": 55.4, "color": "#7c3aed" },
+        { "label": "Moroni", "lat": -11.7, "lon": 43.2, "color": "#7c3aed" },
+        { "label": "Praia", "lat": 14.9, "lon": -23.5, "color": "#7c3aed" },
+        { "label": "Sao Tome", "lat": 0.3, "lon": 6.7, "color": "#7c3aed" }
+      ],
+
+      "steps": [
+        "<b>Madagascar:</b> Antananarivo.",
+        "<b>Mauritius:</b> Port Louis.",
+        "<b>Seychelles:</b> Victoria.",
+        "<b>Comoros:</b> Moroni.",
+        "<b>Cape Verde:</b> Praia.",
+        "<b>Sao Tome & Principe:</b> Sao Tome."
+      ]
+    }
+  ]
+}

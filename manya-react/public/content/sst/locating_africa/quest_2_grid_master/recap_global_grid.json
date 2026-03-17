@@ -1,0 +1,65 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "The Global Grid System",
+  "variantTitle": "Lines of the World",
+  "themeColor": "#9333ea",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Understanding the Grid",
+      "points": [
+        "<b>Grid Reference:</b> The method of locating places using lines of <b>Latitude</b> and <b>Longitude</b>.",
+        "<b>Measurement:</b> All grid lines are imaginary and measured in <b>degrees (°)</b>.",
+        "These lines allow pilots, sailors, and map readers to find exact locations anywhere on Earth."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "The 5 Major Latitudes (Horizontal)",
+      "points": [
+        "<b>Equator (0°):</b> The center line that divides Earth into North and South hemispheres.",
+        "<b>Tropic of Cancer (23½°N):</b> Found in the Northern Hemisphere.",
+        "<b>Tropic of Capricorn (23½°S):</b> Found in the Southern Hemisphere.",
+        "<b>Arctic Circle (66½°N):</b> Marks the start of the North Polar zone.",
+        "<b>Antarctic Circle (66½°S):</b> Marks the start of the South Polar zone."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Major Longitudes (Vertical)",
+      "points": [
+        "<b>Prime Meridian (0°):</b> Also called the <b>Greenwich Meridian</b>. It passes through London and is used to calculate international time (GMT).",
+        "<b>International Date Line (180°):</b> Located on the opposite side of the Prime Meridian. It is used to separate one calendar day from the next."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Latitude vs. Longitude",
+      "itemA": "Latitudes",
+      "itemB": "Longitudes",
+      "rows": [
+        { "feature": "Direction", "valA": "East to West", "valB": "North to South" },
+        { "feature": "Other Name", "valA": "Parallels", "valB": "Meridians" },
+        { "feature": "Main Use", "valA": "To determine climate", "valB": "To determine time" },
+        { "feature": "Meeting Point", "valA": "Never meet (Parallel)", "valB": "Meet at the Poles" }
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>Watch Out:</b> The <b>Prime Meridian</b> divides the earth into East and West, while the <b>Equator</b> divides it into North and South!"
+    }
+  ],
+  "cards": [
+    {
+      "term": "Hemisphere",
+      "fact": "Half of the earth as divided by either the Equator or the Prime Meridian.",
+      "mnemonic": "<b>Hemi</b> means <b>Half</b>."
+    },
+    {
+      "term": "International Date Line",
+      "fact": "The 180° line of longitude where the date changes.",
+      "mnemonic": "Cross the line, <b>change</b> the day!"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Antagonistic Muscle Action",
+  "variantTitle": "Quest 11 Master Recap",
+  "themeColor": "#3b82f6",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Why Muscles Work in Pairs",
+      "points": [
+        "Because muscles only <b>pull</b>, two muscles are needed to move a bone back and forth.",
+        "<b>Antagonistic muscles</b> are pairs that work in opposition: when one contracts, the other relaxes."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "The Arm Team: Biceps & Triceps",
+      "itemA": "Bending the Arm",
+      "itemB": "Straightening the Arm",
+      "rows": [
+        { "feature": "Bicep State", "valA": "<b>Contracts</b> (Shortens)", "valB": "<b>Relaxes</b> (Elongates)" },
+        { "feature": "Tricep State", "valA": "<b>Relaxes</b> (Elongates)", "valB": "<b>Contracts</b> (Shortens)" },
+        { "feature": "Function", "valA": "Acts as a <b>Flexor</b>", "valB": "Acts as an <b>Extensor</b>" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "The Thigh Team: Quads & Hamstrings",
+      "points": [
+        "<b>Quadriceps:</b> Located at the front of the thigh. They contract to <b>straighten</b> the leg.",
+        "<b>Hamstrings:</b> Located at the back of the thigh. They contract to <b>bend</b> the leg.",
+        "During daily routines, we use <b>Biceps</b> more than Triceps because we lift objects <u>against gravity</u>."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "When a muscle <b>contracts</b>, it becomes <b>shorter, thicker, and harder</b>. When it <b>relaxes</b>, it becomes <b>longer, thinner, and softer</b>."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Flexor",
+      "fact": "A muscle that bends a joint (like the Bicep).",
+      "mnemonic": "<b>B</b>icep = <b>B</b>ender!"
+    },
+    {
+      "term": "Extensor",
+      "fact": "A muscle that straightens a joint (like the Tricep).",
+      "mnemonic": "Think: <b>Ex</b>tensor <b>Ex</b>tends the arm!"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "World Geography",
+  "variantTitle": "Quest 4a: The 5 Major Oceans",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "The Giants",
+      "title": "Pacific & Atlantic Oceans",
+      "description": "The two largest bodies of water on Earth. Use buttons to rotate.",
+      "initialRotation": [30, -10, 0],
+      "zoomFactor": 0.9,
+      
+      "focusPoints": [
+        { "label": "Atlantic View", "rotation": [30, -10, 0], "zoom": 1.0 },
+        { "label": "Pacific View", "rotation": [160, 0, 0], "zoom": 0.8 },
+        { "label": "Americas Side", "rotation": [90, -20, 0], "zoom": 1.0 }
+      ],
+
+      "markers": [
+        { "label": "Atlantic Ocean", "lat": 0, "lon": -30, "color": "#3b82f6" },
+        { "label": "Pacific Ocean", "lat": 0, "lon": -160, "color": "#2563eb" }
+      ],
+      "steps": [
+        "<b>1. Pacific Ocean:</b> The largest ocean. Rotate to 'Pacific View' to see it covers almost half the globe!",
+        "<b>2. Atlantic Ocean:</b> The second largest. It forms an 'S' shape between Africa/Europe and the Americas.",
+        "The Atlantic Ocean lies to the <b>West</b> of Africa."
+      ]
+    },
+    {
+      "tabTitle": "Indian & Arctic",
+      "title": "Indian & Arctic Oceans",
+      "description": "The warm ocean of trade and the cold ocean of the North.",
+      "initialRotation": [-70, 20, 0],
+      "zoomFactor": 1.0,
+
+      "focusPoints": [
+        { "label": "Indian Ocean", "rotation": [-75, -10, 0], "zoom": 1.1 },
+        { "label": "Arctic (Top View)", "rotation": [0, 80, 0], "zoom": 1.4 },
+        { "label": "East Africa", "rotation": [-45, -5, 0], "zoom": 1.5 }
+      ],
+
+      "markers": [
+        { "label": "Indian Ocean", "lat": -10, "lon": 75, "color": "#0ea5e9" },
+        { "label": "Arctic Ocean", "lat": 85, "lon": 0, "color": "#bae6fd" }
+      ],
+      "steps": [
+        "<b>3. Indian Ocean:</b> Click 'Indian Ocean' to see it bordering East Africa and India.",
+        "<b>4. Arctic Ocean:</b> Click 'Arctic (Top View)' to look down from the North Pole.",
+        "The Arctic is the smallest ocean and is mostly ice."
+      ]
+    },
+    {
+      "tabTitle": "Southern Ocean",
+      "title": "Antarctic / Southern Ocean",
+      "description": "The continuous body of water surrounding Antarctica.",
+      "initialRotation": [0, -45, 0],
+      "zoomFactor": 1.2,
+      
+      "focusPoints": [
+        { "label": "Globe View", "rotation": [0, -45, 0], "zoom": 1.2 },
+        { "label": "Bottom View", "rotation": [0, -90, 0], "zoom": 1.3 },
+        { "label": "South Africa", "rotation": [-20, 30, 0], "zoom": 1.5 }
+      ],
+
+      "highlight": ["antarctica"],
+      "highlightColor": "#f1f5f9",
+      "markers": [
+        { "label": "Southern Ocean", "lat": -60, "lon": 0, "color": "#60a5fa" },
+        { "label": "Antarctica", "lat": -80, "lon": 0, "color": "#94a3b8" }
+      ],
+      "steps": [
+        "<b>5. Southern Ocean:</b> Use 'Bottom View' to see how it circles the frozen continent.",
+        "It connects the Atlantic, Pacific, and Indian oceans in the south.",
+        "It is very cold and stormy."
+      ]
+    }
+  ]
+}

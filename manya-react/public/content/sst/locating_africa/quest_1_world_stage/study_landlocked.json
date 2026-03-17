@@ -1,0 +1,58 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Landlocked Countries",
+  "variantTitle": "Quest 9: The Landlocked Challenge",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "Definition",
+      "title": "What is a Landlocked Country?",
+      "description": "A country that has no direct access to the sea/ocean.",
+      "initialRotation": [-25, -5, 0],
+      "highlight": ["800", "646", "108", "728"],
+      "highlightColor": "#f87171",
+      "steps": [
+        "<b>Definition:</b> A country surrounded by land on all sides.",
+        "There are <b>16</b> landlocked countries in Africa.",
+        "<b>Examples:</b> Uganda, Rwanda, Burundi, South Sudan, Zambia, Malawi.",
+        "<b>Problem:</b> Imports and exports are expensive because they must pass through other countries."
+      ]
+    },
+    {
+      "tabTitle": "Gateways",
+      "title": "Gateway Countries",
+      "description": "Neighbors with sea ports that help landlocked countries.",
+      "initialRotation": [-40, -5, 0],
+      "highlight": ["404", "834"],
+      "highlightColor": "#4ade80",
+      "markers": [
+        { "label": "Mombasa", "lat": -4, "lon": 39.6, "color": "#3b82f6" },
+        { "label": "Dar es Salaam", "lat": -6.8, "lon": 39.2, "color": "#3b82f6" }
+      ],
+      "steps": [
+        "<b>Kenya</b> and <b>Tanzania</b> are neighbors to Uganda.",
+        "They have coastlines on the Indian Ocean.",
+        "<b>Mombasa (Kenya)</b> handles most of Uganda's trade.",
+        "<b>Dar es Salaam (Tanzania)</b> is another key port for Rwanda, Burundi, and Zambia."
+      ]
+    },
+    {
+      "tabTitle": "Trade Routes",
+      "title": "The Route to the Sea",
+      "description": "How goods travel from Kampala to the Ocean.",
+      "initialRotation": [-36, -2, 0],
+      "zoomFactor": 2.5,
+      "connection": { "from": [32.5, 0.3], "to": [39.6, -4] },
+      "markers": [
+        { "label": "Kampala", "lat": 0.3, "lon": 32.5, "color": "#facc15" }
+      ],
+      "steps": [
+        "Goods travel by <b>Road</b> or <b>Railway</b>.",
+        "The dashed line shows the route from Kampala to Mombasa.",
+        "<b>Solution to problems:</b> Joining regional groups like the <b>EAC</b> (East African Community) helps lower taxes and speed up transport."
+      ]
+    }
+  ]
+}

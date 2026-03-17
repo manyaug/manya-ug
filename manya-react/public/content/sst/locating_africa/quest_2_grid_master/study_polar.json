@@ -1,0 +1,77 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Special Grid Lines",
+  "variantTitle": "Lesson: The Frozen Frontiers",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "The Arctic Circle",
+      "title": "The Arctic Circle (66 ½° N)",
+      "description": "The northernmost major line of latitude. It marks the start of the Polar Zone.",
+      "initialRotation": [0, 45, 0], 
+      "zoomFactor": 1.4,
+      
+      "lines": [
+        { "type": "lat", "value": 66.5, "color": "#3b82f6", "label": "Arctic Circle", "dashed": true }
+      ],
+      "zones": [
+        { "fromLat": 66.5, "toLat": 90, "color": "rgba(255, 255, 255, 0.5)" }
+      ],
+      "markers": [
+        { "label": "North Pole (90°N)", "lat": 90, "lon": 0, "color": "#1e293b" }
+      ],
+      
+      "steps": [
+        "<b>Location:</b> It is located at <b>66 ½° North</b>.",
+        "<b>Countries:</b> It passes through Russia, Canada, Norway, Sweden, Finland, and USA (Alaska).",
+        "<b>Phenomenon:</b> North of this line, the sun does not set for at least one day in summer (Midnight Sun) and does not rise for one day in winter."
+      ]
+    },
+    {
+      "tabTitle": "The Antarctic",
+      "title": "The Antarctic Circle (66 ½° S)",
+      "description": "The southern counterpart surrounding the continent of Antarctica.",
+      "initialRotation": [0, -45, 0],
+      "zoomFactor": 1.4,
+      
+      "lines": [
+        { "type": "lat", "value": -66.5, "color": "#3b82f6", "label": "Antarctic Circle", "dashed": true }
+      ],
+      "zones": [
+        { "fromLat": -66.5, "toLat": -90, "color": "rgba(255, 255, 255, 0.5)" }
+      ],
+      "highlight": ["antarctica"],
+      "highlightColor": "#e2e8f0",
+
+      "steps": [
+        "<b>Location:</b> It is located at <b>66 ½° South</b>.",
+        "<b>Continent:</b> It surrounds the frozen continent of <b>Antarctica</b>.",
+        "<b>No Inhabitants:</b> Unlike the Arctic, there are no permanent countries here, only research stations.",
+        "It is the coldest place on Earth."
+      ]
+    },
+    {
+      "tabTitle": "The Date Line",
+      "title": "International Date Line (180°)",
+      "description": "The line where the calendar date changes.",
+      "initialRotation": [180, 0, 0],
+      "lines": [
+        { "type": "lon", "value": 180, "color": "#a855f7", "label": "Date Line (180°)", "dashed": true },
+        { "type": "lon", "value": 0, "color": "#94a3b8", "dashed": true }
+      ],
+      "markers": [
+          { "label": "Monday", "lat": 0, "lon": 170, "color": "#10b981" },
+          { "label": "Sunday", "lat": 0, "lon": -170, "color": "#f43f5e" }
+      ],
+
+      "steps": [
+        "<b>Location:</b> It runs along the <b>180° Meridian</b>, opposite the Prime Meridian.",
+        "<b>Function:</b> It separates two consecutive calendar days.",
+        "<b>Rule:</b> Crossing it from East to West adds a day. Crossing West to East subtracts a day.",
+        "It passes through the Pacific Ocean to avoid splitting countries."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "mode": "puzzle",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Africa's Extreme Points",
+  "variantTitle": "Quest 1.2: The Four Corners",
+  
+  
+  "initialRotation": [-20, 0, 0],
+
+  "pieces": [
+    { 
+      "id": "tunisia", 
+      "label": "North: Ras Ben Sakka", 
+      "icon": "⬆️", 
+      "target": [9, 37], 
+      "color": "#facc15" 
+    },
+    { 
+      "id": "southafrica", 
+      "label": "South: Cape Agulhas", 
+      "icon": "⬇️", 
+      "target": [20, -34], 
+      "color": "#22c55e" 
+    },
+    { 
+      "id": "somalia", 
+      "label": "East: Cape Guardafui", 
+      "icon": "➡️", 
+      "target": [51, 11], 
+      "color": "#3b82f6" 
+    },
+    { 
+      "id": "senegal", 
+      "label": "West: Cape Verde", 
+      "icon": "⬅️", 
+      "target": [-17, 14], 
+      "color": "#ef4444" 
+    },
+    { 
+      "id": "ghana", 
+      "label": "Center: 0° Longitude", 
+      "icon": "📍", 
+      "target": [0, 6], 
+      "color": "#a855f7" 
+    },
+    { 
+      "id": "uganda", 
+      "label": "Pearl: 0° Latitude", 
+      "icon": "🇺🇬", 
+      "target": [32, 0], 
+      "color": "#ec4899" 
+    }
+  ]
+}

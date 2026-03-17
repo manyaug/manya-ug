@@ -1,0 +1,103 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Regions and Capitals of Africa",
+  "variantTitle": "The Political Map of Africa",
+  "themeColor": "#10b981",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "1. Africa's Political Regions",
+      "points": [
+        "Africa is divided into <b>six</b> major geographical and political regions.",
+        "A <b>political region</b> is a group of countries located in the same area that often share similar history, climate, or economic goals.",
+        "Regional organizations like <b>EAC</b>, <b>ECOWAS</b>, and <b>SADC</b> help these countries trade and work together."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "2. East Africa (The EAC)",
+      "points": [
+        "<b>Members:</b> Uganda, Kenya, Tanzania, Rwanda, Burundi, South Sudan, DR Congo, and Somalia.",
+        "<b>Regional Body:</b> East African Community (EAC).",
+        "<b>Key Capitals:</b> Kampala (Uganda), Nairobi (Kenya), Dodoma (Tanzania), Kigali (Rwanda), Gitega (Burundi), Juba (South Sudan)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "3. West Africa (ECOWAS)",
+      "points": [
+        "This is the most populous region in Africa, largely due to <b>Nigeria</b>.",
+        "<b>Regional Body:</b> Economic Community of West African States (ECOWAS).",
+        "<b>Key Capitals:</b> Abuja (Nigeria), Accra (Ghana), Dakar (Senegal), Bamako (Mali), Ouagadougou (Burkina Faso), Freetown (Sierra Leone)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "4. North Africa and the Horn",
+      "points": [
+        "<b>North Africa:</b> Borders the Mediterranean. <b>Algeria</b> (Largest country) is here. Capitals: Cairo (Egypt), Tripoli (Libya), Rabat (Morocco), Algiers (Algeria).",
+        "<b>The Horn of Africa:</b> Named for its rhino-horn shape. Capitals: Addis Ababa (Ethiopia), Mogadishu (Somalia), Asmara (Eritrea), Djibouti City (Djibouti).",
+        "<b>Note:</b> Addis Ababa is the headquarters of the <b>African Union (AU)</b>."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "5. Central and Southern Africa",
+      "points": [
+        "<b>Central Africa:</b> The heart of Africa, dominated by rainforests. Capitals: Kinshasa (DRC), Bangui (CAR), Libreville (Gabon), Yaounde (Cameroon).",
+        "<b>Southern Africa:</b> Mineral-rich tip of the continent. <b>Regional Body:</b> SADC. Capitals: Pretoria (South Africa), Lusaka (Zambia), Harare (Zimbabwe), Windhoek (Namibia)."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Capital City Traps",
+      "itemA": "Common Mistake City",
+      "itemB": "Actual Political Capital",
+      "rows": [
+        { "feature": "Nigeria", "valA": "Lagos (Largest city)", "valB": "Abuja" },
+        { "feature": "Tanzania", "valA": "Dar es Salaam (Main Port)", "valB": "Dodoma" },
+        { "feature": "Ivory Coast", "valA": "Abidjan (Main City)", "valB": "Yamoussoukro" },
+        { "feature": "South Africa", "valA": "Johannesburg (Gold city)", "valB": "Pretoria (Administrative)" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "6. Africa's Island Capitals",
+      "points": [
+        "<b>Madagascar:</b> Antananarivo",
+        "<b>Seychelles:</b> Victoria",
+        "<b>Mauritius:</b> Port Louis",
+        "<b>Comoros:</b> Moroni",
+        "<b>Cape Verde:</b> Praia",
+        "<b>Sao Tome & Principe:</b> Sao Tome"
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>PLE Fact:</b> <u>Ethiopia</u> is the only African country that was never colonized by Europeans. Its capital, <u>Addis Ababa</u>, is often called the 'Diplomatic Capital of Africa'."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Addis Ababa",
+      "fact": "The capital of Ethiopia and headquarters of the African Union (AU).",
+      "mnemonic": "<b>A</b>ddis <b>A</b>baba = <b>A</b>frican <b>U</b>nion home."
+    },
+    {
+      "term": "Enclave State",
+      "fact": "A country completely surrounded by the territory of another country (e.g., Lesotho in South Africa).",
+      "mnemonic": "<b>Enclaved</b> = <b>Enclosed</b> by one neighbor."
+    },
+    {
+      "term": "Kinshasa & Brazzaville",
+      "fact": "The two closest capital cities in the world, separated only by the Congo River.",
+      "mnemonic": "The Twin Capitals of the Congo."
+    },
+    {
+      "term": "ECOWAS",
+      "fact": "The regional economic organization for West African states.",
+      "mnemonic": "<b>ECO</b>nomic <b>W</b>est <b>A</b>frican <b>S</b>tates."
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "General Facts of Africa",
+  "variantTitle": "Africa: Records, People & Wealth",
+  "themeColor": "#ea580c",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Why is Africa Unique?",
+      "points": [
+        "<b>Cradleland of Man:</b> Believed to be the origin of mankind.",
+        "<b>Archaeological Proof:</b> The skull of early man (<b>Zinjanthropus</b>) was discovered at <b>Olduvai Gorge</b> (Tanzania) by <b>Dr. LSB Leakey</b>.",
+        "<b>Dark Continent:</b> A historical name used by Europeans because they had very little knowledge of Africa's interior for a long time.",
+        "<b>Central Position:</b> It is the only continent crossed by the Equator, the Tropic of Cancer, and the Tropic of Capricorn."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "The People: Africa's Pygmies",
+      "points": [
+        "<b>Shortest People:</b> Africa is home to the <b>Pygmies</b>, the shortest group of people in the world.",
+        "<b>Habitat:</b> They primarily live in the <b>Ituri Forest</b> located in the <b>Democratic Republic of Congo (DRC)</b>.",
+        "<b>Way of Life:</b> Traditionally, they were hunters and gatherers living in harmony with the thick tropical rainforest."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Wealth Under the Ground: Minerals",
+      "points": [
+        "Africa is a leading producer of high-value minerals in the world.",
+        "<b>Key Minerals:</b> The continent produces large quantities of <b>Gold</b> and <b>Diamonds</b>.",
+        "<b>Other Resources:</b> It is also rich in Copper (Zambia), Oil/Petroleum (Nigeria/Libya), and Platinum."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Record-Breaking Water Features",
+      "points": [
+        "<b>Lake Victoria:</b> The largest lake in Africa and the <b>2nd largest freshwater lake</b> in the world.",
+        "<b>Lake Volta:</b> Located in Ghana, it is the world's <b>largest man-made lake</b>.",
+        "<b>River Nile:</b> The <b>longest river</b> in the world (6,670 km), starting in Uganda and ending in the Mediterranean Sea.",
+        "<b>Victoria Falls:</b> The largest waterfalls in Africa, found on the <b>Zambezi River</b> on the border of <b>Zambia and Zimbabwe</b>.",
+        "<b>Suez Canal:</b> A strategic man-made waterway in Egypt (162 km long) connecting the Red Sea to the Mediterranean."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Extreme Points of Africa",
+      "points": [
+        "<b>Highest Mountain:</b> Mt. Kilimanjaro in Tanzania (5,895 meters).",
+        "<b>Lowest Point:</b> Lake Assal in Djibouti.",
+        "<b>Hottest Point:</b> The Sahara Desert, which is also the largest hot desert in the world (8.4 million km²).",
+        "<b>Southernmost Point:</b> Cape Agulhas in South Africa."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Comparing Major African Lakes",
+      "itemA": "Lake Victoria",
+      "itemB": "Lake Tanganyika",
+      "rows": [
+        { "feature": "Type", "valA": "Basin/Down-warped", "valB": "Rift Valley Lake" },
+        { "feature": "Size Rank", "valA": "Largest in Africa", "valB": "2nd Largest in Africa" },
+        { "feature": "Depth", "valA": "Shallow", "valB": "Deepest in Africa" },
+        { "feature": "Shape", "valA": "Rounded/Wide", "valB": "Long and Narrow" }
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>Fact Check:</b> Ethiopia is the most populated landlocked country in Africa, while Seychelles is the smallest country on the continent."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Ituri Forest",
+      "fact": "The specific home of the Pygmies in the Democratic Republic of Congo.",
+      "mnemonic": "<b>I</b>turi <b>I</b>nside <b>DRC</b>."
+    },
+    {
+      "term": "Olduvai Gorge",
+      "fact": "The site in Tanzania where Dr. Leakey found the Zinjanthropus skull.",
+      "mnemonic": "<b>O</b>lduvai = <b>O</b>rigin of Man."
+    },
+    {
+      "term": "Victoria Falls",
+      "fact": "The largest falls in Africa, located on River Zambezi.",
+      "mnemonic": "<b>V</b>ictoria <b>F</b>alls on <b>Z</b>ambezi (VFZ)."
+    },
+    {
+      "term": "Lake Volta",
+      "fact": "The largest man-made lake in the world, found in Ghana.",
+      "mnemonic": "<b>Volta</b> sounds like <b>Voltage</b> (Electricity from a man-made dam)."
+    }
+  ]
+}

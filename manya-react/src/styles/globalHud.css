@@ -1,0 +1,79 @@
+.app-header-master {
+  grid-row: 1; display: flex; justify-content: center; align-items: center; z-index: 10000;
+}
+
+.header-shell {
+    width: 94%;
+    max-width: 420px;
+    height: 46px; /* Optimized height */
+    
+    /* GLASSMORPHISM */
+    background: rgba(255, 255, 255, 0.05); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s ease;
+}
+
+.hud-avatar-peek { display: flex; align-items: center; }
+
+/* AVATAR PEEK REFINEMENT */
+.peek-circle {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    background: #1e293b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+.peek-circle img {
+    width: 100%; height: 100%; object-fit: cover;
+}
+
+/* LOGO / TEXT WRAP */
+.hud-logo-wrap { margin-left: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+.manya-brand-text { 
+    font-weight: 900; font-size: 13px; 
+    color: white; /* Force white for the dark theme */
+    letter-spacing: 0.5px; 
+    line-height: 1; 
+}
+.manya-p7-tag { 
+    font-size: 10px; font-weight: 900; 
+    color: var(--manya-purple); 
+    opacity: 0.9;
+    letter-spacing: 1.2px; margin-top: 2px; 
+}
+
+/* THE GEM PILL (SLEEK) */
+.hud-pill-diamond {
+    background: rgba(0, 0, 0, 0.3); /* Dark pill for contrast */
+    padding: 4px 10px 4px 5px;
+    border-radius: 100px;
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.hud-gem-img {
+    width: 18px; height: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.hud-pill-diamond .count {
+    font-weight: 900; font-size: 13px;
+    color: white;
+}

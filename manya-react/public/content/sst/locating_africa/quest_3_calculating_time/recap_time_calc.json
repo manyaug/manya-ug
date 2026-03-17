@@ -1,0 +1,81 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Calculating Time",
+  "variantTitle": "The Time Traveller's Handbook",
+  "themeColor": "#3b82f6",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "1. The Scientific Basis of Time",
+      "points": [
+        "Time is based on the <b>rotation of the earth</b> on its axis from West to East.",
+        "The earth completes a full circle of <b>360°</b> in <b>24 hours</b> (one day).",
+        "<b>The 15° Rule:</b> To find how many degrees the earth moves in one hour, we divide: 360° ÷ 24 = <b>15° per hour</b>.",
+        "<b>The 4-Minute Rule:</b> To find how long it takes to move 1°, we divide 60 minutes by 15°: 60 ÷ 15 = <b>4 minutes per degree</b>."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "2. The Golden Rules of Direction",
+      "points": [
+        "<b>East is Ahead (+):</b> Places in the East see the sun first. Therefore, we <u>add</u> time when moving Eastwards.",
+        "<b>West is Behind (-):</b> Places in the West see the sun later. Therefore, we <u>subtract</u> time when moving Westwards.",
+        "<b>Reference Point:</b> All time is calculated from the <b>Prime Meridian (0°)</b>, also known as Greenwich Mean Time (GMT)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "3. The 4-Step Calculation Method",
+      "points": [
+        "<b>Step 1 (Find Degree Difference):</b> <br/>• If both places are on the <u>same side</u> (e.g., both East), <b>SUBTRACT</b> the degrees.<br/>• If places are on <u>different sides</u> (e.g., East and West), <b>ADD</b> the degrees.",
+        "<b>Step 2 (Convert Degrees to Time):</b> Divide the total degrees by 15 to get hours. (If there is a remainder, multiply it by 4 to get minutes).",
+        "<b>Step 3 (Find Direction):</b> Determine if the town you are looking for is East or West of the town with the known time.",
+        "<b>Step 4 (Final Time):</b> Add or subtract the hours found in Step 2 to the known time."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Directional Summary",
+      "itemA": "Moving EAST",
+      "itemB": "Moving WEST",
+      "rows": [
+        { "feature": "Position", "valA": "Ahead of GMT", "valB": "Behind GMT" },
+        { "feature": "Sunlight", "valA": "Seen earlier", "valB": "Seen later" },
+        { "feature": "Calculation", "valA": "Add (+) time", "valB": "Subtract (-) time" },
+        { "feature": "Mnemonic", "valA": "East is Least (Ahead)", "valB": "West is Best (Behind)" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "4. Reverse Calculation: Finding Longitude",
+      "points": [
+        "Sometimes you are given the time and asked to find the <b>location (Longitude)</b>.",
+        "<b>Step A:</b> Find the time difference between the two places.",
+        "<b>Step B:</b> Convert the time into degrees by multiplying the hours by <b>15°</b>.",
+        "<b>Step C:</b> If the unknown place is <u>ahead</u> in time (e.g., PM vs AM), it is <b>East</b>. If it is <u>behind</u>, it is <b>West</b>."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>Watch Out for AM and PM!</b> If your addition goes past 12:00 noon, the time changes from AM to PM. If you are subtracting from 1:00 PM, remember that 1:00 PM is effectively <b>13:00 hours</b> in a 24-hour clock!"
+    }
+  ],
+  "cards": [
+    {
+      "term": "15° Longitude",
+      "fact": "Equals exactly 1 hour of time difference.",
+      "mnemonic": "Think of a clock with 24 hours fitting into a 360° circle."
+    },
+    {
+      "term": "4 Minutes",
+      "fact": "The time it takes for the earth to rotate just 1 degree.",
+      "mnemonic": "Small degree, small time (4 mins)."
+    },
+    {
+      "term": "GMT",
+      "fact": "Greenwich Mean Time - the starting point for all world time zones located at 0°.",
+      "mnemonic": "The 'Center' of time."
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+/* MANYA SYLLABUS VAULT - MASTER v13.0 */
+.library-page { 
+    padding: 20px 20px 140px; 
+    transition: background 0.5s ease;
+}
+
+/* 1. SUBJECT SELECTOR (2x2 FIXED GRID) */
+.subject-vault-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.sub-vault-btn {
+    background: var(--bg-card);
+    border: 2.5px solid var(--border-color);
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 0 var(--border-color);
+}
+
+.sub-vault-btn.active {
+    border-color: var(--theme-color);
+    background: var(--bg-main); /* fallback */
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.sub-vault-btn .icon { font-size: 20px; }
+.sub-vault-btn .name { font-weight: 900; font-size: 13px; color: var(--text-main); }
+
+/* 2. UNIT HEADERS */
+.unit-label-elite {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 25px 0 12px 10px;
+    display: block;
+}
+
+/* 3. TOPIC ACCORDION CARDS */
+.topic-bento-card {
+    background: var(--bg-card);
+    border-radius: 28px;
+    margin-bottom: 12px;
+    border: 2.5px solid var(--border-color);
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.topic-bento-card.open {
+    border-color: var(--theme-color);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+}
+
+.topic-header-elite {
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.topic-num-pill {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--bg-main); color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 13px; transition: 0.3s;
+}
+
+.topic-bento-card.open .topic-num-pill {
+    background: var(--theme-color);
+    color: white;
+}
+
+.topic-name-elite {
+    flex: 1; font-weight: 800; font-size: 15px; color: var(--text-main);
+    line-height: 1.3;
+}
+
+.topic-chevron {
+    color: var(--text-muted);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.topic-bento-card.open .topic-chevron {
+    transform: rotate(180deg);
+    color: var(--theme-color);
+}
+
+/* 4. RESOURCE CONTENT */
+.topic-body-elite {
+    display: none;
+    padding: 0 22px 22px;
+    animation: slideInDown 0.3s ease-out;
+}
+.topic-bento-card.open .topic-body-elite { display: block; }
+
+.res-sec { margin-top: 15px; }
+.res-sec-label { font-size: 10px; font-weight: 900; color: var(--text-muted); margin-bottom: 10px; display: block; }
+
+.study-grid-elite { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn-res-study {
+    background: var(--bg-main); border: 2px solid var(--border-color);
+    padding: 12px 18px; border-radius: 16px;
+    font-size: 13px; font-weight: 800; color: var(--text-main);
+    cursor: pointer; transition: 0.2s;
+}
+.btn-res-study:active { transform: scale(0.95); }
+
+/* PRACTICE GRID (Numbered Squares) */
+.practice-grid-elite { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); 
+    gap: 8px; 
+}
+
+.btn-res-practice {
+    height: 48px; background: var(--bg-card); border: 2.5px solid var(--border-color);
+    border-radius: 14px; font-weight: 900; font-size: 14px; color: var(--text-main);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 0 var(--border-color); cursor: pointer; transition: 0.1s;
+}
+
+.btn-res-practice:active {
+    transform: translateY(3px);
+    box-shadow: none;
+    border-color: var(--theme-color);
+}
+
+@keyframes slideInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }

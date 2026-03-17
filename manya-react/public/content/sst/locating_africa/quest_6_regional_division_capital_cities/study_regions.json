@@ -1,0 +1,158 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Regions",
+  "variantTitle": "Quest 7: The Regional Puzzle",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "East Africa",
+      "title": "East Africa (The EAC)",
+      "description": "Home to the Great Lakes and the Source of the Nile.",
+      "initialRotation": [-34, -2, 0],
+      "zoomFactor": 2.5,
+      "highlight": ["east_africa"],
+      "highlightColor": "#4ade80",
+      
+      "focusPoints": [
+        { "label": "Lake Victoria", "rotation": [-33, -1, 0], "zoom": 3.5 },
+        { "label": "Coastline", "rotation": [-39, -5, 0], "zoom": 3.0 }
+      ],
+
+      "markers": [
+        { "label": "Mt. Kilimanjaro", "lat": -3.06, "lon": 37.3, "color": "#ffffff" },
+        { "label": "Lake Victoria", "lat": -1, "lon": 33, "color": "#3b82f6" }
+      ],
+
+      "steps": [
+        "<b>Countries:</b> Uganda, Kenya, Tanzania, Rwanda, Burundi, South Sudan, and DRC.",
+        "<b>Organization:</b> These countries form the East African Community (EAC).",
+        "<b>Special Features:</b> Contains Lake Victoria (largest in Africa), Mt. Kilimanjaro (highest peak), and the Source of the River Nile.",
+        "It is crossed by the Equator."
+      ]
+    },
+    {
+      "tabTitle": "North Africa",
+      "title": "North Africa (The Sahara)",
+      "description": "The arid region bordering the Mediterranean Sea.",
+      "initialRotation": [-15, -25, 0],
+      "zoomFactor": 1.6,
+      "highlight": ["north_africa"],
+      "highlightColor": "#fcd34d",
+      
+      "focusPoints": [
+        { "label": "Nile Delta", "rotation": [-31, -30, 0], "zoom": 3.5 },
+        { "label": "Atlas Mts", "rotation": [-5, -32, 0], "zoom": 3.0 }
+      ],
+
+      "markers": [
+        { "label": "Nile Delta", "lat": 30, "lon": 31, "color": "#15803d" },
+        { "label": "Atlas Mts", "lat": 32, "lon": -5, "color": "#78350f" }
+      ],
+
+      "steps": [
+        "<b>Countries:</b> Egypt, Libya, Tunisia, Algeria, Morocco, Western Sahara, Sudan.",
+        "<b>Special Features:</b> Home to the vast Sahara Desert and the Atlas Mountains (Morocco).",
+        "<b>Water:</b> The River Nile flows north into the Mediterranean Sea here.",
+        "<b>Climate:</b> Mostly hot and dry (Desert climate), with Mediterranean climate on the coast."
+      ]
+    },
+    {
+      "tabTitle": "West Africa",
+      "title": "West Africa (ECOWAS)",
+      "description": "The bulge of Africa, rich in population and history.",
+      "initialRotation": [0, -10, 0],
+      "zoomFactor": 1.8,
+      "highlight": ["west_africa"],
+      "highlightColor": "#facc15",
+      
+      "focusPoints": [
+        { "label": "Gold Coast", "rotation": [2, -6, 0], "zoom": 3.0 },
+        { "label": "Niger River", "rotation": [-5, -15, 0], "zoom": 2.5 }
+      ],
+
+      "lines": [
+         { "type": "lon", "value": 0, "color": "#ef4444", "dashed": true, "label": "Prime Meridian" }
+      ],
+
+      "steps": [
+        "<b>Countries:</b> Nigeria, Ghana, Senegal, Mali, Niger, Cote D'Ivoire, Benin, Togo, Liberia, Sierra Leone, Guinea, Gambia, Burkina Faso.",
+        "<b>Organization:</b> Most belong to ECOWAS.",
+        "<b>Special Features:</b> The River Niger forms a delta here. It is crossed by the Prime Meridian (Ghana/Mali).",
+        "<b>Fact:</b> Nigeria is the most populated country in Africa."
+      ]
+    },
+    {
+      "tabTitle": "Horn of Africa",
+      "title": "The Horn of Africa",
+      "description": "The peninsula that juts into the Indian Ocean.",
+      "initialRotation": [-45, -8, 0],
+      "zoomFactor": 2.2,
+      "highlight": ["horn_africa"],
+      "highlightColor": "#fb923c",
+      
+      "markers": [
+        { "label": "Ethiopian Highlands", "lat": 9, "lon": 39, "color": "#166534" }
+      ],
+
+      "steps": [
+        "<b>Countries:</b> Somalia, Ethiopia, Eritrea, Djibouti.",
+        "<b>Shape:</b> It looks like the horn of a Rhinoceros.",
+        "<b>Special Features:</b> Contains the Ethiopian Highlands. It is very dry and prone to drought.",
+        "<b>Ethiopia:</b> The only African country never colonized."
+      ]
+    },
+    {
+      "tabTitle": "Central Africa",
+      "title": "Central Africa (The Rainforest)",
+      "description": "The heart of the continent, covered in thick forests.",
+      "initialRotation": [-20, 0, 0],
+      "zoomFactor": 1.9,
+      "highlight": ["central_africa"],
+      "highlightColor": "#a78bfa",
+      
+      "focusPoints": [
+        { "label": "Congo Basin", "rotation": [-20, 0, 0], "zoom": 2.5 },
+        { "label": "Coast", "rotation": [-10, 0, 0], "zoom": 3.0 }
+      ],
+
+      "markers": [
+        { "label": "Congo River", "lat": -1, "lon": 19, "color": "#3b82f6" }
+      ],
+
+      "steps": [
+        "<b>Countries:</b> Dem. Rep. of Congo (DRC), Congo Republic, Central African Republic (CAR), Gabon, Cameroon, Chad.",
+        "<b>Climate:</b> Hot and Wet (Equatorial).",
+        "<b>Special Features:</b> The Congo Rainforest (2nd largest in the world) and the mighty Congo River.",
+        "It is rich in minerals but has thick vegetation."
+      ]
+    },
+    {
+      "tabTitle": "Southern Africa",
+      "title": "Southern Africa (SADC)",
+      "description": "The mineral-rich southern tip.",
+      "initialRotation": [-25, 25, 0],
+      "zoomFactor": 1.7,
+      "highlight": ["southern_africa"],
+      "highlightColor": "#60a5fa",
+      
+      "focusPoints": [
+        { "label": "The Cape", "rotation": [-19, 32, 0], "zoom": 3.0 },
+        { "label": "Kalahari", "rotation": [-22, 22, 0], "zoom": 2.5 }
+      ],
+
+      "markers": [
+        { "label": "Drakensberg Mts", "lat": -29, "lon": 29, "color": "#78350f" },
+        { "label": "Orange River", "lat": -28, "lon": 17, "color": "#3b82f6" }
+      ],
+
+      "steps": [
+        "<b>Countries:</b> South Africa, Namibia, Botswana, Zimbabwe, Zambia, Malawi, Mozambique, Lesotho, Eswatini.",
+        "<b>Organization:</b> SADC (Southern African Development Community).",
+        "<b>Special Features:</b> Kalahari Desert, Drakensberg Mountains, and Cape Agulhas.",
+        "Known for Gold and Diamond mining."
+      ]
+    }
+  ]
+}

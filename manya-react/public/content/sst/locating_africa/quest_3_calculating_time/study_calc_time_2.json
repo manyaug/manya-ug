@@ -1,0 +1,129 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Calculating Time Differences",
+  "variantTitle": "Study: How to Calculate Time",
+   "mode": "study",
+  "locked": true,
+
+  "cases": [
+    {
+      "tabTitle": "The Rules",
+      "title": "The Golden Rules of Time",
+      "description": "Before calculating, memorize these basic facts about Earth's rotation.",
+      "initialRotation": [0, -10, 0],
+      "zoomFactor": 1.2,
+      
+      "lines": [
+        { "type": "lon", "value": 0, "color": "#ef4444", "label": "Prime Meridian", "width": 2 },
+        { "type": "lon", "value": 15, "color": "#facc15", "dashed": true, "label": "15°" },
+        { "type": "lon", "value": 30, "color": "#facc15", "dashed": true, "label": "30°" },
+        { "type": "lon", "value": 45, "color": "#facc15", "dashed": true, "label": "45°" }
+      ],
+
+      "steps": [
+        "<b>Rotation:</b> The Earth rotates 360° in 24 hours.",
+        "<b>The Formula:</b> 360° ÷ 24 = <b>15°</b>.",
+        "<b>Rule 1:</b> Every <b>15°</b> of Longitude represents <b>1 Hour</b> of time difference.",
+        "<b>Rule 2:</b> East is <b>ADD (+)</b>. West is <b>SUBTRACT (-)</b>."
+      ]
+    },
+    {
+      "tabTitle": "GMT ➡ East",
+      "title": "Method 1: GMT to East",
+      "description": "Example: It is 12:00 PM at Greenwich. What time is it in Uganda (45°E)?",
+      "initialRotation": [-25, -5, 0],
+      "zoomFactor": 1.4,
+
+      "lines": [
+        { "type": "lon", "value": 0, "color": "#3b82f6", "label": "GMT (12:00)" },
+        { "type": "lon", "value": 45, "color": "#facc15", "label": "Uganda (?)" }
+      ],
+      "connection": { "from": [0, 51.5], "to": [45, 1] },
+      "markers": [
+          { "label": "Greenwich", "lat": 51.5, "lon": 0, "color": "#3b82f6" },
+          { "label": "Kampala", "lat": 1, "lon": 45, "color": "#ef4444" }
+      ],
+
+      "steps": [
+        "<b>Step 1 (Difference):</b> Find the difference in degrees. <br/>45° - 0° = <b>45°</b>.",
+        "<b>Step 2 (Convert):</b> Divide degrees by 15. <br/>45 ÷ 15 = <b>3 Hours</b>.",
+        "<b>Step 3 (Decide):</b> Uganda is EAST of Greenwich. East is Ahead, so we <b>ADD</b>.",
+        "<b>Step 4 (Final):</b> 12:00 PM + 3 hours = <b>3:00 PM</b>."
+      ]
+    },
+    {
+      "tabTitle": "GMT ➡ West",
+      "title": "Method 2: GMT to West",
+      "description": "Example: It is 12:00 PM in Accra (0°). What time is it in Brazil (45°W)?",
+      "initialRotation": [20, -10, 0],
+      "zoomFactor": 1.4,
+
+      "lines": [
+        { "type": "lon", "value": 0, "color": "#3b82f6", "label": "Accra (12:00)" },
+        { "type": "lon", "value": -45, "color": "#ef4444", "label": "Brazil (?)" }
+      ],
+      "connection": { "from": [0, 5.6], "to": [-45, -14] },
+      "markers": [
+          { "label": "Accra", "lat": 5.6, "lon": 0, "color": "#3b82f6" },
+          { "label": "Brasilia", "lat": -14, "lon": -45, "color": "#ef4444" }
+      ],
+
+      "steps": [
+        "<b>Step 1 (Difference):</b> The distance from 0° to 45°W is <b>45°</b>.",
+        "<b>Step 2 (Convert):</b> 45 ÷ 15 = <b>3 Hours</b>.",
+        "<b>Step 3 (Decide):</b> West is BEHIND. We <b>SUBTRACT</b> time.",
+        "<b>Step 4 (Final):</b> 12:00 PM - 3 hours = <b>9:00 AM</b>."
+      ]
+    },
+    {
+      "tabTitle": "East ➡ East",
+      "title": "Method 3: East to East",
+      "description": "When both places are on the SAME side (East). Example: Cairo (30°E) to Dhaka (90°E).",
+      "initialRotation": [-60, -20, 0],
+      "zoomFactor": 1.3,
+
+      "lines": [
+        { "type": "lon", "value": 30, "color": "#3b82f6", "label": "Cairo (7am)" },
+        { "type": "lon", "value": 90, "color": "#ef4444", "label": "Dhaka (?)" },
+        { "type": "lon", "value": 0, "color": "#94a3b8", "dashed": true, "label": "GMT" }
+      ],
+      "connection": { "from": [30, 30], "to": [90, 23] },
+      "markers": [
+          { "label": "Cairo", "lat": 30, "lon": 30, "color": "#3b82f6" },
+          { "label": "Dhaka", "lat": 23, "lon": 90, "color": "#ef4444" }
+      ],
+
+      "steps": [
+        "<b>Rule:</b> When both are East, <b>SUBTRACT</b> the degrees first.",
+        "<b>Step 1:</b> 90° - 30° = <b>60°</b> difference.",
+        "<b>Step 2:</b> 60 ÷ 15 = <b>4 Hours</b>.",
+        "<b>Step 3:</b> Dhaka is further East than Cairo, so it is ahead. <b>ADD</b>.",
+        "<b>Final:</b> 7:00 AM + 4 hours = <b>11:00 AM</b>."
+      ]
+    },
+    {
+      "tabTitle": "Find Longitude",
+      "title": "Method 4: Finding Position",
+      "description": "Reverse Calculation: If time in London is 10:00 AM and City X is 1:00 PM, where is City X?",
+      "initialRotation": [-20, 10, 0],
+      "zoomFactor": 1.3,
+      
+      "lines": [
+        { "type": "lon", "value": 0, "color": "#3b82f6", "label": "London (10am)" },
+        { "type": "lon", "value": 45, "color": "#ef4444", "dashed": true, "label": "City X (?)" }
+      ],
+      "markers": [
+          { "label": "London", "lat": 51.5, "lon": 0, "color": "#3b82f6" },
+          { "label": "City X", "lat": 0, "lon": 45, "color": "#ef4444" }
+      ],
+
+      "steps": [
+        "<b>Step 1 (Time Diff):</b> 1:00 PM is 13:00 hours. <br/>13:00 - 10:00 = <b>3 Hours</b>.",
+        "<b>Step 2 (Convert):</b> Multiply hours by 15°. <br/>3 × 15 = <b>45°</b>.",
+        "<b>Step 3 (Direction):</b> The time is ahead (PM vs AM), so it must be <b>East</b>.",
+        "<b>Answer:</b> City X is at <b>45° East</b>."
+      ]
+    }
+  ]
+}

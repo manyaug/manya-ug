@@ -1,0 +1,108 @@
+{
+ "engineType": "READER_STUDY",
+  "mode": "recap",
+  "topic": "Africa's Water Borders",
+  "variantTitle": "Oceans, Seas and the Hydrosphere",
+  "themeColor": "#0ea5e9",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "1. What is the Hydrosphere?",
+      "points": [
+        "The <b>Hydrosphere</b> is the scientific name for the part of the Earth made up of water.",
+        "Approximately <b>71%</b> of the Earth's surface is covered by water.",
+        "It includes all the world's oceans, seas, rivers, and lakes.",
+        "<b>Oceanography:</b> This is the scientific study of all aspects of the ocean."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "2. The 5 Major World Oceans",
+      "points": [
+        "<b>Pacific Ocean:</b> The largest and deepest ocean in the world. It covers nearly one-third of the globe.",
+        "<b>Atlantic Ocean:</b> The 2nd largest ocean. It is shaped like the letter <b>'S'</b> and lies between the Americas and Africa/Europe.",
+        "<b>Indian Ocean:</b> The 3rd largest ocean. It is known for its warm water and historical trade routes between Africa and Asia.",
+        "<b>Southern (Antarctic) Ocean:</b> This ocean completely surrounds the frozen continent of Antarctica at the South Pole.",
+        "<b>Arctic Ocean:</b> The smallest, shallowest, and coldest ocean. It is located around the North Pole and is mostly covered in ice."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "3. Africa's Surrounding Water Borders",
+      "points": [
+        "Africa is almost entirely surrounded by water, making it nearly an 'island continent'.",
+        "<b>To the North:</b> The <b>Mediterranean Sea</b> separates Africa from Europe.",
+        "<b>To the North-East:</b> The <b>Red Sea</b> separates Africa from the Arabian Peninsula (Asia).",
+        "<b>To the West:</b> The <b>Atlantic Ocean</b> borders the western coast.",
+        "<b>To the East:</b> The <b>Indian Ocean</b> borders the eastern coast (East Africa)."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "4. The Meeting Point: Cape Agulhas",
+      "points": [
+        "The Atlantic Ocean and the Indian Ocean meet at a specific point in <b>South Africa</b>.",
+        "This point is called <b>Cape Agulhas</b>.",
+        "Cape Agulhas is the most <b>Southern point</b> of the African continent.",
+        "South Africa is a unique country because it has coastlines on two different oceans."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "5. The Coast and Continental Shelf",
+      "points": [
+        "<b>The Coast:</b> The narrow zone where the land meets the sea or ocean.",
+        "<b>Continental Shelf:</b> The shallow part of the ocean floor that borders the continent.",
+        "<b>Importance:</b> The continental shelf is vital for the <b>fishing industry</b> because sunlight can reach the bottom, allowing fish food (plankton) to grow."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Ocean Comparison: Africa's Flanks",
+      "itemA": "Atlantic Ocean",
+      "itemB": "Indian Ocean",
+      "rows": [
+        { "feature": "Location", "valA": "West of Africa", "valB": "East of Africa" },
+        { "feature": "Size Rank", "valA": "2nd Largest", "valB": "3rd Largest" },
+        { "feature": "Shape", "valA": "S-Shaped", "valB": "Rounded" },
+        { "feature": "Water Temp", "valA": "Cooler currents", "valB": "Warmer currents" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "6. Importance of Africa's Water Borders",
+      "points": [
+        "<b>Trade & Transport:</b> Oceans provide the cheapest way to move heavy goods like oil and machinery using large ships.",
+        "<b>Climate:</b> Water from the oceans evaporates to form <b>rainfall</b> which is essential for agriculture in Africa.",
+        "<b>Tourism:</b> Coastal regions have beautiful beaches and coral reefs that attract tourists and earn foreign exchange.",
+        "<b>Resources:</b> Oceans provide fish for food and are sources of minerals like salt, oil, and gas."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "<b>PLE Fact:</b> Do not confuse the Mediterranean Sea with an Ocean. It is a <u>Sea</u> because it is smaller and mostly surrounded by land!"
+    }
+  ],
+  "cards": [
+    {
+      "term": "Hydrosphere",
+      "fact": "The part of the earth covered by water bodies.",
+      "mnemonic": "<b>Hydro</b> = Water. <b>Sphere</b> = Ball (Earth)."
+    },
+    {
+      "term": "Cape Agulhas",
+      "fact": "The meeting point of the Atlantic and Indian Oceans.",
+      "mnemonic": "Think of the <b>'A'</b> in Agulhas for <b>A</b>tlantic meeting point."
+    },
+    {
+      "term": "Continental Shelf",
+      "fact": "The shallow part of the sea near the coast, rich in fish.",
+      "mnemonic": "Like a kitchen <b>shelf</b> where the food (fish) is kept!"
+    },
+    {
+      "term": "Atlantic Ocean",
+      "fact": "The ocean to the West of Africa, shaped like an S.",
+      "mnemonic": "<b>W</b>est = <b>A</b>tlantic (<b>W.A.</b>)."
+    }
+  ]
+}

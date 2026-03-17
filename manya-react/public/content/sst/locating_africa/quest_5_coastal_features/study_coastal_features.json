@@ -1,0 +1,105 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quest 5: Shaping the Coast",
+   "mode": "study",
+  
+  "cases": [
+    {
+      "tabTitle": "The Capes",
+      "title": "Major Capes of Africa",
+      "description": "Tap a button below to visit specific Capes.",
+      "initialRotation": [-15, -5, 0],
+      "zoomFactor": 0.95,
+      "focusPoints": [
+        { "label": "Cape Ras Ben (N)", "rotation": [-10, -35, 0], "zoom": 2.5 },
+        { "label": "Cape Agulhas (S)", "rotation": [-20, 35, 0], "zoom": 2.5 },
+        { "label": "Cape Verde (W)", "rotation": [18, -15, 0], "zoom": 2.5 },
+        { "label": "Guardafui (E)", "rotation": [-50, -10, 0], "zoom": 2.5 }
+      ],
+      "markers": [
+        { "label": "Ras Ben", "lat": 37.3, "lon": 9.8, "color": "#ef4444" },
+        { "label": "Agulhas", "lat": -34.8, "lon": 20, "color": "#ef4444" },
+        { "label": "Verde", "lat": 14.7, "lon": -17.5, "color": "#ef4444" },
+        { "label": "Guardafui", "lat": 11.8, "lon": 51.2, "color": "#ef4444" }
+      ],
+      "steps": [
+        "<b>North:</b> Cape Ras Ben (Tunisia).",
+        "<b>South:</b> Cape Agulhas (South Africa).",
+        "<b>West:</b> Cape Verde (Senegal).",
+        "<b>East:</b> Cape Guardafui (Somalia)."
+      ]
+    },
+    {
+      "tabTitle": "The Gulfs",
+      "title": "Major Gulfs",
+      "description": "Zoom into the major Gulfs of Africa.",
+      "initialRotation": [-20, -15, 0],
+      "zoomFactor": 1.1,
+      "focusPoints": [
+        { "label": "Gulf of Guinea", "rotation": [-5, -2, 0], "zoom": 2.0 },
+        { "label": "Gulf of Aden", "rotation": [-48, -12, 0], "zoom": 2.5 },
+        { "label": "Gulf of Sirte", "rotation": [-19, -31.5, 0], "zoom": 3.0 }
+      ],
+      "overlays": [
+        { "type": "curve", "center": [3, 1], "radius": 15, "color": "#0ea5e9" },
+        { "type": "curve", "center": [12, 48], "radius": 5, "color": "#0ea5e9" },
+        { "type": "curve", "center": [32, 18], "radius": 4, "color": "#0ea5e9" }
+      ],
+      "steps": [
+        "<b>Gulf of Guinea:</b> The large curve on the West coast.",
+        "<b>Gulf of Aden:</b> Located in the East, between Somalia and Yemen.",
+        "<b>Gulf of Sirte:</b> Located in the North (Libya)."
+      ]
+    },
+    {
+      "tabTitle": "Islands",
+      "title": "Island Countries",
+      "description": "Visit the Island nations.",
+      "initialRotation": [-20, -10, 0],
+      "zoomFactor": 1.0,
+      "focusPoints": [
+        { "label": "Madagascar", "rotation": [-47, 20, 0], "zoom": 2.0 },
+        { "label": "Seychelles", "rotation": [-55, 5, 0], "zoom": 3.0 },
+        { "label": "Cape Verde", "rotation": [24, -16, 0], "zoom": 2.5 },
+        { "label": "Sao Tome", "rotation": [-6, 0, 0], "zoom": 3.0 }
+      ],
+      "highlight": ["450", "690", "132", "678"],
+      "highlightColor": "#86efac",
+      "markers": [
+        { "label": "Madagascar", "lat": -20, "lon": 47, "color": "#15803d" },
+        { "label": "Seychelles", "lat": -4.6, "lon": 55.5, "color": "#15803d" },
+        { "label": "Cape Verde", "lat": 16, "lon": -24, "color": "#b45309" },
+        { "label": "Sao Tome", "lat": 0.3, "lon": 6.7, "color": "#b45309" }
+      ],
+      "steps": [
+        "<b>Madagascar:</b> Largest island (Indian Ocean).",
+        "<b>Seychelles:</b> Smallest country (Indian Ocean).",
+        "<b>Cape Verde:</b> Atlantic Ocean.",
+        "<b>Sao Tome:</b> Atlantic Ocean (Gulf of Guinea)."
+      ]
+    },
+    {
+      "tabTitle": "Straits",
+      "title": "Water Passages",
+      "description": "Narrow passages connecting water bodies.",
+      "initialRotation": [0, -35, 0],
+      "zoomFactor": 1.5,
+      "focusPoints": [
+        { "label": "Gibraltar", "rotation": [5, -36, 0], "zoom": 4.5 },
+        { "label": "Bab-el-Mandeb", "rotation": [-43, -12, 0], "zoom": 4.5 },
+        { "label": "Mozambique Ch.", "rotation": [-40, 18, 0], "zoom": 2.0 }
+      ],
+      "overlays": [
+        { "type": "arrow", "coordinates": [[-10, 36], [5, 36]], "color": "#2563eb" },
+        { "type": "arrow", "coordinates": [[43, 12], [44, 13]], "color": "#2563eb" }
+      ],
+      "steps": [
+        "<b>Strait of Gibraltar:</b> Connects Atlantic to Med Sea.",
+        "<b>Bab-el-Mandeb:</b> Connects Red Sea to Indian Ocean.",
+        "<b>Mozambique Channel:</b> Separates Madagascar from the mainland."
+      ]
+    }
+  ]
+}
