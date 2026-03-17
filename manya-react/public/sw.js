@@ -1,4 +1,4 @@
-const CACHE_NAME = 'manya-v4'
+const CACHE_NAME = 'manya-v5'
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',

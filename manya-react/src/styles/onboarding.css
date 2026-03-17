@@ -32,6 +32,8 @@
     margin: 0 auto;
     position: relative;
     padding: 0 20px 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .ob-nav {
@@ -90,11 +92,14 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding-bottom: 100px;
+    padding-bottom: 140px; /* More room for floating footer */
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .ob-goal-card {
-    width: 100%;
+    align-self: stretch;
     padding: 24px;
     background: white;
     border: 2px solid transparent;
@@ -115,7 +120,7 @@
 }
 
 .goal-icon { font-size: 32px; }
-.goal-text h4 { margin: 0; font-size: 1.1rem; font-weight: 900; }
+.goal-text h4 { margin: 0; font-size: 1.1rem; font-weight: 900; color: #1E293B; }
 .goal-text p { margin: 4px 0 0; font-size: 0.9rem; color: #64748B; }
 
 .elite-input-ob {
@@ -126,8 +131,10 @@
     border-radius: 20px;
     font-size: 1rem;
     font-weight: 700;
+    color: #1E293B; /* Fix invisible text */
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    box-sizing: border-box;
 }
 
 .elite-input-ob:focus {
@@ -135,6 +142,58 @@
     background: #FDFBFF;
     outline: none;
     box-shadow: 0 8px 20px rgba(124, 58, 237, 0.08);
+}
+
+/* 5. HERO DNA LAB */
+.ob-avatar-lab {
+    width: 100%;
+    background: #1E1B4B;
+    padding: 25px;
+    border-radius: 40px;
+    border: 4px solid #312E81;
+    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.3);
+    box-sizing: border-box;
+}
+
+.lab-grid-ob {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.lab-item-ob {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-item-ob.active {
+    border-color: #7c3aed;
+    background: rgba(124, 58, 237, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+}
+
+.btn-lab-shuffle {
+    width: 100%;
+    padding: 15px;
+    background: transparent;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    color: #818CF8;
+    font-weight: 900;
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .chip-box {
@@ -153,6 +212,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    color: #1E293B;
 }
 
 .sub-chip.active-love {
