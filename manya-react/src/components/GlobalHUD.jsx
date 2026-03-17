@@ -15,7 +15,7 @@ function GlobalHUD() {
         
         {/* Brand Logo/Badge */}
         <div className="hud-brand-peek" onClick={() => navigate('/home')}>
-          <img src="/assets/images/manya_icon.png" alt="Manya" className="brand-logo-img" />
+          <img src="/assets/icons/pwa-192x192.png" alt="Manya" className="brand-logo-img" />
         </div>
 
         <div className="hud-center-stack">

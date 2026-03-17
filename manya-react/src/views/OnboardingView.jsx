@@ -161,7 +161,7 @@ function OnboardingView() {
                 
                 <div className="ob-chat">
                     <div className="manya-bubble-ob">
-                        <img src="/assets/images/manya_icon.png" alt="Manya" />
+                        <img src="/assets/icons/pwa-512x512.png" alt="Manya" />
                         <h2>{questions[step - 1]}</h2>
                     </div>
                 </div>
