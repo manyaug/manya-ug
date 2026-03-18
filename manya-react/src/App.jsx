@@ -23,15 +23,16 @@ import MembershipView from './views/MembershipView';
 import SpiralView from './views/SpiralView';
 import QuestPathView from './views/QuestPathView';
 import OnboardingView from './views/OnboardingView';
+import SimulationTestingView from './views/SimulationTestingView';
 import SplashScreen from './components/SplashScreen';
 
 import { initializeUser } from './store/userSlice';
 import './styles/global.css';
 
 // Routes that hide the global HUD (have their own header)
-const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest'];
+const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test'];
 // Routes that also hide the BottomNav
-const HIDE_NAV_ROUTES = ['/quest-path', '/quest'];
+const HIDE_NAV_ROUTES = ['/quest-path', '/quest', '/sim-test', '/quest'];
 
 /**
  * RouterLayout — lives INSIDE <Router> so it can call useLocation().
@@ -69,6 +70,9 @@ function RouterLayout() {
 
                     {/* Unit Quest Path (full-screen with own HUD) */}
                     <Route path="/quest-path" element={<QuestPathView />} />
+
+                    {/* Simulation Tester */}
+                    <Route path="/sim-test" element={<SimulationTestingView />} />
                 </Routes>
             </div>
 
