@@ -53,7 +53,7 @@ export default function SimulationEngine({
     // preventing the simulation from resetting/glitching on re-renders.
     const TargetSim = useMemo(() => {
         if (!simulationName) return null;
-        return lazy(() => import(`../simulations/${simulationName}`));
+        return lazy(() => import(`../simulations/${simulationName}.jsx`));
     }, [simulationName]);
 
     return (

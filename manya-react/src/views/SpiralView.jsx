@@ -1,12 +1,13 @@
 /**
- * MANYA SPIRAL VIEW - v2.0
+ * MANYA SPIRAL VIEW - v2.1 (Stability Fix)
  * Full-screen world map with alive nodes, custom floating HUD (no global HUD),
  * subject-specific gem pill, and direct quest-path routing on active node tap.
  */
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
+import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
 import '../styles/spiral.css';
 
 // ---- HOTSPOT POSITIONS (exact from original engine) ----
@@ -51,7 +52,7 @@ const BIOMES = {
         icon: '🌍',
         gemFile: 'sst_gem.svg',
         folder: 'sst_path',
-        weather: 'dust-particle',
+        weather: 'sand-wind',
         label: 'SST World',
         progKey: 'prog_sst',
         gemsKey: 'sstGems',
@@ -63,7 +64,7 @@ const BIOMES = {
         icon: '📖',
         gemFile: 'english_gem.svg',
         folder: 'english_path',
-        weather: 'magic-star',
+        weather: 'floating-symbol',
         label: 'English World',
         progKey: 'prog_english',
         gemsKey: 'englishGems',
@@ -75,9 +76,11 @@ function WeatherLayer({ type, count = 50 }) {
     const particles = useMemo(() =>
         Array.from({ length: count }, (_, i) => ({
             id: i,
-            left: `${Math.random() * 120 - 10}%`,
-            duration: `${(Math.random() * 2 + 1.5).toFixed(2)}s`,
-            delay: `-${(Math.random() * 5).toFixed(2)}s`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`, // Start anywhere on page
+            duration: `${(Math.random() * 5 + 8).toFixed(2)}s`, // Slower
+            delay: `-${(Math.random() * 10).toFixed(2)}s`,
+            char: ['A', 'Ω', 'Σ', '!', '?', 'M', 'π'][Math.floor(Math.random() * 7)], // For English
         })),
     [count]);
 
@@ -87,8 +90,15 @@ function WeatherLayer({ type, count = 50 }) {
                 <div
                     key={p.id}
                     className={`weather-particle ${type}`}
-                    style={{ left: p.left, animationDuration: p.duration, animationDelay: p.delay }}
-                />
+                    style={{ 
+                        left: p.left, 
+                        top: type === 'firefly' || type === 'floating-symbol' ? p.top : 'unset',
+                        animationDuration: p.duration, 
+                        animationDelay: p.delay 
+                    }}
+                >
+                    {type === 'floating-symbol' ? p.char : null}
+                </div>
             ))}
         </div>
     );
@@ -128,7 +138,9 @@ function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap
 function SpiralView() {
     const { subjectId } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
+    const { isNightMode } = useSelector(state => state.audio);
     const [curriculum, setCurriculum] = useState(null);
     const containerRef = useRef(null);
 
@@ -148,6 +160,36 @@ function SpiralView() {
             document.documentElement.style.removeProperty('--biome-color-alpha');
         };
     }, [biome]);
+
+    // ---- 1. TIMED DAY/NIGHT CYCLE (45s cycle) ----
+    useEffect(() => {
+        const timer = setInterval(() => {
+            dispatch(setNightMode(!isNightMode));
+        }, 45000); 
+        return () => clearInterval(timer);
+    }, [dispatch, isNightMode]);
+
+    // ---- 2. AMBIENT AUDIO & INITIAL WHOOSH ----
+    useEffect(() => {
+        // Only whoosh on entry
+        dispatch(setAmbientMode(isNightMode ? 'night' : 'day'));
+        
+        if (sub === 'science' && !isNightMode) {
+            dispatch(setRainy(true));
+        } else {
+            dispatch(setRainy(false));
+        }
+
+        return () => { dispatch(setRainy(false)); };
+    }, [dispatch, isNightMode, sub]);
+
+    // ---- 3. SEPARATE ENTRY EFFECT ----
+    useEffect(() => {
+        const whooshTimer = setTimeout(() => {
+            window.ManyaAudio?.whoosh();
+        }, 600);
+        return () => clearTimeout(whooshTimer);
+    }, []);
 
     // Load curriculum JSON
     useEffect(() => {
@@ -229,12 +271,16 @@ function SpiralView() {
     });
 
     return (
-        <div className="spiral-view animate-in">
+        <div className={`spiral-view animate-in ${isNightMode ? 'is-night' : ''}`}>
             {/* VIGNETTE MIST */}
             <div className="spiral-mist-vignette" />
 
-            {/* AMBIENT WEATHER */}
-            <WeatherLayer type={biome.weather} count={55} />
+            {/* AMBIENT WEATHER / FIREFLIES */}
+            {isNightMode ? (
+                <WeatherLayer type="firefly" count={30} />
+            ) : (
+                <WeatherLayer type={biome.weather} count={45} />
+            )}
 
             {/* FLOATING SUBJECT HUD — replaces global HUD on this page */}
             <div className="spiral-hud">

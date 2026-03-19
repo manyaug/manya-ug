@@ -11,6 +11,7 @@ import QuestRunner from './components/QuestRunner';
 import GlobalHUD from './components/GlobalHUD';
 import BottomNav from './components/BottomNav';
 import ManyaToaster from './components/ManyaToaster';
+import AudioManager from './components/AudioManager';
 
 // Views
 import HomeView from './views/HomeView';
@@ -118,6 +119,7 @@ function AppContent() {
 
     return (
         <Router>
+            <AudioManager />
             <RouterLayout />
         </Router>
     );

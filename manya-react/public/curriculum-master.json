@@ -166,10 +166,19 @@
         "title": "Musklo-skeletal-system",
         "quests": [
           {
-            "folder": ".venv",
-            "title": ".venv",
+            "folder": "quest_1_types_of_skeletons",
+            "title": "1 Types Of Skeletons",
             "prefix": "",
-            "resources": [],
+            "resources": [
+              {
+                "label": "Study Types Skeleton",
+                "file": "study_types_skeleton"
+              },
+              {
+                "label": "Recap Quest 1",
+                "file": "recap_quest_1"
+              }
+            ],
             "practiceCount": 0
           },
           {
@@ -292,22 +301,6 @@
               {
                 "label": "Study Diseases",
                 "file": "study_diseases"
-              }
-            ],
-            "practiceCount": 0
-          },
-          {
-            "folder": "quest_1_types_of_skeletons",
-            "title": "1 Types Of Skeletons",
-            "prefix": "",
-            "resources": [
-              {
-                "label": "Recap Quest 1",
-                "file": "recap_quest_1"
-              },
-              {
-                "label": "Sc7 Musklo-skeletal Q1",
-                "file": "sc7_musklo-skeletal_q1"
               }
             ],
             "practiceCount": 0

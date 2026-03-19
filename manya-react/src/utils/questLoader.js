@@ -15,6 +15,7 @@
  * Build the fetch URL for a content file.
  */
 export function contentUrl(subject, unitId, questFolder, file) {
+    if (!file) return '';
     const cleanFile = file.replace(/\.json$/, '');
     return `/content/${subject}/${unitId}/${questFolder}/${cleanFile}.json`;
 }
@@ -49,6 +50,7 @@ function resolveRef(referencePath, baseDir) {
  */
 export async function loadQuestSteps(subject, unitId, questFolder, file) {
     const url = contentUrl(subject, unitId, questFolder, file);
+    console.log(`[QuestLoader] Fetching: ${url}`);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Content not found: ${url}`);
 

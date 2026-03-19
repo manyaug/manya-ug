@@ -1,11 +1,20 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FlaskConical } from 'lucide-react';
+import { setAmbientMode } from '../store/audioSlice';
 import '../styles/home.css';
 
 function HomeView() {
   const user = useSelector((state) => state.user.data);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Set Ambient Audio
+  useEffect(() => {
+    const theme = user?.theme || 'light';
+    dispatch(setAmbientMode(theme === 'dark' ? 'night' : 'day'));
+  }, [dispatch, user?.theme]);
   const subjects = [
     { id: 'math', name: 'Mathematics', progress: user.prog_math || 45, gems: user.mathGems || 12, gemFile: '/assets/images/gems/math_gem.svg', icon: '/assets/images/math_island.png', color: '#6366F1' },
     { id: 'science', name: 'Science', progress: user.prog_science || 20, gems: user.scienceGems || 5, gemFile: '/assets/images/gems/science_svg.svg', icon: '/assets/images/science_island.png', color: '#10B981' },
@@ -13,6 +22,7 @@ function HomeView() {
     { id: 'english', name: 'English', progress: user.prog_english || 80, gems: user.englishGems || 24, gemFile: '/assets/images/gems/english_gem.svg', icon: '/assets/images/english_island.png', color: '#DB2777' }
   ];
   const handleOpenSpiral = (subjectId) => {
+    window.ManyaAudio?.click();
     navigate(`/spiral/${subjectId}`);
   };
 

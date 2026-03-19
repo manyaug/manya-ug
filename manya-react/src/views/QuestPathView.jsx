@@ -3,9 +3,11 @@
  * All 5 nodes visible in ONE screen — no vertical scroll.
  * Locked from horizontal movement. Gem pill → achievements.
  */
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ChevronLeft } from 'lucide-react';
+import { setAmbientMode, setRainy } from '../store/audioSlice';
 import '../styles/quest-path.css';
 
 const STEPS = [
@@ -22,7 +24,22 @@ const ZIG_X = [30, 65, 30, 65, 50];
 function QuestPathView() {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const user = useSelector(s => s.user.data);
+    const { isNightMode } = useSelector(s => s.audio);
+
+    // Maintain Ambient Audio based on local cycle
+    useEffect(() => {
+        dispatch(setAmbientMode(isNightMode ? 'night' : 'day'));
+    }, [dispatch, isNightMode]);
+
+    // Entry Whoosh
+    useEffect(() => {
+        const whooshTimer = setTimeout(() => {
+            window.ManyaAudio?.whoosh();
+        }, 300);
+        return () => clearTimeout(whooshTimer);
+    }, []);
 
     const {
         subject = 'math',
@@ -39,6 +56,7 @@ function QuestPathView() {
 
     const handleStepTap = (idx, stepId, isLocked) => {
         if (isLocked) return;
+        window.ManyaAudio?.click();
         navigate('/quest', {
             state: { subject, unit: unitId, quest: unitId, stepID: stepId, title }
         });

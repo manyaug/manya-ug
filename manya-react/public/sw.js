@@ -1,4 +1,4 @@
-const CACHE_NAME = 'manya-v5'
+const CACHE_NAME = 'manya-v7'
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -34,6 +34,9 @@ self.addEventListener('fetch', (event) => {
 
   // Skip non-GET and cross-origin requests
   if (request.method !== 'GET' || url.origin !== self.location.origin) return
+
+  // ---- FIX: SKIP SERVICE WORKER FOR AUDIO FILES (Range Requests) ----
+  if (url.pathname.endsWith('.mp3') || request.headers.has('range')) return
 
   // Navigation: network first, fallback to cached index
   if (request.mode === 'navigate') {

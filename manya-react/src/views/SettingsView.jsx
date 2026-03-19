@@ -3,10 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, RefreshCw } from 'lucide-react';
 import { updateProfile } from '../store/userSlice';
+import { setVolume, toggleMute } from '../store/audioSlice';
+import { Volume2, VolumeX, Headphones } from 'lucide-react';
 import '../styles/setting.css';
 
 function SettingsView() {
   const user = useSelector((state) => state.user.data);
+  const { volume, isMuted } = useSelector((state) => state.audio);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -74,7 +77,43 @@ function SettingsView() {
                 <span style={{ fontSize: '20px' }}>{formState.theme === 'dark' ? '🌕' : '🌑'}</span>
                 <span style={{ fontWeight: 900, fontSize: '14px' }}>Night Mode</span>
             </div>
-            <div className="manya-switch" id="theme-trigger"></div>
+            <div className={`manya-switch ${formState.theme === 'dark' ? 'active' : ''}`} id="theme-trigger"></div>
+        </div>
+
+        {/* AUDIO SETTINGS */}
+        <div className="dna-vault" style={{ marginTop: '20px', padding: '20px' }}>
+            <span className="vault-label">AUDIO MATRIX</span>
+            
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', cursor: 'pointer' }} onClick={() => dispatch(toggleMute())}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {isMuted ? <VolumeX size={20} color="#EF4444" /> : <Volume2 size={20} color="#818CF8" />}
+                    <span style={{ fontWeight: 900, fontSize: '14px', color: 'var(--text-main)' }}>Master Audio</span>
+                </div>
+                <div className={`manya-switch ${!isMuted ? 'active' : ''}`}></div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Headphones size={16} color="#818CF8" />
+                        <span style={{ fontWeight: 800, fontSize: '12px', color: 'var(--text-muted)' }}>VOLUME</span>
+                    </div>
+                    <span style={{ fontWeight: 900, fontSize: '12px', color: '#818CF8' }}>{Math.round(volume * 100)}%</span>
+                </div>
+                <input 
+                    type="range" 
+                    min="0" 
+                    max="1" 
+                    step="0.01" 
+                    value={volume} 
+                    onChange={(e) => dispatch(setVolume(parseFloat(e.target.value)))}
+                    style={{ 
+                        width: '100%', 
+                        accentColor: '#818CF8',
+                        cursor: 'pointer'
+                    }}
+                />
+            </div>
         </div>
 
         {/* THE DNA VAULT */}

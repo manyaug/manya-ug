@@ -22,6 +22,8 @@ import { ChevronLeft, X } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
 import { updateProfile } from '../store/userSlice';
 import { loadQuestSteps } from '../utils/questLoader';
+import { ENGINE_REGISTRY } from '../utils/engineRouter';
+import React, { Suspense } from 'react';
 import '../styles/engines.css';
 
 // Engines that handle their own "done" — hide the footer CONTINUE button
@@ -54,6 +56,7 @@ export default function QuestRunner() {
     const [stepIdx,  setStepIdx]  = useState(0);
     const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE' });
     const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
+    const [activeEngine, setActiveEngine] = useState(null); // { type: 'react', component: LazyEx }
 
     // ── Derive biome color ────────────────────────────────────────────────────
     const biomeColor = location.state?.biomeColor || SUBJECT_COLOR[meta.subject] || '#7c3aed';
@@ -142,6 +145,9 @@ export default function QuestRunner() {
         if (!mountRef.current) return;
         cleanupEngine();
 
+        // Trigger transition sound
+        window.ManyaAudio?.whoosh();
+
         const { engineType, data, mode } = step;
         const isImmersive = IMMERSIVE_ENGINES.has(engineType);
         const isWait      = WAIT_ENGINES.has(engineType);
@@ -161,7 +167,20 @@ export default function QuestRunner() {
             footer.style.display = (isImmersive && !isEnglish) ? 'none' : '';
         }
 
-        // Load the engine via the legacy router (served as a static file)
+        // 1. Check if it's a React-native engine
+        const engineMeta = ENGINE_REGISTRY[engineType] || { type: 'legacy' };
+        
+        if (engineMeta.type === 'react') {
+            setActiveEngine({
+                type: 'react',
+                component: engineMeta.component,
+                data: data
+            });
+            return;
+        }
+
+        // 2. Load the legacy engine via the router
+        setActiveEngine(null); // Clear react engine
         try {
             // Hide the dynamic import from Vite's bundler analysis
             const importFn = new Function('url', 'return import(url)');
@@ -170,10 +189,10 @@ export default function QuestRunner() {
 
             // The vanilla engines write innerHTML into this container
             const contentBox = mountRef.current;
-            contentBox.innerHTML = '';  // clear previous
-
-            await ManyaRouter.loadInline(engineType, data, contentBox);
-
+            if (contentBox) {
+                contentBox.innerHTML = '';  // clear previous
+                await ManyaRouter.loadInline(engineType, data, contentBox);
+            }
         } catch (err) {
             console.error(`[QuestRunner] engine load error (${engineType}):`, err);
             if (mountRef.current) {
@@ -214,6 +233,9 @@ export default function QuestRunner() {
         const gemsEarned = 3;
         dispatch(updateProfile({ diamonds: (user?.diamonds || 0) + gemsEarned }));
         dispatch(addToast({ message: `🏆 Quest complete! +${gemsEarned} gems earned`, type: 'success' }));
+        
+        // Trigger completion sound
+        window.ManyaAudio?.finish();
     }
 
     // ── PROGRESS ──────────────────────────────────────────────────────────────
@@ -273,11 +295,24 @@ export default function QuestRunner() {
             )}
 
             {phase === 'running' && (
-                <div
-                    ref={mountRef}
-                    className="qr-content-area"
-                    id="qr-content"
-                />
+                <>
+                    {activeEngine?.type === 'react' ? (
+                        <div className="qr-content-area react-mount">
+                            <Suspense fallback={<div className="p-20 text-center font-bold">Booting React Engine...</div>}>
+                                <activeEngine.component 
+                                    data={activeEngine.data} 
+                                    onComplete={() => advanceStep()} 
+                                />
+                            </Suspense>
+                        </div>
+                    ) : (
+                        <div
+                            ref={mountRef}
+                            className="qr-content-area vanilla-mount"
+                            id="qr-content"
+                        />
+                    )}
+                </>
             )}
 
             {phase === 'finished' && (
@@ -328,7 +363,10 @@ export default function QuestRunner() {
                     <button
                         className="manya-btn-pro"
                         disabled={!btnState.enabled}
-                        onClick={advanceStep}
+                        onClick={() => {
+                            window.ManyaAudio?.click();
+                            advanceStep();
+                        }}
                         style={{ background: biomeColor,
                                  boxShadow: `0 6px 0 ${biomeColor}88` }}
                     >
