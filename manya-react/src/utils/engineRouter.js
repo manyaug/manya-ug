@@ -11,6 +11,14 @@ export const ENGINE_REGISTRY = {
         type: 'react',
         component: lazy(() => import('../engines/GalleryStudyEngine.jsx'))
     },
+    '2D_HOTSPOT': {
+        type: 'react',
+        component: lazy(() => import('../engines/ImageHotspotsEngine.jsx'))
+    },
+    'READER_STUDY': {
+        type: 'react',
+        component: lazy(() => import('../engines/ReaderStudyEngine.jsx'))
+    },
 
     // Legacy Engines (Still in Public/Legacy)
     // These will be handled by the legacy loading path in QuestRunner
@@ -24,8 +32,6 @@ export const ENGINE_REGISTRY = {
     'SET_CLASSIFIER': { type: 'legacy' },
     '3D_SKELETON': { type: 'legacy' },
     'PROCEDURAL_CANVAS': { type: 'legacy' },
-    '2D_HOTSPOT': { type: 'legacy' },
-    'READER_STUDY': { type: 'legacy' },
     'MCQ_STANDALONE': { type: 'legacy' },
     'GLOBE_TIME_ENGINE': { type: 'legacy' },
     'CHAT': { type: 'legacy' },

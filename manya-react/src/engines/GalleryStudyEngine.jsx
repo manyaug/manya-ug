@@ -1,26 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Check, Sparkles } from 'lucide-react';
 
 /**
- * GALLERY STUDY ENGINE (React Port)
- * --------------------------------
- * Replaces the legacy vanilla JS gallery engine with a modern, 
- * performant React component.
+ * GALLERY STUDY ENGINE (React Port) - v2.1
+ * -----------------------------------------
+ * World-class educational gallery with:
+ * - Zero-lag preloading
+ * - Conditional completion (must see all slides)
+ * - Premium Glassmorphism & Micro-animations
+ * - Full Dark/Light Theme support
  */
 export default function GalleryStudyEngine({ data, onComplete }) {
     const [currentIdx, setCurrentIdx] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
-
-    const slides = data?.slides || [];
+    const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
+    const [imageLoaded, setImageLoaded] = useState(false);
+    
+    const slides = useMemo(() => data?.slides || [], [data]);
     const currentSlide = slides[currentIdx];
+    const isLastSlide = currentIdx === slides.length - 1;
+    const allSeen = visitedIndices.size === slides.length;
+
+    // ── IMAGE PRELOADING ──────────────────────────────────────────────────────
+    useEffect(() => {
+        // Preload next image for instant transitions
+        if (currentIdx + 1 < slides.length) {
+            const nextImg = new Image();
+            nextImg.src = slides[currentIdx + 1].image;
+        }
+        // Preload previous
+        if (currentIdx - 1 >= 0) {
+            const prevImg = new Image();
+            prevImg.src = slides[currentIdx - 1].image;
+        }
+    }, [currentIdx, slides]);
+
+    // ── COMPLETION LOGIC ──────────────────────────────────────────────────────
+    useEffect(() => {
+        // Update visited set
+        if (!visitedIndices.has(currentIdx)) {
+            setVisitedIndices(prev => new Set([...prev, currentIdx]));
+        }
+    }, [currentIdx]);
 
     if (!currentSlide) return <div className="p-8 text-center text-red-500 font-bold">No slides found.</div>;
 
     const handleNext = () => {
         if (currentIdx < slides.length - 1) {
             setCurrentIdx(idx => idx + 1);
+            setImageLoaded(false);
             setIsExpanded(false);
-        } else {
+        } else if (allSeen) {
             if (onComplete) onComplete();
         }
     };
@@ -28,6 +58,7 @@ export default function GalleryStudyEngine({ data, onComplete }) {
     const handlePrev = () => {
         if (currentIdx > 0) {
             setCurrentIdx(idx => idx - 1);
+            setImageLoaded(false);
             setIsExpanded(false);
         }
     };
@@ -35,92 +66,166 @@ export default function GalleryStudyEngine({ data, onComplete }) {
     const toggleDrawer = () => setIsExpanded(!isExpanded);
 
     return (
-        <div className="relative w-full h-full bg-[#FDFBF7] font-['Plus_Jakarta_Sans',_sans-serif] overflow-hidden flex flex-col">
+        <div className="relative w-full h-full bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-hidden flex flex-col transition-colors duration-500">
             
             {/* STAGE AREA */}
             <main className="flex-1 flex flex-col p-[10px_15px] relative overflow-hidden">
-                <div className="flex-1 bg-white rounded-[35px] border-[2.5px] border-[#F1F5F9] relative overflow-hidden shadow-[0_15px_45px_rgba(0,0,0,0.03)] flex flex-col">
+                <div className="flex-1 bg-[var(--bg-card)] rounded-[40px] border-[2px] border-[var(--border-subtle)] relative overflow-hidden shadow-premium flex flex-col">
                     
-                    {/* PROGRESS DOTS */}
-                    <div className="flex gap-2 p-5 justify-center items-center">
-                        {slides.map((_, i) => (
-                            <div 
-                                key={i}
-                                className={`h-2 transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] rounded-full ${
-                                    i === currentIdx 
-                                    ? 'w-6 bg-[#7c3aed] shadow-[0_0_10px_rgba(124,58,237,0.3)]' 
-                                    : 'w-2 bg-[#E2E8F0]'
-                                }`}
-                            />
-                        ))}
+                    {/* PROGRESS BAR (Modern) */}
+                    <div className="flex flex-col gap-4 p-6 items-center z-10">
+                        <div className="flex gap-1.5 justify-center items-center">
+                            {slides.map((_, i) => (
+                                <div 
+                                    key={i}
+                                    className={`h-1.5 transition-all duration-700 ease-spring rounded-full ${
+                                        i === currentIdx 
+                                        ? 'w-10 bg-[#7c3aed] shadow-glow-purple' 
+                                        : visitedIndices.has(i)
+                                            ? 'w-4 bg-[#10B981]'
+                                            : 'w-2 bg-[var(--text-muted)] opacity-30'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                        <h2 className="text-xl font-black text-[var(--text-main)] text-center animate-in fade-in slide-in-from-top-2 duration-700">
+                            {currentSlide.title}
+                        </h2>
                     </div>
 
-                    {/* SIDE NAVIGATION */}
-                    <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between px-3 pointer-events-none z-[1000]">
+                    {/* SIDE NAVIGATION (Glassmorphism) */}
+                    <div className="absolute top-[50%] -translate-y-1/2 w-full flex justify-between px-4 pointer-events-none z-[1000]">
                         <button 
-                            className="w-12 h-12 rounded-2xl bg-white/90 backdrop-blur-md text-[#7c3aed] flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.1)] border-[1.5px] border-[#F1F5F9] transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none pointer-events-auto"
+                            className="w-12 h-12 rounded-2xl bg-[var(--glass-bg)] backdrop-blur-xl text-[#7c3aed] flex items-center justify-center shadow-glass border border-[var(--glass-border)] transition-all active:scale-90 hover:scale-105 disabled:opacity-0 disabled:scale-90 pointer-events-auto"
                             onClick={handlePrev}
                             disabled={currentIdx === 0}
                         >
-                            <ChevronLeft strokeWidth={4} size={20} />
+                            <ChevronLeft strokeWidth={3.5} size={24} />
                         </button>
                         <button 
-                            className="w-12 h-12 rounded-2xl bg-white/90 backdrop-blur-md text-[#7c3aed] flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.1)] border-[1.5px] border-[#F1F5F9] transition-all active:scale-95 pointer-events-auto"
+                            className={`w-12 h-12 rounded-2xl bg-[var(--glass-bg)] backdrop-blur-xl text-[#7c3aed] flex items-center justify-center shadow-glass border border-[var(--glass-border)] transition-all active:scale-90 hover:scale-105 pointer-events-auto ${!visitedIndices.has(currentIdx + 1) && !isLastSlide ? 'animate-pulse shadow-glow-purple' : ''}`}
                             onClick={handleNext}
                         >
-                            {currentIdx === slides.length - 1 ? <Check strokeWidth={4} size={20} /> : <ChevronRight strokeWidth={4} size={20} />}
+                            {isLastSlide ? <Check strokeWidth={3.5} size={24} /> : <ChevronRight strokeWidth={3.5} size={24} />}
                         </button>
                     </div>
 
                     {/* IMAGE VIEWPORT */}
                     <div 
-                        className="flex-1 w-full flex items-center justify-center p-5 cursor-pointer"
+                        className="flex-1 w-full flex items-center justify-center p-6 cursor-pointer relative group"
                         onClick={toggleDrawer}
                     >
+                        <div className={`absolute inset-0 bg-gradient-to-b from-[#7c3aed]/5 to-transparent transition-opacity duration-700 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`} />
                         <img 
-                            key={currentIdx} // Force animation on index change
+                            key={currentIdx} 
                             src={currentSlide.image} 
                             alt={currentSlide.title}
-                            className="max-w-full max-h-full object-contain rounded-3xl drop-shadow-[0_10px_30px_rgba(0,0,0,0.08)] animate-[slideScale_0.5s_cubic-bezier(0.175,0.885,0.32,1.275)]"
+                            onLoad={() => setImageLoaded(true)}
+                            className={`max-w-[90%] max-h-[90%] object-contain rounded-[2.5rem] transition-all duration-700 ease-spring-heavy ${
+                                imageLoaded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-8'
+                            } shadow-2xl group-hover:scale-[1.03] group-active:scale-[0.98]`}
+                            style={{ willChange: 'transform, opacity' }}
                         />
                     </div>
 
-                    {/* GLASSMOPHISM DRAWER */}
+                    {/* PREMIUM GLASS DRAWER */}
                     <div 
-                        className={`absolute bottom-0 left-0 right-0 h-1/2 bg-white/95 backdrop-blur-2xl z-[1100] rounded-[40px_40px_0_0] border-t-2 border-[#F1F5F9] shadow-[0_-15px_40px_rgba(0,0,0,0.06)] transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] flex flex-col ${
-                            isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-75px)]'
+                        className={`absolute bottom-0 left-0 right-0 h-[65%] bg-[var(--drawer-bg)] backdrop-blur-3xl z-[1100] rounded-[50px_50px_0_0] border-t-2 border-[var(--glass-border)] shadow-up transition-all duration-700 ease-spring flex flex-col ${
+                            isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-85px)]'
                         }`}
                     >
-                        <div className="w-10 h-1.5 bg-[#E2E8F0] rounded-full mx-auto my-4 shrink-0 transition-opacity" />
-                        
+                        {/* HANDLE AREA (Expands Drawer) */}
                         <div 
-                            className="px-6 pb-4 flex justify-between items-center cursor-pointer shrink-0"
+                            className="w-full h-24 shrink-0 flex flex-col items-center justify-center cursor-pointer group/handle"
                             onClick={toggleDrawer}
                         >
-                            <h3 className="text-lg font-black text-[#1E293B] leading-tight flex-1 pr-4 line-clamp-1">
-                                {currentSlide.title}
-                            </h3>
-                            <div className="px-3 py-1.5 rounded-full bg-[#FCE7F3] text-[#db2777] text-[10px] font-black uppercase tracking-wider whitespace-nowrap">
-                                {isExpanded ? 'CLOSE' : 'READ NOTES'}
+                            <div className="w-12 h-1.5 bg-[var(--text-muted)] opacity-20 rounded-full mb-5 group-hover/handle:opacity-40 transition-opacity" />
+                            <div className="px-8 w-full flex justify-center items-center">
+                                <div className={`px-6 py-3 rounded-2xl transition-all duration-300 font-black text-[11px] tracking-widest uppercase flex items-center gap-3 active:scale-95 ${
+                                    isExpanded ? 'bg-[var(--text-muted)]/10 text-[var(--text-main)] px-10' : 'bg-[#7c3aed] text-white shadow-glow-purple'
+                                }`}>
+                                    {isExpanded ? 'CLOSE' : <><Sparkles size={16} /> VIEW DETAILS</>}
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto px-6 pb-12 text-[#475569] text-base leading-relaxed">
-                            <div className="bg-[#F8FAFC] p-4 rounded-2xl border-l-4 border-[#db2777] mb-5 font-bold text-[#1E293B] text-xs">
-                                Manya Insight: Tap notes to close or the image to expand!
+                        {/* CONTENT AREA */}
+                        <div className="flex-1 overflow-y-auto px-8 pb-16 text-[var(--text-sub)] text-base leading-[1.8] scroll-smooth">
+                            <div className="bg-[#7c3aed]/5 p-5 rounded-3xl border-l-[6px] border-[#7c3aed] mb-8 font-extrabold text-[var(--text-main)] text-[11px] flex items-start gap-4 shadow-sm">
+                                <div className="p-2 bg-[#7c3aed] rounded-xl text-white shadow-lg">
+                                    <Sparkles size={16} />
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="tracking-tighter">MANYA INSIGHT</span>
+                                    <span className="opacity-60 font-medium leading-relaxed">Swipe up to expand details. You must see all cards to complete this quest.</span>
+                                </div>
                             </div>
+                            
                             <div 
-                                className="prose prose-slate max-w-none"
+                                className="prose-manya"
                                 dangerouslySetInnerHTML={{ __html: currentSlide.description }}
                             />
                         </div>
+                        
+                        {/* BOTTOM FADE INDICATOR */}
+                        <div className={`absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--drawer-bg)] to-transparent pointer-events-none transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0'}`} />
                     </div>
 
                 </div>
             </main>
 
             <style>{`
-                @keyframes slideScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+                :root {
+                    --bg-main: #FDFBF7;
+                    --bg-card: #ffffff;
+                    --border-subtle: #F1F5F9;
+                    --text-main: #1E293B;
+                    --text-sub: #475569;
+                    --text-muted: #94A3B8;
+                    --glass-bg: rgba(255, 255, 255, 0.85);
+                    --glass-border: rgba(241, 245, 249, 0.82);
+                    --drawer-bg: rgba(255, 255, 255, 0.98);
+                }
+                
+                [data-theme='dark'] {
+                    --bg-main: #0B0E14;
+                    --bg-card: #151921;
+                    --border-subtle: #1E2530;
+                    --text-main: #F8FAFC;
+                    --text-sub: #CBD5E1;
+                    --text-muted: #64748B;
+                    --glass-bg: rgba(30, 37, 48, 0.85);
+                    --glass-border: rgba(255, 255, 255, 0.05);
+                    --drawer-bg: rgba(21, 25, 33, 0.98);
+                }
+
+                .shadow-premium { box-shadow: 0 25px 60px -12px rgba(0,0,0,0.08); }
+                .shadow-glass { box-shadow: 0 12px 30px -5px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.1); }
+                .shadow-up { box-shadow: 0 -25px 50px -12px rgba(0,0,0,0.06); }
+                .shadow-glow-purple { box-shadow: 0 0 25px rgba(124,58,237,0.45); }
+                
+                .ease-spring { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+                .ease-spring-heavy { transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+                .prose-manya b { color: var(--text-main); font-weight: 900; }
+                .prose-manya .rule-box { 
+                    margin: 1.5rem 0; 
+                    padding: 1.5rem; 
+                    background: rgba(124,58,237, 0.06); 
+                    border-radius: 1.5rem; 
+                    border: 1px dashed rgba(124,58,237, 0.25);
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                }
+                .prose-manya .danger-box { 
+                    margin: 1.5rem 0; 
+                    padding: 1.5rem; 
+                    background: rgba(239, 68, 68, 0.06); 
+                    border-radius: 1.5rem; 
+                    border-left: 5px solid #ef4444;
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                }
             `}</style>
         </div>
     );
