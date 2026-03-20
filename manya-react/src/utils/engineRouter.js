@@ -9,15 +9,19 @@ export const ENGINE_REGISTRY = {
     // React-Native Engines (Migrated)
     'GALLERY_STUDY': {
         type: 'react',
-        component: lazy(() => import('../engines/GalleryStudyEngine.jsx'))
+        component: lazy(() => import('../engines/shared-engines/GalleryStudyEngine.jsx'))
     },
-    '2D_HOTSPOT': {
+    'IMAGE_HOTSPOTS': {
         type: 'react',
-        component: lazy(() => import('../engines/ImageHotspotsEngine.jsx'))
+        component: lazy(() => import('../engines/shared-engines/ImageHotspotsEngine.jsx'))
+    },
+    'GLOBE_TIME_ENGINE': {
+        type: 'react',
+        component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
     },
     'READER_STUDY': {
         type: 'react',
-        component: lazy(() => import('../engines/ReaderStudyEngine.jsx'))
+        component: lazy(() => import('../engines/shared-engines/ReaderStudyEngine.jsx'))
     },
 
     // Legacy Engines (Still in Public/Legacy)
@@ -30,10 +34,12 @@ export const ENGINE_REGISTRY = {
     'BINARY_GAME': { type: 'legacy' },
     'VENN_SPOTLIGHT': { type: 'legacy' },
     'SET_CLASSIFIER': { type: 'legacy' },
-    '3D_SKELETON': { type: 'legacy' },
+    '3D_SKELETON': {
+        type: 'react',
+        component: lazy(() => import('../engines/shared-engines/ThreeDStudyEngine.jsx'))
+    },
     'PROCEDURAL_CANVAS': { type: 'legacy' },
     'MCQ_STANDALONE': { type: 'legacy' },
-    'GLOBE_TIME_ENGINE': { type: 'legacy' },
     'CHAT': { type: 'legacy' },
     'ENGLISH_RULE_MASTER': { type: 'legacy' },
     'SYNTAX_ARCHITECT': { type: 'legacy' },

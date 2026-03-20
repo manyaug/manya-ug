@@ -158,36 +158,32 @@ export default function ReaderStudyEngine({ data, onComplete }) {
 
             <style>{`
                 :root {
-                    --bg-main: #FDFBFB;
-                    --bg-card: #ffffff;
-                    --border-subtle: #F1F5F9;
-                    --text-main: #0F172A;
-                    --text-sub: #334155;
-                    --text-muted: #94A3B8;
-                    --shadow-sm: 0 5px 15px rgba(0,0,0,0.02);
-                    --shadow-md: 0 15px 30px rgba(0,0,0,0.05);
+                    --bg-main: #ffffff;
+                .reader-study-root {
+                    background: var(--bg-main);
+                    color: var(--text-main);
                 }
                 
-                [data-theme='dark'] {
-                    --bg-main: #080B11;
-                    --bg-card: #121826;
-                    --border-subtle: #1E293B;
-                    --text-main: #F8FAFC;
-                    --text-sub: #94A3B8;
-                    --text-muted: #475569;
+                [data-theme='dark'] .reader-study-root {
+                    --bg-main: #0B0E14;
+                    --bg-card: #1f2937;
+                    --text-main: #f8fafc;
+                    --text-sub: #d1d5db;
+                    --text-muted: #9ca3af;
+                    --border-subtle: #374151;
+                    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
                 }
 
                 .bento-section {
                     background: var(--bg-card);
-                    border: 2px solid var(--border-subtle);
+                    border: 1.5px solid var(--border-subtle);
                     border-radius: 32px;
-                    padding: 30px;
-                    box-shadow: var(--shadow-md);
+                    padding: 32px;
                     position: relative;
                     overflow: hidden;
                     transition: all 0.5s ease;
                 }
-                
+
                 @media (min-width: 768px) {
                     .bento-section { border-radius: 48px; padding: 56px; }
                     .bento-section:hover { transform: translateY(-8px); border-color: var(--accent-color); }

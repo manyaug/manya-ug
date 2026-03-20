@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "The Human Skeleton",
   "variantTitle": "Quest 2 Master Recap",
@@ -12,7 +12,7 @@
         "A normal <b>adult</b> human being has <b>206 bones</b>.",
         "A <b>newborn baby</b> has more: between <b>300 to 305 bones</b>.",
         "<b>Why?</b> Babies are born with many <b>cartilages</b> that later join/fuse together as they grow.",
-        "<b>Ossification:</b> The process where cartilages turn into hard bones."
+        "<b>Ossification:</b> The process where cartilages turn into hard bones using minerals."
       ]
     },
     {
@@ -21,46 +21,75 @@
       "itemA": "Axial Skeleton",
       "itemB": "Appendicular Skeleton",
       "rows": [
-        { "feature": "Number of Bones", "valA": "80 bones", "valB": "126 bones" },
-        { "feature": "Position", "valA": "The central axis (middle)", "valB": "Attached to the axis" },
-        { "feature": "Includes", "valA": "Skull, Spine, Rib cage, Sternum", "valB": "Limbs (Arms/Legs) and Girdles" },
-        { "feature": "Main Role", "valA": "Protection of vital organs", "valB": "Movement and Locomotion" }
+        {
+          "feature": "Number of Bones",
+          "valA": "80 bones",
+          "valB": "126 bones"
+        },
+        {
+          "feature": "Position",
+          "valA": "The central axis (middle)",
+          "valB": "Attached to the axis"
+        },
+        {
+          "feature": "Includes",
+          "valA": "Skull, Spine, Rib cage, Sternum",
+          "valB": "Limbs (Arms/Legs) and Girdles"
+        },
+        {
+          "feature": "Main Role",
+          "valA": "Protection of vital organs",
+          "valB": "Movement and Locomotion"
+        }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Understanding Girdles",
+      "points": [
+        "<b>Pectoral Girdle:</b> The shoulder bones (Scapula and Clavicle) that attach the arms to the spine.",
+        "<b>Pelvic Girdle:</b> The hip bones that attach the legs to the spine."
       ]
     },
     {
       "type": "bullets",
       "title": "What do the bones protect?",
       "points": [
-        "<b>Skull:</b> Protects the Brain, Eyes, and Middle/Inner ears.",
+        "<b>Skull (Cranium):</b> Protects the Brain, Eyes, and Middle/Inner ears.",
         "<b>Vertebral Column (Backbone):</b> Protects the <b>Spinal Cord</b>.",
         "<b>Rib Cage:</b> Protects the <b>Heart and Lungs</b>.",
-        "<b>Pelvic Girdle (Hip):</b> Protects the bladder and <b>Reproductive organs</b> (Uterus in women)."
+        "<b>Pelvic Girdle (Hip):</b> Protects the bladder and <b>Reproductive organs</b> (e.g., Uterus in women)."
       ]
     },
     {
       "type": "bullets",
       "title": "Living Tissue Facts",
       "points": [
-        "Bones are NOT dead; they have <b>blood supply</b> and <b>nerves</b>.",
-        "The <b>Bone Marrow</b> acts as a factory for making blood cells.",
-        "Bones store <b>Calcium</b> and <b>Phosphorus</b> to keep the body strong."
+        "Bones are NOT dead; they have <b>blood supply</b> and <b>nerves</b> to feel pain.",
+        "The <b>Red Bone Marrow</b> acts as a factory for making <b>Red Blood Cells</b>.",
+        "Bones act as a 'bank' to store <b>Calcium</b> and <b>Phosphorus</b>."
       ]
     },
     {
       "type": "warning",
-      "text": "The <b>Femur</b> (thigh bone) is the longest and strongest bone in the body! It must support your whole weight when you stand."
+      "text": "Record Breakers: The <b>Femur</b> (thigh bone) is the <b>longest and strongest</b> bone! The <b>Stapes</b> (in the ear) is the <b>smallest and lightest</b> bone in the body."
     }
   ],
   "cards": [
     {
       "term": "206 vs 305",
       "fact": "Adults have 206 bones. Babies have ~305.",
-      "mnemonic": "Babies are 'Bonus' bones! They fuse as they grow."
+      "mnemonic": "Babies are born with <b>cartilage</b> that fuses into bone!"
     },
     {
       "term": "Axial",
       "fact": "The 80 bones in the center of your body (Skull, Spine, Ribs).",
-      "mnemonic": "Think of an <b>Axle</b> on a bicycle wheel—it's right in the center!"
+      "mnemonic": "Think of an <b>Axle</b>—it's the middle pole everything turns on!"
+    },
+    {
+      "term": "Appendicular",
+      "fact": "The 126 bones of the limbs and girdles.",
+      "mnemonic": "<b>Appendages</b> = Arms and Legs!"
     }
   ]
 }

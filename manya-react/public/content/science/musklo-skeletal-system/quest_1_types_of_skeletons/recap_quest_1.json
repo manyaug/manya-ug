@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Types of Skeletons",
   "variantTitle": "Quest 1 Master Study Guide",
@@ -10,7 +10,7 @@
       "title": "What is a Skeleton?",
       "points": [
         "A <b>skeleton</b> is the supportive framework of bones or hard tissues in an organism.",
-        "It is a <b>living tissue</b> because it has a blood supply, nerves, and living cells.",
+        "It is a <b>living tissue</b> because it <u>grows</u>, <u>heals</u> after a fracture, has a blood supply, and nerves.",
         "Bones are the <b>hardest tissues</b> in the body and need proper feeding to stay healthy.",
         "The primary minerals that make bones strong are <b>Calcium</b> and <b>Phosphorus</b>."
       ]
@@ -21,9 +21,9 @@
       "points": [
         "<b>Definition:</b> Hard tissues found <u>outside</u> the flesh/body.",
         "<b>Found in:</b> Insects and Arthropods.",
-        "<b>Examples:</b> Cockroaches, Grasshoppers, Crickets, Houseflies, Mosquitoes, Spiders, Scorpions, Crabs, Lobsters, Centipedes, and Millipedes.",
-        "<b>Special Case:</b> A <b>Tortoise</b> has an exo-skeleton (shell) but also an endo-skeleton (internal bones).",
-        "<b>Functions:</b> Provides protection to soft internal organs and supports the body."
+        "<b>Examples:</b> Bees, Cockroaches, Grasshoppers, Crickets, Houseflies, Mosquitoes, Spiders, Scorpions, Crabs, Lobsters, Centipedes, and Millipedes.",
+        "<b>Special Case:</b> A <b>Tortoise</b> and a <b>Snail</b> have an exo-skeleton (shell) for protection but have different support for their soft bodies.",
+        "<b>Functions:</b> Acts like armor to protect soft internal organs and gives the body shape."
       ]
     },
     {
@@ -32,16 +32,16 @@
       "points": [
         "Animals with exo-skeletons cannot grow continuously because their 'shell' is rigid.",
         "<b>Ecdysis (Moulting):</b> The process of shedding the old outer layer to form a new, larger one.",
-        "This allows the animal to <b>increase in size</b>."
+        "This leads to <b>growth in spurts</b> (jerky growth) rather than smooth, continuous growth."
       ]
     },
     {
       "type": "bullets",
       "title": "2. Hydrostatic Skeleton (Liquid Support)",
       "points": [
-        "<b>Definition:</b> The body is filled with <b>liquid under pressure</b> within a thin membrane.",
+        "<b>Definition:</b> The body is supported by <b>liquid under pressure</b> within a thin membrane.",
         "<b>Movement:</b> They use the pressure of the fluid and surrounding muscles to change shape and move.",
-        "<b>Examples:</b> Earthworms, Slugs, Snails, Maggots, Caterpillars, Jellyfish, Starfish, Sea Urchins, and Octopuses."
+        "<b>Examples:</b> Earthworms, Slugs, Snails (the soft part), Maggots, Caterpillars, Jellyfish, and Starfish."
       ]
     },
     {
@@ -50,8 +50,8 @@
       "points": [
         "<b>Definition:</b> Hard tissues (bones and cartilage) found <u>inside</u> the flesh.",
         "<b>Found in:</b> All <b>Vertebrates</b> (animals with backbones).",
-        "<b>Examples:</b> Humans (Man), Cows, Goats, Dogs, Lions, Birds, Fish, Frogs (Amphibians), and Snakes (Reptiles).",
-        "<b>Growth:</b> Unlike insects, vertebrates grow <b>continuously</b> without shedding."
+        "<b>Examples:</b> Humans (Man), Cows, Goats, Dogs, Lions, Birds, Fish, Frogs, and Snakes.",
+        "<b>Growth:</b> Vertebrates grow <b>continuously</b> and the skeleton increases in size along with the body."
       ]
     },
     {
@@ -60,10 +60,26 @@
       "itemA": "Exo-skeleton",
       "itemB": "Endo-skeleton",
       "rows": [
-        { "feature": "Location", "valA": "Outside the flesh", "valB": "Inside the flesh" },
-        { "feature": "Growth", "valA": "By Ecdysis (Moulting)", "valB": "Continuous growth" },
-        { "feature": "Examples", "valA": "Insects, Crabs", "valB": "Man, Birds, Fish" },
-        { "feature": "Main Material", "valA": "Chitin / Cuticle", "valB": "Bone / Cartilage" }
+        {
+          "feature": "Location",
+          "valA": "Outside the flesh",
+          "valB": "Inside the flesh"
+        },
+        {
+          "feature": "Growth",
+          "valA": "By Ecdysis (Spurts)",
+          "valB": "Continuous growth"
+        },
+        {
+          "feature": "Body Size",
+          "valA": "Limits size (too heavy)",
+          "valB": "Supports large size"
+        },
+        {
+          "feature": "Main Material",
+          "valA": "Chitin / Cuticle",
+          "valB": "Bone / Cartilage"
+        }
       ]
     },
     {
@@ -72,15 +88,15 @@
       "points": [
         "<b>Shape:</b> Gives the body its specific framework.",
         "<b>Support:</b> Supports the soft parts of the body so we can stand/sit.",
-        "<b>Protection:</b> Protects delicate organs (e.g., Skull protects the Brain).",
-        "<b>Blood Manufacture:</b> The <b>Bone Marrow</b> produces red and white blood cells.",
+        "<b>Protection:</b> Protects delicate organs (e.g., Skull protects the Brain; Ribcage protects Heart/Lungs).",
+        "<b>Blood Manufacture:</b> The <b>Red Bone Marrow</b> produces red and white blood cells.",
         "<b>Movement:</b> Provides surfaces for <b>Muscles</b> to attach at the joints.",
-        "<b>Storage:</b> Acts as a bank for minerals like Calcium."
+        "<b>Storage:</b> Acts as a bank for minerals like Calcium and Phosphorus."
       ]
     },
     {
       "type": "warning",
-      "text": "Remember: <b>Sharks</b> are vertebrates but their skeleton is made of <b>Cartilage</b>, not hard bone! Also, <b>Babies</b> have over 300 bones/cartilages, which fuse into <b>206 bones</b> in adults."
+      "text": "Remember: <b>Sharks and Rays</b> have skeletons made of <b>Cartilage</b>, not hard bone! Also, <b>Ossification</b> is the process where cartilage turns into hard bone as we grow."
     }
   ],
   "cards": [
@@ -90,14 +106,14 @@
       "mnemonic": "Think of <b>'Exit'</b> - The insect exits its old skin to grow bigger!"
     },
     {
-      "term": "Hydrostatic",
-      "fact": "Support provided by fluid under pressure in soft-bodied animals.",
-      "mnemonic": "<b>Hydro</b> = Water. Like a water-filled balloon that holds its shape!"
+      "term": "Ossification",
+      "fact": "The biological process where cartilage is replaced by hard bone.",
+      "mnemonic": "<b>O-S-S</b>: Only Solid Stuff!"
     },
     {
       "term": "Living Tissue",
-      "fact": "Bones are alive; they grow, need food (minerals), and have nerves to feel pain.",
-      "mnemonic": "Bones aren't stones! They have <b>Blood</b> and <b>Breathing</b> cells."
+      "fact": "Bones grow, heal, and have blood vessels and nerves.",
+      "mnemonic": "Bones aren't stones! They <b>Repair</b> and <b>Respond</b>."
     }
   ]
 }

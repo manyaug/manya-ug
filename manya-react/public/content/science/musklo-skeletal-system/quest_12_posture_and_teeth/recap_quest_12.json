@@ -1,8 +1,8 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Posture and Dental Health",
-  "variantTitle": "Quest 12 Master Recap",
+  "variantTitle": "Quest 12 Master Study Guide",
   "themeColor": "#059669",
   "sections": [
     {
@@ -10,40 +10,109 @@
       "title": "What is Posture?",
       "points": [
         "<b>Posture</b> is the way a person positions their body while sitting, standing, or walking.",
-        "<b>Importance:</b> Helps the skeleton develop properly and allows internal organs to function well."
-      ]
-    },
-    {
-      "type": "comparison",
-      "title": "Good vs. Bad Posture",
-      "itemA": "Good Posture",
-      "itemB": "Bad Posture",
-      "rows": [
-        { "feature": "Sitting", "valA": "Upright, back supported", "valB": "Bending/Slouching forward" },
-        { "feature": "Spine Effect", "valA": "Bones grow <b>straight</b>", "valB": "Bones grow <b>bent/deformed</b>" },
-        { "feature": "Pain", "valA": "Prevents aches", "valB": "Causes <b>Back and Chest pain</b>" },
-        { "feature": "Digestion", "valA": "Proper digestion", "valB": "Leads to <b>Indigestion</b>" }
+        "<b>Good Posture:</b> Keeps the spine in its natural <b>S-shape</b> and allows internal organs to work without being crushed.",
+        "<b>Importance:</b> Prevents bone deformation, backaches, and ensures efficient <b>Respiration</b> and <b>Circulation</b>."
       ]
     },
     {
       "type": "bullets",
-      "title": "Dental Health",
+      "title": "Common Postural Disorders",
       "points": [
-        "Teeth are part of the skeletal system because they are hard and contain <b>Calcium</b>.",
-        "<b>Habits:</b> Brush and floss <b>twice a day</b> to remove food and plaque.",
-        "<b>Mineral Rule:</b> Calcium and <b>Phosphorus</b> keep teeth strong; <b>Vitamin D</b> is needed to absorb them."
+        "<b>Scoliosis:</b> An abnormal <b>sideways</b> curvature of the spine (often caused by carrying heavy bags on one shoulder).",
+        "<b>Kyphosis:</b> An excessive outward curve of the upper back, leading to a <b>hunchback</b> appearance.",
+        "<b>Lordosis:</b> An excessive inward curve of the lower back (swayback)."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "The Price of Bad Posture",
+      "itemA": "Good Posture",
+      "itemB": "Bad Posture",
+      "rows": [
+        {
+          "feature": "Spine Shape",
+          "valA": "Natural S-curve",
+          "valB": "Bent or deformed"
+        },
+        {
+          "feature": "Breathing",
+          "valA": "Full lung expansion",
+          "valB": "Compressed rib cage"
+        },
+        {
+          "feature": "Digestion",
+          "valA": "Smooth food passage",
+          "valB": "Indigestion (crushed stomach)"
+        },
+        {
+          "feature": "Circulation",
+          "valA": "Efficient blood flow",
+          "valB": "Poor blood supply to limbs"
+        }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Anatomy of a Tooth",
+      "points": [
+        "<b>Enamel:</b> The white, outer part. It is the <b>hardest substance</b> in the human body.",
+        "<b>Dentine:</b> The bone-like layer under the enamel that protects the pulp.",
+        "<b>Pulp Cavity:</b> The living center containing <b>blood vessels</b> (for food/oxygen) and <b>nerves</b> (for pain).",
+        "<b>Cementum:</b> The tissue that anchors the tooth root to the jawbone."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Types of Teeth & Functions",
+      "itemA": "Incisors/Canines",
+      "itemB": "Premolars/Molars",
+      "rows": [
+        {
+          "feature": "Shape",
+          "valA": "Chisel/Peg-shaped",
+          "valB": "Broad and Flat"
+        },
+        {
+          "feature": "Function",
+          "valA": "Biting and Tearing",
+          "valB": "Crushing and Grinding"
+        },
+        {
+          "feature": "Number (Adult)",
+          "valA": "8 Incisors / 4 Canines",
+          "valB": "8 Premolars / 12 Molars"
+        }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Dental Health Habits",
+      "points": [
+        "<b>Minerals:</b> Teeth need <b>Calcium</b> and <b>Phosphorus</b> to stay hard.",
+        "<b>Fluoride:</b> Use fluoridated toothpaste to strengthen enamel against <b>Dental Caries</b> (cavities).",
+        "<b>Diet:</b> Avoid sugary foods which bacteria turn into <b>acid</b> to dissolve teeth."
       ]
     },
     {
       "type": "warning",
-      "text": "Slouching causes <b>poor blood circulation</b> and compresses the chest, making it harder for the lungs to take in oxygen!"
+      "text": "Exam Tip: <b>Calcium</b> and <b>Vitamin D</b> are the 'Best Friends' of the skeleton. Calcium builds the house, and Vitamin D is the key that lets it into the body!"
     }
   ],
   "cards": [
     {
-      "term": "Indigestion",
-      "fact": "A result of bad posture crushing the stomach.",
-      "mnemonic": "Sit <b>Up</b> to keep your food <b>Down</b>!"
+      "term": "Enamel",
+      "fact": "The hardest part of the human body.",
+      "mnemonic": "<b>E</b>namel is <b>E</b>xtremely hard!"
+    },
+    {
+      "term": "Scoliosis",
+      "fact": "Sideways bending of the spine.",
+      "mnemonic": "<b>S</b>coliosis makes the spine look like an <b>'S'</b>!"
+    },
+    {
+      "term": "Pulp Cavity",
+      "fact": "The part of the tooth that feels pain.",
+      "mnemonic": "The <b>Pulp</b> has the <b>P</b>ain!"
     }
   ]
 }

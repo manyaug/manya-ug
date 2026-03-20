@@ -18,7 +18,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, X } from 'lucide-react';
+import { ChevronLeft, X, AlertTriangle, RefreshCw } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
 import { updateProfile } from '../store/userSlice';
 import { loadQuestSteps } from '../utils/questLoader';
@@ -32,8 +32,50 @@ const IMMERSIVE_ENGINES = new Set([
     'HANGMAN_GAME', 'SET_CLASSIFIER', 'SUBSET_GAME', 'PIZZA_GAME',
     'BINARY_GAME', 'VENN_SPOTLIGHT', 'MEMORY_MATCH', 'GRAMMAR_MAZE',
     'SENTENCE_TRAIN', 'WORDGRID_ENGINE', 'MORPH_GAME', 'GALLERY_STUDY',
-    '2D_HOTSPOT', 'READER_STUDY'
+    '2D_HOTSPOT', 'READER_STUDY', '3D_SKELETON'
 ]);
+
+// ── QuestErrorBoundary — Catch-all for engine crashes ───────────────────
+class QuestErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[var(--bg-main)] animate-in fade-in duration-700">
+                    <div className="w-24 h-24 bg-rose-500/10 text-rose-500 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-inner">
+                        <AlertTriangle size={48} />
+                    </div>
+                    <h2 className="text-3xl font-black text-[var(--text-main)] mb-3 tracking-tight">Engine Glitch</h2>
+                    <p className="max-w-sm text-[var(--text-sub)] text-lg font-bold mb-10 opacity-60 leading-relaxed">
+                        Something went wrong with this quest step. Don't worry, you can try again or skip to the next one!
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
+                        <button 
+                            onClick={() => window.location.reload()}
+                            className="flex-1 h-16 bg-[var(--text-main)] text-[var(--bg-main)] rounded-3xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all"
+                        >
+                            <RefreshCw size={20} />
+                            RETRY
+                        </button>
+                        <button 
+                            onClick={() => this.props.onSkip()}
+                            className="flex-1 h-16 bg-rose-500 text-white rounded-3xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl shadow-rose-500/20 active:scale-95 transition-all"
+                        >
+                            SKIP STEP →
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
 
 // Engines where the CONTINUE button is disabled until user interacts (chat/typing)
 const WAIT_ENGINES = new Set(['CHAT', 'ENGLISH_RULE_MASTER', 'SYNTAX_ARCHITECT']);
@@ -248,74 +290,78 @@ export default function QuestRunner() {
     return (
         <div className="quest-runner-shell" style={{ '--biome-color': biomeColor }}>
 
-            {/* ── HEADER ── */}
-            <div className="qr-classic-header">
+            {/* ── HEADER (Slick Glass HUD) ── */}
+            <header className="qr-classic-header">
                 <button
                     className="qr-back-btn"
                     onClick={() => { cleanupEngine(); navigate(-1); }}
-                    title="Exit quest"
+                    aria-label="Exit quest"
                 >
-                    <X size={20} strokeWidth={2.5} />
+                    <X size={18} strokeWidth={3} />
                 </button>
 
-                <div className="qr-subject-tag" style={{ flex: 1, paddingLeft: 12 }}>
-                    {meta.title.length > 28 ? meta.title.slice(0, 26) + '…' : meta.title}
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6,
-                              background: 'rgba(0,0,0,0.05)', borderRadius: 12,
-                              padding: '4px 10px', fontSize: 12, fontWeight: 900 }}>
-                    <img
-                        src={`/assets/images/gems/${gemFile}`}
-                        style={{ width: 20, height: 20 }}
-                        alt="gem"
-                        onError={e => { e.target.style.display = 'none'; }}
-                    />
-                    <span style={{ color: 'var(--text-main)' }}>
-                        {stepIdx + 1}/{steps.length}
+                <div className="flex items-center justify-center" style={{ flex: 1 }}>
+                    <span className="qr-subject-tag">
+                        {meta.subject}
                     </span>
                 </div>
 
-                {/* Progress bar */}
+                <div className="qr-progress-counter">
+                    <img
+                        src={`/assets/images/gems/${gemFile}`}
+                        className="w-5 h-5 object-contain"
+                        alt="gem"
+                        onError={e => { e.target.style.display = 'none'; }}
+                    />
+                    <span>
+                        {stepIdx + 1}<span className="opacity-30 mx-0.5">/</span>{steps.length}
+                    </span>
+                </div>
+
+                {/* Integrated Progress Line */}
                 <div className="qr-progress-bar">
-                    <div className="fill" style={{ width: `${progressPct}%`,
-                        background: `linear-gradient(90deg, ${biomeColor}, ${biomeColor}aa)` }} />
+                    <div className="fill" style={{ width: `${progressPct}%` }} />
                 </div>
-            </div>
+            </header>
 
-            {/* ── CONTENT AREA (engine renders here) ── */}
-            {phase === 'loading' && (
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center',
-                              justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
-                    <div style={{ fontSize: 40 }}>⚡</div>
-                    <div style={{ fontWeight: 900, color: 'var(--text-muted)',
-                                  fontSize: 13, letterSpacing: 2, textTransform: 'uppercase' }}>
-                        Loading Engine…
-                    </div>
-                </div>
-            )}
-
-            {phase === 'running' && (
-                <>
-                    {activeEngine?.type === 'react' ? (
-                        <div className="qr-content-area react-mount">
-                            <Suspense fallback={<div className="p-20 text-center font-bold">Booting React Engine...</div>}>
-                                <activeEngine.component 
-                                    data={activeEngine.data} 
-                                    onComplete={() => advanceStep()} 
-                                />
-                            </Suspense>
+            {/* ── CONTENT AREA (Quest Engine Mount) ── */}
+            <main className="qr-content-area scroll-smooth">
+                <QuestErrorBoundary key={stepIdx + phase} onSkip={() => advanceStep()}>
+                    {phase === 'loading' && (
+                        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
+                            <div className="w-16 h-16 border-4 border-slate-200 border-t-[var(--biome-color)] rounded-full animate-spin mb-6" />
+                            <p className="text-[var(--text-main)] font-black tracking-widest uppercase text-xs opacity-40 animate-pulse font-jakarta">
+                                Initializing Quest...
+                            </p>
                         </div>
-                    ) : (
-                        <div
-                            ref={mountRef}
-                            className="qr-content-area vanilla-mount"
-                            id="qr-content"
-                        />
                     )}
-                </>
-            )}
 
+                    {phase === 'running' && (
+                        <div className="w-full flex-1 flex flex-col animate-in fade-in duration-500">
+                            {activeEngine?.type === 'react' ? (
+                                <div className="flex-1 w-full bg-[var(--bg-main)]">
+                                    <Suspense fallback={
+                                        <div className="flex-1 flex items-center justify-center p-20">
+                                            <div className="w-8 h-8 border-2 border-[var(--biome-color)] border-t-transparent rounded-full animate-spin" />
+                                        </div>
+                                    }>
+                                        <activeEngine.component 
+                                            data={activeEngine.data} 
+                                            onComplete={() => advanceStep()} 
+                                        />
+                                    </Suspense>
+                                </div>
+                            ) : (
+                                <div
+                                    ref={mountRef}
+                                    className="flex-1 w-full bg-[var(--bg-main)] vanilla-engine-mount"
+                                    id="qr-content"
+                                />
+                            )}
+                        </div>
+                    )}
+                </QuestErrorBoundary>
+            </main>
             {phase === 'finished' && (
                 <div className="quest-finish-screen animate-in" style={{ background: `linear-gradient(135deg, ${biomeColor}, ${biomeColor}dd)` }}>
                     <div className="finish-card bento-card-premium" style={{ border: `3px solid ${biomeColor}22` }}>
@@ -359,21 +405,25 @@ export default function QuestRunner() {
             )}
 
             {/* ── FOOTER (CONTINUE button) ── */}
-            {phase === 'running' && (
-                <div className="qr-classic-footer" id="qr-footer-mount">
-                    <button
-                        className="manya-btn-pro"
-                        disabled={!btnState.enabled}
-                        onClick={() => {
-                            window.ManyaAudio?.click();
-                            advanceStep();
-                        }}
-                        style={{ background: biomeColor,
-                                 boxShadow: `0 6px 0 ${biomeColor}88` }}
-                    >
-                        {btnState.label}
-                    </button>
-                </div>
+            {phase === 'running' && !(steps[stepIdx]?.data?.mode === 'quiz' || steps[stepIdx]?.mode === 'quiz' || steps[stepIdx]?.data?.mode === 'puzzle' || steps[stepIdx]?.mode === 'puzzle') && (
+                <footer className={`qr-classic-footer ${activeEngine?.component?.floatingFooter ? 'qr-footer-floating' : ''}`}>
+                    <div className="flex justify-center max-w-[500px] mx-auto w-full">
+                        {btnState.label && (
+                            <button
+                                className="manya-btn-pro w-full"
+                                style={{ 
+                                    backgroundColor: btnState.enabled ? biomeColor : 'var(--border-subtle)',
+                                    boxShadow: btnState.enabled ? `0 6px 0 ${biomeColor}88` : 'none',
+                                    opacity: btnState.enabled ? 1 : 0.5
+                                }}
+                                disabled={!btnState.enabled}
+                                onClick={advanceStep}
+                            >
+                                {btnState.label}
+                            </button>
+                        )}
+                    </div>
+                </footer>
             )}
         </div>
     );

@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Pivot and Gliding Joints",
   "variantTitle": "Quest 9 Master Recap",
@@ -7,54 +7,71 @@
   "sections": [
     {
       "type": "bullets",
-      "title": "The Pivot Joint (The 'No' Joint)",
+      "title": "The Pivot Joint (The Rotation Joint)",
       "points": [
-        "<b>Definition:</b> Allows the <b>rotation</b> of one bone around its own axis.",
-        "<b>Location:</b> Found in the <b>neck</b> between the first and second vertebrae.",
-        "<b>Function:</b> Allows the head to <b>nod</b> ('Yes') or <b>shake</b> ('No').",
-        "<b>The Bones:</b> The <b>Atlas</b> (first vertebra) and the <b>Axis</b> (second vertebra) work together."
+        "<b>Definition:</b> Allows one bone to <b>rotate</b> or turn around another bone.",
+        "<b>Location 1 (Neck):</b> Between the <b>Atlas</b> (1st vertebra) and the <b>Axis</b> (2nd vertebra). This allows the head to turn left and right.",
+        "<b>Location 2 (Forearm):</b> Between the radius and ulna. This allows you to turn your palm up and down.",
+        "<b>The Bones:</b> The <b>Axis</b> has a peg-like projection (the dens) that the <b>Atlas</b> turns on."
       ]
     },
     {
       "type": "bullets",
-      "title": "The Gliding Joint (The Slider)",
+      "title": "The Gliding Joint (The Sliding Joint)",
       "points": [
-        "<b>Definition:</b> Two relatively <b>flat bones</b> slide or glide over each other.",
-        "<b>Production:</b> This joint produces <u>very little</u> rotation.",
-        "<b>Locations:</b> Found in the <b>Wrists</b> (between carpals) and the <b>Ankles</b> (between tarsals)."
+        "<b>Definition:</b> Two relatively <b>flat surfaces</b> slide or glide over each other.",
+        "<b>Function:</b> Provides <b>flexibility</b> for complex movements like writing or walking on uneven ground.",
+        "<b>Locations:</b> Found in the <b>Wrists</b> (carpals), <b>Ankles</b> (tarsals), and between the processes of the <b>Vertebrae</b>."
       ]
     },
     {
       "type": "comparison",
-      "title": "Immovable Joints (The Exception)",
-      "itemA": "Movable Joints",
-      "itemB": "Immovable Joints",
+      "title": "Classification of Joints (The PLE Triad)",
+      "itemA": "Immovable (Fixed)",
+      "itemB": "Slightly Movable",
       "rows": [
-        { "feature": "Movement", "valA": "Allow directional movement", "valB": "Allow <b>NO</b> movement" },
-        { "feature": "Examples", "valA": "Elbow, Wrist, Neck", "valB": "<b>Sutures</b> in the skull" },
-        { "feature": "Structure", "valA": "Have synovial fluid", "valB": "Saw-like interlocking edges" }
+        {
+          "feature": "Movement",
+          "valA": "<b>No</b> movement",
+          "valB": "<b>Limited</b> movement"
+        },
+        {
+          "feature": "Structure",
+          "valA": "Fused/Interlocking",
+          "valB": "Pads of Cartilage"
+        },
+        {
+          "feature": "Example",
+          "valA": "Skull (Sutures)",
+          "valB": "Vertebrae (Backbone)"
+        },
+        {
+          "feature": "Primary Role",
+          "valA": "Maximum Protection",
+          "valB": "Shock Absorption"
+        }
       ]
     },
     {
       "type": "warning",
-      "text": "<b>Sutures</b> are immovable joints that keep the skull rigid to protect your brain. Do not confuse them with movable joints!"
+      "text": "<b>Exam Tip:</b> Freely Movable (Synovial) joints like Pivot and Gliding joints MUST have <b>Synovial Fluid</b> and <b>Cartilage</b> to prevent friction. If the fluid dries up, the bones will rub and cause pain!"
     }
   ],
   "cards": [
     {
-      "term": "Pivot Joint",
-      "fact": "Allows the head to rotate.",
-      "mnemonic": "Think of a <b>Pivot</b> like a spinning tire axle!"
+      "term": "Rotation",
+      "fact": "The main movement of a pivot joint.",
+      "mnemonic": "A <b>Pivot</b> turns like a <b>Pilot</b> turns a wheel!"
     },
     {
       "term": "Gliding Joint",
-      "fact": "Bones slide past each other.",
-      "mnemonic": "Flat bones <b>Glide</b> like skates on ice!"
+      "fact": "Allows bones to slide past each other.",
+      "mnemonic": "Flat bones <b>Glide</b> like <b>Guide</b> rails!"
     },
     {
-      "term": "Atlas & Axis",
-      "fact": "The neck vertebrae that form the pivot joint.",
-      "mnemonic": "The <b>Atlas</b> holds the head, the <b>Axis</b> lets it turn!"
+      "term": "Atlas vs Axis",
+      "fact": "Atlas supports the skull; Axis acts as the turning point.",
+      "mnemonic": "The <b>Atlas</b> holds the weight; the <b>Axis</b> rotates the gate!"
     }
   ]
 }

@@ -1,56 +1,97 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Musculo-Skeletal Diseases",
-  "variantTitle": "Quest 14 Master Recap",
+  "variantTitle": "Quest 14 Master Study Guide",
   "themeColor": "#dc2626",
   "sections": [
     {
       "type": "bullets",
-      "title": "Disease Summary Table",
+      "title": "Major Diseases & Causes",
       "points": [
-        "<b>Polio:</b> Caused by a <b>Virus</b> in contaminated water. Causes paralysis/lameness.",
-        "<b>Rickets:</b> Caused by lack of <b>Vitamin D/Calcium</b>. Causes bowlegs/knock-knees.",
-        "<b>TB of Spine:</b> Caused by <b>Mycobacterium</b> bacteria. Causes backache and a lump on the spine.",
-        "<b>Tetanus:</b> Caused by soil bacteria entering cuts. Causes <b>stiff muscles</b> (Lockjaw).",
-        "<b>Leprosy:</b> Caused by bacteria spread by direct contact. Causes <b>loss of feeling</b> in skin."
+        "<b>Polio:</b> Caused by a <b>Virus</b>. Spreads via the faecal-oral route. Leads to muscle wasting and <b>paralysis</b>.",
+        "<b>Rickets:</b> Caused by lack of <b>Vitamin D/Calcium</b> in children. Results in soft bones that bend (bowlegs).",
+        "<b>TB of Spine:</b> Caused by <b>Mycobacterium</b> bacteria. Causes a painful lump/deformity on the backbone.",
+        "<b>Tetanus (Lockjaw):</b> Caused by bacteria in soil entering via deep cuts or the <b>umbilical cord</b> of newborns.",
+        "<b>Leprosy:</b> A bacterial disease spread by long-term contact. Causes skin patches with <b>loss of feeling</b>.",
+        "<b>Scurvy:</b> Caused by lack of <b>Vitamin C</b>. Weakens connective tissues, leading to joint pain and bleeding gums."
       ]
     },
     {
       "type": "comparison",
-      "title": "Critical Vaccines",
-      "itemA": "BCG Vaccine",
-      "itemB": "DPT Vaccine",
+      "title": "The Arthritis Duo",
+      "itemA": "Osteoarthritis",
+      "itemB": "Rheumatoid Arthritis",
       "rows": [
-        { "feature": "Prevents", "valA": "<b>Tuberculosis</b>", "valB": "Diphtheria, Pertussis, <b>Tetanus</b>" },
-        { "feature": "Location", "valA": "Right upper arm", "valB": "Left upper thigh" },
-        { "feature": "Timing", "valA": "At birth", "valB": "6, 10, and 14 weeks" }
+        {
+          "feature": "Primary Cause",
+          "valA": "<b>Wear and Tear</b>",
+          "valB": "Autoimmune/Infection"
+        },
+        {
+          "feature": "Target Group",
+          "valA": "Elderly people",
+          "valB": "Can affect all ages"
+        },
+        {
+          "feature": "Symptoms",
+          "valA": "Joint stiffness/pain",
+          "valB": "Swelling and deformity"
+        }
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Immunization Schedule",
+      "itemA": "BCG Vaccine",
+      "itemB": "DPT (Pentavalent)",
+      "rows": [
+        {
+          "feature": "Disease",
+          "valA": "<b>Tuberculosis</b>",
+          "valB": "Diphtheria, Pertussis, <b>Tetanus</b>"
+        },
+        {
+          "feature": "Site",
+          "valA": "Right upper arm",
+          "valB": "Left outer thigh"
+        },
+        {
+          "feature": "Administration",
+          "valA": "By injection (Birth)",
+          "valB": "By injection (6, 10, 14 wks)"
+        }
       ]
     },
     {
       "type": "bullets",
-      "title": "Prevention & Control",
+      "title": "Prevention & Public Health",
       "points": [
-        "<b>Polio:</b> Boil drinking water and use latrines properly.",
-        "<b>TB:</b> Drink <b>pasteurized/boiled milk</b> (to kill bacteria from infected cows).",
-        "<b>Leprosy:</b> Avoid sharing towels/beddings with infected people."
+        "<b>Boil/Pasteurize Milk:</b> Essential to kill TB bacteria that may come from <b>infected cows</b>.",
+        "<b>Proper Latrine Use:</b> Prevents Polio germs from reaching the community water supply.",
+        "<b>Wound Care:</b> Cleaning cuts with <b>Antiseptics</b> prevents Tetanus bacteria from growing."
       ]
     },
     {
       "type": "warning",
-      "text": "<b>Osteoporosis</b> is common in women after menopause; it causes thinning of bones, making them brittle and easy to break!"
+      "text": "<b>Skeletal Nutrition:</b> Vitamin D is the 'key' that lets Calcium into the bones. Without the sun or proper food, bones remain soft even if you drink milk! <b>Osteomalacia</b> is the name for Rickets when it affects adults."
     }
   ],
   "cards": [
     {
-      "term": "Mycobacterium",
-      "fact": "The specific bacterium that causes Tuberculosis.",
-      "mnemonic": "Think: <b>My-Back-Bacteria</b> (TB of the spine)."
+      "term": "Neonatal Tetanus",
+      "fact": "Tetanus in newborns caused by using unsterile tools on the umbilical cord.",
+      "mnemonic": "Keep the <b>Cord</b> clean to keep <b>Tetanus</b> away!"
     },
     {
-      "term": "Polio Drops",
-      "fact": "Immunization against Polio is given through the mouth.",
-      "mnemonic": "A small <b>Drop</b> stops the <b>Polio</b>!"
+      "term": "Osteoporosis",
+      "fact": "Thinning of bones in older age (especially women) due to loss of minerals.",
+      "mnemonic": "<b>Porous</b> bones have <b>Pores</b> (holes) and break easily!"
+    },
+    {
+      "term": "Mycobacterium",
+      "fact": "The bacterium that causes TB in both lungs and bones.",
+      "mnemonic": "<b>M-B</b>: My-Back-Bacteria!"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Axial Skeleton: Rib Cage",
   "variantTitle": "Quest 4 Master Recap",
@@ -10,39 +10,40 @@
       "title": "Structure of the Rib Cage",
       "points": [
         "The rib cage is made up of <b>24 individual ribs</b> (12 pairs).",
-        "At the back, all ribs are attached to the <b>12 Thoracic vertebrae</b>.",
-        "<b>Sternum:</b> Also called the <b>breastbone</b>. It is a flat bone in the center of the chest that anchors the ribs at the front.",
-        "<b>Intercostal Muscles:</b> Muscles found <u>between</u> the ribs that help in breathing."
+        "<b>Attachment:</b> At the back, all 12 pairs are attached to the <b>Thoracic vertebrae</b>.",
+        "<b>Sternum:</b> Also called the <b>breastbone</b>. It is the flat bone that anchors the ribs at the front.",
+        "<b>Costal Cartilage:</b> The flexible tissue that connects ribs to the sternum, allowing the chest to expand.",
+        "<b>Intercostal Muscles:</b> Found <u>between</u> the ribs; they pull the ribs during breathing."
       ]
     },
     {
       "type": "bullets",
       "title": "Three Types of Ribs",
       "points": [
-        "<b>1. True Ribs:</b> The first <b>7 pairs</b>. They attach <u>directly</u> to the sternum using cartilage.",
-        "<b>2. False Ribs:</b> The next 3 pairs. They attach to the cartilage of the rib above them instead of the sternum.",
-        "<b>3. Floating Ribs:</b> The last <b>2 pairs</b>. They do not attach to anything at the front."
+        "<b>1. True Ribs (Pairs 1-7):</b> They attach <u>directly</u> to the sternum using their own cartilage.",
+        "<b>2. False Ribs (Pairs 8-10):</b> They attach to the cartilage of the rib above them, not the sternum.",
+        "<b>3. Floating Ribs (Pairs 11-12):</b> They only attach to the spine and 'float' at the front."
       ]
     },
     {
       "type": "bullets",
-      "title": "Breathing Mechanics",
+      "title": "Breathing Mechanics (The Pump)",
       "points": [
-        "<b>Inspiration (Inhaling):</b> Ribs move <b>up and outwards</b>. Chest volume increases, air enters.",
-        "<b>Expiration (Exhaling):</b> Ribs move <b>down and inwards</b>. Chest volume decreases, air is pushed out."
+        "<b>Inhalation (Breathing In):</b> Ribs move <b>up and out</b> + Diaphragm <b>flattens</b>. Volume increases, pressure drops, air rushes in.",
+        "<b>Exhalation (Breathing Out):</b> Ribs move <b>down and in</b> + Diaphragm <b>domes</b>. Volume decreases, pressure rises, air is forced out."
       ]
     },
     {
       "type": "warning",
-      "text": "The rib cage is <b>flexible</b> because of <b>cartilage</b>. If ribs were attached by hard bone at the front, your chest could not expand to let you breathe!"
+      "text": "The rib cage is <b>flexible</b> because of <b>cartilage</b>. This allows for <b>Respiration</b>. If the cage were solid bone, the lungs could not expand, and the person would suffocate!"
     },
     {
       "type": "bullets",
       "title": "Key Functions",
       "points": [
-        "Protects vital organs: <b>Heart and Lungs</b>.",
-        "Provides a surface for <b>Intercostal muscles</b> to attach.",
-        "Manufactures <b>Red Blood Cells</b> in its red bone marrow."
+        "<b>Protection:</b> Shields the <b>Heart and Lungs</b>. The lower ribs also protect the <b>Liver and Spleen</b>.",
+        "<b>Movement:</b> Provides the framework for the <b>Intercostal muscles</b> to act as a bellows.",
+        "<b>Blood Factory:</b> The flat bones (ribs/sternum) contain <b>Red Bone Marrow</b> to make blood cells."
       ]
     }
   ],
@@ -50,17 +51,17 @@
     {
       "term": "True Ribs",
       "fact": "The first 7 pairs that touch the breastbone.",
-      "mnemonic": "7 is a <b>'True'</b> lucky number! (7 pairs of True ribs)."
+      "mnemonic": "Lucky <b>7</b> is <b>True</b> to the Heart!"
     },
     {
-      "term": "Sternum",
-      "fact": "The flat bone in the middle of your chest.",
-      "mnemonic": "Think of it as the <b>'Shield'</b> for your heart."
+      "term": "Floating Ribs",
+      "fact": "The last 2 pairs (11 & 12) with no front attachment.",
+      "mnemonic": "<b>11 and 12</b> are <b>Free</b> to float!"
     },
     {
-      "term": "Breathing Rule",
-      "fact": "Up and Out = In. Down and In = Out.",
-      "mnemonic": "<b>Up</b> and <b>Out</b> brings the oxygen <b>In</b>!"
+      "term": "Volume & Pressure",
+      "fact": "Big volume = Low pressure (In); Small volume = High pressure (Out).",
+      "mnemonic": "Think of a <b>Squeeze</b>—it pushes the air <b>Out</b>!"
     }
   ]
 }

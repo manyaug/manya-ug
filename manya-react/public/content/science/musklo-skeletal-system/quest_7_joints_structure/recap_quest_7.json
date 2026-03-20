@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Joints & Connective Tissue",
   "variantTitle": "Quest 7 Master Recap",
@@ -10,8 +10,18 @@
       "title": "The Basics",
       "points": [
         "A <b>joint</b> is a place in the body where two or more bones meet.",
-        "Joints allow for movement, stretching, and bending of the body.",
-        "They are divided into two main classes: <b>Movable</b> (Synovial) and <b>Immovable</b> (Fixed)."
+        "Joints provide <b>flexibility</b>, allowing the body to bend and stretch.",
+        "<b>Ligaments:</b> Strong fibers that hold bones together at a joint.",
+        "<b>Tendons:</b> Tough tissues that attach muscles to the bones."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Three Classes of Joints",
+      "points": [
+        "<b>1. Immovable (Fixed) Joints:</b> Allow no movement. Found in the <b>Skull (Sutures)</b>.",
+        "<b>2. Slightly Movable Joints:</b> Allow limited movement. Found between the <b>Vertebrae (Spine)</b>.",
+        "<b>3. Freely Movable (Synovial) Joints:</b> Allow a wide range of motion. Includes Hinge and Ball-and-Socket joints."
       ]
     },
     {
@@ -20,23 +30,40 @@
       "itemA": "Ligament",
       "itemB": "Tendon",
       "rows": [
-        { "feature": "Joins", "valA": "<b>Bone to Bone</b>", "valB": "<b>Muscle to Bone</b>" },
-        { "feature": "Elasticity", "valA": "Tough <b>Elastic</b> fiber", "valB": "Tough <b>Non-elastic</b> tissue" },
-        { "feature": "Main Role", "valA": "Prevents dislocation", "valB": "Pulls the bone" }
+        {
+          "feature": "Joins",
+          "valA": "<b>Bone to Bone</b> (B-L-B)",
+          "valB": "<b>Muscle to Bone</b> (M-T-B)"
+        },
+        {
+          "feature": "Elasticity",
+          "valA": "Very <b>Elastic</b> (stretchy)",
+          "valB": "<b>Non-elastic</b> (cannot stretch)"
+        },
+        {
+          "feature": "Primary Role",
+          "valA": "Prevents <b>dislocation</b>",
+          "valB": "Transmits muscle pull to bone"
+        },
+        {
+          "feature": "Injury Type",
+          "valA": "Sprain",
+          "valB": "Strain"
+        }
       ]
     },
     {
       "type": "bullets",
-      "title": "The Lubrication Team",
+      "title": "The Lubrication Team (Synovial Joint)",
       "points": [
-        "<b>Synovial Fluid:</b> A slippery liquid that acts like machine oil/grease to <b>reduce friction</b>.",
-        "<b>Synovial Membrane:</b> The capsule that holds and secretes the synovial fluid.",
-        "<b>Cartilage:</b> A smooth, slippery tissue covering bone ends. It acts as a <b>shock absorber</b>."
+        "<b>Synovial Fluid:</b> A thick, slippery liquid that <b>lubricates</b> the joint to reduce friction.",
+        "<b>Synovial Membrane:</b> The lining that produces and contains the synovial fluid.",
+        "<b>Articular Cartilage:</b> A smooth layer on bone ends that acts as a <b>shock absorber</b> and prevents bones from wearing out."
       ]
     },
     {
       "type": "warning",
-      "text": "If a joint lacks <b>synovial fluid</b>, bones will rub together, causing friction, heat, and extreme pain. Always use the <b>B-L-B</b> and <b>M-T-B</b> rule!"
+      "text": "Friction is the enemy! Without <b>synovial fluid</b> and <b>cartilage</b>, bones would grind together, creating heat and pain that leads to bone damage."
     }
   ],
   "cards": [
@@ -49,6 +76,11 @@
       "term": "M-T-B Rule",
       "fact": "<b>M</b>uscle + <b>T</b>endon + <b>B</b>one.",
       "mnemonic": "Tendons are like strong ropes that pull the bone!"
+    },
+    {
+      "term": "Dislocation",
+      "fact": "When a bone moves out of its normal position at a joint.",
+      "mnemonic": "<b>D</b>islocation = <b>D</b>isplaced bone!"
     }
   ]
 }

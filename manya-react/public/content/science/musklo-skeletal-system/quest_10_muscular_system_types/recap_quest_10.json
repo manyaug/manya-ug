@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "The Muscular System",
   "variantTitle": "Quest 10 Master Recap",
@@ -9,10 +9,10 @@
       "type": "bullets",
       "title": "Muscle Basics",
       "points": [
-        "<b>Definition:</b> Muscles are elastic bundles of flesh or fibers that produce movement.",
-        "<b>Attachment:</b> They connect to bones using tough fibrous tissues called <b>Tendons</b>.",
-        "<b>Function:</b> Muscles produce movement by <b>contracting</b> (shortening) and <b>relaxing</b>.",
-        "<b>The Pull Rule:</b> Muscles can <u>ONLY PULL</u> bones; they can never push."
+        "<b>Definition:</b> Muscles are elastic bundles of fibers that produce movement and maintain posture.",
+        "<b>Attachment:</b> They connect to bones using <b>Tendons</b> (Muscle-Tendon-Bone).",
+        "<b>States:</b> When a muscle <b>contracts</b>, it becomes shorter, thicker, and harder. When it <b>relaxes</b>, it becomes longer and thinner.",
+        "<b>The Pull Rule:</b> Muscles can <u>ONLY PULL</u>; they never push a bone back into position."
       ]
     },
     {
@@ -21,10 +21,26 @@
       "itemA": "Voluntary (Skeletal)",
       "itemB": "Involuntary (Smooth)",
       "rows": [
-        { "feature": "Control", "valA": "Controlled by our <b>will</b>", "valB": "Work <b>automatically</b>" },
-        { "feature": "Fatigue", "valA": "Get <b>tired quickly</b>", "valB": "Work continuously without tiring" },
-        { "feature": "Location", "valA": "Attached to the <b>skeleton</b>", "valB": "Walls of <b>internal organs</b>" },
-        { "feature": "Examples", "valA": "Biceps, Triceps, Calf", "valB": "Stomach, Intestines, Bladder" }
+        {
+          "feature": "Control",
+          "valA": "By our <b>will</b>",
+          "valB": "Automatic"
+        },
+        {
+          "feature": "Appearance",
+          "valA": "<b>Striped</b> (Striated)",
+          "valB": "Plain (Non-striated)"
+        },
+        {
+          "feature": "Fatigue",
+          "valA": "Get <b>tired quickly</b>",
+          "valB": "Never get tired"
+        },
+        {
+          "feature": "Location",
+          "valA": "Arms, Legs, Neck",
+          "valB": "Stomach, Arteries"
+        }
       ]
     },
     {
@@ -32,26 +48,41 @@
       "title": "Cardiac Muscle (The Specialist)",
       "points": [
         "Found <b>ONLY</b> in the walls of the <b>heart</b>.",
-        "It combines the strength of skeletal muscle with the automatic nature of smooth muscle.",
-        "It contracts <b>rhythmically</b> throughout life and <u>never gets tired</u>.",
-        "It only stops working when the person is dead."
+        "It combined features: It is <b>striped</b> (like skeletal) but <b>automatic</b> (like smooth).",
+        "It contracts <b>rhythmically</b> to pump blood and <u>never fatigues</u> throughout life.",
+        "It has a very rich blood supply to provide constant oxygen and glucose."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "What Muscles Need to Work",
+      "points": [
+        "<b>Fuel:</b> Muscles need <b>Glucose</b> (sugar) and <b>Oxygen</b> to produce energy.",
+        "<b>Waste:</b> When muscles work too hard without enough oxygen, they produce <b>Lactic Acid</b>.",
+        "<b>Fatigue:</b> The buildup of lactic acid causes <b>muscle cramp</b> and tiredness.",
+        "<b>Heat:</b> Muscle contraction produces heat. This is why we <b>shiver</b> when cold to warm up the body."
       ]
     },
     {
       "type": "warning",
-      "text": "Skeletal muscles are often called <b>Striped</b> or <b>Striated</b> muscles because of their appearance under a microscope. Smooth muscles are found in the <b>alimentary canal</b> to push food via <b>peristalsis</b>."
+      "text": "Exam Tip: The <b>Diaphragm</b> is a skeletal muscle that works automatically for breathing, but we can also control it when we want to hold our breath!"
     }
   ],
   "cards": [
     {
-      "term": "Cardiac",
-      "fact": "The unique muscle found only in the heart.",
-      "mnemonic": "Think: <b>'Cardio'</b> exercises help your heart!"
+      "term": "Striated",
+      "fact": "The 'striped' look of skeletal and cardiac muscles.",
+      "mnemonic": "<b>Stri</b>ated = <b>Stri</b>ped!"
     },
     {
-      "term": "Involuntary",
-      "fact": "Muscles that move without you thinking about it.",
-      "mnemonic": "Your <b>Internal</b> organs are <b>Involuntary</b>!"
+      "term": "Lactic Acid",
+      "fact": "The waste product that causes muscle pain/fatigue.",
+      "mnemonic": "Lactic makes you <b>LACK</b> energy!"
+    },
+    {
+      "term": "Peristalsis",
+      "fact": "Wave-like contraction of smooth muscles to push food.",
+      "mnemonic": "Smooth muscles <b>Push</b> the food through!"
     }
   ]
 }

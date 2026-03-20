@@ -282,35 +282,28 @@ export default function ImageHotspotsEngine({ data, onComplete }) {
             </div>
 
             <style>{`
-                :root {
-                    --bg-main: #FDFBF7;
-                    --bg-card: #ffffff;
-                    --border-subtle: #F1F5F9;
-                    --text-main: #1E293B;
-                    --text-sub: #475569;
-                    --text-muted: #94A3B8;
-                    --glass-bg: rgba(255, 255, 255, 0.82);
-                    --glass-border: rgba(241, 245, 249, 0.85);
-                    --drawer-bg: rgba(255, 255, 255, 0.98);
+                .hotspots-engine-root {
+                    background: var(--bg-main);
+                    color: var(--text-main);
                 }
                 
-                [data-theme='dark'] {
+                [data-theme='dark'] .hotspots-engine-root {
                     --bg-main: #0B0E14;
-                    --bg-card: #151921;
-                    --border-subtle: #1E2530;
-                    --text-main: #F8FAFC;
-                    --text-sub: #CBD5E1;
-                    --text-muted: #64748B;
-                    --glass-bg: rgba(30, 37, 48, 0.85);
-                    --glass-border: rgba(255, 255, 255, 0.05);
-                    --drawer-bg: rgba(21, 25, 33, 0.98);
+                    --bg-card: #2a2a2a;
+                    --border-subtle: #3a3a3a;
+                    --text-main: #f8fafc;
+                    --text-sub: #cccccc;
+                    --text-muted: #888888;
+                    --drawer-bg: #2a2a2a;
+                    --glass-bg: rgba(42, 42, 42, 0.7);
+                    --glass-border: rgba(42, 42, 42, 0.3);
                 }
 
-                .shadow-strong { box-shadow: 0 20px 40px -10px rgba(124,58,237,0.5); }
                 .shadow-premium { box-shadow: 0 25px 60px -12px rgba(0,0,0,0.08); }
                 .shadow-glass { box-shadow: 0 12px 30px -5px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.1); }
                 .shadow-up { box-shadow: 0 -25px 50px -12px rgba(0,0,0,0.06); }
                 .shadow-glow-purple { box-shadow: 0 0 25px rgba(124,58,237,0.45); }
+                .shadow-strong { box-shadow: 0 10px 20px rgba(124,58,237,0.3); }
                 
                 .ease-spring { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
 

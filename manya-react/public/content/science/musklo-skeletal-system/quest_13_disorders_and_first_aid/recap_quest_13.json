@@ -1,55 +1,81 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Injuries & First Aid",
-  "variantTitle": "Quest 13 Master Recap",
+  "variantTitle": "Quest 13 Master Study Guide",
   "themeColor": "#d97706",
   "sections": [
     {
       "type": "bullets",
       "title": "Types of Bone Fractures",
       "points": [
-        "<b>Simple:</b> Bone breaks but stays <u>inside</u> the flesh.",
-        "<b>Compound:</b> Bone breaks and <u>pierces</u> the skin (Bleeding occurs).",
-        "<b>Greenstick:</b> Bone bends or cracks but <u>does not break fully</u> (Common in children).",
-        "<b>Comminuted:</b> Bone is shattered into <u>several small pieces</u>."
+        "<b>Simple:</b> A clean break where the bone stays <u>inside</u> the flesh.",
+        "<b>Compound:</b> The bone <u>pierces</u> the skin. It is dangerous due to heavy bleeding and high risk of <b>infection</b>.",
+        "<b>Greenstick:</b> The bone bends or cracks but doesn't snap. Common in <b>children</b> because their bones are flexible.",
+        "<b>Comminuted:</b> The bone is shattered or crushed into many small pieces."
       ]
     },
     {
       "type": "comparison",
-      "title": "Sprain vs. Strain (Very Important)",
+      "title": "Sprain vs. Strain (PLE Hot Zone)",
       "itemA": "Sprain",
       "itemB": "Strain",
       "rows": [
-        { "feature": "Tissue", "valA": "Injury to a <b>Ligament</b>", "valB": "Injury to a <b>Muscle/Tendon</b>" },
-        { "feature": "Cause", "valA": "Torn/Overstretched ligament", "valB": "Torn/Overstretched muscle" },
-        { "feature": "Sign", "valA": "Sudden swelling at joint", "valB": "Pain in the muscle flesh" }
+        {
+          "feature": "Tissue Affected",
+          "valA": "<b>Ligament</b> (Joint)",
+          "valB": "<b>Muscle or Tendon</b>"
+        },
+        {
+          "feature": "Definition",
+          "valA": "Tearing of bone-to-bone fibers",
+          "valB": "Overstretching of a muscle"
+        },
+        {
+          "feature": "Symptom",
+          "valA": "Sudden swelling/bruising",
+          "valB": "Sharp pain in muscle body"
+        }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Muscle Cramp & Fatigue",
+      "points": [
+        "<b>Cramp:</b> A sudden, painful, and involuntary contraction of a muscle.",
+        "<b>Causes:</b> Dehydration (lack of water), <b>Lactic acid</b> buildup, or extreme muscle fatigue.",
+        "<b>First Aid:</b> Gently stretch and massage the cramped muscle."
       ]
     },
     {
       "type": "bullets",
       "title": "First Aid Mastery",
       "points": [
-        "<b>Splint:</b> A stiff support used to keep broken bones from moving during transport.",
-        "<b>Arm Sling:</b> Used to support and rest a broken arm or sprained wrist.",
-        "<b>Stretcher:</b> Essential for patients with <b>spinal injuries</b> to prevent permanent paralysis."
+        "<b>Splint:</b> A stiff support used to <b>immobilize</b> a limb. It prevents broken bone ends from cutting nerves and blood vessels.",
+        "<b>Arm Sling:</b> A triangular bandage used to take the weight off a broken arm or shoulder.",
+        "<b>Stretcher:</b> Used to carry casualties with <b>spinal injuries</b>. Keeping the back straight prevents the broken vertebrae from severing the <b>spinal cord</b>."
       ]
     },
     {
       "type": "warning",
-      "text": "For dislocations or sprains, use the <b>RICE</b> method: <b>R</b>est, <b>I</b>ce (reduce swelling), <b>C</b>ompress (bandage), <b>E</b>levate (lift above heart)!"
+      "text": "The <b>R.I.C.E.</b> Rule for Joint Injuries: <b>R</b>est the part, <b>I</b>ce the swelling, <b>C</b>ompress with a bandage, <b>E</b>levate the limb above the heart!"
     }
   ],
   "cards": [
     {
-      "term": "Dislocation",
-      "fact": "When bones at a joint are forced out of place.",
-      "mnemonic": "Think: <b>'Dis-Located'</b> — the bone is in the wrong location!"
+      "term": "Fracture",
+      "fact": "A complete or partial break in a bone.",
+      "mnemonic": "<b>F</b>racture = <b>F</b>ault in the bone!"
     },
     {
-      "term": "Antiseptic",
-      "fact": "Used on compound fractures to prevent infection.",
-      "mnemonic": "<b>Anti-Septic</b> = <b>Against</b> Germs!"
+      "term": "Lactic Acid",
+      "fact": "Waste product that causes muscle fatigue/cramps.",
+      "mnemonic": "Lactic makes the muscle <b>Lack</b> power!"
+    },
+    {
+      "term": "Dislocation",
+      "fact": "When a bone is forced out of its socket at a joint.",
+      "mnemonic": "The bone has been <b>Dis-Located</b> (put in the wrong place)!"
     }
   ]
 }

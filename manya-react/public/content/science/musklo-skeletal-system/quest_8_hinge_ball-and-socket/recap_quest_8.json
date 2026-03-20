@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Types of Movable Joints",
   "variantTitle": "Quest 8 Master Recap",
@@ -9,9 +9,9 @@
       "type": "bullets",
       "title": "Movable (Synovial) Joints",
       "points": [
-        "These joints are held together by <b>ligaments and tendons</b>.",
-        "They all contain <b>synovial fluid</b> to make them move smoothly.",
-        "The two most important types for PLE are <b>Hinge</b> and <b>Ball-and-Socket</b>."
+        "These joints are held together by <b>ligaments</b> and lubricated by <b>synovial fluid</b>.",
+        "They allow for free movement of the limbs and neck.",
+        "They are classified based on the <b>shape</b> of the bones and the <b>direction</b> they move."
       ]
     },
     {
@@ -20,35 +20,79 @@
       "itemA": "Hinge Joint",
       "itemB": "Ball & Socket",
       "rows": [
-        { "feature": "Movement", "valA": "In <b>one plane</b> only", "valB": "In <b>all directions</b>" },
-        { "feature": "Examples", "valA": "<b>Elbow and Knee</b>", "valB": "<b>Shoulder and Hip</b>" },
-        { "feature": "Analogy", "valA": "Movement of a <b>door</b>", "valB": "Movement of a <b>joystick</b>" }
+        {
+          "feature": "Range of Motion",
+          "valA": "In <b>one plane</b> (180°)",
+          "valB": "In <b>all planes</b> (360°)"
+        },
+        {
+          "feature": "Movement Type",
+          "valA": "Bending/Straightening",
+          "valB": "Circular/Rotation"
+        },
+        {
+          "feature": "Examples",
+          "valA": "<b>Elbow, Knee, Fingers</b>",
+          "valB": "<b>Shoulder, Hip</b>"
+        },
+        {
+          "feature": "Analogy",
+          "valA": "A swinging <b>door</b>",
+          "valB": "A <b>joystick</b> or ball in a cup"
+        }
       ]
     },
     {
       "type": "bullets",
-      "title": "Special Details",
+      "title": "Pivot and Gliding Joints",
       "points": [
-        "<b>Shoulder:</b> Rounded head of the <b>Humerus</b> fits into the Scapula.",
-        "<b>Hip:</b> Rounded head of the <b>Femur</b> fits into the Pelvic Girdle.",
-        "<b>The Knee:</b> Sometimes called a 'modified hinge' because of the <b>Patella</b> (knee cap)."
+        "<b>Pivot Joint:</b> Allows rotation (turning). Found in the <b>Neck</b> between the Atlas and Axis vertebrae.",
+        "<b>Gliding (Sliding) Joint:</b> Allows bones to slide over each other. Found in the <b>Wrist</b> (carpals) and <b>Ankle</b> (tarsals)."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Shoulder vs. Hip Joint",
+      "itemA": "Shoulder Joint",
+      "itemB": "Hip Joint",
+      "rows": [
+        {
+          "feature": "Socket Depth",
+          "valA": "Shallow (Glenoid cavity)",
+          "valB": "Deep (Acetabulum)"
+        },
+        {
+          "feature": "Stability",
+          "valA": "Less stable (easy to dislocate)",
+          "valB": "Very stable (supports weight)"
+        },
+        {
+          "feature": "Mobility",
+          "valA": "Highest range of motion",
+          "valB": "Limited by socket depth"
+        }
       ]
     },
     {
       "type": "warning",
-      "text": "The <b>Ball and Socket</b> joint provides the greatest range of motion in the human body, allowing for circular movement!"
+      "text": "The <b>Patella</b> (knee cap) is a special bone that protects the <b>Hinge joint</b> of the knee from front impact and helps the thigh muscles pull the leg straight."
     }
   ],
   "cards": [
     {
-      "term": "Hinge Joint",
-      "fact": "Allows bending and straightening (Flexion/Extension).",
-      "mnemonic": "Think of a door hinge—it only opens one way!"
+      "term": "Pivot Joint",
+      "fact": "Allows the head to turn 'No'.",
+      "mnemonic": "The <b>Pivot</b> helps you <b>P</b>oint your head!"
     },
     {
-      "term": "Ball and Socket",
-      "fact": "Allows full 360-degree rotation.",
-      "mnemonic": "Like a ball sitting in a cup—it can roll in any direction!"
+      "term": "Gliding Joint",
+      "fact": "Small bones slide or twist past each other.",
+      "mnemonic": "Think of <b>Sliding</b> on the <b>Ice</b> with your <b>Ankles</b>!"
+    },
+    {
+      "term": "Circumduction",
+      "fact": "The 360-degree circular movement of a ball-and-socket joint.",
+      "mnemonic": "<b>Circum</b> = Circle!"
     }
   ]
 }

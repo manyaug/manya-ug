@@ -1,5 +1,5 @@
 {
- "engineType": "READER_STUDY",
+  "engineType": "READER_STUDY",
   "mode": "recap",
   "topic": "Internal Bone Structure",
   "variantTitle": "Quest 6 Master Recap",
@@ -7,20 +7,22 @@
   "sections": [
     {
       "type": "bullets",
-      "title": "Bone Composition",
+      "title": "Why is Bone a Living Tissue?",
       "points": [
-        "Bones are <b>living tissues</b>. They have blood vessels, nerves, and living cells.",
-        "They are the <b>hardest tissue</b> in the body because they store <b>Calcium</b> and <b>Phosphorus</b>.",
-        "Bones need <b>proper feeding</b> and nutrients to stay strong."
+        "<b>It Grows:</b> Increases in length and thickness as an organism matures.",
+        "<b>It Heals:</b> Can repair itself after a fracture or break.",
+        "<b>It Breathes:</b> Living cells require oxygen and nutrients brought by <b>blood vessels</b>.",
+        "<b>It Senses:</b> Contains nerves to detect pain and pressure."
       ]
     },
     {
       "type": "bullets",
-      "title": "Internal Parts of a Bone",
+      "title": "Layers of a Bone",
       "points": [
-        "<b>Hard Bone:</b> The outer layer that provides strength and protects the marrow.",
-        "<b>Spongy Bone:</b> The porous part found at the ends. It is filled with <b>Red Bone Marrow</b>.",
-        "<b>Cartilage:</b> A smooth, slippery tissue covering the ends. It acts as a <b>shock absorber</b> and reduces friction."
+        "<b>Periosteum:</b> The thin, tough outer membrane that covers the bone. It contains blood vessels and nerves.",
+        "<b>Compact (Hard) Bone:</b> The dense, heavy layer that gives the bone its strength and protects the marrow.",
+        "<b>Spongy Bone:</b> A light, porous layer found at the ends. It houses the <b>Red Bone Marrow</b>.",
+        "<b>Cartilage:</b> A smooth, flexible tissue on bone ends at the joints to prevent friction and absorb shock."
       ]
     },
     {
@@ -29,40 +31,57 @@
       "itemA": "Red Bone Marrow",
       "itemB": "Yellow Bone Marrow",
       "rows": [
-        { "feature": "Primary Role", "valA": "Makes Red Blood Cells", "valB": "Makes White Blood Cells" },
-        { "feature": "Storage", "valA": "None (Active Factory)", "valB": "Stores Fat cells" },
-        { "feature": "Location", "valA": "Pores of spongy bone", "valB": "Central cavity of long bones" },
-        { "feature": "Extra Task", "valA": "Destroys old blood cells", "valB": "Can turn into Red marrow during blood loss" }
+        {
+          "feature": "Primary Role",
+          "valA": "Manufactures Red Blood Cells",
+          "valB": "Stores Fat (Energy Reserve)"
+        },
+        {
+          "feature": "Location",
+          "valA": "Ends of long bones (Spongy part)",
+          "valB": "Central cavity (shaft) of long bones"
+        },
+        {
+          "feature": "Found in...",
+          "valA": "Babies and Adults",
+          "valB": "Mainly in Adults"
+        },
+        {
+          "feature": "Emergency Task",
+          "valA": "Constant production",
+          "valB": "Can convert to Red marrow if blood is lost"
+        }
       ]
     },
     {
       "type": "bullets",
-      "title": "Why do bones have nerves?",
+      "title": "Chemical Composition",
       "points": [
-        "Nerves allow the bone to <b>feel pain</b> if it is injured or fractured.",
-        "This warns the body to stop moving and protect the injured area."
+        "Bones are made of <b>Organic matter</b> (protein fibers for flexibility) and <b>Inorganic matter</b> (minerals for hardness).",
+        "The primary minerals are <b>Calcium</b> and <b>Phosphorus</b>.",
+        "<b>Warning:</b> Without enough organic matter, bones become <b>brittle</b> and snap easily! Without minerals, they become <b>soft</b> and bend."
       ]
     },
     {
       "type": "warning",
-      "text": "Bones act as a <b>Mineral Bank</b>. If your blood levels of <b>Calcium</b> drop too low, the bones release calcium into the bloodstream to help other organs!"
+      "text": "Bones act as a <b>Mineral Bank</b>. If blood calcium levels drop, the body 'borrows' minerals from the skeleton, which can weaken the bones if not replaced by a good diet!"
     }
   ],
   "cards": [
     {
-      "term": "Red Marrow",
-      "fact": "The factory for Red Blood Cells.",
-      "mnemonic": "<b>Red</b> makes <b>Red</b>!"
+      "term": "Periosteum",
+      "fact": "The outer skin of the bone that brings in blood and nerves.",
+      "mnemonic": "<b>P</b>eriosteum = <b>P</b>rotective <b>P</b>ackaging!"
     },
     {
-      "term": "Yellow Marrow",
-      "fact": "Stores fat and makes White Blood Cells.",
-      "mnemonic": "Fat is <b>Yellow</b>. Yellow marrow handles the fat!"
+      "term": "Compact Bone",
+      "fact": "The hardest part of the bone used for support.",
+      "mnemonic": "It is <b>Compact</b> like a <b>Compressed</b> rock!"
     },
     {
-      "term": "Cartilage",
-      "fact": "The slippery 'cap' on the ends of bones.",
-      "mnemonic": "Cartilage is a <b>Cushion</b> for your bones!"
+      "term": "Marrow Factory",
+      "fact": "Red marrow makes blood; Yellow marrow stores fat.",
+      "mnemonic": "<b>Red</b> for <b>R</b>BCs; <b>Yellow</b> for <b>Y</b>ummy fat!"
     }
   ]
 }
