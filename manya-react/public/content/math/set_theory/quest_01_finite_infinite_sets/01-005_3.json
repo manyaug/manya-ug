@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Social Sets",
+  "variantTitle": "Quest 1-006: My Class (Part 3)",
+  "questions": [
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "Set of <b>Whole Numbers</b>."
+    }
+  ]
+}

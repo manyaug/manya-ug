@@ -1,0 +1,23 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Advanced Grid Knowledge",
+  "variantTitle": "Africa: Four Hemispheres",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "Africa is the only continent that lies in all four hemispheres. Which two lines divide it into these four parts?",
+      "initialRotation": [0, 0, 0],
+      "zoomFactor": 1.2,
+      "lines": [
+          { "type": "lat", "value": 0, "color": "#ef4444", "dashed": false },
+          { "type": "lon", "value": 0, "color": "#3b82f6", "dashed": false }
+      ],
+      "highlight": ["africa"],
+      "highlightColor": "#fcd34d",
+      "correctAnswer": "Equator & Prime Meridian",
+      "options": ["Equator & Tropic of Cancer", "Prime Meridian & Capricorn", "Equator & Prime Meridian"]
+    }
+  ]
+}

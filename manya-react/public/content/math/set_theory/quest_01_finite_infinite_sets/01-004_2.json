@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Math Concepts",
+  "variantTitle": "Quest 1-005: Number Sets (Part 2)",
+  "questions": [
+    {
+      "scene": "vowels",
+      "expected": "finite",
+      "prompt": "Set of <b>Vowels</b> in the alphabet."
+    }
+  ]
+}

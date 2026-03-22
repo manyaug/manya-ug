@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-008: Nature Visuals (Part 5)",
+  "questions": [
+    {
+      "scene": "default",
+      "expected": "finite",
+      "prompt": "<b>Scene: Map Pins</b><br>Set of Districts in Uganda."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Strait: Bab-el-Mandeb (East)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "Which Strait connects the Red Sea to the Indian Ocean?",
+      "initialRotation": [-43, -12, 0],
+      "zoomFactor": 5.0,
+      "overlays": [
+        { "type": "arrow", "coordinates": [[43, 15], [45, 10]], "color": "#ef4444" }
+      ],
+      "correctAnswer": "Bab-el-Mandeb",
+      "options": ["Strait of Gibraltar", "Bab-el-Mandeb", "Mozambique Channel"]
+    }
+  ]
+}

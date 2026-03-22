@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Social Sets",
+  "variantTitle": "Quest 1-006: My Class (Part 2)",
+  "questions": [
+    {
+      "scene": "default", 
+      "expected": "finite",
+      "prompt": "Set of <b>Districts in Uganda</b>."
+    }
+  ]
+}

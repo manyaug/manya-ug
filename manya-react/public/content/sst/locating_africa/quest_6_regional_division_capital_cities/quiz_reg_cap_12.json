@@ -1,0 +1,27 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Geography",
+  "variantTitle": "Capital: Antananarivo (Madagascar)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "id": "q5",
+      "title": "Island Nations",
+      "question": "Antananarivo is the capital of which large island nation?",
+      "initialRotation": [-45, 10, 0],
+      "zoomFactor": 1.3,
+      "options": ["Mauritius", "Comoros", "Madagascar", "Seychelles"],
+      "correctAnswer": "Madagascar",
+      "explanation": {
+        "text": "<b>Madagascar</b> is the fourth largest island in the world, located off the coast of Mozambique.",
+        "camera": { "rotation": [-47.5, 18.8, 0], "zoom": 3.0 },
+        "highlight": ["MG"],
+        "highlightColor": "#a78bfa",
+        "markers": [
+          { "label": "Antananarivo", "lat": -18.8, "lon": 47.5, "color": "#7c3aed" }
+        ]
+      }
+    }
+  ]
+}

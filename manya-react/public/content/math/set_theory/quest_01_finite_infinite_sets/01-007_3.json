@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-008: Nature Visuals (Part 3)",
+  "questions": [
+    {
+      "scene": "cows",
+      "expected": "finite",
+      "prompt": "<b>Scene: Grazing Cows</b><br>Set of Cattle on a farm."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation",
+  "variantTitle": "Uganda to London (Behind)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Uganda to London",
+      "question": "If it is 2:00 PM in Uganda (45°E), what time is it in London (0°)?",
+      "initialRotation": [-25, -5, 0],
+      "options": ["5:00 PM", "11:00 AM", "11:00 PM", "2:00 AM"],
+      "correctAnswer": "11:00 AM",
+      "explanation": "<b>Step 1:</b> Diff = 45°. <br><b>Step 2:</b> 45 ÷ 15 = 3 Hours. <br><b>Step 3:</b> London is West of Uganda (Behind). Subtract. <br><b>Step 4:</b> 2:00 PM - 3 Hours = 11:00 AM.",
+      "markers": [
+         { "label": "London (?)", "lat": 51.5, "lon": 0, "color": "#f59e0b" },
+         { "label": "Uganda (2:00 PM)", "lat": 1, "lon": 45, "color": "#6366f1" }
+      ],
+      "connection": { "from": [45, 1], "to": [0, 51.5] }
+    }
+  ]
+}

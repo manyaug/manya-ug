@@ -1,0 +1,18 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Advanced Latitudes",
+  "variantTitle": "Antarctic Continent",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 4",
+      "question": "Unlike the Arctic, the Antarctic Circle crosses only one continent. Which one?",
+      "initialRotation": [0, -60, 0],
+      "highlight": ["antarctica"],
+      "highlightColor": "#cbd5e1",
+      "correctAnswer": "Antarctica",
+      "options": ["Australia", "Antarctica", "South America"]
+    }
+  ]
+}

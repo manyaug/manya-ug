@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-008: Nature Visuals (Part 4)",
+  "questions": [
+    {
+      "scene": "sand",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Sand Grains</b><br>Set of Sand Grains on a beach (Too many to count!)."
+    }
+  ]
+}

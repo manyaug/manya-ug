@@ -1,0 +1,10 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-004: Nature Walk (Part 4)",
+  "questions": [
+    { "scene": "stars", "expected": "infinite", "prompt": "Set of <b>Stars in the Universe</b>." }
+  ]
+}

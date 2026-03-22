@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Advanced Grid Knowledge",
+  "variantTitle": "Date Line: Longitude",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "The International Date Line separates one day from the next. What is its longitude?",
+      "initialRotation": [180, 0, 0],
+      "lines": [
+          { "type": "lon", "value": 180, "color": "#a855f7", "label": "IDL", "dashed": true }
+      ],
+      "correctAnswer": "180°",
+      "options": ["0°", "90°", "180°"]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-008: Nature Visuals (Part 2)",
+  "questions": [
+    {
+      "scene": "fish",
+      "expected": "finite",
+      "prompt": "<b>Scene: Swimming Fish</b><br>Set of Fish in a tank."
+    }
+  ]
+}

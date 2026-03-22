@@ -1,0 +1,26 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Landlocked Countries",
+  "variantTitle": "East Africa: Uganda's Port",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 2",
+      "question": "Which port in Kenya does landlocked Uganda primarily use for international trade via the Northern Corridor?",
+      "initialRotation": [-32, -2, 0],
+      "zoomFactor": 2.5,
+      "highlight": ["UG"],
+      "highlightColor": "#86efac",
+      "markers": [
+        { "label": "Kampala", "lat": 0.3, "lon": 32.5, "color": "#facc15" },
+        { "label": "Mombasa (Port)", "lat": -4.0, "lon": 39.6, "color": "#3b82f6" }
+      ],
+      "overlays": [
+        { "type": "arrow", "coordinates": [[32.5, 0.3], [39.6, -4.0]], "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Port of Mombasa",
+      "options": ["Port of Djibouti", "Port of Mombasa", "Port of Durban"]
+    }
+  ]
+}

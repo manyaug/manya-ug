@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation (West)",
+  "variantTitle": "GMT to Brazil (Subtract)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "GMT to Brazil",
+      "question": "It is 10:00 AM in London (0°). What time is it in Brasilia (45° West)?",
+      "initialRotation": [20, -15, 0],
+      "options": ["1:00 PM", "7:00 AM", "1:00 AM", "7:00 PM"],
+      "correctAnswer": "7:00 AM",
+      "explanation": "<b>Step 1:</b> 45° ÷ 15 = 3 Hours.<br><b>Step 2:</b> Subtract 3 hours from 10:00 AM.<br><b>Answer:</b> 7:00 AM.",
+      "markers": [{ "label": "London (10AM)", "lat": 51, "lon": 0, "color": "#3b82f6" }, { "label": "Brazil (?)", "lat": -15, "lon": -45, "color": "#ef4444" }],
+      "connection": { "from": [0, 51], "to": [-45, -15] }
+    }
+  ]
+}

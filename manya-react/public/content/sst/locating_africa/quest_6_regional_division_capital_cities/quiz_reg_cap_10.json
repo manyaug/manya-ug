@@ -1,0 +1,27 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Geography",
+  "variantTitle": "Capital: Cairo (Egypt)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "id": "q3",
+      "title": "North Africa",
+      "question": "Cairo is the capital of which country?",
+      "initialRotation": [-15, -25, 0],
+      "zoomFactor": 1.5,
+      "options": ["Libya", "Egypt", "Sudan", "Algeria"],
+      "correctAnswer": "Egypt",
+      "explanation": {
+        "text": "<b>Egypt</b> is located in the Northeast corner of Africa. Cairo lies near the Nile Delta.",
+        "camera": { "rotation": [-31.2, -30.0, 0], "zoom": 4.0 },
+        "highlight": ["EG"],
+        "highlightColor": "#fcd34d",
+        "markers": [
+          { "label": "Cairo", "lat": 30.0, "lon": 31.2, "color": "#c2410c" }
+        ]
+      }
+    }
+  ]
+}

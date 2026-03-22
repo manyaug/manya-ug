@@ -1,0 +1,21 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Advanced Grid Knowledge",
+  "variantTitle": "South Africa: Climate Zone",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 2",
+      "question": "South Africa lies South of the Tropic of Capricorn. What type of climate zone is this?",
+      "initialRotation": [-20, 25, 0],
+      "highlight": ["710"],
+      "highlightColor": "#60a5fa",
+      "lines": [
+          { "type": "lat", "value": -23.5, "color": "#ef4444", "label": "Capricorn", "dashed": true }
+      ],
+      "correctAnswer": "Temperate Zone",
+      "options": ["Torrid Zone", "Temperate Zone", "Equatorial Zone"]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Infinite Sets",
+  "variantTitle": "Quest 1-007: Infinite Visuals (Part 3)",
+  "questions": [
+    {
+      "scene": "integers",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Matrix Rain</b><br>Set of Integers {..., -1, 0, 1, ...}."
+    }
+  ]
+}

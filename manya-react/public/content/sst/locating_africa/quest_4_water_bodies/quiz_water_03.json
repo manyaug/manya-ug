@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "World Geography",
+  "variantTitle": "Ocean: North Pole (Arctic)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "Identify the cold ocean located around the North Pole.",
+      "initialRotation": [0, -85, 0],
+      "zoomFactor": 1.2,
+      "markers": [
+          { "label": "???", "lat": 90, "lon": 0, "color": "#bae6fd" }
+      ],
+      "correctAnswer": "Arctic Ocean",
+      "options": ["Antarctic Ocean", "Arctic Ocean", "Pacific Ocean"]
+    }
+  ]
+}

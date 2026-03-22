@@ -18,7 +18,7 @@ import {
  * - Intelligent Feedback: Shake animations and completion overlay.
  * - Z-Fixed: Ensures the FINISH button is always accessible.
  */
-export default function ImageHotspotsEngine({ data, onComplete }) {
+export function ImageHotspotsEngine({ data, onComplete }) {
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
@@ -326,3 +326,7 @@ export default function ImageHotspotsEngine({ data, onComplete }) {
         </div>
     );
 }
+
+ImageHotspotsEngine.hideGlobalFooter = true;
+
+export default ImageHotspotsEngine;

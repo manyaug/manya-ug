@@ -1,0 +1,22 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Location of Africa",
+  "variantTitle": "Water: Cape Agulhas (Meeting Point)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 5",
+      "question": "Where do the Atlantic and Indian Oceans meet?",
+      "initialRotation": [-20, 35, 0],
+      "zoomFactor": 2.5,
+      "highlight": ["710"],
+      "highlightColor": "#86efac",
+      "markers": [
+          { "label": "???", "lat": -34.8, "lon": 20, "color": "#facc15" }
+      ],
+      "correctAnswer": "Cape Agulhas",
+      "options": ["Cape Verde", "Cape Guardafui", "Cape Agulhas"]
+    }
+  ]
+}

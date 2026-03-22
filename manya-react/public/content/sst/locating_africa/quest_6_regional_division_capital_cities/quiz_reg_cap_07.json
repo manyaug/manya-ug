@@ -1,0 +1,30 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Regions",
+  "variantTitle": "Region: West Africa (Prime Meridian)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "id": "q7_lines_grid",
+      "title": "Important Lines",
+      "question": "The Prime Meridian (0° Longitude) passes through which West African country?",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 2.0,
+      "options": ["Nigeria", "Ghana", "Senegal", "Cameroon"],
+      "correctAnswer": "Ghana",
+      "explanation": {
+        "text": "The Prime Meridian crosses <b>Ghana</b> (at Accra/Tema). It divides the world into East and West hemispheres.",
+        "camera": { "rotation": [0, -5.6, 0], "zoom": 4.0 },
+        "highlight": ["288"],
+        "highlightColor": "#facc15",
+        "lines": [
+           { "type": "lon", "value": 0, "color": "#ef4444", "dashed": true, "label": "Prime Meridian" }
+        ],
+        "markers": [
+          { "label": "Accra (Ghana)", "lat": 5.6, "lon": -0.1, "color": "#b45309" }
+        ]
+      }
+    }
+  ]
+}

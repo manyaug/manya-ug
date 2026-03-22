@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation (East)",
+  "variantTitle": "GMT to Cairo (Eastward)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "GMT to Cairo",
+      "question": "It is 8:00 AM at Greenwich. What time is it in Cairo (30° East)?",
+      "initialRotation": [-15, -20, 0],
+      "options": ["6:00 AM", "10:00 AM", "10:00 PM", "6:00 PM"],
+      "correctAnswer": "10:00 AM",
+      "explanation": "<b>Step 1:</b> 30° ÷ 15 = 2 Hours.<br><b>Step 2:</b> East is Ahead. Add.<br><b>Step 3:</b> 8:00 + 2 = 10:00 AM.",
+      "markers": [{ "label": "GMT (8AM)", "lat": 51, "lon": 0, "color": "#3b82f6" }, { "label": "Cairo (?)", "lat": 30, "lon": 30, "color": "#ef4444" }],
+      "connection": { "from": [0, 51], "to": [30, 30] }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Infinite Sets",
+  "variantTitle": "Quest 1-007: Infinite Visuals (Part 2)",
+  "questions": [
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Matrix Rain</b><br>Set of All Even Numbers {2, 4, 6...}."
+    }
+  ]
+}

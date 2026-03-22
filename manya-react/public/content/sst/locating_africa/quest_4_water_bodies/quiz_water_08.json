@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Location of Africa",
+  "variantTitle": "Water: Red Sea",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "Which water body separates Africa from the Arabian Peninsula (Asia)?",
+      "initialRotation": [-38, -20, 0],
+      "zoomFactor": 2.5,
+      "markers": [
+          { "label": "???", "lat": 20, "lon": 38, "color": "#0ea5e9" }
+      ],
+      "correctAnswer": "Red Sea",
+      "options": ["Black Sea", "Red Sea", "Dead Sea"]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Shape: Cape Agulhas (Point)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 4",
+      "question": "Which Cape is located at the furthest Southern tip of Africa?",
+      "initialRotation": [-20, 34, 0],
+      "zoomFactor": 3.0,
+      "markers": [
+          { "label": "Point A", "lat": -34.8, "lon": 20, "color": "#ef4444" },
+          { "label": "Point B", "lat": -34.3, "lon": 18.4, "color": "#94a3b8" }
+      ],
+      "correctAnswer": "Cape Agulhas",
+      "options": ["Cape of Good Hope", "Cape Agulhas", "Cape Verde"]
+    }
+  ]
+}

@@ -11,10 +11,27 @@
             "title": "01 Finite Infinite Sets",
             "prefix": "01",
             "resources": [
-              {
-                "label": "Study Finite Infinite",
-                "file": "study_finite_infinite"
-              }
+              { "label": "Study Finite Infinite", "file": "study_finite_infinite" },
+              { "label": "Practice 001.2", "file": "01-001_2" },
+              { "label": "Practice 001.3", "file": "01-001_3" },
+              { "label": "Practice 001.4", "file": "01-001_4" },
+              { "label": "Practice 002.2", "file": "01-002_2" },
+              { "label": "Practice 002.3", "file": "01-002_3" },
+              { "label": "Practice 002.4", "file": "01-002_4" },
+              { "label": "Practice 003.2", "file": "01-003_2" },
+              { "label": "Practice 003.3", "file": "01-003_3" },
+              { "label": "Practice 003.4", "file": "01-003_4" },
+              { "label": "Practice 004.2", "file": "01-004_2" },
+              { "label": "Practice 004.3", "file": "01-004_3" },
+              { "label": "Practice 005.2", "file": "01-005_2" },
+              { "label": "Practice 005.3", "file": "01-005_3" },
+              { "label": "Practice 006.2", "file": "01-006_2" },
+              { "label": "Practice 006.3", "file": "01-006_3" },
+              { "label": "Practice 007.2", "file": "01-007_2" },
+              { "label": "Practice 007.3", "file": "01-007_3" },
+              { "label": "Practice 007.4", "file": "01-007_4" },
+              { "label": "Practice 007.5", "file": "01-007_5" },
+              { "label": "Practice 008.2", "file": "01-008_2" }
             ],
             "practiceCount": 8
           },
@@ -658,34 +675,30 @@
             "title": "2 Grid Master",
             "prefix": "",
             "resources": [
-              {
-                "label": "Grid Quiz",
-                "file": "grid_quiz"
-              },
-              {
-                "label": "Grid Quiz 2",
-                "file": "grid_quiz_2"
-              },
-              {
-                "label": "Grid Quiz 3",
-                "file": "grid_quiz_3"
-              },
-              {
-                "label": "Grid Quiz 4",
-                "file": "grid_quiz_4"
-              },
-              {
-                "label": "Grid Quiz 5",
-                "file": "grid_quiz_5"
-              },
-              {
-                "label": "Grid Quiz 6",
-                "file": "grid_quiz_6"
-              },
-              {
-                "label": "Grid Quiz 7",
-                "file": "grid_quiz_7"
-              },
+              { "label": "Basics: Equator 0°", "file": "quiz_grid_basics_01" },
+              { "label": "Basics: Uganda Highlight", "file": "quiz_grid_basics_02" },
+              { "label": "Basics: Tropic of Capricorn", "file": "quiz_grid_basics_03" },
+              { "label": "Basics: Cancer Solstice", "file": "quiz_grid_basics_04" },
+
+              { "label": "Ext: Equator Division", "file": "quiz_grid_ext_01" },
+              { "label": "Ext: Country Check", "file": "quiz_grid_ext_02" },
+              { "label": "Ext: Southern Africa", "file": "quiz_grid_ext_03" },
+              { "label": "Ext: Torrid Zone", "file": "quiz_grid_ext_04" },
+
+              { "label": "Puzzle: Global Lines", "file": "quiz_grid_puzzle_01" },
+              { "label": "Puzzle: World Identification", "file": "quiz_grid_puzzle_02" },
+
+              { "label": "Master: Four Hemispheres", "file": "quiz_grid_master_01" },
+              { "label": "Master: South Africa Climate", "file": "quiz_grid_master_02" },
+              { "label": "Master: IDL Longitude", "file": "quiz_grid_master_03" },
+              { "label": "Master: Algiers Meridian", "file": "quiz_grid_master_04" },
+              { "label": "Master: Kampala Reference", "file": "quiz_grid_master_05" },
+
+              { "label": "Adv: Arctic Latitude", "file": "quiz_adv_grid_01" },
+              { "label": "Adv: Climatic Zones", "file": "quiz_adv_grid_02" },
+              { "label": "Adv: Int. Date Line", "file": "quiz_adv_grid_03" },
+              { "label": "Adv: Antarctic Continent", "file": "quiz_adv_grid_04" },
+              { "label": "Adv: Date Line Rules", "file": "quiz_adv_grid_05" },
               {
                 "label": "Recap Afrca Grid",
                 "file": "recap_afrca_grid"
@@ -722,38 +735,31 @@
                 "label": "Study Calc Time 2",
                 "file": "study_calc_time_2"
               },
-              {
-                "label": "Time Quiz 1",
-                "file": "time_quiz_1"
-              },
-              {
-                "label": "Time Quiz 2",
-                "file": "time_quiz_2"
-              },
-              {
-                "label": "Time Quiz 3",
-                "file": "time_quiz_3"
-              },
-              {
-                "label": "Time Quiz 4",
-                "file": "time_quiz_4"
-              },
-              {
-                "label": "Time Quiz 5",
-                "file": "time_quiz_5"
-              },
-              {
-                "label": "Time Quiz 6",
-                "file": "time_quiz_6"
-              },
-              {
-                "label": "Time Quiz 7",
-                "file": "time_quiz_7"
-              },
-              {
-                "label": "Time Quiz 8",
-                "file": "time_quiz_8"
-              }
+              { "label": "Time: GMT to Uganda", "file": "quiz_time_01" },
+              { "label": "Time: Uganda to London", "file": "quiz_time_02" },
+              { "label": "Time: Uganda to Sydney", "file": "quiz_time_03" },
+              { "label": "Time: Uganda to USA", "file": "quiz_time_04" },
+              { "label": "Time: Finding Longitude", "file": "quiz_time_05" },
+
+              { "label": "West: GMT to 30°W", "file": "quiz_time_06" },
+              { "label": "West: Accra to NY", "file": "quiz_time_07" },
+              { "label": "West: GMT to Brazil", "file": "quiz_time_08" },
+              { "label": "West: Early Morning", "file": "quiz_time_09" },
+
+              { "label": "East: GMT to Cairo", "file": "quiz_time_10" },
+              { "label": "East: Ghana to Uganda", "file": "quiz_time_11" },
+              { "label": "East: London to Mauritius", "file": "quiz_time_12" },
+              { "label": "East: Finding Longitude", "file": "quiz_time_13" },
+
+              { "label": "Expert: Cairo to Dhaka", "file": "quiz_time_14" },
+              { "label": "Expert: Crossing 0°", "file": "quiz_time_15" },
+              { "label": "Expert: London to Baghdad", "file": "quiz_time_16" },
+              { "label": "Expert: Finding West", "file": "quiz_time_17" },
+
+              { "label": "Puzzle: West Logic", "file": "quiz_time_18" },
+              { "label": "Puzzle: East-East Calc", "file": "quiz_time_19" },
+              { "label": "Puzzle: Crossing Line", "file": "quiz_time_20" },
+              { "label": "Puzzle: Finding Location", "file": "quiz_time_21" }
             ],
             "practiceCount": 0
           },
@@ -762,14 +768,17 @@
             "title": "4 Water Bodies",
             "prefix": "",
             "resources": [
-              {
-                "label": "Quiz African Waters",
-                "file": "quiz_african_waters"
-              },
-              {
-                "label": "Quiz Oceans",
-                "file": "quiz_oceans"
-              },
+              { "label": "Ocean: Largest Pacific", "file": "quiz_water_01" },
+              { "label": "Ocean: West Atlantic", "file": "quiz_water_02" },
+              { "label": "Ocean: North Pole Arctic", "file": "quiz_water_03" },
+              { "label": "Ocean: Southern Boundary", "file": "quiz_water_04" },
+              { "label": "Ocean: East Africa Indian", "file": "quiz_water_05" },
+
+              { "label": "Water: Mediterranean Sea", "file": "quiz_water_06" },
+              { "label": "Water: Suez Canal", "file": "quiz_water_07" },
+              { "label": "Water: Red Sea Boundary", "file": "quiz_water_08" },
+              { "label": "Water: Bab-el-Mandeb", "file": "quiz_water_09" },
+              { "label": "Water: Cape Agulhas", "file": "quiz_water_10" },
               {
                 "label": "Recap Water Bodies Africa",
                 "file": "recap_water_bodies_africa"
@@ -790,22 +799,28 @@
             "title": "5 Coastal Features",
             "prefix": "",
             "resources": [
-              {
-                "label": "Coastal Quiz 1",
-                "file": "coastal_quiz_1"
-              },
-              {
-                "label": "Coastal Quiz 2",
-                "file": "coastal_quiz_2"
-              },
-              {
-                "label": "Coastal Quiz 3",
-                "file": "coastal_quiz_3"
-              },
-              {
-                "label": "Coastal Quiz 4",
-                "file": "coastal_quiz_4"
-              },
+              { "label": "Gulf: Guinea", "file": "quiz_coastal_01" },
+              { "label": "Gulf: Aden", "file": "quiz_coastal_02" },
+              { "label": "Gulf: Sirte", "file": "quiz_coastal_03" },
+              { "label": "Gulf: Gabes", "file": "quiz_coastal_04" },
+
+              { "label": "Island: Madagascar", "file": "quiz_coastal_05" },
+              { "label": "Island: Indian Ocean", "file": "quiz_coastal_06" },
+              { "label": "Island: Seychelles", "file": "quiz_coastal_07" },
+              { "label": "Island: Cape Verde", "file": "quiz_coastal_08" },
+              { "label": "Island: Sao Tome", "file": "quiz_coastal_09" },
+
+              { "label": "Strait: Gibraltar", "file": "quiz_coastal_10" },
+              { "label": "Peninsula: Horn of Africa", "file": "quiz_coastal_11" },
+              { "label": "Strait: Bab-el-Mandeb", "file": "quiz_coastal_12" },
+              { "label": "Cape: Agulhas Southern", "file": "quiz_coastal_13" },
+              { "label": "Strait: Mozambique", "file": "quiz_coastal_14" },
+
+              { "label": "Identify: Gibraltar", "file": "quiz_coastal_15" },
+              { "label": "Identify: Gulf Guinea", "file": "quiz_coastal_16" },
+              { "label": "Identify: Horn Africa", "file": "quiz_coastal_17" },
+              { "label": "Identify: Cape Agulhas", "file": "quiz_coastal_18" },
+              { "label": "Identify: Seychelles", "file": "quiz_coastal_19" },
               {
                 "label": "Recap Coastal Feat Africa",
                 "file": "recap_coastal_feat_africa"
@@ -822,22 +837,21 @@
             "title": "6 Regional Division Capital Cities",
             "prefix": "",
             "resources": [
-              {
-                "label": "Capitals Quiz",
-                "file": "capitals_quiz"
-              },
-              {
-                "label": "Recap Regions Capitals",
-                "file": "recap_regions_capitals"
-              },
-              {
-                "label": "Regions Quiz",
-                "file": "regions_quiz"
-              },
-              {
-                "label": "Study Capitals",
-                "file": "study_capitals"
-              },
+              { "label": "Region: East Africa", "file": "quiz_reg_cap_01" },
+              { "label": "Region: West Africa", "file": "quiz_reg_cap_02" },
+              { "label": "Region: Horn of Africa", "file": "quiz_reg_cap_03" },
+              { "label": "Region: Central Africa", "file": "quiz_reg_cap_04" },
+              { "label": "Region: North Africa", "file": "quiz_reg_cap_05" },
+              { "label": "Region: Southern Africa", "file": "quiz_reg_cap_06" },
+              { "label": "Region: West Africa Line", "file": "quiz_reg_cap_07" },
+
+              { "label": "Capital: Kampala", "file": "quiz_reg_cap_08" },
+              { "label": "Capital: Abuja", "file": "quiz_reg_cap_09" },
+              { "label": "Capital: Cairo", "file": "quiz_reg_cap_10" },
+              { "label": "Capital: Pretoria", "file": "quiz_reg_cap_11" },
+              { "label": "Capital: Antananarivo", "file": "quiz_reg_cap_12" },
+              { "label": "Capital: Mogadishu", "file": "quiz_reg_cap_13" },
+              { "label": "Recap: Regions & Capitals", "file": "recap_regions_capitals" },
               {
                 "label": "Study Regions",
                 "file": "study_regions"
@@ -850,14 +864,18 @@
             "title": "7 Landlocked Countries",
             "prefix": "",
             "resources": [
-              {
-                "label": "Recap Landlocked",
-                "file": "recap_landlocked"
-              },
-              {
-                "label": "Study Landlocked",
-                "file": "study_landlocked"
-              }
+              { "label": "Recap: Landlocked Nations", "file": "recap_landlocked" },
+              { "label": "Study: Interior Nations", "file": "study_landlocked" },
+              { "label": "Landlocked: Definition", "file": "quiz_landlocked_01" },
+              { "label": "Landlocked: Uganda Port", "file": "quiz_landlocked_02" },
+              { "label": "Landlocked: Ethiopia Port", "file": "quiz_landlocked_03" },
+              { "label": "Landlocked: Lesotho Enclave", "file": "quiz_landlocked_04" },
+              { "label": "Landlocked: Mali Gateway", "file": "quiz_landlocked_05" },
+              { "label": "Landlocked: Central Africa", "file": "quiz_landlocked_06" },
+              { "label": "Landlocked: Zambia TAZARA", "file": "quiz_landlocked_07" },
+              { "label": "Landlocked: Zimbabwe Beira", "file": "quiz_landlocked_08" },
+              { "label": "Landlocked: Botswana Kalahari", "file": "quiz_landlocked_09" },
+              { "label": "Landlocked: Economic Impact", "file": "quiz_landlocked_10" }
             ],
             "practiceCount": 0
           }

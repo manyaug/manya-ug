@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Shape: Seychelles (ID)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 5",
+      "question": "This Island country is located in the Indian Ocean. What is its name?",
+      "initialRotation": [-55, 5, 0],
+      "zoomFactor": 4.0,
+      "markers": [
+          { "label": "???", "lat": -4.6, "lon": 55.5, "color": "#facc15" }
+      ],
+      "correctAnswer": "Seychelles",
+      "options": ["Comoros", "Madagascar", "Seychelles"]
+    }
+  ]
+}

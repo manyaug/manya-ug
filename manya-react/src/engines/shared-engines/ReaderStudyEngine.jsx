@@ -18,7 +18,7 @@ import {
  * - Flashcards: Interactive term/fact/mnemonic cards.
  * - Subject-Aware: Dynamic accents based on subject.
  */
-export default function ReaderStudyEngine({ data, onComplete }) {
+export function ReaderStudyEngine({ data, onComplete }) {
     const [isVisible, setIsVisible] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
     const containerRef = useRef(null);
@@ -392,4 +392,4 @@ function Flashcard({ card, accent }) {
     );
 }
 
-// ... rest of the file ...
+export default ReaderStudyEngine;

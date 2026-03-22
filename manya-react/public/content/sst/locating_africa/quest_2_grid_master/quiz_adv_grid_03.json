@@ -1,0 +1,17 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Advanced Latitudes",
+  "variantTitle": "International Date Line",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "Which line of longitude is marked 180°?",
+      "initialRotation": [180, 0, 0],
+      "lines": [{ "type": "lon", "value": 180, "color": "#a855f7", "dashed": false }],
+      "correctAnswer": "International Date Line",
+      "options": ["Prime Meridian", "Equator", "International Date Line"]
+    }
+  ]
+}

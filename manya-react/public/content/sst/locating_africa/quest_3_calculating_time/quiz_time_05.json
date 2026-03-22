@@ -1,0 +1,21 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation",
+  "variantTitle": "Finding Longitude (Ahead)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Finding Longitude",
+      "question": "It is 12:00 Noon at GMT and 3:00 PM at City X. What is the longitude of City X?",
+      "initialRotation": [-20, 0, 0],
+      "options": ["45° West", "30° East", "45° East", "30° West"],
+      "correctAnswer": "45° East",
+      "explanation": "<b>Step 1:</b> Time diff = 3 hours. <br><b>Step 2:</b> 3 × 15 = 45°. <br><b>Step 3:</b> Time is Ahead (PM > Noon), so it must be <b>East</b>. <br><b>Answer:</b> 45° East.",
+      "markers": [
+         { "label": "GMT (12:00)", "lat": 51, "lon": 0, "color": "#6366f1" },
+         { "label": "City X (3:00)", "lat": 0, "lon": 45, "color": "#f59e0b" }
+      ]
+    }
+  ]
+}

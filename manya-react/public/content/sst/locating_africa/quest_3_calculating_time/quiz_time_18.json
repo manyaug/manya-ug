@@ -1,0 +1,22 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation",
+  "variantTitle": "Puzzle: West is Behind",
+  "mode": "puzzle",
+  "initialRotation": [20, -10, 0],
+  "zoomFactor": 1.4,
+  "lines": [
+    { "type": "lon", "value": 0, "color": "#1e293b", "label": "GMT (4:00 PM)", "width": 2 },
+    { "type": "lon", "value": -45, "color": "#ef4444", "label": "45° W", "dashed": true }
+  ],
+  "pieces": [
+    { 
+      "id": "ans_1pm", 
+      "label": "1:00 PM", 
+      "icon": "🕐", 
+      "target": [-45, 0], 
+      "color": "#facc15" 
+    }
+  ]
+}

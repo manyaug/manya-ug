@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finite vs. Infinite Sets",
+  "variantTitle": "Quest 1-001: Set Types (Part 3)",
+  "questions": [
+    {
+      "scene": "cows",
+      "expected": "finite",
+      "prompt": "Set of <span style='color:#16a34a'>Cows in this Kraal</span>."
+    }
+  ]
+}

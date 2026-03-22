@@ -1,0 +1,26 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Shape: Strait of Gibraltar (ID)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "What is the name of the narrow water passage indicated by the blue arrow?",
+      "initialRotation": [0, -36, 0],
+      "zoomFactor": 5.0,
+      "highlight": ["504"],
+      "highlightColor": "#fcd34d",
+      "overlays": [
+        { 
+          "type": "arrow", 
+          "coordinates": [[-15, 36], [5, 36]], 
+          "color": "#3b82f6" 
+        }
+      ],
+      "correctAnswer": "Strait of Gibraltar",
+      "options": ["Suez Canal", "Strait of Gibraltar", "Bab-el-Mandeb"]
+    }
+  ]
+}

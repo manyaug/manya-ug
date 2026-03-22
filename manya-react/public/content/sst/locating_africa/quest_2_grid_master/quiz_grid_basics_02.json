@@ -1,0 +1,18 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Latitudes Quiz",
+  "variantTitle": "Equator: Uganda",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 2",
+      "question": "Which of these countries is crossed by the Equator?",
+      "initialRotation": [-32, -5, 0],
+      "highlight": ["uganda"],
+      "highlightColor": "#86efac",
+      "correctAnswer": "Uganda",
+      "options": ["Egypt", "Uganda", "South Africa"]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation (East)",
+  "variantTitle": "Ghana to Uganda (Eastward)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Ghana to Uganda",
+      "question": "Accra (Ghana) is at 0°. Uganda is approx 45° East. If it is 2:00 PM in Accra, what time is it in Kampala?",
+      "initialRotation": [-25, 0, 0],
+      "options": ["5:00 PM", "11:00 AM", "4:00 PM", "5:00 AM"],
+      "correctAnswer": "5:00 PM",
+      "explanation": "<b>Step 1:</b> 45° ÷ 15 = 3 Hours.<br><b>Step 2:</b> Uganda is East of Ghana. Add time.<br><b>Step 3:</b> 2:00 PM + 3 hours = 5:00 PM.",
+      "markers": [{ "label": "Accra (2PM)", "lat": 5, "lon": 0, "color": "#3b82f6" }, { "label": "Kampala (?)", "lat": 1, "lon": 45, "color": "#ef4444" }],
+      "connection": { "from": [0, 5], "to": [45, 1] }
+    }
+  ]
+}

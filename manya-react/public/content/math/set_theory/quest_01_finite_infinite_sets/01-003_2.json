@@ -1,0 +1,10 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-004: Nature Walk (Part 2)",
+  "questions": [
+    { "scene": "fish", "expected": "finite", "prompt": "Set of <b>Fish in Lake Victoria</b>." }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Math Concepts",
+  "variantTitle": "Quest 1-005: Number Sets (Part 3)",
+  "questions": [
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "Set of <b>Multiples of 5</b>."
+    }
+  ]
+}

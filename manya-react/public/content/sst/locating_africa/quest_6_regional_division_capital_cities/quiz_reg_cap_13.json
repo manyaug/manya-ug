@@ -1,0 +1,27 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Geography",
+  "variantTitle": "Capital: Mogadishu (Somalia)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "id": "q6",
+      "title": "Horn of Africa",
+      "question": "Mogadishu is located on the coast of which country?",
+      "initialRotation": [-40, -5, 0],
+      "zoomFactor": 1.8,
+      "options": ["Ethiopia", "Eritrea", "Somalia", "Djibouti"],
+      "correctAnswer": "Somalia",
+      "explanation": {
+        "text": "<b>Somalia</b> has the longest coastline on mainland Africa. Mogadishu faces the Indian Ocean.",
+        "camera": { "rotation": [-45.3, -2.0, 0], "zoom": 4.5 },
+        "highlight": ["SO"],
+        "highlightColor": "#86efac",
+        "markers": [
+          { "label": "Mogadishu", "lat": 2.0, "lon": 45.3, "color": "#16a34a" }
+        ]
+      }
+    }
+  ]
+}

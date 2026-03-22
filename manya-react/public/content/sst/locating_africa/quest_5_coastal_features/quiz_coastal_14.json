@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Strait: Mozambique Channel",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 5",
+      "question": "The Mozambique Channel separates Madagascar from which mainland country?",
+      "initialRotation": [-35, 20, 0],
+      "zoomFactor": 2.0,
+      "highlight": ["508"],
+      "highlightColor": "#86efac",
+      "correctAnswer": "Mozambique",
+      "options": ["Tanzania", "Mozambique", "South Africa"]
+    }
+  ]
+}

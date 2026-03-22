@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight, Check, Sparkles } from 'lucide-react';
  * - Premium Glassmorphism & Micro-animations
  * - Full Dark/Light Theme support
  */
-export default function GalleryStudyEngine({ data, onComplete }) {
+export function GalleryStudyEngine({ data, onComplete }) {
     const [currentIdx, setCurrentIdx] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
@@ -232,3 +232,6 @@ export default function GalleryStudyEngine({ data, onComplete }) {
         </div>
     );
 }
+
+GalleryStudyEngine.hideGlobalFooter = true;
+export default GalleryStudyEngine;

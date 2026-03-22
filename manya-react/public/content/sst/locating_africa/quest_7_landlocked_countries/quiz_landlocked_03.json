@@ -1,0 +1,26 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Landlocked Countries",
+  "variantTitle": "Horn of Africa: Ethiopia",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "Which port does Ethiopia rely on for 95% of its international trade after becoming landlocked in 1993?",
+      "initialRotation": [-40, -9, 0],
+      "zoomFactor": 3.5,
+      "highlight": ["231"],
+      "highlightColor": "#fb923c",
+      "markers": [
+        { "label": "Addis Ababa", "lat": 9.0, "lon": 38.7, "color": "#c2410c" },
+        { "label": "Djibouti (Port)", "lat": 11.6, "lon": 43.1, "color": "#3b82f6" }
+      ],
+      "overlays": [
+        { "type": "arrow", "coordinates": [[38.7, 9.0], [43.1, 11.6]], "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Port of Djibouti",
+      "options": ["Port Sudan", "Port of Djibouti", "Port of Aden"]
+    }
+  ]
+}

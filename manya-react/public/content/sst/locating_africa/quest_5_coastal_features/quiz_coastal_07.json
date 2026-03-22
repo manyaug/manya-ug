@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Island: Seychelles (Smallest)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 3",
+      "question": "Identify the smallest country in Africa, located East of Tanzania.",
+      "initialRotation": [-55, 5, 0],
+      "zoomFactor": 3.5,
+      "markers": [
+          { "label": "???", "lat": -4.6, "lon": 55.5, "color": "#facc15" }
+      ],
+      "correctAnswer": "Seychelles",
+      "options": ["Comoros", "Seychelles", "Zanzibar"]
+    }
+  ]
+}

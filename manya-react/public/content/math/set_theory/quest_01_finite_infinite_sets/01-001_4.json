@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finite vs. Infinite Sets",
+  "variantTitle": "Quest 1-001: Set Types (Part 4)",
+  "questions": [
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "Set of <span style='color:#16a34a'>Multiples of 7</span> {7, 14, 21, ...}"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Regions",
+  "variantTitle": "Region: Central Africa (Rainforest)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "id": "q4_central_africa",
+      "title": "Central Africa",
+      "question": "Central Africa is dominated by which type of natural vegetation?",
+      "initialRotation": [-20, 0, 0],
+      "zoomFactor": 1.8,
+      "options": ["Desert", "Savanna Grassland", "Tropical Rainforest", "Mediterranean"],
+      "correctAnswer": "Tropical Rainforest",
+      "explanation": {
+        "text": "The <b>Congo Rainforest</b> covers most of Central Africa (DRC & Congo) due to the hot and wet Equatorial climate.",
+        "camera": { "rotation": [-20, 0, 0], "zoom": 2.5 },
+        "highlight": ["central_africa"],
+        "highlightColor": "#a78bfa",
+        "markers": [
+          { "label": "Congo Rainforest", "lat": -1.0, "lon": 20.0, "color": "#166534" }
+        ]
+      }
+    }
+  ]
+}

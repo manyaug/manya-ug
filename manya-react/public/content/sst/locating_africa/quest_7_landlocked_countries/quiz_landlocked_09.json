@@ -1,0 +1,23 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Landlocked Countries",
+  "variantTitle": "Southern Africa: Botswana",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 9",
+      "question": "Which desert covers about 70% of landlocked Botswana, the world's leading producer of diamonds by value?",
+      "initialRotation": [-26, -24, 0],
+      "zoomFactor": 3.5,
+      "highlight": ["072"],
+      "highlightColor": "#facc15",
+      "markers": [
+        { "label": "Gaborone (Botswana)", "lat": -24.6, "lon": 25.9, "color": "#15803d" },
+        { "label": "Kalahari Desert", "lat": -23.0, "lon": 22.0, "color": "#d97706" }
+      ],
+      "correctAnswer": "Kalahari Desert",
+      "options": ["Sahara Desert", "Namib Desert", "Kalahari Desert"]
+    }
+  ]
+}

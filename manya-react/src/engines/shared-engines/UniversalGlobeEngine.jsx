@@ -486,6 +486,14 @@ const UniversalGlobeEngine = ({ data, onComplete }) => {
                   </div>
                 ))}
               </div>
+              
+              {/* Localized Finish Button for Study Mode */}
+              <button 
+                onClick={onComplete}
+                className="w-full mt-4 py-3 rounded-2xl bg-sky-500 text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-transform"
+              >
+                Finish Activity
+              </button>
             </div>
           )}
 
@@ -556,7 +564,5 @@ const UniversalGlobeEngine = ({ data, onComplete }) => {
   );
 };
 
-UniversalGlobeEngine.floatingFooter = true;
-UniversalGlobeEngine.hideFooterOnQuiz = true;
 
 export default UniversalGlobeEngine;

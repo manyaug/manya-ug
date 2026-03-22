@@ -1,0 +1,19 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation (West)",
+  "variantTitle": "Accra to New York (Westward)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Accra to New York",
+      "question": "Accra is at 0°. New York is approx 75° West. If it is 5:00 PM in Accra, what time is it in New York?",
+      "initialRotation": [40, 20, 0],
+      "options": ["10:00 PM", "12:00 PM", "12:00 AM", "8:00 PM"],
+      "correctAnswer": "12:00 PM",
+      "explanation": "<b>Step 1:</b> 75° ÷ 15 = 5 Hours.<br><b>Step 2:</b> New York is West (Behind). Subtract.<br><b>Step 3:</b> 5:00 PM - 5 hours = 12:00 Noon.",
+      "markers": [{ "label": "Accra (5PM)", "lat": 5, "lon": 0, "color": "#3b82f6" }, { "label": "NY (?)", "lat": 40, "lon": -75, "color": "#ef4444" }],
+      "connection": { "from": [0, 5], "to": [-75, 40] }
+    }
+  ]
+}

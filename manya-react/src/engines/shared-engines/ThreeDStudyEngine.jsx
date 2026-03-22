@@ -10,7 +10,7 @@ import { RotateCcw, Box, Sparkles, Info, CheckCircle2, Trophy, ChevronRight, X, 
  * - Global Theme: Syncs with Manya's Light/Dark mode.
  * - Quiz/Study Modes: Interactive labeling and anatomical focus.
  */
-export default function ThreeDStudyEngine({ data, onComplete }) {
+export function ThreeDStudyEngine({ data, onComplete }) {
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -365,3 +365,5 @@ export default function ThreeDStudyEngine({ data, onComplete }) {
         </div>
     );
 }
+
+export default ThreeDStudyEngine;

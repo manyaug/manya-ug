@@ -1,202 +1,57 @@
 {
   "engineType": "GLOBE_TIME_ENGINE",
   "subject": "SOCIAL_STUDIES",
-  "topic": "Physical Geography",
-  "variantTitle": "Study: All 16 Landlocked Nations",
+  "topic": "Landlocked Countries",
+  "variantTitle": "Quest 9: The Landlocked Challenge",
    "mode": "study",
   
   "cases": [
     {
-      "tabTitle": "East Africa",
-      "title": "East Africa & The Nile",
-      "description": "Uganda, Rwanda, Burundi, South Sudan.",
-      "initialRotation": [-32, -2, 0],
-      "zoomFactor": 3.0,
-      "highlight": ["800", "646", "108", "728"], 
+      "tabTitle": "Definition",
+      "title": "What is a Landlocked Country?",
+      "description": "A country that has no direct access to the sea/ocean.",
+      "initialRotation": [-25, -5, 0],
+      "highlight": ["800", "646", "108", "728"],
       "highlightColor": "#f87171",
-      
       "steps": [
-        "<b>Overview:</b> East Africa has 4 landlocked countries. They are famous for the Great Lakes.",
-        "<b>Uganda (Pearl of Africa):</b> Uses the Northern Corridor to the <b>Port of Mombasa</b> (Kenya).",
-        "<b>Rwanda & Burundi:</b> These small mountainous nations use the Central Corridor to the <b>Port of Dar es Salaam</b> (Tanzania).",
-        "<b>South Sudan:</b> The newest nation (2011). It exports oil via pipelines to <b>Port Sudan</b> in the north and Mombasa in the south."
-      ],
-
-      "markers": [
-        { "label": "Kampala", "lat": 0.3, "lon": 32.5, "color": "#ef4444" },
-        { "label": "Kigali", "lat": -1.9, "lon": 30.0, "color": "#ef4444" },
-        { "label": "Juba", "lat": 4.8, "lon": 31.5, "color": "#ef4444" },
-        { "label": "Mombasa (Port)", "lat": -4.0, "lon": 39.6, "color": "#3b82f6" },
-        { "label": "Dar es Salaam", "lat": -6.7, "lon": 39.2, "color": "#3b82f6" }
-      ],
-
-      "overlays": [
-        { "type": "arrow", "coordinates": [[32.5, 0.3], [39.6, -4.0]], "color": "#3b82f6" }, 
-        { "type": "arrow", "coordinates": [[30.0, -1.9], [39.2, -6.7]], "color": "#3b82f6" },
-        { "type": "arrow", "coordinates": [[31.5, 4.8], [37.0, 19.6]], "color": "#94a3b8" } 
+        "<b>Definition:</b> A country surrounded by land on all sides.",
+        "There are <b>16</b> landlocked countries in Africa.",
+        "<b>Examples:</b> Uganda, Rwanda, Burundi, South Sudan, Zambia, Malawi.",
+        "<b>Problem:</b> Imports and exports are expensive because they must pass through other countries."
       ]
     },
     {
-      "tabTitle": "The Horn",
-      "title": "Ethiopia (The Horn)",
-      "description": "The most populated landlocked nation.",
-      "initialRotation": [-40, -9, 0],
-      "zoomFactor": 3.5,
-      "highlight": ["231"],
-      "highlightColor": "#fb923c",
-      
-      "steps": [
-        "<b>Ethiopia:</b> With over 100 million people, it is the largest landlocked country by population.",
-        "<b>History:</b> It became landlocked in 1993 when Eritrea gained independence, taking the entire Red Sea coastline.",
-        "<b>The Route:</b> 95% of trade goes via rail to the <b>Port of Djibouti</b>."
-      ],
-
-      "markers": [
-        { "label": "Addis Ababa", "lat": 9.0, "lon": 38.7, "color": "#c2410c" },
-        { "label": "Djibouti (Port)", "lat": 11.6, "lon": 43.1, "color": "#3b82f6" }
-      ],
-
-      "overlays": [
-        { "type": "arrow", "coordinates": [[38.7, 9.0], [43.1, 11.6]], "color": "#3b82f6" }
-      ]
-    },
-    {
-      "tabTitle": "West (Sahel)",
-      "title": "The Sahel Region",
-      "description": "Mali, Niger, Burkina Faso.",
-      "initialRotation": [-2, -14, 0],
-      "zoomFactor": 2.8,
-      "highlight": ["466", "562", "854"],
-      "highlightColor": "#facc15",
-      
-      "steps": [
-        "<b>The Sahel:</b> These three vast nations lie on the southern edge of the Sahara Desert.",
-        "<b>Mali:</b> Relies on the <b>Port of Dakar</b> (Senegal) and Abidjan.",
-        "<b>Burkina Faso:</b> Uses Tema (Ghana) and Abidjan (Cote d'Ivoire).",
-        "<b>Niger:</b> The uranium-rich nation uses the <b>Port of Cotonou</b> (Benin) and Lagos."
-      ],
-
-      "markers": [
-        { "label": "Bamako", "lat": 12.6, "lon": -8.0, "color": "#ca8a04" },
-        { "label": "Ouagadougou", "lat": 12.3, "lon": -1.5, "color": "#ca8a04" },
-        { "label": "Niamey", "lat": 13.5, "lon": 2.1, "color": "#ca8a04" },
-        { "label": "Dakar (Port)", "lat": 14.7, "lon": -17.4, "color": "#3b82f6" },
-        { "label": "Cotonou", "lat": 6.3, "lon": 2.4, "color": "#3b82f6" }
-      ],
-
-      "overlays": [
-        { "type": "arrow", "coordinates": [[-8.0, 12.6], [-17.4, 14.7]], "color": "#3b82f6" },
-        { "type": "arrow", "coordinates": [[-1.5, 12.3], [-0.1, 5.6]], "color": "#3b82f6" },
-        { "type": "arrow", "coordinates": [[2.1, 13.5], [2.4, 6.3]], "color": "#3b82f6" }
-      ]
-    },
-    {
-      "tabTitle": "Central Africa",
-      "title": "Central Heart",
-      "description": "Chad and Central African Republic (CAR).",
-      "initialRotation": [-16, -8, 0],
-      "zoomFactor": 3.0,
-      "highlight": ["148", "140"],
-      "highlightColor": "#a78bfa",
-      
-      "steps": [
-        "<b>Location:</b> These two countries are deep in the center of the continent, making transport very expensive.",
-        "<b>Chad:</b> A large desert nation. It relies on the <b>Port of Douala</b> (Cameroon) via road and rail.",
-        "<b>C.A.R.:</b> The Central African Republic also uses the Ubangi River to connect to the Congo, but mainly trucks goods to <b>Douala</b>."
-      ],
-
-      "markers": [
-        { "label": "N'Djamena", "lat": 12.1, "lon": 15.0, "color": "#7e22ce" },
-        { "label": "Bangui", "lat": 4.3, "lon": 18.5, "color": "#7e22ce" },
-        { "label": "Douala (Port)", "lat": 4.0, "lon": 9.7, "color": "#3b82f6" }
-      ],
-
-      "overlays": [
-        { "type": "arrow", "coordinates": [[15.0, 12.1], [9.7, 4.0]], "color": "#3b82f6" },
-        { "type": "arrow", "coordinates": [[18.5, 4.3], [9.7, 4.0]], "color": "#3b82f6" }
-      ]
-    },
-    {
-      "tabTitle": "Southern I",
-      "title": "The Zambezi Region",
-      "description": "Zambia, Zimbabwe, Malawi.",
-      "initialRotation": [-30, -16, 0],
-      "zoomFactor": 2.8,
-      "highlight": ["894", "716", "454"],
-      "highlightColor": "#60a5fa",
-      
-      "steps": [
-        "<b>Zambia:</b> A major Copper producer. Uses the TAZARA railway to Dar es Salaam and roads to Durban.",
-        "<b>Zimbabwe:</b> Uses the <b>Port of Beira</b> (Mozambique) for the shortest route to the sea.",
-        "<b>Malawi:</b> Known as the 'Warm Heart of Africa'. It uses the Nacala railway to Mozambique."
-      ],
-
-      "markers": [
-        { "label": "Lusaka", "lat": -15.4, "lon": 28.3, "color": "#1d4ed8" },
-        { "label": "Harare", "lat": -17.8, "lon": 31.0, "color": "#1d4ed8" },
-        { "label": "Beira (Port)", "lat": -19.8, "lon": 34.8, "color": "#3b82f6" },
-        { "label": "Dar es Salaam", "lat": -6.7, "lon": 39.2, "color": "#3b82f6" }
-      ],
-
-      "overlays": [
-        { "type": "arrow", "coordinates": [[31.0, -17.8], [34.8, -19.8]], "color": "#3b82f6" },
-        { "type": "arrow", "coordinates": [[28.3, -15.4], [39.2, -6.7]], "color": "#3b82f6" }
-      ]
-    },
-    {
-      "tabTitle": "Southern II",
-      "title": "Kalahari & Kingdoms",
-      "description": "Botswana and Eswatini.",
-      "initialRotation": [-26, -24, 0],
-      "zoomFactor": 3.5,
-      "highlight": ["072", "748"],
+      "tabTitle": "Gateways",
+      "title": "Gateway Countries",
+      "description": "Neighbors with sea ports that help landlocked countries.",
+      "initialRotation": [-40, -5, 0],
+      "highlight": ["404", "834"],
       "highlightColor": "#4ade80",
-      
-      "steps": [
-        "<b>Botswana:</b> A wealthy diamond nation covered by the Kalahari Desert. It uses <b>Durban</b> (South Africa) and Walvis Bay (Namibia).",
-        "<b>Eswatini:</b> Formerly Swaziland. It is small and borders Mozambique and South Africa. It uses the <b>Port of Maputo</b>."
-      ],
-
       "markers": [
-        { "label": "Gaborone", "lat": -24.6, "lon": 25.9, "color": "#15803d" },
-        { "label": "Mbabane", "lat": -26.3, "lon": 31.1, "color": "#15803d" },
-        { "label": "Maputo (Port)", "lat": -25.9, "lon": 32.5, "color": "#3b82f6" },
-        { "label": "Walvis Bay", "lat": -22.9, "lon": 14.5, "color": "#3b82f6" }
+        { "label": "Mombasa", "lat": -4, "lon": 39.6, "color": "#3b82f6" },
+        { "label": "Dar es Salaam", "lat": -6.8, "lon": 39.2, "color": "#3b82f6" }
       ],
-
-      "overlays": [
-        { "type": "arrow", "coordinates": [[31.1, -26.3], [32.5, -25.9]], "color": "#3b82f6" },
-        { "type": "arrow", "coordinates": [[25.9, -24.6], [14.5, -22.9]], "color": "#3b82f6" }
+      "steps": [
+        "<b>Kenya</b> and <b>Tanzania</b> are neighbors to Uganda.",
+        "They have coastlines on the Indian Ocean.",
+        "<b>Mombasa (Kenya)</b> handles most of Uganda's trade.",
+        "<b>Dar es Salaam (Tanzania)</b> is another key port for Rwanda, Burundi, and Zambia."
       ]
     },
     {
-      "tabTitle": "Lesotho",
-      "title": "The Enclave: Lesotho",
-      "description": "A Country Inside a Country.",
-      "initialRotation": [-28, 29, 0],
-      "zoomFactor": 5.0,
-      "highlight": ["426"], 
-      "highlightColor": "#ec4899",
-      
-      "steps": [
-        "<b>Lesotho:</b> This is a Kingdom in the sky (very high altitude).",
-        "<b>Enclave:</b> It is unique because it is completely surrounded by **South Africa**.",
-        "<b>Trade:</b> It is totally dependent on South Africa for road access to the ocean (Durban).",
-        "<b>Fact:</b> It is one of only 3 enclave nations in the world (others are Vatican and San Marino)."
-      ],
-
-      "focusPoints": [
-        { "label": "Lesotho", "rotation": [-28.2, 29.3, 0], "zoom": 5.5 }
-      ],
-
+      "tabTitle": "Trade Routes",
+      "title": "The Route to the Sea",
+      "description": "How goods travel from Kampala to the Ocean.",
+      "initialRotation": [-36, -2, 0],
+      "zoomFactor": 2.5,
+      "connection": { "from": [32.5, 0.3], "to": [39.6, -4] },
       "markers": [
-        { "label": "Maseru", "lat": -29.3, "lon": 27.5, "color": "#be185d" },
-        { "label": "Durban (Port)", "lat": -29.8, "lon": 31.0, "color": "#3b82f6" }
+        { "label": "Kampala", "lat": 0.3, "lon": 32.5, "color": "#facc15" }
       ],
-
-      "overlays": [
-        { "type": "curve", "center": [28, -29], "radius": 4, "color": "#1d4ed8" },
-        { "type": "arrow", "coordinates": [[27.5, -29.3], [31.0, -29.8]], "color": "#3b82f6" }
+      "steps": [
+        "Goods travel by <b>Road</b> or <b>Railway</b>.",
+        "The dashed line shows the route from Kampala to Mombasa.",
+        "<b>Solution to problems:</b> Joining regional groups like the <b>EAC</b> (East African Community) helps lower taxes and speed up transport."
       ]
     }
   ]

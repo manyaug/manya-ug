@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Location of Africa",
+  "variantTitle": "Water: Bab-el-Mandeb Strait",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 4",
+      "question": "Which narrow strait connects the Red Sea to the Indian Ocean?",
+      "initialRotation": [-43, -12, 0],
+      "zoomFactor": 5.0,
+      "overlays": [
+          { "type": "arrow", "coordinates": [[43, 13], [44, 12]], "color": "#ef4444" }
+      ],
+      "correctAnswer": "Bab-el-Mandeb",
+      "options": ["Strait of Gibraltar", "Bab-el-Mandeb", "Mozambique Channel"]
+    }
+  ]
+}

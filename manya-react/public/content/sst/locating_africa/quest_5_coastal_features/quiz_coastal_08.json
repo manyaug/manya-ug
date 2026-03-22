@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Island: Cape Verde (West)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 4",
+      "question": "Which island nation is located in the Atlantic Ocean, west of Senegal?",
+      "initialRotation": [24, -16, 0],
+      "zoomFactor": 3.0,
+      "markers": [
+          { "label": "???", "lat": 16, "lon": -24, "color": "#ef4444" }
+      ],
+      "correctAnswer": "Cape Verde",
+      "options": ["Sao Tome", "Cape Verde", "Canary Islands"]
+    }
+  ]
+}

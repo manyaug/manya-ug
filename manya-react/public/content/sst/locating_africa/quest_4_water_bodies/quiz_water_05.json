@@ -1,0 +1,20 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "World Geography",
+  "variantTitle": "Ocean: East of Africa (Indian)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 5",
+      "question": "Which ocean is named after a country and lies to the East of Africa?",
+      "initialRotation": [-75, -10, 0],
+      "zoomFactor": 1.0,
+      "markers": [
+          { "label": "???", "lat": -10, "lon": 75, "color": "#0ea5e9" }
+      ],
+      "correctAnswer": "Indian Ocean",
+      "options": ["Indian Ocean", "Pacific Ocean", "Arabian Sea"]
+    }
+  ]
+}

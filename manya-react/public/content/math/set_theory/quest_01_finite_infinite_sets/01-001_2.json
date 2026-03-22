@@ -1,0 +1,14 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finite vs. Infinite Sets",
+  "variantTitle": "Quest 1-001: Set Types (Part 2)",
+  "questions": [
+    {
+      "scene": "stars",
+      "expected": "infinite",
+      "prompt": "Set of <span style='color:#9333ea'>Whole Numbers</span> {0, 1, 2, ...}"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Regions",
+  "variantTitle": "Region: East Africa (Kilimanjaro)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "id": "q1_east_africa",
+      "title": "East Africa",
+      "question": "Which East African country is home to Mt. Kilimanjaro, the highest peak in Africa?",
+      "initialRotation": [-34, -2, 0],
+      "zoomFactor": 2.0,
+      "options": ["Uganda", "Kenya", "Tanzania", "Rwanda"],
+      "correctAnswer": "Tanzania",
+      "explanation": {
+        "text": "<b>Tanzania</b> contains Mt. Kilimanjaro near its northern border with Kenya. It is the highest mountain in Africa.",
+        "camera": { "rotation": [-37.3, -3.06, 0], "zoom": 4.0 },
+        "highlight": ["834"],
+        "highlightColor": "#4ade80",
+        "markers": [
+          { "label": "Mt. Kilimanjaro", "lat": -3.06, "lon": 37.3, "color": "#ffffff" },
+          { "label": "Tanzania", "lat": -6.0, "lon": 35.0, "color": "#16a34a" }
+        ]
+      }
+    }
+  ]
+}

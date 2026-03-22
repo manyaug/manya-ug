@@ -1,0 +1,24 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Advanced Grid Knowledge",
+  "variantTitle": "Kampala: Grid Reference",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 5",
+      "question": "Uganda is located at a specific grid reference. Which of these is correct?",
+      "initialRotation": [-32, 0, 0],
+      "zoomFactor": 2.0,
+      "lines": [
+          { "type": "lat", "value": 0, "color": "#22c55e", "dashed": true },
+          { "type": "lon", "value": 32, "color": "#22c55e", "dashed": true }
+      ],
+      "markers": [
+           { "label": "Kampala", "lat": 0.3, "lon": 32.5, "color": "#facc15" }
+      ],
+      "correctAnswer": "0° N, 32° E",
+      "options": ["0° N, 32° E", "0° N, 32° W", "23° N, 32° E"]
+    }
+  ]
+}

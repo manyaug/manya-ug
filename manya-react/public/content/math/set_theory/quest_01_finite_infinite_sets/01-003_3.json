@@ -1,0 +1,10 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-004: Nature Walk (Part 3)",
+  "questions": [
+    { "scene": "sand", "expected": "finite", "prompt": "Set of <b>Grains of Sand</b> on a beach." }
+  ]
+}

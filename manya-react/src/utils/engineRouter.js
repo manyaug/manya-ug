@@ -9,33 +9,51 @@ export const ENGINE_REGISTRY = {
     // React-Native Engines (Migrated)
     'GALLERY_STUDY': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/shared-engines/GalleryStudyEngine.jsx'))
     },
     'IMAGE_HOTSPOTS': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/shared-engines/ImageHotspotsEngine.jsx'))
     },
     'GLOBE_TIME_ENGINE': {
         type: 'react',
+        hideGlobalFooter: true,
+        floatingFooter: true,
         component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
     },
     'READER_STUDY': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/shared-engines/ReaderStudyEngine.jsx'))
     },
 
     // Legacy Engines (Still in Public/Legacy)
     // These will be handled by the legacy loading path in QuestRunner
-    'SET_THEORY': { type: 'legacy' },
-    'MATH_STUDY': { type: 'legacy' },
+    'SET_THEORY': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/math/SetTheoryEngine.jsx'))
+    },
+    'MATH_STUDY': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/math/SetStudyEngine.jsx'))
+    },
     'VENN_PROB_ENGINE': { type: 'legacy' },
     'SUBSET_GAME': { type: 'legacy' },
     'PIZZA_GAME': { type: 'legacy' },
     'BINARY_GAME': { type: 'legacy' },
     'VENN_SPOTLIGHT': { type: 'legacy' },
-    'SET_CLASSIFIER': { type: 'legacy' },
+    'SET_CLASSIFIER': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/math/SetClassifierEngine.jsx'))
+    },
     '3D_SKELETON': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/shared-engines/ThreeDStudyEngine.jsx'))
     },
     'PROCEDURAL_CANVAS': { type: 'legacy' },

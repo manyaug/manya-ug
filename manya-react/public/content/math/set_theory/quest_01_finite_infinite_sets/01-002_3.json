@@ -1,0 +1,10 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Types",
+  "variantTitle": "Quest 1-003: Abstract Sets (Part 3)",
+  "questions": [
+    { "scene": "cows", "expected": "finite", "prompt": "Set of <b>Primary Schools in Uganda</b>." }
+  ]
+}

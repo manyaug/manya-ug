@@ -1,0 +1,27 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Shape: Gulf of Guinea (Curve)",
+  "mode": "quiz",
+  "questions": [
+    {
+      "title": "Question 2",
+      "question": "Identify the large water body highlighted by the blue curve on the West Coast.",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 2.0,
+      "highlight": ["566", "288", "120"],
+      "highlightColor": "#e0f2fe",
+      "overlays": [
+        { 
+          "type": "curve", 
+          "center": [3, 2], 
+          "radius": 12, 
+          "color": "#0ea5e9" 
+        }
+      ],
+      "correctAnswer": "Gulf of Guinea",
+      "options": ["Gulf of Aden", "Gulf of Guinea", "Gulf of Sirte"]
+    }
+  ]
+}
