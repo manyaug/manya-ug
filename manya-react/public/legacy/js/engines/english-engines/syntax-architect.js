@@ -18,6 +18,17 @@ export const SyntaxArchitect = {
                 SyntaxArchitect.show();
             } else {
                 console.log("SyntaxArchitect complete, moving to next step.");
+                
+                // DB Bridge
+                const result = {
+                    isCorrect: true,
+                    score: s.data.questions.length,
+                    total: s.data.questions.length,
+                    type: 'quiz'
+                };
+                if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+                if (window.captureSimulationResult) window.captureSimulationResult(true, result.score, result.total);
+
                 window.QuestRunner.next();
             }
             return;

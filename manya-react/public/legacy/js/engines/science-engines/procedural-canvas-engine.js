@@ -127,6 +127,13 @@ export const ProceduralCanvasEngine = {
                 <p class="proc-data-desc">${part.desc}</p>
             </div>`;
         document.getElementById('proc-label').innerText = id.toUpperCase();
+
+        // DB Bridge: Mark as completed once an interaction occurs
+        if (!ProceduralCanvasEngine.state.hasInteracted) {
+            ProceduralCanvasEngine.state.hasInteracted = true;
+            if (window.captureSimulationResult) window.captureSimulationResult(true, 1, 1);
+            if (window.onSimulationSubmit) window.onSimulationSubmit({ isCorrect: true, score: 1, total: 1, type: 'simulation' });
+        }
     },
 
     startLoop: () => {

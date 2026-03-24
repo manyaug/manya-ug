@@ -2,27 +2,28 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Attribute Sorting",
-  "variantTitle": "Quest 6-022: Shape Sorter",
-  "sets": { "A": { "label": "Red", "color": "#ef4444" }, "B": { "label": "Circle", "color": "#3b82f6" } },
-  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "topic": "Shading Regions",
+  "variantTitle": "Quest 6-023: Region Painter",
+  "sets": { "A": { "label": "X", "color": "#9333ea" }, "B": { "label": "Y", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] }, 
   "questions": [
     {
-      "interaction": "DRAG_SORT",
-      "prompt": "Sort the shapes.<br><b>A = Red Objects</b>, <b>B = Circles</b>",
-      "items": [
-        { "val": "🟥", "target": "left" },   
-        { "val": "🔴", "target": "center" },
-        { "val": "🔵", "target": "right" },  
-        { "val": "🟦", "target": "outside" } 
-      ]
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_left",
+      "prompt": "Tap regions to shade <span style='color:#9333ea'>X '</span> (Complement of X).",
+      "hint": "Everything NOT in circle X. (Y Only + Outside)."
     },
     {
-      "retain_visuals": true,
-      "type": "COUNT",
+      "interaction": "CLICK_SUM",
       "targetRegion": "intersection",
-      "prompt": "How many items are <b>Red Circles</b>?",
-      "hint": "Count the items in the middle."
+      "prompt": "Tap to shade <span style='color:#64748b'>X ∩ Y</span>.",
+      "hint": "The overlapping middle part."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "Tap to shade <span style='color:#0f172a'>(X ∪ Y) - (X ∩ Y)</span>.",
+      "hint": "Everything in the circles EXCEPT the middle."
     }
   ]
 }

@@ -11,7 +11,7 @@ import { ChevronLeft, ChevronRight, Sparkles, Orbit } from 'lucide-react';
  * - Fixed Proper Subset Logic in Power Sets.
  */
 
-const SetStudyEngine = ({ data, onComplete }) => {
+const SetStudyEngine = ({ data, onComplete, onResult }) => {
   const [stepIdx, setStepIdx] = useState(0);
   const [isDark, setIsDark] = useState(false);
   const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
@@ -287,7 +287,21 @@ const SetStudyEngine = ({ data, onComplete }) => {
 
   useEffect(() => { tickRef.current = 0; if (slides.length > 0 && !visitedIndices.has(stepIdx)) setVisitedIndices(prev => new Set([...prev, stepIdx])); }, [stepIdx, slides.length]);
 
-  const hNext = () => { if (stepIdx < slides.length - 1) setStepIdx(s => s + 1); else if (allSeen) onComplete(); };
+  const hNext = () => { 
+    if (stepIdx < slides.length - 1) {
+      setStepIdx(s => s + 1); 
+    } else if (allSeen) {
+      if (onResult) {
+        onResult({
+          isCorrect: true,
+          score: 1,
+          total: 1,
+          type: 'study_complete'
+        });
+      }
+      onComplete(); 
+    }
+  };
   const hPrev = () => { if (stepIdx > 0) setStepIdx(s => s - 1); };
 
   const theme = isDark ? { bg: 'bg-[#0B101A]', stage: 'from-[#0F172A] to-[#0B101A]', card: 'bg-[#151921]', text: 'text-white', sub: 'text-slate-400', b: 'border-white/5' } : { bg: 'bg-[#F8FAFC]', stage: 'from-[#FFFBF5] to-[#F8F9FA]', card: 'bg-white', text: 'text-[#0f172a]', sub: 'text-[#475569]', b: 'border-slate-100' };

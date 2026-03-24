@@ -2,26 +2,26 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Intersection Probability",
-  "variantTitle": "Quest 10-025: Drink Prob",
-  "sets": { "A": { "label": "T (25)", "color": "#06b6d4" }, "B": { "label": "C (20)", "color": "#8b5cf6" } },
-  "zones": { "left": ["20"], "center": ["x"], "right": ["15"], "outside": ["0"] },
+  "topic": "Probability of Union",
+  "variantTitle": "Quest 10-026: Sports Prob",
+  "sets": { "A": { "label": "F (40)", "color": "#16a34a" }, "B": { "label": "R (30)", "color": "#f59e0b" } },
+  "zones": { "left": ["30"], "center": ["10"], "right": ["20"], "outside": ["20"] },
   "questions": [
     {
-      "type": "ALGEBRA_SOLVE",
-      "targetRegion": "intersection",
-      "equation_target": 40,
-      "expected_x": 5,
-      "prompt": "Total=40. Find <b>x</b> (Both).",
-      "hint": "25 + 20 - x = 40."
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "How many play <b>at least one</b> sport?",
+      "hint": "30 + 10 + 20 = 60."
     },
     {
       "retain_visuals": true,
       "type": "PROBABILITY",
-      "targetRegion": "intersection",
-      "x_val": 5, "total": 40, "expression": "x",
-      "prompt": "Probability of drinking <b>Both</b>?",
-      "hint": "5/40 = 1/8."
+      "targetRegion": "union",
+      "total": 80,
+      "x_val": 0,
+      "expression": "60",
+      "prompt": "Probability of picking a student who plays a sport?",
+      "hint": "Union (60) / Total (80) = 3/4."
     }
   ]
 }

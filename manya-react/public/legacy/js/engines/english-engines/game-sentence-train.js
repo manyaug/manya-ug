@@ -195,6 +195,17 @@ export const SentenceTrainEngine = {
 
     endGame: () => {
         const s = SentenceTrainEngine.state;
+        
+        // DB Bridge
+        const result = {
+            isCorrect: true,
+            score: s.score,
+            total: s.levels.length * 100,
+            type: 'game'
+        };
+        if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+        if (window.captureSimulationResult) window.captureSimulationResult(true, s.score, result.total);
+
         s.container.innerHTML = `
             <div class="bento-card" style="text-align:center; padding:40px; animation: popIn 0.5s;">
                 <div style="font-size:4rem; margin-bottom:10px;">🚂🏆</div>

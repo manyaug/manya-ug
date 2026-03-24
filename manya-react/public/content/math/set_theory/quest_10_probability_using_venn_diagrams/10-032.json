@@ -2,35 +2,29 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Double Variables",
-  "variantTitle": "Quest 10-018: Subject Sets",
-  "sets": { "A": { "label": "E (36)", "color": "#9333ea" }, "B": { "label": "M", "color": "#db2777" } },
-  "zones": { "left": ["3n"], "center": ["12"], "right": ["4h+5"], "outside": ["15-h"] },
+  "topic": "Number Probability",
+  "variantTitle": "Quest 10-020: Prime Odds",
+  "sets": { "A": { "label": "Prime < 10", "color": "#db2777" }, "B": { "label": "Odd < 10", "color": "#9333ea" } },
+  "zones": { "left": [2], "center": [3, 5, 7], "right": [1, 9], "outside": [4, 6, 8] },
   "questions": [
     {
-      "type": "ALGEBRA_SOLVE",
-      "targetRegion": "left_total",
-      "equation_target": 36,
-      "expected_x": 8,
-      "prompt": "<b>Part 1:</b> Given n(E) = 36, find <b>n</b>.",
-      "hint": "3n + 12 = 36."
-    },
-    {
-      "type": "ALGEBRA_SOLVE", 
-      "targetRegion": "right_total",
-      "equation_target": 33, 
-      "expected_x": 33, 
-      "prompt": "<b>Part 2:</b> Given n(M) = h + 29. Find Total n(M).",
-      "hint": "(4h+5) + 12 = h + 29. Solve for h, then find Total M."
-      
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort numbers < 10 into Primes & Odds.",
+      "items": [
+        { "val": "2", "target": "left" },
+        { "val": "3", "target": "center" },
+        { "val": "1", "target": "right" },
+        { "val": "4", "target": "outside" },
+        { "val": "9", "target": "right" }
+      ]
     },
     {
       "retain_visuals": true,
-      "type": "COUNT_SUM",
-      "targetRegion": "union",
-      "x_val": 8,
-      "prompt": "Find the <b>Total Number</b> of pupils.",
-      "hint": "n=8, h=4. Sum: 24 + 12 + 21 + 11 = 68."
+      "type": "PROBABILITY",
+      "targetRegion": "intersection",
+      "x_val": 1, "total": 9, "expression": "3", 
+      "prompt": "Prob. of picking a number that is <b>Prime AND Odd</b>?",
+      "hint": "{3, 5, 7} are the overlapping numbers. 3/9 = 1/3."
     }
   ]
 }

@@ -226,6 +226,16 @@ export const FunctionalComposer = {
             FunctionalComposer.state.currentStep++;
             FunctionalComposer.loadTask();
         } else {
+            // DB Bridge
+            const result = {
+                isCorrect: true,
+                score: FunctionalComposer.state.data.questions.length,
+                total: FunctionalComposer.state.data.questions.length,
+                type: 'writing'
+            };
+            if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+            if (window.captureSimulationResult) window.captureSimulationResult(true, result.score, result.total);
+
             FunctionalComposer.state.container.innerHTML = `
                 <div class="composer-workspace">
                     <h1 style="color:#6366f1; margin-top:50px">Quest Complete! 🎓</h1>

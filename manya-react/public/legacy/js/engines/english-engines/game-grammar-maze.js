@@ -253,6 +253,18 @@ export const JungleMazeEngine = {
 
     endGame: (status) => {
         const s = JungleMazeEngine.state;
+        const isWin = status === "complete";
+        
+        // DB Bridge
+        const result = {
+            isCorrect: isWin,
+            score: s.score,
+            total: s.questData.length * 250,
+            type: 'game'
+        };
+        if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+        if (window.captureSimulationResult) window.captureSimulationResult(isWin, s.score, result.total);
+
         s.isGameOver = true;
         clearInterval(s.obstacleInterval);
 
@@ -261,7 +273,7 @@ export const JungleMazeEngine = {
         if(mainFooter) mainFooter.style.display = 'flex';
         
         // Also enable the button inside it
-        if (window.QuestRunner) window.QuestRunner.enableButton(true, window.QuestRunner.next, "CONTINUE");
+        if (window.QuestRunner) window.QuestRunner.enableButton(true, "CONTINUE");
 
         const modal = document.createElement('div');
         modal.id = "game-over-screen";

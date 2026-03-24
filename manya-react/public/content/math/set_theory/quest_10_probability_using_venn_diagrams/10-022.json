@@ -2,45 +2,35 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Algebraic Ratios II",
-  "variantTitle": "Topic 10: Peas & Beans",
-  "sets": {
-    "A": { "label": "P (50)", "color": "#9333ea" },
-    "B": { "label": "B", "color": "#db2777" }
-  },
-  "zones": {
-    "left": ["50-x"],
-    "center": ["x"],
-    "right": ["2x"],
-    "outside": ["10"]
-  }, 
+  "topic": "Complex Word Problems",
+  "variantTitle": "Topic 10: Wedding Drinks",
+  "sets": { "A": { "label": "J (32)", "color": "#9333ea" }, "B": { "label": "W", "color": "#db2777" } },
+  "zones": { "left": ["32-x"], "center": ["x"], "right": ["3x-2"], "outside": ["11"] },
   "questions": [
     {
       "interaction": "DIAGRAM_FILL",
-      "prompt": "<b>Phase 1:</b> Beans only is 2x. Neither is 10. Fill the diagram.",
+      "prompt": "<b>Phase 1:</b> Wine only is 2 less than thrice x. Neither is 11.",
       "inputs": [
-        { "region": "left", "expected": "50-x" },
-        { "region": "right", "expected": "2x" },
-        { "region": "center", "expected": "x" },
-        { "region": "outside", "expected": "10" }
+        { "region": "left", "expected": "32-x" },
+        { "region": "right", "expected": "3x-2" },
+        { "region": "outside", "expected": "11" }
       ]
     },
     {
       "type": "ALGEBRA_SOLVE",
       "targetRegion": "union", 
-      "equation_target": 90,
-      "expected_x": 15,
-      "prompt": "<b>Phase 2:</b> Total farmers = 90. Find <b>x</b>.",
-      "hint": "(50-x) + x + 2x + 10 = 90 -> 60 + 2x = 90"
+      "equation_target": 62,
+      "expected_x": 7,
+      "prompt": "<b>Phase 2:</b> Total guests = 62. Find <b>x</b>.",
+      "hint": "(32-x) + x + (3x-2) + 11 = 62 -> 3x + 41 = 62"
     },
     {
       "retain_visuals": true,
-      "type": "ALGEBRA_SUBSTITUTE",
+      "type": "COUNT_SUM",
       "targetRegion": "right_total",
-      "x_val": 15,
-      "expression": "3x",
-      "prompt": "How many grow <span style='color:#db2777'>Beans</span> in total?",
-      "hint": "Intersection + Beans Only = x + 2x = 3x."
+      "x_val": 7,
+      "prompt": "Find Total Wine drinkers.",
+      "hint": "Intersection (7) + Wine Only (3(7)-2 = 19). Sum = 26."
     }
   ]
 }

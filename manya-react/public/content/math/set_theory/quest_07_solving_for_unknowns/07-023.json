@@ -2,28 +2,38 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Algebraic Construction",
-  "variantTitle": "Quest 7-018: Sports Build",
-  "sets": { "A": { "label": "R", "color": "#7c3aed" }, "B": { "label": "T", "color": "#db2777" } },
-  "zones": { "left": ["2n"], "center": ["10"], "right": ["n"], "outside": ["0"] },
+  "topic": "Partial Sums",
+  "variantTitle": "Quest 7-019: Set Logic",
+  "sets": { "A": { "label": "H (24)", "color": "#9333ea" }, "B": { "label": "R", "color": "#db2777" } },
+  "zones": { "left": ["2k"], "center": ["k+3"], "right": ["3k-1"], "outside": ["k+3"] }, 
   "questions": [
     {
-      "interaction": "DRAG_SORT",
-      "prompt": "<b>Phase 1: Build It</b><br>• R-only: <b>2n</b> &nbsp; • T-only: <b>n</b><br>• Both: <b>10</b>",
-      "items": [
-        { "val": "2n", "target": "left" },
-        { "val": "10", "target": "center" },
-        { "val": "n", "target": "right" }
-      ]
+      "interaction": "CHOICE",
+      "prompt": "<b>Step 1:</b> Which equation helps find <b>k</b> given n(H)=24?",
+      "options": [
+        "2k + (k+3) = 24",
+        "(k+3) + (3k-1) = 24",
+        "Sum of all regions = 24"
+      ],
+      "expected": "2k + (k+3) = 24",
+      "hint": "n(H) is the total of the Left Circle (Only + Both)."
     },
     {
-      "retain_visuals": false,
       "type": "ALGEBRA_SOLVE",
-      "targetRegion": "union",
-      "equation_target": 40,
-      "expected_x": 10,
-      "prompt": "<b>Phase 2:</b> Total=40. Find <b>n</b>.",
-      "hint": "2n + 10 + n = 40 -> 3n = 30."
+      "targetRegion": "left_total",
+      "equation_target": 24,
+      "expected_x": 7,
+      "prompt": "<b>Step 2:</b> Solve 3k + 3 = 24. Find <b>k</b>.",
+      "hint": "3k = 21"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 7,
+      "expression": "3k-1",
+      "prompt": "<b>Step 3:</b> How many play <span style='color:#db2777'>Rugby Only</span>?",
+      "hint": "3(7) - 1 = 20."
     }
   ]
 }

@@ -2,17 +2,24 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Working Backwards",
-  "variantTitle": "Quest 5-009: Reverse 63",
-  "sets": { "A": { "label": "K", "color": "#2563eb" }, "B": { "label": "", "color": "transparent" } },
+  "topic": "Indices",
+  "variantTitle": "Quest 5-007: Indices Quiz",
+  "sets": { "A": { "label": "", "color": "transparent" }, "B": { "label": "", "color": "transparent" } },
   "zones": { "left": [], "center": [], "right": [], "outside": [] },
   "questions": [
     {
-      "type": "REVERSE_PROPER_SUBSET",
-      "targetRegion": "union",
-      "expected_val": 6,
-      "prompt": "Set K has <b>63 Proper Subsets</b>. Find n(K).",
-      "hint": "2ⁿ - 1 = 63. So 2ⁿ = 64. Count powers of 2."
+      "interaction": "CHOICE",
+      "prompt": "Solve for n: <b>2ⁿ = 32</b>",
+      "options": ["4", "5", "6", "16"],
+      "expected": "5",
+      "hint": "2 x 2 x 2 x 2 x 2 = 32."
+    },
+    {
+      "interaction": "CHOICE",
+      "prompt": "Solve for x: <b>2ˣ - 1 = 15</b>",
+      "options": ["3", "4", "5", "15"],
+      "expected": "4",
+      "hint": "2ˣ = 16. So x=4."
     }
   ]
 }

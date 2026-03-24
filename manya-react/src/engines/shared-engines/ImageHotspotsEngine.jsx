@@ -18,7 +18,7 @@ import {
  * - Intelligent Feedback: Shake animations and completion overlay.
  * - Z-Fixed: Ensures the FINISH button is always accessible.
  */
-export function ImageHotspotsEngine({ data, onComplete }) {
+export function ImageHotspotsEngine({ data, onComplete, onResult }) {
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
@@ -29,6 +29,30 @@ export function ImageHotspotsEngine({ data, onComplete }) {
     const hotspots = data?.hotspots || [];
     const isQuizMode = data?.mode === 'quiz' || data?.mode === 'labeling' || !!data?.wordBank;
     const wordBank = data?.wordBank || hotspots.map(h => h.label);
+
+    useEffect(() => {
+        if (showCompletion) {
+            const score = isQuizMode ? correctPinIds.size : 1;
+            const total = isQuizMode ? hotspots.length : 1;
+            
+            // DB Bridge
+            if (onResult) {
+                onResult({
+                    isCorrect: score === total,
+                    score,
+                    total,
+                    type: isQuizMode ? 'labeling' : 'study'
+                });
+            } else if (window.QuestRunner?.handleEngineResult) {
+                 window.QuestRunner.handleEngineResult({
+                    isCorrect: score === total,
+                    score,
+                    total,
+                    type: isQuizMode ? 'labeling' : 'study'
+                });
+            }
+        }
+    }, [showCompletion, isQuizMode, correctPinIds.size, hotspots.length, onResult]);
 
     useEffect(() => {
         if (correctPinIds.size === hotspots.length && hotspots.length > 0) {

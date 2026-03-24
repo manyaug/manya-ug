@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Visual Sums",
+  "variantTitle": "Quest 8-024: Click to Sum",
+  "sets": { "A": { "label": "M", "color": "#9333ea" }, "B": { "label": "E", "color": "#db2777" } },
+  "zones": { "left": [5], "center": [10], "right": [3], "outside": [7] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "left_total", 
+      "prompt": "Tap regions to find total <b>Mathematics (M)</b>.",
+      "hint": "Select 'M only' and 'Both'. Sum should be 15."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_left",
+      "prompt": "Tap regions representing <b>Not Mathematics</b>.",
+      "hint": "Select 'E only' and 'Outside'. Sum should be 10."
+    }
+  ]
+}

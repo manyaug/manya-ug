@@ -185,6 +185,16 @@ export const DeepReader = {
             DeepReader.state.currentStep++;
             DeepReader.loadQuestion();
         } else {
+            // DB Bridge
+            const result = {
+                isCorrect: true,
+                score: DeepReader.state.data.questions.length,
+                total: DeepReader.state.data.questions.length,
+                type: 'reading'
+            };
+            if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+            if (window.captureSimulationResult) window.captureSimulationResult(true, result.score, result.total);
+
             DeepReader.state.container.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;"><h1 style="color:#22c55e">Reading Master! 📖</h1><p>You completed the comprehension quest.</p></div>`;
         }
     }

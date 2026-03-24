@@ -90,6 +90,23 @@ export function ThreeDStudyEngine({ data, onComplete }) {
 
     // CHECK COMPLETION
     useEffect(() => {
+        if (isFinished) {
+            const score = isQuiz ? correctPinIds.size : 1;
+            const total = isQuiz ? hotspots.length : 1;
+            
+            // DB Bridge
+            if (window.QuestRunner?.handleEngineResult) {
+                window.QuestRunner.handleEngineResult({
+                    isCorrect: score === total,
+                    score,
+                    total,
+                    type: isQuiz ? 'labeling' : 'study'
+                });
+            }
+        }
+    }, [isFinished, isQuiz, correctPinIds.size, hotspots.length]);
+
+    useEffect(() => {
         if (isQuiz && correctPinIds.size === hotspots.length && hotspots.length > 0) {
             setTimeout(() => setIsFinished(true), 1000);
         }

@@ -2,22 +2,22 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Visual Sums",
-  "variantTitle": "Quest 8-024: Click to Sum",
+  "topic": "Visual Totals",
+  "variantTitle": "Quest 8-028: Exam Clicks",
   "sets": { "A": { "label": "M", "color": "#9333ea" }, "B": { "label": "E", "color": "#db2777" } },
-  "zones": { "left": [5], "center": [10], "right": [3], "outside": [7] }, 
+  "zones": { "left": [15], "center": [10], "right": [20], "outside": [5] }, 
   "questions": [
     {
       "interaction": "CLICK_SUM",
-      "targetRegion": "left_total", 
-      "prompt": "Tap regions to find total <b>Mathematics (M)</b>.",
-      "hint": "Select 'M only' and 'Both'. Sum should be 15."
+      "targetRegion": "left_total",
+      "prompt": "Tap regions to find <b>Total Math</b> students.",
+      "hint": "Click 'M Only' (15) and 'Both' (10). Sum = 25."
     },
     {
       "interaction": "CLICK_SUM",
-      "targetRegion": "complement_left",
-      "prompt": "Tap regions representing <b>Not Mathematics</b>.",
-      "hint": "Select 'E only' and 'Outside'. Sum should be 10."
+      "targetRegion": "union",
+      "prompt": "Tap everyone who passed <b>at least one</b> subject.",
+      "hint": "Click all regions inside the circles. 15 + 10 + 20 = 45."
     }
   ]
 }

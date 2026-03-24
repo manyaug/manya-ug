@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Missing Regions",
+  "variantTitle": "Topic 10: Language Totals",
+  "sets": { "A": { "label": "E (45)", "color": "#9333ea" }, "B": { "label": "L", "color": "#db2777" } },
+  "zones": { "left": ["30"], "center": ["15"], "right": ["m"], "outside": ["5"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Total English is 45. Intersection is 15. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "30" }, 
+        { "region": "center", "expected": "15" },
+        { "region": "right", "expected": "m" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 80,
+      "expected_x": 30,
+      "prompt": "<b>Phase 2:</b> Total villagers = 80. Find <b>m</b>.",
+      "hint": "30 + 15 + m + 5 = 80 -> 50 + m = 80"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 30,
+      "prompt": "Find the <b>Total Luganda</b> speakers.",
+      "hint": "Intersection (15) + Luganda Only (30) = 45."
+    }
+  ]
+}

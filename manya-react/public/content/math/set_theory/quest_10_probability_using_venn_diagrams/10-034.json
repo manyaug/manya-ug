@@ -2,7 +2,7 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Algebraic Complements",
+  "topic": "Complement Algebra",
   "variantTitle": "Quest 10-019: Complement Solver",
   "sets": { "A": { "label": "G", "color": "#9333ea" }, "B": { "label": "S", "color": "#db2777" } },
   "zones": {
@@ -13,22 +13,23 @@
   }, 
   "questions": [
     {
-      "interaction": "DIAGRAM_FILL",
-      "prompt": "<b>Phase 1:</b> S-only is 2m. Outside is m+4. Fill the diagram.",
-      "inputs": [
-        { "region": "left", "expected": "15" },
-        { "region": "center", "expected": "5" },
-        { "region": "right", "expected": "2m" },
-        { "region": "outside", "expected": "m+4" }
+      "interaction": "DRAG_SORT",
+      "prompt": "<b>Phase 1: Construct the Diagram</b><br><span style='font-size:0.9em'>• G only: <b>15</b> &nbsp; • S only: <b>2m</b><br>• Intersection: <b>5</b> &nbsp; • Outside: <b>m+4</b></span>",
+      "items": [
+        { "val": "15", "target": "left" },
+        { "val": "5", "target": "center" },
+        { "val": "2m", "target": "right" },
+        { "val": "m+4", "target": "outside" }
       ]
     },
     {
+      "retain_visuals": false,
       "type": "ALGEBRA_SOLVE",
-      "targetRegion": "complement_left", 
+      "targetRegion": "complement_left",
       "equation_target": 25,
       "expected_x": 7,
       "prompt": "<b>Phase 2:</b> n(G)' = 25 (Not G). Find <b>m</b>.",
-      "hint": "(S Only) + (Outside) = 25. So 2m + m + 4 = 25."
+      "hint": "(S Only) + (Outside) = 25 -> 2m + m + 4 = 25"
     },
     {
       "retain_visuals": true,

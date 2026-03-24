@@ -2,16 +2,16 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Shading Complements",
-  "variantTitle": "Quest 6-026: Shade Neither",
-  "sets": { "A": { "label": "M", "color": "#2563eb" }, "B": { "label": "N", "color": "#0891b2" } },
+  "topic": "Shading Differences",
+  "variantTitle": "Quest 6-027: Only One",
+  "sets": { "A": { "label": "X", "color": "#ef4444" }, "B": { "label": "Y", "color": "#f59e0b" } },
   "zones": { "left": [], "center": [], "right": [], "outside": [] }, 
   "questions": [
     {
       "interaction": "CLICK_SUM",
-      "targetRegion": "universal_only",
-      "prompt": "Tap to shade <span style='color:#64748b'>(M ∪ N)'</span>.",
-      "hint": "The complement of the Union. Tap the region OUTSIDE the circles."
+      "targetRegion": "symmetric_difference",
+      "prompt": "Tap regions representing elements in <span style='color:#1e293b'>Exactly One Set</span>.",
+      "hint": "Tap 'X Only' and 'Y Only'. Do NOT tap the middle."
     }
   ]
 }

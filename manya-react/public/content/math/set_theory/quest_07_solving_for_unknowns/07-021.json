@@ -2,42 +2,28 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Equating Regions",
-  "variantTitle": "Quest 7-016: Set Construction",
-  "sets": { "A": { "label": "R", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
-  "zones": {
-    "left": ["3k-2"],
-    "center": ["10"],
-    "right": ["2k+4"],
-    "outside": ["k"]
-  },
+  "topic": "Equal Totals",
+  "variantTitle": "Quest 7-017: Exam Build",
+  "sets": { "A": { "label": "M", "color": "#2563eb" }, "B": { "label": "E", "color": "#db2777" } },
+  "zones": { "left": ["x+10"], "center": ["5"], "right": ["2x"], "outside": ["0"] },
   "questions": [
     {
       "interaction": "DRAG_SORT",
-      "prompt": "<b>Phase 1: Construct the Diagram</b><br><span style='font-size:0.9em'>• R only: <b>3k-2</b> &nbsp; • B only: <b>2k+4</b><br>• Intersection: <b>10</b> &nbsp; • Outside: <b>k</b></span>",
+      "prompt": "<b>Phase 1: Build It</b><br>• M-only: <b>x+10</b> &nbsp; • E-only: <b>2x</b><br>• Both: <b>5</b>",
       "items": [
-        { "val": "3k-2", "target": "left" },
-        { "val": "10", "target": "center" },
-        { "val": "2k+4", "target": "right" },
-        { "val": "k", "target": "outside" }
+        { "val": "x+10", "target": "left" },
+        { "val": "5", "target": "center" },
+        { "val": "2x", "target": "right" }
       ]
     },
     {
       "retain_visuals": false,
       "type": "ALGEBRA_SOLVE",
-      "targetRegion": "union", 
-      "equation_target": 0, 
-      "expected_x": 6,
-      "prompt": "<b>Phase 2:</b> Given <b>n(R only) = n(B only)</b>. Find <b>k</b>.",
-      "hint": "3k - 2 = 2k + 4. Solve for k."
-    },
-    {
-      "retain_visuals": true,
-      "type": "COUNT_SUM",
-      "targetRegion": "universal_only",
-      "x_val": 6,
-      "prompt": "How many are <b>Outside</b> the sets?",
-      "hint": "Outside = k = 6."
+      "targetRegion": "union",
+      "equation_target": 0,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> If n(M) = n(E), find <b>x</b>.",
+      "hint": "(x+10) + 5 = 5 + 2x -> x+15 = 2x+5 -> x=10."
     }
   ]
 }

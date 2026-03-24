@@ -117,6 +117,13 @@ export const MorphSpeechEngine = {
         document.getElementById('label-indirect').classList.toggle('active-label', s.isTransformed);
         document.getElementById('hint-text').innerHTML = s.isTransformed ? s.data.indirectHint : s.data.directHint;
 
+        // DB Bridge: Mark as completed once morph is experienced
+        if (!s.hasMorphed) {
+            s.hasMorphed = true;
+            if (window.captureSimulationResult) window.captureSimulationResult(true, 1, 1);
+            if (window.onSimulationSubmit) window.onSimulationSubmit({ isCorrect: true, score: 1, total: 1, type: 'study_complete' });
+        }
+
         // 3. Render New Content (but keep it hidden for a split second)
         MorphSpeechEngine.renderSentence(s.isTransformed ? s.data.indirect : s.data.direct);
         const newWords = Array.from(box.querySelectorAll('.m-word'));

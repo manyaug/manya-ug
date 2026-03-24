@@ -333,6 +333,11 @@ export const UniversalGlobeEngine = {
         const cur = UniversalGlobeEngine.state.data.cases[i];
         UniversalGlobeEngine.renderUI();
         UniversalGlobeEngine.focusOn(cur.initialRotation, cur.zoomFactor || 1);
+
+        // DB Bridge: Mark as completed when user explores different tabs
+        if (window.captureSimulationResult) {
+            window.captureSimulationResult(true, 1, 1);
+        }
     },
 
     focusOn: (rot, zoom) => {
@@ -358,7 +363,20 @@ export const UniversalGlobeEngine = {
             setTimeout(() => {
                 if (s.activeTab < s.data.questions.length - 1) {
                     s.activeTab++; UniversalGlobeEngine.renderUI(); UniversalGlobeEngine.draw();
-                } else { if(window.QuestRunner) window.QuestRunner.enableButton("FINISH QUEST"); }
+                } else { 
+                    // DB Bridge
+                    if (window.onSimulationSubmit) {
+                        window.onSimulationSubmit({
+                            isCorrect: true,
+                            score: s.data.questions.length,
+                            total: s.data.questions.length,
+                            type: 'quiz'
+                        });
+                    }
+                    if (window.captureSimulationResult) window.captureSimulationResult(true, s.data.questions.length, s.data.questions.length);
+
+                    if(window.QuestRunner) window.QuestRunner.enableButton("FINISH QUEST"); 
+                }
             }, 1500);
         } else {
             btn.classList.add('wrong');
@@ -407,6 +425,20 @@ export const UniversalGlobeEngine = {
             if(window.addToast) window.addToast({message: "Perfect!", type: "success"});
             UniversalGlobeEngine.renderUI();
             UniversalGlobeEngine.focusOn([-piece.target[0], -piece.target[1]], 1.1);
+
+            // Check Puzzle Completion
+            if (UniversalGlobeEngine.state.placedPieces.length === UniversalGlobeEngine.state.data.pieces.length) {
+                if (window.onSimulationSubmit) {
+                    window.onSimulationSubmit({
+                        isCorrect: true,
+                        score: UniversalGlobeEngine.state.placedPieces.length,
+                        total: UniversalGlobeEngine.state.data.pieces.length,
+                        type: 'puzzle'
+                    });
+                }
+                if (window.captureSimulationResult) window.captureSimulationResult(true, UniversalGlobeEngine.state.placedPieces.length, UniversalGlobeEngine.state.data.pieces.length);
+                if(window.QuestRunner) window.QuestRunner.enableButton("FINISH PUZZLE");
+            }
         } else { 
             if(window.addToast) window.addToast({message: "Try again!", type: "error"}); 
         }

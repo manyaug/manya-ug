@@ -2,36 +2,28 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Solving via Total II",
-  "variantTitle": "Topic 10: Fruits Total",
-  "sets": { "A": { "label": "P (30)", "color": "#9333ea" }, "B": { "label": "A", "color": "#db2777" } },
-  "zones": { "left": ["30-y"], "center": ["y"], "right": ["2y"], "outside": ["5"] }, 
+  "topic": "Probability Final",
+  "variantTitle": "Quest 10-018: Garden Prob",
+  "sets": { "A": { "label": "M (60)", "color": "#059669" }, "B": { "label": "O (50)", "color": "#d97706" } },
+  "zones": { "left": ["60-x"], "center": ["x"], "right": ["50-x"], "outside": ["0"] }, 
   "questions": [
     {
       "type": "ALGEBRA_SOLVE",
-      "targetRegion": "universal_only",
-      "equation_target": 55, 
+      "targetRegion": "intersection", 
+      "equation_target": 100,
       "expected_x": 10,
-      "prompt": "Total = 55. Total Pineapples = 30. Find <b>y</b>.",
-      "hint": "(Total P) + (A Only) + Outside = 55 -> 30 + 2y + 5 = 55."
-    },
-    {
-      "retain_visuals": true,
-      "type": "COUNT_SUM",
-      "targetRegion": "right_total",
-      "x_val": 10,
-      "prompt": "How many like <span style='color:#db2777'>Apples</span> altogether?",
-      "hint": "Intersection (y) + Only (2y) = 3y = 30."
+      "prompt": "Total=100. Find <b>x</b> (Both).",
+      "hint": "60 + 50 - x = 100."
     },
     {
       "retain_visuals": true,
       "type": "PROBABILITY",
-      "targetRegion": "right_only",
+      "targetRegion": "left_only",
       "x_val": 10,
-      "total": 55,
-      "expression": "2y", 
-      "prompt": "Probability of picking a pupil who likes <span style='color:#db2777'>Apples Only</span>?",
-      "hint": "n(Apples Only) / Total. (20/55)"
+      "total": 100,
+      "expression": "60-x",
+      "prompt": "Probability of <b>Mango Only</b>?",
+      "hint": "(60-10)/100 = 50/100 = 1/2."
     }
   ]
 }

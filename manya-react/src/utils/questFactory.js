@@ -65,6 +65,16 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         default:           slice = allIDs.slice(0, 3);
     }
 
+    // ── NEW: For English, inject the Dynamic Fetcher for Practice modes ────────
+    if (subject === 'english' && (nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'WARMUP')) {
+        return [{
+            engineType: 'ENGLISH_FETCHER',
+            topic: questFolder, // Pass the folder name as topic for the fetcher
+            mode: 'quiz',
+            data: { topic: questFolder }
+        }];
+    }
+
     const allSteps = [];
     for (const id of slice) {
         try {

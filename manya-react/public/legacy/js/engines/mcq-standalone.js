@@ -38,6 +38,18 @@ export const MCQStandalone = {
                 
                 // Update Top UI
                 if(window.QuestRunner) window.QuestRunner.enableButton();
+
+                // DB Bridge
+                if (window.onSimulationSubmit) {
+                    window.onSimulationSubmit({
+                        isCorrect: true,
+                        score: data.points || 1,
+                        total: data.points || 1,
+                        type: 'mcq'
+                    });
+                }
+                if (window.captureSimulationResult) window.captureSimulationResult(true, data.points || 1, data.points || 1);
+
                 document.querySelectorAll('.mcq-btn-elite').forEach(b => b.style.pointerEvents = 'none');
             } else {
                 btn.classList.add('wrong');

@@ -164,6 +164,17 @@ export const MemoryMatchEngine = {
 
     endGame: () => {
         const s = MemoryMatchEngine.state;
+        
+        // DB Bridge
+        const result = {
+            isCorrect: true,
+            score: s.score,
+            total: s.totalPairs * 20,
+            type: 'game'
+        };
+        if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+        if (window.captureSimulationResult) window.captureSimulationResult(true, s.score, result.totalPairs * 20);
+
         s.container.innerHTML = `
             <div class="bento-card" style="text-align:center; padding:40px; margin-top:20%; animation: popIn 0.5s;">
                 <div style="font-size:4rem; margin-bottom:10px;">🃏</div>

@@ -18,7 +18,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, X, AlertTriangle, RefreshCw } from 'lucide-react';
+import { ChevronLeft, X, AlertTriangle, RefreshCw, SkipForward } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
 import { updateProfile } from '../store/userSlice';
 import { loadQuestSteps } from '../utils/questLoader';
@@ -115,7 +115,7 @@ export default function QuestRunner() {
         document.ontouchmove  = null;
         document.onmouseup    = null;
         document.ontouchend   = null;
-        window.removeEventListener('stop-typing', null);
+        window.__manyaIsTyping = false;
     }, []);
 
     // ── Expose next() so vanilla engines can call window.QuestRunner.next() ──
@@ -127,6 +127,11 @@ export default function QuestRunner() {
             setIsTyping: (val) => {
                 window.__manyaIsTyping = val; 
                 setBtnState(s => ({ ...s, enabled: !val }));
+            },
+            // DB Bridging Callbacks
+            onSimulationSubmit: (result) => handleEngineResult(result),
+            captureSimulationResult: (isCorrect, score, total) => {
+                handleEngineResult({ isCorrect, score, total, type: 'legacy_capture' });
             }
         };
         // Legacy support mapping
@@ -185,7 +190,7 @@ export default function QuestRunner() {
 
     // ── RENDER STEP ───────────────────────────────────────────────────────────
     async function renderStep(step) {
-        if (!mountRef.current) return;
+        if (!step) return;
         cleanupEngine();
 
         // Trigger transition sound
@@ -202,15 +207,13 @@ export default function QuestRunner() {
         });
 
         // Hide footer for immersive engines
-        // Hide footer for some immersive engines, but show for English ones if they need a "Continue"
         const footer = document.getElementById('qr-footer-mount');
         if (footer) {
-            // If it's an English engine but marked immersive, we still might want the button for flow
             const isEnglish = meta.subject === 'english';
             footer.style.display = (isImmersive && !isEnglish) ? 'none' : '';
         }
 
-        // 1. Check if it's a React-native engine
+        // 1. Check if it's a React-native engine FIRST (independent of mountRef)
         const engineMeta = ENGINE_REGISTRY[engineType] || { type: 'legacy' };
         
         if (engineMeta.type === 'react') {
@@ -221,7 +224,9 @@ export default function QuestRunner() {
             return;
         }
 
-        // 2. Load the legacy engine via the router
+        // 2. Load the legacy engine via the router (needs mountRef)
+        if (!mountRef.current) return;
+
         setActiveEngine(null); // Clear react engine
         try {
             // Hide the dynamic import from Vite's bundler analysis
@@ -250,20 +255,50 @@ export default function QuestRunner() {
         }
     }
 
+    // ── RESULT HANDLING (DB BRIDGING) ─────────────────────────────────────────
+    const handleEngineResult = useCallback((result) => {
+        console.log("[QuestRunner] Received Engine Result:", result);
+        
+        // 1. Update Score in Redux/LocalStorage
+        if (result.isCorrect && result.score) {
+            const currentPoints = parseInt(localStorage.getItem('manya_points') || 0);
+            localStorage.setItem('manya_points', currentPoints + (result.score * 10)); 
+        }
+
+        // 2. Logic for specific engine types if needed
+        if (result.type === 'simulation') {
+            dispatch(addToast({ message: "Simulation Complete!", type: "success" }));
+        }
+
+        // 3. Auto-enable button or advance if appropriate
+        if (result.isCorrect) {
+            setBtnState(s => ({ ...s, enabled: true }));
+        }
+        
+    }, [dispatch]);
+
     // ── ADVANCE ───────────────────────────────────────────────────────────────
     function advanceStep() {
-        // If user is in a typing animation, stop-typing first
-        if (btnState.label === 'CONTINUE' && window.__manyaIsTyping) {
+        // If user is in a typing animation, stop-typing FIRST to show the full text
+        if (window.__manyaIsTyping) {
+            console.log("[QuestRunner] Skipping typing animation...");
+            window.__manyaIsTyping = false;
             window.dispatchEvent(new CustomEvent('stop-typing'));
+            setBtnState(s => ({ ...s, enabled: true }));
             return;
         }
 
-        const nextIdx = stepIdx + 1;
-        if (nextIdx < steps.length) {
-            setStepIdx(nextIdx);
-        } else {
-            finishQuest();
-        }
+        setStepIdx(prevIdx => {
+            const nextIdx = prevIdx + 1;
+            console.log(`[QuestRunner] Attempting to advance from ${prevIdx} to ${nextIdx} (Total: ${steps.length})`);
+            
+            if (nextIdx < steps.length) {
+                return nextIdx;
+            } else {
+                finishQuest();
+                return prevIdx;
+            }
+        });
     }
 
     // ── FINISH ────────────────────────────────────────────────────────────────
@@ -345,8 +380,13 @@ export default function QuestRunner() {
                                         </div>
                                     }>
                                         <activeEngine.component 
+                                            key={`${stepIdx}-${activeEngine.type}`}
                                             data={activeEngine.data} 
-                                            onComplete={() => advanceStep()} 
+                                            onComplete={() => {
+                                                console.log(`[QuestRunner] Engine ${activeEngine.type} completed step ${stepIdx}`);
+                                                advanceStep();
+                                            }} 
+                                            onResult={handleEngineResult}
                                         />
                                     </Suspense>
                                 </div>
@@ -423,6 +463,21 @@ export default function QuestRunner() {
                         )}
                     </div>
                 </footer>
+            )}
+
+            {/* Developer Skip Button (Floating - Global for Story/Engines) */}
+            {phase === 'running' && (
+                <button 
+                    onClick={() => {
+                        console.log("[QuestRunner] Global Dev Skip Triggered");
+                        advanceStep();
+                    }}
+                    className="fixed top-3 right-4 z-[9999] p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all flex items-center gap-2 group backdrop-blur-md shadow-2xl"
+                    title="Skip (Dev Only)"
+                >
+                    <span className="text-[8px] font-black uppercase tracking-widest hidden group-hover:block transition-all">Skip Story</span>
+                    <SkipForward size={14} />
+                </button>
             )}
         </div>
     );

@@ -82,8 +82,20 @@ export const HarvestGameEngine = {
     },
 
     win: () => {
-        HarvestGameEngine.state.active = false;
-        if (window.QuestRunner) window.QuestRunner.enableButton(true, null, "FINISH GAME");
+        const s = HarvestGameEngine.state;
+        s.active = false;
+        
+        // DB Bridge
+        const result = {
+            isCorrect: true,
+            score: s.score,
+            total: 50, // Win threshold
+            type: 'game'
+        };
+        if (window.onSimulationSubmit) window.onSimulationSubmit(result);
+        if (window.captureSimulationResult) window.captureSimulationResult(true, s.score, 50);
+
+        if (window.QuestRunner) window.QuestRunner.enableButton(true, "FINISH GAME");
         // Show a little result popup
         const sky = document.getElementById('harvest-sky');
         if (sky) {

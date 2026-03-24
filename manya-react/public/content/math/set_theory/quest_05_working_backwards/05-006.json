@@ -1,14 +1,31 @@
 {
-  "engineType": "SUBSET_GAME",
+  "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Reverse Construction",
-  "variantTitle": "Quest 5-006: Build to Target",
+  "topic": "Comparison",
+  "variantTitle": "Quest 5-005: Compare Sets",
+  "sets": { "A": { "label": "A", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
   "questions": [
     {
-      "items": ["Apple", "Banana", "Orange", "Mango"],
-      "prompt": "Pack enough items to create exactly <b>8 Subsets</b>.",
-      "hint": "2ⁿ = 8. You need to pack 3 items."
+      "type": "REVERSE_SUBSET",
+      "targetRegion": "left_total",
+      "expected_val": 4,
+      "prompt": "Set A has 16 Subsets. Find <b>n(A)</b>.",
+      "hint": "2⁴ = 16."
+    },
+    {
+      "type": "REVERSE_PROPER_SUBSET",
+      "targetRegion": "right_total",
+      "expected_val": 2,
+      "prompt": "Set B has 3 Proper Subsets. Find <b>n(B)</b>.",
+      "hint": "2² - 1 = 3."
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union", 
+      "prompt": "Calculate <b>n(A) + n(B)</b>.",
+      "hint": "4 + 2 = 6."
     }
   ]
 }

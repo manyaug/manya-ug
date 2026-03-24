@@ -2,28 +2,35 @@
   "engineType": "SET_THEORY",
   "mode": "quiz",
   "subject": "MATH",
-  "topic": "Probability Final",
-  "variantTitle": "Quest 10-018: Garden Prob",
-  "sets": { "A": { "label": "M (60)", "color": "#059669" }, "B": { "label": "O (50)", "color": "#d97706" } },
-  "zones": { "left": ["60-x"], "center": ["x"], "right": ["50-x"], "outside": ["0"] }, 
+  "topic": "Double Variables",
+  "variantTitle": "Quest 10-018: Subject Sets",
+  "sets": { "A": { "label": "E (36)", "color": "#9333ea" }, "B": { "label": "M", "color": "#db2777" } },
+  "zones": { "left": ["3n"], "center": ["12"], "right": ["4h+5"], "outside": ["15-h"] },
   "questions": [
     {
       "type": "ALGEBRA_SOLVE",
-      "targetRegion": "intersection", 
-      "equation_target": 100,
-      "expected_x": 10,
-      "prompt": "Total=100. Find <b>x</b> (Both).",
-      "hint": "60 + 50 - x = 100."
+      "targetRegion": "left_total",
+      "equation_target": 36,
+      "expected_x": 8,
+      "prompt": "<b>Part 1:</b> Given n(E) = 36, find <b>n</b>.",
+      "hint": "3n + 12 = 36."
+    },
+    {
+      "type": "ALGEBRA_SOLVE", 
+      "targetRegion": "right_total",
+      "equation_target": 33, 
+      "expected_x": 33, 
+      "prompt": "<b>Part 2:</b> Given n(M) = h + 29. Find Total n(M).",
+      "hint": "(4h+5) + 12 = h + 29. Solve for h, then find Total M."
+      
     },
     {
       "retain_visuals": true,
-      "type": "PROBABILITY",
-      "targetRegion": "left_only",
-      "x_val": 10,
-      "total": 100,
-      "expression": "60-x",
-      "prompt": "Probability of <b>Mango Only</b>?",
-      "hint": "(60-10)/100 = 50/100 = 1/2."
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 8,
+      "prompt": "Find the <b>Total Number</b> of pupils.",
+      "hint": "n=8, h=4. Sum: 24 + 12 + 21 + 11 = 68."
     }
   ]
 }
