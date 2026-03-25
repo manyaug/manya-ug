@@ -21,6 +21,20 @@
       }
     },
     {
+      "id": "q7-chat-bridge",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "assets/english/quest_2/hday_2_chat_2.png",
+        "text": "Meow! The Treehouse has <b>THREE FLOORS</b> — Past, Present, and Future. Climb to the right floor by choosing the correct verb tense!"
+      }
+    },
+    {
+      "id": "q7-game-tense-treehouse",
+      "engineType": "TENSE_TREEHOUSE",
+      "data": {}
+    },
+    {
       "engineType": "DEEP_READER",
       "data": {
         "media": { "type": "PASSAGE", "content": "<h2>PASSAGE 2: The Market</h2><p>The village market was a <b>bustling</b> place. If they had delayed their visit, they <b>would have missed</b> the vibrant market day.</p>" },

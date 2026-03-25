@@ -4,21 +4,35 @@
   "engineType": "QUEST_RUNNER",
   "steps": [
     {
-      "id": "q1-chat-06",
+      "id": "q3-chat-06",
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
         "image": "assets/english/quest_1/holiday_chat_6.png",
-        "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It’s like a mirror, isn't it? Can you guess the tags?"
+        "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It's like a mirror, isn't it? Can you guess the tags?"
       }
     },
     {
-      "id": "q1-rule-tags",
+      "id": "q3-rule-tags",
       "engineType": "ENGLISH_RULE_MASTER",
       "referencePath": "../quest_10_vault/rule_question_tags.json"
     },
     {
-      "id": "q1-game-hangman",
+      "id": "q3-chat-garden",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "text": "Before we guess the tags — the sentences on the roadside signs are <b>WILTING</b>! The verbs don't match their subjects. <b>Tap the sick word</b> to fix it first!"
+      }
+    },
+    {
+      "id": "q3-game-garden-guard",
+      "engineType": "GARDEN_GUARD",
+      "data": {}
+    },
+    {
+      "id": "q3-game-hangman",
       "engineType": "HANGMAN_ENGINE",
       "data": {
         "words": [

@@ -20,6 +20,20 @@
       "referencePath": "../quest_10_vault/dict_activities.json"
     },
     {
+      "id": "q5-chat-bridge",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "polly",
+        "image": "assets/english/quest_2/hday_2_chat_3.png",
+        "text": "Look at the farm notices! Some of them are missing punctuation marks. Let's <b>fix the notices</b> by sticking the right marks in the gaps!"
+      }
+    },
+    {
+      "id": "q5-game-punctuation-stickers",
+      "engineType": "PUNCTUATION_STICKERS",
+      "data": {}
+    },
+    {
       "engineType": "HANGMAN_ENGINE",
       "data": { "title": "Save the Stickman!", "words": [{ "word": "SCRUTINY", "hint": "A very careful look at something." }] }
     }

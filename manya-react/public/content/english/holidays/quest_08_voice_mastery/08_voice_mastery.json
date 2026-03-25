@@ -30,6 +30,20 @@
           { "mode": "TRANSFORM", "prompt": "Passive: We are digging the garden.", "expected": "The garden is being dug by us" }
         ]
       }
+    },
+    {
+      "id": "q8-chat-bridge",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "image": "assets/english/quest_2/hday_2_chat_1.png",
+        "text": "Waddle! Let's try building passive sentences ourselves using the <b>SENTENCE BLOCKS</b>. Where does the 'doer' go?"
+      }
+    },
+    {
+      "id": "q8-game-sentence-blocks",
+      "engineType": "SENTENCE_BLOCKS",
+      "data": {}
     }
   ]
 }

@@ -121,6 +121,28 @@ export const ENGINE_REGISTRY = {
         hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/MorphGameEngine.jsx'))
     },
+
+    // ── Grammar Simulation Engines (Primary Education) ──────────────────────
+    'SENTENCE_BLOCKS': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../components/simulations/SyntaxArchitect.jsx'))
+    },
+    'GARDEN_GUARD': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../components/simulations/GrammarGuard.jsx'))
+    },
+    'PUNCTUATION_STICKERS': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../components/simulations/PunctuationPortal.jsx'))
+    },
+    'TENSE_TREEHOUSE': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../components/simulations/TenseTransformer.jsx'))
+    },
     'DEEP_READER': {
         type: 'react',
         hideGlobalFooter: true,

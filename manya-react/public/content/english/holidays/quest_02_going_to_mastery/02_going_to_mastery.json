@@ -4,7 +4,7 @@
   "engineType": "QUEST_RUNNER",
   "steps": [
     {
-      "id": "q1-chat-05",
+      "id": "q2-chat-05",
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
@@ -13,12 +13,12 @@
       }
     },
     {
-      "id": "q1-rule-going-to",
+      "id": "q2-rule-going-to",
       "engineType": "ENGLISH_RULE_MASTER",
       "referencePath": "../quest_10_vault/rule_going_to.json"
     },
     {
-      "id": "q1-game-train",
+      "id": "q2-game-train",
       "engineType": "SENTENCE_TRAIN",
       "data": {
         "questions": [
@@ -29,6 +29,20 @@
           { "sentence": "Manya is going to visit relatives." }
         ]
       }
+    },
+    {
+      "id": "q2-chat-bridge",
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "kiki",
+        "image": "assets/english/quest_1/holiday_chat_3.png",
+        "text": "Meow! Now let's <b>BUILD</b> our own Going To sentence. Drag the blocks into the right spots!"
+      }
+    },
+    {
+      "id": "q2-game-sentence-blocks",
+      "engineType": "SENTENCE_BLOCKS",
+      "data": {}
     }
   ]
 }
