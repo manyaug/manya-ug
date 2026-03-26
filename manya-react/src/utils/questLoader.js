@@ -11,6 +11,9 @@
  *   { engineType, data, topic, mode }
  */
 
+// Global in-memory cache for quest JSONs
+const JSON_CACHE = {};
+
 /**
  * Build the fetch URL for a content file.
  */
@@ -50,11 +53,19 @@ function resolveRef(referencePath, baseDir) {
  */
 export async function loadQuestSteps(subject, unitId, questFolder, file) {
     const url = contentUrl(subject, unitId, questFolder, file);
+    
+    // Return from cache if available
+    if (JSON_CACHE[url]) {
+        console.log(`⚡ [QuestLoader] Serving from cache: ${url}`);
+        return JSON_CACHE[url];
+    }
+
     console.log(`[QuestLoader] Fetching: ${url}`);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Content not found: ${url}`);
 
     const json = await res.json();
+    let result;
 
     // ── CASE 1: Already a steps[] array (multi-step quest) ──────────────────
     if (Array.isArray(json.steps)) {
@@ -73,18 +84,22 @@ export async function loadQuestSteps(subject, unitId, questFolder, file) {
                 return normaliseStep(step);
             })
         );
-        return {
+        result = {
             steps: resolvedSteps,
+            meta: { topic: json.topic || file, variantTitle: json.variantTitle }
+        };
+    } else {
+        // ── CASE 2: Single step JSON ─────────────────────────────────────────────
+        const step = normaliseStep(json);
+        result = {
+            steps: [step],
             meta: { topic: json.topic || file, variantTitle: json.variantTitle }
         };
     }
 
-    // ── CASE 2: Single step JSON ─────────────────────────────────────────────
-    const step = normaliseStep(json);
-    return {
-        steps: [step],
-        meta: { topic: json.topic || file, variantTitle: json.variantTitle }
-    };
+    // Save to cache
+    JSON_CACHE[url] = result;
+    return result;
 }
 
 /**

@@ -7,14 +7,27 @@
 
 export function parseQuestionId(qId) {
     if (!qId) return { baseId: 'unknown', variant: 'V1', variantNum: 1 };
-    const match = qId.match(/^(.+)-V(\d+)$/);
-    if (match) {
+    
+    // Pattern 1: Standard -V1, -V2
+    const vMatch = qId.match(/^(.+)-V(\d+)$/i);
+    if (vMatch) {
         return {
-            baseId: match[1],
-            variant: 'V' + match[2],
-            variantNum: parseInt(match[2])
+            baseId: vMatch[1],
+            variant: 'V' + vMatch[2],
+            variantNum: parseInt(vMatch[2])
         };
     }
+
+    // Pattern 2: Rephrased suffixes (-R, -REP, -REPHRASED)
+    const rMatch = qId.match(/^(.+)-(R|REP|REPHRASED)$/i);
+    if (rMatch) {
+        return {
+            baseId: rMatch[1],
+            variant: 'REPHRASED',
+            variantNum: 1
+        };
+    }
+
     return { baseId: qId, variant: 'V1', variantNum: 1 };
 }
 

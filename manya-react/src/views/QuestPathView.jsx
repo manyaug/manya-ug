@@ -14,6 +14,7 @@ import {
     getQuestProgress, getCurrentNodeIndex, getEarnedGems,
     getJustFinished, clearJustFinished, getQuestKey, UNLOCK_THRESHOLDS, NODE_ORDER
 } from '../services/questProgressService';
+import { preloadCurriculum, findQuestData, getCachedCurriculum } from '../services/curriculumService';
 import '../styles/quest-path.css';
 
 const STEPS = [
@@ -70,9 +71,9 @@ function QuestPathView() {
         return null;
     };
 
-    const questData = getQuestData();
-    
-    // Build a stable quest key — Prefer questData.folder if available
+    // 1. Initial stable key (from state)
+    // 2. Refresh questData from curriculum when available
+    const [questData, setQuestData] = useState(() => findQuestData(subject, unitId, title));
     const questKey = getQuestKey(subject, questData?.unitId || unitId, questData?.folder || title);
 
     // Load progress and check for just-finished-unlock
@@ -134,20 +135,15 @@ function QuestPathView() {
         return () => clearTimeout(t);
     }, []);
 
-    // Load curriculum
+    // ── DATA SYNC ──
     useEffect(() => {
         (async () => {
-            try {
-                const res = await fetch('/curriculum-master.json');
-                const raw = await res.json();
-                const norm = {};
-                Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
-                setCurriculum(norm);
-            } catch (e) {
-                console.error('[QuestPath] Curriculum load failed:', e);
-            }
+            const curriculum = await preloadCurriculum();
+            const data = findQuestData(subject, unitId, title);
+            if (data) setQuestData(data);
+            setCurriculum(curriculum);
         })();
-    }, []);
+    }, [subject, unitId, title]);
 
 
     // Dynamic derived values from progress
@@ -231,14 +227,15 @@ function QuestPathView() {
                 </div>
             </div>
 
-            {/* Loading overlay */}
-            {loading && (
+            {/* Loading overlay / Skeleton */}
+            {(loading || !curriculum) && (
                 <div style={{
                     position: 'absolute', inset: 0, zIndex: 100,
-                    background: 'rgba(0,0,0,0.3)', display: 'flex',
-                    alignItems: 'center', justifyContent: 'center'
+                    background: 'white', display: 'flex',
+                    flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
                 }}>
-                    <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-4" />
+                    <div className="text-amber-600 font-black text-xs tracking-widest animate-pulse">PREPARING QUEST WORLD...</div>
                 </div>
             )}
 

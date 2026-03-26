@@ -1,0 +1,18 @@
+
+-- SQL TO ADD MISSING SIMULATION COLUMNS TO MANYA QUESTION BANK
+ALTER TABLE questions
+ADD COLUMN IF NOT EXISTS engine_type TEXT,
+ADD COLUMN IF NOT EXISTS mode TEXT,
+ADD COLUMN IF NOT EXISTS json_reference_path TEXT,
+ADD COLUMN IF NOT EXISTS model_url TEXT,
+ADD COLUMN IF NOT EXISTS has_hotspots TEXT,
+ADD COLUMN IF NOT EXISTS variant_title TEXT,
+ADD COLUMN IF NOT EXISTS question_count INTEGER,
+ADD COLUMN IF NOT EXISTS full_json_raw TEXT,
+ADD COLUMN IF NOT EXISTS filename TEXT,
+ADD COLUMN IF NOT EXISTS folder TEXT;
+
+-- Verify columns
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'questions';

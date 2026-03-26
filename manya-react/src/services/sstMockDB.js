@@ -1,11 +1,7 @@
-/**
- * MANYA SST SUPABASE DB SERVICE
- * ----------------------------
- * Fetches SST questions directly from Supabase.
- * Now includes BOTH Raw questions and their Rephrased variants.
- */
-
 import { supabase } from './supabaseClient';
+
+// Simple in-memory cache to speed up re-entry
+const BANK_CACHE = {};
 
 // Map subtopic names (from URL/Navigation) to 'subtopic' column in Supabase
 const SUBTOPIC_MAP = {
@@ -26,6 +22,12 @@ export const fetchSstQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
         
+        // Return from cache if available (Speed!)
+        if (BANK_CACHE[subtopic]) {
+            console.log(`⚡ [Supabase] Serving ${subtopic} from cache.`);
+            return BANK_CACHE[subtopic];
+        }
+
         console.log(`🔍 [Supabase] Fetching ALL questions (Raw + Rephrased) for subtopic: ${subtopic}`);
 
         const { data, error } = await supabase
@@ -59,11 +61,26 @@ export const fetchSstQuestions = async (topicId) => {
                 isPLE: q.marked_ple === 'yes',
                 type: q.questiontype || 'MCQ',
                 tags: q.tags || [],
-                source: q.source_sheet
+                source: q.source_sheet,
+                parentid: q.parentid,
+                json_reference_path: q.json_reference_path,
+                engine_type: q.engine_type,
+                mode: q.mode,
+                model_url: q.model_url,
+                has_hotspots: q.has_hotspots,
+                variant_title: q.variant_title,
+                question_count: q.question_count,
+                full_json_raw: q.full_json_raw,
+                filename: q.filename,
+                folder: q.folder
             };
         });
 
         console.log(`✅ [Supabase] Loaded ${transformed.length} questions for ${subtopic}`);
+        
+        // Save to cache for next time
+        BANK_CACHE[subtopic] = transformed;
+        
         return transformed;
 
     } catch (error) {

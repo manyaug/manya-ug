@@ -72,7 +72,7 @@ async function migrate() {
             console.log(`📦 Processing ${data.length} rows from [${sheetName}]...`);
 
             const formatted = data
-                .filter(row => row.questiontext && row.questiontext !== 'null')
+                .filter(row => row.qid && (row.questiontext || row.engine_type || row.json_reference_path))
                 .map(row => ({
                     qid: row.qid,
                     term: row.term === 'null' ? null : row.term,
@@ -97,6 +97,12 @@ async function migrate() {
                     mode: row.mode === 'null' ? null : row.mode,
                     json_reference_path: row.json_reference_path === 'null' ? null : row.json_reference_path,
                     model_url: row.model_url === 'null' ? null : row.model_url,
+                    has_hotspots: row.has_hotspots === 'null' ? null : row.has_hotspots,
+                    variant_title: row.variant_title === 'null' ? null : row.variant_title,
+                    question_count: row.question_count && row.question_count !== 'null' ? parseInt(row.question_count) : null,
+                    full_json_raw: row.full_json_raw === 'null' ? null : row.full_json_raw,
+                    filename: row.filename === 'null' ? null : row.filename,
+                    folder: row.folder === 'null' ? null : row.folder,
                     source_sheet: sheetName
                 }));
 

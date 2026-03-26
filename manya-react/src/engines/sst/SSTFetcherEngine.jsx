@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw } from 'lucide-react';
+import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw, Search, Puzzle, AlertCircle } from 'lucide-react';
 import { fetchSstQuestions } from '../../services/sstMockDB';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../../store/userSlice';
@@ -13,6 +13,86 @@ import {
     saveNodeCompletion, trackWrongAnswer, resolveRephrased,
     setJustFinished, UNLOCK_THRESHOLDS, NODE_ORDER
 } from '../../services/questProgressService';
+import { preloadCurriculum } from '../../services/curriculumService';
+import UniversalGlobeEngine from '../shared-engines/UniversalGlobeEngine';
+import ImageHotspotsEngine from '../shared-engines/ImageHotspotsEngine';
+import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
+import { loadQuestSteps } from '../../utils/questLoader';
+
+/**
+ * SIMULATOR BRIDGE
+ * Connects the MCQ-based Fetcher to specialized Simulation Engines.
+ */
+const SimulatorBridge = ({ step, onComplete }) => {
+    const [simData, setSimData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSim = async () => {
+            try {
+                // Use the shared loader to get the JSON content
+                const content = await loadQuestSteps([step]);
+                if (content && content[0]?.data) {
+                    setSimData(content[0].data);
+                }
+            } catch (err) {
+                console.error("Failed to load simulation data:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSim();
+    }, [step]);
+
+    if (loading) return (
+        <div className="flex-1 flex items-center justify-center p-10">
+            <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+    );
+
+    if (!simData) return (
+        <div className="flex-1 flex flex-col items-center justify-center p-10 text-rose-500 font-bold">
+            <AlertCircle size={40} className="mb-4" />
+            Simulation Load Failure
+            <button onClick={onComplete} className="mt-4 text-xs bg-slate-100 px-4 py-2 rounded-lg">Skip Simulation</button>
+        </div>
+    );
+
+    // Determine which engine to use
+    const engineType = simData.engineType || simData.type || 'IMAGE_HOTSPOTS';
+
+    const handleSimComplete = (results) => {
+        console.log(`🎮 [SimulatorBridge] Simulation Complete. Results:`, results);
+        // We wrap the result in a standard format
+        onComplete({
+            success: true,
+            score: results?.accuracy ?? 100,
+            simResults: results
+        });
+    };
+
+    switch (engineType) {
+        case 'GLOBE_TIME_ENGINE':
+        case 'GLOBE_ENGINE':
+        case 'UNIVERSAL_GLOBE':
+            return <UniversalGlobeEngine data={simData} onComplete={handleSimComplete} />;
+        
+        case 'IMAGE_HOTSPOTS':
+            return <ImageHotspotsEngine data={simData} onComplete={handleSimComplete} />;
+        
+        case 'GALLERY_STUDY':
+            return <GalleryStudyEngine data={simData} onComplete={handleSimComplete} />;
+
+        default:
+            return (
+                <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-500">
+                    <Puzzle size={40} className="mb-4 opacity-20" />
+                    <p className="font-bold">Unsupported Engine: {engineType}</p>
+                    <button onClick={onComplete} className="mt-4 text-xs bg-slate-100 px-4 py-2 rounded-lg text-slate-900 font-black">CONTINUE QUEST</button>
+                </div>
+            );
+    }
+};
 
 /**
  * MANYA SST FETCHER ENGINE v3.0 (Adaptive + Variant Retry + Mastery Save)
@@ -57,24 +137,34 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         const loadQuestions = async () => {
             setIsLoading(true);
             resetSession();
+            
+            // Prime curriculum cache early so map exit is instant
+            preloadCurriculum();
 
-            // 1. Fetch ALL questions from the bank
-            const allQuestions = await fetchSstQuestions(topicId);
-            allBankRef.current = allQuestions;
+            try {
+                // 1. Fetch ALL questions from the bank
+                const allQuestions = await fetchSstQuestions(topicId);
+                allBankRef.current = allQuestions;
 
-            // 2. Run them through the adaptive engine, passing resources for recap injection
-            const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, data?.resources || []);
-            setQuestions(quest.questions);
-            setQuestMeta(quest);
-            setIsLoading(false);
+                // 2. Run them through the adaptive engine
+                const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, data?.resources || []);
+                setQuestions(quest.questions);
+                setQuestMeta(quest);
 
-            console.log(`🎯 [SST Adaptive v3] ${nodeType} quest:`, {
-                length: quest.questLength,
-                gameMode: quest.gameMode,
-            });
+                console.log(`🎯 [SST Adaptive v3] ${nodeType} quest:`, {
+                    length: quest.questions.length,
+                    gameMode: quest.gameMode,
+                });
+                
+                // Small delay to ensure smooth transition
+                setTimeout(() => setIsLoading(false), 300);
+            } catch (err) {
+                console.error("🔥 [SST] Initialization Failed:", err);
+                setRenderError(err);
+            }
         };
         loadQuestions();
-    }, [topicId, nodeType]);
+    }, [topicId, nodeType, questKey]);
 
     /**
      * Find a rephrased variant of a question in the bank.
@@ -265,7 +355,6 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const showHint = () => {
         if (!hintUsed) {
             setHintUsed(true);
-            setShowExplanation(true);
         }
     };
 
@@ -276,33 +365,68 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         </div>
     );
 
-    if (renderError) return (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-4">
+    const RenderError = ({ error, onRetry }) => (
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50">
+            <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-rose-500/10">
                 <X size={32} />
             </div>
-            <h3 className="text-xl font-black text-slate-800 mb-2">Engine Render Crash</h3>
-            <p className="text-sm text-slate-500 font-bold mb-6 max-w-xs mx-auto">
-                A runtime error occurred while rendering the SST engine.
+            <h3 className="text-2xl font-black text-slate-900 mb-2">Engine Glitch</h3>
+            <p className="text-sm text-slate-500 font-bold mb-8 max-w-xs mx-auto">
+                Something went wrong on your device. Let's try to reload.
             </p>
-            <div className="w-full max-w-md bg-slate-900 text-rose-400 p-4 rounded-xl text-left font-mono text-[10px] overflow-auto max-h-60 mb-6">
-                <strong>Error:</strong> {renderError.message}
+            <div className="w-full max-w-md bg-slate-900 text-rose-400 p-6 rounded-2xl text-left font-mono text-[10px] overflow-auto max-h-60 mb-8 border border-white/10">
+                <strong>Error:</strong> {error.message}
                 <br /><br />
                 <strong>Stack:</strong>
-                <pre>{renderError.stack}</pre>
+                <pre className="opacity-70 mt-2">{error.stack}</pre>
             </div>
             <button 
-                onClick={() => window.location.reload()}
-                className="px-6 h-12 bg-slate-800 text-white rounded-xl font-bold"
+                onClick={onRetry}
+                className="px-8 h-14 bg-slate-900 text-white rounded-2xl font-black tracking-widest uppercase flex items-center gap-2 active:scale-95 transition-all shadow-xl shadow-slate-900/10"
             >
-                RELOAD APP
+                RELOAD ENGINE <RotateCcw size={18} />
             </button>
         </div>
     );
 
+    // ── RENDER DEBUG OVERLAY ──
+    const renderDebug = () => {
+        if (!data?.debug) return null;
+        const q = questions[currentIdx];
+        const factors = q?._score?.factors || [];
+        return (
+            <div className="fixed bottom-24 left-4 right-4 bg-black/80 text-white p-3 rounded-lg text-[10px] font-mono z-[100] backdrop-blur-sm border border-white/20 pointer-events-none">
+                <div className="flex justify-between border-b border-white/20 pb-1 mb-1">
+                    <span className="text-amber-400">ADM-DEBUG v3.2</span>
+                    <span className="opacity-50 uppercase">{nodeType}</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                    <span className="bg-blue-500/30 px-1 rounded">SRC: {q?.source || 'unknown'}</span>
+                    <span className="bg-purple-500/30 px-1 rounded">DIF: {q?.difficulty || 'E'}</span>
+                    {q?.isPLE && <span className="bg-emerald-500/30 px-1 rounded">PLE: YES</span>}
+                    {factors.map(f => <span key={f} className="bg-white/10 px-1 rounded border border-white/10">{f}</span>)}
+                </div>
+            </div>
+        );
+    };
+
+    if (renderError) return <RenderError error={renderError} onRetry={() => window.location.reload()} />;
+
     if (questions.length === 0) return (
-        <div className="flex-1 flex items-center justify-center text-slate-400 font-bold">
-            No questions found for this topic.
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+            <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-4">
+                <Search size={32} />
+            </div>
+            <h3 className="text-xl font-black text-slate-800 mb-2">No Questions Found</h3>
+            <p className="text-sm text-slate-500 font-bold max-w-xs mx-auto mb-6">
+                We couldn't find any questions for <span className="text-amber-600">"{topicId}"</span>. Please check your Supabase data or subtopic filters.
+            </p>
+            <button 
+                onClick={handleFinish}
+                className="px-6 h-12 bg-slate-800 text-white rounded-xl font-bold flex items-center gap-2"
+            >
+                BACK TO MAP <ArrowRight size={18} />
+            </button>
         </div>
     );
 
@@ -310,101 +434,117 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     if (showCompletion && completionResult) {
         const { mastery, unlocked, nextNode, needsRetry, threshold, attempts } = completionResult;
         const isPassing = mastery >= 60;
+        const isPerfect = mastery === 100;
 
         return (
-            <div className="flex-1 flex items-center justify-center p-6 animate-in fade-in duration-500">
-                <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl p-8 text-center">
-                    {/* Emoji header */}
-                    <div style={{ fontSize: '64px', marginBottom: '12px' }}>
-                        {mastery >= 85 ? '🏆' : mastery >= 70 ? '⭐' : mastery >= 60 ? '👍' : '💪'}
-                    </div>
-
-                    <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#1e293b', marginBottom: '4px' }}>
-                        {mastery >= 85 ? 'Outstanding!' : mastery >= 70 ? 'Well Done!' : mastery >= 60 ? 'Good Job!' : 'Keep Trying!'}
-                    </h2>
-
-                    <p style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, marginBottom: '20px' }}>
-                        {nodeType === 'WARMUP' ? 'Warm-up' : nodeType} Complete
-                    </p>
-
-                    {/* Mastery Ring */}
-                    <div style={{
-                        width: '120px', height: '120px', margin: '0 auto 20px',
-                        borderRadius: '50%', position: 'relative',
-                        background: `conic-gradient(${isPassing ? '#10b981' : '#ef4444'} ${mastery * 3.6}deg, #e2e8f0 0deg)`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <div style={{
-                            width: '100px', height: '100px', borderRadius: '50%',
-                            background: 'white', display: 'flex', alignItems: 'center',
-                            justifyContent: 'center', flexDirection: 'column'
-                        }}>
-                            <span style={{ fontSize: '28px', fontWeight: 900, color: isPassing ? '#10b981' : '#ef4444' }}>
-                                {mastery}%
-                            </span>
-                            <span style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8' }}>MASTERY</span>
-                        </div>
-                    </div>
-
-                    {/* Score details */}
-                    <div style={{
-                        display: 'flex', justifyContent: 'center', gap: '24px',
-                        marginBottom: '20px'
-                    }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '20px', fontWeight: 900, color: '#1e293b' }}>
-                                {completionResult.score}/{completionResult.total}
-                            </div>
-                            <div style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8' }}>CORRECT</div>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '20px', fontWeight: 900, color: '#f59e0b' }}>
-                                +{gemsEarned}
-                            </div>
-                            <div style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8' }}>GEMS</div>
-                        </div>
-                    </div>
-
-                    {/* Unlock status */}
-                    {unlocked && nextNode && (
-                        <div style={{
-                            background: '#f0fdf4', border: '2px solid #86efac',
-                            borderRadius: '16px', padding: '12px', marginBottom: '16px'
-                        }}>
-                            <span style={{ fontSize: '13px', fontWeight: 800, color: '#16a34a' }}>
-                                🔓 {nextNode} Unlocked!
-                            </span>
+            <div className="flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 bg-slate-50/50">
+                <div className="w-full max-w-sm bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-100 p-8 text-center relative overflow-hidden">
+                    
+                    {/* Decorative Background Elements */}
+                    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-amber-50 to-transparent opacity-50" />
+                    {isPerfect && (
+                        <div className="absolute inset-0 pointer-events-none opacity-20">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="absolute animate-bounce" style={{
+                                    top: `${Math.random() * 80}%`,
+                                    left: `${Math.random() * 100}%`,
+                                    animationDelay: `${i * 0.2}s`,
+                                    fontSize: '24px'
+                                }}>
+                                    {['🎈', '🎉', '✨', '🎊'][i % 4]}
+                                </div>
+                            ))}
                         </div>
                     )}
 
-                    {needsRetry && (
-                        <div style={{
-                            background: '#fef2f2', border: '2px solid #fca5a5',
-                            borderRadius: '16px', padding: '12px', marginBottom: '16px'
-                        }}>
-                            <span style={{ fontSize: '13px', fontWeight: 800, color: '#dc2626' }}>
-                                Need {threshold}% to unlock {nextNode} — Try again!
-                            </span>
+                    {/* Trophy/Status Icon */}
+                    <div className="relative mb-6 pt-4">
+                        <div className="w-24 h-24 bg-amber-50 rounded-[2rem] flex items-center justify-center mx-auto mb-4 rotate-3 shadow-inner group-hover:rotate-0 transition-transform duration-500">
+                             <div className="text-6xl animate-pulse">
+                                {mastery >= 90 ? '🏆' : mastery >= 75 ? '🥈' : mastery >= 60 ? '🥉' : '💪'}
+                             </div>
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">
+                             {mastery >= 90 ? 'Outstanding!' : mastery >= 75 ? 'Great Job!' : mastery >= 60 ? 'Well Done!' : 'Keep Going!'}
+                        </h2>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                             <Compass size={10} /> {nodeType} COMPLETE
+                        </div>
+                    </div>
+
+                    {/* Mastery Ring Card */}
+                    <div className="bg-slate-50 rounded-[2.5rem] p-6 mb-6 border border-slate-100/50">
+                        <div className="relative w-32 h-32 mx-auto mb-4">
+                            <svg className="w-full h-full -rotate-90">
+                                <circle 
+                                    cx="64" cy="64" r="58"
+                                    fill="none" stroke="#e2e8f0" strokeWidth="12"
+                                />
+                                <circle 
+                                    cx="64" cy="64" r="58"
+                                    fill="none" 
+                                    stroke={isPassing ? '#10b981' : '#f43f5e'} 
+                                    strokeWidth="12"
+                                    strokeDasharray="364.4"
+                                    strokeDashoffset={364.4 - (364.4 * mastery) / 100}
+                                    strokeLinecap="round"
+                                    className="transition-all duration-1000 ease-out"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-3xl font-black text-slate-800 leading-none">{mastery}%</span>
+                                <span className="text-[9px] font-black text-slate-400 tracking-widest uppercase mt-1">Mastery</span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-around border-t border-slate-200/50 pt-4 mt-2">
+                            <div className="text-center">
+                                <div className="text-lg font-black text-slate-800">{completionResult.score}/{completionResult.total}</div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                            </div>
+                            <div className="w-[1px] h-8 bg-slate-200" />
+                            <div className="text-center">
+                                <div className="text-lg font-black text-amber-500 flex items-center gap-1">
+                                    <Trophy size={16} fill="currentColor" /> +{gemsEarned}
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gems</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Unlock Feedback */}
+                    {unlocked && nextNode ? (
+                        <div className="bg-emerald-50/80 border border-emerald-200 rounded-3xl p-4 mb-8 animate-in slide-in-from-bottom-2 duration-500 delay-300">
+                             <div className="flex items-center justify-center gap-3">
+                                 <div className="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                                     <Zap size={16} fill="currentColor" />
+                                 </div>
+                                 <div className="text-left">
+                                     <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">New Milestone</div>
+                                     <div className="text-sm font-bold text-emerald-900 leading-none">{nextNode} Unlocked!</div>
+                                 </div>
+                             </div>
+                        </div>
+                    ) : needsRetry && (
+                        <div className="bg-rose-50 border border-rose-100 rounded-3xl p-4 mb-8">
+                             <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">Progress Guard</div>
+                             <div className="text-sm font-bold text-rose-900">Need {threshold}% to unlock next node</div>
                         </div>
                     )}
 
-                    {/* Action buttons */}
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+                    {/* Bottom Actions */}
+                    <div className="flex flex-col gap-3">
+                         <button
+                            onClick={handleFinish}
+                            className="w-full h-14 bg-slate-900 text-white rounded-3xl font-black text-[13px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-black active:scale-95 transition-all shadow-xl shadow-slate-900/10"
+                        >
+                            {needsRetry ? 'EXIT QUEST' : 'COLLECT REWARDS'} <ArrowRight size={18} />
+                        </button>
+                        
                         {needsRetry && (
-                            <button
+                             <button
                                 onClick={() => {
-                                    // Reset and retry
-                                    setShowCompletion(false);
-                                    setCompletionResult(null);
-                                    setCurrentIdx(0);
-                                    setScore(0);
-                                    setGemsEarned(0);
-                                    setSelectedOption(null);
-                                    setIsAnswered(false);
-                                    setShowExplanation(false);
-                                    setIsLoading(true);
-                                    resetSession();
-                                    // Reload questions
+                                    setShowCompletion(false); setCompletionResult(null); setCurrentIdx(0); setScore(0); setGemsEarned(0); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setIsLoading(true); resetSession();
                                     (async () => {
                                         const allQ = await fetchSstQuestions(topicId);
                                         allBankRef.current = allQ;
@@ -414,29 +554,11 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                         setIsLoading(false);
                                     })();
                                 }}
-                                style={{
-                                    flex: 1, height: '48px', borderRadius: '14px',
-                                    background: '#f59e0b', color: 'white', border: 'none',
-                                    fontWeight: 900, fontSize: '12px', letterSpacing: '1px',
-                                    cursor: 'pointer', display: 'flex', alignItems: 'center',
-                                    justifyContent: 'center', gap: '6px'
-                                }}
+                                className="w-full h-14 bg-white text-slate-600 border-2 border-slate-100 rounded-3xl font-black text-[11px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
                             >
-                                <RotateCcw size={14} /> TRY AGAIN
+                                <RotateCcw size={16} /> REPLAY NODE
                             </button>
                         )}
-                        <button
-                            onClick={handleFinish}
-                            style={{
-                                flex: 1, height: '48px', borderRadius: '14px',
-                                background: '#0f172a', color: 'white', border: 'none',
-                                fontWeight: 900, fontSize: '12px', letterSpacing: '1px',
-                                cursor: 'pointer', display: 'flex', alignItems: 'center',
-                                justifyContent: 'center', gap: '6px'
-                            }}
-                        >
-                            {needsRetry ? 'EXIT' : 'CONTINUE'} <ArrowRight size={14} />
-                        </button>
                     </div>
                 </div>
             </div>
@@ -451,41 +573,22 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         const session = getSession();
         const frustration = calculateFrustration(session);
 
-        // ── STUDY RECAP VIEW ──
-        if (q.type === 'STUDY_RECAP') {
+        // ── SIMULATION / PUZZLE / RECAP VIEW ──
+        if (q.isSimulation || q.type === 'STUDY_RECAP' || q.type === 'INTERACTIVE_PUZZLE') {
             return (
-                <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-                    <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border-l-8 border-l-blue-500 p-10">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600">
-                                <Lightbulb size={24} />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-black text-slate-800">Quick Recap</h2>
-                                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Time to power up!</p>
-                            </div>
-                        </div>
-
-                        <p className="text-lg font-bold text-slate-600 mb-8 leading-relaxed">
-                            You've been working hard! Let's take a quick moment to review this concept more deeply before we continue.
-                        </p>
-
-                        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-10 flex items-center gap-4">
-                             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20">
-                                <ArrowRight size={20} />
-                             </div>
-                             <span className="font-bold text-blue-800 text-sm">
-                                 Loading simulation: <code className="bg-white/50 px-2 py-0.5 rounded">{q.file}</code>
-                             </span>
-                        </div>
-
-                        <button
-                            onClick={nextQuestion}
-                            className="w-full h-16 bg-blue-600 text-white rounded-2xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-blue-700 active:scale-98 transition-all shadow-xl shadow-blue-600/20"
-                        >
-                            I'M READY TO CONTINUE <ArrowRight size={20} />
-                        </button>
-                    </div>
+                <div className="flex-1 flex flex-col items-center justify-center p-0 animate-in fade-in duration-500 overflow-hidden">
+                    <SimulatorBridge 
+                        step={q} 
+                        onComplete={(results) => {
+                            // Grade the simulation!
+                            const isSuccess = results?.score >= 60;
+                            if (isSuccess) {
+                                setScore(prev => prev + 1);
+                                setGemsEarned(prev => prev + 5); // Bonus for simulations
+                            }
+                            nextQuestion();
+                        }} 
+                    />
                 </div>
             );
         }
@@ -581,7 +684,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                     onClick={() => handleSelect(opt)}
                                     disabled={isAnswered}
                                     style={boxStyle}
-                                    className="group relative w-full h-14 rounded-2xl border-2 transition-all duration-300 flex items-center px-5 text-[15px] font-bold"
+                                    className={`group relative w-full h-14 rounded-2xl border-2 transition-all duration-300 flex items-center px-5 text-[15px] font-bold animate-in slide-in-from-bottom-${2 + i} fade-in duration-500`}
                                 >
                                     <span className="flex-1 text-left">{opt}</span>
                                     {isAnswered && isCorrect && <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0"><Check size={14} strokeWidth={4} /></div>}
@@ -598,22 +701,35 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                         </button>
                     )}
 
-                    {showExplanation && (
-                        <div className="mt-8 relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 shadow-sm animate-in slide-in-from-bottom-4 duration-500">
-                            {/* Decorative background icon */}
-                            <div className="absolute -right-4 -bottom-4 text-amber-500/10 -rotate-12">
-                                <Lightbulb size={120} />
+                    {/* HINT DISPLAY (Only if requested and not yet answered) */}
+                    {hintUsed && !isAnswered && (
+                        <div className="mt-6 relative overflow-hidden bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 shadow-sm animate-in slide-in-from-bottom-2 duration-300">
+                            <div className="flex items-start gap-3 relative z-10">
+                                <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white shrink-0">
+                                    <Lightbulb size={16} fill="currentColor" />
+                                </div>
+                                <div>
+                                    <h4 className="font-black text-amber-600 text-[10px] tracking-widest uppercase mb-1">Quick Hint</h4>
+                                    <p className="text-slate-700 font-bold text-[13px] leading-relaxed">{q.hint || 'No hint available for this concept.'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* EXPLANATION / DETAILED SOLUTION (Only after answering) */}
+                    {isAnswered && (
+                        <div className="mt-8 relative overflow-hidden bg-slate-900 border-2 border-white/10 rounded-2xl p-6 shadow-2xl animate-in fade-in duration-500">
+                            <div className="absolute -right-8 -bottom-8 text-white/5 -rotate-12">
+                                <Search size={160} />
                             </div>
                             
                             <div className="flex items-start gap-4 relative z-10">
-                                <div className="w-10 h-10 bg-gradient-to-b from-amber-400 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 text-white shrink-0 ring-4 ring-white">
-                                    <Lightbulb size={20} fill="currentColor" />
+                                <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 text-white shrink-0">
+                                    <Check size={20} strokeWidth={4} />
                                 </div>
-                                <div className="pt-0.5 max-w-[85%]">
-                                    <h4 className="font-black text-amber-500 text-[10px] tracking-widest uppercase mb-1.5 flex items-center gap-2">
-                                        {hintUsed && !isAnswered ? 'Hint' : 'Explanation'}
-                                    </h4>
-                                    <p className="text-slate-700 font-bold text-[14px] leading-relaxed">"{q.explanation || 'Think about the location and context.'}"</p>
+                                <div className="pt-0.5">
+                                    <h4 className="font-black text-blue-400 text-[10px] tracking-widest uppercase mb-1.5">Detailed Solution</h4>
+                                    <p className="text-white font-bold text-[14px] leading-relaxed">{q.explanation || 'Detailed concept explanation coming soon.'}</p>
                                 </div>
                             </div>
                         </div>

@@ -27,11 +27,13 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
     if (subject === 'sst' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
         const steps = [];
 
-        // WARMUP and EXPLORE get a study/recap sim first
+        // WARMUP and EXPLORE get a study/recap sim first (Broadened to include puzzles/quizzes)
         if ((nodeType === 'WARMUP' || nodeType === 'EXPLORE') && resources && resources.length > 0) {
             const studyRes = resources.find(r =>
                 r.file.startsWith('study_') || r.file.includes('_study') ||
-                r.file.startsWith('recap_') || r.file.includes('_recap')
+                r.file.startsWith('recap_') || r.file.includes('_recap') ||
+                r.file.startsWith('puzzle_') || r.file.startsWith('quiz_') ||
+                r.file.includes('project_genesis')
             );
             if (studyRes) {
                 // Determine whether it needs .json suffix

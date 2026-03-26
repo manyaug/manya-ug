@@ -16,6 +16,7 @@
 import { getSession, getAnswerHistory, getUserState } from './userStateService';
 import { calculateFrustration } from './psychTracker';
 import { parseQuestionId, areSameConcept } from '../utils/questionParser';
+import { getWrongQuestions } from './questProgressService';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. VARIANT DISTRIBUTIONS (from questEngine.js)
@@ -171,15 +172,50 @@ const WEIGHTS = {
     mastered: 20,
 };
 
-function scoreQuestion(question, answerHistory) {
+function scoreQuestion(question, answerHistory, subject, wrongQuestions = []) {
     let score = 0;
     const factors = [];
 
     // Build concept stats from history
-    const conceptAnswers = answerHistory.filter(a => a.questionId === question.id);
+    const conceptAnswers = answerHistory.filter(a => areSameConcept(a.questionId, question.id));
     const attempts = conceptAnswers.length;
     const correct = conceptAnswers.filter(a => a.isCorrect).length;
     const accuracy = attempts > 0 ? correct / attempts : 0;
+
+    // ── REPHRASED HOOK ──
+    // If this is a rephrased version (source_sheet: 'Rephrased') and the parent was failed recently
+    const isNewRephrased = question.source === 'Rephrased';
+    const parentFailed = wrongQuestions.some(wq => wq.id === question.parentid);
+    
+    if (isNewRephrased && parentFailed) {
+        score += 500; // MASSIVE BOOST to bring it to the front
+        factors.push('rephrased_accurate_retry');
+    }
+
+    // fallback to generic concept retry if no exact parent match
+    const conceptFailed = wrongQuestions.some(wq => areSameConcept(wq.id, question.id));
+    if (isNewRephrased && conceptFailed && !parentFailed) {
+        score += 150;
+        factors.push('rephrased_similar_concept');
+    }
+
+    // ── PLE CHALLENGE ──
+    // Prioritize PLE questions for high-performers, or if they are in MASTERY
+    const overallAccuracy = answerHistory.slice(-10).filter(a => a.isCorrect).length / Math.max(1, Math.min(10, answerHistory.length));
+    const isPLE = question.isPLE;
+    
+    if (isPLE) {
+        if (overallAccuracy > 0.8) {
+            score += 150; // Challenge the pros
+            factors.push('ple_challenge_high');
+        } else if (overallAccuracy < 0.5) {
+            score -= 50; // Spare the strugglers
+            factors.push('ple_mercy_low');
+        } else {
+            score += 30; // Standard PLE weight
+            factors.push('ple_standard');
+        }
+    }
 
     // Simple mastery classification
     let mastery = 'new';
@@ -207,6 +243,12 @@ function scoreQuestion(question, answerHistory) {
     if (attempts > 0 && hintCount / attempts > 0.3) {
         score += 30;
         factors.push('high_hint_usage');
+    }
+
+    // Difficulty weighting
+    if (overallAccuracy < 0.5 && question.difficulty === 'E') {
+        score += 50; // Give easier questions to strugglers
+        factors.push('mercy_difficulty_e');
     }
 
     return { score, factors, mastery };
@@ -256,101 +298,78 @@ function selectPool(answerHistory, targetRatio = 2) {
  * @param {Array}  resources    - Available JSON resources for this quest
  * @returns {{ questions: Array, questLength: number, gameMode: string, variantMix: object, metadata: object }}
  */
-export function generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, resources = []) {
+export function generateAdaptiveQuest(allQuestionsRaw, nodeType, subject, questKey, resources = []) {
     const session = getSession();
     const history = getAnswerHistory(subject);
     const frustration = calculateFrustration(session);
 
+    // ── 0. DATA NORMALIZATION ──
+    // Identify intrinsic simulations early
+    const allQuestions = allQuestionsRaw.map(q => ({
+        ...q,
+        isSimulation: q.isSimulation || !!q.engine_type || !!q.json_reference_path,
+        type: q.engine_type === 'UniversalGlobeEngine' ? 'INTERACTIVE_PUZZLE' : q.type
+    }));
+
     // 1. Calculate dynamic quest length
     const questLength = calculateQuestLength(nodeType, session);
 
-    // 2. Get variant distribution for this node
+    // 2. Get variant distribution
     const variantMix = VARIANT_DISTRIBUTIONS[nodeType] || VARIANT_DISTRIBUTIONS.PRACTICE;
 
     // 3. Select game mode
     const gameMode = selectGameMode(nodeType, session, history);
 
-    // 4. Score every question
-    const scored = allQuestions.map(q => ({
-        ...q,
-        _score: scoreQuestion(q, history),
-    }));
+    // 4. Get recent wrong questions
+    const wrongQuestions = getWrongQuestions(subject);
 
-    // 5. Sort by priority (highest first)
+    // 5. Score every question
+    const scored = allQuestions.map(q => {
+        const score = scoreQuestion(q, history, subject, wrongQuestions);
+        // BOOST simulations slightly so they appear as "rewards" or active learning steps
+        if (q.isSimulation) score.score += 100; 
+        return { ...q, _score: score };
+    });
+
+    // 5. Sort by priority
     scored.sort((a, b) => b._score.score - a._score.score);
 
-    // 6. Select questions respecting spacing and variant mix
+    // 6. Select questions
     const selected = [];
     const selectedIds = [];
 
-    // Calculate how many of each variant we need
-    const v1Count = Math.round(questLength * variantMix.V1);
-    const v2Count = Math.round(questLength * variantMix.V2);
-    const v3Count = questLength - v1Count - v2Count;
-
-    // Since our current question banks don't have V1/V2/V3 IDs yet,
-    // we simulate difficulty mixing by selecting from different score ranges:
-    // Top-scored = harder (more needed), bottom = easier (already known)
-    const needCounts = { hard: v3Count, medium: v2Count, easy: v1Count };
-
-    // Easy questions = mastered or high-score (quick review)
-    // Hard questions = new or struggling (need attention)
     for (const q of scored) {
         if (selected.length >= questLength) break;
-
-        // Enforce spacing
         if (!validateSpacing(q.id, selectedIds)) continue;
-
-        // Frustration guardrail: if frustration is high, skip hard questions
         if (frustration.score > 70 && q._score.mastery === 'new') continue;
 
         selected.push(q);
         selectedIds.push(q.id);
     }
 
-    // If we still don't have enough, pad with remaining questions
-    if (selected.length < questLength) {
-        for (const q of scored) {
-            if (selected.length >= questLength) break;
-            if (!selected.includes(q)) {
-                selected.push(q);
-            }
+    // 7. Final questions processing
+    let finalQuestions = shuffleArray(selected).map(({ _score, ...q }) => q);
+
+    // 8. DYNAMIC INJECTION (Recaps & Extras)
+    const accuracy = history.slice(-5).filter(a => a.isCorrect).length / Math.max(1, Math.min(5, history.length));
+
+    // STREAK PUZZLE (Fallback injection if no sims were picked naturally)
+    const hasSim = finalQuestions.some(q => q.isSimulation);
+    if (!hasSim && session.consecutiveCorrect >= 2 && nodeType !== 'MASTERY') {
+        const puzzle = allQuestions.find(q => q.isSimulation);
+        if (puzzle) {
+            finalQuestions.push(puzzle);
+            console.log(`🎁 [Adaptive] Injected Simulation via Streak: ${puzzle.id}`);
         }
     }
 
-    // 7. Shuffle selected questions (avoid predictable ordering)
-    const shuffled = shuffleArray(selected.slice(0, questLength));
-
-    // 8. Clean up internal scoring data
-    let finalQuestions = shuffled.map(({ _score, ...q }) => q);
-
-    // 9. DYNAMIC RECAP INJECTION
-    //    If frustration is high or accuracy low, inject a study JSON in the middle
-    if (['PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType) && resources.length > 0) {
-        const accuracy = history.slice(-5).filter(a => a.isCorrect).length / Math.max(1, Math.min(5, history.length));
-        
-        if (frustration.score > 60 || accuracy < 0.6) {
-            const recapRes = resources.find(r => 
-                r.file.startsWith('recap_') || r.file.includes('_recap') || r.file.startsWith('study_')
-            );
-            
-            if (recapRes) {
-                const recapStep = {
-                    id: `recap_${questKey}_${Date.now()}`,
-                    type: 'STUDY_RECAP',
-                    file: recapRes.file,
-                    isSimulation: true,
-                    isStudySim: true,
-                    question: "Quick Recap: Let's review the concepts!",
-                    options: ["Continue"],
-                    answer: "Continue"
-                };
-                
-                // Inject at index 3 or middle
-                const injectionIdx = Math.min(3, Math.floor(finalQuestions.length / 2));
-                finalQuestions.splice(injectionIdx, 0, recapStep);
-                console.log(`🧠 [Adaptive] Weakness detected (Frust:${frustration.score}, Acc:${accuracy}). Injected recap: ${recapRes.file}`);
-            }
+    // FRUSTRATION RECAP
+    if (frustration.score > 60 && nodeType !== 'WARMUP') {
+        const recap = allQuestions.find(q => q.isSimulation && (q.id.includes('study') || q.id.includes('recap')));
+        if (recap && !finalQuestions.some(q => q.id === recap.id)) {
+            const injectionIdx = Math.min(2, Math.floor(finalQuestions.length / 2));
+            finalQuestions.splice(injectionIdx, 0, recap);
+            console.log(`🧠 [Adaptive] Injected Study Recap: ${recap.id}`);
         }
     }
 
