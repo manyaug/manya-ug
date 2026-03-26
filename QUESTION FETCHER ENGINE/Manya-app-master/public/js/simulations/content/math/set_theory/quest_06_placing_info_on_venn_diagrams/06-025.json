@@ -1,0 +1,17 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Shading Differences",
+  "variantTitle": "Quest 6-027: Only One",
+  "sets": { "A": { "label": "X", "color": "#ef4444" }, "B": { "label": "Y", "color": "#f59e0b" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "Tap regions representing elements in <span style='color:#1e293b'>Exactly One Set</span>.",
+      "hint": "Tap 'X Only' and 'Y Only'. Do NOT tap the middle."
+    }
+  ]
+}

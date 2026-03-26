@@ -1,0 +1,28 @@
+{
+  "questId": "ENG-C1-Q9",
+  "title": "Chapter 1 Mastery",
+  "engineType": "QUEST_RUNNER",
+  "steps": [
+    {
+      "engineType": "DEEP_READER",
+      "data": {
+        "media": { "type": "PASSAGE", "content": "<h2>PASSAGE 4: Final Bash</h2><p>The whole village was <b>invited</b>. Manya promised his grandparents that he would <b>revise</b> before the new term <b>commenced</b>.</p>" },
+        "questions": [
+          { "text": "What does 'commenced' mean?", "options": ["Began", "Ended"], "answer": "Began" }
+        ]
+      }
+    },
+    {
+      "engineType": "CHAT",
+      "data": {
+        "speaker": "manya",
+        "image": "assets/english/quest_2/hday_2_chat_6.png",
+        "text": "Waddle! What an adventure. Ready for the badge?",
+        "choices": [
+          { "text": "Revise Chapter Rules", "targetId": "rule-review-selector-2" },
+          { "text": "Finish and Get Badge", "action": "COMPLETE" }
+        ]
+      }
+    }
+  ]
+}

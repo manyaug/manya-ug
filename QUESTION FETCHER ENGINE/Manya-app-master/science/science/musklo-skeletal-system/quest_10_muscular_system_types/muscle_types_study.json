@@ -1,0 +1,27 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "study",
+  "topic": "The Three Types of Muscles",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_10_muscular_system_types/3_muscle_types.png",
+  "intro": "Muscles are the engines of the body. They are divided into three main groups.",
+  "hotspots": [
+    {
+      "id": "cardiac",
+      "label": "Cardiac Muscle",
+      "x": 54.2, "y": 38.67,
+      "info": "Found only in the heart. It works automatically (involuntary) and never gets tired throughout life."
+    },
+    {
+      "id": "smooth",
+      "label": "Involuntary (Smooth) Muscle",
+      "x": 54.69, "y": 60.74,
+      "info": "Found in internal organs like the stomach and intestines. They control processes like digestion (peristalsis)."
+    },
+    {
+      "id": "skeletal",
+      "label": "Voluntary (Skeletal) Muscle",
+      "x": 26.17, "y": 44.73,
+      "info": "Attached to bones by tendons. We control these consciously to move, lift, and run."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability Calculation",
+  "variantTitle": "Quest 10-008: Language Prob",
+  "sets": { "A": { "label": "E (60)", "color": "#2563eb" }, "B": { "label": "F (50)", "color": "#db2777" } },
+  "zones": { "left": ["60-x"], "center": ["x"], "right": ["50-x"], "outside": ["0"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 100,
+      "expected_x": 10,
+      "prompt": "Total = 100. Everyone speaks at least one. Find <b>x</b> (Both).",
+      "hint": "60 + 50 - x = 100 -> 110 - x = 100"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "symmetric_difference",
+      "x_val": 10,
+      "total": 100,
+      "expression": "90", 
+      "prompt": "Prob. of speaking <b>Only One</b> language?",
+      "hint": "n(Only One) = 50 + 40 = 90. Prob = 90/100."
+    }
+  ]
+}

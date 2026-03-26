@@ -1,0 +1,43 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Equal Sets",
+  "variantTitle": "Quest 7-005: Equating Sets",
+  "sets": {
+    "A": { "label": "L", "color": "#9333ea" },
+    "B": { "label": "E", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["5m+4"],
+    "center": ["m"],
+    "right": ["3m+12"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "expected_x": 4,
+      "prompt": "If <span style='color:#9333ea'>n(L)</span> = <span style='color:#db2777'>n(E)</span>, find <b>m</b>.",
+      "hint": "(5m+4) + m = m + (3m+12). Simplify to 6m+4 = 4m+12."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 4,
+      "expression": "5m + 4",
+      "prompt": "How many speak <span style='color:#9333ea'>Luganda only</span>?",
+      "hint": "5(4) + 4"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 4,
+      "prompt": "How many pupils in the class <b>altogether</b>?",
+      "hint": "Sum all parts: 24 + 4 + 24."
+    }
+  ]
+}

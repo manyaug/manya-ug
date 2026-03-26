@@ -1,0 +1,48 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Probability",
+  "variantTitle": "Chance in Venn Diagrams",
+  "slides": [
+    {
+      "title": "What is Probability?",
+      "text": "Probability tells us the <b>chance</b> of picking someone from a specific group.<br><br><b>Formula:</b><br><center><span class='sym'>Prob = (Target Count) / (Total People)</span></center>",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "30", "center": "10", "right": "20" },
+      "highlight": []
+    },
+    {
+      "title": "Case 1: Simple Probability",
+      "text": "<b>Question:</b> What is the probability of picking someone from <b>Set A</b>?<br><br><b>Step 1:</b> Find Total (30+10+20 = 60).<br><b>Step 2:</b> Find n(A) (30+10 = 40).<br><b>Answer:</b> 40/60 = 2/3.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "30", "center": "10", "right": "20" },
+      "highlight": ["left", "center"]
+    },
+    {
+      "title": "Case 2: 'Only' Probability",
+      "text": "<b>Question:</b> Prob. of picking someone who likes <b>B ONLY</b>?<br><br><b>Logic:</b> Look at the crescent moon on the right.<br>n(B Only) = 20.<br><b>Answer:</b> 20/60 = 1/3.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "30", "center": "10", "right": "20" },
+      "highlight": ["right"]
+    },
+    {
+      "title": "Case 3: Algebra First!",
+      "text": "Sometimes you must find <b>x</b> first.<br><br><b>Question:</b> Total=100. Find Prob(Both).<br><b>Step 1:</b> Solve for x.<br>60 + 50 - x = 100 → x = 10.<br><b>Step 2:</b> Prob = 10/100.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["E (60)", "F (50)"],
+      "elements": { "left": "50", "center": "x", "right": "40" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "Case 4: Probability of 'Neither'",
+      "text": "<b>Question:</b> Prob. of picking someone outside?<br><br>If Total = 60, and Outside = 14.<br><b>Answer:</b> 14/60.<br><br>Always remember to count the people outside the circles!",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["N", "B"],
+      "elements": { "left": "24", "center": "10", "right": "12", "outside": "14" },
+      "highlight": ["outside"]
+    }
+  ]
+}

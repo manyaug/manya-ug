@@ -1,0 +1,30 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Farm Logic",
+  "variantTitle": "Quest 10-022: Farm Build",
+  "sets": { "A": { "label": "G", "color": "#16a34a" }, "B": { "label": "C", "color": "#ea580c" } },
+  "zones": { "left": ["20"], "center": ["y"], "right": ["30"], "outside": ["5"] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "<b>Phase 1: Build It</b><br>• G-only: <b>20</b> &nbsp; • C-only: <b>30</b><br>• Both: <b>y</b> &nbsp; • Neither: <b>5</b>",
+      "items": [
+        { "val": "20", "target": "left" },
+        { "val": "y", "target": "center" },
+        { "val": "30", "target": "right" },
+        { "val": "5", "target": "outside" }
+      ]
+    },
+    {
+      "retain_visuals": false,
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 65,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total=65. Find <b>y</b>.",
+      "hint": "20 + y + 30 + 5 = 65 -> y + 55 = 65."
+    }
+  ]
+}

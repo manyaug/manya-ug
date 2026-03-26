@@ -1,0 +1,25 @@
+{
+  "engineType": "VENN_PROB_ENGINE",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Probability Game",
+  "variantTitle": "Quest 10: Probability Sim",
+  "questions": [
+    {
+      "story": "<b>Level 1:</b> 3 friends play Football (A) only. 2 play Football AND Netball (B). None play Netball only or Outside.",
+      "setup": { "aOnly": 3, "bOnly": 0, "intersection": 2, "outside": 0 },
+      "question": "P(Football)? (Total in A / Total People)",
+      "expectedNumerator": 5,
+      "expectedDenominator": 5,
+      "hint": "Count everyone inside the Blue Circle (A)."
+    },
+    {
+      "story": "<b>Level 2:</b> 2 in A only, 3 in B only, 2 Both, 1 Outside.",
+      "setup": { "aOnly": 2, "bOnly": 3, "intersection": 2, "outside": 1 },
+      "question": "What is P(A ∩ B)? (Both / Total)",
+      "expectedNumerator": 2,
+      "expectedDenominator": 8,
+      "hint": "Intersection (2) / Total (8)."
+    }
+  ]
+}

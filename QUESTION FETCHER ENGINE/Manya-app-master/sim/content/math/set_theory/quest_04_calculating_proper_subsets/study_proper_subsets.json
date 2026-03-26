@@ -1,0 +1,52 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Proper Subsets",
+  "variantTitle": "Proper vs Improper Subsets",
+  "slides": [
+    {
+      "title": "What is a Proper Subset?",
+      "text": "We learned that a subset is a part of a larger set.<br><br>A <b>Proper Subset</b> is a subset that is strictly <b>smaller</b> than the original set. It cannot be equal to the original set.",
+      "visualType": "SUBSETS_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "subset": "1, 2", "difference": "3, 4" },
+      "highlight": ["subset"]
+    },
+    {
+      "title": "The 'Improper' Subset",
+      "text": "Did you know? Every set is a subset of itself!<br><br>If Set A = {1, 2}, then {1, 2} is a subset of A. <br>But it is <b>NOT</b> a Proper Subset. We call it an <b>Improper Subset</b>.",
+      "visualType": "EQUAL_SETS",
+      "labels": ["A", "Subset"],
+      "items": "1, 2"
+    },
+    {
+      "title": "The Logic",
+      "text": "For a subset to be <b>Proper</b>, there must be at least one member left over in the main set.<br><br>Look at the diagram: Set B has members '3' and '4' that are NOT in A.",
+      "visualType": "SUBSETS_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "subset": "1, 2", "difference": "3, 4" },
+      "highlight": ["difference"]
+    },
+    {
+      "title": "The Formula",
+      "text": "To calculate the number of Proper Subsets, we take the total subsets and <b>subtract 1</b> (the improper one).<br><br><center><span class='sym'>Proper Subsets = 2ⁿ - 1</span></center>",
+      "visualType": "POWER_SET_TREE",
+      "items": ["a", "b"],
+      "showProper": true
+    },
+    {
+      "title": "Example Calculation",
+      "text": "Let's try Set P = { a, b }.<br><b>n = 2</b>.<br><br>Total Subsets = 2² = 4.<br>Proper Subsets = 4 - 1 = <b>3</b>.",
+      "visualType": "POWER_SET_TREE",
+      "items": ["a", "b"],
+      "showProper": true
+    },
+    {
+      "title": "Listing Them",
+      "text": "For Set {a, b}:<br><br><b>Proper:</b> {a}, {b}, { }<br><b>Improper:</b> {a, b} (We throw this one away!)",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["{a}", "{b}", "{ }"],
+      "showCount": false
+    }
+  ]
+}

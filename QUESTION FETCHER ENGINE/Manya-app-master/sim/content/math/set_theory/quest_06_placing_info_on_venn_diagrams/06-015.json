@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Region Notation",
+  "variantTitle": "Quest 6-016: Region Decoder",
+  "sets": { "A": { "label": "X", "color": "#9333ea" }, "B": { "label": "Y", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "REGION_ID_QUIZ", 
+      "targetRegion": "universal_only", 
+      "interaction": "CHOICE",
+      "prompt": "Which notation describes the shaded region?",
+      "options": [
+        "(X ∪ Y)'",
+        "X ∪ Y",
+        "X' ∩ Y",
+        "X ∩ Y"
+      ],
+      "expected": "(X ∪ Y)'",
+      "hint": "The shaded part is OUTSIDE both circles."
+    }
+  ]
+}

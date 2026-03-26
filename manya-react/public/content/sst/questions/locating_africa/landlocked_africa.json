@@ -1,0 +1,4322 @@
+[
+  {
+    "id": "SST-P7-T1-00361",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is a landlocked country?",
+    "options": [
+      "A country surrounded by water",
+      "A country with many lakes",
+      "A country without a coastline or direct access to the sea",
+      "A country found in a valley"
+    ],
+    "answer": "A country without a coastline or direct access to the sea",
+    "explanation": "Think about countries that do not touch the ocean.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00362",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "How many landlocked countries are currently in Africa?",
+    "options": [
+      10,
+      12,
+      16,
+      20
+    ],
+    "answer": 16,
+    "explanation": "The number includes the newest nation, South Sudan.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00363",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these is a landlocked country in East Africa?",
+    "options": [
+      "Kenya",
+      "Tanzania",
+      "Uganda",
+      "Somalia"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is known as the Pearl of Africa.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00364",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is an \"enclave\" country?",
+    "options": [
+      "A country with two coastlines",
+      "A country completely surrounded by only one other country",
+      "A country that is an island",
+      "A country with no mountains"
+    ],
+    "answer": "A country completely surrounded by only one other country",
+    "explanation": "Think of a country \"locked\" inside another.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00365",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which African country is a famous example of an enclave?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Lesotho",
+      "Zambia"
+    ],
+    "answer": "Lesotho",
+    "explanation": "It is located inside South Africa.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00366",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "In which year did South Sudan become an independent landlocked nation?",
+    "options": [
+      1990,
+      2001,
+      2011,
+      2020
+    ],
+    "answer": 2011,
+    "explanation": "It separated from the Republic of Sudan.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00367",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country borders Lesotho on all sides?",
+    "options": [
+      "Zimbabwe",
+      "Namibia",
+      "South Africa",
+      "Mozambique"
+    ],
+    "answer": "South Africa",
+    "explanation": "It is an enclave.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00368",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these is a landlocked country in Central Africa?",
+    "options": [
+      "Gabon",
+      "Cameroon",
+      "Chad",
+      "Congo"
+    ],
+    "answer": "Chad",
+    "explanation": "It is a large desert country.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00369",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Why do landlocked countries need good relations with their neighbors?",
+    "options": [
+      "To share the same president",
+      "To have access to their sea ports",
+      "To stop the sun from rising",
+      "To share the same currency"
+    ],
+    "answer": "To have access to their sea ports",
+    "explanation": "They depend on neighbors for transit.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00370",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these is a landlocked island?",
+    "options": [
+      "Madagascar",
+      "Seychelles",
+      "None, islands cannot be landlocked",
+      "Mauritius"
+    ],
+    "answer": "None, islands cannot be landlocked",
+    "explanation": "Think about the definition of an island.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00371",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is the capital of the landlocked country Zambia?",
+    "options": [
+      "Harare",
+      "Lusaka",
+      "Lilongwe",
+      "Windhoek"
+    ],
+    "answer": "Lusaka",
+    "explanation": "It is in the copperbelt region.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00372",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Can a landlocked country have a traditional navy?",
+    "options": [
+      "Yes, in the ocean",
+      "No, because they have no sea",
+      "Yes, but only in lakes and rivers",
+      "Yes, in the desert"
+    ],
+    "answer": "No, because they have no sea",
+    "explanation": "Think about where a navy operates.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00373",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is the main geographic disadvantage of being landlocked?",
+    "options": [
+      "Free trade",
+      "Direct access to the sea",
+      "High transport costs for trade",
+      "No taxes"
+    ],
+    "answer": "High transport costs for trade",
+    "explanation": "Think about the extra distance to ports.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00374",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these countries is landlocked: Nigeria or Niger?",
+    "options": [
+      "Nigeria",
+      "Niger",
+      "Both",
+      "Neither"
+    ],
+    "answer": "Niger",
+    "explanation": "Nigeria has a coast.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00375",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country is a neighbor to both landlocked Uganda and South Sudan?",
+    "options": [
+      "Tanzania",
+      "DR Congo",
+      "Kenya",
+      "Ethiopia"
+    ],
+    "answer": "Kenya",
+    "explanation": "Check the map of East Africa.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00376",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which sea port does Uganda primarily use for its international trade?",
+    "options": [
+      "Port Sudan",
+      "Port Mombasa",
+      "Port Douala",
+      "Port Beira"
+    ],
+    "answer": "Port Mombasa",
+    "explanation": "It is located in Kenya.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00377",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country became landlocked in 1993 after Eritrea gained independence?",
+    "options": [
+      "Sudan",
+      "Ethiopia",
+      "Chad",
+      "Niger"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00378",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port do Rwanda and Burundi mainly use for their trade?",
+    "options": [
+      "Port Mombasa",
+      "Port of Dar es Salaam",
+      "Port of Djibouti",
+      "Port of Lagos"
+    ],
+    "answer": "Port of Dar es Salaam",
+    "explanation": "It is the main port of Tanzania.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00379",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port does Ethiopia rely on for over 95% of its trade?",
+    "options": [
+      "Port Sudan",
+      "Port of Mombasa",
+      "Port of Djibouti",
+      "Port of Beira"
+    ],
+    "answer": "Port of Djibouti",
+    "explanation": "It is connected to Addis Ababa by rail.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00380",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which landlocked country is completely covered by the Kalahari Desert?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Botswana",
+      "Chad"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is famous for diamonds.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00381",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which regional body helps landlocked countries in Southern Africa trade together?",
+    "options": [
+      "EAC",
+      "ECOWAS",
+      "SADC",
+      "IGAD"
+    ],
+    "answer": "SADC",
+    "explanation": "Southern African Development Community.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00382",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is a major challenge for landlocked countries?",
+    "options": [
+      "Too much rain",
+      "High transport costs",
+      "Too many sea ports",
+      "Lack of neighbors"
+    ],
+    "answer": "High transport costs",
+    "explanation": "They pay to use other ports.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00383",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Why is air transport expensive for landlocked countries?",
+    "options": [
+      "Planes are slow",
+      "It is only for passengers",
+      "High cost of fuel and maintenance",
+      "There are no airports"
+    ],
+    "answer": "High cost of fuel and maintenance",
+    "explanation": "Think about the weight of cargo.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00384",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country uses the Port of Dakar in Senegal for trade?",
+    "options": [
+      "Niger",
+      "Mali",
+      "Chad",
+      "Zambia"
+    ],
+    "answer": "Mali",
+    "explanation": "Dakar is its closest major port.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00385",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which landlocked country was formerly called Swaziland?",
+    "options": [
+      "Lesotho",
+      "Eswatini",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Eswatini",
+    "explanation": "The King changed the name in 2018.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00386",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these countries is NOT landlocked?",
+    "options": [
+      "Zimbabwe",
+      "Zambia",
+      "Mozambique",
+      "Malawi"
+    ],
+    "answer": "Mozambique",
+    "explanation": "It has a long coastline.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00387",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Why is South Sudan considered landlocked even though it has the Nile?",
+    "options": [
+      "The Nile has no water",
+      "The Nile is not an ocean",
+      "The Nile is too salty",
+      "Boats cannot move on the Nile"
+    ],
+    "answer": "The Nile is not an ocean",
+    "explanation": "Access must be to the sea.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00388",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country uses the Port of Walvis Bay in Namibia?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Ethiopia"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is a route to the Atlantic.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00389",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is the capital of the landlocked country Burkina Faso?",
+    "options": [
+      "Bamako",
+      "Niamey",
+      "Ouagadougou",
+      "Dakar"
+    ],
+    "answer": "Ouagadougou",
+    "explanation": "The name starts with O.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00390",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port in South Africa is used by Botswana and Lesotho?",
+    "options": [
+      "Cape Town",
+      "Durban",
+      "Port Elizabeth",
+      "East London"
+    ],
+    "answer": "Durban",
+    "explanation": "It is the busiest port in Africa.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00391",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country is the most populated landlocked nation in the world?",
+    "options": [
+      "Uganda",
+      "Ethiopia",
+      "Mali",
+      "Chad"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It has over 120 million people.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00392",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which landlocked country is a major producer of copper in Africa?",
+    "options": [
+      "Botswana",
+      "Malawi",
+      "Zambia",
+      "Niger"
+    ],
+    "answer": "Zambia",
+    "explanation": "It is in Southern Africa.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00393",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port is used by Chad for its international trade?",
+    "options": [
+      "Port of Douala",
+      "Port of Mombasa",
+      "Port of Durban",
+      "Port of Tema"
+    ],
+    "answer": "Port of Douala",
+    "explanation": "It is in Cameroon.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00394",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port in Mozambique is the shortest route to the sea for Zimbabwe?",
+    "options": [
+      "Maputo",
+      "Beira",
+      "Nacala",
+      "Durban"
+    ],
+    "answer": "Beira",
+    "explanation": "Beira Corridor.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00395",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Mali, Niger, and Burkina Faso are landlocked countries in which region?",
+    "options": [
+      "East Africa",
+      "Central Africa",
+      "West Africa",
+      "Southern Africa"
+    ],
+    "answer": "West Africa",
+    "explanation": "Part of the Sahel belt.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00396",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is the \"Northern Corridor\" in relation to Uganda?",
+    "options": [
+      "A river in the North",
+      "A trade route from Kampala to Mombasa",
+      "A mountain range",
+      "A political treaty"
+    ],
+    "answer": "A trade route from Kampala to Mombasa",
+    "explanation": "It passes through Kenya.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00397",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which landlocked country is known as the \"Warm Heart of Africa\"?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Malawi",
+      "Eswatini"
+    ],
+    "answer": "Malawi",
+    "explanation": "Famous for its friendly people.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00398",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "The TAZARA railway connects Zambia to which sea port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Beira",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Built for copper exports.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00399",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port in Benin is used by Niger?",
+    "options": [
+      "Lagos",
+      "Cotonou",
+      "Tema",
+      "Abidjan"
+    ],
+    "answer": "Cotonou",
+    "explanation": "A major West African port.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00400",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which river is used by the Central African Republic (CAR) for some transport?",
+    "options": [
+      "River Nile",
+      "River Niger",
+      "River Ubangi",
+      "River Zambezi"
+    ],
+    "answer": "River Ubangi",
+    "explanation": "Tributary of the Congo.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00401",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is \"smuggling\" and why is it a problem for landlocked nations?",
+    "options": [
+      "Illegal fishing",
+      "Illegal trade of goods",
+      "Building roads",
+      "Moving people"
+    ],
+    "answer": "Illegal trade of goods",
+    "explanation": "Government loses revenue.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00402",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "The \"Central Corridor\" links landlocked countries to which port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Djibouti",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Main route through Tanzania.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00403",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which landlocked country is rich in Uranium?",
+    "options": [
+      "Uganda",
+      "Niger",
+      "Malawi",
+      "Lesotho"
+    ],
+    "answer": "Niger",
+    "explanation": "West African nation.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00404",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What term is used for the area of a country far from the coast?",
+    "options": [
+      "Coastline",
+      "Hinterland",
+      "Islands",
+      "Delta"
+    ],
+    "answer": "Hinterland",
+    "explanation": "Means \"behind the land\".",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00405",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country borders Burkina Faso to the South and provides it with port access?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Ghana",
+      "Sudan"
+    ],
+    "answer": "Ghana",
+    "explanation": "Port Tema is here.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00406",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "How does being landlocked affect the price of goods like cars in Uganda?",
+    "options": [
+      "Prices become lower",
+      "Prices become higher",
+      "Prices stay same",
+      "Cars are free"
+    ],
+    "answer": "Prices become higher",
+    "explanation": "Think of transport costs.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00407",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Why does South Sudan export its oil through Port Sudan?",
+    "options": [
+      "It is the only port",
+      "Pipelines go through Sudan",
+      "Oil is only for Sudan",
+      "Cheapest route to USA"
+    ],
+    "answer": "Pipelines go through Sudan",
+    "explanation": "Think of existing infrastructure.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00408",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these countries is NOT landlocked (trick question)?",
+    "options": [
+      "Botswana",
+      "Zambia",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Namibia",
+    "explanation": "Look at the Atlantic coast.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00409",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Joining regional groups like the EAC helps landlocked countries to?",
+    "options": [
+      "Get a new ocean",
+      "Negotiate better trade terms",
+      "Stop using ports",
+      "Become an island"
+    ],
+    "answer": "Negotiate better trade terms",
+    "explanation": "Cooperation reduces fees.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00410",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is the main challenge shared by Chad and Niger?",
+    "options": [
+      "Too much rain",
+      "They are located in the Sahara/Sahel",
+      "They are islands",
+      "Lack of neighbors"
+    ],
+    "answer": "They are located in the Sahara/Sahel",
+    "explanation": "Both are hot and dry.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00411",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port in Cote d'Ivoire is used by Burkina Faso and Mali?",
+    "options": [
+      "Lagos",
+      "Tema",
+      "Abidjan",
+      "Dakar"
+    ],
+    "answer": "Abidjan",
+    "explanation": "A major West African hub.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00412",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Why is the Port of Mombasa vital to the Ugandan economy?",
+    "options": [
+      "It has many fish",
+      "It is the main gateway for imports",
+      "It is in Uganda",
+      "It is the only port in Africa"
+    ],
+    "answer": "It is the main gateway for imports",
+    "explanation": "Think of the Northern Corridor.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00413",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which of these landlocked countries is the smallest in size?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Burundi",
+      "Eswatini"
+    ],
+    "answer": "Burundi",
+    "explanation": "Near Lake Tanganyika.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00414",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is a common feature of Mali, Niger, and Chad?",
+    "options": [
+      "They have no deserts",
+      "They are all landlocked",
+      "They are in East Africa",
+      "They border the ocean"
+    ],
+    "answer": "They are all landlocked",
+    "explanation": "Look at the Sahel map.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00415",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which port is used by Eswatini for its sea access?",
+    "options": [
+      "Mombasa",
+      "Maputo",
+      "Dakar",
+      "Douala"
+    ],
+    "answer": "Maputo",
+    "explanation": "Near Mozambique.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00416",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which country is an \"enclave\" within South Africa?",
+    "options": [
+      "Swaziland",
+      "Lesotho",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Lesotho",
+    "explanation": "Surrounded by one neighbor.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00417",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "The landlocked country Ethiopia is located in which region?",
+    "options": [
+      "West Africa",
+      "North Africa",
+      "Horn of Africa",
+      "Central Africa"
+    ],
+    "answer": "Horn of Africa",
+    "explanation": "Near Somalia.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00418",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What is the name of the landlocked country whose capital is Lilongwe?",
+    "options": [
+      "Zambia",
+      "Zimbabwe",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Malawi",
+    "explanation": "In Southern Africa.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00419",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Which landlocked country borders Lake Chad?",
+    "options": [
+      "Uganda",
+      "Chad",
+      "Zambia",
+      "Malawi"
+    ],
+    "answer": "Chad",
+    "explanation": "Named after the country.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00420",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "What can a landlocked country do to reduce the cost of imports?",
+    "options": [
+      "Close its borders",
+      "Improve inland transport (railways)",
+      "Stop buying from abroad",
+      "Build a navy"
+    ],
+    "answer": "Improve inland transport (railways)",
+    "explanation": "Rail is cheaper than road.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00361-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It’s a country trapped by land. What exactly is a landlocked country?",
+    "options": [
+      "A country surrounded by water",
+      "A country with many lakes",
+      "A country without a coastline",
+      "A country found in a valley"
+    ],
+    "answer": "A country without a coastline or direct access to the sea",
+    "explanation": "Think about countries that do not touch the ocean.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00361-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: If a nation has no sea ports of its own, what do we call it? A landlocked country?",
+    "options": [
+      "A country surrounded by water",
+      "A country with many lakes",
+      "A country without a coastline",
+      "A country found in a valley"
+    ],
+    "answer": "A country without a coastline or direct access to the sea",
+    "explanation": "Think about countries that do not touch the ocean.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00361-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the definition of a landlocked country?",
+    "options": [
+      "A country surrounded by water",
+      "A country with many lakes",
+      "A country without a coastline",
+      "A country found in a valley"
+    ],
+    "answer": "A country without a coastline or direct access to the sea",
+    "explanation": "Think about countries that do not touch the ocean.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00362-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: From Uganda to Zambia, count them all up. How many landlocked countries are currently in Africa?",
+    "options": [
+      10,
+      12,
+      16,
+      20
+    ],
+    "answer": 16,
+    "explanation": "The number includes South Sudan.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00362-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: How many African nations have no coastline? How many landlocked countries are currently in Africa?",
+    "options": [
+      10,
+      12,
+      16,
+      20
+    ],
+    "answer": 16,
+    "explanation": "The number includes South Sudan.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00362-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Including the newest nation, South Sudan, how many landlocked countries are currently in Africa?",
+    "options": [
+      10,
+      12,
+      16,
+      20
+    ],
+    "answer": 16,
+    "explanation": "The number includes South Sudan.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00363-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It is the \"Pearl of Africa\" and has no coast. Which of these is a landlocked country in East Africa?",
+    "options": [
+      "Kenya",
+      "Tanzania",
+      "Uganda",
+      "Somalia"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is known as the Pearl of Africa.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00363-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Which of these neighbors of Kenya is landlocked? Which of these is a landlocked country in East Africa?",
+    "options": [
+      "Kenya",
+      "Tanzania",
+      "Uganda",
+      "Somalia"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is known as the Pearl of Africa.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00363-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Which country among these is landlocked? Which of these is a landlocked country in East Africa?",
+    "options": [
+      "Kenya",
+      "Tanzania",
+      "Uganda",
+      "Somalia"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is known as the Pearl of Africa.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00364-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It’s like a country inside another country. What is an \"enclave\" country?",
+    "options": [
+      "A country with two coastlines",
+      "A country completely surrounded by only one other country",
+      "A country that is an island",
+      "A country with no mountains"
+    ],
+    "answer": "A country completely surrounded by only one other country",
+    "explanation": "Think of a country \"locked\" inside another.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00364-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What do we call a nation totally contained within another? An \"enclave\" country?",
+    "options": [
+      "A country with two coastlines",
+      "A country completely surrounded by only one other country",
+      "A country that is an island",
+      "A country with no mountains"
+    ],
+    "answer": "A country completely surrounded by only one other country",
+    "explanation": "Think of a country \"locked\" inside another.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00364-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the definition of an \"enclave\" country?",
+    "options": [
+      "A country with two coastlines",
+      "A country completely surrounded by only one other country",
+      "A country that is an island",
+      "A country with no mountains"
+    ],
+    "answer": "A country completely surrounded by only one other country",
+    "explanation": "Think of a country \"locked\" inside another.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00365-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: You can only enter this country through South Africa. Which African country is a famous example of an enclave?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Lesotho",
+      "Zambia"
+    ],
+    "answer": "Lesotho",
+    "explanation": "It is located inside South Africa.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00365-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Which small kingdom is an enclave within South Africa?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Lesotho",
+      "Zambia"
+    ],
+    "answer": "Lesotho",
+    "explanation": "It is located inside South Africa.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00365-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the name of the famous enclave country inside South Africa?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Lesotho",
+      "Zambia"
+    ],
+    "answer": "Lesotho",
+    "explanation": "It is located inside South Africa.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00366-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It separated from its northern neighbor recently. In which year did South Sudan become an independent landlocked nation?",
+    "options": [
+      1990,
+      2001,
+      2011,
+      2020
+    ],
+    "answer": 2011,
+    "explanation": "It separated from the Republic of Sudan.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00366-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Our youngest neighbor  In which year did South Sudan become an independent landlocked nation?",
+    "options": [
+      1990,
+      2001,
+      2011,
+      2020
+    ],
+    "answer": 2011,
+    "explanation": "It separated from the Republic of Sudan.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00366-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: When did South Sudan finally gain its independence? In which year did South Sudan become an independent landlocked nation?",
+    "options": [
+      1990,
+      2001,
+      2011,
+      2020
+    ],
+    "answer": 2011,
+    "explanation": "It separated from the Republic of Sudan.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00367-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It’s surrounded by one big neighbor. Which country borders Lesotho on all sides?",
+    "options": [
+      "Zimbabwe",
+      "Namibia",
+      "South Africa",
+      "Mozambique"
+    ],
+    "answer": "South Africa",
+    "explanation": "It is an enclave.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00367-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Who is the only neighbor of the tiny nation of Lesotho? Which country borders Lesotho on all sides?",
+    "options": [
+      "Zimbabwe",
+      "Namibia",
+      "South Africa",
+      "Mozambique"
+    ],
+    "answer": "South Africa",
+    "explanation": "It is an enclave.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00367-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Lesotho is an enclave inside which nation? Which country borders Lesotho on all sides?",
+    "options": [
+      "Zimbabwe",
+      "Namibia",
+      "South Africa",
+      "Mozambique"
+    ],
+    "answer": "South Africa",
+    "explanation": "It is an enclave.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00368-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It is a massive, dry country in the heart of the continent. Which of these is a landlocked country in Central Africa?",
+    "options": [
+      "Gabon",
+      "Cameroon",
+      "Chad",
+      "Congo"
+    ],
+    "answer": "Chad",
+    "explanation": "It is a large desert country.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00368-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Looking at the map of Central Africa, which of these has no coast? Which of these is a landlocked country in Central Africa?",
+    "options": [
+      "Gabon",
+      "Cameroon",
+      "Chad",
+      "Congo"
+    ],
+    "answer": "Chad",
+    "explanation": "It is a large desert country.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00368-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Which of these is a landlocked country in Central Africa?",
+    "options": [
+      "Gabon",
+      "Cameroon",
+      "Chad",
+      "Congo"
+    ],
+    "answer": "Chad",
+    "explanation": "It is a large desert country.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00369-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Since they have no ports, they need friends. Why do landlocked countries need good relations with their neighbors?",
+    "options": [
+      "To share the same president",
+      "To have access to their sea ports",
+      "To stop the sun from rising",
+      "To share the same currency"
+    ],
+    "answer": "To have access to their sea ports",
+    "explanation": "They depend on neighbors for transit.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00369-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Trade requires cooperation. Why do landlocked countries need good relations with their neighbors?",
+    "options": [
+      "To share the same president",
+      "To have access to their sea ports",
+      "To stop the sun from rising",
+      "To share the same currency"
+    ],
+    "answer": "To have access to their sea ports",
+    "explanation": "They depend on neighbors for transit.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00369-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: How do they get goods in? Why do landlocked countries need good relations with their neighbors?",
+    "options": [
+      "To share the same president",
+      "To have access to their sea ports",
+      "To stop the sun from rising",
+      "To share the same currency"
+    ],
+    "answer": "To have access to their sea ports",
+    "explanation": "They depend on neighbors for transit.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00370-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Can an island be landlocked? Which of these is a landlocked island?",
+    "options": [
+      "Madagascar",
+      "Seychelles",
+      "None, islands cannot be landlocked",
+      "Mauritius"
+    ],
+    "answer": "None, islands cannot be landlocked",
+    "explanation": "Think about the definition of an island.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00370-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Use your logic  Which of these is a landlocked island?",
+    "options": [
+      "Madagascar",
+      "Seychelles",
+      "None, islands cannot be landlocked",
+      "Mauritius"
+    ],
+    "answer": "None, islands cannot be landlocked",
+    "explanation": "Think about the definition of an island.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00370-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Can an island ever be landlocked? Which of these is a landlocked island?",
+    "options": [
+      "Madagascar",
+      "Seychelles",
+      "None, islands cannot be landlocked",
+      "Mauritius"
+    ],
+    "answer": "None, islands cannot be landlocked",
+    "explanation": "Think about the definition of an island.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00371-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It is in the copperbelt region. What is the capital of the landlocked country Zambia?",
+    "options": [
+      "Harare",
+      "Lusaka",
+      "Lilongwe",
+      "Windhoek"
+    ],
+    "answer": "Lusaka",
+    "explanation": "It is in the copperbelt region.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00371-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Which city is the capital of Zambia?",
+    "options": [
+      "Harare",
+      "Lusaka",
+      "Lilongwe",
+      "Windhoek"
+    ],
+    "answer": "Lusaka",
+    "explanation": "It is in the copperbelt region.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00371-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the capital of the landlocked country Zambia?",
+    "options": [
+      "Harare",
+      "Lusaka",
+      "Lilongwe",
+      "Windhoek"
+    ],
+    "answer": "Lusaka",
+    "explanation": "It is in the copperbelt region.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00372-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: They have no ocean to sail on. Can a landlocked country have a traditional navy?",
+    "options": [
+      "Yes, in the ocean",
+      "No, because they have no sea",
+      "Yes, but only in lakes and rivers",
+      "Yes, in the desert"
+    ],
+    "answer": "No, because they have no sea",
+    "explanation": "Think about where a navy operates.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00372-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Does a landlocked nation have a traditional navy? Can a landlocked country have a traditional navy?",
+    "options": [
+      "Yes, in the ocean",
+      "No, because they have no sea",
+      "Yes, but only in lakes and rivers",
+      "Yes, in the desert"
+    ],
+    "answer": "No, because they have no sea",
+    "explanation": "Think about where a navy operates.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00372-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: A navy needs an ocean  Can a landlocked country have a traditional navy?",
+    "options": [
+      "Yes, in the ocean",
+      "No, because they have no sea",
+      "Yes, but only in lakes and rivers",
+      "Yes, in the desert"
+    ],
+    "answer": "No, because they have no sea",
+    "explanation": "Think about where a navy operates.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00373-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It makes everything you buy more expensive. What is the main geographic disadvantage of being landlocked?",
+    "options": [
+      "Free trade",
+      "Direct access to the sea",
+      "High transport costs for trade",
+      "No taxes"
+    ],
+    "answer": "High transport costs for trade",
+    "explanation": "Think about the extra distance to ports.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00373-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Shipping by road for thousands of kilometers is pricey  What is the main geographic disadvantage of being landlocked?",
+    "options": [
+      "Free trade",
+      "Direct access to the sea",
+      "High transport costs for trade",
+      "No taxes"
+    ],
+    "answer": "High transport costs for trade",
+    "explanation": "Think about the extra distance to ports.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00373-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Why do landlocked countries struggle with trade? What is the main geographic disadvantage of being landlocked?",
+    "options": [
+      "Free trade",
+      "Direct access to the sea",
+      "High transport costs for trade",
+      "No taxes"
+    ],
+    "answer": "High transport costs for trade",
+    "explanation": "Think about the extra distance to ports.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00374-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: One has a coast, the other doesn't  Which of these countries is landlocked: Nigeria or Niger?",
+    "options": [
+      "Nigeria",
+      "Niger",
+      "Both",
+      "Neither"
+    ],
+    "answer": "Niger",
+    "explanation": "Nigeria has a coast.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00374-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Which is the one without a port? Which of these countries is landlocked: Nigeria or Niger?",
+    "options": [
+      "Nigeria",
+      "Niger",
+      "Both",
+      "Neither"
+    ],
+    "answer": "Niger",
+    "explanation": "Nigeria has a coast.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00374-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Nigeria touches the Atlantic. Which of these countries is landlocked: Nigeria or Niger?",
+    "options": [
+      "Nigeria",
+      "Niger",
+      "Both",
+      "Neither"
+    ],
+    "answer": "Niger",
+    "explanation": "Nigeria has a coast.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00375-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It borders both the Pearl and the new nation. Which country is a neighbor to both landlocked Uganda and South Sudan?",
+    "options": [
+      "Tanzania",
+      "DR Congo",
+      "Kenya",
+      "Ethiopia"
+    ],
+    "answer": "Kenya",
+    "explanation": "Check the map of East Africa.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00375-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Looking at the East African map. Which country is a neighbor to both landlocked Uganda and South Sudan?",
+    "options": [
+      "Tanzania",
+      "DR Congo",
+      "Kenya",
+      "Ethiopia"
+    ],
+    "answer": "Kenya",
+    "explanation": "Check the map of East Africa.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00375-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Who is the neighbor shared by Uganda and South Sudan? Which country is a neighbor to both landlocked Uganda and South Sudan?",
+    "options": [
+      "Tanzania",
+      "DR Congo",
+      "Kenya",
+      "Ethiopia"
+    ],
+    "answer": "Kenya",
+    "explanation": "Check the map of East Africa.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00376-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is the primary gateway for Uganda's imports. Which sea port does Uganda primarily use for its international trade?",
+    "options": [
+      "Port Sudan",
+      "Port Mombasa",
+      "Port Douala",
+      "Port Beira"
+    ],
+    "answer": "Port Mombasa",
+    "explanation": "It is located in Kenya.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00376-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Goods come through Kenya to reach Uganda. Which sea port does Uganda primarily use for its international trade?",
+    "options": [
+      "Port Sudan",
+      "Port Mombasa",
+      "Port Douala",
+      "Port Beira"
+    ],
+    "answer": "Port Mombasa",
+    "explanation": "It is located in Kenya.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00376-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the main Kenyan port for Uganda? Which sea port does Uganda primarily use for its international trade?",
+    "options": [
+      "Port Sudan",
+      "Port Mombasa",
+      "Port Douala",
+      "Port Beira"
+    ],
+    "answer": "Port Mombasa",
+    "explanation": "It is located in Kenya.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00377-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: They lost their coast after the war. Which country became landlocked in 1993 after Eritrea gained independence?",
+    "options": [
+      "Sudan",
+      "Ethiopia",
+      "Chad",
+      "Niger"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00377-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Ethiopia's coast disappeared that year  Which country became landlocked in 1993 after Eritrea gained independence?",
+    "options": [
+      "Sudan",
+      "Ethiopia",
+      "Chad",
+      "Niger"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00377-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What country was coastal but lost it to Eritrea? Which country became landlocked in 1993 after Eritrea gained independence?",
+    "options": [
+      "Sudan",
+      "Ethiopia",
+      "Chad",
+      "Niger"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00378-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: They use the Central Corridor. Which port do Rwanda and Burundi mainly use for their trade?",
+    "options": [
+      "Port Mombasa",
+      "Port of Dar es Salaam",
+      "Port of Djibouti",
+      "Port of Lagos"
+    ],
+    "answer": "Port of Dar es Salaam",
+    "explanation": "It is the main port of Tanzania.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00378-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: This Tanzanian port serves Rwanda and Burundi. Which port do Rwanda and Burundi mainly use for their trade?",
+    "options": [
+      "Port Mombasa",
+      "Port of Dar es Salaam",
+      "Port of Djibouti",
+      "Port of Lagos"
+    ],
+    "answer": "Port of Dar es Salaam",
+    "explanation": "It is the main port of Tanzania.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00378-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the main port of Tanzania used by its neighbors? Which port do Rwanda and Burundi mainly use for their trade?",
+    "options": [
+      "Port Mombasa",
+      "Port of Dar es Salaam",
+      "Port of Djibouti",
+      "Port of Lagos"
+    ],
+    "answer": "Port of Dar es Salaam",
+    "explanation": "It is the main port of Tanzania.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00379-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is connected to Addis Ababa by rail. Which port does Ethiopia rely on for over 95% of its trade?",
+    "options": [
+      "Port Sudan",
+      "Port of Mombasa",
+      "Port of Djibouti",
+      "Port of Beira"
+    ],
+    "answer": "Port of Djibouti",
+    "explanation": "It is connected to Addis Ababa by rail.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00379-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: The rail link to this port is crucial for Ethiopia. Which port does Ethiopia rely on for over 95% of its trade?",
+    "options": [
+      "Port Sudan",
+      "Port of Mombasa",
+      "Port of Djibouti",
+      "Port of Beira"
+    ],
+    "answer": "Port of Djibouti",
+    "explanation": "It is connected to Addis Ababa by rail.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00379-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the lifeline port of Ethiopia? Which port does Ethiopia rely on for over 95% of its trade?",
+    "options": [
+      "Port Sudan",
+      "Port of Mombasa",
+      "Port of Djibouti",
+      "Port of Beira"
+    ],
+    "answer": "Port of Djibouti",
+    "explanation": "It is connected to Addis Ababa by rail.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00380-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It is famous for diamonds. Which landlocked country is completely covered by the Kalahari Desert?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Botswana",
+      "Chad"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is famous for diamonds.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00380-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Where is the Kalahari Desert? Which landlocked country is completely covered by the Kalahari Desert?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Botswana",
+      "Chad"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is famous for diamonds.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00380-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the landlocked country covered by the Kalahari Desert?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Botswana",
+      "Chad"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is famous for diamonds.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00381-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Southern African Development Community. Which regional body helps landlocked countries in Southern Africa trade together?",
+    "options": [
+      "EAC",
+      "ECOWAS",
+      "SADC",
+      "IGAD"
+    ],
+    "answer": "SADC",
+    "explanation": "Southern African Development Community.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00381-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the S in SADC? Which regional body helps landlocked countries in Southern Africa trade together?",
+    "options": [
+      "EAC",
+      "ECOWAS",
+      "SADC",
+      "IGAD"
+    ],
+    "answer": "SADC",
+    "explanation": "Southern African Development Community.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00381-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Which regional body helps landlocked countries in Southern Africa trade together?",
+    "options": [
+      "EAC",
+      "ECOWAS",
+      "SADC",
+      "IGAD"
+    ],
+    "answer": "SADC",
+    "explanation": "Southern African Development Community.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00382-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: They pay to use other ports. What is a major challenge for landlocked countries?",
+    "options": [
+      "Too much rain",
+      "High transport costs",
+      "Too many sea ports",
+      "Lack of neighbors"
+    ],
+    "answer": "High transport costs",
+    "explanation": "They pay to use other ports.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00382-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Why is it pricey to be landlocked? What is a major challenge for landlocked countries?",
+    "options": [
+      "Too much rain",
+      "High transport costs",
+      "Too many sea ports",
+      "Lack of neighbors"
+    ],
+    "answer": "High transport costs",
+    "explanation": "They pay to use other ports.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00382-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Transporting by road is very expensive for them. What is a major challenge for landlocked countries?",
+    "options": [
+      "Too much rain",
+      "High transport costs",
+      "Too many sea ports",
+      "Lack of neighbors"
+    ],
+    "answer": "High transport costs",
+    "explanation": "They pay to use other ports.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00383-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Think about the weight of cargo. Why is air transport expensive for landlocked countries?",
+    "options": [
+      "Planes are slow",
+      "It is only for passengers",
+      "High cost of fuel and maintenance",
+      "There are no airports"
+    ],
+    "answer": "High cost of fuel and maintenance",
+    "explanation": "Think about the weight of cargo.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00383-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Planes aren't meant for heavy shipping. Why is air transport expensive for landlocked countries?",
+    "options": [
+      "Planes are slow",
+      "It is only for passengers",
+      "High cost of fuel and maintenance",
+      "There are no airports"
+    ],
+    "answer": "High cost of fuel and maintenance",
+    "explanation": "Think about the weight of cargo.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00383-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What makes air travel the most expensive option? Why is air transport expensive for landlocked countries?",
+    "options": [
+      "Planes are slow",
+      "It is only for passengers",
+      "High cost of fuel and maintenance",
+      "There are no airports"
+    ],
+    "answer": "High cost of fuel and maintenance",
+    "explanation": "Think about the weight of cargo.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00384-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Dakar is its closest major port. Which country uses the Port of Dakar in Senegal for trade?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Mali"
+    ],
+    "answer": "Mali",
+    "explanation": "Dakar is its closest major port.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00384-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Which landlocked Sahel nation uses Senegal's ports? Which country uses the Port of Dakar in Senegal for trade?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Mali"
+    ],
+    "answer": "Mali",
+    "explanation": "Dakar is its closest major port.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00384-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Port of Dakar is critical for whom? Which country uses the Port of Dakar in Senegal for trade?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Mali"
+    ],
+    "answer": "Mali",
+    "explanation": "Dakar is its closest major port.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00385-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: The King changed the name in 2018. Which landlocked country was formerly called Swaziland?",
+    "options": [
+      "Lesotho",
+      "Eswatini",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Eswatini",
+    "explanation": "The King changed the name in 2018.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00385-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Name the country that used to be Swaziland. Which landlocked country was formerly called Swaziland?",
+    "options": [
+      "Lesotho",
+      "Eswatini",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Eswatini",
+    "explanation": "The King changed the name in 2018.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00385-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the new name for Swaziland? Which landlocked country was formerly called Swaziland?",
+    "options": [
+      "Lesotho",
+      "Eswatini",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Eswatini",
+    "explanation": "The King changed the name in 2018.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00386-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: One of these has an Indian Ocean coast. Which of these countries is NOT landlocked?",
+    "options": [
+      "Zimbabwe",
+      "Zambia",
+      "Mozambique",
+      "Malawi"
+    ],
+    "answer": "Mozambique",
+    "explanation": "It has a long coastline.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00386-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Who is the neighbor with a port? Which of these countries is NOT landlocked?",
+    "options": [
+      "Zimbabwe",
+      "Zambia",
+      "Mozambique",
+      "Malawi"
+    ],
+    "answer": "Mozambique",
+    "explanation": "It has a long coastline.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00386-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Which one of these is a coastal country? Which of these countries is NOT landlocked?",
+    "options": [
+      "Zimbabwe",
+      "Zambia",
+      "Mozambique",
+      "Malawi"
+    ],
+    "answer": "Mozambique",
+    "explanation": "It has a long coastline.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00387-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Rivers aren't oceans  Why is South Sudan considered landlocked even though it has the Nile?",
+    "options": [
+      "The Nile has no water",
+      "The Nile is not an ocean",
+      "The Nile is too salty",
+      "Boats cannot move on the Nile"
+    ],
+    "answer": "The Nile is not an ocean",
+    "explanation": "Access must be to the sea.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00387-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Just having a river isn't enough for trade. Why is South Sudan considered landlocked even though it has the Nile?",
+    "options": [
+      "The Nile has no water",
+      "The Nile is not an ocean",
+      "The Nile is too salty",
+      "Boats cannot move on the Nile"
+    ],
+    "answer": "The Nile is not an ocean",
+    "explanation": "Access must be to the sea.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00387-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Does the Nile take ships to the ocean? Why is South Sudan considered landlocked even though it has the Nile?",
+    "options": [
+      "The Nile has no water",
+      "The Nile is not an ocean",
+      "The Nile is too salty",
+      "Boats cannot move on the Nile"
+    ],
+    "answer": "The Nile is not an ocean",
+    "explanation": "Access must be to the sea.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00388-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is a route to the Atlantic. Which country uses the Port of Walvis Bay in Namibia?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Ethiopia"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is a route to the Atlantic.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00388-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Which landlocked country uses the Namibian coast? Which country uses the Port of Walvis Bay in Namibia?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Ethiopia"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is a route to the Atlantic.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00388-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Walvis Bay is essential for which neighbor? Which country uses the Port of Walvis Bay in Namibia?",
+    "options": [
+      "Uganda",
+      "Botswana",
+      "Niger",
+      "Ethiopia"
+    ],
+    "answer": "Botswana",
+    "explanation": "It is a route to the Atlantic.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00389-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It’s a capital in the Sahel. What is the capital of the landlocked country Burkina Faso?",
+    "options": [
+      "Bamako",
+      "Niamey",
+      "Ouagadougou",
+      "Dakar"
+    ],
+    "answer": "Ouagadougou",
+    "explanation": "The name starts with O.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00389-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the famous capital city of Burkina Faso? What is the capital of the landlocked country Burkina Faso?",
+    "options": [
+      "Bamako",
+      "Niamey",
+      "Ouagadougou",
+      "Dakar"
+    ],
+    "answer": "Ouagadougou",
+    "explanation": "The name starts with O.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00389-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the capital of the landlocked country Burkina Faso?",
+    "options": [
+      "Bamako",
+      "Niamey",
+      "Ouagadougou",
+      "Dakar"
+    ],
+    "answer": "Ouagadougou",
+    "explanation": "The name starts with O.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00390-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It is the busiest port in Africa. Which port in South Africa is used by Botswana and Lesotho?",
+    "options": [
+      "Cape Town",
+      "Durban",
+      "Port Elizabeth",
+      "East London"
+    ],
+    "answer": "Durban",
+    "explanation": "It is the busiest port in Africa.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00390-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: South Africa has many ports, but which one is key for the landlocked neighbors? Which port in South Africa is used by Botswana and Lesotho?",
+    "options": [
+      "Cape Town",
+      "Durban",
+      "Port Elizabeth",
+      "East London"
+    ],
+    "answer": "Durban",
+    "explanation": "It is the busiest port in Africa.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00390-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the main port in South Africa used by Botswana and Lesotho?",
+    "options": [
+      "Cape Town",
+      "Durban",
+      "Port Elizabeth",
+      "East London"
+    ],
+    "answer": "Durban",
+    "explanation": "It is the busiest port in Africa.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00391-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It has over 120 million people. Which country is the most populated landlocked nation in the world?",
+    "options": [
+      "Uganda",
+      "Ethiopia",
+      "Mali",
+      "Chad"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It has over 120 million people.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00391-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Africa's second-largest country by population is also landlocked  Which country is the most populated landlocked nation in the world?",
+    "options": [
+      "Uganda",
+      "Ethiopia",
+      "Mali",
+      "Chad"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It has over 120 million people.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00391-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the most populated landlocked nation in the world?",
+    "options": [
+      "Uganda",
+      "Ethiopia",
+      "Mali",
+      "Chad"
+    ],
+    "answer": "Ethiopia",
+    "explanation": "It has over 120 million people.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00392-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It is in Southern Africa. Which landlocked country is a major producer of copper in Africa?",
+    "options": [
+      "Botswana",
+      "Malawi",
+      "Zambia",
+      "Niger"
+    ],
+    "answer": "Zambia",
+    "explanation": "It is in Southern Africa.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00392-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the landlocked country famous for its copperbelt?",
+    "options": [
+      "Botswana",
+      "Malawi",
+      "Zambia",
+      "Niger"
+    ],
+    "answer": "Zambia",
+    "explanation": "It is in Southern Africa.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00392-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Copper is the main wealth here. Which landlocked country is a major producer of copper in Africa?",
+    "options": [
+      "Botswana",
+      "Malawi",
+      "Zambia",
+      "Niger"
+    ],
+    "answer": "Zambia",
+    "explanation": "It is in Southern Africa.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00393-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is in Cameroon. Which port is used by Chad for its international trade?",
+    "options": [
+      "Port of Douala",
+      "Port of Mombasa",
+      "Port of Durban",
+      "Port of Tema"
+    ],
+    "answer": "Port of Douala",
+    "explanation": "It is in Cameroon.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00393-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Chad’s goods travel through this Cameroon port. Which port is used by Chad for its international trade?",
+    "options": [
+      "Port of Douala",
+      "Port of Mombasa",
+      "Port of Durban",
+      "Port of Tema"
+    ],
+    "answer": "Port of Douala",
+    "explanation": "It is in Cameroon.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00393-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the primary port for Chad?",
+    "options": [
+      "Port of Douala",
+      "Port of Mombasa",
+      "Port of Durban",
+      "Port of Tema"
+    ],
+    "answer": "Port of Douala",
+    "explanation": "It is in Cameroon.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00394-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Beira Corridor. Which port in Mozambique is the shortest route to the sea for Zimbabwe?",
+    "options": [
+      "Maputo",
+      "Beira",
+      "Nacala",
+      "Durban"
+    ],
+    "answer": "Beira",
+    "explanation": "Beira Corridor.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00394-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the Mozambique port that Zimbabwe uses the most? Which port in Mozambique is the shortest route to the sea for Zimbabwe?",
+    "options": [
+      "Maputo",
+      "Beira",
+      "Nacala",
+      "Durban"
+    ],
+    "answer": "Beira",
+    "explanation": "Beira Corridor.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00394-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the shortest route to the sea for Zimbabwe?",
+    "options": [
+      "Maputo",
+      "Beira",
+      "Nacala",
+      "Durban"
+    ],
+    "answer": "Beira",
+    "explanation": "Beira Corridor.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00395-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Part of the Sahel belt. Mali, Niger, and Burkina Faso are landlocked countries in which region?",
+    "options": [
+      "East Africa",
+      "Central Africa",
+      "West Africa",
+      "Southern Africa"
+    ],
+    "answer": "West Africa",
+    "explanation": "Part of the Sahel belt.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00395-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Where are the Sahelian landlocked countries? Mali, Niger, and Burkina Faso are landlocked countries in which region?",
+    "options": [
+      "East Africa",
+      "Central Africa",
+      "West Africa",
+      "Southern Africa"
+    ],
+    "answer": "West Africa",
+    "explanation": "Part of the Sahel belt.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00395-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the region for landlocked Mali, Niger, and Burkina Faso?",
+    "options": [
+      "East Africa",
+      "Central Africa",
+      "West Africa",
+      "Southern Africa"
+    ],
+    "answer": "West Africa",
+    "explanation": "Part of the Sahel belt.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00396-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It passes through Kenya. What is the \"Northern Corridor\" in relation to Uganda?",
+    "options": [
+      "A river in the North",
+      "A trade route from Kampala to Mombasa",
+      "A mountain range",
+      "A political treaty"
+    ],
+    "answer": "A trade route from Kampala to Mombasa",
+    "explanation": "It passes through Kenya.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00396-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is the road that keeps Uganda supplied  What is the \"Northern Corridor\" in relation to Uganda?",
+    "options": [
+      "A river in the North",
+      "A trade route from Kampala to Mombasa",
+      "A mountain range",
+      "A political treaty"
+    ],
+    "answer": "A trade route from Kampala to Mombasa",
+    "explanation": "It passes through Kenya.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00396-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the \"Northern Corridor\" for Uganda?",
+    "options": [
+      "A river in the North",
+      "A trade route from Kampala to Mombasa",
+      "A mountain range",
+      "A political treaty"
+    ],
+    "answer": "A trade route from Kampala to Mombasa",
+    "explanation": "It passes through Kenya.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00397-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Famous for its friendly people. Which landlocked country is known as the \"Warm Heart of Africa\"?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Malawi",
+      "Eswatini"
+    ],
+    "answer": "Malawi",
+    "explanation": "Famous for its friendly people.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00397-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: This beautiful country in the South is called what? Which landlocked country is known as the \"Warm Heart of Africa\"?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Malawi",
+      "Eswatini"
+    ],
+    "answer": "Malawi",
+    "explanation": "Famous for its friendly people.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00397-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Name the country known as the \"Warm Heart of Africa\"?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Malawi",
+      "Eswatini"
+    ],
+    "answer": "Malawi",
+    "explanation": "Famous for its friendly people.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00398-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Built for copper exports. The TAZARA railway connects Zambia to which sea port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Beira",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Built for copper exports.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00398-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the port at the end of the TAZARA railway? The TAZARA railway connects Zambia to which sea port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Beira",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Built for copper exports.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00398-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: The railway between Tanzania and Zambia is called what? The TAZARA railway connects Zambia to which sea port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Beira",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Built for copper exports.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00399-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: A major West African port. Which port in Benin is used by Niger?",
+    "options": [
+      "Lagos",
+      "Cotonou",
+      "Tema",
+      "Abidjan"
+    ],
+    "answer": "Cotonou",
+    "explanation": "A major West African port.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00399-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is the primary sea outlet for landlocked Niger. Which port in Benin is used by Niger?",
+    "options": [
+      "Lagos",
+      "Cotonou",
+      "Tema",
+      "Abidjan"
+    ],
+    "answer": "Cotonou",
+    "explanation": "A major West African port.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00399-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the port in Benin used by Niger?",
+    "options": [
+      "Lagos",
+      "Cotonou",
+      "Tema",
+      "Abidjan"
+    ],
+    "answer": "Cotonou",
+    "explanation": "A major West African port.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00400-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Tributary of the Congo. Which river is used by the Central African Republic (CAR) for some transport?",
+    "options": [
+      "River Nile",
+      "River Niger",
+      "River Ubangi",
+      "River Zambezi"
+    ],
+    "answer": "River Ubangi",
+    "explanation": "Tributary of the Congo.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00400-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It’s a vital river for CAR. Which river is used by the Central African Republic (CAR) for some transport?",
+    "options": [
+      "River Nile",
+      "River Niger",
+      "River Ubangi",
+      "River Zambezi"
+    ],
+    "answer": "River Ubangi",
+    "explanation": "Tributary of the Congo.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00400-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Name the river used by the Central African Republic (CAR) for some transport?",
+    "options": [
+      "River Nile",
+      "River Niger",
+      "River Ubangi",
+      "River Zambezi"
+    ],
+    "answer": "River Ubangi",
+    "explanation": "Tributary of the Congo.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00401-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It makes the government lose tax money  What is \"smuggling\" and why is it a problem for landlocked nations?",
+    "options": [
+      "Illegal fishing",
+      "Illegal trade of goods",
+      "Building roads",
+      "Moving people"
+    ],
+    "answer": "Illegal trade of goods",
+    "explanation": "Government loses revenue.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00401-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Why is avoiding customs tax harmful? What is \"smuggling\" and why is it a problem for landlocked nations?",
+    "options": [
+      "Illegal fishing",
+      "Illegal trade of goods",
+      "Building roads",
+      "Moving people"
+    ],
+    "answer": "Illegal trade of goods",
+    "explanation": "Government loses revenue.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00401-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the illegal trade of goods? What is \"smuggling\" and why is it a problem for landlocked nations?",
+    "options": [
+      "Illegal fishing",
+      "Illegal trade of goods",
+      "Building roads",
+      "Moving people"
+    ],
+    "answer": "Illegal trade of goods",
+    "explanation": "Government loses revenue.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00402-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It is the primary route through the Tanzanian heartland. The \"Central Corridor\" links landlocked countries to which port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Djibouti",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Main route through Tanzania.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00402-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What is the name of the route from the center of Africa to Dar es Salaam? The \"Central Corridor\" links landlocked countries to which port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Djibouti",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Main route through Tanzania.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00402-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Which port is central to the \"Central Corridor\"? The \"Central Corridor\" links landlocked countries to which port?",
+    "options": [
+      "Mombasa",
+      "Dar es Salaam",
+      "Djibouti",
+      "Durban"
+    ],
+    "answer": "Dar es Salaam",
+    "explanation": "Main route through Tanzania.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00403-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is a very important mineral for nuclear power. Which landlocked country is rich in Uranium?",
+    "options": [
+      "Uganda",
+      "Niger",
+      "Malawi",
+      "Lesotho"
+    ],
+    "answer": "Niger",
+    "explanation": "West African nation.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00403-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Which West African landlocked country has vast uranium mines? Which landlocked country is rich in Uranium?",
+    "options": [
+      "Uganda",
+      "Niger",
+      "Malawi",
+      "Lesotho"
+    ],
+    "answer": "Niger",
+    "explanation": "West African nation.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00403-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the landlocked country rich in Uranium?",
+    "options": [
+      "Uganda",
+      "Niger",
+      "Malawi",
+      "Lesotho"
+    ],
+    "answer": "Niger",
+    "explanation": "West African nation.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00404-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It means \"behind the land.\" What term is used for the area of a country far from the coast?",
+    "options": [
+      "Coastline",
+      "Hinterland",
+      "Islands",
+      "Delta"
+    ],
+    "answer": "Hinterland",
+    "explanation": "Means \"behind the land\".",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00404-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: When you are deep inland from a port, you are in the...? What term is used for the area of a country far from the coast?",
+    "options": [
+      "Coastline",
+      "Hinterland",
+      "Islands",
+      "Delta"
+    ],
+    "answer": "Hinterland",
+    "explanation": "Means \"behind the land\".",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00404-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the definition of hinterland?",
+    "options": [
+      "Coastline",
+      "Hinterland",
+      "Islands",
+      "Delta"
+    ],
+    "answer": "Hinterland",
+    "explanation": "Means \"behind the land\".",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00405-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: They have the port of Tema. Which country borders Burkina Faso to the South and provides it with port access?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Ghana",
+      "Sudan"
+    ],
+    "answer": "Ghana",
+    "explanation": "Port Tema is here.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00405-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Where do people from Burkina Faso go for the coast? Which country borders Burkina Faso to the South and provides it with port access?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Ghana",
+      "Sudan"
+    ],
+    "answer": "Ghana",
+    "explanation": "Port Tema is here.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00405-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Name the southern neighbor of Burkina Faso that has a big port. Which country borders Burkina Faso to the South and provides it with port access?",
+    "options": [
+      "Mali",
+      "Niger",
+      "Ghana",
+      "Sudan"
+    ],
+    "answer": "Ghana",
+    "explanation": "Port Tema is here.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00406-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Transit taxes make everything pricier. How does being landlocked affect the price of goods like cars in Uganda?",
+    "options": [
+      "Prices become lower",
+      "Prices become higher",
+      "Prices stay same",
+      "Cars are free"
+    ],
+    "answer": "Prices become higher",
+    "explanation": "Think of transport costs.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00406-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Everything has to be trucked in  How does being landlocked affect the price of goods like cars in Uganda?",
+    "options": [
+      "Prices become lower",
+      "Prices become higher",
+      "Prices stay same",
+      "Cars are free"
+    ],
+    "answer": "Prices become higher",
+    "explanation": "Think of transport costs.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00406-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Does being inland make products cheaper or more expensive? How does being landlocked affect the price of goods like cars in Uganda?",
+    "options": [
+      "Prices become lower",
+      "Prices become higher",
+      "Prices stay same",
+      "Cars are free"
+    ],
+    "answer": "Prices become higher",
+    "explanation": "Think of transport costs.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00407-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: They share the pipelines. Why does South Sudan export its oil through Port Sudan?",
+    "options": [
+      "It is the only port",
+      "Pipelines go through Sudan",
+      "Oil is only for Sudan",
+      "Cheapest route to USA"
+    ],
+    "answer": "Pipelines go through Sudan",
+    "explanation": "Think of existing infrastructure.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00407-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Why is their oil going through their neighbor? Why does South Sudan export its oil through Port Sudan?",
+    "options": [
+      "It is the only port",
+      "Pipelines go through Sudan",
+      "Oil is only for Sudan",
+      "Cheapest route to USA"
+    ],
+    "answer": "Pipelines go through Sudan",
+    "explanation": "Think of existing infrastructure.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00407-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the reason for South Sudan's oil pipeline route? Why does South Sudan export its oil through Port Sudan?",
+    "options": [
+      "It is the only port",
+      "Pipelines go through Sudan",
+      "Oil is only for Sudan",
+      "Cheapest route to USA"
+    ],
+    "answer": "Pipelines go through Sudan",
+    "explanation": "Think of existing infrastructure.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00408-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Check the map carefully  Which of these countries is NOT landlocked (trick question)?",
+    "options": [
+      "Botswana",
+      "Zambia",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Namibia",
+    "explanation": "Look at the Atlantic coast.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00408-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It’s a coastal state in Southern Africa. Which of these countries is NOT landlocked?",
+    "options": [
+      "Botswana",
+      "Zambia",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Namibia",
+    "explanation": "Look at the Atlantic coast.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00408-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Who has the Atlantic ocean? Which of these countries is NOT landlocked?",
+    "options": [
+      "Botswana",
+      "Zambia",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Namibia",
+    "explanation": "Look at the Atlantic coast.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00409-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Negotiation is better than working alone  Joining regional groups like the EAC helps landlocked countries to?",
+    "options": [
+      "Get a new ocean",
+      "Negotiate better trade terms",
+      "Stop using ports",
+      "Become an island"
+    ],
+    "answer": "Negotiate better trade terms",
+    "explanation": "Cooperation reduces fees.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00409-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Working as a group gets you better deals. Joining regional groups like the EAC helps landlocked countries to?",
+    "options": [
+      "Get a new ocean",
+      "Negotiate better trade terms",
+      "Stop using ports",
+      "Become an island"
+    ],
+    "answer": "Negotiate better trade terms",
+    "explanation": "Cooperation reduces fees.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00409-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Why join the EAC if you are landlocked? Joining regional groups like the EAC helps landlocked countries to?",
+    "options": [
+      "Get a new ocean",
+      "Negotiate better trade terms",
+      "Stop using ports",
+      "Become an island"
+    ],
+    "answer": "Negotiate better trade terms",
+    "explanation": "Cooperation reduces fees.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00410-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It's tough living in the desert  What is the main challenge shared by Chad and Niger?",
+    "options": [
+      "Too much rain",
+      "They are located in the Sahara/Sahel",
+      "They are islands",
+      "Lack of neighbors"
+    ],
+    "answer": "They are located in the Sahara/Sahel",
+    "explanation": "Both are hot and dry.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00410-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What makes the environment difficult in both Chad and Niger? What is the main challenge shared by Chad and Niger?",
+    "options": [
+      "Too much rain",
+      "They are located in the Sahara/Sahel",
+      "They are islands",
+      "Lack of neighbors"
+    ],
+    "answer": "They are located in the Sahara/Sahel",
+    "explanation": "Both are hot and dry.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00410-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: These countries are dry and landlocked. What is the main challenge shared by Chad and Niger?",
+    "options": [
+      "Too much rain",
+      "They are located in the Sahara/Sahel",
+      "They are islands",
+      "Lack of neighbors"
+    ],
+    "answer": "They are located in the Sahara/Sahel",
+    "explanation": "Both are hot and dry.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00411-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Abidjan is a very busy port city. Which port in Cote d'Ivoire is used by Burkina Faso and Mali?",
+    "options": [
+      "Lagos",
+      "Tema",
+      "Abidjan",
+      "Dakar"
+    ],
+    "answer": "Abidjan",
+    "explanation": "A major West African hub.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00411-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Cote d'Ivoire provides access for these Sahel neighbors. Which port in Cote d'Ivoire is used by Burkina Faso and Mali?",
+    "options": [
+      "Lagos",
+      "Tema",
+      "Abidjan",
+      "Dakar"
+    ],
+    "answer": "Abidjan",
+    "explanation": "A major West African hub.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00411-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the port in Cote d'Ivoire used by Burkina Faso and Mali?",
+    "options": [
+      "Lagos",
+      "Tema",
+      "Abidjan",
+      "Dakar"
+    ],
+    "answer": "Abidjan",
+    "explanation": "A major West African hub.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00412-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is our main supply route for fuel  Why is the Port of Mombasa vital to the Ugandan economy?",
+    "options": [
+      "It has many fish",
+      "It is the main gateway for imports",
+      "It is in Uganda",
+      "It is the only port in Africa"
+    ],
+    "answer": "It is the main gateway for imports",
+    "explanation": "Think of the Northern Corridor.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00412-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Most Ugandan trade flows through this Kenyan port. Why is the Port of Mombasa vital to the Ugandan economy?",
+    "options": [
+      "It has many fish",
+      "It is the main gateway for imports",
+      "It is in Uganda",
+      "It is the only port in Africa"
+    ],
+    "answer": "It is the main gateway for imports",
+    "explanation": "Think of the Northern Corridor.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00412-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What makes Mombasa so important for Uganda? Why is the Port of Mombasa vital to the Ugandan economy?",
+    "options": [
+      "It has many fish",
+      "It is the main gateway for imports",
+      "It is in Uganda",
+      "It is the only port in Africa"
+    ],
+    "answer": "It is the main gateway for imports",
+    "explanation": "Think of the Northern Corridor.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00413-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It is very small and nestled between neighbors. Which of these landlocked countries is the smallest in size?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Burundi",
+      "Eswatini"
+    ],
+    "answer": "Burundi",
+    "explanation": "Near Lake Tanganyika.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00413-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Between these, which one is tiny? Which of these landlocked countries is the smallest in size?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Burundi",
+      "Eswatini"
+    ],
+    "answer": "Burundi",
+    "explanation": "Near Lake Tanganyika.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00413-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Which of these landlocked nations has the least area? Which of these landlocked countries is the smallest in size?",
+    "options": [
+      "Uganda",
+      "Rwanda",
+      "Burundi",
+      "Eswatini"
+    ],
+    "answer": "Burundi",
+    "explanation": "Near Lake Tanganyika.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00414-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Look at the Sahel map. What is a common feature of Mali, Niger, and Chad?",
+    "options": [
+      "They have no deserts",
+      "They are all landlocked",
+      "They are in East Africa",
+      "They border the ocean"
+    ],
+    "answer": "They are all landlocked",
+    "explanation": "Look at the Sahel map.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00414-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: What connects these three West African countries? What is a common feature of Mali, Niger, and Chad?",
+    "options": [
+      "They have no deserts",
+      "They are all landlocked",
+      "They are in East Africa",
+      "They border the ocean"
+    ],
+    "answer": "They are all landlocked",
+    "explanation": "Look at the Sahel map.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00414-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: None of them have an ocean coast. What is a common feature of Mali, Niger, and Chad?",
+    "options": [
+      "They have no deserts",
+      "They are all landlocked",
+      "They are in East Africa",
+      "They border the ocean"
+    ],
+    "answer": "They are all landlocked",
+    "explanation": "Look at the Sahel map.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00415-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is very close to Mozambique. Which port is used by Eswatini for its sea access?",
+    "options": [
+      "Mombasa",
+      "Maputo",
+      "Dakar",
+      "Douala"
+    ],
+    "answer": "Maputo",
+    "explanation": "Near Mozambique.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00415-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Eswatini uses the capital of Mozambique for trade. Which port is used by Eswatini for its sea access?",
+    "options": [
+      "Mombasa",
+      "Maputo",
+      "Dakar",
+      "Douala"
+    ],
+    "answer": "Maputo",
+    "explanation": "Near Mozambique.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00415-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the port used by Eswatini for its sea access?",
+    "options": [
+      "Mombasa",
+      "Maputo",
+      "Dakar",
+      "Douala"
+    ],
+    "answer": "Maputo",
+    "explanation": "Near Mozambique.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00416-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: A kingdom hidden inside a neighbor. Which country is an \"enclave\" within South Africa?",
+    "options": [
+      "Swaziland",
+      "Lesotho",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Lesotho",
+    "explanation": "Surrounded by one neighbor.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00416-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is the only country inside another. Which country is an \"enclave\" within South Africa?",
+    "options": [
+      "Swaziland",
+      "Lesotho",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Lesotho",
+    "explanation": "Surrounded by one neighbor.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00416-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the enclave country found inside South Africa?",
+    "options": [
+      "Swaziland",
+      "Lesotho",
+      "Namibia",
+      "Zimbabwe"
+    ],
+    "answer": "Lesotho",
+    "explanation": "Surrounded by one neighbor.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00417-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Near Somalia and Djibouti. The landlocked country Ethiopia is located in which region?",
+    "options": [
+      "West Africa",
+      "North Africa",
+      "Horn of Africa",
+      "Central Africa"
+    ],
+    "answer": "Horn of Africa",
+    "explanation": "Near Somalia.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00417-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It is the only landlocked nation in the Horn. The landlocked country Ethiopia is located in which region?",
+    "options": [
+      "West Africa",
+      "North Africa",
+      "Horn of Africa",
+      "Central Africa"
+    ],
+    "answer": "Horn of Africa",
+    "explanation": "Near Somalia.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00417-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the region of Ethiopia?",
+    "options": [
+      "West Africa",
+      "North Africa",
+      "Horn of Africa",
+      "Central Africa"
+    ],
+    "answer": "Horn of Africa",
+    "explanation": "Near Somalia.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00418-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: It is the \"Warm Heart of Africa.\" What is the name of the landlocked country whose capital is Lilongwe?",
+    "options": [
+      "Zambia",
+      "Zimbabwe",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Malawi",
+    "explanation": "In Southern Africa.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00418-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: Which country has Lilongwe as its capital? What is the name of the landlocked country whose capital is Lilongwe?",
+    "options": [
+      "Zambia",
+      "Zimbabwe",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Malawi",
+    "explanation": "In Southern Africa.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00418-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: What is the name of the landlocked country whose capital is Lilongwe?",
+    "options": [
+      "Zambia",
+      "Zimbabwe",
+      "Malawi",
+      "Botswana"
+    ],
+    "answer": "Malawi",
+    "explanation": "In Southern Africa.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00419-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: It shares its name with the lake. Which landlocked country borders Lake Chad?",
+    "options": [
+      "Uganda",
+      "Chad",
+      "Zambia",
+      "Malawi"
+    ],
+    "answer": "Chad",
+    "explanation": "Named after the country.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00419-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: It borders a giant lake in the Sahel. Which landlocked country borders Lake Chad?",
+    "options": [
+      "Uganda",
+      "Chad",
+      "Zambia",
+      "Malawi"
+    ],
+    "answer": "Chad",
+    "explanation": "Named after the country.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00419-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: What is the landlocked country that borders Lake Chad?",
+    "options": [
+      "Uganda",
+      "Chad",
+      "Zambia",
+      "Malawi"
+    ],
+    "answer": "Chad",
+    "explanation": "Named after the country.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00420-V1",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Manya wonders: Trains are much cheaper than trucks  What can a landlocked country do to reduce the cost of imports?",
+    "options": [
+      "Close its borders",
+      "Improve inland transport (railways)",
+      "Stop buying from abroad",
+      "Build a navy"
+    ],
+    "answer": "Improve inland transport (railways)",
+    "explanation": "Rail is cheaper than road.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00420-V2",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Polly ponders: Better trains mean cheaper goods. What can a landlocked country do to reduce the cost of imports?",
+    "options": [
+      "Close its borders",
+      "Improve inland transport (railways)",
+      "Stop buying from abroad",
+      "Build a navy"
+    ],
+    "answer": "Improve inland transport (railways)",
+    "explanation": "Rail is cheaper than road.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00420-V3",
+    "topic": "Locating Africa",
+    "subtopic": "landlocked_africa",
+    "question": "Kato asks: How do we make things cheaper for people in Uganda? What can a landlocked country do to reduce the cost of imports?",
+    "options": [
+      "Close its borders",
+      "Improve inland transport (railways)",
+      "Stop buying from abroad",
+      "Build a navy"
+    ],
+    "answer": "Improve inland transport (railways)",
+    "explanation": "Rail is cheaper than road.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  }
+]

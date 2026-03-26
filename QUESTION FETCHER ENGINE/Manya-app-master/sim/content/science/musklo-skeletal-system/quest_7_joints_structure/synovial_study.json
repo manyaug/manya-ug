@@ -1,0 +1,20 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "study",
+  "topic": "Study: Synovial Joint Structure",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_7_joints_structure/sylluvial.png",
+  "hotspots": [
+    { 
+      "id": "point_1", "label": "Patella", "x": 48.31, "y": 33.63, 
+      "info": "The kneecap bone that protects the front of the joint." 
+    },
+    { 
+      "id": "point_2", "label": "Synovial Membrane", "x": 22.79, "y": 43.82, 
+      "info": "The lining that produces synovial fluid to keep the joint oiled." 
+    },
+    { 
+      "id": "point_3", "label": "Synovial Fluid", "x": 44.01, "y": 50, 
+      "info": "The slippery liquid that reduces friction between bones." 
+    }
+  ]
+}

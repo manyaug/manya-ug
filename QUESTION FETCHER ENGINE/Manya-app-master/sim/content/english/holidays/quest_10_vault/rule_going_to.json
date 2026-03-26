@@ -1,0 +1,16 @@
+{
+  "engineType": "ENGLISH_RULE_MASTER",
+  "topicTitle": "Future Plans (Going To)",
+  "rules": [
+    {
+      "title": "The Intent Formula",
+      "formula": "Subject + is/am/are + GOING TO + Verb",
+      "toggleA": "Singular", "toggleB": "Plural",
+      "exampleA": "Manya <b>is going to</b> board.",
+      "exampleB": "We <b>are going to</b> board.",
+      "explainA": "Use 'is' for Manya, He, or She.",
+      "explainB": "Use 'are' for We, They, or You.",
+      "teacherNote": "PLE Trap: Always check the subject before picking is/am/are!"
+    }
+  ]
+}

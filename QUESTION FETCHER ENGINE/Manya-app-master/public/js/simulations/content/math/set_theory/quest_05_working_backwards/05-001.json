@@ -1,0 +1,13 @@
+{
+  "engineType": "BINARY_GENERATOR",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: Power Plant",
+  "questions": [
+    {
+      "targetVal": 16,
+      "prompt": "Target Output: <b>16 Subsets</b>. How many cells (n) are needed?"
+    }
+  ]
+}

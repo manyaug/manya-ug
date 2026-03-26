@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Ratios",
+  "variantTitle": "Quest 10-006: Farming Ratios",
+  "sets": { "A": { "label": "M (40)", "color": "#16a34a" }, "B": { "label": "B", "color": "#d97706" } },
+  "zones": { "left": [], "center": ["y"], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Beans only is <b>2y</b>. 10 grow neither. Fill diagram.",
+      "inputs": [
+        { "region": "left", "expected": "40-y" },
+        { "region": "right", "expected": "2y" },
+        { "region": "outside", "expected": "10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 80,
+      "expected_x": 15,
+      "prompt": "<b>Phase 2:</b> Total farmers = 80. Find <b>y</b>.",
+      "hint": "(40-y) + y + 2y + 10 = 80. Simplify: 2y + 50 = 80."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_total",
+      "x_val": 15,
+      "expression": "3y",
+      "prompt": "Find total growing <span style='color:#d97706'>Beans n(B)</span>.",
+      "hint": "y + 2y = 3y. Calculate 3(15)."
+    }
+  ]
+}

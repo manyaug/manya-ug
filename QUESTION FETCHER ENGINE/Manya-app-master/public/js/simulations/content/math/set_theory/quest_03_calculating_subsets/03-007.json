@@ -1,0 +1,14 @@
+{
+  "engineType": "SUBSET_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Finding Subsets",
+  "variantTitle": "Quest 3-010: School Bag",
+  "questions": [
+    {
+      "items": ["Book", "Pen", "Apple"],
+      "prompt": "Pack the Bag! Find all <b>8 subsets</b> of {Book, Pen, Apple}.",
+      "hint": "Start with Empty. Then 1 item. Then 2 items. Then all 3."
+    }
+  ]
+}

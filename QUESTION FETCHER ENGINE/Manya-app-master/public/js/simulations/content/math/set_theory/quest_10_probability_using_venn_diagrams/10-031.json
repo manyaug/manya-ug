@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability Final",
+  "variantTitle": "Quest 10-018: Garden Prob",
+  "sets": { "A": { "label": "M (60)", "color": "#059669" }, "B": { "label": "O (50)", "color": "#d97706" } },
+  "zones": { "left": ["60-x"], "center": ["x"], "right": ["50-x"], "outside": ["0"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection", 
+      "equation_target": 100,
+      "expected_x": 10,
+      "prompt": "Total=100. Find <b>x</b> (Both).",
+      "hint": "60 + 50 - x = 100."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "left_only",
+      "x_val": 10,
+      "total": 100,
+      "expression": "60-x",
+      "prompt": "Probability of <b>Mango Only</b>?",
+      "hint": "(60-10)/100 = 50/100 = 1/2."
+    }
+  ]
+}

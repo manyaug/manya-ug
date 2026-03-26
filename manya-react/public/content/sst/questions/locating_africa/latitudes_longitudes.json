@@ -1,0 +1,4322 @@
+[
+  {
+    "id": "SST-P7-T1-00061",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What are the imaginary lines drawn on a map from East to West called?",
+    "options": [
+      "Longitudes",
+      "Latitudes",
+      "Meridians",
+      "Contours"
+    ],
+    "answer": "Latitudes",
+    "explanation": "They are horizontal lines.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00062",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What are the imaginary lines drawn on a map from North to South called?",
+    "options": [
+      "Latitudes",
+      "Equator",
+      "Longitudes",
+      "Tropics"
+    ],
+    "answer": "Longitudes",
+    "explanation": "They are vertical lines.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00063",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the most important line of latitude marked 0 degrees?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Cancer",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It divides the Earth into North and South.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00064",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the main line of longitude marked 0 degrees?",
+    "options": [
+      "Equator",
+      "International Date Line",
+      "Greenwich Meridian",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It passes through London.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00065",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Another name for lines of longitude is?",
+    "options": [
+      "Parallels",
+      "Meridians",
+      "Equators",
+      "Tropics"
+    ],
+    "answer": "Meridians",
+    "explanation": "It starts with M.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00066",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Another name for lines of latitude is?",
+    "options": [
+      "Meridians",
+      "Parallels",
+      "Poles",
+      "Grids"
+    ],
+    "answer": "Parallels",
+    "explanation": "They never meet.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00067",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "In which hemisphere is Africa mostly located?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Both North and South",
+      "Western Hemisphere"
+    ],
+    "answer": "Both North and South",
+    "explanation": "The Equator crosses the middle of Africa.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00068",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Latitudes and Longitudes are measured in which units?",
+    "options": [
+      "Meters",
+      "Kilometers",
+      "Degrees",
+      "Hours"
+    ],
+    "answer": "Degrees",
+    "explanation": "Think of angles.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00069",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which hemisphere is located South of the Equator?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Eastern Hemisphere",
+      "Western Hemisphere"
+    ],
+    "answer": "Southern Hemisphere",
+    "explanation": "The name tells you the direction.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00070",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Where do lines of longitude meet?",
+    "options": [
+      "At the Equator",
+      "At the Tropics",
+      "At the North and South Poles",
+      "They never meet"
+    ],
+    "answer": "At the North and South Poles",
+    "explanation": "Think of the top and bottom of a globe.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00071",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which of these lines is found at 23½° North?",
+    "options": [
+      "Tropic of Capricorn",
+      "Arctic Circle",
+      "Equator",
+      "Tropic of Cancer"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "Cancer is in the North.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00072",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which of these lines is found at 23½° South?",
+    "options": [
+      "Tropic of Capricorn",
+      "Antarctic Circle",
+      "Tropic of Cancer",
+      "Equator"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "Capricorn is in the South.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00073",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which African country is famously crossed by the Prime Meridian?",
+    "options": [
+      "Nigeria",
+      "Kenya",
+      "Ghana",
+      "Uganda"
+    ],
+    "answer": "Ghana",
+    "explanation": "Accra is its capital.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00074",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which East African country is crossed by the Equator?",
+    "options": [
+      "Tanzania",
+      "Uganda",
+      "Rwanda",
+      "Burundi"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is the Pearl of Africa.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00075",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "The Prime Meridian divides the world into which two hemispheres?",
+    "options": [
+      "North and South",
+      "East and West",
+      "Hot and Cold",
+      "Land and Water"
+    ],
+    "answer": "East and West",
+    "explanation": "It is a vertical divider.",
+    "variant": "V0",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00076",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the main use of lines of latitude?",
+    "options": [
+      "To determine time",
+      "To determine climate",
+      "To find direction",
+      "To measure population"
+    ],
+    "answer": "To determine climate",
+    "explanation": "Distance from the Equator affects heat.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00077",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the main use of lines of longitude?",
+    "options": [
+      "To determine climate",
+      "To determine time",
+      "To measure rainfall",
+      "To find altitude"
+    ],
+    "answer": "To determine time",
+    "explanation": "Think of clocks and time zones.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00078",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which major line passes through Gabon, Congo, and DRC?",
+    "options": [
+      "Prime Meridian",
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the hot center of Africa.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00079",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which major line passes through Egypt, Libya, and Algeria?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "These are North African countries.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00080",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which major line passes through Namibia, Botswana, and South Africa?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "These are Southern African countries.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00081",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "How many degrees does the Earth rotate in one hour?",
+    "options": [
+      "10°",
+      "15°",
+      "30°",
+      "45°"
+    ],
+    "answer": "15°",
+    "explanation": "360 divided by 24.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00082",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "How many minutes does it take the Earth to rotate 1 degree?",
+    "options": [
+      "1 minute",
+      "4 minutes",
+      "15 minutes",
+      "60 minutes"
+    ],
+    "answer": "4 minutes",
+    "explanation": "60 minutes divided by 15.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00083",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which North African country is crossed by the Prime Meridian?",
+    "options": [
+      "Egypt",
+      "Libya",
+      "Algeria",
+      "Morocco"
+    ],
+    "answer": "Algeria",
+    "explanation": "It is the largest country in Africa.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00084",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the collective name given to the area between the two Tropics?",
+    "options": [
+      "Polar Zone",
+      "Temperate Zone",
+      "Tropical (Torrid) Zone",
+      "Frigid Zone"
+    ],
+    "answer": "Tropical (Torrid) Zone",
+    "explanation": "It is the hottest part of the Earth.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00085",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which major line crosses Lake Victoria?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It passes through Entebbe.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00086",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Somalia is crossed by which major line of latitude?",
+    "options": [
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00087",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the Prime Meridian also called?",
+    "options": [
+      "International Date Line",
+      "Equator",
+      "Greenwich Meridian",
+      "Tropic of Cancer"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It is named after a town in London.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00088",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which African city is famously crossed by the Prime Meridian?",
+    "options": [
+      "Lagos",
+      "Nairobi",
+      "Accra",
+      "Cairo"
+    ],
+    "answer": "Accra",
+    "explanation": "It is the capital of Ghana.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00089",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "If you travel 15° East of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Time stops"
+    ],
+    "answer": "Add 1 hour",
+    "explanation": "The sun rises in the East.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00090",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "If you travel 15° West of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Add a day"
+    ],
+    "answer": "Subtract 1 hour",
+    "explanation": "West is behind.",
+    "variant": "V0",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00091",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Between which two latitudes is Africa located?",
+    "options": [
+      "20°N and 20°S",
+      "37°N and 35°S",
+      "50°N and 50°S",
+      "10°N and 10°S"
+    ],
+    "answer": "37°N and 35°S",
+    "explanation": "Think of Tunisia and South Africa.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00092",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Between which two longitudes is Africa located?",
+    "options": [
+      "17°W and 52°E",
+      "20°W and 20°E",
+      "10°W and 60°E",
+      "0° and 100°E"
+    ],
+    "answer": "17°W and 52°E",
+    "explanation": "From Senegal to Somalia.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00093",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the position of the Arctic Circle?",
+    "options": [
+      "66½° S",
+      "23½° N",
+      "66½° N",
+      "90° N"
+    ],
+    "answer": "66½° N",
+    "explanation": "It is near the North Pole.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00094",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the position of the Antarctic Circle?",
+    "options": [
+      "66½° S",
+      "66½° N",
+      "23½° S",
+      "90° S"
+    ],
+    "answer": "66½° S",
+    "explanation": "It surrounds the southern continent.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00095",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "The International Date Line is marked as which degree?",
+    "options": [
+      "0°",
+      "90°",
+      "180°",
+      "360°"
+    ],
+    "answer": "180°",
+    "explanation": "It is opposite the Prime Meridian.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00096",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What happens to the date when you cross the International Date Line from East to West?",
+    "options": [
+      "Subtract a day",
+      "Add a day",
+      "Stay same",
+      "Add an hour"
+    ],
+    "answer": "Add a day",
+    "explanation": "You move into tomorrow.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00097",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Why is the Prime Meridian called the Greenwich Meridian?",
+    "options": [
+      "It is green in color",
+      "It passes through Greenwich, London",
+      "It was found by Mr. Green",
+      "It divides green land"
+    ],
+    "answer": "It passes through Greenwich, London",
+    "explanation": "It's a historical location.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00098",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which line of latitude marks the northernmost tip of Africa (Ras Ben Sakka)?",
+    "options": [
+      "23½° N",
+      "37° N",
+      "35° S",
+      "0°"
+    ],
+    "answer": "37° N",
+    "explanation": "It is in Tunisia.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00099",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which line of latitude defines the southernmost limit of Africa at Cape Agulhas?",
+    "options": [
+      "37° N",
+      "23½° S",
+      "35° S",
+      "66½° S"
+    ],
+    "answer": "35° S",
+    "explanation": "It is in South Africa.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00100",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "How many degrees of latitude does the African continent cover from North to South?",
+    "options": [
+      "37°",
+      "35°",
+      "72°",
+      "2°"
+    ],
+    "answer": "72°",
+    "explanation": "Add 37 and 35.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00101",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which line of latitude marks the furthest point North where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00102",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which line of latitude marks the furthest point South where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Antarctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00103",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is the time difference between 45° East and the Prime Meridian?",
+    "options": [
+      "1 hour",
+      "2 hours",
+      "3 hours",
+      "4 hours"
+    ],
+    "answer": "3 hours",
+    "explanation": "45 divided by 15.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00104",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "On which dates of the year is the sun directly overhead at the Equator?",
+    "options": [
+      "June 21 and Dec 22",
+      "March 21 and Sept 23",
+      "Jan 1 and July 4",
+      "May 10 and Aug 12"
+    ],
+    "answer": "March 21 and Sept 23",
+    "explanation": "These are the Equinoxes.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00105",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which African countries are crossed by the Prime Meridian?",
+    "options": [
+      "Egypt and Sudan",
+      "Ghana, Mali, Burkina Faso, Algeria",
+      "Nigeria and Niger",
+      "Kenya and Tanzania"
+    ],
+    "answer": "Ghana, Mali, Burkina Faso, Algeria",
+    "explanation": "These are mostly in West Africa.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00106",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What do we call the method of locating places using latitudes and longitudes?",
+    "options": [
+      "Compass Direction",
+      "Grid Reference",
+      "Scale Drawing",
+      "Map Reading"
+    ],
+    "answer": "Grid Reference",
+    "explanation": "It forms a \"grid\".",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00107",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Why is the Equator marked 0 degrees?",
+    "options": [
+      "It is the longest line",
+      "It is the starting point for measuring latitude",
+      "It is the hottest line",
+      "It crosses the ocean"
+    ],
+    "answer": "It is the starting point for measuring latitude",
+    "explanation": "Baseline for measurement.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00108",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which is the only continent crossed by the Equator, Tropic of Cancer, and Tropic of Capricorn?",
+    "options": [
+      "Asia",
+      "South America",
+      "Africa",
+      "Australia"
+    ],
+    "answer": "Africa",
+    "explanation": "It is very long.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00109",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Why is the region around the Equator usually hot?",
+    "options": [
+      "Because it is near the ocean",
+      "Because it receives direct rays of the sun",
+      "Because it has many forests",
+      "Because it is high up"
+    ],
+    "answer": "Because it receives direct rays of the sun",
+    "explanation": "Sunlight travels the shortest distance here.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00110",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is a common feature of countries crossed by the Equator in Africa?",
+    "options": [
+      "They are all deserts",
+      "They have tropical rainforests",
+      "They are all islands",
+      "They are all landlocked"
+    ],
+    "answer": "They have tropical rainforests",
+    "explanation": "Think of heavy rain.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00111",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Latitudes run parallel to which major line?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Poles",
+      "Date Line"
+    ],
+    "answer": "Equator",
+    "explanation": "They never meet it.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00112",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Why is Africa considered the hottest continent based on its grid position?",
+    "options": [
+      "It has many active volcanoes",
+      "The biggest part lies within the tropics",
+      "It is surrounded by oceans",
+      "It has the most deserts"
+    ],
+    "answer": "The biggest part lies within the tropics",
+    "explanation": "75% of the land is between the tropics.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00113",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "If it is 12:00 noon in London (0°), what time is it in Kampala (45° East)?",
+    "options": [
+      0.375,
+      0.4166666666666667,
+      0.625,
+      0.6666666666666666
+    ],
+    "answer": 0.625,
+    "explanation": "45 / 15 = 3 hours ahead.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00114",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which line helps us know how far North or South a place is?",
+    "options": [
+      "Longitude",
+      "Latitude",
+      "Contour",
+      "Isobar"
+    ],
+    "answer": "Latitude",
+    "explanation": "North/South distance.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00115",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which line helps us know how far East or West a place is?",
+    "options": [
+      "Latitude",
+      "Longitude",
+      "Equator",
+      "Tropic"
+    ],
+    "answer": "Longitude",
+    "explanation": "East/West distance.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00116",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Why do we add time when moving East?",
+    "options": [
+      "Because the sun rises in the East",
+      "Because wind blows East",
+      "Because the Earth is tilted",
+      "Because East is hotter"
+    ],
+    "answer": "Because the sun rises in the East",
+    "explanation": "Rotation is West to East.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00117",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What determines the standard time zones of the world?",
+    "options": [
+      "The Equator",
+      "The Prime Meridian",
+      "The International Date Line",
+      "The Tropics"
+    ],
+    "answer": "The Prime Meridian",
+    "explanation": "Greenwich is the base.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00118",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Which region follows \"East Africa Standard Time\" (+3 GMT)?",
+    "options": [
+      "Ghana and Togo",
+      "Uganda, Kenya, Tanzania",
+      "South Africa",
+      "Egypt"
+    ],
+    "answer": "Uganda, Kenya, Tanzania",
+    "explanation": "These neighbors share a zone.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00119",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "What is unique about the Sinai Peninsula's location?",
+    "options": [
+      "It is the coldest part",
+      "It is the land bridge between Africa and Asia",
+      "It is the largest island",
+      "It is in the Southern hemisphere"
+    ],
+    "answer": "It is the land bridge between Africa and Asia",
+    "explanation": "It is in Egypt.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00120",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Why can't we use Latitudes to calculate time?",
+    "options": [
+      "They are too short",
+      "They run East-West",
+      "They don't meet at poles",
+      "They are not imaginary"
+    ],
+    "answer": "They run East-West",
+    "explanation": "Rotation is about East-West position.",
+    "variant": "V0",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00061-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: If you look at a map, these lines run horizontally from East to West. What are they called?",
+    "options": [
+      "Longitudes",
+      "Latitudes",
+      "Meridians",
+      "Contours"
+    ],
+    "answer": "Latitudes",
+    "explanation": "They are horizontal lines.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00061-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Map makers draw horizontal lines from East to West. What is the correct name for lines of latitude?",
+    "options": [
+      "Longitudes",
+      "Latitudes",
+      "Meridians",
+      "Contours"
+    ],
+    "answer": "Latitudes",
+    "explanation": "They are horizontal lines.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00061-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: We use these lines to identify climate zones. What do we call lines drawn East to West?",
+    "options": [
+      "Longitudes",
+      "Latitudes",
+      "Meridians",
+      "Contours"
+    ],
+    "answer": "Latitudes",
+    "explanation": "They are horizontal lines.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00062-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: These lines run vertically from North to South. What do we call lines of longitude?",
+    "options": [
+      "Latitudes",
+      "Equator",
+      "Longitudes",
+      "Tropics"
+    ],
+    "answer": "Longitudes",
+    "explanation": "They are vertical lines.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00062-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: If latitude is horizontal, what do we call lines drawn North to South?",
+    "options": [
+      "Latitudes",
+      "Equator",
+      "Longitudes",
+      "Tropics"
+    ],
+    "answer": "Longitudes",
+    "explanation": "They are vertical lines.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00062-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato ponders: Think of a globe's vertical lines. What is the name for lines of longitude?",
+    "options": [
+      "Latitudes",
+      "Equator",
+      "Longitudes",
+      "Tropics"
+    ],
+    "answer": "Longitudes",
+    "explanation": "They are vertical lines.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00063-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It is the starting point (0°) for latitude. What is the most important line of latitude?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Cancer",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It divides the Earth into North and South.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00063-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Everything is measured North or South from this line. What is the 0° latitude line?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Cancer",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It divides the Earth into North and South.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00063-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Can you name the most important line of latitude marked at 0 degrees?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Cancer",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It divides the Earth into North and South.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00064-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It passes through London and marks 0°. What is the main line of longitude?",
+    "options": [
+      "Equator",
+      "International Date Line",
+      "Greenwich Meridian",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It passes through London.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00064-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Sailors and pilots start their time calculation here. What is the main 0° line of longitude?",
+    "options": [
+      "Equator",
+      "International Date Line",
+      "Greenwich Meridian",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It passes through London.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00064-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: What is the official name for the main 0° line of longitude?",
+    "options": [
+      "Equator",
+      "International Date Line",
+      "Greenwich Meridian",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It passes through London.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00065-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: They start with 'M'. What is another common name for lines of longitude?",
+    "options": [
+      "Parallels",
+      "Meridians",
+      "Equators",
+      "Tropics"
+    ],
+    "answer": "Meridians",
+    "explanation": "It starts with M.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00065-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Every time zone is based on these. What is another name for lines of longitude?",
+    "options": [
+      "Parallels",
+      "Meridians",
+      "Equators",
+      "Tropics"
+    ],
+    "answer": "Meridians",
+    "explanation": "It starts with M.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00065-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya ponders: Cartographers often use this term instead of longitude. What are Meridians?",
+    "options": [
+      "Parallels",
+      "Meridians",
+      "Equators",
+      "Tropics"
+    ],
+    "answer": "Meridians",
+    "explanation": "It starts with M.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00066-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: They never cross because they run side-by-side. Why are lines of latitude called parallels?",
+    "options": [
+      "Meridians",
+      "Parallels",
+      "Poles",
+      "Grids"
+    ],
+    "answer": "Parallels",
+    "explanation": "They never meet.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00066-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Think about how they stay the same distance apart. What is another name for lines of latitude?",
+    "options": [
+      "Meridians",
+      "Parallels",
+      "Poles",
+      "Grids"
+    ],
+    "answer": "Parallels",
+    "explanation": "They never meet.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00066-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Because they run around the earth without ever meeting, what is another name for lines of latitude?",
+    "options": [
+      "Meridians",
+      "Parallels",
+      "Poles",
+      "Grids"
+    ],
+    "answer": "Parallels",
+    "explanation": "They never meet.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00067-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: The equator runs right through it. In which hemispheres is Africa located?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Both North and South",
+      "Western Hemisphere"
+    ],
+    "answer": "Both North and South",
+    "explanation": "The Equator crosses the middle of Africa.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00067-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Our continent spans both sides of the equator. In which hemispheres is Africa located?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Both North and South",
+      "Western Hemisphere"
+    ],
+    "answer": "Both North and South",
+    "explanation": "The Equator crosses the middle of Africa.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00067-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya ponders: Since the Equator splits it, in which hemispheres is Africa located?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Both North and South",
+      "Western Hemisphere"
+    ],
+    "answer": "Both North and South",
+    "explanation": "The Equator crosses the middle of Africa.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00068-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: Because the Earth is a circle, we measure our location in angles. What units are used for latitudes and longitudes?",
+    "options": [
+      "Meters",
+      "Kilometers",
+      "Degrees",
+      "Hours"
+    ],
+    "answer": "Degrees",
+    "explanation": "Think of angles.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00068-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: We don't use meters for grid lines  What units are used for latitudes and longitudes?",
+    "options": [
+      "Meters",
+      "Kilometers",
+      "Degrees",
+      "Hours"
+    ],
+    "answer": "Degrees",
+    "explanation": "Think of angles.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00068-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Every position on a globe is marked using what kind of units for grid lines?",
+    "options": [
+      "Meters",
+      "Kilometers",
+      "Degrees",
+      "Hours"
+    ],
+    "answer": "Degrees",
+    "explanation": "Think of angles.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00069-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: Look at the bottom half of the globe. Which hemisphere is located South of the Equator?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Eastern Hemisphere",
+      "Western Hemisphere"
+    ],
+    "answer": "Southern Hemisphere",
+    "explanation": "The name tells you the direction.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00069-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: The part of the world where Australia is  Which hemisphere is located South of the Equator?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Eastern Hemisphere",
+      "Western Hemisphere"
+    ],
+    "answer": "Southern Hemisphere",
+    "explanation": "The name tells you the direction.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00069-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya ponders: The Equator is 0°. What do we call the hemisphere located South of the Equator?",
+    "options": [
+      "Northern Hemisphere",
+      "Southern Hemisphere",
+      "Eastern Hemisphere",
+      "Western Hemisphere"
+    ],
+    "answer": "Southern Hemisphere",
+    "explanation": "The name tells you the direction.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00070-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: Latitude lines are parallels, but longitude lines do something different. Where do lines of longitude meet?",
+    "options": [
+      "At the Equator",
+      "At the Tropics",
+      "At the North and South Poles",
+      "They never meet"
+    ],
+    "answer": "At the North and South Poles",
+    "explanation": "Think of the top and bottom of a globe.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00070-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Latitude lines are like tracks, but longitude lines pinch together. Where do lines of longitude meet?",
+    "options": [
+      "At the Equator",
+      "At the Tropics",
+      "At the North and South Poles",
+      "They never meet"
+    ],
+    "answer": "At the North and South Poles",
+    "explanation": "Think of the top and bottom of a globe.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00070-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: If you travel far North or South, you'll reach the spot. Where do lines of longitude meet?",
+    "options": [
+      "At the Equator",
+      "At the Tropics",
+      "At the North and South Poles",
+      "They never meet"
+    ],
+    "answer": "At the North and South Poles",
+    "explanation": "Think of the top and bottom of a globe.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00071-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It is located at 23½° North. Which of these lines is found in the Northern Hemisphere?",
+    "options": [
+      "Tropic of Capricorn",
+      "Arctic Circle",
+      "Equator",
+      "Tropic of Cancer"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "Cancer is in the North.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00071-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Map makers call this the northern limit of the sun. What is the line at 23½° North?",
+    "options": [
+      "Tropic of Capricorn",
+      "Arctic Circle",
+      "Equator",
+      "Tropic of Cancer"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "Cancer is in the North.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00071-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Which tropical line is located at 23½° North?",
+    "options": [
+      "Tropic of Capricorn",
+      "Arctic Circle",
+      "Equator",
+      "Tropic of Cancer"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "Cancer is in the North.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00072-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: It is the southern tropical latitude. Which line is found at 23½° South?",
+    "options": [
+      "Tropic of Capricorn",
+      "Antarctic Circle",
+      "Tropic of Cancer",
+      "Equator"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "Capricorn is in the South.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00072-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Map makers call this the southern limit of the sun. What is the line at 23½° South?",
+    "options": [
+      "Tropic of Capricorn",
+      "Antarctic Circle",
+      "Tropic of Cancer",
+      "Equator"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "Capricorn is in the South.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00072-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Which tropical line is located at 23½° South?",
+    "options": [
+      "Tropic of Capricorn",
+      "Antarctic Circle",
+      "Tropic of Cancer",
+      "Equator"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "Capricorn is in the South.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00073-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It is a major port city in West Africa. Which African country is famously crossed by the Prime Meridian?",
+    "options": [
+      "Nigeria",
+      "Kenya",
+      "Ghana",
+      "Uganda"
+    ],
+    "answer": "Ghana",
+    "explanation": "Accra is its capital.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00073-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Visit Accra, the capital city, and you are standing on 0° longitude  Which African country is crossed by the Prime Meridian?",
+    "options": [
+      "Nigeria",
+      "Kenya",
+      "Ghana",
+      "Uganda"
+    ],
+    "answer": "Ghana",
+    "explanation": "Accra is its capital.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00073-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Travelers going to West Africa often pass through this nation on the 0° line. Which African country is crossed by the Prime Meridian?",
+    "options": [
+      "Nigeria",
+      "Kenya",
+      "Ghana",
+      "Uganda"
+    ],
+    "answer": "Ghana",
+    "explanation": "Accra is its capital.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00074-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It is known as the Pearl of Africa. Which East African country is crossed by the Equator?",
+    "options": [
+      "Tanzania",
+      "Uganda",
+      "Rwanda",
+      "Burundi"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is the Pearl of Africa.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00074-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: If you visit Entebbe, you can stand on the 0° latitude line  Which East African country is crossed by the Equator?",
+    "options": [
+      "Tanzania",
+      "Uganda",
+      "Rwanda",
+      "Burundi"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is the Pearl of Africa.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00074-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Our own country is one of them. Which East African country is crossed by the Equator?",
+    "options": [
+      "Tanzania",
+      "Uganda",
+      "Rwanda",
+      "Burundi"
+    ],
+    "answer": "Uganda",
+    "explanation": "It is the Pearl of Africa.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00075-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: This vertical line is crucial for navigation. The Prime Meridian divides the world into which two hemispheres?",
+    "options": [
+      "North and South",
+      "East and West",
+      "Hot and Cold",
+      "Land and Water"
+    ],
+    "answer": "East and West",
+    "explanation": "It is a vertical divider.",
+    "variant": "V1",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00075-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: If the Equator gives us North and South, what does the Prime Meridian divide the world into?",
+    "options": [
+      "North and South",
+      "East and West",
+      "Hot and Cold",
+      "Land and Water"
+    ],
+    "answer": "East and West",
+    "explanation": "It is a vertical divider.",
+    "variant": "V2",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00075-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya ponders: Think of the vertical 0° line. The Prime Meridian divides the world into which two hemispheres?",
+    "options": [
+      "North and South",
+      "East and West",
+      "Hot and Cold",
+      "Land and Water"
+    ],
+    "answer": "East and West",
+    "explanation": "It is a vertical divider.",
+    "variant": "V3",
+    "difficulty": "E",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00076-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It’s all about distance from the Equator. What is the main use of lines of latitude?",
+    "options": [
+      "To determine time",
+      "To determine climate",
+      "To find direction",
+      "To measure population"
+    ],
+    "answer": "To determine climate",
+    "explanation": "Distance from the Equator affects heat.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00076-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Why do scientists use latitude to define Tropical and Polar zones? What is the main use of lines of latitude?",
+    "options": [
+      "To determine time",
+      "To determine climate",
+      "To find direction",
+      "To measure population"
+    ],
+    "answer": "To determine climate",
+    "explanation": "Distance from the Equator affects heat.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00076-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: It tells us how far we are from the equator. What is the main use of lines of latitude?",
+    "options": [
+      "To determine time",
+      "To determine climate",
+      "To find direction",
+      "To measure population"
+    ],
+    "answer": "To determine climate",
+    "explanation": "Distance from the Equator affects heat.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00077-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: Think of wristwatches and clocks. What is the main use of lines of longitude?",
+    "options": [
+      "To determine climate",
+      "To determine time",
+      "To measure rainfall",
+      "To find altitude"
+    ],
+    "answer": "To determine time",
+    "explanation": "Think of clocks and time zones.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00077-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Why do we divide the world into time zones? What is the main use of lines of longitude?",
+    "options": [
+      "To determine climate",
+      "To determine time",
+      "To measure rainfall",
+      "To find altitude"
+    ],
+    "answer": "To determine time",
+    "explanation": "Think of clocks and time zones.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00077-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya ponders: We calculate the time difference using these. What is the main use of lines of longitude?",
+    "options": [
+      "To determine climate",
+      "To determine time",
+      "To measure rainfall",
+      "To find altitude"
+    ],
+    "answer": "To determine time",
+    "explanation": "Think of clocks and time zones.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00078-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It crosses the hot center of the continent. Which major line passes through Gabon, Congo, and DRC?",
+    "options": [
+      "Prime Meridian",
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the hot center of Africa.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00078-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Look at the heart of Africa. Which major line passes through Gabon, Congo, and DRC?",
+    "options": [
+      "Prime Meridian",
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the hot center of Africa.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00078-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Which invisible line crosses Central Africa and its rainforests? Which major line passes through Gabon, Congo, and DRC?",
+    "options": [
+      "Prime Meridian",
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the hot center of Africa.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00079-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: These are North African nations. Which major line passes through Egypt, Libya, and Algeria?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "These are North African countries.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00079-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Which tropical latitude line goes across the Northern African desert? Which major line passes through Egypt, Libya, and Algeria?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "These are North African countries.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00079-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: This line is at 23½° North. Which major line passes through Egypt, Libya, and Algeria?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "These are North African countries.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00080-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: These are Southern African nations. Which major line passes through Namibia, Botswana, and South Africa?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "These are Southern African countries.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00080-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Which tropical line is at 23½° South and crosses the southern tip of Africa? Which major line passes through Namibia, Botswana, and South Africa?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "These are Southern African countries.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00080-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Look at the Southern Hemisphere map. Which major line passes through Namibia, Botswana, and South Africa?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "These are Southern African countries.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00081-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: A circle is 360°, and a day is 24 hours. How many degrees does the Earth rotate in one hour?",
+    "options": [
+      "10°",
+      "15°",
+      "30°",
+      "45°"
+    ],
+    "answer": "15°",
+    "explanation": "360 divided by 24.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00081-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: If the Earth spins 360° in 24 hours, how many degrees does the Earth rotate in one hour?",
+    "options": [
+      "10°",
+      "15°",
+      "30°",
+      "45°"
+    ],
+    "answer": "15°",
+    "explanation": "360 divided by 24.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00081-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Every time zone is determined by this. How many degrees does the Earth rotate in one hour?",
+    "options": [
+      "10°",
+      "15°",
+      "30°",
+      "45°"
+    ],
+    "answer": "15°",
+    "explanation": "360 divided by 24.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00082-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: We know 15 degrees take 60 minutes. How many minutes does it take the Earth to rotate 1 degree?",
+    "options": [
+      "1 minute",
+      "4 minutes",
+      "15 minutes",
+      "60 minutes"
+    ],
+    "answer": "4 minutes",
+    "explanation": "60 minutes divided by 15.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00082-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: If 15° = 60 minutes, then how many minutes does it take the Earth to rotate 1 degree?",
+    "options": [
+      "1 minute",
+      "4 minutes",
+      "15 minutes",
+      "60 minutes"
+    ],
+    "answer": "4 minutes",
+    "explanation": "60 minutes divided by 15.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00082-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: This is the magic number for calculating longitude time. How many minutes does it take the Earth to rotate 1 degree?",
+    "options": [
+      "1 minute",
+      "4 minutes",
+      "15 minutes",
+      "60 minutes"
+    ],
+    "answer": "4 minutes",
+    "explanation": "60 minutes divided by 15.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00083-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: We learned this earlier, let's see if you remember  Which North African country is crossed by the Prime Meridian?",
+    "options": [
+      "Egypt",
+      "Libya",
+      "Algeria",
+      "Morocco"
+    ],
+    "answer": "Algeria",
+    "explanation": "It is the largest country in Africa.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00083-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Thinking of the 0° longitude line in the Sahara region. Which North African country is crossed by the Prime Meridian?",
+    "options": [
+      "Egypt",
+      "Libya",
+      "Algeria",
+      "Morocco"
+    ],
+    "answer": "Algeria",
+    "explanation": "It is the largest country in Africa.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00083-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato ponders: Which North African country is crossed by the Prime Meridian (the largest one there)?",
+    "options": [
+      "Egypt",
+      "Libya",
+      "Algeria",
+      "Morocco"
+    ],
+    "answer": "Algeria",
+    "explanation": "It is the largest country in Africa.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00084-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It is the hottest part of the globe. What is the collective name given to the area between the two Tropics?",
+    "options": [
+      "Polar Zone",
+      "Temperate Zone",
+      "Tropical (Torrid) Zone",
+      "Frigid Zone"
+    ],
+    "answer": "Tropical (Torrid) Zone",
+    "explanation": "It is the hottest part of the Earth.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00084-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Everything between the Tropic of Cancer and Tropic of Capricorn is known as the what?",
+    "options": [
+      "Polar Zone",
+      "Temperate Zone",
+      "Tropical (Torrid) Zone",
+      "Frigid Zone"
+    ],
+    "answer": "Tropical (Torrid) Zone",
+    "explanation": "It is the hottest part of the Earth.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00084-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What is the collective name given to the area between the two Tropics where direct sun shines all year?",
+    "options": [
+      "Polar Zone",
+      "Temperate Zone",
+      "Tropical (Torrid) Zone",
+      "Frigid Zone"
+    ],
+    "answer": "Tropical (Torrid) Zone",
+    "explanation": "It is the hottest part of the Earth.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00085-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It passes right near Entebbe. Which major line crosses Lake Victoria?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It passes through Entebbe.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00085-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: If you are at the Entebbe Equator marker, you are near this water body. Which major line crosses Lake Victoria?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It passes through Entebbe.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00085-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Which major line crosses Lake Victoria in Uganda?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Equator",
+    "explanation": "It passes through Entebbe.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00086-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: It sits in the Horn of Africa. Somalia is crossed by which major line of latitude?",
+    "options": [
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00086-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Which major line of latitude crosses the southern part of Somalia?",
+    "options": [
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00086-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya ponders: Somalia is a long country. Which major line of latitude crosses it?",
+    "options": [
+      "Tropic of Cancer",
+      "Equator",
+      "Tropic of Capricorn",
+      "Prime Meridian"
+    ],
+    "answer": "Equator",
+    "explanation": "It is in the Horn of Africa.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00087-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It’s named after an observatory in England. What is the Prime Meridian also called?",
+    "options": [
+      "International Date Line",
+      "Equator",
+      "Greenwich Meridian",
+      "Tropic of Cancer"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It is named after a town in London.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00087-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Every time zone is referenced from here. What is the Prime Meridian also called?",
+    "options": [
+      "International Date Line",
+      "Equator",
+      "Greenwich Meridian",
+      "Tropic of Cancer"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It is named after a town in London.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00087-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: It is the official name for the 0° line. What is the Prime Meridian also called?",
+    "options": [
+      "International Date Line",
+      "Equator",
+      "Greenwich Meridian",
+      "Tropic of Cancer"
+    ],
+    "answer": "Greenwich Meridian",
+    "explanation": "It is named after a town in London.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00088-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It is the capital of Ghana. Which African city is famously crossed by the Prime Meridian?",
+    "options": [
+      "Lagos",
+      "Nairobi",
+      "Accra",
+      "Cairo"
+    ],
+    "answer": "Accra",
+    "explanation": "It is the capital of Ghana.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00088-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: If you stand in this city, you are on the 0° line. Which African city is famously crossed by the Prime Meridian?",
+    "options": [
+      "Lagos",
+      "Nairobi",
+      "Accra",
+      "Cairo"
+    ],
+    "answer": "Accra",
+    "explanation": "It is the capital of Ghana.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00088-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Think of West Africa  Which African city is famously crossed by the Prime Meridian?",
+    "options": [
+      "Lagos",
+      "Nairobi",
+      "Accra",
+      "Cairo"
+    ],
+    "answer": "Accra",
+    "explanation": "It is the capital of Ghana.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00089-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: The sun rises in the East  If you travel 15° East of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Time stops"
+    ],
+    "answer": "Add 1 hour",
+    "explanation": "The sun rises in the East.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00089-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Every 15 degrees is one hour. If you travel 15° East of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Time stops"
+    ],
+    "answer": "Add 1 hour",
+    "explanation": "The sun rises in the East.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00089-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Since the East sees the sun earlier, if you travel 15° East of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Time stops"
+    ],
+    "answer": "Add 1 hour",
+    "explanation": "The sun rises in the East.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00090-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: If East is ahead, West is definitely behind. If you travel 15° West of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Add a day"
+    ],
+    "answer": "Subtract 1 hour",
+    "explanation": "West is behind.",
+    "variant": "V1",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00090-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: The sun sets later in the West  If you travel 15° West of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Add a day"
+    ],
+    "answer": "Subtract 1 hour",
+    "explanation": "West is behind.",
+    "variant": "V2",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00090-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Every 15 degrees is one hour difference. If you travel 15° West of Greenwich, what happens to the time?",
+    "options": [
+      "Subtract 1 hour",
+      "Add 1 hour",
+      "Time stays same",
+      "Add a day"
+    ],
+    "answer": "Subtract 1 hour",
+    "explanation": "West is behind.",
+    "variant": "V3",
+    "difficulty": "M",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00091-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: Think of the distance from Tunisia to South Africa. Between which two latitudes is Africa located?",
+    "options": [
+      "20°N and 20°S",
+      "37°N and 35°S",
+      "50°N and 50°S",
+      "10°N and 10°S"
+    ],
+    "answer": "37°N and 35°S",
+    "explanation": "Think of Tunisia and South Africa.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00091-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: It covers more land in the Northern Hemisphere than the Southern. Between which two latitudes is Africa located?",
+    "options": [
+      "20°N and 20°S",
+      "37°N and 35°S",
+      "50°N and 50°S",
+      "10°N and 10°S"
+    ],
+    "answer": "37°N and 35°S",
+    "explanation": "Think of Tunisia and South Africa.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00091-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: From Ras Ben Sakka to Cape Agulhas. Between which two latitudes is Africa located?",
+    "options": [
+      "20°N and 20°S",
+      "37°N and 35°S",
+      "50°N and 50°S",
+      "10°N and 10°S"
+    ],
+    "answer": "37°N and 35°S",
+    "explanation": "Think of Tunisia and South Africa.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00092-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It stretches from Senegal to Somalia. Between which two longitudes is Africa located?",
+    "options": [
+      "17°W and 52°E",
+      "20°W and 20°E",
+      "10°W and 60°E",
+      "0° and 100°E"
+    ],
+    "answer": "17°W and 52°E",
+    "explanation": "From Senegal to Somalia.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00092-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: How wide is Africa on the grid? Between which two longitudes is Africa located?",
+    "options": [
+      "17°W and 52°E",
+      "20°W and 20°E",
+      "10°W and 60°E",
+      "0° and 100°E"
+    ],
+    "answer": "17°W and 52°E",
+    "explanation": "From Senegal to Somalia.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00092-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Measuring from the West coast to the East coast. Between which two longitudes is Africa located?",
+    "options": [
+      "17°W and 52°E",
+      "20°W and 20°E",
+      "10°W and 60°E",
+      "0° and 100°E"
+    ],
+    "answer": "17°W and 52°E",
+    "explanation": "From Senegal to Somalia.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00093-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: It is near the North Pole. What is the position of the Arctic Circle?",
+    "options": [
+      "66½° S",
+      "23½° N",
+      "66½° N",
+      "90° N"
+    ],
+    "answer": "66½° N",
+    "explanation": "It is near the North Pole.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00093-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Think about the far North. What is the position of the Arctic Circle?",
+    "options": [
+      "66½° S",
+      "23½° N",
+      "66½° N",
+      "90° N"
+    ],
+    "answer": "66½° N",
+    "explanation": "It is near the North Pole.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00093-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Which latitude marks the boundary of the North Polar zone? What is the position of the Arctic Circle?",
+    "options": [
+      "66½° S",
+      "23½° N",
+      "66½° N",
+      "90° N"
+    ],
+    "answer": "66½° N",
+    "explanation": "It is near the North Pole.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00094-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It surrounds the bottom of the globe. What is the position of the Antarctic Circle?",
+    "options": [
+      "66½° S",
+      "66½° N",
+      "23½° S",
+      "90° S"
+    ],
+    "answer": "66½° S",
+    "explanation": "It surrounds the southern continent.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00094-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Think about the far South. What is the position of the Antarctic Circle?",
+    "options": [
+      "66½° S",
+      "66½° N",
+      "23½° S",
+      "90° S"
+    ],
+    "answer": "66½° S",
+    "explanation": "It surrounds the southern continent.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00094-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Which latitude marks the boundary of the South Polar zone? What is the position of the Antarctic Circle?",
+    "options": [
+      "66½° S",
+      "66½° N",
+      "23½° S",
+      "90° S"
+    ],
+    "answer": "66½° S",
+    "explanation": "It surrounds the southern continent.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00095-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It is exactly on the opposite side of Greenwich. The International Date Line is marked as which degree?",
+    "options": [
+      "0°",
+      "90°",
+      "180°",
+      "360°"
+    ],
+    "answer": "180°",
+    "explanation": "It is opposite the Prime Meridian.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00095-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Where does the calendar day start and finish globally? The International Date Line is marked as which degree?",
+    "options": [
+      "0°",
+      "90°",
+      "180°",
+      "360°"
+    ],
+    "answer": "180°",
+    "explanation": "It is opposite the Prime Meridian.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00095-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: We reference the 0° line for time and the 180° for dates. The International Date Line is marked as which degree?",
+    "options": [
+      "0°",
+      "90°",
+      "180°",
+      "360°"
+    ],
+    "answer": "180°",
+    "explanation": "It is opposite the Prime Meridian.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00096-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: You jump forward in time when you cross it  What happens to the date when you cross the International Date Line from East to West?",
+    "options": [
+      "Subtract a day",
+      "Add a day",
+      "Stay same",
+      "Add an hour"
+    ],
+    "answer": "Add a day",
+    "explanation": "You move into tomorrow.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00096-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: You leave today and enter tomorrow  What happens to the date when you cross the International Date Line from East to West?",
+    "options": [
+      "Subtract a day",
+      "Add a day",
+      "Stay same",
+      "Add an hour"
+    ],
+    "answer": "Add a day",
+    "explanation": "You move into tomorrow.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00096-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Moving from America towards Asia means you shift time forward. What happens to the date when you cross the International Date Line from East to West?",
+    "options": [
+      "Subtract a day",
+      "Add a day",
+      "Stay same",
+      "Add an hour"
+    ],
+    "answer": "Add a day",
+    "explanation": "You move into tomorrow.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00097-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It is a suburb of London. Why is the Prime Meridian called the Greenwich Meridian?",
+    "options": [
+      "It is green in color",
+      "It passes through Greenwich, London",
+      "It was found by Mr. Green",
+      "It divides green land"
+    ],
+    "answer": "It passes through Greenwich, London",
+    "explanation": "It's a historical location.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00097-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: History shows the Royal Observatory is right there. Why is the Prime Meridian called the Greenwich Meridian?",
+    "options": [
+      "It is green in color",
+      "It passes through Greenwich, London",
+      "It was found by Mr. Green",
+      "It divides green land"
+    ],
+    "answer": "It passes through Greenwich, London",
+    "explanation": "It's a historical location.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00097-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: The longitude 0° line is named after which British location? Why is the Prime Meridian called the Greenwich Meridian?",
+    "options": [
+      "It is green in color",
+      "It passes through Greenwich, London",
+      "It was found by Mr. Green",
+      "It divides green land"
+    ],
+    "answer": "It passes through Greenwich, London",
+    "explanation": "It's a historical location.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00098-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It is found in Tunisia. Which line of latitude marks the northernmost tip of Africa (Ras Ben Sakka)?",
+    "options": [
+      "23½° N",
+      "37° N",
+      "35° S",
+      "0°"
+    ],
+    "answer": "37° N",
+    "explanation": "It is in Tunisia.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00098-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: The continent starts far north in Tunisia. Which line of latitude marks the northernmost tip of Africa (Ras Ben Sakka)?",
+    "options": [
+      "23½° N",
+      "37° N",
+      "35° S",
+      "0°"
+    ],
+    "answer": "37° N",
+    "explanation": "It is in Tunisia.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00098-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What is the latitude of the most northern spot in Africa? Which line of latitude marks the northernmost tip of Africa (Ras Ben Sakka)?",
+    "options": [
+      "23½° N",
+      "37° N",
+      "35° S",
+      "0°"
+    ],
+    "answer": "37° N",
+    "explanation": "It is in Tunisia.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00099-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: It is in South Africa. Which line of latitude defines the southernmost limit of Africa at Cape Agulhas?",
+    "options": [
+      "37° N",
+      "23½° S",
+      "35° S",
+      "66½° S"
+    ],
+    "answer": "35° S",
+    "explanation": "It is in South Africa.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00099-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: The continent ends way down in South Africa. Which line of latitude defines the southernmost limit of Africa at Cape Agulhas?",
+    "options": [
+      "37° N",
+      "23½° S",
+      "35° S",
+      "66½° S"
+    ],
+    "answer": "35° S",
+    "explanation": "It is in South Africa.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00099-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What is the latitude of Cape Agulhas? Which line of latitude defines the southernmost limit of Africa?",
+    "options": [
+      "37° N",
+      "23½° S",
+      "35° S",
+      "66½° S"
+    ],
+    "answer": "35° S",
+    "explanation": "It is in South Africa.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00100-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: If it goes 37° North and 35° South, how many degrees of latitude does the African continent cover from North to South?",
+    "options": [
+      "37°",
+      "35°",
+      "72°",
+      "2°"
+    ],
+    "answer": "72°",
+    "explanation": "Add 37 and 35.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00100-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Simply add the northernmost and southernmost degrees together. How many degrees of latitude does the African continent cover from North to South?",
+    "options": [
+      "37°",
+      "35°",
+      "72°",
+      "2°"
+    ],
+    "answer": "72°",
+    "explanation": "Add 37 and 35.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00100-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: 37 degrees up and 35 degrees down. How many degrees of latitude does the African continent cover from North to South?",
+    "options": [
+      "37°",
+      "35°",
+      "72°",
+      "2°"
+    ],
+    "answer": "72°",
+    "explanation": "Add 37 and 35.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00101-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: The sun turns back once it hits this line. Which line of latitude marks the furthest point North where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00101-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: It is at 23½° North. Which line of latitude marks the furthest point North where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00101-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What is the limit of the sun in the North? Which line of latitude marks the furthest point North where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Arctic Circle"
+    ],
+    "answer": "Tropic of Cancer",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00102-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: It is at 23½° South. Which line of latitude marks the furthest point South where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Antarctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00102-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What is the limit of the sun in the South? Which line of latitude marks the furthest point South where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Antarctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00102-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: When the sun hits this line, it begins moving back to the Equator. Which line of latitude marks the furthest point South where the sun can be overhead?",
+    "options": [
+      "Equator",
+      "Tropic of Cancer",
+      "Tropic of Capricorn",
+      "Antarctic Circle"
+    ],
+    "answer": "Tropic of Capricorn",
+    "explanation": "The sun \"turns back\" here.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00103-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: Use the 15° rule: 45 ÷ 15. What is the time difference between 45° East and the Prime Meridian?",
+    "options": [
+      "1 hour",
+      "2 hours",
+      "3 hours",
+      "4 hours"
+    ],
+    "answer": "3 hours",
+    "explanation": "45 divided by 15.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00103-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Every 15 degrees is one hour. What is the time difference between 45° East and the Prime Meridian?",
+    "options": [
+      "1 hour",
+      "2 hours",
+      "3 hours",
+      "4 hours"
+    ],
+    "answer": "3 hours",
+    "explanation": "45 divided by 15.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00103-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Just divide 45 by 15. What is the time difference between 45° East and the Prime Meridian?",
+    "options": [
+      "1 hour",
+      "2 hours",
+      "3 hours",
+      "4 hours"
+    ],
+    "answer": "3 hours",
+    "explanation": "45 divided by 15.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00104-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: We call these the Equinoxes. On which dates of the year is the sun directly overhead at the Equator?",
+    "options": [
+      "June 21 and Dec 22",
+      "March 21 and Sept 23",
+      "Jan 1 and July 4",
+      "May 10 and Aug 12"
+    ],
+    "answer": "March 21 and Sept 23",
+    "explanation": "These are the Equinoxes.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00104-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: When do we have days and nights of equal length worldwide? On which dates of the year is the sun directly overhead at the Equator?",
+    "options": [
+      "June 21 and Dec 22",
+      "March 21 and Sept 23",
+      "Jan 1 and July 4",
+      "May 10 and Aug 12"
+    ],
+    "answer": "March 21 and Sept 23",
+    "explanation": "These are the Equinoxes.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00104-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Think of the Equinoxes. On which dates of the year is the sun directly overhead at the Equator?",
+    "options": [
+      "June 21 and Dec 22",
+      "March 21 and Sept 23",
+      "Jan 1 and July 4",
+      "May 10 and Aug 12"
+    ],
+    "answer": "March 21 and Sept 23",
+    "explanation": "These are the Equinoxes.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00105-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It passes through four of them  Which African countries are crossed by the Prime Meridian?",
+    "options": [
+      "Egypt and Sudan",
+      "Ghana, Mali, Burkina Faso, Algeria",
+      "Nigeria and Niger",
+      "Kenya and Tanzania"
+    ],
+    "answer": "Ghana, Mali, Burkina Faso, Algeria",
+    "explanation": "These are mostly in West Africa.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00105-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Can you identify the West African nations that touch the 0° line? Which African countries are crossed by the Prime Meridian?",
+    "options": [
+      "Egypt and Sudan",
+      "Ghana, Mali, Burkina Faso, Algeria",
+      "Nigeria and Niger",
+      "Kenya and Tanzania"
+    ],
+    "answer": "Ghana, Mali, Burkina Faso, Algeria",
+    "explanation": "These are mostly in West Africa.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00105-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Name all the African countries the 0° longitude crosses. Which African countries are crossed by the Prime Meridian?",
+    "options": [
+      "Egypt and Sudan",
+      "Ghana, Mali, Burkina Faso, Algeria",
+      "Nigeria and Niger",
+      "Kenya and Tanzania"
+    ],
+    "answer": "Ghana, Mali, Burkina Faso, Algeria",
+    "explanation": "These are mostly in West Africa.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": false,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00106-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It creates a system of squares on a map. What do we call the method of locating places using latitudes and longitudes?",
+    "options": [
+      "Compass Direction",
+      "Grid Reference",
+      "Scale Drawing",
+      "Map Reading"
+    ],
+    "answer": "Grid Reference",
+    "explanation": "It forms a \"grid\".",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00106-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: When you combine latitude and longitude to find a city, you are using what? What do we call the method of locating places using latitudes and longitudes?",
+    "options": [
+      "Compass Direction",
+      "Grid Reference",
+      "Scale Drawing",
+      "Map Reading"
+    ],
+    "answer": "Grid Reference",
+    "explanation": "It forms a \"grid\".",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00106-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: It is like an address system for the whole world. What do we call the method of locating places using latitudes and longitudes?",
+    "options": [
+      "Compass Direction",
+      "Grid Reference",
+      "Scale Drawing",
+      "Map Reading"
+    ],
+    "answer": "Grid Reference",
+    "explanation": "It forms a \"grid\".",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00107-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: We need a starting point for North and South distance. Why is the Equator marked 0 degrees?",
+    "options": [
+      "It is the longest line",
+      "It is the starting point for measuring latitude",
+      "It is the hottest line",
+      "It crosses the ocean"
+    ],
+    "answer": "It is the starting point for measuring latitude",
+    "explanation": "Baseline for measurement.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00107-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Why don't we start latitude counting from the North Pole? Why is the Equator marked 0 degrees?",
+    "options": [
+      "It is the longest line",
+      "It is the starting point for measuring latitude",
+      "It is the hottest line",
+      "It crosses the ocean"
+    ],
+    "answer": "It is the starting point for measuring latitude",
+    "explanation": "Baseline for measurement.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00107-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: What makes the Equator the perfect 0° line? Why is the Equator marked 0 degrees?",
+    "options": [
+      "It is the longest line",
+      "It is the starting point for measuring latitude",
+      "It is the hottest line",
+      "It crosses the ocean"
+    ],
+    "answer": "It is the starting point for measuring latitude",
+    "explanation": "Baseline for measurement.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00108-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It spans almost all climate zones. Which is the only continent crossed by the Equator, Tropic of Cancer, and Tropic of Capricorn?",
+    "options": [
+      "Asia",
+      "South America",
+      "Africa",
+      "Australia"
+    ],
+    "answer": "Africa",
+    "explanation": "It is very long.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00108-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: This makes our continent unique. Which is the only continent crossed by the Equator, Tropic of Cancer, and Tropic of Capricorn?",
+    "options": [
+      "Asia",
+      "South America",
+      "Africa",
+      "Australia"
+    ],
+    "answer": "Africa",
+    "explanation": "It is very long.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00108-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Which continent sits so perfectly in the center of the world? Which is the only continent crossed by the Equator, Tropic of Cancer, and Tropic of Capricorn?",
+    "options": [
+      "Asia",
+      "South America",
+      "Africa",
+      "Australia"
+    ],
+    "answer": "Africa",
+    "explanation": "It is very long.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00109-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It’s all about the sun's angle. Why is the region around the Equator usually hot?",
+    "options": [
+      "Because it is near the ocean",
+      "Because it receives direct rays of the sun",
+      "Because it has many forests",
+      "Because it is high up"
+    ],
+    "answer": "Because it receives direct rays of the sun",
+    "explanation": "Sunlight travels the shortest distance here.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00109-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: The sun's energy is most concentrated here. Why is the region around the Equator usually hot?",
+    "options": [
+      "Because it is near the ocean",
+      "Because it receives direct rays of the sun",
+      "Because it has many forests",
+      "Because it is high up"
+    ],
+    "answer": "Because it receives direct rays of the sun",
+    "explanation": "Sunlight travels the shortest distance here.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00109-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Think about direct sunlight versus slanted rays. Why is the region around the Equator usually hot?",
+    "options": [
+      "Because it is near the ocean",
+      "Because it receives direct rays of the sun",
+      "Because it has many forests",
+      "Because it is high up"
+    ],
+    "answer": "Because it receives direct rays of the sun",
+    "explanation": "Sunlight travels the shortest distance here.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00110-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: With all that heat and moisture, what grows there? What is a common feature of countries crossed by the Equator in Africa?",
+    "options": [
+      "They are all deserts",
+      "They have tropical rainforests",
+      "They are all islands",
+      "They are all landlocked"
+    ],
+    "answer": "They have tropical rainforests",
+    "explanation": "Think of heavy rain.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00110-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Uganda and DRC are on the Equator. What is a common feature of countries crossed by the Equator in Africa?",
+    "options": [
+      "They are all deserts",
+      "They have tropical rainforests",
+      "They are all islands",
+      "They are all landlocked"
+    ],
+    "answer": "They have tropical rainforests",
+    "explanation": "Think of heavy rain.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00110-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Where there is constant sun and rain, you find this. What is a common feature of countries crossed by the Equator in Africa?",
+    "options": [
+      "They are all deserts",
+      "They have tropical rainforests",
+      "They are all islands",
+      "They are all landlocked"
+    ],
+    "answer": "They have tropical rainforests",
+    "explanation": "Think of heavy rain.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00111-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: If you look at the globe, all these horizontal lines are even. Latitudes run parallel to which major line?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Poles",
+      "Date Line"
+    ],
+    "answer": "Equator",
+    "explanation": "They never meet it.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00111-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: They never cross the middle line. Latitudes run parallel to which major line?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Poles",
+      "Date Line"
+    ],
+    "answer": "Equator",
+    "explanation": "They never meet it.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00111-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What do we call the 0° line that all latitudes are parallel to? Latitudes run parallel to which major line?",
+    "options": [
+      "Prime Meridian",
+      "Equator",
+      "Poles",
+      "Date Line"
+    ],
+    "answer": "Equator",
+    "explanation": "They never meet it.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00112-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It’s all about grid position and the sun. Why is Africa considered the hottest continent based on its grid position?",
+    "options": [
+      "It has many active volcanoes",
+      "The biggest part lies within the tropics",
+      "It is surrounded by oceans",
+      "It has the most deserts"
+    ],
+    "answer": "The biggest part lies within the tropics",
+    "explanation": "75% of the land is between the tropics.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00112-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Look at where Africa sits between 23½° N and 23½° S. Why is Africa considered the hottest continent based on its grid position?",
+    "options": [
+      "It has many active volcanoes",
+      "The biggest part lies within the tropics",
+      "It is surrounded by oceans",
+      "It has the most deserts"
+    ],
+    "answer": "The biggest part lies within the tropics",
+    "explanation": "75% of the land is between the tropics.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00112-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Because the sun is overhead here more than anywhere else. Why is Africa considered the hottest continent based on its grid position?",
+    "options": [
+      "It has many active volcanoes",
+      "The biggest part lies within the tropics",
+      "It is surrounded by oceans",
+      "It has the most deserts"
+    ],
+    "answer": "The biggest part lies within the tropics",
+    "explanation": "75% of the land is between the tropics.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00113-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: Remember, East is ahead  If it is 12:00 noon in London (0°), what time is it in Kampala (45° East)?",
+    "options": [
+      0.375,
+      0.4166666666666667,
+      0.625,
+      0.6666666666666666
+    ],
+    "answer": 0.625,
+    "explanation": "45 / 15 = 3 hours ahead.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00113-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Let's calculate the time difference for 45° E. If it is 12:00 noon in London (0°), what time is it in Kampala (45° East)?",
+    "options": [
+      0.375,
+      0.4166666666666667,
+      0.625,
+      0.6666666666666666
+    ],
+    "answer": 0.625,
+    "explanation": "45 / 15 = 3 hours ahead.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00113-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: We add three hours to noon. If it is 12:00 noon in London (0°), what time is it in Kampala (45° East)?",
+    "options": [
+      0.375,
+      0.4166666666666667,
+      0.625,
+      0.6666666666666666
+    ],
+    "answer": 0.625,
+    "explanation": "45 / 15 = 3 hours ahead.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00114-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It’s all about the North-South distance. Which line helps us know how far North or South a place is?",
+    "options": [
+      "Longitude",
+      "Latitude",
+      "Contour",
+      "Isobar"
+    ],
+    "answer": "Latitude",
+    "explanation": "North/South distance.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00114-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: If you are traveling towards the poles, which line measures that? Which line helps us know how far North or South a place is?",
+    "options": [
+      "Longitude",
+      "Latitude",
+      "Contour",
+      "Isobar"
+    ],
+    "answer": "Latitude",
+    "explanation": "North/South distance.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00114-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: What do we call the line that tells us our distance from the Equator? Which line helps us know how far North or South a place is?",
+    "options": [
+      "Longitude",
+      "Latitude",
+      "Contour",
+      "Isobar"
+    ],
+    "answer": "Latitude",
+    "explanation": "North/South distance.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00115-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It’s all about the East-West position. Which line helps us know how far East or West a place is?",
+    "options": [
+      "Latitude",
+      "Longitude",
+      "Equator",
+      "Tropic"
+    ],
+    "answer": "Longitude",
+    "explanation": "East/West distance.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00115-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: These lines determine our position relative to Greenwich. Which line helps us know how far East or West a place is?",
+    "options": [
+      "Latitude",
+      "Longitude",
+      "Equator",
+      "Tropic"
+    ],
+    "answer": "Longitude",
+    "explanation": "East/West distance.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00115-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: How do we measure distance from the Prime Meridian? Which line helps us know how far East or West a place is?",
+    "options": [
+      "Latitude",
+      "Longitude",
+      "Equator",
+      "Tropic"
+    ],
+    "answer": "Longitude",
+    "explanation": "East/West distance.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00116-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: Since the world rotates towards the East. Why do we add time when moving East?",
+    "options": [
+      "Because the sun rises in the East",
+      "Because wind blows East",
+      "Because the Earth is tilted",
+      "Because East is hotter"
+    ],
+    "answer": "Because the sun rises in the East",
+    "explanation": "Rotation is West to East.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00116-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Why do we say \"East is ahead\"? Why do we add time when moving East?",
+    "options": [
+      "Because the sun rises in the East",
+      "Because wind blows East",
+      "Because the Earth is tilted",
+      "Because East is hotter"
+    ],
+    "answer": "Because the sun rises in the East",
+    "explanation": "Rotation is West to East.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00116-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: The sunrise happens earlier for them  Why do we add time when moving East?",
+    "options": [
+      "Because the sun rises in the East",
+      "Because wind blows East",
+      "Because the Earth is tilted",
+      "Because East is hotter"
+    ],
+    "answer": "Because the sun rises in the East",
+    "explanation": "Rotation is West to East.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00117-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: It is the base for our 24-hour clocks. What determines the standard time zones of the world?",
+    "options": [
+      "The Equator",
+      "The Prime Meridian",
+      "The International Date Line",
+      "The Tropics"
+    ],
+    "answer": "The Prime Meridian",
+    "explanation": "Greenwich is the base.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00117-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Everything is measured from London's 0° line. What determines the standard time zones of the world?",
+    "options": [
+      "The Equator",
+      "The Prime Meridian",
+      "The International Date Line",
+      "The Tropics"
+    ],
+    "answer": "The Prime Meridian",
+    "explanation": "Greenwich is the base.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00117-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: We start our count at Greenwich. What determines the standard time zones of the world?",
+    "options": [
+      "The Equator",
+      "The Prime Meridian",
+      "The International Date Line",
+      "The Tropics"
+    ],
+    "answer": "The Prime Meridian",
+    "explanation": "Greenwich is the base.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00118-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato asks: It’s three hours ahead of Greenwich. Which region follows \"East Africa Standard Time\" (+3 GMT)?",
+    "options": [
+      "Ghana and Togo",
+      "Uganda, Kenya, Tanzania",
+      "South Africa",
+      "Egypt"
+    ],
+    "answer": "Uganda, Kenya, Tanzania",
+    "explanation": "These neighbors share a zone.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00118-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: Our local time zone is shared with our neighbors. Which region follows \"East Africa Standard Time\" (+3 GMT)?",
+    "options": [
+      "Ghana and Togo",
+      "Uganda, Kenya, Tanzania",
+      "South Africa",
+      "Egypt"
+    ],
+    "answer": "Uganda, Kenya, Tanzania",
+    "explanation": "These neighbors share a zone.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00118-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: Kenya, Tanzania, and Uganda have the same clocks. Which region follows \"East Africa Standard Time\" (+3 GMT)?",
+    "options": [
+      "Ghana and Togo",
+      "Uganda, Kenya, Tanzania",
+      "South Africa",
+      "Egypt"
+    ],
+    "answer": "Uganda, Kenya, Tanzania",
+    "explanation": "These neighbors share a zone.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00119-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly asks: It connects our continent to the Middle East. What is unique about the Sinai Peninsula's location?",
+    "options": [
+      "It is the coldest part",
+      "It is the land bridge between Africa and Asia",
+      "It is the largest island",
+      "It is in the Southern hemisphere"
+    ],
+    "answer": "It is the land bridge between Africa and Asia",
+    "explanation": "It is in Egypt.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00119-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: You can walk from Africa into Asia right through here  What is unique about the Sinai Peninsula's location?",
+    "options": [
+      "It is the coldest part",
+      "It is the land bridge between Africa and Asia",
+      "It is the largest island",
+      "It is in the Southern hemisphere"
+    ],
+    "answer": "It is the land bridge between Africa and Asia",
+    "explanation": "It is in Egypt.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00119-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya wonders: It's the physical connection between our continent and the East. What is unique about the Sinai Peninsula's location?",
+    "options": [
+      "It is the coldest part",
+      "It is the land bridge between Africa and Asia",
+      "It is the largest island",
+      "It is in the Southern hemisphere"
+    ],
+    "answer": "It is the land bridge between Africa and Asia",
+    "explanation": "It is in Egypt.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00120-V1",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Manya asks: Rotation only changes your East-West position. Why can't we use Latitudes to calculate time?",
+    "options": [
+      "They are too short",
+      "They run East-West",
+      "They don't meet at poles",
+      "They are not imaginary"
+    ],
+    "answer": "They run East-West",
+    "explanation": "Rotation is about East-West position.",
+    "variant": "V1",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00120-V2",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Kato wonders: Latitudes stay the same all day as the Earth spins. Why can't we use Latitudes to calculate time?",
+    "options": [
+      "They are too short",
+      "They run East-West",
+      "They don't meet at poles",
+      "They are not imaginary"
+    ],
+    "answer": "They run East-West",
+    "explanation": "Rotation is about East-West position.",
+    "variant": "V2",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  },
+  {
+    "id": "SST-P7-T1-00120-V3",
+    "topic": "Locating Africa",
+    "subtopic": "latitudes_longitudes",
+    "question": "Polly ponders: You need vertical lines for time calculation. Why can't we use Latitudes to calculate time?",
+    "options": [
+      "They are too short",
+      "They run East-West",
+      "They don't meet at poles",
+      "They are not imaginary"
+    ],
+    "answer": "They run East-West",
+    "explanation": "Rotation is about East-West position.",
+    "variant": "V3",
+    "difficulty": "H",
+    "isPLE": true,
+    "type": "MCQ"
+  }
+]

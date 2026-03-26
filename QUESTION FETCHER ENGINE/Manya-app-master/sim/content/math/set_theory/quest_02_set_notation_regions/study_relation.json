@@ -1,0 +1,41 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Set Relationships",
+  "variantTitle": "Comparing Sets",
+  "slides": [
+    {
+      "title": "Comparing Sets",
+      "text": "We can compare Sets to see how they relate. Are they the same? Do they share members?",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["X", "Y"]
+    },
+    {
+      "title": "1. Equal Sets (=)",
+      "text": "Sets are <b>Equal</b> if they have exactly the <b>same members</b>.<br><br>A = {1, 2, 3}<br>B = {3, 1, 2}<br><br>Even if the order is different, they are the same set!",
+      "visualType": "EQUAL_SETS",
+      "labels": ["A", "B"],
+      "items": "1, 2, 3"
+    },
+    {
+      "title": "2. Equivalent Sets (↔)",
+      "text": "Sets are <b>Equivalent</b> if they have the <b>same number</b> of members (same cardinality).<br><br>n(A) = 3 and n(B) = 3.<br>They don't need to have the same items.",
+      "visualType": "MAPPING_DIAGRAM",
+      "itemsA": [1, 2, 3],
+      "itemsB": ["a", "b", "c"]
+    },
+    {
+      "title": "3. Disjoint Sets",
+      "text": "<b>Disjoint Sets</b> have <b>nothing</b> in common. Their intersection is empty (Ø).<br><br>Example: Cats and Dogs. No animal is both!",
+      "visualType": "DISJOINT_SETS",
+      "labels": ["Cats", "Dogs"]
+    },
+    {
+      "title": "Review",
+      "text": "<ul><li><b>Equal:</b> Same members inside.</li><li><b>Equivalent:</b> Same amount (count).</li><li><b>Disjoint:</b> No overlap.</li></ul>",
+      "visualType": "MAPPING_DIAGRAM",
+      "itemsA": ["Dog", "Cat"],
+      "itemsB": ["Tree", "Flower"]
+    }
+  ]
+}

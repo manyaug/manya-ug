@@ -1,0 +1,56 @@
+{
+  "engineType": "READER_STUDY",
+  "topic": "The Muscular System",
+  "variantTitle": "Quest 10 Master Recap",
+  "themeColor": "#f43f5e",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Muscle Basics",
+      "points": [
+        "<b>Definition:</b> Muscles are elastic bundles of flesh or fibers that produce movement.",
+        "<b>Attachment:</b> They connect to bones using tough fibrous tissues called <b>Tendons</b>.",
+        "<b>Function:</b> Muscles produce movement by <b>contracting</b> (shortening) and <b>relaxing</b>.",
+        "<b>The Pull Rule:</b> Muscles can <u>ONLY PULL</u> bones; they can never push."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "The Three Types of Muscles",
+      "itemA": "Voluntary (Skeletal)",
+      "itemB": "Involuntary (Smooth)",
+      "rows": [
+        { "feature": "Control", "valA": "Controlled by our <b>will</b>", "valB": "Work <b>automatically</b>" },
+        { "feature": "Fatigue", "valA": "Get <b>tired quickly</b>", "valB": "Work continuously without tiring" },
+        { "feature": "Location", "valA": "Attached to the <b>skeleton</b>", "valB": "Walls of <b>internal organs</b>" },
+        { "feature": "Examples", "valA": "Biceps, Triceps, Calf", "valB": "Stomach, Intestines, Bladder" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Cardiac Muscle (The Specialist)",
+      "points": [
+        "Found <b>ONLY</b> in the walls of the <b>heart</b>.",
+        "It combines the strength of skeletal muscle with the automatic nature of smooth muscle.",
+        "It contracts <b>rhythmically</b> throughout life and <u>never gets tired</u>.",
+        "It only stops working when the person is dead."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "Skeletal muscles are often called <b>Striped</b> or <b>Striated</b> muscles because of their appearance under a microscope. Smooth muscles are found in the <b>alimentary canal</b> to push food via <b>peristalsis</b>."
+    }
+  ],
+  "cards": [
+    {
+      "term": "Cardiac",
+      "fact": "The unique muscle found only in the heart.",
+      "mnemonic": "Think: <b>'Cardio'</b> exercises help your heart!"
+    },
+    {
+      "term": "Involuntary",
+      "fact": "Muscles that move without you thinking about it.",
+      "mnemonic": "Your <b>Internal</b> organs are <b>Involuntary</b>!"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Pivot Joint: The Neck",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/pivot_joint_neck.glb",
+  "intro": "A Pivot Joint allows one bone to rotate or turn around another.",
+  "notes": [
+    "<b>Atlas (C1):</b> The first vertebra, holds up the head.",
+    "<b>Axis (C2):</b> The second vertebra, has a peg to turn on.",
+    "Allows the head to shake 'No'."
+  ],
+  "hotspots": [
+    { 
+      "id": "1", 
+      "label": "Atlas (C1)", 
+      "region": "axial",
+      "pos": "-34.806 138.805 -87.330", 
+      "norm": "-0.335 0.782 0.525", 
+      "info": "The ring-like bone.",
+      "description": "The <b>Atlas</b> is the first cervical vertebra. It is a ring of bone that supports the skull.<br><br>It has no body and no spinous process.",
+      "examTip": "It is named after the Greek Titan 'Atlas' who held up the world."
+    },
+    { 
+      "id": "2", 
+      "label": "Axis (C2)", 
+      "region": "axial",
+      "pos": "-33.460 135.737 -83.528", 
+      "norm": "-0.254 0.907 0.336", 
+      "info": "The pivot point.",
+      "description": "The <b>Axis</b> is the second vertebra. It has a vertical peg called the 'Dens' or 'Odontoid Process'.<br><br>The Atlas rotates around this peg.",
+      "examTip": "This mechanism allows you to turn your head side-to-side (shake 'No')."
+    },
+    { 
+      "id": "3", 
+      "label": "Rotation", 
+      "region": "axial",
+      "pos": "0.210 127.509 -83.678", 
+      "norm": "-0.946 -0.313 0.082", 
+      "info": "Twisting movement.",
+      "description": "In a pivot joint, a ring rotates around a peg (or a peg inside a ring).",
+      "examTip": "Another example is the joint between the Radius and Ulna near the elbow."
+    }
+  ]
+}

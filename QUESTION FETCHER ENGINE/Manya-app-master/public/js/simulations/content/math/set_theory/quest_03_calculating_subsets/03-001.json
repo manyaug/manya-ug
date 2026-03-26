@@ -1,0 +1,39 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Calculating Subsets",
+  "variantTitle": "Quest 3-001: Venn Subsets",
+  "sets": {
+    "A": { "label": "P", "color": "#9333ea" },
+    "B": { "label": "Q", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["d", "e", "f"],
+    "center": ["a", "b", "c"],
+    "right": ["g", "h"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "left_only",
+      "prompt": "How many <b>subsets</b> are in set <span style='color:#9333ea'>(P - Q)</span>?",
+      "hint": "Count items in P only (3). Calculate 2³."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "right_total",
+      "prompt": "Find the number of subsets in set <span style='color:#db2777'>Q</span>.",
+      "hint": "Count ALL items in circle Q (Intersection + Right). That's 5 items. Calculate 2⁵."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "right_only",
+      "prompt": "How many subsets from members in <b>Q but not P</b>?",
+      "hint": "Count items in Q only (2). Calculate 2²."
+    }
+  ]
+}

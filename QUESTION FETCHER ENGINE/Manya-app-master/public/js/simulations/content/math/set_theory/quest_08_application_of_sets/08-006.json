@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Ratio Word Problems",
+  "variantTitle": "Quest 8-006: Farm Ratios",
+  "sets": { "A": { "label": "G (2x)", "color": "#10b981" }, "B": { "label": "C (x)", "color": "#f59e0b" } },
+  "zones": { "left": ["2x-5"], "center": ["5"], "right": ["x-5"], "outside": ["5"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 40,
+      "expected_x": 15,
+      "prompt": "Total=40. G=2x, C=x. Both=5, Neither=5. Find <b>x</b>.",
+      "hint": "(2x-5) + 5 + (x-5) + 5 = 40 -> 3x = 45"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 15,
+      "prompt": "How many have <b>Cows</b>?",
+      "hint": "n(C) = x = 15."
+    }
+  ]
+}

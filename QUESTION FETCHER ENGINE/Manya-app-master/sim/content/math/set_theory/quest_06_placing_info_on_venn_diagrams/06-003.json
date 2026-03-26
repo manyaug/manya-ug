@@ -1,0 +1,22 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Integers",
+  "variantTitle": "Quest 6-009: Integers",
+  "sets": { "A": { "label": "x > -2", "color": "#9333ea" }, "B": { "label": "x < 2", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort integers: -3, -1, 0, 1, 3",
+      "items": [
+        { "val": "-3", "target": "right" }, 
+        { "val": "-1", "target": "center" },
+        { "val": "0", "target": "center" },
+        { "val": "1", "target": "center" },
+        { "val": "3", "target": "left" }   
+      ]
+    }
+  ]
+}

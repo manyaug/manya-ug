@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Reverse Calculation",
+  "variantTitle": "Quest 3-013: Big Sets",
+  "sets": { "A": { "label": "K", "color": "#db2777" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "REVERSE_SUBSET",
+      "targetRegion": "intersection",
+      "expected_val": 6,
+      "prompt": "Set K has <b>64 Subsets</b>. Find n(K).",
+      "hint": "2ⁿ = 64. 2×2×2×2×2×2. Count the 2s."
+    },
+    {
+      "retain_visuals": true,
+      "type": "REVERSE_SUBSET",
+      "targetRegion": "intersection",
+      "expected_val": 7,
+      "prompt": "If a set has <b>128 Subsets</b>, find n.",
+      "hint": "Double 64 is 128. So add 1 to previous n."
+    }
+  ]
+}

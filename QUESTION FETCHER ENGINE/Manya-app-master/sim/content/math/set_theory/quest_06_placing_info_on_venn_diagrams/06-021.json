@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Attribute Sorting",
+  "variantTitle": "Quest 6-022: Shape Sorter",
+  "sets": { "A": { "label": "Red", "color": "#ef4444" }, "B": { "label": "Circle", "color": "#3b82f6" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort the shapes.<br><b>A = Red Objects</b>, <b>B = Circles</b>",
+      "items": [
+        { "val": "🟥", "target": "left" },   
+        { "val": "🔴", "target": "center" },
+        { "val": "🔵", "target": "right" },  
+        { "val": "🟦", "target": "outside" } 
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "How many items are <b>Red Circles</b>?",
+      "hint": "Count the items in the middle."
+    }
+  ]
+}

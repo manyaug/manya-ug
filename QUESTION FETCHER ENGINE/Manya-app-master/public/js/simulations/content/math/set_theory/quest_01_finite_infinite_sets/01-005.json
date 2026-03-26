@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Social Sets",
+  "variantTitle": "Quest 1-006: My Class",
+  "questions": [
+    {
+      "scene": "class",
+      "expected": "finite",
+      "prompt": "Set of <b>Pupils in P7 Class</b>."
+    },
+    {
+      "scene": "default", 
+      "expected": "finite",
+      "prompt": "Set of <b>Districts in Uganda</b>."
+    },
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "Set of <b>Whole Numbers</b>."
+    }
+  ]
+}

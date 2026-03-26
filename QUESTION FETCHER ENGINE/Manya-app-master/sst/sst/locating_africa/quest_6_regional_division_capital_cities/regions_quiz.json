@@ -1,0 +1,145 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Political Regions",
+  "variantTitle": "Quiz: The Regional Puzzle",
+  "mode": "game",
+  "settings": {
+    "passScore": 70,
+    "showExplanationOnWrong": true
+  },
+  
+  "questions": [
+    {
+      "id": "q1_east_africa",
+      "title": "East Africa",
+      "question": "Which East African country is home to Mt. Kilimanjaro, the highest peak in Africa?",
+      "initialRotation": [-34, -2, 0],
+      "zoomFactor": 2.0,
+      "options": ["Uganda", "Kenya", "Tanzania", "Rwanda"],
+      "correctAnswer": "Tanzania",
+      "explanation": {
+        "text": "<b>Tanzania</b> contains Mt. Kilimanjaro near its northern border with Kenya. It is the highest mountain in Africa.",
+        "camera": { "rotation": [-37.3, 3.06, 0], "zoom": 4.0 },
+        "highlight": ["834"],
+        "highlightColor": "#4ade80",
+        "markers": [
+          { "label": "Mt. Kilimanjaro", "lat": -3.06, "lon": 37.3, "color": "#ffffff" },
+          { "label": "Tanzania", "lat": -6.0, "lon": 35.0, "color": "#16a34a" }
+        ]
+      }
+    },
+    {
+      "id": "q2_west_africa",
+      "title": "West Africa",
+      "question": "Nigeria is a key member of ECOWAS. What distinct fact makes it famous in Africa?",
+      "initialRotation": [-5, -10, 0],
+      "zoomFactor": 1.8,
+      "options": ["Largest land area", "Highest population", "Largest desert", "Highest mountain"],
+      "correctAnswer": "Highest population",
+      "explanation": {
+        "text": "<b>Nigeria</b> is the most populated country in Africa. It is located in West Africa near the Atlantic Ocean.",
+        "camera": { "rotation": [-7.5, -9.0, 0], "zoom": 3.5 },
+        "highlight": ["566"],
+        "highlightColor": "#facc15",
+        "markers": [
+          { "label": "Nigeria (Populated)", "lat": 9.0, "lon": 7.5, "color": "#b45309" }
+        ]
+      }
+    },
+    {
+      "id": "q3_horn_africa",
+      "title": "The Horn of Africa",
+      "question": "Which of these countries is part of the 'Horn of Africa'?",
+      "initialRotation": [-40, -5, 0],
+      "zoomFactor": 2.0,
+      "options": ["Ghana", "Somalia", "Angola", "Libya"],
+      "correctAnswer": "Somalia",
+      "explanation": {
+        "text": "The Horn is made up of <b>Somalia</b>, Ethiopia, Eritrea, and Djibouti. It resembles a rhino's horn jutting into the Indian Ocean.",
+        "camera": { "rotation": [-45.3, -2.0, 0], "zoom": 3.0 },
+        "highlight": ["horn_africa"],
+        "highlightColor": "#fb923c",
+        "markers": [
+          { "label": "Somalia", "lat": 5.0, "lon": 46.0, "color": "#c2410c" }
+        ]
+      }
+    },
+    {
+      "id": "q4_central_africa",
+      "title": "Central Africa",
+      "question": "Central Africa is dominated by which type of natural vegetation?",
+      "initialRotation": [-20, 0, 0],
+      "zoomFactor": 1.8,
+      "options": ["Desert", "Savanna Grassland", "Tropical Rainforest", "Mediterranean"],
+      "correctAnswer": "Tropical Rainforest",
+      "explanation": {
+        "text": "The <b>Congo Rainforest</b> covers most of Central Africa (DRC & Congo) due to the hot and wet Equatorial climate.",
+        "camera": { "rotation": [-20, 0, 0], "zoom": 2.5 },
+        "highlight": ["central_africa"],
+        "highlightColor": "#a78bfa",
+        "markers": [
+          { "label": "Congo Rainforest", "lat": -1.0, "lon": 20.0, "color": "#166534" }
+        ]
+      }
+    },
+    {
+      "id": "q5_north_africa",
+      "title": "North Africa",
+      "question": "Which famous river flows north through Egypt into the Mediterranean Sea?",
+      "initialRotation": [-30, -20, 0],
+      "zoomFactor": 1.6,
+      "options": ["River Niger", "River Congo", "River Nile", "River Zambezi"],
+      "correctAnswer": "River Nile",
+      "explanation": {
+        "text": "The <b>River Nile</b> is the longest river in the world. It forms a delta in Egypt before entering the Mediterranean Sea.",
+        "camera": { "rotation": [-31, -30, 0], "zoom": 3.5 },
+        "highlight": ["818"],
+        "highlightColor": "#fcd34d",
+        "markers": [
+          { "label": "Nile Delta", "lat": 30.5, "lon": 31.0, "color": "#15803d" },
+          { "label": "Cairo", "lat": 30.0, "lon": 31.2, "color": "#c2410c" }
+        ]
+      }
+    },
+    {
+      "id": "q6_southern_africa",
+      "title": "Southern Africa",
+      "question": "Southern Africa is economically famous for mining which minerals?",
+      "initialRotation": [-25, 25, 0],
+      "zoomFactor": 1.7,
+      "options": ["Oil and Gas", "Gold and Diamonds", "Coffee and Tea", "Fish and Timber"],
+      "correctAnswer": "Gold and Diamonds",
+      "explanation": {
+        "text": "South Africa and Botswana are world-famous for <b>Gold and Diamond</b> mining. The region is rich in minerals.",
+        "camera": { "rotation": [-24.0, 28.0, 0], "zoom": 3.0 },
+        "highlight": ["southern_africa"],
+        "highlightColor": "#60a5fa",
+        "markers": [
+          { "label": "Mineral Belt", "lat": -26.0, "lon": 28.0, "color": "#fbbf24" }
+        ]
+      }
+    },
+    {
+      "id": "q7_lines_grid",
+      "title": "Important Lines",
+      "question": "The Prime Meridian (0° Longitude) passes through which West African country?",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 2.0,
+      "options": ["Nigeria", "Ghana", "Senegal", "Cameroon"],
+      "correctAnswer": "Ghana",
+      "explanation": {
+        "text": "The Prime Meridian crosses <b>Ghana</b> (at Accra/Tema). It divides the world into East and West hemispheres.",
+        "camera": { "rotation": [0, -5.6, 0], "zoom": 4.0 },
+        "highlight": ["288"],
+        "highlightColor": "#facc15",
+        "lines": [
+           { "type": "lon", "value": 0, "color": "#ef4444", "dashed": true, "label": "Prime Meridian" }
+        ],
+        "markers": [
+          { "label": "Accra (Ghana)", "lat": 5.6, "lon": -0.1, "color": "#b45309" }
+        ]
+      }
+    }
+  ]
+}

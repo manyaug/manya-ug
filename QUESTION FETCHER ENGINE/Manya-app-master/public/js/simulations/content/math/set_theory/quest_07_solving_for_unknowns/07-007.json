@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Equal Regions Algebra",
+  "variantTitle": "Quest 7-006: Music Festival",
+  "sets": { "A": { "label": "S", "color": "#2563eb" }, "B": { "label": "D", "color": "#e11d48" } },
+  "zones": { "left": ["20"], "center": ["x"], "right": ["15"], "outside": ["x"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "Total = 55. Singers only = 20, Drummers only = 15. <br><b>Both</b> equal <b>Neither</b>. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "20" },
+        { "region": "right", "expected": "15" },
+        { "region": "outside", "expected": "x" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 55,
+      "expected_x": 10,
+      "prompt": "Find value of <b>x</b> (Both).",
+      "hint": "20 + x + 15 + x = 55. So 2x + 35 = 55."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "x_val": 10,
+      "prompt": "How many students are <b>Singers</b> in total?",
+      "hint": "Singers Only (20) + Both (10)."
+    }
+  ]
+}

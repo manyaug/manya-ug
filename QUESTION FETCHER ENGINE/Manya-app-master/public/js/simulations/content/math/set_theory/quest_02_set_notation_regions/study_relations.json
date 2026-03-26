@@ -1,0 +1,48 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Sets & Regions",
+  "variantTitle": "Understanding Sets",
+  "slides": [
+    {
+      "title": "What is a Set?",
+      "text": "A set is simply a collection of well-defined objects. In Uganda, we often use sets to group things like fruits, numbers, or even countries!",
+      "visual": {
+        "type": "VENN_2_SET",
+        "labels": ["Fruits", "Veg"],
+        "elements": { "left": "Mango", "right": "Kale", "center": "" },
+        "highlight": ["left", "right"]
+      }
+    },
+    {
+      "title": "Intersection (∩)",
+      "text": "The <strong>Intersection</strong> is the region where two sets overlap. It contains items that belong to BOTH groups.",
+      "visual": {
+        "type": "VENN_2_SET",
+        "labels": ["Set A", "Set B"],
+        "elements": { "left": "1, 2", "right": "5, 6", "center": "3, 4" },
+        "highlight": ["intersection"]
+      }
+    },
+    {
+      "title": "Union (∪)",
+      "text": "The <strong>Union</strong> combines everything! It includes all elements in Set A, Set B, and the intersection.",
+      "visual": {
+        "type": "VENN_2_SET",
+        "labels": ["Set A", "Set B"],
+        "elements": { "left": "1, 2", "right": "5, 6", "center": "3, 4" },
+        "highlight": ["union"]
+      }
+    },
+    {
+      "title": "Difference of Sets",
+      "text": "If we say <strong>'A only'</strong> or <strong>(A - B)</strong>, we want elements that are strictly inside A and NOT in B.",
+      "visual": {
+        "type": "VENN_2_SET",
+        "labels": ["A", "B"],
+        "elements": { "left": "✔", "right": "✘", "center": "✘" },
+        "highlight": ["left"]
+      }
+    }
+  ]
+}

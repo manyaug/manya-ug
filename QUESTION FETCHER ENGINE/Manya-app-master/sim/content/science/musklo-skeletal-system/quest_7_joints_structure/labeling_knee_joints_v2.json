@@ -1,0 +1,19 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Joint Connections & Rules",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_7_joints_structure/joint_structure.glb",
+  "hotspots": [
+    { "id": "5", "label": "Ligament (Bone to Bone)", "pos": "-0.044 -0.069 0.169" },
+    { "id": "3", "label": "Tendon (Muscle to Bone)", "pos": "0.100 0.228 -0.011" },
+    { "id": "4", "label": "Reduces Friction", "pos": "0.121 -0.024 0.077" },
+    { "id": "2", "label": "Kneecap Bone", "pos": "0.158 0.058 0.011" }
+  ],
+  "wordBank": [
+    "Ligament (Bone to Bone)", 
+    "Tendon (Muscle to Bone)", 
+    "Reduces Friction", 
+    "Kneecap Bone",
+    "Protects Spinal Cord"
+  ]
+}

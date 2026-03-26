@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Intersection",
+  "variantTitle": "Quest 2-014: Intersection",
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "items": [
+          { "val": "A", "radius": 70, "color": "rgba(147, 51, 234, 0.2)", "locked": true, "target": "overlap" },
+          { "val": "B", "radius": 70, "color": "rgba(219, 39, 119, 0.2)", "locked": true, "target": "overlap" }
+      ],
+      "prompt": "What relationship is shown?",
+      "options": [
+        "Intersecting Sets",
+        "Disjoint Sets",
+        "Equal Sets",
+        "Empty Set"
+      ],
+      "expected": "Intersecting Sets",
+      "hint": "They share a common region in the middle."
+    }
+  ]
+}

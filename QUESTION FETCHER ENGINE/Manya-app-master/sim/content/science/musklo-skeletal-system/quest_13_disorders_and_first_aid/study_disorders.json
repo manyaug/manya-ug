@@ -1,0 +1,27 @@
+{
+  "engineType": "GALLERY_STUDY",
+  "mode": "study",
+  "topic": "Skeletal Disorders & First Aid",
+  "slides": [
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_13_disorders_and_first_aid/Fracture.png",
+      "title": "1. Fractures (Broken Bones)",
+      "description": "<p>A fracture is a crack or break in a bone.</p><ul><li><b>Simple (Closed) Fracture:</b> Bone breaks but stays inside the skin.</li><li><b>Compound (Open) Fracture:</b> Bone breaks and tears through the skin.</li><li><b>Greenstick Fracture:</b> Bone bends and cracks. Common in <b>babies</b> because their bones are soft.</li><li><b>Comminuted Fracture:</b> Bone shatters into many pieces.</li></ul>"
+    },
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_13_disorders_and_first_aid/Sprain.png",
+      "title": "2. Sprains and Strains",
+      "description": "<div class='rule-box'><b>Sprain:</b> An injury to a <b>LIGAMENT</b> (torn or over-stretched). Occurs at joints.</div><div class='danger-box'><b>Strain:</b> An injury to a <b>MUSCLE</b> or Tendon (torn or over-stretched).</div><p><b>First Aid (R.I.C.E):</b><br><b>R</b>est, <b>I</b>ce, <b>C</b>ompression, <b>E</b>levation.</p>"
+    },
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_13_disorders_and_first_aid/Dislocation.png",
+      "title": "3. Dislocation",
+      "description": "<p><b>Definition:</b> When a bone is forced out of its normal position at a joint.</p><p><b>Signs:</b> Severe pain, swelling, and the joint looks deformed.</p><p><b>First Aid:</b> Do NOT try to force the bone back. Apply a cold compress and seek medical help immediately.</p>"
+    },
+    {
+      "image": "assets/science/musklo-skeletal-system/quest_13_disorders_and_first_aid/first_aid.png",
+      "title": "4. First Aid for Bones",
+      "description": "<p><b>Splints:</b> Hard objects (wood, plastic) tied alongside a broken limb to keep the bone straight and prevent movement.</p><p><b>Arm Sling:</b> A cloth tied around the neck to support a broken or injured arm.</p><p><b>Stretcher:</b> Used to carry a victim who cannot walk (e.g., leg or spine injury).</p>"
+    }
+  ]
+}

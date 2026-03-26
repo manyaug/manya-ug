@@ -1,499 +1,499 @@
 Type,Engine,Topic,Subtopic,Question_Text,Expected_Answer
-"Visual Question","SET_CLASSIFIER","Finite vs. Infinite Sets","Quest 1-001: Set Types (Part 2)","Set of Whole Numbers {0, 1, 2, ...}","infinite"
-"Visual Question","SET_CLASSIFIER","Finite vs. Infinite Sets","Quest 1-001: Set Types (Part 3)","Set of Cows in this Kraal.","finite"
-"Visual Question","SET_CLASSIFIER","Finite vs. Infinite Sets","Quest 1-001: Set Types (Part 4)","Set of Multiples of 7 {7, 14, 21, ...}","infinite"
-"Visual Question","SET_CLASSIFIER","Set Types","Quest 1-003: Abstract Sets (Part 2)","Set of Points on a Line.","infinite"
-"Visual Question","SET_CLASSIFIER","Set Types","Quest 1-003: Abstract Sets (Part 3)","Set of Primary Schools in Uganda.","finite"
-"Visual Question","SET_CLASSIFIER","Set Types","Quest 1-003: Abstract Sets (Part 4)","Set of Letters in 'MATHEMATICS'.","finite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-004: Nature Walk (Part 2)","Set of Fish in Lake Victoria.","finite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-004: Nature Walk (Part 3)","Set of Grains of Sand on a beach.","finite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-004: Nature Walk (Part 4)","Set of Stars in the Universe.","infinite"
-"Visual Question","SET_CLASSIFIER","Math Concepts","Quest 1-005: Number Sets (Part 2)","Set of Vowels in the alphabet.","finite"
-"Visual Question","SET_CLASSIFIER","Math Concepts","Quest 1-005: Number Sets (Part 3)","Set of Multiples of 5.","infinite"
-"Visual Question","SET_CLASSIFIER","Social Sets","Quest 1-006: My Class (Part 2)","Set of Districts in Uganda.","finite"
-"Visual Question","SET_CLASSIFIER","Social Sets","Quest 1-006: My Class (Part 3)","Set of Whole Numbers.","infinite"
-"Visual Question","SET_CLASSIFIER","Infinite Sets","Quest 1-007: Infinite Visuals (Part 2)","Scene: Matrix RainSet of All Even Numbers {2, 4, 6...}.","infinite"
-"Visual Question","SET_CLASSIFIER","Infinite Sets","Quest 1-007: Infinite Visuals (Part 3)","Scene: Matrix RainSet of Integers {..., -1, 0, 1, ...}.","infinite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-008: Nature Visuals (Part 2)","Scene: Swimming FishSet of Fish in a tank.","finite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-008: Nature Visuals (Part 3)","Scene: Grazing CowsSet of Cattle on a farm.","finite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-008: Nature Visuals (Part 4)","Scene: Sand GrainsSet of Sand Grains on a beach (Too many to count!).","infinite"
-"Visual Question","SET_CLASSIFIER","Nature Sets","Quest 1-008: Nature Visuals (Part 5)","Scene: Map PinsSet of Districts in Uganda.","finite"
-"Visual Question","SET_CLASSIFIER","Social Sets","Quest 1-009: Class Visuals (Part 2)","Scene: Bouncing LettersSet of Vowels {A, E, I, O, U}.","finite"
-"Read","MATH_STUDY","Types of Sets","Finite vs Infinite","What is a Set?: A Set is just a collection of distinct objects. Imagine a basket. Anything we put inside that basket is a 'member' of the set.",""
-"Read","MATH_STUDY","Types of Sets","Finite vs Infinite","1. Finite Sets: A Finite Set has a specific number of members. You can count them, and the counting comes to an end.Example: Vowels = {a, e, i, o, u}",""
-"Read","MATH_STUDY","Types of Sets","Finite vs Infinite","Cardinal Number: Because a Finite set ends, we can find its Cardinal Number, n(A).This is just the total count of members.",""
-"Read","MATH_STUDY","Types of Sets","Finite vs Infinite","2. Infinite Sets: An Infinite Set has no end. It goes on forever!Imagine counting numbers: 1, 2, 3, 4... You could never finish.",""
-"Read","MATH_STUDY","Types of Sets","Finite vs Infinite","The Ellipsis (...): Since we can't write all the numbers, we use three dots called an Ellipsis.{ 1, 2, 3, ... }This symbol means 'and so on forever'.",""
-"Read","MATH_STUDY","Types of Sets","Finite vs Infinite","Summary: Finite: Ends. Can be counted.Infinite: Never ends. Uses '...'",""
-"Visual Question","SET_THEORY","Set Notation & Regions","Quest 2: Reading Regions","List the elements of Y ∩ Z",""
-"Visual Question","SET_THEORY","Set Notation & Regions","Quest 2: Reading Regions","Find n(Y ∩ Z)",""
-"Visual Question","SET_THEORY","Set Notation & Regions","Quest 2: Reading Regions","Find n(Y only)",""
-"Visual Question","SET_THEORY","Set Notation & Regions","Quest 2: Reading Regions","Find n(Z - Y)",""
-"Visual Question","SET_THEORY","Set Intersections","Quest 2-003: Overlap Sets","Show that Some Singers (S) are Dancers (D).Create an Intersection.",""
-"Visual Question","SET_THEORY","Set Relationships","Quest 2-003: Visual Relations","Show that All Mangoes (M) are Fruits (F).",""
-"Visual Question","SET_THEORY","Set Relationships","Quest 2-003: Visual Relations","Show that No Cars (C) are Plants (P).",""
-"Visual Question","SET_THEORY","Set Relationships","Quest 2-003: Visual Relations","Show that Some Singers (S) are Dancers (D).",""
-"Visual Question","SUBSET_GAME","Finding All Subsets","Quest 2-004: The Lunchbox","Level 1: Find all 2 subsets of {Apple}. (2¹)",""
-"Visual Question","SUBSET_GAME","Finding All Subsets","Quest 2-004: The Lunchbox","Level 2: Find all 4 subsets of {Apple, Banana}. (2²)",""
-"Visual Question","SUBSET_GAME","Finding All Subsets","Quest 2-004: The Lunchbox","Level 3: Find all 8 subsets of {Apple, Banana, Orange}. (2³)",""
-"Visual Question","SUBSET_GAME","Finding Subsets","Quest 3-002: The Toy Van","Level 1: Load the Van! Find all 2 subsets of {Car}.",""
-"Visual Question","SUBSET_GAME","Finding Subsets","Quest 3-002: The Toy Van","Level 2: Find all 4 subsets of {Ball, Bear}.",""
-"Visual Question","SUBSET_GAME","Finding Subsets","Quest 3-002: The Toy Van","Level 3: Master Mover! Find all 8 subsets.",""
-"Visual Question","SUBSET_GAME","Finding Subsets","Quest 3-003: Flag Painter","Find all 8 subsets by painting the stripes.",""
-"Visual Question","SUBSET_GAME","Finding Subsets","Quest 3-004: The Card Machine","Grandmaster Level: Find all 16 subsets of the Card Suits.",""
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 2-005: Disjoint Logic","Sort numbers < 7 into Evens and Odds.",""
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 2-005: Disjoint Logic","Find n(Evens ∩ Odds).",""
-"Visual Question","SET_THEORY","Equal vs Equivalent","Quest 2-004: Equal or Equivalent?","Sort: X={a,b,c}, Y={1,2,3}. Are they overlapping?",""
-"Visual Question","SET_THEORY","Equal vs Equivalent","Quest 2-004: Equal or Equivalent?","Are sets X and Y Equal?","no"
-"Visual Question","SET_THEORY","Equal vs Equivalent","Quest 2-004: Equal or Equivalent?","Are sets X and Y Equivalent?","yes"
-"Visual Question","SET_THEORY","Union of Sets","Quest 2-007: Union Quiz","List the members of P ∪ Q (Union).","{1, 2, 3, 4, 5}"
-"Visual Question","SET_THEORY","Difference of Sets","Quest 2-008: Set Difference","List the members of M - N (M only).","{a, b}"
-"Visual Question","SET_THEORY","Complement","Quest 2-009: Complement Quiz","List the members of B' (Complement of B).","{x, w}"
-"Visual Question","SET_THEORY","Empty Set","Quest 2-010: Disjoint Quiz","What is E ∩ O?","∅ (Empty Set)"
-"Visual Question","SET_THEORY","Set Relationships","Quest 2-012: Subset Reverse","What is the relationship shown?","B is a subset of A"
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 2-013: Disjoint","Describe the relationship.","Disjoint Sets"
-"Visual Question","SET_THEORY","Intersection","Quest 2-014: Intersection","What relationship is shown?","Intersecting Sets"
-"Visual Question","SET_THEORY","Equal Sets","Quest 2-015: Equality","If Set A and Set B look like this, they are...","Equal Sets"
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 2-016: Living vs Non-Living","Sort the objects. Do they overlap?",""
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 2-016: Living vs Non-Living","Is the Intersection (Middle) an Empty Set?","yes"
-"Visual Question","SET_THEORY","Set Notation","Quest 2-017: Notation Quiz","Which symbol represents the shaded region?","A'"
-"Visual Question","SET_THEORY","Subset Notation","Quest 2-018: Symbols","Which statement matches the diagram?","P ⊂ Q"
-"Read","MATH_STUDY","Set Operations","Universal Set & Operations","1. The Universal Set (ξ): Imagine a big box that contains everything we are talking about. This is the Universal Set, marked with the symbol ξ.Here, ξ = {1, 2, 3, 4, 5, 6, 7, 8}",""
-"Read","MATH_STUDY","Set Operations","Universal Set & Operations","2. Intersection (∩): The Intersection is where the two circles overlap. These are numbers that are in Set A AND Set B.A ∩ B = { 3, 4 }",""
-"Read","MATH_STUDY","Set Operations","Universal Set & Operations","3. Union (∪): The Union brings everyone together! It includes Set A, Set B, and the middle.It is the marriage of the two sets.A ∪ B = { 1, 2, 3, 4, 5, 6 }",""
-"Read","MATH_STUDY","Set Operations","Universal Set & Operations","4. Difference (A - B): Set Difference means 'A Only'. We start with Set A, but we remove anything that touches B.A - B = { 1, 2 }(Notice 3 and 4 are gone because they are in B)",""
-"Read","MATH_STUDY","Set Operations","Universal Set & Operations","5. Complement of A (A'): Complement means 'Everything outside of A'. Cover circle A with your hand. What is left in the Universal box?A' = { 5, 6, 7, 8 }",""
-"Read","MATH_STUDY","Set Relationships","Comparing Sets","Comparing Sets: We can compare Sets to see how they relate. Are they the same? Do they share members?",""
-"Read","MATH_STUDY","Set Relationships","Comparing Sets","1. Equal Sets (=): Sets are Equal if they have exactly the same members.A = {1, 2, 3}B = {3, 1, 2}Even if the order is different, they are the same set!",""
-"Read","MATH_STUDY","Set Relationships","Comparing Sets","2. Equivalent Sets (↔): Sets are Equivalent if they have the same number of members (same cardinality).n(A) = 3 and n(B) = 3.They don't need to have the same items.",""
-"Read","MATH_STUDY","Set Relationships","Comparing Sets","3. Disjoint Sets: Disjoint Sets have nothing in common. Their intersection is empty (Ø).Example: Cats and Dogs. No animal is both!",""
-"Read","MATH_STUDY","Set Relationships","Comparing Sets","Review: Equal: Same members inside.Equivalent: Same amount (count).Disjoint: No overlap.",""
-"Read","MATH_STUDY","Sets & Regions","Understanding Sets","What is a Set?: A set is simply a collection of well-defined objects. In Uganda, we often use sets to group things like fruits, numbers, or even countries!",""
-"Read","MATH_STUDY","Sets & Regions","Understanding Sets","Intersection (∩): The Intersection is the region where two sets overlap. It contains items that belong to BOTH groups.",""
-"Read","MATH_STUDY","Sets & Regions","Understanding Sets","Union (∪): The Union combines everything! It includes all elements in Set A, Set B, and the intersection.",""
-"Read","MATH_STUDY","Sets & Regions","Understanding Sets","Difference of Sets: If we say 'A only' or (A - B), we want elements that are strictly inside A and NOT in B.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-001: Venn Subsets","How many subsets are in set (P - Q)?",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-001: Venn Subsets","Find the number of subsets in set Q.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-001: Venn Subsets","How many subsets from members in Q but not P?",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-005: Factors of 4","Step 1: Count the Factors of 4.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-005: Factors of 4","Step 2: Find the number of Subsets.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-006: Word Sets","Step 1: Find n(M) for the word 'MATH'.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-006: Word Sets","Step 2: Calculate total Subsets.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-007: Prime Numbers","Step 1: How many Primes are less than 10?",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-007: Prime Numbers","Step 2: Calculate Subsets.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-008: High Powers","Step 1: Find n(F) (Fingers on a hand).",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-008: High Powers","Step 2: Calculate total Subsets.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-009: Weekend","Step 1: Find n(Weekend Days).",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-009: Weekend","Step 2: Calculate total Subsets.",""
-"Visual Question","SUBSET_GAME","Finding Subsets","Quest 3-010: School Bag","Pack the Bag! Find all 8 subsets of {Book, Pen, Apple}.",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-011: Factors of 6","Step 1: Find n(F6). (Count the factors).",""
-"Visual Question","SET_THEORY","Calculating Subsets","Quest 3-011: Factors of 6","Step 2: Calculate total Subsets.",""
-"Visual Question","SET_THEORY","Powers of 2","Quest 3-012: Vowels Set","Find n(V).",""
-"Visual Question","SET_THEORY","Powers of 2","Quest 3-012: Vowels Set","Calculate total subsets (2ⁿ).",""
-"Visual Question","SET_THEORY","Reverse Calculation","Quest 3-013: Big Sets","Set K has 64 Subsets. Find n(K).",""
-"Visual Question","SET_THEORY","Reverse Calculation","Quest 3-013: Big Sets","If a set has 128 Subsets, find n.",""
-"Read","MATH_STUDY","Subsets","Subsets & The Empty Set","What is a Subset?: Set A is a Subset of Set B if ALL members of A are also inside B.Think of it like a smaller box sitting inside a bigger box.",""
-"Read","MATH_STUDY","Subsets","Subsets & The Empty Set","The Notation (⊂): We use the symbol ⊂ to mean 'is a subset of'.A ⊂ BThis is read as: Set A is a subset of Set B.",""
-"Read","MATH_STUDY","Subsets","Subsets & The Empty Set","The Empty Set (Ø): Before we count subsets, we must meet the Empty Set.This is a set with NO members. It is empty! We write it as {} or Ø.",""
-"Read","MATH_STUDY","Subsets","Subsets & The Empty Set","The Golden Rule: Important Rule: The Empty Set is a subset of EVERY set.Why? Because 'nothing' can fit inside anything!Ø ⊂ A",""
-"Read","MATH_STUDY","Subsets","Subsets & The Empty Set","Calculating Subsets: To find the total number of subsets, use the formula:Subsets = 2ⁿWhere n is the number of elements in the set.",""
-"Read","MATH_STUDY","Subsets","Subsets & The Empty Set","Let's Verify!: If Set V = { a, b }, then n = 2.2² = 4 Subsets.Let's list them:1. {a, b} (The set itself)2. {a}3. {b}4. { } (The Empty Set!)",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4: Proper Subsets","How many Proper Subsets are in X ∩ Y?",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4: Proper Subsets","Find number of proper subsets in (X only).",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4: Proper Subsets","A set has 31 Proper Subsets. Find the number of elements (n).",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-002: Vowels","Step 1: Find n(V). (Count the vowels)",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-002: Vowels","Step 2: Calculate total Subsets (2ⁿ).",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-002: Vowels","Step 3: Calculate Proper Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-003: Colors","Step 1: Find n(C).",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-003: Colors","Step 2: Total Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-003: Colors","Step 3: Proper Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-004: Even Numbers","Step 1: Find n(E).",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-004: Even Numbers","Step 2: Total Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-004: Even Numbers","Step 3: Proper Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-005: Single Set","Step 1: Find n(S).",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-005: Single Set","Step 2: Total Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-005: Single Set","Step 3: Proper Subsets.",""
-"Visual Question","PIZZA_GAME","Proper Subsets","Quest 4-006: The Giant Pizza","Master Chef Level: Create a menu with exactly 31 Proper Subsets.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-007: Prime Proper","Step 1: Find n(P) for Primes less than 10.",""
-"Visual Question","SET_THEORY","Proper Subsets","Quest 4-007: Prime Proper","Step 2: Calculate Proper Subsets.",""
-"Visual Question","SET_THEORY","Word Problems","Quest 4-008: Word Proper","Step 1: Find n(W) for the word 'EAT'.",""
-"Visual Question","SET_THEORY","Word Problems","Quest 4-008: Word Proper","Step 2: Calculate Proper Subsets.",""
-"Visual Question","SET_THEORY","Concepts","Quest 4-010: Concept Check","Total Subsets of {1, 2}?",""
-"Visual Question","SET_THEORY","Concepts","Quest 4-010: Concept Check","Total Proper Subsets?",""
-"Visual Question","SET_THEORY","Concepts","Quest 4-010: Concept Check","Which subset is removed to make them 'Proper'?","The Set Itself"
-"Read","MATH_STUDY","Proper Subsets","Proper vs Improper Subsets","What is a Proper Subset?: We learned that a subset is a part of a larger set.A Proper Subset is a subset that is strictly smaller than the original set. It cannot be equal to the original set.",""
-"Read","MATH_STUDY","Proper Subsets","Proper vs Improper Subsets","The 'Improper' Subset: Did you know? Every set is a subset of itself!If Set A = {1, 2}, then {1, 2} is a subset of A. But it is NOT a Proper Subset. We call it an Improper Subset.",""
-"Read","MATH_STUDY","Proper Subsets","Proper vs Improper Subsets","The Logic: For a subset to be Proper, there must be at least one member left over in the main set.Look at the diagram: Set B has members '3' and '4' that are NOT in A.",""
-"Read","MATH_STUDY","Proper Subsets","Proper vs Improper Subsets","The Formula: To calculate the number of Proper Subsets, we take the total subsets and subtract 1 (the improper one).Proper Subsets = 2ⁿ - 1",""
-"Read","MATH_STUDY","Proper Subsets","Proper vs Improper Subsets","Example Calculation: Let's try Set P = { a, b }.n = 2.Total Subsets = 2² = 4.Proper Subsets = 4 - 1 = 3.",""
-"Read","MATH_STUDY","Proper Subsets","Proper vs Improper Subsets","Listing Them: For Set {a, b}:Proper: {a}, {b}, { }Improper: {a, b} (We throw this one away!)",""
-"Visual Question","BINARY_GENERATOR","Working Backwards","Quest 5: Power Plant","Target Output: 16 Subsets. How many cells (n) are needed?",""
-"Visual Question","PIZZA_GAME","Proper Subsets","Quest 5: The Pizza Chef","Intern Level: Make a menu with 3 Proper Subsets.",""
-"Visual Question","PIZZA_GAME","Proper Subsets","Quest 5: The Pizza Chef","Sous Chef: Make a menu with 7 Proper Subsets.",""
-"Visual Question","PIZZA_GAME","Proper Subsets","Quest 5: The Pizza Chef","Head Chef: Make a menu with 15 Proper Subsets.",""
-"Visual Question","PIZZA_GAME","Proper Subsets","Quest 5: The Pizza Chef","Master Chef: The ultimate order! 31 Proper Subsets.",""
-"Visual Question","SET_THEORY","Working Backwards","Quest 5-009: Reverse 63","Set K has 63 Proper Subsets. Find n(K).",""
-"Visual Question","SET_THEORY","Indices","Quest 5-007: Indices Quiz","Solve for n: 2ⁿ = 32","5"
-"Visual Question","SET_THEORY","Indices","Quest 5-007: Indices Quiz","Solve for x: 2ˣ - 1 = 15","4"
-"Visual Question","SUBSET_GAME","Reverse Construction","Quest 5-006: Build to Target","Pack enough items to create exactly 8 Subsets.",""
-"Visual Question","SET_THEORY","Comparison","Quest 5-005: Compare Sets","Set A has 16 Subsets. Find n(A).",""
-"Visual Question","SET_THEORY","Comparison","Quest 5-005: Compare Sets","Set B has 3 Proper Subsets. Find n(B).",""
-"Visual Question","SET_THEORY","Comparison","Quest 5-005: Compare Sets","Calculate n(A) + n(B).",""
-"Visual Question","SET_THEORY","Concept Logic","Quest 5-004: Fact Check","Can a set have exactly 100 Subsets?","no"
-"Visual Question","SET_THEORY","Concept Logic","Quest 5-004: Fact Check","Can a set have 7 Proper Subsets?","yes"
-"Visual Question","SET_THEORY","Large Numbers","Quest 5-003: Library Logic","A shelf has 128 arrangements (Subsets). How many books (n)?",""
-"Visual Question","SET_THEORY","Large Numbers","Quest 5-003: Library Logic","Another shelf has 63 Proper Subsets. Find n.",""
-"Visual Question","BINARY_GENERATOR","Proper Subsets","Quest 5-002: Power Plant II","Target: 31 Proper Subsets.Hint: Generator calculates Total (2ⁿ). Set it to 32 to get 31 Proper.",""
-"Read","MATH_STUDY","Finding Number of Elements","Working Backwards","The Mystery: Usually, we count elements to find the number of subsets.But what if we know the Number of Subsets (e.g., 8 subsets) and need to find how many members are in the set?",""
-"Read","MATH_STUDY","Finding Number of Elements","Working Backwards","The Pattern (Powers of 2): Remember the powers of 2. This is our key:2¹ = 2 subsets (1 member)2² = 4 subsets (2 members)2³ = 8 subsets (3 members)2⁴ = 16 subsets (4 members)2⁵ = 32 subsets (5 members)",""
-"Read","MATH_STUDY","Finding Number of Elements","Working Backwards","Case 1: From Total Subsets: Question: A set has 8 subsets. Find n(A).Step 1: Write the formula.2ⁿ = 8Step 2: Factorize 8 by 2.8 = 2 × 2 × 2 (That is 2³)Step 3: Compare powers.2ⁿ = 2³n(A) = 3.",""
-"Read","MATH_STUDY","Finding Number of Elements","Working Backwards","Case 2: From Proper Subsets: Question: Set M has 15 Proper Subsets. Find n(M).Step 1: Proper subsets are missing 1 (the improper one). So we must ADD 1 back.Total Subsets = 15 + 1 = 16.",""
-"Read","MATH_STUDY","Finding Number of Elements","Working Backwards","Solving Case 2: Now we solve for 16 Subsets.2ⁿ = 162 × 2 × 2 × 2 = 16Count the twos: There are 4.So, 2ⁿ = 2⁴.n(M) = 4.",""
-"Read","MATH_STUDY","Finding Number of Elements","Working Backwards","A Harder Example: Question: Set K has 63 Proper Subsets.1. Add 1: 63 + 1 = 64 Total Subsets.2. Factorize 64:2 × 2 × 2 × 2 × 2 × 2 = 64(Count them... there are 6!)Answer: n(K) = 6.",""
-"Visual Question","SET_THEORY","Placing Information","Quest 6-001: Map the Venn","Drag numbers to the correct region.M (Multiples of 3) & O (Odds)",""
-"Visual Question","SET_THEORY","Placing Information","Quest 6-001: Map the Venn","List elements of M ∩ O.",""
-"Visual Question","SET_THEORY","Placing Information","Quest 6-001: Map the Venn","List elements of M only.",""
-"Visual Question","SET_THEORY","Logic","Quest 6-010: Shape Logic","Sort the shapes.",""
-"Visual Question","SET_THEORY","Integers","Quest 6-009: Integers","Sort integers: -3, -1, 0, 1, 3",""
-"Visual Question","SET_THEORY","Classification","Quest 6-008: Food Sort","Sort: Apple (Red Fruit), Banana (Yellow Fruit), Tomato (Red Veg).",""
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 6-007: Even vs Odd","Sort the numbers.",""
-"Visual Question","SET_THEORY","Disjoint Sets","Quest 6-007: Even vs Odd","Find n(Even ∩ Odd).",""
-"Visual Question","SET_THEORY","Subsets","Quest 6-006: Factors Subset","A={1,2,4}, B={1,2,4,8}. Sort them.",""
-"Visual Question","SET_THEORY","Subsets","Quest 6-006: Factors Subset","Is Set A a Proper Subset of Set B?","yes"
-"Visual Question","SET_THEORY","Universal Set","Quest 6-005: Universal Box","Universal Set = {1, 2, 3, 4, 5}. Sort them.",""
-"Visual Question","SET_THEORY","Universal Set","Quest 6-005: Universal Box","Find n(A ∪ B)' (Complement).",""
-"Visual Question","SET_THEORY","Multiples","Quest 6-004: LCM Finder","Sort Multiples of 3 and 4 (less than 15).",""
-"Visual Question","SET_THEORY","Multiples","Quest 6-004: LCM Finder","Identify the LCM (Lowest Common Multiple).",""
-"Visual Question","SET_THEORY","Intersections","Quest 6-003: Word Sets","Set A = {Letters in PEAR}. Set B = {Letters in REAP}.Sort the letters.",""
-"Visual Question","SET_THEORY","Intersections","Quest 6-003: Word Sets","Are the sets Equivalent?","yes"
-"Visual Question","SET_THEORY","Number Properties","Quest 6-002: Primes & Odds","Sort numbers P (Primes) & O (Odds)",""
-"Visual Question","SET_THEORY","Number Properties","Quest 6-002: Primes & Odds","How many numbers are Even Primes?",""
-"Visual Question","SET_THEORY","Factors","Quest 6-001: Factors of 12 & 18","Drag factors to the correct region.F12 & F18",""
-"Visual Question","SET_THEORY","Factors","Quest 6-001: Factors of 12 & 18","List the GCF (Highest Common Factor).",""
-"Visual Question","SET_THEORY","Word Problems","Quest 6-012: Word Sets","Sort the unique letters of MANGO and APPLE.",""
-"Visual Question","SET_THEORY","Word Problems","Quest 6-012: Word Sets","Probability of picking a letter shared by BOTH words?",""
-"Visual Question","SET_THEORY","Inequalities","Quest 6-011: Logic Ranges","A={x : 2 A ∩ B.",""
-"Visual Question","SET_THEORY","Visual Intersection","Quest 6-015: Visual Intersect","Place 'Both' in the intersection.",""
-"Visual Question","SET_THEORY","Region Notation","Quest 6-016: Region Decoder","Which notation describes the shaded region?","(X ∪ Y)'"
-"Visual Question","SET_THEORY","Region Shading","Quest 6-017: Identify Overlap","Which notation represents the shaded region?","A ∩ B"
-"Visual Question","SET_THEORY","Set Difference","Quest 6-018: Identify Difference","Identify the shaded region.","P - Q"
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 6-019: Only One","What does the shaded region represent?","Only X or Only Y"
-"Visual Question","SET_THEORY","Factors","Quest 6-020: Factors 12 & 18","Sort the factors.F12 = {1,2,3,4,6,12}F18 = {1,2,3,6,9,18}",""
-"Visual Question","SET_THEORY","Factors","Quest 6-020: Factors 12 & 18","List the Common Factors.",""
-"Visual Question","SET_THEORY","Attribute Sorting","Quest 6-022: Shape Sorter","Sort the shapes.A = Red Objects, B = Circles",""
-"Visual Question","SET_THEORY","Attribute Sorting","Quest 6-022: Shape Sorter","How many items are Red Circles?",""
-"Visual Question","SET_THEORY","Shading Regions","Quest 6-023: Region Painter","Tap regions to shade X ' (Complement of X).",""
-"Visual Question","SET_THEORY","Shading Regions","Quest 6-023: Region Painter","Tap to shade X ∩ Y.",""
-"Visual Question","SET_THEORY","Shading Regions","Quest 6-023: Region Painter","Tap to shade (X ∪ Y) - (X ∩ Y).",""
-"Visual Question","SET_THEORY","Shading Sets","Quest 6-024: Shade Union","Tap to shade P ∪ Q (Union).",""
-"Visual Question","SET_THEORY","Shading Complements","Quest 6-026: Shade Neither","Tap to shade (M ∪ N)'.",""
-"Visual Question","SET_THEORY","Shading Differences","Quest 6-027: Only One","Tap regions representing elements in Exactly One Set.",""
-"Visual Question","VENN_SPOTLIGHT","Shading Regions","Quest 6b: The Spotlight","",""
-"Visual Question","VENN_SPOTLIGHT","Shading Regions","Quest 6b: The Spotlight","",""
-"Visual Question","VENN_SPOTLIGHT","Shading Regions","Quest 6b: The Spotlight","",""
-"Visual Question","VENN_SPOTLIGHT","Shading Regions","Quest 6b: The Spotlight","",""
-"Read","MATH_STUDY","Venn Diagrams","Placing Info Correctly","The Sorting Game: Filling a Venn Diagram is just like sorting objects into baskets.Let's sort shapes based on two rules:Set A: Must be RED.Set B: Must be a CIRCLE.",""
-"Read","MATH_STUDY","Venn Diagrams","Placing Info Correctly","Rule 1: The Middle First!: Pro Tip: Always fill the Intersection first!Ask: ""Is there anything that is BOTH Red AND a Circle?""Yes! The Red Circle (🔴) goes in the center.",""
-"Read","MATH_STUDY","Venn Diagrams","Placing Info Correctly","Rule 2: Fill the Sides: Now, place the rest:1. Red Square (🟥): It is Red, but NOT a circle. It goes to the Left (Red Only).2. Blue Circle (🔵): It is a Circle, but NOT red. It goes to the Right (Circle Only).",""
-"Read","MATH_STUDY","Venn Diagrams","Placing Info Correctly","Rule 3: The Outsiders: What about a Blue Square (🟦)?It is NOT red. It is NOT a circle.It gets kicked outside the rings, but stays inside the box (Universal Set).",""
-"Read","MATH_STUDY","Venn Diagrams","Placing Info Correctly","Applying to Numbers: Now let's try Math!Set A = Factors of 6: {1, 2, 3, 6}Set B = Factors of 9: {1, 3, 9}Step 1: Find the Middle (Common members).Both have 1 and 3.",""
-"Read","MATH_STUDY","Venn Diagrams","Placing Info Correctly","Calculating 'Only': Step 2: Fill the rest.Set A (Left): We used {1,3}. Remaining: {2, 6}.Set B (Right): We used {1,3}. Remaining: {9}.Notice: We don't write {1,3} again!",""
-"Read","MATH_STUDY","Venn Strategy","Solving & Placing Info","The 3-Step Strategy: To solve any Venn Diagram problem correctly, follow these three steps:1. List the members (if hidden).2. Fill the Intersection first.3. Subtract to find the 'Only' regions.",""
-"Read","MATH_STUDY","Venn Strategy","Solving & Placing Info","Step 1: Decoding the List: Sometimes sets are hidden in algebra!Set A = { x : 2 This means 'integers between 2 and 6'.List: { 3, 4, 5 }",""
-"Read","MATH_STUDY","Venn Strategy","Solving & Placing Info","Step 2: Finding the Intersection: Let's compare two sets:A = { 3, 4, 5 }B = { 4, 5, 6 }What is in BOTH? { 4, 5 }.We place these in the middle immediately.",""
-"Read","MATH_STUDY","Venn Strategy","Solving & Placing Info","Step 3: Calculating 'Only': Set A has {3, 4, 5}. But {4, 5} are already in the middle!So, A Only gets the remaining member: 3.Similarly, B Only gets 6.",""
-"Read","MATH_STUDY","Venn Strategy","Solving & Placing Info","Strategy: Working with Counts: Sometimes exam questions give you Totals instead of lists.""n(P) = 20. Intersection = 5. Find n(P Only).""Rule: Whole Circle - Middle = Only.20 - 5 = 15.",""
-"Read","MATH_STUDY","Venn Strategy","Solving & Placing Info","Strategy: The Universal Set: Question: ""Total pupils = 40. Union = 35. Find the Complement.""'Complement means the Outside region.Total - Union = Outside.40 - 35 = 5.",""
-"Read","MATH_STUDY","Venn Strategy","Placing Information","The Golden Rule: To fill a Venn Diagram correctly, there is one Golden Rule:Fill the Intersection FIRST!Let's see why, using Red shapes and Circles.",""
-"Read","MATH_STUDY","Venn Strategy","Placing Information","1. Visual Sorting: Set A: Red Objects.Set B: Circles.Where does a Red Circle go?It is BOTH, so it goes in the Middle (Intersection).",""
-"Read","MATH_STUDY","Venn Strategy","Placing Information","2. Decoding Lists: Now let's use numbers. Sometimes lists are hidden in algebra!A = { x : 2 This means 'numbers between 2 and 6'.List: { 3, 4, 5 }",""
-"Read","MATH_STUDY","Venn Strategy","Placing Information","3. Comparing Lists: Set A = { 3, 4, 5 }Set B = { 4, 5, 6 }What is in BOTH? { 4, 5 }.We place these in the middle immediately.",""
-"Read","MATH_STUDY","Venn Strategy","Placing Information","4. Subtract for 'Only': Set A has {3, 4, 5}. But {4, 5} are already in the middle!So, A Only gets the remaining member: 3.Similarly, B Only gets 6.",""
-"Read","MATH_STUDY","Venn Strategy","Placing Information","5. The Outsiders: What about numbers not in A or B?If Total = {3, 4, 5, 6, 7, 8}, then 7 and 8 go Outside.This is called the Complement (A ∪ B)'.",""
-"Visual Question","SET_THEORY","Solving for Unknowns","Quest 7: Finding X","Given n(R) = 25, find x.",""
-"Visual Question","SET_THEORY","Solving for Unknowns","Quest 7: Finding X","How many pupils eat Matooke?",""
-"Visual Question","SET_THEORY","Solving for Unknowns","Quest 7: Finding X","How many eat one type only?",""
-"Visual Question","SET_THEORY","Complex Equations","Quest 7-002: Advanced Algebra","Given n(B) = 50, find x.",""
-"Visual Question","SET_THEORY","Complex Equations","Quest 7-002: Advanced Algebra","How many grow Coffee?",""
-"Visual Question","SET_THEORY","Complex Equations","Quest 7-002: Advanced Algebra","Farmers growing Beans but not Coffee?",""
-"Visual Question","SET_THEORY","Solving from Regions","Quest 7-003: Region Algebra","If 20 pupils like Mangoes ONLY, find y.",""
-"Visual Question","SET_THEORY","Solving from Regions","Quest 7-003: Region Algebra","How many like Oranges ONLY?",""
-"Visual Question","SET_THEORY","Solving from Regions","Quest 7-003: Region Algebra","Find the Total Number of pupils.",""
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 7-004: Only One Type","If 36 pupils do only one activity, find k.",""
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 7-004: Only One Type","How many pupils do both activities?",""
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 7-004: Only One Type","Total pupils in Dancing?",""
-"Visual Question","SET_THEORY","Equal Sets","Quest 7-005: Equating Sets","If n(L) = n(E), find m.",""
-"Visual Question","SET_THEORY","Equal Sets","Quest 7-005: Equating Sets","How many speak Luganda only?",""
-"Visual Question","SET_THEORY","Equal Sets","Quest 7-005: Equating Sets","How many pupils in the class altogether?",""
-"Visual Question","SET_THEORY","Equal Sets Algebra","Quest 7-005: Equal Sets","If n(L) = n(E), find m.",""
-"Visual Question","SET_THEORY","Equal Sets Algebra","Quest 7-005: Equal Sets","How many speak Luganda only?",""
-"Visual Question","SET_THEORY","Equal Sets Algebra","Quest 7-005: Equal Sets","How many pupils in the class altogether?",""
-"Visual Question","SET_THEORY","Equal Regions Algebra","Quest 7-006: Music Festival","Total = 55. Singers only = 20, Drummers only = 15. Both equal Neither. Fill the diagram.",""
-"Visual Question","SET_THEORY","Equal Regions Algebra","Quest 7-006: Music Festival","Find value of x (Both).",""
-"Visual Question","SET_THEORY","Equal Regions Algebra","Quest 7-006: Music Festival","How many students are Singers in total?",""
-"Visual Question","SET_THEORY","Finding Totals","Quest 7-007: Market Day","Given n(P) = 29, find y.",""
-"Visual Question","SET_THEORY","Finding Totals","Quest 7-007: Market Day","Find the Total People in the market.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-008: Sports Ratios","Total = 90. n(F)=2x, n(R)=x. Both=10. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-008: Sports Ratios","Find Total Footballers.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-009: Book Sale","Phase 1: F-only is twice N-only (y). Both=10. Outside=10.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-009: Book Sale","Phase 2: Total books = 80. Find y.",""
-"Visual Question","SET_THEORY","Complex Algebra","Quest 7-006: Sports Algebra","If 21 pupils play only one game, find h.",""
-"Visual Question","SET_THEORY","Complex Algebra","Quest 7-006: Sports Algebra","How many play Netball altogether?",""
-"Visual Question","SET_THEORY","Complex Algebra","Quest 7-006: Sports Algebra","How many pupils do NOT play Netball?",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-007: Farmer's Market","Phase 1: Both is 2x. Neither is x. Fill Diagram.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-007: Farmer's Market","Phase 2: Total = 50. Find x.",""
-"Visual Question","SET_THEORY","Equal Sets","Quest 7-008: Clinic Data","If n(M) = n(T), find y.",""
-"Visual Question","SET_THEORY","Equal Sets","Quest 7-008: Clinic Data","Find Malaria Only.",""
-"Visual Question","SET_THEORY","Algebraic Totals","Quest 7-009: Food Survey","Total = 45. Find x.",""
-"Visual Question","SET_THEORY","Algebra via Total Set","Quest 7-010: Subject Algebra","Total Math pupils = 30. Find x.",""
-"Visual Question","SET_THEORY","Algebra via Total Set","Quest 7-010: Subject Algebra","How many like Science ONLY?",""
-"Visual Question","SET_THEORY","Algebra via Total Set","Quest 7-010: Subject Algebra","Find the Total Number of pupils in the class.",""
-"Visual Question","SET_THEORY","Solving via Total","Quest 7-011: Art Class","Total=40. Total Paint=25. Sketch Only=x. Find x.",""
-"Visual Question","SET_THEORY","Solving via Total","Quest 7-011: Art Class","How many do BOTH?",""
-"Visual Question","SET_THEORY","Algebraic Totals","Quest 7-012: Sports Algebra","Total=60. Total F=40. R-only=x. Outside=5. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Totals","Quest 7-012: Sports Algebra","How many play BOTH?",""
-"Visual Question","SET_THEORY","Algebra","Quest 7-014: Mystery Total","Total=40. Intersection=10. A=2x, B=3x. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-013: 3:2 Ratio","Phase 1: n(A)=3x, n(B)=2x. Both=x. Fill Only regions.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 7-013: 3:2 Ratio","Phase 2: Total = 40. Find x.",""
-"Visual Question","SET_THEORY","Equating Regions","Quest 7-016: Set Construction","Phase 1: Construct the Diagram• R only: 3k-2 &nbsp; • B only: 2k+4• Intersection: 10 &nbsp; • Outside: k",""
-"Visual Question","SET_THEORY","Equating Regions","Quest 7-016: Set Construction","Phase 2: Given n(R only) = n(B only). Find k.",""
-"Visual Question","SET_THEORY","Equating Regions","Quest 7-016: Set Construction","How many are Outside the sets?",""
-"Visual Question","SET_THEORY","Equal Totals","Quest 7-017: Exam Build","Phase 1: Build It• M-only: x+10 &nbsp; • E-only: 2x• Both: 5",""
-"Visual Question","SET_THEORY","Equal Totals","Quest 7-017: Exam Build","Phase 2: If n(M) = n(E), find x.",""
-"Visual Question","SET_THEORY","Algebraic Construction","Quest 7-018: Sports Build","Phase 1: Build It• R-only: 2n &nbsp; • T-only: n• Both: 10",""
-"Visual Question","SET_THEORY","Algebraic Construction","Quest 7-018: Sports Build","Phase 2: Total=40. Find n.",""
-"Visual Question","SET_THEORY","Partial Sums","Quest 7-019: Set Logic","Step 1: Which equation helps find k given n(H)=24?","2k + (k+3) = 24"
-"Visual Question","SET_THEORY","Partial Sums","Quest 7-019: Set Logic","Step 2: Solve 3k + 3 = 24. Find k.",""
-"Visual Question","SET_THEORY","Partial Sums","Quest 7-019: Set Logic","Step 3: How many play Rugby Only?",""
-"Visual Question","SET_THEORY","Intersection Formula","Quest 7-020: Intersection Solver","Total=50. Outside=0. Find Intersection z.",""
-"Visual Question","SET_THEORY","Intersection Formula","Quest 7-020: Intersection Solver","Find p (Rice Only).",""
-"Visual Question","SET_THEORY","Intersection Formula","Quest 7-020: Intersection Solver","Find q (Matooke Only).",""
-"Read","MATH_STUDY","Complex Algebra","Mastering Set Equations","The 4 Main Exam Questions: In hard exams, you won't just count numbers. You will solve for letters like k, m, or y.There are 4 types of questions. Let's learn to spot them.",""
-"Read","MATH_STUDY","Complex Algebra","Mastering Set Equations","Type 1: The 'Whole Circle' Rule: Clue: Question says ""n(A) = 24"".Logic: This means the Entire Circle A adds up to 24. Do not forget the intersection!Equation: (Left Only) + (Middle) = 242k + (k+3) = 24",""
-"Read","MATH_STUDY","Complex Algebra","Mastering Set Equations","Type 2: 'Only One' Activity: Clue: ""36 pupils do only one activity"".Logic: This refers to the 'ears' of the diagram. We ignore the middle.Equation: (Left Only) + (Right Only) = 364k + (2k+6) = 36",""
-"Read","MATH_STUDY","Complex Algebra","Mastering Set Equations","Type 3: Equal Sets: Clue: ""n(L) = n(E)"".Logic: The total of the Left Circle equals the total of the Right Circle.Equation: (Left + Mid) = (Mid + Right)5m+4 + m = m + 3m+12",""
-"Read","MATH_STUDY","Complex Algebra","Mastering Set Equations","Type 4: The Universal Sum: Clue: ""Total class = 90"" (and there are outsiders).Logic: Add EVERYTHING. Left + Middle + Right + Outside = Total.Equation: (3h+1) + 2h + (h-4) + (h+2) = 90",""
-"Read","MATH_STUDY","Complex Algebra","Mastering Set Equations","Final Step: Substitution: Finding x is not the end!If question asks: ""How many do Dancing?"", you must substitute x back into the expression.If x=5, Dancing = 4(5) + (5+2) = 27.",""
-"Read","MATH_STUDY","Solving Unknowns","Algebra in Sets","Why Algebra?: Sometimes we don't know the exact numbers in a region. Instead, we are given a letter like x.To find x, we need to build an Equation.",""
-"Read","MATH_STUDY","Solving Unknowns","Algebra in Sets","Case 1: The Whole Circle: Problem: n(A) = 25. Find x.Logic: The label n(A) means the entire circle A. This includes the 'Only' part AND the 'Intersection'.Equation:x + 10 = 25x = 15",""
-"Read","MATH_STUDY","Solving Unknowns","Algebra in Sets","Case 2: The Universal Sum: Problem: Total Class = 50. Find x.Logic: If we add every region (including outside), it must equal the Total.Equation:(x) + (10) + (2x) + (5) = 503x + 15 = 50",""
-"Read","MATH_STUDY","Solving Unknowns","Algebra in Sets","Case 3: Equal Sets: Problem: n(A) = n(B). Find x.Logic: The total count of Circle A is equal to Circle B.Equation:(x + 10) = (10 + 2x)x + 10 = 2x + 10",""
-"Read","MATH_STUDY","Solving Unknowns","Algebra in Sets","Case 4: The Intersection Trick: Problem: n(A)=30, n(B)=25, Total=50. Find the middle (z).Logic: Add the sets: 30 + 25 = 55.This is bigger than the Total (50) because we counted the middle twice!Formula: (A + B) - Total = Intersection.55 - 50 = 5.",""
-"Read","MATH_STUDY","Solving Unknowns","Algebra in Sets","Final Step: Substitution: After finding x, always read the question again!If x = 15, and the question asks for ""Set B Only"" (2x):Answer = 2(15) = 30.",""
-"Visual Question","SET_THEORY","Survey Applications","Quest 8-001: Sports Survey","How many pupils play Football?",""
-"Visual Question","SET_THEORY","Survey Applications","Quest 8-001: Sports Survey","How many play Volleyball only?",""
-"Visual Question","SET_THEORY","Survey Applications","Quest 8-001: Sports Survey","How many play both?",""
-"Visual Question","SET_THEORY","Survey Applications","Quest 8-001: Sports Survey","How many pupils play one type only?",""
-"Visual Question","SET_THEORY","Fractions in Sets","Quest 8-002: The Reading Club","Phase 1: Class of 40. ½ read News (20), ¼ read Comics (10). 5 read Both. Fill the diagram.",""
-"Visual Question","SET_THEORY","Fractions in Sets","Quest 8-002: The Reading Club","Phase 2: How many read only one type of book?",""
-"Visual Question","SET_THEORY","Intersection Formula","Quest 8-003: Book Club","Total = 50. Everyone reads. Find x (Both).",""
-"Visual Question","SET_THEORY","Intersection Formula","Quest 8-003: Book Club","How many read Fiction ONLY?",""
-"Visual Question","SET_THEORY","Relative Algebra","Quest 8-004: Hockey & Rugby","Phase 1: Rugby Only is 5 more than both. Neither is 5.",""
-"Visual Question","SET_THEORY","Relative Algebra","Quest 8-004: Hockey & Rugby","Phase 2: Total pupils = 65. Find x.",""
-"Visual Question","SET_THEORY","Relative Algebra","Quest 8-004: Hockey & Rugby","Find total playing Rugby.",""
-"Visual Question","SET_THEORY","Difference of Sets","Quest 8-005: Science Project","Phase 1: P=30, B=25, Both=10. Fill Only regions.",""
-"Visual Question","SET_THEORY","Difference of Sets","Quest 8-005: Science Project","Phase 2: Total = 50. Find k (Neither).",""
-"Visual Question","SET_THEORY","Difference of Sets","Quest 8-005: Science Project","Find n(P - B) (Physics Only).",""
-"Visual Question","SET_THEORY","Ratio Word Problems","Quest 8-006: Farm Ratios","Total=40. G=2x, C=x. Both=5, Neither=5. Find x.",""
-"Visual Question","SET_THEORY","Ratio Word Problems","Quest 8-006: Farm Ratios","How many have Cows?",""
-"Visual Question","SET_THEORY","Algebraic Word Problems","Quest 8-007: Sports Algebra","Phase 1: n(F)=25. V-only equals Both (x). Neither is 5.",""
-"Visual Question","SET_THEORY","Algebraic Word Problems","Quest 8-007: Sports Algebra","Phase 2: Total students = 40. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Word Problems","Quest 8-007: Sports Algebra","Find Total Volleyball players.",""
-"Visual Question","SET_THEORY","Ratio Problems","Quest 8-008: Debate Club","Phase 1: S-only is 3x. D-only is 2x. Both is x.",""
-"Visual Question","SET_THEORY","Ratio Problems","Quest 8-008: Debate Club","Phase 2: Total students = 60. Find x.",""
-"Visual Question","SET_THEORY","Ratio Problems","Quest 8-008: Debate Club","Find Total Speakers n(S).",""
-"Visual Question","SET_THEORY","Logic Applications","Quest 8-009: Voting","A=60, B=50, Both=20, Invalid=10. Fill diagram.",""
-"Visual Question","SET_THEORY","Logic Applications","Quest 8-009: Voting","How many did NOT vote for A?",""
-"Visual Question","SET_THEORY","Application of Sets","Quest 8-010: Music Fest","Total=100. Neither=10. Find x (Both).",""
-"Visual Question","SET_THEORY","Application of Sets","Quest 8-010: Music Fest","How many like only one type of music?",""
-"Visual Question","SET_THEORY","Medical Sets","Quest 8-011: Clinic Logic","Total = 50. Find x (Both).",""
-"Visual Question","SET_THEORY","Medical Sets","Quest 8-011: Clinic Logic","How many have Malaria Only?",""
-"Visual Question","SET_THEORY","Overlap Logic","Quest 8-012: The Debate","Total=100. Neither=5. Find x (Both).",""
-"Visual Question","SET_THEORY","Ratio Logic","Quest 8-013: Science Ratios","Total=80. P-only is twice C-only (x). Both=10. Outside=10.",""
-"Visual Question","SET_THEORY","Ratio Logic","Quest 8-013: Science Ratios","Find Total Physics Students.",""
-"Visual Question","SET_THEORY","Word Problems","Quest 8-014: Drink Survey","Total=80. Outside is 2x. Find x (Both).",""
-"Visual Question","SET_THEORY","Word Problems","Quest 8-014: Drink Survey","How many drink Neither?",""
-"Visual Question","SET_THEORY","Algebraic Difference","Quest 8-015: Sports Diff","Total=60. n(F)=40. R-only=x. Outside=x+10. Find x.",""
-"Visual Question","SET_THEORY","Logic","Quest 8-016: Party Invite","How many guests took at least one item?",""
-"Visual Question","SET_THEORY","Logic","Quest 8-016: Party Invite","How many guests in Total?",""
-"Visual Question","SET_THEORY","Visual Sums","Quest 8-024: Click to Sum","Tap regions to find total Mathematics (M).",""
-"Visual Question","SET_THEORY","Visual Sums","Quest 8-024: Click to Sum","Tap regions representing Not Mathematics.",""
-"Visual Question","SET_THEORY","Visual Calculation","Quest 8-024: Visual Sums","Tap regions to find total Mathematics (M).",""
-"Visual Question","SET_THEORY","Visual Calculation","Quest 8-024: Visual Sums","Tap regions representing Not Mathematics.",""
-"Visual Question","SET_THEORY","Visual Calculation","Quest 8-024: Visual Sums","Tap regions to find probability of Either subject.",""
-"Visual Question","SET_THEORY","Visual Sums","Quest 8-027: Visual Market","Tap the regions representing shoppers who bought Only One item.",""
-"Visual Question","SET_THEORY","Visual Sums","Quest 8-027: Visual Market","Tap regions representing shoppers who did NOT buy Rice.",""
-"Visual Question","SET_THEORY","Visual Totals","Quest 8-028: Exam Clicks","Tap regions to find Total Math students.",""
-"Visual Question","SET_THEORY","Visual Totals","Quest 8-028: Exam Clicks","Tap everyone who passed at least one subject.",""
-"Visual Question","SET_THEORY","Intersection Clicks","Quest 8-029: Fruit Clicks","Tap the region for fruits that are Both Mango and Orange.",""
-"Visual Question","SET_THEORY","Intersection Clicks","Quest 8-029: Fruit Clicks","Tap all regions containing Oranges.",""
-"Read","MATH_STUDY","Applications","Word Problems in Sets","From Words to Diagrams: In exams, Set Theory is often hidden inside stories about sports, food, or books.Let's learn the secret language of these word problems.",""
-"Read","MATH_STUDY","Applications","Word Problems in Sets","1. 'Only One Item': Question: How many guests took only one item?Logic: This means people who took Tea Only OR Cake Only.20 + 10 = 30 guests.",""
-"Read","MATH_STUDY","Applications","Word Problems in Sets","2. 'At Least One': Question: How many took at least one item?Logic: This implies the Union. It means 'Anyone who took anything'.20 + 15 + 10 = 45 guests.",""
-"Read","MATH_STUDY","Applications","Word Problems in Sets","3. 'Neither' or 'None': Question: How many guests took neither?Logic: This is the region outside the circles but inside the Universal box.Answer = 5 guests.",""
-"Read","MATH_STUDY","Applications","Word Problems in Sets","4. Probability: Question: What is the probability a guest took Both?Step 1: Find Total Guests. (20+15+10+5 = 50)Step 2: Find 'Both'. (15)Probability = 15/50.",""
-"Visual Question","SET_THEORY","Universal Sets & Complements","Quest 9-001: The Universal Box","Drag numbers to correct places. Don't forget the Universal Set!F={1,2,3,6}, T={3,6,9,12,15}",""
-"Visual Question","SET_THEORY","Universal Sets & Complements","Quest 9-001: The Universal Box","List members of Intersection F ∩ T.",""
-"Visual Question","SET_THEORY","Universal Sets & Complements","Quest 9-001: The Universal Box","List members of (F ∪ T)' (Complement).",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-002: Science Lab","Phase 1: Both is 5. Fill Only regions.",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-002: Science Lab","Phase 2: Total = 40. Find y (Neither).",""
-"Visual Question","SET_THEORY","Complements","Quest 9-003: Debate Team","Phase 1: Both is 10. Outside is y. Fill Only regions.",""
-"Visual Question","SET_THEORY","Complements","Quest 9-003: Debate Team","Phase 2: Total = 50. Find y (Neither).",""
-"Visual Question","SET_THEORY","Probability","Quest 9-004: Sports Prob","Total = 100. Find x (Both).",""
-"Visual Question","SET_THEORY","Probability","Quest 9-004: Sports Prob","Probability of playing Golf Only?",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-005: Library Books","Phase 1: Both is 10. Outside is y. Fill 'Only' regions.",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-005: Library Books","Phase 2: Total = 50. Find y (Neither).",""
-"Visual Question","SET_THEORY","Difference of Sets","Quest 9-006: The Garden","Phase 1: M-only is x+5. B-only is x+10. Both is x.",""
-"Visual Question","SET_THEORY","Difference of Sets","Quest 9-006: The Garden","Phase 2: Total gardeners = 45. Find x.",""
-"Visual Question","SET_THEORY","Difference of Sets","Quest 9-006: The Garden","How many grow Maize Only?",""
-"Visual Question","SET_THEORY","Set Difference","Quest 9-007: Science Test","Total Math = 25. Find x.",""
-"Visual Question","SET_THEORY","Set Difference","Quest 9-007: Science Test","How many passed Math ONLY?",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-008: Book Fair","Total Fiction = 25. Find x.",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-008: Book Fair","Find n(F') (Not Fiction).",""
-"Visual Question","SET_THEORY","Voting Probability","Quest 9-009: Election Day","Phase 1: Both is 10. Fill Only regions. (A=40, B=30)",""
-"Visual Question","SET_THEORY","Voting Probability","Quest 9-009: Election Day","Phase 2: Total = 80. Find y (Invalid Votes).",""
-"Visual Question","SET_THEORY","Voting Probability","Quest 9-009: Election Day","Probability of an Invalid Vote?",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 9-010: Party Drinks","If n(S ∩ W)' = 32 (Not Both), find x.",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 9-010: Party Drinks","How many guests attended altogether?",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 9-010: Party Drinks","How many did NOT take Soda?",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-011: Transport","Phase 1: Both=5. Outside=x. Fill Only regions.",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-011: Transport","Phase 2: Total=60. Find x.",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-011: Transport","How many do NOT take the Bus?",""
-"Visual Question","SET_THEORY","Complement Logic","Quest 9-013: Lunch Logic","Total=50. Neither=10. Find x (Both).",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-014: Music Class","Phase 1: P=25, V=10, Both=5. Fill Only regions.",""
-"Visual Question","SET_THEORY","Finding Complements","Quest 9-014: Music Class","Phase 2: Total=50. Find x (Neither).",""
-"Visual Question","SET_THEORY","Complement Logic","Quest 9-015: Exam Results","Total=50. Neither=5. Find x (Both).",""
-"Visual Question","SET_THEORY","Complement Logic","Quest 9-015: Exam Results","How many passed exactly one subject?",""
-"Visual Question","SET_THEORY","Total & Complements","Quest 9-016: Market Data","Find the Total Number of people.",""
-"Visual Question","SET_THEORY","Total & Complements","Quest 9-016: Market Data","Find n(A ∩ B)'.",""
-"Visual Question","SET_THEORY","De Morgan Law","Quest 9-017: Complements","List elements of (A ∪ B)'.",""
-"Visual Question","SET_THEORY","De Morgan Law","Quest 9-017: Complements","Find n(A' ∩ B').",""
-"Visual Question","SET_THEORY","Complement Construction","Quest 9-019: Party Build","Phase 1: Build It• J-only: 15 &nbsp; • W-only: 10• Both: 5 &nbsp; • Outside: p",""
-"Visual Question","SET_THEORY","Complement Construction","Quest 9-019: Party Build","Phase 2: Total=40. Find p.",""
-"Visual Question","SET_THEORY","Finding Neither","Quest 9-022: Library Data","Phase 1: Both is 20. Outside is k. Fill Only regions.",""
-"Visual Question","SET_THEORY","Finding Neither","Quest 9-022: Library Data","Phase 2: Total = 60. Find k (Neither).",""
-"Visual Question","SET_THEORY","Finding Neither","Quest 9-022: Library Data","How many do NOT read Books?",""
-"Visual Question","SET_THEORY","Not Set A","Quest 9-023: Not A","Total=50. Neither=5. Find x (Both).",""
-"Visual Question","SET_THEORY","Not Set A","Quest 9-023: Not A","Find n(A') (Not A).",""
-"Visual Question","SET_THEORY","Finding Complement","Quest 9-024: Missing Group","Total=80. Intersection=15. Find y (Neither).",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 9-025: Travel Plans","Phase 1: USA(30), UK(25), Both(5). Fill Only regions.",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 9-025: Travel Plans","Phase 2: Total=60. Find y (Neither).",""
-"Visual Question","SET_THEORY","Visual Complements","Quest 9-026: Food Clicks","Tap regions representing people who did NOT eat Pizza.",""
-"Visual Question","SET_THEORY","Visual Complements","Quest 9-026: Food Clicks","Tap regions representing people who did NOT eat Burgers.",""
-"Visual Question","SET_THEORY","Outside Logic","Quest 9-027: Sports Clicks","Tap the region for people who play Neither sport.",""
-"Visual Question","SET_THEORY","Outside Logic","Quest 9-027: Sports Clicks","Tap everyone who plays a sport.",""
-"Read","MATH_STUDY","Complements","Understanding 'Not'","What is a Complement?: The Complement of Set A (written A') means everything that is NOT in Circle A.Imagine covering Circle A with your hand. What is left?",""
-"Read","MATH_STUDY","Complements","Understanding 'Not'","Case 1: The Visual Test: Question: Identify regions for ""Not Pizza"".Logic: We must exclude the Pizza Circle completely.This leaves: Burger Only + Neither.",""
-"Read","MATH_STUDY","Complements","Understanding 'Not'","Case 2: Finding 'Neither': Problem: Total = 50. Find y (Neither).Logic: The Universal Set contains EVERYTHING.Left + Mid + Right + Outside = Total.Equation:15 + 10 + 10 + y = 5035 + y = 50y = 15",""
-"Read","MATH_STUDY","Complements","Understanding 'Not'","Case 3: 'Not Both': Question: ""n(S ∩ W)' = 32"". What does this mean?Logic: It means the Complement of the Intersection.Everything EXCEPT the middle.So, (Left + Right + Outside) = 32.",""
-"Read","MATH_STUDY","Complements","Understanding 'Not'","Solving Case 3: If Total = 42, and 'Not Both' = 32, we can find the Middle easily.Shortcut: Total - Not Both = Both.42 - 32 = 10.",""
-"Visual Question","SET_THEORY","Probability using Venn Diagrams","Topic 10: Probability Master","Total farmers = 60. Find x.",""
-"Visual Question","SET_THEORY","Probability using Venn Diagrams","Topic 10: Probability Master","How many keep Goats ONLY?",""
-"Visual Question","SET_THEORY","Probability using Venn Diagrams","Topic 10: Probability Master","What is the probability of choosing a farmer with Goats Only?",""
-"Visual Question","SET_THEORY","Probability II","Topic 10: School Subjects","Phase 1: 5 pupils learn neither subject. Fill the diagram.",""
-"Visual Question","SET_THEORY","Probability II","Topic 10: School Subjects","Phase 2: Total pupils = 50. Find x.",""
-"Visual Question","SET_THEORY","Probability II","Topic 10: School Subjects","Probability of choosing a pupil who studies Science Only?",""
-"Visual Question","SET_THEORY","Party Drinks","Topic 10: Party Drinks","Phase 1: 2 guests drink neither. Fill the diagram.",""
-"Visual Question","SET_THEORY","Party Drinks","Topic 10: Party Drinks","Phase 2: Total guests = 40. Find x.",""
-"Visual Question","SET_THEORY","Party Drinks","Topic 10: Party Drinks","How many drink one type only?",""
-"Visual Question","SET_THEORY","Probability III","Topic 10: Language Village","Phase 1: 15 pupils speak neither. Fill the diagram.",""
-"Visual Question","SET_THEORY","Probability III","Topic 10: Language Village","Phase 2: Total pupils = 80. Find x.",""
-"Visual Question","SET_THEORY","Probability III","Topic 10: Language Village","Probability of choosing a pupil who speaks BOTH?",""
-"Visual Question","SET_THEORY","Probability","Topic 10: Pet Owners","Total families = 50. Find x.",""
-"Visual Question","SET_THEORY","Probability","Topic 10: Pet Owners","How many families have Neither?",""
-"Visual Question","SET_THEORY","Probability","Topic 10: Pet Owners","What is the probability of picking a family with No Pets?",""
-"Visual Question","SET_THEORY","Symmetric Difference Algebra","Topic 10: Sports Selection","Phase 1: Netball only is w+10. Neither is w. Fill the diagram.",""
-"Visual Question","SET_THEORY","Symmetric Difference Algebra","Topic 10: Sports Selection","Phase 2: Total pupils = 60. Find w.",""
-"Visual Question","SET_THEORY","Symmetric Difference Algebra","Topic 10: Sports Selection","How many play Netball Only?",""
-"Visual Question","SET_THEORY","Algebraic Sets","Quest 10-005: Music Class","Phase 1: n(P)=25. Guitar only is x+5. 5 play neither. Fill diagram.",""
-"Visual Question","SET_THEORY","Algebraic Sets","Quest 10-005: Music Class","Phase 2: Total students = 50. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Sets","Quest 10-005: Music Class","How many play Guitar Only?",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 10-006: Farming Ratios","Phase 1: Beans only is 2y. 10 grow neither. Fill diagram.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 10-006: Farming Ratios","Phase 2: Total farmers = 80. Find y.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 10-006: Farming Ratios","Find total growing Beans n(B).",""
-"Visual Question","SET_THEORY","Algebraic Complements","Quest 10-007: Reading List","Phase 1: Neither is k+2. N-only is 2k. B-only is k.",""
-"Visual Question","SET_THEORY","Algebraic Complements","Quest 10-007: Reading List","Phase 2: Total people = 60. Find k.",""
-"Visual Question","SET_THEORY","Algebraic Complements","Quest 10-007: Reading List","Probability of reading Neither?",""
-"Visual Question","SET_THEORY","Full Algebra","Quest 10-008: Party Time","Phase 1: S only is p+5. Both is p. W only is p+10.",""
-"Visual Question","SET_THEORY","Full Algebra","Quest 10-008: Party Time","Phase 2: Total guests = 45. Find p.",""
-"Visual Question","SET_THEORY","Full Algebra","Quest 10-008: Party Time","How many drink only one type?",""
-"Visual Question","SET_THEORY","Agricultural Sets","Topic 10: Crop Farming","Phase 1: P only is 2k. Neither is k. Fill the diagram.",""
-"Visual Question","SET_THEORY","Agricultural Sets","Topic 10: Crop Farming","Phase 2: Total farmers = 80. Find k.",""
-"Visual Question","SET_THEORY","Agricultural Sets","Topic 10: Crop Farming","How many farmers did not grow Peas (P)?",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 10: The Pet Shop","Phase 1: Cats only is 2x. Dogs only is x+10. Fill the diagram.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 10: The Pet Shop","Phase 2: Total pets = 50. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Ratios","Quest 10: The Pet Shop","How many Dogs are there in total?",""
-"Visual Question","SET_THEORY","Solving for Intersection","Quest 10: Fruit Market","Phase 1: 20 sell Apples only, 25 Bananas only. Intersection and Outside are both y.",""
-"Visual Question","SET_THEORY","Solving for Intersection","Quest 10: Fruit Market","Phase 2: Total farmers = 65. Find y.",""
-"Visual Question","SET_THEORY","Solving for Intersection","Quest 10: Fruit Market","What is the Probability a farmer sells BOTH?",""
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 10: Talent Show","Phase 1: S only is x+5. 10 do both. Outside is 5. Fill it.",""
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 10: Talent Show","Phase 2: Total students = 50. Find x.",""
-"Visual Question","SET_THEORY","Symmetric Difference","Quest 10: Talent Show","How many have Only One talent?",""
-"Visual Question","SET_THEORY","Finding Missing Regions","Topic 10: Language Totals","Phase 1: Total English is 45. Intersection is 15. Fill the diagram.",""
-"Visual Question","SET_THEORY","Finding Missing Regions","Topic 10: Language Totals","Phase 2: Total villagers = 80. Find m.",""
-"Visual Question","SET_THEORY","Finding Missing Regions","Topic 10: Language Totals","Find the Total Luganda speakers.",""
-"Visual Question","SET_THEORY","Finding Neither","Quest 10-005: Art Club","Phase 1: P=20, D=15, Both=5. Fill Only regions.",""
-"Visual Question","SET_THEORY","Finding Neither","Quest 10-005: Art Club","Phase 2: Total students = 40. Find y (Neither).",""
-"Visual Question","SET_THEORY","Finding Intersection","Quest 10-006: Science Fair","Phase 1: Both is x. Neither is 5. Fill diagram.",""
-"Visual Question","SET_THEORY","Finding Intersection","Quest 10-006: Science Fair","Phase 2: Total = 60. Find x.",""
-"Visual Question","SET_THEORY","Set Totals Algebra","Quest 10-007: The Clinic","Phase 1: n(M)=2x, n(T)=x. Both=10. Fill Only regions.",""
-"Visual Question","SET_THEORY","Set Totals Algebra","Quest 10-007: The Clinic","Phase 2: Total patients = 60. Find x.",""
-"Visual Question","SET_THEORY","Set Totals Algebra","Quest 10-007: The Clinic","Find Total Malaria Cases n(M).",""
-"Visual Question","SET_THEORY","Probability Calculation","Quest 10-008: Language Prob","Total = 100. Everyone speaks at least one. Find x (Both).",""
-"Visual Question","SET_THEORY","Probability Calculation","Quest 10-008: Language Prob","Prob. of speaking Only One language?",""
-"Visual Question","SET_THEORY","Finding Missing Regions","Topic 10: Harvest Time","Phase 1: Total Rice is 60. Intersection is 20. Fill the diagram.",""
-"Visual Question","SET_THEORY","Finding Missing Regions","Topic 10: Harvest Time","Phase 2: Total farmers = 100. Find p.",""
-"Visual Question","SET_THEORY","Finding Missing Regions","Topic 10: Harvest Time","Find the Total Beans growers.",""
-"Visual Question","SET_THEORY","Algebraic Ratios II","Topic 10: Peas & Beans","Phase 1: Beans only is 2x. Neither is 10. Fill the diagram.",""
-"Visual Question","SET_THEORY","Algebraic Ratios II","Topic 10: Peas & Beans","Phase 2: Total farmers = 90. Find x.",""
-"Visual Question","SET_THEORY","Algebraic Ratios II","Topic 10: Peas & Beans","How many grow Beans in total?",""
-"Visual Question","SET_THEORY","Complex Word Problems","Topic 10: Wedding Drinks","Phase 1: Wine only is 2 less than thrice x. Neither is 11.",""
-"Visual Question","SET_THEORY","Complex Word Problems","Topic 10: Wedding Drinks","Phase 2: Total guests = 62. Find x.",""
-"Visual Question","SET_THEORY","Complex Word Problems","Topic 10: Wedding Drinks","Find Total Wine drinkers.",""
-"Visual Question","SET_THEORY","Probability Union","Quest 10-011: Garden Prob","How many trees are Mango OR Orange?",""
-"Visual Question","SET_THEORY","Probability Union","Quest 10-011: Garden Prob","Probability of picking a fruit tree?",""
-"Visual Question","SET_THEORY","Probability Algebra","Quest 10-006: Exam Results","Total = 40. M-only = E-only = x. Find x.",""
-"Visual Question","SET_THEORY","Probability Algebra","Quest 10-006: Exam Results","Prob. of passing Math Only?",""
-"Visual Question","SET_THEORY","Symmetric Difference II","Topic 10: Math & English","Phase 1: English only is 8 more than both. Neither is 4.",""
-"Visual Question","SET_THEORY","Symmetric Difference II","Topic 10: Math & English","Phase 2: Total students = 92. Find x.",""
-"Visual Question","SET_THEORY","Symmetric Difference II","Topic 10: Math & English","Find Total English students.",""
-"Visual Question","SET_THEORY","Complement Equations","Topic 10: Sports Logic","Given n(F') = 18 (Not Football), find p.",""
-"Visual Question","SET_THEORY","Complement Equations","Topic 10: Sports Logic","Find n(F ∪ R) (The Union).",""
-"Visual Question","SET_THEORY","Complement Equations","Topic 10: Sports Logic","Probability of playing neither?",""
-"Visual Question","SET_THEORY","Final Mix","Topic 10: Math & Science","Total = 65. Total Science = 45. Find h.",""
-"Visual Question","SET_THEORY","Final Mix","Topic 10: Math & Science","How many like Math ONLY?",""
-"Visual Question","SET_THEORY","Final Mix","Topic 10: Math & Science","Probability of picking a pupil who likes Math?",""
-"Visual Question","SET_THEORY","Probability Final","Quest 10-017: Sports Final","How many play only one sport?",""
-"Visual Question","SET_THEORY","Probability Final","Quest 10-017: Sports Final","Probability of playing Only One?",""
-"Visual Question","SET_THEORY","Solving via Total II","Topic 10: Fruits Total","Total = 55. Total Pineapples = 30. Find y.",""
-"Visual Question","SET_THEORY","Solving via Total II","Topic 10: Fruits Total","How many like Apples altogether?",""
-"Visual Question","SET_THEORY","Solving via Total II","Topic 10: Fruits Total","Probability of picking a pupil who likes Apples Only?",""
-"Visual Question","SET_THEORY","Probability Final","Quest 10-018: Garden Prob","Total=100. Find x (Both).",""
-"Visual Question","SET_THEORY","Probability Final","Quest 10-018: Garden Prob","Probability of Mango Only?",""
-"Visual Question","SET_THEORY","Double Variables","Quest 10-018: Subject Sets","Part 1: Given n(E) = 36, find n.",""
-"Visual Question","SET_THEORY","Double Variables","Quest 10-018: Subject Sets","Part 2: Given n(M) = h + 29. Find Total n(M).",""
-"Visual Question","SET_THEORY","Double Variables","Quest 10-018: Subject Sets","Find the Total Number of pupils.",""
-"Visual Question","SET_THEORY","Number Probability","Quest 10-020: Prime Odds","Sort numbers < 10 into Primes & Odds.",""
-"Visual Question","SET_THEORY","Number Probability","Quest 10-020: Prime Odds","Prob. of picking a number that is Prime AND Odd?",""
-"Visual Question","SET_THEORY","Algebraic Complements","Quest 10-019: Complement Solver","Phase 1: S-only is 2m. Outside is m+4. Fill the diagram.",""
-"Visual Question","SET_THEORY","Algebraic Complements","Quest 10-019: Complement Solver","Phase 2: n(G)' = 25 (Not G). Find m.",""
-"Visual Question","SET_THEORY","Algebraic Complements","Quest 10-019: Complement Solver","Find Total n(S).",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 10-019: Complement Solver","Phase 1: Construct the Diagram• G only: 15 &nbsp; • S only: 2m• Intersection: 5 &nbsp; • Outside: m+4",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 10-019: Complement Solver","Phase 2: n(G)' = 25 (Not G). Find m.",""
-"Visual Question","SET_THEORY","Complement Algebra","Quest 10-019: Complement Solver","Find Total n(S).",""
-"Visual Question","SET_THEORY","Farm Logic","Quest 10-022: Farm Build","Phase 1: Build It• G-only: 20 &nbsp; • C-only: 30• Both: y &nbsp; • Neither: 5",""
-"Visual Question","SET_THEORY","Farm Logic","Quest 10-022: Farm Build","Phase 2: Total=65. Find y.",""
-"Visual Question","SET_THEORY","Intersection Probability","Quest 10-025: Drink Prob","Total=40. Find x (Both).",""
-"Visual Question","SET_THEORY","Intersection Probability","Quest 10-025: Drink Prob","Probability of drinking Both?",""
-"Visual Question","SET_THEORY","Probability of Union","Quest 10-026: Sports Prob","How many play at least one sport?",""
-"Visual Question","SET_THEORY","Probability of Union","Quest 10-026: Sports Prob","Probability of picking a student who plays a sport?",""
-"Visual Question","SET_THEORY","Finding Totals","Quest 10: Drink Stand","Phase 1: Juice Only is 2k. Soda Only is k. Fill diagram.",""
-"Visual Question","SET_THEORY","Finding Totals","Quest 10: Drink Stand","Phase 2: Given n(Soda) = 30. Find k.",""
-"Visual Question","SET_THEORY","Finding Totals","Quest 10: Drink Stand","Now find the Total Number of people.",""
-"Visual Question","VENN_PROB_ENGINE","Probability Game","Quest 10: Probability Sim","P(Football)? (Total in A / Total People)",""
-"Visual Question","VENN_PROB_ENGINE","Probability Game","Quest 10: Probability Sim","What is P(A ∩ B)? (Both / Total)",""
-"Read","MATH_STUDY","Probability","Chance in Venn Diagrams","What is Probability?: Probability tells us the chance of picking someone from a specific group.Formula:Prob = (Target Count) / (Total People)",""
-"Read","MATH_STUDY","Probability","Chance in Venn Diagrams","Case 1: Simple Probability: Question: What is the probability of picking someone from Set A?Step 1: Find Total (30+10+20 = 60).Step 2: Find n(A) (30+10 = 40).Answer: 40/60 = 2/3.",""
-"Read","MATH_STUDY","Probability","Chance in Venn Diagrams","Case 2: 'Only' Probability: Question: Prob. of picking someone who likes B ONLY?Logic: Look at the crescent moon on the right.n(B Only) = 20.Answer: 20/60 = 1/3.",""
-"Read","MATH_STUDY","Probability","Chance in Venn Diagrams","Case 3: Algebra First!: Sometimes you must find x first.Question: Total=100. Find Prob(Both).Step 1: Solve for x.60 + 50 - x = 100 → x = 10.Step 2: Prob = 10/100.",""
-"Read","MATH_STUDY","Probability","Chance in Venn Diagrams","Case 4: Probability of 'Neither': Question: Prob. of picking someone outside?If Total = 60, and Outside = 14.Answer: 14/60.Always remember to count the people outside the circles!",""
+Visual Question,SET_CLASSIFIER,Finite vs. Infinite Sets,Quest 1-001: Set Types (Part 2),"Set of Whole Numbers {0, 1, 2, ...}",infinite
+Visual Question,SET_CLASSIFIER,Finite vs. Infinite Sets,Quest 1-001: Set Types (Part 3),Set of Cows in this Kraal.,finite
+Visual Question,SET_CLASSIFIER,Finite vs. Infinite Sets,Quest 1-001: Set Types (Part 4),"Set of Multiples of 7 {7, 14, 21, ...}",infinite
+Visual Question,SET_CLASSIFIER,Set Types,Quest 1-003: Abstract Sets (Part 2),Set of Points on a Line.,infinite
+Visual Question,SET_CLASSIFIER,Set Types,Quest 1-003: Abstract Sets (Part 3),Set of Primary Schools in Uganda.,finite
+Visual Question,SET_CLASSIFIER,Set Types,Quest 1-003: Abstract Sets (Part 4),Set of Letters in 'MATHEMATICS'.,finite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-004: Nature Walk (Part 2),Set of Fish in Lake Victoria.,finite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-004: Nature Walk (Part 3),Set of Grains of Sand on a beach.,finite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-004: Nature Walk (Part 4),Set of Stars in the Universe.,infinite
+Visual Question,SET_CLASSIFIER,Math Concepts,Quest 1-005: Number Sets (Part 2),Set of Vowels in the alphabet.,finite
+Visual Question,SET_CLASSIFIER,Math Concepts,Quest 1-005: Number Sets (Part 3),Set of Multiples of 5.,infinite
+Visual Question,SET_CLASSIFIER,Social Sets,Quest 1-006: My Class (Part 2),Set of Districts in Uganda.,finite
+Visual Question,SET_CLASSIFIER,Social Sets,Quest 1-006: My Class (Part 3),Set of Whole Numbers.,infinite
+Visual Question,SET_CLASSIFIER,Infinite Sets,Quest 1-007: Infinite Visuals (Part 2),"Scene: Matrix RainSet of All Even Numbers {2, 4, 6...}.",infinite
+Visual Question,SET_CLASSIFIER,Infinite Sets,Quest 1-007: Infinite Visuals (Part 3),"Scene: Matrix RainSet of Integers {..., -1, 0, 1, ...}.",infinite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-008: Nature Visuals (Part 2),Scene: Swimming FishSet of Fish in a tank.,finite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-008: Nature Visuals (Part 3),Scene: Grazing CowsSet of Cattle on a farm.,finite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-008: Nature Visuals (Part 4),Scene: Sand GrainsSet of Sand Grains on a beach (Too many to count!).,infinite
+Visual Question,SET_CLASSIFIER,Nature Sets,Quest 1-008: Nature Visuals (Part 5),Scene: Map PinsSet of Districts in Uganda.,finite
+Visual Question,SET_CLASSIFIER,Social Sets,Quest 1-009: Class Visuals (Part 2),"Scene: Bouncing LettersSet of Vowels {A, E, I, O, U}.",finite
+Read,MATH_STUDY,Types of Sets,Finite vs Infinite,What is a Set?: A Set is just a collection of distinct objects. Imagine a basket. Anything we put inside that basket is a 'member' of the set.,
+Read,MATH_STUDY,Types of Sets,Finite vs Infinite,"1. Finite Sets: A Finite Set has a specific number of members. You can count them, and the counting comes to an end.Example: Vowels = {a, e, i, o, u}",
+Read,MATH_STUDY,Types of Sets,Finite vs Infinite,"Cardinal Number: Because a Finite set ends, we can find its Cardinal Number, n(A).This is just the total count of members.",
+Read,MATH_STUDY,Types of Sets,Finite vs Infinite,"2. Infinite Sets: An Infinite Set has no end. It goes on forever!Imagine counting numbers: 1, 2, 3, 4... You could never finish.",
+Read,MATH_STUDY,Types of Sets,Finite vs Infinite,"The Ellipsis (...): Since we can't write all the numbers, we use three dots called an Ellipsis.{ 1, 2, 3, ... }This symbol means 'and so on forever'.",
+Read,MATH_STUDY,Types of Sets,Finite vs Infinite,Summary: Finite: Ends. Can be counted.Infinite: Never ends. Uses '...',
+Visual Question,SET_THEORY,Set Notation & Regions,Quest 2: Reading Regions,List the elements of Y ∩ Z,
+Visual Question,SET_THEORY,Set Notation & Regions,Quest 2: Reading Regions,Find n(Y ∩ Z),
+Visual Question,SET_THEORY,Set Notation & Regions,Quest 2: Reading Regions,Find n(Y only),
+Visual Question,SET_THEORY,Set Notation & Regions,Quest 2: Reading Regions,Find n(Z - Y),
+Visual Question,SET_THEORY,Set Intersections,Quest 2-003: Overlap Sets,Show that Some Singers (S) are Dancers (D).Create an Intersection.,
+Visual Question,SET_THEORY,Set Relationships,Quest 2-003: Visual Relations,Show that All Mangoes (M) are Fruits (F).,
+Visual Question,SET_THEORY,Set Relationships,Quest 2-003: Visual Relations,Show that No Cars (C) are Plants (P).,
+Visual Question,SET_THEORY,Set Relationships,Quest 2-003: Visual Relations,Show that Some Singers (S) are Dancers (D).,
+Visual Question,SUBSET_GAME,Finding All Subsets,Quest 2-004: The Lunchbox,Level 1: Find all 2 subsets of {Apple}. (2¹),
+Visual Question,SUBSET_GAME,Finding All Subsets,Quest 2-004: The Lunchbox,"Level 2: Find all 4 subsets of {Apple, Banana}. (2²)",
+Visual Question,SUBSET_GAME,Finding All Subsets,Quest 2-004: The Lunchbox,"Level 3: Find all 8 subsets of {Apple, Banana, Orange}. (2³)",
+Visual Question,SUBSET_GAME,Finding Subsets,Quest 3-002: The Toy Van,Level 1: Load the Van! Find all 2 subsets of {Car}.,
+Visual Question,SUBSET_GAME,Finding Subsets,Quest 3-002: The Toy Van,"Level 2: Find all 4 subsets of {Ball, Bear}.",
+Visual Question,SUBSET_GAME,Finding Subsets,Quest 3-002: The Toy Van,Level 3: Master Mover! Find all 8 subsets.,
+Visual Question,SUBSET_GAME,Finding Subsets,Quest 3-003: Flag Painter,Find all 8 subsets by painting the stripes.,
+Visual Question,SUBSET_GAME,Finding Subsets,Quest 3-004: The Card Machine,Grandmaster Level: Find all 16 subsets of the Card Suits.,
+Visual Question,SET_THEORY,Disjoint Sets,Quest 2-005: Disjoint Logic,Sort numbers < 7 into Evens and Odds.,
+Visual Question,SET_THEORY,Disjoint Sets,Quest 2-005: Disjoint Logic,Find n(Evens ∩ Odds).,
+Visual Question,SET_THEORY,Equal vs Equivalent,Quest 2-004: Equal or Equivalent?,"Sort: X={a,b,c}, Y={1,2,3}. Are they overlapping?",
+Visual Question,SET_THEORY,Equal vs Equivalent,Quest 2-004: Equal or Equivalent?,Are sets X and Y Equal?,no
+Visual Question,SET_THEORY,Equal vs Equivalent,Quest 2-004: Equal or Equivalent?,Are sets X and Y Equivalent?,yes
+Visual Question,SET_THEORY,Union of Sets,Quest 2-007: Union Quiz,List the members of P ∪ Q (Union).,"{1, 2, 3, 4, 5}"
+Visual Question,SET_THEORY,Difference of Sets,Quest 2-008: Set Difference,List the members of M - N (M only).,"{a, b}"
+Visual Question,SET_THEORY,Complement,Quest 2-009: Complement Quiz,List the members of B' (Complement of B).,"{x, w}"
+Visual Question,SET_THEORY,Empty Set,Quest 2-010: Disjoint Quiz,What is E ∩ O?,∅ (Empty Set)
+Visual Question,SET_THEORY,Set Relationships,Quest 2-012: Subset Reverse,What is the relationship shown?,B is a subset of A
+Visual Question,SET_THEORY,Disjoint Sets,Quest 2-013: Disjoint,Describe the relationship.,Disjoint Sets
+Visual Question,SET_THEORY,Intersection,Quest 2-014: Intersection,What relationship is shown?,Intersecting Sets
+Visual Question,SET_THEORY,Equal Sets,Quest 2-015: Equality,"If Set A and Set B look like this, they are...",Equal Sets
+Visual Question,SET_THEORY,Disjoint Sets,Quest 2-016: Living vs Non-Living,Sort the objects. Do they overlap?,
+Visual Question,SET_THEORY,Disjoint Sets,Quest 2-016: Living vs Non-Living,Is the Intersection (Middle) an Empty Set?,yes
+Visual Question,SET_THEORY,Set Notation,Quest 2-017: Notation Quiz,Which symbol represents the shaded region?,A'
+Visual Question,SET_THEORY,Subset Notation,Quest 2-018: Symbols,Which statement matches the diagram?,P ⊂ Q
+Read,MATH_STUDY,Set Operations,Universal Set & Operations,"1. The Universal Set (ξ): Imagine a big box that contains everything we are talking about. This is the Universal Set, marked with the symbol ξ.Here, ξ = {1, 2, 3, 4, 5, 6, 7, 8}",
+Read,MATH_STUDY,Set Operations,Universal Set & Operations,"2. Intersection (∩): The Intersection is where the two circles overlap. These are numbers that are in Set A AND Set B.A ∩ B = { 3, 4 }",
+Read,MATH_STUDY,Set Operations,Universal Set & Operations,"3. Union (∪): The Union brings everyone together! It includes Set A, Set B, and the middle.It is the marriage of the two sets.A ∪ B = { 1, 2, 3, 4, 5, 6 }",
+Read,MATH_STUDY,Set Operations,Universal Set & Operations,"4. Difference (A - B): Set Difference means 'A Only'. We start with Set A, but we remove anything that touches B.A - B = { 1, 2 }(Notice 3 and 4 are gone because they are in B)",
+Read,MATH_STUDY,Set Operations,Universal Set & Operations,"5. Complement of A (A'): Complement means 'Everything outside of A'. Cover circle A with your hand. What is left in the Universal box?A' = { 5, 6, 7, 8 }",
+Read,MATH_STUDY,Set Relationships,Comparing Sets,Comparing Sets: We can compare Sets to see how they relate. Are they the same? Do they share members?,
+Read,MATH_STUDY,Set Relationships,Comparing Sets,"1. Equal Sets (=): Sets are Equal if they have exactly the same members.A = {1, 2, 3}B = {3, 1, 2}Even if the order is different, they are the same set!",
+Read,MATH_STUDY,Set Relationships,Comparing Sets,2. Equivalent Sets (↔): Sets are Equivalent if they have the same number of members (same cardinality).n(A) = 3 and n(B) = 3.They don't need to have the same items.,
+Read,MATH_STUDY,Set Relationships,Comparing Sets,3. Disjoint Sets: Disjoint Sets have nothing in common. Their intersection is empty (Ø).Example: Cats and Dogs. No animal is both!,
+Read,MATH_STUDY,Set Relationships,Comparing Sets,Review: Equal: Same members inside.Equivalent: Same amount (count).Disjoint: No overlap.,
+Read,MATH_STUDY,Sets & Regions,Understanding Sets,"What is a Set?: A set is simply a collection of well-defined objects. In Uganda, we often use sets to group things like fruits, numbers, or even countries!",
+Read,MATH_STUDY,Sets & Regions,Understanding Sets,Intersection (∩): The Intersection is the region where two sets overlap. It contains items that belong to BOTH groups.,
+Read,MATH_STUDY,Sets & Regions,Understanding Sets,"Union (∪): The Union combines everything! It includes all elements in Set A, Set B, and the intersection.",
+Read,MATH_STUDY,Sets & Regions,Understanding Sets,"Difference of Sets: If we say 'A only' or (A - B), we want elements that are strictly inside A and NOT in B.",
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-001: Venn Subsets,How many subsets are in set (P - Q)?,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-001: Venn Subsets,Find the number of subsets in set Q.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-001: Venn Subsets,How many subsets from members in Q but not P?,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-005: Factors of 4,Step 1: Count the Factors of 4.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-005: Factors of 4,Step 2: Find the number of Subsets.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-006: Word Sets,Step 1: Find n(M) for the word 'MATH'.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-006: Word Sets,Step 2: Calculate total Subsets.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-007: Prime Numbers,Step 1: How many Primes are less than 10?,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-007: Prime Numbers,Step 2: Calculate Subsets.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-008: High Powers,Step 1: Find n(F) (Fingers on a hand).,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-008: High Powers,Step 2: Calculate total Subsets.,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-009: Weekend,Step 1: Find n(Weekend Days).,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-009: Weekend,Step 2: Calculate total Subsets.,
+Visual Question,SUBSET_GAME,Finding Subsets,Quest 3-010: School Bag,"Pack the Bag! Find all 8 subsets of {Book, Pen, Apple}.",
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-011: Factors of 6,Step 1: Find n(F6). (Count the factors).,
+Visual Question,SET_THEORY,Calculating Subsets,Quest 3-011: Factors of 6,Step 2: Calculate total Subsets.,
+Visual Question,SET_THEORY,Powers of 2,Quest 3-012: Vowels Set,Find n(V).,
+Visual Question,SET_THEORY,Powers of 2,Quest 3-012: Vowels Set,Calculate total subsets (2ⁿ).,
+Visual Question,SET_THEORY,Reverse Calculation,Quest 3-013: Big Sets,Set K has 64 Subsets. Find n(K).,
+Visual Question,SET_THEORY,Reverse Calculation,Quest 3-013: Big Sets,"If a set has 128 Subsets, find n.",
+Read,MATH_STUDY,Subsets,Subsets & The Empty Set,What is a Subset?: Set A is a Subset of Set B if ALL members of A are also inside B.Think of it like a smaller box sitting inside a bigger box.,
+Read,MATH_STUDY,Subsets,Subsets & The Empty Set,The Notation (⊂): We use the symbol ⊂ to mean 'is a subset of'.A ⊂ BThis is read as: Set A is a subset of Set B.,
+Read,MATH_STUDY,Subsets,Subsets & The Empty Set,"The Empty Set (Ø): Before we count subsets, we must meet the Empty Set.This is a set with NO members. It is empty! We write it as {} or Ø.",
+Read,MATH_STUDY,Subsets,Subsets & The Empty Set,The Golden Rule: Important Rule: The Empty Set is a subset of EVERY set.Why? Because 'nothing' can fit inside anything!Ø ⊂ A,
+Read,MATH_STUDY,Subsets,Subsets & The Empty Set,"Calculating Subsets: To find the total number of subsets, use the formula:Subsets = 2ⁿWhere n is the number of elements in the set.",
+Read,MATH_STUDY,Subsets,Subsets & The Empty Set,"Let's Verify!: If Set V = { a, b }, then n = 2.2² = 4 Subsets.Let's list them:1. {a, b} (The set itself)2. {a}3. {b}4. { } (The Empty Set!)",
+Visual Question,SET_THEORY,Proper Subsets,Quest 4: Proper Subsets,How many Proper Subsets are in X ∩ Y?,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4: Proper Subsets,Find number of proper subsets in (X only).,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4: Proper Subsets,A set has 31 Proper Subsets. Find the number of elements (n).,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-002: Vowels,Step 1: Find n(V). (Count the vowels),
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-002: Vowels,Step 2: Calculate total Subsets (2ⁿ).,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-002: Vowels,Step 3: Calculate Proper Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-003: Colors,Step 1: Find n(C).,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-003: Colors,Step 2: Total Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-003: Colors,Step 3: Proper Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-004: Even Numbers,Step 1: Find n(E).,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-004: Even Numbers,Step 2: Total Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-004: Even Numbers,Step 3: Proper Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-005: Single Set,Step 1: Find n(S).,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-005: Single Set,Step 2: Total Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-005: Single Set,Step 3: Proper Subsets.,
+Visual Question,PIZZA_GAME,Proper Subsets,Quest 4-006: The Giant Pizza,Master Chef Level: Create a menu with exactly 31 Proper Subsets.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-007: Prime Proper,Step 1: Find n(P) for Primes less than 10.,
+Visual Question,SET_THEORY,Proper Subsets,Quest 4-007: Prime Proper,Step 2: Calculate Proper Subsets.,
+Visual Question,SET_THEORY,Word Problems,Quest 4-008: Word Proper,Step 1: Find n(W) for the word 'EAT'.,
+Visual Question,SET_THEORY,Word Problems,Quest 4-008: Word Proper,Step 2: Calculate Proper Subsets.,
+Visual Question,SET_THEORY,Concepts,Quest 4-010: Concept Check,"Total Subsets of {1, 2}?",
+Visual Question,SET_THEORY,Concepts,Quest 4-010: Concept Check,Total Proper Subsets?,
+Visual Question,SET_THEORY,Concepts,Quest 4-010: Concept Check,Which subset is removed to make them 'Proper'?,The Set Itself
+Read,MATH_STUDY,Proper Subsets,Proper vs Improper Subsets,What is a Proper Subset?: We learned that a subset is a part of a larger set.A Proper Subset is a subset that is strictly smaller than the original set. It cannot be equal to the original set.,
+Read,MATH_STUDY,Proper Subsets,Proper vs Improper Subsets,"The 'Improper' Subset: Did you know? Every set is a subset of itself!If Set A = {1, 2}, then {1, 2} is a subset of A. But it is NOT a Proper Subset. We call it an Improper Subset.",
+Read,MATH_STUDY,Proper Subsets,Proper vs Improper Subsets,"The Logic: For a subset to be Proper, there must be at least one member left over in the main set.Look at the diagram: Set B has members '3' and '4' that are NOT in A.",
+Read,MATH_STUDY,Proper Subsets,Proper vs Improper Subsets,"The Formula: To calculate the number of Proper Subsets, we take the total subsets and subtract 1 (the improper one).Proper Subsets = 2ⁿ - 1",
+Read,MATH_STUDY,Proper Subsets,Proper vs Improper Subsets,"Example Calculation: Let's try Set P = { a, b }.n = 2.Total Subsets = 2² = 4.Proper Subsets = 4 - 1 = 3.",
+Read,MATH_STUDY,Proper Subsets,Proper vs Improper Subsets,"Listing Them: For Set {a, b}:Proper: {a}, {b}, { }Improper: {a, b} (We throw this one away!)",
+Visual Question,BINARY_GENERATOR,Working Backwards,Quest 5: Power Plant,Target Output: 16 Subsets. How many cells (n) are needed?,
+Visual Question,PIZZA_GAME,Proper Subsets,Quest 5: The Pizza Chef,Intern Level: Make a menu with 3 Proper Subsets.,
+Visual Question,PIZZA_GAME,Proper Subsets,Quest 5: The Pizza Chef,Sous Chef: Make a menu with 7 Proper Subsets.,
+Visual Question,PIZZA_GAME,Proper Subsets,Quest 5: The Pizza Chef,Head Chef: Make a menu with 15 Proper Subsets.,
+Visual Question,PIZZA_GAME,Proper Subsets,Quest 5: The Pizza Chef,Master Chef: The ultimate order! 31 Proper Subsets.,
+Visual Question,SET_THEORY,Working Backwards,Quest 5-009: Reverse 63,Set K has 63 Proper Subsets. Find n(K).,
+Visual Question,SET_THEORY,Indices,Quest 5-007: Indices Quiz,Solve for n: 2ⁿ = 32,5
+Visual Question,SET_THEORY,Indices,Quest 5-007: Indices Quiz,Solve for x: 2ˣ - 1 = 15,4
+Visual Question,SUBSET_GAME,Reverse Construction,Quest 5-006: Build to Target,Pack enough items to create exactly 8 Subsets.,
+Visual Question,SET_THEORY,Comparison,Quest 5-005: Compare Sets,Set A has 16 Subsets. Find n(A).,
+Visual Question,SET_THEORY,Comparison,Quest 5-005: Compare Sets,Set B has 3 Proper Subsets. Find n(B).,
+Visual Question,SET_THEORY,Comparison,Quest 5-005: Compare Sets,Calculate n(A) + n(B).,
+Visual Question,SET_THEORY,Concept Logic,Quest 5-004: Fact Check,Can a set have exactly 100 Subsets?,no
+Visual Question,SET_THEORY,Concept Logic,Quest 5-004: Fact Check,Can a set have 7 Proper Subsets?,yes
+Visual Question,SET_THEORY,Large Numbers,Quest 5-003: Library Logic,A shelf has 128 arrangements (Subsets). How many books (n)?,
+Visual Question,SET_THEORY,Large Numbers,Quest 5-003: Library Logic,Another shelf has 63 Proper Subsets. Find n.,
+Visual Question,BINARY_GENERATOR,Proper Subsets,Quest 5-002: Power Plant II,Target: 31 Proper Subsets.Hint: Generator calculates Total (2ⁿ). Set it to 32 to get 31 Proper.,
+Read,MATH_STUDY,Finding Number of Elements,Working Backwards,"The Mystery: Usually, we count elements to find the number of subsets.But what if we know the Number of Subsets (e.g., 8 subsets) and need to find how many members are in the set?",
+Read,MATH_STUDY,Finding Number of Elements,Working Backwards,The Pattern (Powers of 2): Remember the powers of 2. This is our key:2¹ = 2 subsets (1 member)2² = 4 subsets (2 members)2³ = 8 subsets (3 members)2⁴ = 16 subsets (4 members)2⁵ = 32 subsets (5 members),
+Read,MATH_STUDY,Finding Number of Elements,Working Backwards,Case 1: From Total Subsets: Question: A set has 8 subsets. Find n(A).Step 1: Write the formula.2ⁿ = 8Step 2: Factorize 8 by 2.8 = 2 × 2 × 2 (That is 2³)Step 3: Compare powers.2ⁿ = 2³n(A) = 3.,
+Read,MATH_STUDY,Finding Number of Elements,Working Backwards,Case 2: From Proper Subsets: Question: Set M has 15 Proper Subsets. Find n(M).Step 1: Proper subsets are missing 1 (the improper one). So we must ADD 1 back.Total Subsets = 15 + 1 = 16.,
+Read,MATH_STUDY,Finding Number of Elements,Working Backwards,"Solving Case 2: Now we solve for 16 Subsets.2ⁿ = 162 × 2 × 2 × 2 = 16Count the twos: There are 4.So, 2ⁿ = 2⁴.n(M) = 4.",
+Read,MATH_STUDY,Finding Number of Elements,Working Backwards,A Harder Example: Question: Set K has 63 Proper Subsets.1. Add 1: 63 + 1 = 64 Total Subsets.2. Factorize 64:2 × 2 × 2 × 2 × 2 × 2 = 64(Count them... there are 6!)Answer: n(K) = 6.,
+Visual Question,SET_THEORY,Placing Information,Quest 6-001: Map the Venn,Drag numbers to the correct region.M (Multiples of 3) & O (Odds),
+Visual Question,SET_THEORY,Placing Information,Quest 6-001: Map the Venn,List elements of M ∩ O.,
+Visual Question,SET_THEORY,Placing Information,Quest 6-001: Map the Venn,List elements of M only.,
+Visual Question,SET_THEORY,Logic,Quest 6-010: Shape Logic,Sort the shapes.,
+Visual Question,SET_THEORY,Integers,Quest 6-009: Integers,"Sort integers: -3, -1, 0, 1, 3",
+Visual Question,SET_THEORY,Classification,Quest 6-008: Food Sort,"Sort: Apple (Red Fruit), Banana (Yellow Fruit), Tomato (Red Veg).",
+Visual Question,SET_THEORY,Disjoint Sets,Quest 6-007: Even vs Odd,Sort the numbers.,
+Visual Question,SET_THEORY,Disjoint Sets,Quest 6-007: Even vs Odd,Find n(Even ∩ Odd).,
+Visual Question,SET_THEORY,Subsets,Quest 6-006: Factors Subset,"A={1,2,4}, B={1,2,4,8}. Sort them.",
+Visual Question,SET_THEORY,Subsets,Quest 6-006: Factors Subset,Is Set A a Proper Subset of Set B?,yes
+Visual Question,SET_THEORY,Universal Set,Quest 6-005: Universal Box,"Universal Set = {1, 2, 3, 4, 5}. Sort them.",
+Visual Question,SET_THEORY,Universal Set,Quest 6-005: Universal Box,Find n(A ∪ B)' (Complement).,
+Visual Question,SET_THEORY,Multiples,Quest 6-004: LCM Finder,Sort Multiples of 3 and 4 (less than 15).,
+Visual Question,SET_THEORY,Multiples,Quest 6-004: LCM Finder,Identify the LCM (Lowest Common Multiple).,
+Visual Question,SET_THEORY,Intersections,Quest 6-003: Word Sets,Set A = {Letters in PEAR}. Set B = {Letters in REAP}.Sort the letters.,
+Visual Question,SET_THEORY,Intersections,Quest 6-003: Word Sets,Are the sets Equivalent?,yes
+Visual Question,SET_THEORY,Number Properties,Quest 6-002: Primes & Odds,Sort numbers P (Primes) & O (Odds),
+Visual Question,SET_THEORY,Number Properties,Quest 6-002: Primes & Odds,How many numbers are Even Primes?,
+Visual Question,SET_THEORY,Factors,Quest 6-001: Factors of 12 & 18,Drag factors to the correct region.F12 & F18,
+Visual Question,SET_THEORY,Factors,Quest 6-001: Factors of 12 & 18,List the GCF (Highest Common Factor).,
+Visual Question,SET_THEORY,Word Problems,Quest 6-012: Word Sets,Sort the unique letters of MANGO and APPLE.,
+Visual Question,SET_THEORY,Word Problems,Quest 6-012: Word Sets,Probability of picking a letter shared by BOTH words?,
+Visual Question,SET_THEORY,Inequalities,Quest 6-011: Logic Ranges,A={x : 2 A ∩ B.,
+Visual Question,SET_THEORY,Visual Intersection,Quest 6-015: Visual Intersect,Place 'Both' in the intersection.,
+Visual Question,SET_THEORY,Region Notation,Quest 6-016: Region Decoder,Which notation describes the shaded region?,(X ∪ Y)'
+Visual Question,SET_THEORY,Region Shading,Quest 6-017: Identify Overlap,Which notation represents the shaded region?,A ∩ B
+Visual Question,SET_THEORY,Set Difference,Quest 6-018: Identify Difference,Identify the shaded region.,P - Q
+Visual Question,SET_THEORY,Symmetric Difference,Quest 6-019: Only One,What does the shaded region represent?,Only X or Only Y
+Visual Question,SET_THEORY,Factors,Quest 6-020: Factors 12 & 18,"Sort the factors.F12 = {1,2,3,4,6,12}F18 = {1,2,3,6,9,18}",
+Visual Question,SET_THEORY,Factors,Quest 6-020: Factors 12 & 18,List the Common Factors.,
+Visual Question,SET_THEORY,Attribute Sorting,Quest 6-022: Shape Sorter,"Sort the shapes.A = Red Objects, B = Circles",
+Visual Question,SET_THEORY,Attribute Sorting,Quest 6-022: Shape Sorter,How many items are Red Circles?,
+Visual Question,SET_THEORY,Shading Regions,Quest 6-023: Region Painter,Tap regions to shade X ' (Complement of X).,
+Visual Question,SET_THEORY,Shading Regions,Quest 6-023: Region Painter,Tap to shade X ∩ Y.,
+Visual Question,SET_THEORY,Shading Regions,Quest 6-023: Region Painter,Tap to shade (X ∪ Y) - (X ∩ Y).,
+Visual Question,SET_THEORY,Shading Sets,Quest 6-024: Shade Union,Tap to shade P ∪ Q (Union).,
+Visual Question,SET_THEORY,Shading Complements,Quest 6-026: Shade Neither,Tap to shade (M ∪ N)'.,
+Visual Question,SET_THEORY,Shading Differences,Quest 6-027: Only One,Tap regions representing elements in Exactly One Set.,
+Visual Question,VENN_SPOTLIGHT,Shading Regions,Quest 6b: The Spotlight,,
+Visual Question,VENN_SPOTLIGHT,Shading Regions,Quest 6b: The Spotlight,,
+Visual Question,VENN_SPOTLIGHT,Shading Regions,Quest 6b: The Spotlight,,
+Visual Question,VENN_SPOTLIGHT,Shading Regions,Quest 6b: The Spotlight,,
+Read,MATH_STUDY,Venn Diagrams,Placing Info Correctly,The Sorting Game: Filling a Venn Diagram is just like sorting objects into baskets.Let's sort shapes based on two rules:Set A: Must be RED.Set B: Must be a CIRCLE.,
+Read,MATH_STUDY,Venn Diagrams,Placing Info Correctly,"Rule 1: The Middle First!: Pro Tip: Always fill the Intersection first!Ask: ""Is there anything that is BOTH Red AND a Circle?""Yes! The Red Circle (🔴) goes in the center.",
+Read,MATH_STUDY,Venn Diagrams,Placing Info Correctly,"Rule 2: Fill the Sides: Now, place the rest:1. Red Square (🟥): It is Red, but NOT a circle. It goes to the Left (Red Only).2. Blue Circle (🔵): It is a Circle, but NOT red. It goes to the Right (Circle Only).",
+Read,MATH_STUDY,Venn Diagrams,Placing Info Correctly,"Rule 3: The Outsiders: What about a Blue Square (🟦)?It is NOT red. It is NOT a circle.It gets kicked outside the rings, but stays inside the box (Universal Set).",
+Read,MATH_STUDY,Venn Diagrams,Placing Info Correctly,"Applying to Numbers: Now let's try Math!Set A = Factors of 6: {1, 2, 3, 6}Set B = Factors of 9: {1, 3, 9}Step 1: Find the Middle (Common members).Both have 1 and 3.",
+Read,MATH_STUDY,Venn Diagrams,Placing Info Correctly,"Calculating 'Only': Step 2: Fill the rest.Set A (Left): We used {1,3}. Remaining: {2, 6}.Set B (Right): We used {1,3}. Remaining: {9}.Notice: We don't write {1,3} again!",
+Read,MATH_STUDY,Venn Strategy,Solving & Placing Info,"The 3-Step Strategy: To solve any Venn Diagram problem correctly, follow these three steps:1. List the members (if hidden).2. Fill the Intersection first.3. Subtract to find the 'Only' regions.",
+Read,MATH_STUDY,Venn Strategy,Solving & Placing Info,"Step 1: Decoding the List: Sometimes sets are hidden in algebra!Set A = { x : 2 This means 'integers between 2 and 6'.List: { 3, 4, 5 }",
+Read,MATH_STUDY,Venn Strategy,Solving & Placing Info,"Step 2: Finding the Intersection: Let's compare two sets:A = { 3, 4, 5 }B = { 4, 5, 6 }What is in BOTH? { 4, 5 }.We place these in the middle immediately.",
+Read,MATH_STUDY,Venn Strategy,Solving & Placing Info,"Step 3: Calculating 'Only': Set A has {3, 4, 5}. But {4, 5} are already in the middle!So, A Only gets the remaining member: 3.Similarly, B Only gets 6.",
+Read,MATH_STUDY,Venn Strategy,Solving & Placing Info,"Strategy: Working with Counts: Sometimes exam questions give you Totals instead of lists.""n(P) = 20. Intersection = 5. Find n(P Only).""Rule: Whole Circle - Middle = Only.20 - 5 = 15.",
+Read,MATH_STUDY,Venn Strategy,Solving & Placing Info,"Strategy: The Universal Set: Question: ""Total pupils = 40. Union = 35. Find the Complement.""'Complement means the Outside region.Total - Union = Outside.40 - 35 = 5.",
+Read,MATH_STUDY,Venn Strategy,Placing Information,"The Golden Rule: To fill a Venn Diagram correctly, there is one Golden Rule:Fill the Intersection FIRST!Let's see why, using Red shapes and Circles.",
+Read,MATH_STUDY,Venn Strategy,Placing Information,"1. Visual Sorting: Set A: Red Objects.Set B: Circles.Where does a Red Circle go?It is BOTH, so it goes in the Middle (Intersection).",
+Read,MATH_STUDY,Venn Strategy,Placing Information,"2. Decoding Lists: Now let's use numbers. Sometimes lists are hidden in algebra!A = { x : 2 This means 'numbers between 2 and 6'.List: { 3, 4, 5 }",
+Read,MATH_STUDY,Venn Strategy,Placing Information,"3. Comparing Lists: Set A = { 3, 4, 5 }Set B = { 4, 5, 6 }What is in BOTH? { 4, 5 }.We place these in the middle immediately.",
+Read,MATH_STUDY,Venn Strategy,Placing Information,"4. Subtract for 'Only': Set A has {3, 4, 5}. But {4, 5} are already in the middle!So, A Only gets the remaining member: 3.Similarly, B Only gets 6.",
+Read,MATH_STUDY,Venn Strategy,Placing Information,"5. The Outsiders: What about numbers not in A or B?If Total = {3, 4, 5, 6, 7, 8}, then 7 and 8 go Outside.This is called the Complement (A ∪ B)'.",
+Visual Question,SET_THEORY,Solving for Unknowns,Quest 7: Finding X,"Given n(R) = 25, find x.",
+Visual Question,SET_THEORY,Solving for Unknowns,Quest 7: Finding X,How many pupils eat Matooke?,
+Visual Question,SET_THEORY,Solving for Unknowns,Quest 7: Finding X,How many eat one type only?,
+Visual Question,SET_THEORY,Complex Equations,Quest 7-002: Advanced Algebra,"Given n(B) = 50, find x.",
+Visual Question,SET_THEORY,Complex Equations,Quest 7-002: Advanced Algebra,How many grow Coffee?,
+Visual Question,SET_THEORY,Complex Equations,Quest 7-002: Advanced Algebra,Farmers growing Beans but not Coffee?,
+Visual Question,SET_THEORY,Solving from Regions,Quest 7-003: Region Algebra,"If 20 pupils like Mangoes ONLY, find y.",
+Visual Question,SET_THEORY,Solving from Regions,Quest 7-003: Region Algebra,How many like Oranges ONLY?,
+Visual Question,SET_THEORY,Solving from Regions,Quest 7-003: Region Algebra,Find the Total Number of pupils.,
+Visual Question,SET_THEORY,Symmetric Difference,Quest 7-004: Only One Type,"If 36 pupils do only one activity, find k.",
+Visual Question,SET_THEORY,Symmetric Difference,Quest 7-004: Only One Type,How many pupils do both activities?,
+Visual Question,SET_THEORY,Symmetric Difference,Quest 7-004: Only One Type,Total pupils in Dancing?,
+Visual Question,SET_THEORY,Equal Sets,Quest 7-005: Equating Sets,"If n(L) = n(E), find m.",
+Visual Question,SET_THEORY,Equal Sets,Quest 7-005: Equating Sets,How many speak Luganda only?,
+Visual Question,SET_THEORY,Equal Sets,Quest 7-005: Equating Sets,How many pupils in the class altogether?,
+Visual Question,SET_THEORY,Equal Sets Algebra,Quest 7-005: Equal Sets,"If n(L) = n(E), find m.",
+Visual Question,SET_THEORY,Equal Sets Algebra,Quest 7-005: Equal Sets,How many speak Luganda only?,
+Visual Question,SET_THEORY,Equal Sets Algebra,Quest 7-005: Equal Sets,How many pupils in the class altogether?,
+Visual Question,SET_THEORY,Equal Regions Algebra,Quest 7-006: Music Festival,"Total = 55. Singers only = 20, Drummers only = 15. Both equal Neither. Fill the diagram.",
+Visual Question,SET_THEORY,Equal Regions Algebra,Quest 7-006: Music Festival,Find value of x (Both).,
+Visual Question,SET_THEORY,Equal Regions Algebra,Quest 7-006: Music Festival,How many students are Singers in total?,
+Visual Question,SET_THEORY,Finding Totals,Quest 7-007: Market Day,"Given n(P) = 29, find y.",
+Visual Question,SET_THEORY,Finding Totals,Quest 7-007: Market Day,Find the Total People in the market.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-008: Sports Ratios,"Total = 90. n(F)=2x, n(R)=x. Both=10. Find x.",
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-008: Sports Ratios,Find Total Footballers.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-009: Book Sale,Phase 1: F-only is twice N-only (y). Both=10. Outside=10.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-009: Book Sale,Phase 2: Total books = 80. Find y.,
+Visual Question,SET_THEORY,Complex Algebra,Quest 7-006: Sports Algebra,"If 21 pupils play only one game, find h.",
+Visual Question,SET_THEORY,Complex Algebra,Quest 7-006: Sports Algebra,How many play Netball altogether?,
+Visual Question,SET_THEORY,Complex Algebra,Quest 7-006: Sports Algebra,How many pupils do NOT play Netball?,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-007: Farmer's Market,Phase 1: Both is 2x. Neither is x. Fill Diagram.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-007: Farmer's Market,Phase 2: Total = 50. Find x.,
+Visual Question,SET_THEORY,Equal Sets,Quest 7-008: Clinic Data,"If n(M) = n(T), find y.",
+Visual Question,SET_THEORY,Equal Sets,Quest 7-008: Clinic Data,Find Malaria Only.,
+Visual Question,SET_THEORY,Algebraic Totals,Quest 7-009: Food Survey,Total = 45. Find x.,
+Visual Question,SET_THEORY,Algebra via Total Set,Quest 7-010: Subject Algebra,Total Math pupils = 30. Find x.,
+Visual Question,SET_THEORY,Algebra via Total Set,Quest 7-010: Subject Algebra,How many like Science ONLY?,
+Visual Question,SET_THEORY,Algebra via Total Set,Quest 7-010: Subject Algebra,Find the Total Number of pupils in the class.,
+Visual Question,SET_THEORY,Solving via Total,Quest 7-011: Art Class,Total=40. Total Paint=25. Sketch Only=x. Find x.,
+Visual Question,SET_THEORY,Solving via Total,Quest 7-011: Art Class,How many do BOTH?,
+Visual Question,SET_THEORY,Algebraic Totals,Quest 7-012: Sports Algebra,Total=60. Total F=40. R-only=x. Outside=5. Find x.,
+Visual Question,SET_THEORY,Algebraic Totals,Quest 7-012: Sports Algebra,How many play BOTH?,
+Visual Question,SET_THEORY,Algebra,Quest 7-014: Mystery Total,"Total=40. Intersection=10. A=2x, B=3x. Find x.",
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-013: 3:2 Ratio,"Phase 1: n(A)=3x, n(B)=2x. Both=x. Fill Only regions.",
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 7-013: 3:2 Ratio,Phase 2: Total = 40. Find x.,
+Visual Question,SET_THEORY,Equating Regions,Quest 7-016: Set Construction,Phase 1: Construct the Diagram• R only: 3k-2 &nbsp; • B only: 2k+4• Intersection: 10 &nbsp; • Outside: k,
+Visual Question,SET_THEORY,Equating Regions,Quest 7-016: Set Construction,Phase 2: Given n(R only) = n(B only). Find k.,
+Visual Question,SET_THEORY,Equating Regions,Quest 7-016: Set Construction,How many are Outside the sets?,
+Visual Question,SET_THEORY,Equal Totals,Quest 7-017: Exam Build,Phase 1: Build It• M-only: x+10 &nbsp; • E-only: 2x• Both: 5,
+Visual Question,SET_THEORY,Equal Totals,Quest 7-017: Exam Build,"Phase 2: If n(M) = n(E), find x.",
+Visual Question,SET_THEORY,Algebraic Construction,Quest 7-018: Sports Build,Phase 1: Build It• R-only: 2n &nbsp; • T-only: n• Both: 10,
+Visual Question,SET_THEORY,Algebraic Construction,Quest 7-018: Sports Build,Phase 2: Total=40. Find n.,
+Visual Question,SET_THEORY,Partial Sums,Quest 7-019: Set Logic,Step 1: Which equation helps find k given n(H)=24?,2k + (k+3) = 24
+Visual Question,SET_THEORY,Partial Sums,Quest 7-019: Set Logic,Step 2: Solve 3k + 3 = 24. Find k.,
+Visual Question,SET_THEORY,Partial Sums,Quest 7-019: Set Logic,Step 3: How many play Rugby Only?,
+Visual Question,SET_THEORY,Intersection Formula,Quest 7-020: Intersection Solver,Total=50. Outside=0. Find Intersection z.,
+Visual Question,SET_THEORY,Intersection Formula,Quest 7-020: Intersection Solver,Find p (Rice Only).,
+Visual Question,SET_THEORY,Intersection Formula,Quest 7-020: Intersection Solver,Find q (Matooke Only).,
+Read,MATH_STUDY,Complex Algebra,Mastering Set Equations,"The 4 Main Exam Questions: In hard exams, you won't just count numbers. You will solve for letters like k, m, or y.There are 4 types of questions. Let's learn to spot them.",
+Read,MATH_STUDY,Complex Algebra,Mastering Set Equations,"Type 1: The 'Whole Circle' Rule: Clue: Question says ""n(A) = 24"".Logic: This means the Entire Circle A adds up to 24. Do not forget the intersection!Equation: (Left Only) + (Middle) = 242k + (k+3) = 24",
+Read,MATH_STUDY,Complex Algebra,Mastering Set Equations,"Type 2: 'Only One' Activity: Clue: ""36 pupils do only one activity"".Logic: This refers to the 'ears' of the diagram. We ignore the middle.Equation: (Left Only) + (Right Only) = 364k + (2k+6) = 36",
+Read,MATH_STUDY,Complex Algebra,Mastering Set Equations,"Type 3: Equal Sets: Clue: ""n(L) = n(E)"".Logic: The total of the Left Circle equals the total of the Right Circle.Equation: (Left + Mid) = (Mid + Right)5m+4 + m = m + 3m+12",
+Read,MATH_STUDY,Complex Algebra,Mastering Set Equations,"Type 4: The Universal Sum: Clue: ""Total class = 90"" (and there are outsiders).Logic: Add EVERYTHING. Left + Middle + Right + Outside = Total.Equation: (3h+1) + 2h + (h-4) + (h+2) = 90",
+Read,MATH_STUDY,Complex Algebra,Mastering Set Equations,"Final Step: Substitution: Finding x is not the end!If question asks: ""How many do Dancing?"", you must substitute x back into the expression.If x=5, Dancing = 4(5) + (5+2) = 27.",
+Read,MATH_STUDY,Solving Unknowns,Algebra in Sets,"Why Algebra?: Sometimes we don't know the exact numbers in a region. Instead, we are given a letter like x.To find x, we need to build an Equation.",
+Read,MATH_STUDY,Solving Unknowns,Algebra in Sets,Case 1: The Whole Circle: Problem: n(A) = 25. Find x.Logic: The label n(A) means the entire circle A. This includes the 'Only' part AND the 'Intersection'.Equation:x + 10 = 25x = 15,
+Read,MATH_STUDY,Solving Unknowns,Algebra in Sets,"Case 2: The Universal Sum: Problem: Total Class = 50. Find x.Logic: If we add every region (including outside), it must equal the Total.Equation:(x) + (10) + (2x) + (5) = 503x + 15 = 50",
+Read,MATH_STUDY,Solving Unknowns,Algebra in Sets,Case 3: Equal Sets: Problem: n(A) = n(B). Find x.Logic: The total count of Circle A is equal to Circle B.Equation:(x + 10) = (10 + 2x)x + 10 = 2x + 10,
+Read,MATH_STUDY,Solving Unknowns,Algebra in Sets,"Case 4: The Intersection Trick: Problem: n(A)=30, n(B)=25, Total=50. Find the middle (z).Logic: Add the sets: 30 + 25 = 55.This is bigger than the Total (50) because we counted the middle twice!Formula: (A + B) - Total = Intersection.55 - 50 = 5.",
+Read,MATH_STUDY,Solving Unknowns,Algebra in Sets,"Final Step: Substitution: After finding x, always read the question again!If x = 15, and the question asks for ""Set B Only"" (2x):Answer = 2(15) = 30.",
+Visual Question,SET_THEORY,Survey Applications,Quest 8-001: Sports Survey,How many pupils play Football?,
+Visual Question,SET_THEORY,Survey Applications,Quest 8-001: Sports Survey,How many play Volleyball only?,
+Visual Question,SET_THEORY,Survey Applications,Quest 8-001: Sports Survey,How many play both?,
+Visual Question,SET_THEORY,Survey Applications,Quest 8-001: Sports Survey,How many pupils play one type only?,
+Visual Question,SET_THEORY,Fractions in Sets,Quest 8-002: The Reading Club,"Phase 1: Class of 40. ½ read News (20), ¼ read Comics (10). 5 read Both. Fill the diagram.",
+Visual Question,SET_THEORY,Fractions in Sets,Quest 8-002: The Reading Club,Phase 2: How many read only one type of book?,
+Visual Question,SET_THEORY,Intersection Formula,Quest 8-003: Book Club,Total = 50. Everyone reads. Find x (Both).,
+Visual Question,SET_THEORY,Intersection Formula,Quest 8-003: Book Club,How many read Fiction ONLY?,
+Visual Question,SET_THEORY,Relative Algebra,Quest 8-004: Hockey & Rugby,Phase 1: Rugby Only is 5 more than both. Neither is 5.,
+Visual Question,SET_THEORY,Relative Algebra,Quest 8-004: Hockey & Rugby,Phase 2: Total pupils = 65. Find x.,
+Visual Question,SET_THEORY,Relative Algebra,Quest 8-004: Hockey & Rugby,Find total playing Rugby.,
+Visual Question,SET_THEORY,Difference of Sets,Quest 8-005: Science Project,"Phase 1: P=30, B=25, Both=10. Fill Only regions.",
+Visual Question,SET_THEORY,Difference of Sets,Quest 8-005: Science Project,Phase 2: Total = 50. Find k (Neither).,
+Visual Question,SET_THEORY,Difference of Sets,Quest 8-005: Science Project,Find n(P - B) (Physics Only).,
+Visual Question,SET_THEORY,Ratio Word Problems,Quest 8-006: Farm Ratios,"Total=40. G=2x, C=x. Both=5, Neither=5. Find x.",
+Visual Question,SET_THEORY,Ratio Word Problems,Quest 8-006: Farm Ratios,How many have Cows?,
+Visual Question,SET_THEORY,Algebraic Word Problems,Quest 8-007: Sports Algebra,Phase 1: n(F)=25. V-only equals Both (x). Neither is 5.,
+Visual Question,SET_THEORY,Algebraic Word Problems,Quest 8-007: Sports Algebra,Phase 2: Total students = 40. Find x.,
+Visual Question,SET_THEORY,Algebraic Word Problems,Quest 8-007: Sports Algebra,Find Total Volleyball players.,
+Visual Question,SET_THEORY,Ratio Problems,Quest 8-008: Debate Club,Phase 1: S-only is 3x. D-only is 2x. Both is x.,
+Visual Question,SET_THEORY,Ratio Problems,Quest 8-008: Debate Club,Phase 2: Total students = 60. Find x.,
+Visual Question,SET_THEORY,Ratio Problems,Quest 8-008: Debate Club,Find Total Speakers n(S).,
+Visual Question,SET_THEORY,Logic Applications,Quest 8-009: Voting,"A=60, B=50, Both=20, Invalid=10. Fill diagram.",
+Visual Question,SET_THEORY,Logic Applications,Quest 8-009: Voting,How many did NOT vote for A?,
+Visual Question,SET_THEORY,Application of Sets,Quest 8-010: Music Fest,Total=100. Neither=10. Find x (Both).,
+Visual Question,SET_THEORY,Application of Sets,Quest 8-010: Music Fest,How many like only one type of music?,
+Visual Question,SET_THEORY,Medical Sets,Quest 8-011: Clinic Logic,Total = 50. Find x (Both).,
+Visual Question,SET_THEORY,Medical Sets,Quest 8-011: Clinic Logic,How many have Malaria Only?,
+Visual Question,SET_THEORY,Overlap Logic,Quest 8-012: The Debate,Total=100. Neither=5. Find x (Both).,
+Visual Question,SET_THEORY,Ratio Logic,Quest 8-013: Science Ratios,Total=80. P-only is twice C-only (x). Both=10. Outside=10.,
+Visual Question,SET_THEORY,Ratio Logic,Quest 8-013: Science Ratios,Find Total Physics Students.,
+Visual Question,SET_THEORY,Word Problems,Quest 8-014: Drink Survey,Total=80. Outside is 2x. Find x (Both).,
+Visual Question,SET_THEORY,Word Problems,Quest 8-014: Drink Survey,How many drink Neither?,
+Visual Question,SET_THEORY,Algebraic Difference,Quest 8-015: Sports Diff,Total=60. n(F)=40. R-only=x. Outside=x+10. Find x.,
+Visual Question,SET_THEORY,Logic,Quest 8-016: Party Invite,How many guests took at least one item?,
+Visual Question,SET_THEORY,Logic,Quest 8-016: Party Invite,How many guests in Total?,
+Visual Question,SET_THEORY,Visual Sums,Quest 8-024: Click to Sum,Tap regions to find total Mathematics (M).,
+Visual Question,SET_THEORY,Visual Sums,Quest 8-024: Click to Sum,Tap regions representing Not Mathematics.,
+Visual Question,SET_THEORY,Visual Calculation,Quest 8-024: Visual Sums,Tap regions to find total Mathematics (M).,
+Visual Question,SET_THEORY,Visual Calculation,Quest 8-024: Visual Sums,Tap regions representing Not Mathematics.,
+Visual Question,SET_THEORY,Visual Calculation,Quest 8-024: Visual Sums,Tap regions to find probability of Either subject.,
+Visual Question,SET_THEORY,Visual Sums,Quest 8-027: Visual Market,Tap the regions representing shoppers who bought Only One item.,
+Visual Question,SET_THEORY,Visual Sums,Quest 8-027: Visual Market,Tap regions representing shoppers who did NOT buy Rice.,
+Visual Question,SET_THEORY,Visual Totals,Quest 8-028: Exam Clicks,Tap regions to find Total Math students.,
+Visual Question,SET_THEORY,Visual Totals,Quest 8-028: Exam Clicks,Tap everyone who passed at least one subject.,
+Visual Question,SET_THEORY,Intersection Clicks,Quest 8-029: Fruit Clicks,Tap the region for fruits that are Both Mango and Orange.,
+Visual Question,SET_THEORY,Intersection Clicks,Quest 8-029: Fruit Clicks,Tap all regions containing Oranges.,
+Read,MATH_STUDY,Applications,Word Problems in Sets,"From Words to Diagrams: In exams, Set Theory is often hidden inside stories about sports, food, or books.Let's learn the secret language of these word problems.",
+Read,MATH_STUDY,Applications,Word Problems in Sets,1. 'Only One Item': Question: How many guests took only one item?Logic: This means people who took Tea Only OR Cake Only.20 + 10 = 30 guests.,
+Read,MATH_STUDY,Applications,Word Problems in Sets,2. 'At Least One': Question: How many took at least one item?Logic: This implies the Union. It means 'Anyone who took anything'.20 + 15 + 10 = 45 guests.,
+Read,MATH_STUDY,Applications,Word Problems in Sets,3. 'Neither' or 'None': Question: How many guests took neither?Logic: This is the region outside the circles but inside the Universal box.Answer = 5 guests.,
+Read,MATH_STUDY,Applications,Word Problems in Sets,4. Probability: Question: What is the probability a guest took Both?Step 1: Find Total Guests. (20+15+10+5 = 50)Step 2: Find 'Both'. (15)Probability = 15/50.,
+Visual Question,SET_THEORY,Universal Sets & Complements,Quest 9-001: The Universal Box,"Drag numbers to correct places. Don't forget the Universal Set!F={1,2,3,6}, T={3,6,9,12,15}",
+Visual Question,SET_THEORY,Universal Sets & Complements,Quest 9-001: The Universal Box,List members of Intersection F ∩ T.,
+Visual Question,SET_THEORY,Universal Sets & Complements,Quest 9-001: The Universal Box,List members of (F ∪ T)' (Complement).,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-002: Science Lab,Phase 1: Both is 5. Fill Only regions.,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-002: Science Lab,Phase 2: Total = 40. Find y (Neither).,
+Visual Question,SET_THEORY,Complements,Quest 9-003: Debate Team,Phase 1: Both is 10. Outside is y. Fill Only regions.,
+Visual Question,SET_THEORY,Complements,Quest 9-003: Debate Team,Phase 2: Total = 50. Find y (Neither).,
+Visual Question,SET_THEORY,Probability,Quest 9-004: Sports Prob,Total = 100. Find x (Both).,
+Visual Question,SET_THEORY,Probability,Quest 9-004: Sports Prob,Probability of playing Golf Only?,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-005: Library Books,Phase 1: Both is 10. Outside is y. Fill 'Only' regions.,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-005: Library Books,Phase 2: Total = 50. Find y (Neither).,
+Visual Question,SET_THEORY,Difference of Sets,Quest 9-006: The Garden,Phase 1: M-only is x+5. B-only is x+10. Both is x.,
+Visual Question,SET_THEORY,Difference of Sets,Quest 9-006: The Garden,Phase 2: Total gardeners = 45. Find x.,
+Visual Question,SET_THEORY,Difference of Sets,Quest 9-006: The Garden,How many grow Maize Only?,
+Visual Question,SET_THEORY,Set Difference,Quest 9-007: Science Test,Total Math = 25. Find x.,
+Visual Question,SET_THEORY,Set Difference,Quest 9-007: Science Test,How many passed Math ONLY?,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-008: Book Fair,Total Fiction = 25. Find x.,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-008: Book Fair,Find n(F') (Not Fiction).,
+Visual Question,SET_THEORY,Voting Probability,Quest 9-009: Election Day,"Phase 1: Both is 10. Fill Only regions. (A=40, B=30)",
+Visual Question,SET_THEORY,Voting Probability,Quest 9-009: Election Day,Phase 2: Total = 80. Find y (Invalid Votes).,
+Visual Question,SET_THEORY,Voting Probability,Quest 9-009: Election Day,Probability of an Invalid Vote?,
+Visual Question,SET_THEORY,Complement Algebra,Quest 9-010: Party Drinks,"If n(S ∩ W)' = 32 (Not Both), find x.",
+Visual Question,SET_THEORY,Complement Algebra,Quest 9-010: Party Drinks,How many guests attended altogether?,
+Visual Question,SET_THEORY,Complement Algebra,Quest 9-010: Party Drinks,How many did NOT take Soda?,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-011: Transport,Phase 1: Both=5. Outside=x. Fill Only regions.,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-011: Transport,Phase 2: Total=60. Find x.,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-011: Transport,How many do NOT take the Bus?,
+Visual Question,SET_THEORY,Complement Logic,Quest 9-013: Lunch Logic,Total=50. Neither=10. Find x (Both).,
+Visual Question,SET_THEORY,Finding Complements,Quest 9-014: Music Class,"Phase 1: P=25, V=10, Both=5. Fill Only regions.",
+Visual Question,SET_THEORY,Finding Complements,Quest 9-014: Music Class,Phase 2: Total=50. Find x (Neither).,
+Visual Question,SET_THEORY,Complement Logic,Quest 9-015: Exam Results,Total=50. Neither=5. Find x (Both).,
+Visual Question,SET_THEORY,Complement Logic,Quest 9-015: Exam Results,How many passed exactly one subject?,
+Visual Question,SET_THEORY,Total & Complements,Quest 9-016: Market Data,Find the Total Number of people.,
+Visual Question,SET_THEORY,Total & Complements,Quest 9-016: Market Data,Find n(A ∩ B)'.,
+Visual Question,SET_THEORY,De Morgan Law,Quest 9-017: Complements,List elements of (A ∪ B)'.,
+Visual Question,SET_THEORY,De Morgan Law,Quest 9-017: Complements,Find n(A' ∩ B').,
+Visual Question,SET_THEORY,Complement Construction,Quest 9-019: Party Build,Phase 1: Build It• J-only: 15 &nbsp; • W-only: 10• Both: 5 &nbsp; • Outside: p,
+Visual Question,SET_THEORY,Complement Construction,Quest 9-019: Party Build,Phase 2: Total=40. Find p.,
+Visual Question,SET_THEORY,Finding Neither,Quest 9-022: Library Data,Phase 1: Both is 20. Outside is k. Fill Only regions.,
+Visual Question,SET_THEORY,Finding Neither,Quest 9-022: Library Data,Phase 2: Total = 60. Find k (Neither).,
+Visual Question,SET_THEORY,Finding Neither,Quest 9-022: Library Data,How many do NOT read Books?,
+Visual Question,SET_THEORY,Not Set A,Quest 9-023: Not A,Total=50. Neither=5. Find x (Both).,
+Visual Question,SET_THEORY,Not Set A,Quest 9-023: Not A,Find n(A') (Not A).,
+Visual Question,SET_THEORY,Finding Complement,Quest 9-024: Missing Group,Total=80. Intersection=15. Find y (Neither).,
+Visual Question,SET_THEORY,Complement Algebra,Quest 9-025: Travel Plans,"Phase 1: USA(30), UK(25), Both(5). Fill Only regions.",
+Visual Question,SET_THEORY,Complement Algebra,Quest 9-025: Travel Plans,Phase 2: Total=60. Find y (Neither).,
+Visual Question,SET_THEORY,Visual Complements,Quest 9-026: Food Clicks,Tap regions representing people who did NOT eat Pizza.,
+Visual Question,SET_THEORY,Visual Complements,Quest 9-026: Food Clicks,Tap regions representing people who did NOT eat Burgers.,
+Visual Question,SET_THEORY,Outside Logic,Quest 9-027: Sports Clicks,Tap the region for people who play Neither sport.,
+Visual Question,SET_THEORY,Outside Logic,Quest 9-027: Sports Clicks,Tap everyone who plays a sport.,
+Read,MATH_STUDY,Complements,Understanding 'Not',What is a Complement?: The Complement of Set A (written A') means everything that is NOT in Circle A.Imagine covering Circle A with your hand. What is left?,
+Read,MATH_STUDY,Complements,Understanding 'Not',"Case 1: The Visual Test: Question: Identify regions for ""Not Pizza"".Logic: We must exclude the Pizza Circle completely.This leaves: Burger Only + Neither.",
+Read,MATH_STUDY,Complements,Understanding 'Not',Case 2: Finding 'Neither': Problem: Total = 50. Find y (Neither).Logic: The Universal Set contains EVERYTHING.Left + Mid + Right + Outside = Total.Equation:15 + 10 + 10 + y = 5035 + y = 50y = 15,
+Read,MATH_STUDY,Complements,Understanding 'Not',"Case 3: 'Not Both': Question: ""n(S ∩ W)' = 32"". What does this mean?Logic: It means the Complement of the Intersection.Everything EXCEPT the middle.So, (Left + Right + Outside) = 32.",
+Read,MATH_STUDY,Complements,Understanding 'Not',"Solving Case 3: If Total = 42, and 'Not Both' = 32, we can find the Middle easily.Shortcut: Total - Not Both = Both.42 - 32 = 10.",
+Visual Question,SET_THEORY,Probability using Venn Diagrams,Topic 10: Probability Master,Total farmers = 60. Find x.,
+Visual Question,SET_THEORY,Probability using Venn Diagrams,Topic 10: Probability Master,How many keep Goats ONLY?,
+Visual Question,SET_THEORY,Probability using Venn Diagrams,Topic 10: Probability Master,What is the probability of choosing a farmer with Goats Only?,
+Visual Question,SET_THEORY,Probability II,Topic 10: School Subjects,Phase 1: 5 pupils learn neither subject. Fill the diagram.,
+Visual Question,SET_THEORY,Probability II,Topic 10: School Subjects,Phase 2: Total pupils = 50. Find x.,
+Visual Question,SET_THEORY,Probability II,Topic 10: School Subjects,Probability of choosing a pupil who studies Science Only?,
+Visual Question,SET_THEORY,Party Drinks,Topic 10: Party Drinks,Phase 1: 2 guests drink neither. Fill the diagram.,
+Visual Question,SET_THEORY,Party Drinks,Topic 10: Party Drinks,Phase 2: Total guests = 40. Find x.,
+Visual Question,SET_THEORY,Party Drinks,Topic 10: Party Drinks,How many drink one type only?,
+Visual Question,SET_THEORY,Probability III,Topic 10: Language Village,Phase 1: 15 pupils speak neither. Fill the diagram.,
+Visual Question,SET_THEORY,Probability III,Topic 10: Language Village,Phase 2: Total pupils = 80. Find x.,
+Visual Question,SET_THEORY,Probability III,Topic 10: Language Village,Probability of choosing a pupil who speaks BOTH?,
+Visual Question,SET_THEORY,Probability,Topic 10: Pet Owners,Total families = 50. Find x.,
+Visual Question,SET_THEORY,Probability,Topic 10: Pet Owners,How many families have Neither?,
+Visual Question,SET_THEORY,Probability,Topic 10: Pet Owners,What is the probability of picking a family with No Pets?,
+Visual Question,SET_THEORY,Symmetric Difference Algebra,Topic 10: Sports Selection,Phase 1: Netball only is w+10. Neither is w. Fill the diagram.,
+Visual Question,SET_THEORY,Symmetric Difference Algebra,Topic 10: Sports Selection,Phase 2: Total pupils = 60. Find w.,
+Visual Question,SET_THEORY,Symmetric Difference Algebra,Topic 10: Sports Selection,How many play Netball Only?,
+Visual Question,SET_THEORY,Algebraic Sets,Quest 10-005: Music Class,Phase 1: n(P)=25. Guitar only is x+5. 5 play neither. Fill diagram.,
+Visual Question,SET_THEORY,Algebraic Sets,Quest 10-005: Music Class,Phase 2: Total students = 50. Find x.,
+Visual Question,SET_THEORY,Algebraic Sets,Quest 10-005: Music Class,How many play Guitar Only?,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 10-006: Farming Ratios,Phase 1: Beans only is 2y. 10 grow neither. Fill diagram.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 10-006: Farming Ratios,Phase 2: Total farmers = 80. Find y.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 10-006: Farming Ratios,Find total growing Beans n(B).,
+Visual Question,SET_THEORY,Algebraic Complements,Quest 10-007: Reading List,Phase 1: Neither is k+2. N-only is 2k. B-only is k.,
+Visual Question,SET_THEORY,Algebraic Complements,Quest 10-007: Reading List,Phase 2: Total people = 60. Find k.,
+Visual Question,SET_THEORY,Algebraic Complements,Quest 10-007: Reading List,Probability of reading Neither?,
+Visual Question,SET_THEORY,Full Algebra,Quest 10-008: Party Time,Phase 1: S only is p+5. Both is p. W only is p+10.,
+Visual Question,SET_THEORY,Full Algebra,Quest 10-008: Party Time,Phase 2: Total guests = 45. Find p.,
+Visual Question,SET_THEORY,Full Algebra,Quest 10-008: Party Time,How many drink only one type?,
+Visual Question,SET_THEORY,Agricultural Sets,Topic 10: Crop Farming,Phase 1: P only is 2k. Neither is k. Fill the diagram.,
+Visual Question,SET_THEORY,Agricultural Sets,Topic 10: Crop Farming,Phase 2: Total farmers = 80. Find k.,
+Visual Question,SET_THEORY,Agricultural Sets,Topic 10: Crop Farming,How many farmers did not grow Peas (P)?,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 10: The Pet Shop,Phase 1: Cats only is 2x. Dogs only is x+10. Fill the diagram.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 10: The Pet Shop,Phase 2: Total pets = 50. Find x.,
+Visual Question,SET_THEORY,Algebraic Ratios,Quest 10: The Pet Shop,How many Dogs are there in total?,
+Visual Question,SET_THEORY,Solving for Intersection,Quest 10: Fruit Market,"Phase 1: 20 sell Apples only, 25 Bananas only. Intersection and Outside are both y.",
+Visual Question,SET_THEORY,Solving for Intersection,Quest 10: Fruit Market,Phase 2: Total farmers = 65. Find y.,
+Visual Question,SET_THEORY,Solving for Intersection,Quest 10: Fruit Market,What is the Probability a farmer sells BOTH?,
+Visual Question,SET_THEORY,Symmetric Difference,Quest 10: Talent Show,Phase 1: S only is x+5. 10 do both. Outside is 5. Fill it.,
+Visual Question,SET_THEORY,Symmetric Difference,Quest 10: Talent Show,Phase 2: Total students = 50. Find x.,
+Visual Question,SET_THEORY,Symmetric Difference,Quest 10: Talent Show,How many have Only One talent?,
+Visual Question,SET_THEORY,Finding Missing Regions,Topic 10: Language Totals,Phase 1: Total English is 45. Intersection is 15. Fill the diagram.,
+Visual Question,SET_THEORY,Finding Missing Regions,Topic 10: Language Totals,Phase 2: Total villagers = 80. Find m.,
+Visual Question,SET_THEORY,Finding Missing Regions,Topic 10: Language Totals,Find the Total Luganda speakers.,
+Visual Question,SET_THEORY,Finding Neither,Quest 10-005: Art Club,"Phase 1: P=20, D=15, Both=5. Fill Only regions.",
+Visual Question,SET_THEORY,Finding Neither,Quest 10-005: Art Club,Phase 2: Total students = 40. Find y (Neither).,
+Visual Question,SET_THEORY,Finding Intersection,Quest 10-006: Science Fair,Phase 1: Both is x. Neither is 5. Fill diagram.,
+Visual Question,SET_THEORY,Finding Intersection,Quest 10-006: Science Fair,Phase 2: Total = 60. Find x.,
+Visual Question,SET_THEORY,Set Totals Algebra,Quest 10-007: The Clinic,"Phase 1: n(M)=2x, n(T)=x. Both=10. Fill Only regions.",
+Visual Question,SET_THEORY,Set Totals Algebra,Quest 10-007: The Clinic,Phase 2: Total patients = 60. Find x.,
+Visual Question,SET_THEORY,Set Totals Algebra,Quest 10-007: The Clinic,Find Total Malaria Cases n(M).,
+Visual Question,SET_THEORY,Probability Calculation,Quest 10-008: Language Prob,Total = 100. Everyone speaks at least one. Find x (Both).,
+Visual Question,SET_THEORY,Probability Calculation,Quest 10-008: Language Prob,Prob. of speaking Only One language?,
+Visual Question,SET_THEORY,Finding Missing Regions,Topic 10: Harvest Time,Phase 1: Total Rice is 60. Intersection is 20. Fill the diagram.,
+Visual Question,SET_THEORY,Finding Missing Regions,Topic 10: Harvest Time,Phase 2: Total farmers = 100. Find p.,
+Visual Question,SET_THEORY,Finding Missing Regions,Topic 10: Harvest Time,Find the Total Beans growers.,
+Visual Question,SET_THEORY,Algebraic Ratios II,Topic 10: Peas & Beans,Phase 1: Beans only is 2x. Neither is 10. Fill the diagram.,
+Visual Question,SET_THEORY,Algebraic Ratios II,Topic 10: Peas & Beans,Phase 2: Total farmers = 90. Find x.,
+Visual Question,SET_THEORY,Algebraic Ratios II,Topic 10: Peas & Beans,How many grow Beans in total?,
+Visual Question,SET_THEORY,Complex Word Problems,Topic 10: Wedding Drinks,Phase 1: Wine only is 2 less than thrice x. Neither is 11.,
+Visual Question,SET_THEORY,Complex Word Problems,Topic 10: Wedding Drinks,Phase 2: Total guests = 62. Find x.,
+Visual Question,SET_THEORY,Complex Word Problems,Topic 10: Wedding Drinks,Find Total Wine drinkers.,
+Visual Question,SET_THEORY,Probability Union,Quest 10-011: Garden Prob,How many trees are Mango OR Orange?,
+Visual Question,SET_THEORY,Probability Union,Quest 10-011: Garden Prob,Probability of picking a fruit tree?,
+Visual Question,SET_THEORY,Probability Algebra,Quest 10-006: Exam Results,Total = 40. M-only = E-only = x. Find x.,
+Visual Question,SET_THEORY,Probability Algebra,Quest 10-006: Exam Results,Prob. of passing Math Only?,
+Visual Question,SET_THEORY,Symmetric Difference II,Topic 10: Math & English,Phase 1: English only is 8 more than both. Neither is 4.,
+Visual Question,SET_THEORY,Symmetric Difference II,Topic 10: Math & English,Phase 2: Total students = 92. Find x.,
+Visual Question,SET_THEORY,Symmetric Difference II,Topic 10: Math & English,Find Total English students.,
+Visual Question,SET_THEORY,Complement Equations,Topic 10: Sports Logic,"Given n(F') = 18 (Not Football), find p.",
+Visual Question,SET_THEORY,Complement Equations,Topic 10: Sports Logic,Find n(F ∪ R) (The Union).,
+Visual Question,SET_THEORY,Complement Equations,Topic 10: Sports Logic,Probability of playing neither?,
+Visual Question,SET_THEORY,Final Mix,Topic 10: Math & Science,Total = 65. Total Science = 45. Find h.,
+Visual Question,SET_THEORY,Final Mix,Topic 10: Math & Science,How many like Math ONLY?,
+Visual Question,SET_THEORY,Final Mix,Topic 10: Math & Science,Probability of picking a pupil who likes Math?,
+Visual Question,SET_THEORY,Probability Final,Quest 10-017: Sports Final,How many play only one sport?,
+Visual Question,SET_THEORY,Probability Final,Quest 10-017: Sports Final,Probability of playing Only One?,
+Visual Question,SET_THEORY,Solving via Total II,Topic 10: Fruits Total,Total = 55. Total Pineapples = 30. Find y.,
+Visual Question,SET_THEORY,Solving via Total II,Topic 10: Fruits Total,How many like Apples altogether?,
+Visual Question,SET_THEORY,Solving via Total II,Topic 10: Fruits Total,Probability of picking a pupil who likes Apples Only?,
+Visual Question,SET_THEORY,Probability Final,Quest 10-018: Garden Prob,Total=100. Find x (Both).,
+Visual Question,SET_THEORY,Probability Final,Quest 10-018: Garden Prob,Probability of Mango Only?,
+Visual Question,SET_THEORY,Double Variables,Quest 10-018: Subject Sets,"Part 1: Given n(E) = 36, find n.",
+Visual Question,SET_THEORY,Double Variables,Quest 10-018: Subject Sets,Part 2: Given n(M) = h + 29. Find Total n(M).,
+Visual Question,SET_THEORY,Double Variables,Quest 10-018: Subject Sets,Find the Total Number of pupils.,
+Visual Question,SET_THEORY,Number Probability,Quest 10-020: Prime Odds,Sort numbers < 10 into Primes & Odds.,
+Visual Question,SET_THEORY,Number Probability,Quest 10-020: Prime Odds,Prob. of picking a number that is Prime AND Odd?,
+Visual Question,SET_THEORY,Algebraic Complements,Quest 10-019: Complement Solver,Phase 1: S-only is 2m. Outside is m+4. Fill the diagram.,
+Visual Question,SET_THEORY,Algebraic Complements,Quest 10-019: Complement Solver,Phase 2: n(G)' = 25 (Not G). Find m.,
+Visual Question,SET_THEORY,Algebraic Complements,Quest 10-019: Complement Solver,Find Total n(S).,
+Visual Question,SET_THEORY,Complement Algebra,Quest 10-019: Complement Solver,Phase 1: Construct the Diagram• G only: 15 &nbsp; • S only: 2m• Intersection: 5 &nbsp; • Outside: m+4,
+Visual Question,SET_THEORY,Complement Algebra,Quest 10-019: Complement Solver,Phase 2: n(G)' = 25 (Not G). Find m.,
+Visual Question,SET_THEORY,Complement Algebra,Quest 10-019: Complement Solver,Find Total n(S).,
+Visual Question,SET_THEORY,Farm Logic,Quest 10-022: Farm Build,Phase 1: Build It• G-only: 20 &nbsp; • C-only: 30• Both: y &nbsp; • Neither: 5,
+Visual Question,SET_THEORY,Farm Logic,Quest 10-022: Farm Build,Phase 2: Total=65. Find y.,
+Visual Question,SET_THEORY,Intersection Probability,Quest 10-025: Drink Prob,Total=40. Find x (Both).,
+Visual Question,SET_THEORY,Intersection Probability,Quest 10-025: Drink Prob,Probability of drinking Both?,
+Visual Question,SET_THEORY,Probability of Union,Quest 10-026: Sports Prob,How many play at least one sport?,
+Visual Question,SET_THEORY,Probability of Union,Quest 10-026: Sports Prob,Probability of picking a student who plays a sport?,
+Visual Question,SET_THEORY,Finding Totals,Quest 10: Drink Stand,Phase 1: Juice Only is 2k. Soda Only is k. Fill diagram.,
+Visual Question,SET_THEORY,Finding Totals,Quest 10: Drink Stand,Phase 2: Given n(Soda) = 30. Find k.,
+Visual Question,SET_THEORY,Finding Totals,Quest 10: Drink Stand,Now find the Total Number of people.,
+Visual Question,VENN_PROB_ENGINE,Probability Game,Quest 10: Probability Sim,P(Football)? (Total in A / Total People),
+Visual Question,VENN_PROB_ENGINE,Probability Game,Quest 10: Probability Sim,What is P(A ∩ B)? (Both / Total),
+Read,MATH_STUDY,Probability,Chance in Venn Diagrams,What is Probability?: Probability tells us the chance of picking someone from a specific group.Formula:Prob = (Target Count) / (Total People),
+Read,MATH_STUDY,Probability,Chance in Venn Diagrams,Case 1: Simple Probability: Question: What is the probability of picking someone from Set A?Step 1: Find Total (30+10+20 = 60).Step 2: Find n(A) (30+10 = 40).Answer: 40/60 = 2/3.,
+Read,MATH_STUDY,Probability,Chance in Venn Diagrams,Case 2: 'Only' Probability: Question: Prob. of picking someone who likes B ONLY?Logic: Look at the crescent moon on the right.n(B Only) = 20.Answer: 20/60 = 1/3.,
+Read,MATH_STUDY,Probability,Chance in Venn Diagrams,Case 3: Algebra First!: Sometimes you must find x first.Question: Total=100. Find Prob(Both).Step 1: Solve for x.60 + 50 - x = 100 → x = 10.Step 2: Prob = 10/100.,
+Read,MATH_STUDY,Probability,Chance in Venn Diagrams,"Case 4: Probability of 'Neither': Question: Prob. of picking someone outside?If Total = 60, and Outside = 14.Answer: 14/60.Always remember to count the people outside the circles!",

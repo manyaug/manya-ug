@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4-005: Single Set",
+  "sets": { "A": { "label": "S", "color": "#2563eb" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["A"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Find n(S).",
+      "hint": "There is only 1 item."
+    },
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Total Subsets.",
+      "hint": "2¹ = 2."
+    },
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 3:</b> Proper Subsets.",
+      "hint": "2 - 1 = 1."
+    }
+  ]
+}

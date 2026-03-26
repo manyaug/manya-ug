@@ -1,0 +1,55 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Solving Unknowns",
+  "variantTitle": "Algebra in Sets",
+  "slides": [
+    {
+      "title": "Why Algebra?",
+      "text": "Sometimes we don't know the exact numbers in a region. Instead, we are given a letter like <b>x</b>.<br><br>To find <b>x</b>, we need to build an <b>Equation</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "x", "center": "10", "right": "2x" },
+      "highlight": ["left", "center", "right"]
+    },
+    {
+      "title": "Case 1: The Whole Circle",
+      "text": "<b>Problem:</b> n(A) = 25. Find x.<br><br><b>Logic:</b> The label n(A) means the <b>entire</b> circle A. This includes the 'Only' part AND the 'Intersection'.<br><br><b>Equation:</b><br>x + 10 = 25<br>x = 15",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A (25)", "B"],
+      "elements": { "left": "x", "center": "10", "right": "" },
+      "highlight": ["left", "center"]
+    },
+    {
+      "title": "Case 2: The Universal Sum",
+      "text": "<b>Problem:</b> Total Class = 50. Find x.<br><br><b>Logic:</b> If we add <b>every</b> region (including outside), it must equal the Total.<br><br><b>Equation:</b><br>(x) + (10) + (2x) + (5) = 50<br>3x + 15 = 50",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "x", "center": "10", "right": "2x", "outside": "5" },
+      "highlight": ["left", "center", "right", "outside"]
+    },
+    {
+      "title": "Case 3: Equal Sets",
+      "text": "<b>Problem:</b> n(A) = n(B). Find x.<br><br><b>Logic:</b> The total count of Circle A is equal to Circle B.<br><br><b>Equation:</b><br>(x + 10) = (10 + 2x)<br>x + 10 = 2x + 10",
+      "visualType": "EQUAL_SETS",
+      "labels": ["Set A", "Set B"],
+      "items": "n(A) = n(B)"
+    },
+    {
+      "title": "Case 4: The Intersection Trick",
+      "text": "<b>Problem:</b> n(A)=30, n(B)=25, Total=50. Find the middle (z).<br><br><b>Logic:</b> Add the sets: 30 + 25 = 55.<br>This is bigger than the Total (50) because we counted the middle twice!<br><br><b>Formula:</b> (A + B) - Total = Intersection.<br>55 - 50 = <b>5</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A (30)", "B (25)"],
+      "elements": { "left": "?", "center": "z", "right": "?" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "Final Step: Substitution",
+      "text": "After finding <b>x</b>, always read the question again!<br><br>If x = 15, and the question asks for \"Set B Only\" (2x):<br><br>Answer = 2(15) = <b>30</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "15", "center": "10", "right": "30" },
+      "highlight": ["right"]
+    }
+  ]
+}

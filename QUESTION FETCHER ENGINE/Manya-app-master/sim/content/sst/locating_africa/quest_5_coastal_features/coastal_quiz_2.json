@@ -1,0 +1,67 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quiz 2: Island Nations",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "What is the largest island country in Africa?",
+      "initialRotation": [-47, 20, 0],
+      "zoomFactor": 1.8,
+      "highlight": ["450"],
+      "highlightColor": "#22c55e",
+      "correctAnswer": "Madagascar",
+      "options": ["Seychelles", "Madagascar", "Mauritius"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Which ocean surrounds the island of Madagascar?",
+      "initialRotation": [-55, 15, 0],
+      "zoomFactor": 1.2,
+      "markers": [
+          { "label": "???", "lat": -15, "lon": 70, "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Indian Ocean",
+      "options": ["Atlantic Ocean", "Indian Ocean", "Red Sea"]
+    },
+    {
+      "title": "Question 3",
+      "question": "Identify the smallest country in Africa, located East of Tanzania.",
+      "initialRotation": [-55, 5, 0],
+      "zoomFactor": 3.5,
+      "markers": [
+          { "label": "???", "lat": -4.6, "lon": 55.5, "color": "#facc15" }
+      ],
+      "correctAnswer": "Seychelles",
+      "options": ["Comoros", "Seychelles", "Zanzibar"]
+    },
+    {
+      "title": "Question 4",
+      "question": "Which island nation is located in the Atlantic Ocean, west of Senegal?",
+      "initialRotation": [24, -16, 0],
+      "zoomFactor": 3.0,
+      "markers": [
+          { "label": "???", "lat": 16, "lon": -24, "color": "#ef4444" }
+      ],
+      "correctAnswer": "Cape Verde",
+      "options": ["Sao Tome", "Cape Verde", "Canary Islands"]
+    },
+    {
+      "title": "Question 5",
+      "question": "Which island country lies on the Equator in the Gulf of Guinea?",
+      "initialRotation": [-6, 0, 0],
+      "zoomFactor": 4.0,
+      "lines": [
+          { "type": "lat", "value": 0, "color": "#22c55e", "dashed": true }
+      ],
+      "markers": [
+          { "label": "???", "lat": 0.2, "lon": 6.6, "color": "#a855f7" }
+      ],
+      "correctAnswer": "Sao Tome and Principe",
+      "options": ["Comoros", "Sao Tome and Principe", "Madagascar"]
+    }
+  ]
+}

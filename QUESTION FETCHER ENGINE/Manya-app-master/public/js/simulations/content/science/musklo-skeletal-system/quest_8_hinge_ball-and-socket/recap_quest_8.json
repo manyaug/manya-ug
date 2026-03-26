@@ -1,0 +1,53 @@
+{
+  "engineType": "READER_STUDY",
+  "topic": "Types of Movable Joints",
+  "variantTitle": "Quest 8 Master Recap",
+  "themeColor": "#7c3aed",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Movable (Synovial) Joints",
+      "points": [
+        "These joints are held together by <b>ligaments and tendons</b>.",
+        "They all contain <b>synovial fluid</b> to make them move smoothly.",
+        "The two most important types for PLE are <b>Hinge</b> and <b>Ball-and-Socket</b>."
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Hinge vs. Ball and Socket",
+      "itemA": "Hinge Joint",
+      "itemB": "Ball & Socket",
+      "rows": [
+        { "feature": "Movement", "valA": "In <b>one plane</b> only", "valB": "In <b>all directions</b>" },
+        { "feature": "Examples", "valA": "<b>Elbow and Knee</b>", "valB": "<b>Shoulder and Hip</b>" },
+        { "feature": "Analogy", "valA": "Movement of a <b>door</b>", "valB": "Movement of a <b>joystick</b>" }
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Special Details",
+      "points": [
+        "<b>Shoulder:</b> Rounded head of the <b>Humerus</b> fits into the Scapula.",
+        "<b>Hip:</b> Rounded head of the <b>Femur</b> fits into the Pelvic Girdle.",
+        "<b>The Knee:</b> Sometimes called a 'modified hinge' because of the <b>Patella</b> (knee cap)."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "The <b>Ball and Socket</b> joint provides the greatest range of motion in the human body, allowing for circular movement!"
+    }
+  ],
+  "cards": [
+    {
+      "term": "Hinge Joint",
+      "fact": "Allows bending and straightening (Flexion/Extension).",
+      "mnemonic": "Think of a door hinge—it only opens one way!"
+    },
+    {
+      "term": "Ball and Socket",
+      "fact": "Allows full 360-degree rotation.",
+      "mnemonic": "Like a ball sitting in a cup—it can roll in any direction!"
+    }
+  ]
+}

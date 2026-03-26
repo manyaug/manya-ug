@@ -1,0 +1,24 @@
+{
+  "engineType": "SUBSET_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Finding Subsets",
+  "variantTitle": "Quest 3-002: The Toy Van",
+  "questions": [
+    {
+      "items": ["Car"],
+      "prompt": "Level 1: Load the Van! Find all 2 subsets of {Car}.",
+      "hint": "1. Empty Van (∅)\n2. Just the Car"
+    },
+    {
+      "items": ["Ball", "Bear"],
+      "prompt": "Level 2: Find all 4 subsets of {Ball, Bear}.",
+      "hint": "Don't forget the Empty Set and the Full Set!"
+    },
+    {
+      "items": ["Car", "Ball", "Bear"],
+      "prompt": "Level 3: Master Mover! Find all 8 subsets.",
+      "hint": "List:\n- Empty\n- Singles (3)\n- Doubles (3)\n- Full Set (1)"
+    }
+  ]
+}

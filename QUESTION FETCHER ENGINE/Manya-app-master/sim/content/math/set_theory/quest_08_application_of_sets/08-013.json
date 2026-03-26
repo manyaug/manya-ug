@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Ratio Logic",
+  "variantTitle": "Quest 8-013: Science Ratios",
+  "sets": { "A": { "label": "P", "color": "#7c3aed" }, "B": { "label": "C", "color": "#db2777" } },
+  "zones": { "left": ["2x"], "center": ["10"], "right": ["x"], "outside": ["10"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 80,
+      "expected_x": 20,
+      "prompt": "Total=80. P-only is twice C-only (x). Both=10. Outside=10.",
+      "hint": "2x + 10 + x + 10 = 80 -> 3x = 60."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total",
+      "x_val": 20,
+      "prompt": "Find Total Physics Students.",
+      "hint": "2x + 10 = 40 + 10 = 50."
+    }
+  ]
+}

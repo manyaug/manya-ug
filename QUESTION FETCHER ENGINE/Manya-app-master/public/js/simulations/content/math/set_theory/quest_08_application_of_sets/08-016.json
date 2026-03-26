@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Logic",
+  "variantTitle": "Quest 8-016: Party Invite",
+  "sets": { "A": { "label": "Tea", "color": "#16a34a" }, "B": { "label": "Cake", "color": "#d97706" } },
+  "zones": { "left": [20], "center": [15], "right": [10], "outside": [5] },
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "How many guests took <b>at least one</b> item?",
+      "hint": "Union of Tea and Cake. 20 + 15 + 10."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_total", 
+      "prompt": "How many guests in Total?",
+      "hint": "Union (45) + Neither (5) = 50."
+    }
+  ]
+}

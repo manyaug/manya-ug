@@ -1,0 +1,43 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Latitudes Quiz",
+  "variantTitle": "Quiz: The Grid Master",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "Which major line of latitude is marked 0°?",
+      "initialRotation": [-20, -5, 0],
+      "lines": [{ "type": "lat", "value": 0, "color": "#22c55e", "dashed": false }],
+      "correctAnswer": "Equator",
+      "options": ["Equator", "Greenwich", "Cancer"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Which of these countries is crossed by the Equator?",
+      "initialRotation": [-32, -5, 0],
+      "highlight": ["uganda"],
+      "highlightColor": "#86efac",
+      "correctAnswer": "Uganda",
+      "options": ["Egypt", "Uganda", "South Africa"]
+    },
+    {
+      "title": "Question 3",
+      "question": "What is the latitude of the Tropic of Capricorn?",
+      "initialRotation": [-20, 15, 0],
+      "lines": [{ "type": "lat", "value": -23.5, "color": "#3b82f6", "label": "?" }],
+      "correctAnswer": "23 1/2° S",
+      "options": ["23 1/2° N", "66 1/2° S", "23 1/2° S"]
+    },
+    {
+      "title": "Question 4",
+      "question": "On which date is the sun directly overhead the Tropic of Cancer?",
+      "initialRotation": [-15, -20, 0],
+      "lines": [{ "type": "lat", "value": 23.5, "color": "#ef4444", "label": "Cancer" }],
+      "correctAnswer": "June 21st",
+      "options": ["December 22nd", "June 21st", "March 21st"]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "mode": "labeling",
+  "variantTitle": "Arm Anatomy: Full Mastery",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",
+  "hotspots": [
+    { "id": "3", "label": "Humerus", "pos": "69.08 81.51 -101.92", "norm": "0 1 0" },
+    { "id": "1", "label": "Radius", "pos": "77.36 119.98 -49.19", "norm": "0 1 0" },
+    { "id": "2", "label": "Ulna", "pos": "69.04 110.86 -56.59", "norm": "0 1 0" },
+    { "id": "4", "label": "Carpals", "pos": "72.85 138.14 -32.75", "norm": "0 1 0" },
+    { "id": "5", "label": "Metacarpals", "pos": "72.43 146.66 -29.81", "norm": "0 1 0" },
+    { "id": "6", "label": "Phalanges", "pos": "72.63 160.57 -32.49", "norm": "0 1 0" }
+  ],
+  "wordBank": ["Humerus", "Radius", "Ulna", "Carpals", "Metacarpals", "Phalanges", "Femur", "Tibia"]
+}

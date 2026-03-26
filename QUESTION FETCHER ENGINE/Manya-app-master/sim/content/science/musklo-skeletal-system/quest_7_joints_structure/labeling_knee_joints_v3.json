@@ -1,0 +1,12 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Joint Structure Properties",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_7_joints_structure/joint_structure.glb",
+  "hotspots": [
+    { "id": "4", "label": "Shock Absorber", "pos": "0.121 -0.024 0.077" },
+    { "id": "5", "label": "Elastic Fibers", "pos": "-0.044 -0.069 0.169" },
+    { "id": "3", "label": "Non-elastic Fibers", "pos": "0.100 0.228 -0.011" }
+  ],
+  "wordBank": ["Shock Absorber", "Elastic Fibers", "Non-elastic Fibers", "Movable Jaw", "Fixed Joint"]
+}

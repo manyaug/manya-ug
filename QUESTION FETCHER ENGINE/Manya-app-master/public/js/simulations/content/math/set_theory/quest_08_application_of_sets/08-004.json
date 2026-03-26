@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Relative Algebra",
+  "variantTitle": "Quest 8-004: Hockey & Rugby",
+  "sets": { "A": { "label": "H (40)", "color": "#9333ea" }, "B": { "label": "R", "color": "#db2777" } },
+  "zones": { "left": ["40-x"], "center": ["x"], "right": ["x+5"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Rugby Only is 5 more than both. Neither is 5.",
+      "inputs": [
+        { "region": "left", "expected": "40-x" },
+        { "region": "right", "expected": "x+5" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 65,
+      "expected_x": 15,
+      "prompt": "<b>Phase 2:</b> Total pupils = 65. Find <b>x</b>.",
+      "hint": "(40-x) + x + (x+5) + 5 = 65 -> x + 50 = 65"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_total",
+      "x_val": 15,
+      "expression": "2x+5",
+      "prompt": "Find total playing <span style='color:#db2777'>Rugby</span>.",
+      "hint": "n(R) = Both + Only. x + (x+5) = 2x+5."
+    }
+  ]
+}

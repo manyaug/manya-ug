@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Visual Sums",
+  "variantTitle": "Quest 8-027: Visual Market",
+  "sets": { "A": { "label": "R", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  "zones": { "left": [20], "center": [10], "right": [10], "outside": [10] },
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "Tap the regions representing shoppers who bought <b>Only One</b> item.",
+      "hint": "Click 'Rice Only' (20) and 'Beans Only' (10). Sum should be 30."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_left", 
+      "prompt": "Tap regions representing shoppers who did <b>NOT</b> buy Rice.",
+      "hint": "Click 'Beans Only' and 'Outside'. Sum should be 20."
+    }
+  ]
+}

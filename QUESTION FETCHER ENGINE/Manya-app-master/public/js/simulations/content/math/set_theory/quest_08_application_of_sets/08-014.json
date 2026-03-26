@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Word Problems",
+  "variantTitle": "Quest 8-014: Drink Survey",
+  "sets": { "A": { "label": "C (40)", "color": "#7c3aed" }, "B": { "label": "T (30)", "color": "#db2777" } },
+  "zones": { "left": ["40-x"], "center": ["x"], "right": ["30-x"], "outside": ["2x"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 80,
+      "expected_x": 10,
+      "prompt": "Total=80. Outside is 2x. Find <b>x</b> (Both).",
+      "hint": "(40-x) + x + (30-x) + 2x = 80 -> 70 + x = 80."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "universal_only",
+      "x_val": 10,
+      "prompt": "How many drink <b>Neither</b>?",
+      "hint": "2x = 20."
+    }
+  ]
+}

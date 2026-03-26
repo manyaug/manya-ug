@@ -1,0 +1,538 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 20px;
+}
+
+header {
+    grid-column: 1 / -1;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.logo h1 { color: #667eea; font-size: 2em; }
+.logo p { color: #999; font-style: italic; }
+
+.user-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.user-selector select {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.stats-badge {
+    display: flex;
+    gap: 15px;
+}
+
+.stats-badge span {
+    background: #f0f0f0;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.main-content { grid-column: 1; }
+
+/* Quest Card */
+.quest-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.quest-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.quest-badge {
+    background: #667eea;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #48bb78, #667eea);
+    transition: width 0.3s;
+}
+
+.quest-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #718096;
+    margin-top: 10px;
+}
+
+/* Question Card */
+.question-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.topic-badge {
+    background: #667eea;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.difficulty-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.difficulty-badge.easy { background: #48bb78; color: white; }
+.difficulty-badge.medium { background: #ed8936; color: white; }
+.difficulty-badge.hard { background: #f56565; color: white; }
+.difficulty-badge.exam { background: #9f7aea; color: white; }
+
+.question-text {
+    font-size: 1.3em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #2d3748;
+}
+
+.options {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.option {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.option:hover:not(.disabled) {
+    background: #edf2f7;
+    border-color: #667eea;
+    transform: translateX(5px);
+}
+
+.option.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.option.correct {
+    background: #48bb78;
+    border-color: #48bb78;
+    color: white;
+}
+
+.option.incorrect {
+    background: #f56565;
+    border-color: #f56565;
+    color: white;
+}
+
+.option.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.option-letter {
+    font-weight: bold;
+    font-size: 1.2em;
+    min-width: 30px;
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+}
+
+.hint-btn, .next-btn, .continue-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+}
+
+.hint-btn { background: #ed8936; color: white; }
+.next-btn { background: #48bb78; color: white; }
+.continue-btn { background: #667eea; color: white; }
+.hint-btn:disabled, .next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.hint-display {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff3e0;
+    border-left: 4px solid #ed8936;
+    display: none;
+}
+
+.feedback-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    display: none;
+}
+
+.feedback-icon { font-size: 4em; margin-bottom: 20px; }
+.feedback-message { font-size: 2em; margin-bottom: 20px; }
+
+/* Dashboard */
+.dashboard {
+    grid-column: 2;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.dashboard-section {
+    margin-bottom: 25px;
+}
+
+.dashboard-section h3, .dashboard-section h4 {
+    color: #2d3748;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.stat-card {
+    background: #f7fafc;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-card.large { grid-column: span 2; }
+.stat-label { font-size: 0.85em; color: #718096; }
+.stat-value { font-size: 1.5em; font-weight: bold; color: #2d3748; }
+.stat-value.small { font-size: 1.2em; }
+
+/* Psychological Grid */
+.psych-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.psych-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.psych-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.psych-label { font-size: 0.85em; color: #718096; }
+.psych-value { font-weight: bold; }
+
+.psych-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.psych-fill {
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.fill-frustration { background: #f56565; }
+.fill-confidence { background: #48bb78; }
+.fill-engagement { background: #667eea; }
+.fill-cognitive { background: #9f7aea; }
+
+/* Quest List */
+.quest-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.quest-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quest-item:hover { background: #f7fafc; }
+.quest-item:last-child { border-bottom: none; }
+
+.quest-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quest-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+}
+
+.quest-details { flex: 1; }
+.quest-name { font-weight: 600; color: #2d3748; }
+.quest-mastery { font-size: 0.8em; color: #718096; }
+
+.quest-status {
+    font-size: 0.9em;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 15px;
+}
+
+.status-available { background: #48bb78; color: white; }
+.status-in_progress { background: #667eea; color: white; }
+.status-completed { background: #9f7aea; color: white; }
+.status-locked { background: #cbd5e0; color: #718096; }
+
+.progress-small {
+    width: 60px;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin-top: 3px;
+}
+
+.progress-small-fill {
+    height: 100%;
+    background: #48bb78;
+    border-radius: 3px;
+}
+
+/* Topics List */
+.topics-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.topic-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Debug Console */
+.debug-console {
+    grid-column: 1 / -1;
+    background: #1a1e24;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    font-family: monospace;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+
+/* Reward Animation */
+@keyframes rewardPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.reward-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 1000;
+    animation: rewardPulse 0.5s ease;
+}
+
+.reward-icon { font-size: 4em; margin-bottom: 20px; }
+.reward-title { font-size: 1.5em; font-weight: bold; margin-bottom: 10px; }
+.reward-xp { color: #48bb78; font-weight: bold; }
+
+/* Trends */
+.trends {
+    font-size: 0.85em;
+    color: #718096;
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    .dashboard {
+        grid-column: 1;
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .user-info {
+        flex-direction: column;
+        width: 100%;
+    }
+    .user-selector select {
+        width: 100%;
+    }
+    .stats-badge {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .actions {
+        flex-direction: column;
+    }
+}
+/* User Profile Styles */
+.user-profile {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.profile-summary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.profile-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.recommendations-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.recommendation-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    border-left: 4px solid #718096;
+}
+
+.recommendation-item.priority-high {
+    border-left-color: #f56565;
+    background: #fff5f5;
+}
+
+.recommendation-item.priority-medium {
+    border-left-color: #ed8936;
+    background: #fffaf0;
+}
+
+.recommendation-item.priority-low {
+    border-left-color: #48bb78;
+    background: #f0fff4;
+}

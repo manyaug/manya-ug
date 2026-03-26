@@ -1,0 +1,33 @@
+{
+  "engineType": "VENN_SPOTLIGHT",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Shading Regions",
+  "variantTitle": "Quest 6b: The Spotlight",
+  "questions": [
+    {
+      "notation": "A'",
+      "description": "Complement of A",
+      "targetRegions": ["right", "outside"],
+      "hint": "Turn on everything NOT in circle A."
+    },
+    {
+      "notation": "A - B",
+      "description": "Difference (A Only)",
+      "targetRegions": ["left"],
+      "hint": "Items in A but NOT in B."
+    },
+    {
+      "notation": "(A ∪ B)'",
+      "description": "Complement of Union",
+      "targetRegions": ["outside"],
+      "hint": "Everything OUTSIDE the circles."
+    },
+    {
+      "notation": "A' ∩ B",
+      "description": "Not A, intersecting B",
+      "targetRegions": ["right"],
+      "hint": "This is the same as B - A (B Only)."
+    }
+  ]
+}

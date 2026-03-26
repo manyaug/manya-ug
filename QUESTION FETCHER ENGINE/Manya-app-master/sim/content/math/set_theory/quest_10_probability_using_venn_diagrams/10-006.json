@@ -1,0 +1,45 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Symmetric Difference Algebra",
+  "variantTitle": "Topic 10: Sports Selection",
+  "sets": {
+    "A": { "label": "F (30)", "color": "#9333ea" },
+    "B": { "label": "N", "color": "#db2777" }
+  },
+  "zones": {
+    "left": [],
+    "center": ["w"],
+    "right": [],
+    "outside": []
+  }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Netball only is w+10. Neither is w. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "30-w" },
+        { "region": "right", "expected": "w+10" },
+        { "region": "outside", "expected": "w" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 60,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total pupils = 60. Find <b>w</b>.",
+      "hint": "(30-w) + w + (w+10) + w = 60. Simplify: 2w + 40 = 60."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 10,
+      "expression": "w+10",
+      "prompt": "How many play <span style='color:#db2777'>Netball Only</span>?",
+      "hint": "w + 10 = 10 + 10"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quiz: Shapes of the Coast",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "What is the name of the narrow water passage indicated by the blue arrow?",
+      "initialRotation": [0, -36, 0],
+      "zoomFactor": 5.0,
+      "highlight": ["504"],
+      "highlightColor": "#fcd34d",
+      "overlays": [
+        { 
+          "type": "arrow", 
+          "coordinates": [[-15, 36], [5, 36]], 
+          "color": "#3b82f6" 
+        }
+      ],
+      "correctAnswer": "Strait of Gibraltar",
+      "options": ["Suez Canal", "Strait of Gibraltar", "Bab-el-Mandeb"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Identify the large water body highlighted by the blue curve on the West Coast.",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 2.0,
+      "highlight": ["566", "288", "120"],
+      "highlightColor": "#e0f2fe",
+      "overlays": [
+        { 
+          "type": "curve", 
+          "center": [3, 2], 
+          "radius": 12, 
+          "color": "#0ea5e9" 
+        }
+      ],
+      "correctAnswer": "Gulf of Guinea",
+      "options": ["Gulf of Aden", "Gulf of Guinea", "Gulf of Sirte"]
+    },
+    {
+      "title": "Question 3",
+      "question": "The highlighted region is a Peninsula jutting into the Indian Ocean. What is it called?",
+      "initialRotation": [-45, -10, 0],
+      "zoomFactor": 2.5,
+      "highlight": ["706", "231", "262"],
+      "highlightColor": "#fb923c",
+      "markers": [
+          { "label": "???", "lat": 8, "lon": 48, "color": "#ffffff" }
+      ],
+      "correctAnswer": "Horn of Africa",
+      "options": ["Cape of Good Hope", "Horn of Africa", "Sinai Peninsula"]
+    },
+    {
+      "title": "Question 4",
+      "question": "Which Cape is located at the furthest Southern tip of Africa?",
+      "initialRotation": [-20, 34, 0],
+      "zoomFactor": 3.0,
+      "markers": [
+          { "label": "Point A", "lat": -34.8, "lon": 20, "color": "#ef4444" },
+          { "label": "Point B", "lat": -34.3, "lon": 18.4, "color": "#94a3b8" }
+      ],
+      "correctAnswer": "Cape Agulhas",
+      "options": ["Cape of Good Hope", "Cape Agulhas", "Cape Verde"]
+    },
+    {
+      "title": "Question 5",
+      "question": "This Island country is located in the Indian Ocean. What is its name?",
+      "initialRotation": [-55, 5, 0],
+      "zoomFactor": 4.0,
+      "markers": [
+          { "label": "???", "lat": -4.6, "lon": 55.5, "color": "#facc15" }
+      ],
+      "correctAnswer": "Seychelles",
+      "options": ["Comoros", "Madagascar", "Seychelles"]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Subsets",
+  "variantTitle": "Subsets & The Empty Set",
+  "slides": [
+    {
+      "title": "What is a Subset?",
+      "text": "Set A is a <b>Subset</b> of Set B if <b>ALL</b> members of A are also inside B.<br><br>Think of it like a smaller box sitting inside a bigger box.",
+      "visualType": "SUBSETS_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "subset": "1, 2", "difference": "3, 4, 5" },
+      "highlight": ["subset"]
+    },
+    {
+      "title": "The Notation (⊂)",
+      "text": "We use the symbol <span class='sym'>⊂</span> to mean 'is a subset of'.<br><br><center><b>A ⊂ B</b></center><br>This is read as: <i>Set A is a subset of Set B.</i>",
+      "visualType": "SUBSETS_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "subset": "1, 2", "difference": "3, 4" },
+      "highlight": []
+    },
+    {
+      "title": "The Empty Set (Ø)",
+      "text": "Before we count subsets, we must meet the <b>Empty Set</b>.<br><br>This is a set with <b>NO</b> members. It is empty! We write it as <span class='sym'>{}</span> or <span class='sym'>Ø</span>.",
+      "visualType": "FINITE_BASKET",
+      "visualData": [],
+      "showCount": true
+    },
+    {
+      "title": "The Golden Rule",
+      "text": "<b>Important Rule:</b> The Empty Set is a subset of <b>EVERY</b> set.<br><br>Why? Because 'nothing' can fit inside anything!<br><br><center><b>Ø ⊂ A</b></center>",
+      "visualType": "SUBSETS_DIAGRAM",
+      "labels": ["Ø", "A"],
+      "elements": { "subset": "", "difference": "1, 2, 3" },
+      "highlight": ["subset"]
+    },
+    {
+      "title": "Calculating Subsets",
+      "text": "To find the total number of subsets, use the formula:<br><br><center><span class='sym'>Subsets = 2ⁿ</span></center><br>Where <b>n</b> is the number of elements in the set.",
+      "visualType": "POWER_SET_TREE",
+      "items": ["a", "b"]
+    },
+    {
+      "title": "Let's Verify!",
+      "text": "If Set V = { a, b }, then n = 2.<br><b>2² = 4 Subsets.</b><br><br>Let's list them:<br>1. {a, b} (The set itself)<br>2. {a}<br>3. {b}<br>4. { } (The Empty Set!)",
+      "visualType": "POWER_SET_TREE",
+      "items": ["a", "b"]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Inside a Tooth",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/inside_my_tooth.glb",
+  "hotspots": [
+    { "id": "1", "label": "Enamel", "pos": "-62.27 83.68 -63.37" },
+    { "id": "2", "label": "Dentine", "pos": "-60.19 45.50 -37.02" },
+    { "id": "3", "label": "Pulp Cavity", "pos": "-51.48 10.68 -28.54" },
+    { "id": "4", "label": "Cementum", "pos": "-52.98 -212.47 -75.53" }
+  ],
+  "wordBank": ["Enamel", "Dentine", "Pulp Cavity", "Cementum", "Gum", "Jaw Bone"]
+}

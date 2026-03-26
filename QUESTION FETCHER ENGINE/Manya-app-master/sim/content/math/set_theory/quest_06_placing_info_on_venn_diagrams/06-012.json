@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Word Problems",
+  "variantTitle": "Quest 6-012: Word Sets",
+  "sets": { "A": { "label": "MANGO", "color": "#f59e0b" }, "B": { "label": "APPLE", "color": "#ef4444" } },
+  "zones": { "left": ["M","N","G","O"], "center": ["A"], "right": ["P","L","E"], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort the unique letters of MANGO and APPLE.",
+      "items": [
+        { "val": "M", "target": "left" }, { "val": "A", "target": "center" },
+        { "val": "N", "target": "left" }, { "val": "P", "target": "right" },
+        { "val": "L", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "intersection",
+      "x_val": 1, "total": 8, "expression": "1", 
+      "prompt": "Probability of picking a letter shared by BOTH words?",
+      "hint": "Only 'A' is shared. Total unique letters = 8. (1/8)"
+    }
+  ]
+}

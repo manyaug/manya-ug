@@ -1,0 +1,60 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Coastal Features",
+  "variantTitle": "Quiz 1: Gulfs of Africa",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "Question 1",
+      "question": "Which large Gulf is located on the West Coast of Africa, where the Equator meets the Prime Meridian?",
+      "initialRotation": [0, -5, 0],
+      "zoomFactor": 2.0,
+      "highlight": ["566", "288", "120", "266"],
+      "highlightColor": "#bae6fd",
+      "overlays": [
+        { "type": "curve", "center": [3, 2], "radius": 12, "color": "#0ea5e9" }
+      ],
+      "correctAnswer": "Gulf of Guinea",
+      "options": ["Gulf of Aden", "Gulf of Guinea", "Gulf of Sirte"]
+    },
+    {
+      "title": "Question 2",
+      "question": "Identify the Gulf located between the Horn of Africa (Somalia) and the Arabian Peninsula.",
+      "initialRotation": [-48, -12, 0],
+      "zoomFactor": 2.5,
+      "markers": [
+          { "label": "???", "lat": 12.5, "lon": 48, "color": "#3b82f6" }
+      ],
+      "correctAnswer": "Gulf of Aden",
+      "options": ["Gulf of Gabes", "Gulf of Aden", "Gulf of Aqaba"]
+    },
+    {
+      "title": "Question 3",
+      "question": "Which Gulf is found on the northern coast of Libya in the Mediterranean Sea?",
+      "initialRotation": [-18, -31, 0],
+      "zoomFactor": 3.0,
+      "highlight": ["434"],
+      "highlightColor": "#fcd34d",
+      "overlays": [
+        { "type": "curve", "center": [18, 31.5], "radius": 4, "color": "#0ea5e9" }
+      ],
+      "correctAnswer": "Gulf of Sirte",
+      "options": ["Gulf of Sirte", "Gulf of Gabes", "Gulf of Suez"]
+    },
+    {
+      "title": "Question 4",
+      "question": "The Gulf of Gabes is located in which North African country?",
+      "initialRotation": [-10, -34, 0],
+      "zoomFactor": 4.0,
+      "highlight": ["788"],
+      "highlightColor": "#86efac",
+      "markers": [
+          { "label": "???", "lat": 34, "lon": 10, "color": "#ef4444" }
+      ],
+      "correctAnswer": "Tunisia",
+      "options": ["Libya", "Egypt", "Tunisia"]
+    }
+  ]
+}

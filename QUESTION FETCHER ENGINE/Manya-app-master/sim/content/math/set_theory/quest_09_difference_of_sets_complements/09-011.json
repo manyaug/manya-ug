@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Complements",
+  "variantTitle": "Quest 9-011: Transport",
+  "sets": { "A": { "label": "B (30)", "color": "#2563eb" }, "B": { "label": "T (25)", "color": "#f59e0b" } },
+  "zones": { "left": ["25"], "center": ["5"], "right": ["20"], "outside": ["x"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Both=5. Outside=x. Fill Only regions.",
+      "inputs": [
+        { "region": "left", "expected": "25" },
+        { "region": "right", "expected": "20" },
+        { "region": "center", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 60,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total=60. Find <b>x</b>.",
+      "hint": "25 + 5 + 20 + x = 60."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "complement_left", 
+      "x_val": 10,
+      "prompt": "How many do <b>NOT</b> take the Bus?",
+      "hint": "(Taxi Only) + (Neither) = 20 + 10."
+    }
+  ]
+}

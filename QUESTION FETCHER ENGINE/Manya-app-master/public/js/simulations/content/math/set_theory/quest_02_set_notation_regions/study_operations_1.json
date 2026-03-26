@@ -1,0 +1,48 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Set Operations",
+  "variantTitle": "Universal Set & Operations",
+  "slides": [
+    {
+      "title": "1. The Universal Set (ξ)",
+      "text": "Imagine a big box that contains <b>everything</b> we are talking about. This is the <b>Universal Set</b>, marked with the symbol <span class='sym'>ξ</span>.<br><br>Here, ξ = {1, 2, 3, 4, 5, 6, 7, 8}",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "1,2", "center": "3,4", "right": "5,6", "outside": "7,8" },
+      "highlight": ["left", "center", "right", "outside"]
+    },
+    {
+      "title": "2. Intersection (∩)",
+      "text": "The <b>Intersection</b> is where the two circles overlap. These are numbers that are in Set A <b>AND</b> Set B.<br><br><span class='sym'>A ∩ B</span> = { 3, 4 }",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "1,2", "center": "3,4", "right": "5,6", "outside": "7,8" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "3. Union (∪)",
+      "text": "The <b>Union</b> brings everyone together! It includes Set A, Set B, and the middle.<br><br>It is the marriage of the two sets.<br><span class='sym'>A ∪ B</span> = { 1, 2, 3, 4, 5, 6 }",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "1,2", "center": "3,4", "right": "5,6", "outside": "7,8" },
+      "highlight": ["left", "center", "right"]
+    },
+    {
+      "title": "4. Difference (A - B)",
+      "text": "Set Difference means <b>'A Only'</b>. We start with Set A, but we remove anything that touches B.<br><br><span class='sym'>A - B</span> = { 1, 2 }<br><i>(Notice 3 and 4 are gone because they are in B)</i>",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "1,2", "center": "3,4", "right": "5,6", "outside": "7,8" },
+      "highlight": ["left"]
+    },
+    {
+      "title": "5. Complement of A (A')",
+      "text": "<b>Complement</b> means 'Everything outside of A'. Cover circle A with your hand. What is left in the Universal box?<br><br><span class='sym'>A'</span> = { 5, 6, 7, 8 }",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "1,2", "center": "3,4", "right": "5,6", "outside": "7,8" },
+      "highlight": ["right", "outside"]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Calculating Subsets",
+  "variantTitle": "Quest 3-007: Prime Numbers",
+  "sets": { "A": { "label": "P", "color": "#ea580c" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [2, 3, 5, 7], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> How many Primes are less than 10?",
+      "hint": "2, 3, 5, 7."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Calculate Subsets.",
+      "hint": "2⁴ = 16."
+    }
+  ]
+}

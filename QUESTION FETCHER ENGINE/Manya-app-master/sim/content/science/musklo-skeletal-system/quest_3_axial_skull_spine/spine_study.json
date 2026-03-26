@@ -1,0 +1,65 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Axial Skeleton: Vertebral Column",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/the_human_spinal_column.glb",
+  "intro": "The backbone is made of 33 small bones called vertebrae arranged in five regions.",
+  "notes": [
+    "It protects the <b>Spinal Cord</b>.",
+    "It supports the head and trunk.",
+    "It provides attachment for the ribs and pelvic girdle.",
+    "Between vertebrae are <b>Cartilage Discs</b> to absorb shock."
+  ],
+  "hotspots": [
+    { 
+      "id": "1", 
+      "label": "Cervical Region", 
+      "region": "axial",
+      "pos": "-82.26 159.32 -0.47", 
+      "norm": "-1 0 0", 
+      "info": "7 vertebrae in the neck.",
+      "description": "These are the 7 bones of the neck.<br><br>The first one is called the <b>Atlas</b> (supports the head) and the second is the <b>Axis</b> (allows the head to turn).",
+      "examTip": "The Atlas allows you to nod 'Yes', the Axis allows you to shake 'No'."
+    },
+    { 
+      "id": "2", 
+      "label": "Thoracic Region", 
+      "region": "axial",
+      "pos": "-82.03 137.76 -7.94", 
+      "norm": "-0.93 -0.36 0.05", 
+      "info": "12 vertebrae in the chest.",
+      "description": "These 12 vertebrae correspond to the 12 pairs of ribs. They have long neural spines and facets for rib attachment.",
+      "examTip": "They are found in the Chest (Thorax) region."
+    },
+    { 
+      "id": "3", 
+      "label": "Lumbar Region", 
+      "region": "axial",
+      "pos": "-82.67 115.05 -2.26", 
+      "norm": "-0.99 -0.05 0.10", 
+      "info": "5 vertebrae in the lower back.",
+      "description": "These are the largest and strongest vertebrae because they support the most body weight.",
+      "examTip": "Lower back pain is usually caused by strain on the Lumbar vertebrae."
+    },
+    { 
+      "id": "5", 
+      "label": "Sacrum", 
+      "region": "axial",
+      "pos": "-80.79 104.16 -11.48", 
+      "norm": "-0.10 -0.02 -0.99", 
+      "info": "5 fused bones.",
+      "description": "The Sacrum is a triangular bone located between the hip bones. It is made of 5 vertebrae fused together.",
+      "examTip": "It connects the spine to the Pelvis."
+    },
+    { 
+      "id": "6", 
+      "label": "Coccyx", 
+      "region": "axial",
+      "pos": "-80.11 98.83 -11.06", 
+      "norm": "0 -0.15 -0.98", 
+      "info": "The Tailbone.",
+      "description": "The Coccyx is the vestigial tail at the base of the spine. It consists of 4 tiny fused bones.",
+      "examTip": "It provides attachment for muscles but has no spinal cord inside it."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Calculating Subsets",
+  "variantTitle": "Quest 3-006: Word Sets",
+  "sets": { "A": { "label": "M", "color": "#2563eb" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["M", "A", "T", "H"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Find n(M) for the word 'MATH'.",
+      "hint": "Count the letters."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Calculate total Subsets.",
+      "hint": "2⁴ = 16."
+    }
+  ]
+}

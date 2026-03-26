@@ -1,0 +1,20 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Intersections",
+  "variantTitle": "Quest 2-003: Overlap Sets",
+  "sets": { "A": { "label": "", "color": "transparent" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SETS",
+      "prompt": "Show that <b>Some Singers (S)</b> are <b>Dancers (D)</b>.<br>Create an Intersection.",
+      "hint": "Overlap the circles partially.",
+      "items": [
+        { "val": "S", "radius": 60, "color": "rgba(147, 51, 234, 0.2)", "x": 100, "y": 200, "target": "overlap" },
+        { "val": "D", "radius": 60, "color": "rgba(219, 39, 119, 0.2)", "x": 300, "y": 200, "target": "overlap" }
+      ]
+    }
+  ]
+}

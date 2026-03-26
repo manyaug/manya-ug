@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Outside Logic",
+  "variantTitle": "Quest 9-027: Sports Clicks",
+  "sets": { "A": { "label": "T", "color": "#2563eb" }, "B": { "label": "G", "color": "#7c3aed" } },
+  "zones": { "left": [40], "center": [20], "right": [30], "outside": [10] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "universal_only",
+      "prompt": "Tap the region for people who play <b>Neither</b> sport.",
+      "hint": "Click the box background area. Sum = 10."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "union",
+      "prompt": "Tap everyone who plays <b>a sport</b>.",
+      "hint": "Click Left, Center, and Right. 40 + 20 + 30 = 90."
+    }
+  ]
+}

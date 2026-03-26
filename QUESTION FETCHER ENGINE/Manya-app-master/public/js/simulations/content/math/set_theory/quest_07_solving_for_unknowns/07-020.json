@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Ratios",
+  "variantTitle": "Quest 7-013: 3:2 Ratio",
+  "sets": { "A": { "label": "A (3x)", "color": "#9333ea" }, "B": { "label": "B (2x)", "color": "#db2777" } },
+  "zones": { "left": ["2x"], "center": ["x"], "right": ["x"], "outside": ["0"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> n(A)=3x, n(B)=2x. Both=x. Fill Only regions.",
+      "inputs": [
+        { "region": "left", "expected": "2x" }, 
+        { "region": "right", "expected": "x" }, 
+        { "region": "center", "expected": "x" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total = 40. Find <b>x</b>.",
+      "hint": "2x + x + x = 40 -> 4x = 40."
+    }
+  ]
+}

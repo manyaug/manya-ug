@@ -1,0 +1,15 @@
+{
+  "engineType": "ENGLISH_RULE_MASTER",
+  "type": "VOCABULARY_LIST",
+  "topicTitle": "The Holiday Dictionary",
+  "rules": [
+    { "word": "Commence", "meaning": "To start or begin officially." },
+    { "word": "Vacation", "meaning": "A long holiday between school terms." },
+    { "word": "Rural", "meaning": "The quiet countryside or village area." },
+    { "word": "Urban", "meaning": "A busy town or city area." },
+    { "word": "Pen-pal", "meaning": "A friend you make by writing letters." },
+    { "word": "Remedial", "meaning": "Extra classes to help you improve." },
+    { "word": "Fare", "meaning": "The money you pay for transport." },
+    { "word": "Chores", "meaning": "Small regular jobs you do at home." }
+  ]
+}

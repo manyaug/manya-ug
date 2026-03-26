@@ -1,0 +1,30 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Multiples",
+  "variantTitle": "Quest 6-004: LCM Finder",
+  "sets": { "A": { "label": "M3", "color": "#db2777" }, "B": { "label": "M4", "color": "#2563eb" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort Multiples of 3 and 4 (less than 15).",
+      "items": [
+        { "val": "3", "target": "left" },
+        { "val": "4", "target": "right" },
+        { "val": "6", "target": "left" },
+        { "val": "8", "target": "right" },
+        { "val": "9", "target": "left" },
+        { "val": "12", "target": "center" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "Identify the <b>LCM</b> (Lowest Common Multiple).",
+      "hint": "The smallest number in the intersection (12)."
+    }
+  ]
+}

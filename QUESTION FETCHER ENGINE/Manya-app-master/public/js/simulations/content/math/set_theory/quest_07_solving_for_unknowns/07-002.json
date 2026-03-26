@@ -1,0 +1,45 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complex Equations",
+  "variantTitle": "Quest 7-002: Advanced Algebra",
+  "sets": {
+    "A": { "label": "C", "color": "#9333ea" },
+    "B": { "label": "B", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["2x+5"],
+    "center": ["x"],
+    "right": ["3x+10"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "right_total",
+      "equation_target": 50,
+      "expected_x": 10,
+      "prompt": "Given <span style='color:#db2777'>n(B) = 50</span>, find <b>x</b>.",
+      "hint": "Pink Circle Total: x + (3x + 10) = 50. So 4x = 40."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_total",
+      "x_val": 10,
+      "expression": "3x + 5",
+      "prompt": "How many grow <span style='color:#9333ea'>Coffee</span>?",
+      "hint": "n(C) = (2x + 5) + x. Substitute x=10."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 10,
+      "expression": "3x + 10",
+      "prompt": "Farmers growing <span style='color:#db2777'>Beans but not Coffee</span>?",
+      "hint": "This is n(B only). Calculate 3(10) + 10."
+    }
+  ]
+}

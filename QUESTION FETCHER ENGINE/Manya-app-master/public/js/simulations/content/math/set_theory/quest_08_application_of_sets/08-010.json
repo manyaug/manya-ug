@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Application of Sets",
+  "variantTitle": "Quest 8-010: Music Fest",
+  "sets": { "A": { "label": "R (60)", "color": "#16a34a" }, "B": { "label": "J (50)", "color": "#ea580c" } },
+  "zones": { "left": ["60-x"], "center": ["x"], "right": ["50-x"], "outside": ["10"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 100,
+      "expected_x": 20,
+      "prompt": "Total=100. Neither=10. Find <b>x</b> (Both).",
+      "hint": "(60-x) + x + (50-x) + 10 = 100 -> 120 - x = 100."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "x_val": 20,
+      "prompt": "How many like <b>only one</b> type of music?",
+      "hint": "R Only (40) + J Only (30)."
+    }
+  ]
+}

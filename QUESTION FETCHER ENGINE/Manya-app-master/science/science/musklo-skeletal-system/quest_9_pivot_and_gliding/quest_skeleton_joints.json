@@ -1,0 +1,20 @@
+{
+  "engineType": "SKELETON_PUPPET",
+  "mode": "study",
+  "topic": "Skeletal Joint Coordination",
+  "intro": "Tap the joint circles to adjust angles and study the human range of motion.",
+  "initialJoints": {
+    "head": { "angle": 0, "min": -0.7, "max": 0.7, "label": "Neck Joint", "type": "pivot" },
+    "r_shoulder": { "angle": 0, "min": -1.5, "max": 1.5, "label": "Right Shoulder", "type": "ball" },
+    "r_elbow": { "angle": 0, "min": -2.4, "max": 0, "label": "Right Elbow", "type": "hinge" },
+    "l_shoulder": { "angle": 0, "min": -1.5, "max": 1.5, "label": "Left Shoulder", "type": "ball" },
+    "l_elbow": { "angle": 0, "min": 0, "max": 2.4, "label": "Left Elbow", "type": "hinge" },
+    "r_hip": { "angle": 0, "min": -0.8, "max": 0.8, "label": "Right Hip", "type": "ball" },
+    "l_hip": { "angle": 0, "min": -0.8, "max": 0.8, "label": "Left Hip", "type": "ball" }
+  },
+  "parts": {
+    "head": { "title": "Neck (Pivot Joint)", "desc": "Allows side-to-side rotation.", "tip": "Formed by the Atlas and Axis vertebrae." },
+    "r_shoulder": { "title": "Shoulder (Ball & Socket)", "desc": "Allows 360° movement.", "tip": "Connects Humerus to Scapula." },
+    "spine": { "title": "Vertebral Column", "desc": "Protects the spinal cord.", "tip": "Made of 33 vertebrae." }
+  }
+}

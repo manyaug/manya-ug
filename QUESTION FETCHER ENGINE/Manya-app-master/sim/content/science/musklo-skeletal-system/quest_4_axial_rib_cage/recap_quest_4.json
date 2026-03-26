@@ -1,0 +1,65 @@
+{
+  "engineType": "READER_STUDY",
+  "topic": "Axial Skeleton: Rib Cage",
+  "variantTitle": "Quest 4 Master Recap",
+  "themeColor": "#ef4444",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "Structure of the Rib Cage",
+      "points": [
+        "The rib cage is made up of <b>24 individual ribs</b> (12 pairs).",
+        "At the back, all ribs are attached to the <b>12 Thoracic vertebrae</b>.",
+        "<b>Sternum:</b> Also called the <b>breastbone</b>. It is a flat bone in the center of the chest that anchors the ribs at the front.",
+        "<b>Intercostal Muscles:</b> Muscles found <u>between</u> the ribs that help in breathing."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Three Types of Ribs",
+      "points": [
+        "<b>1. True Ribs:</b> The first <b>7 pairs</b>. They attach <u>directly</u> to the sternum using cartilage.",
+        "<b>2. False Ribs:</b> The next 3 pairs. They attach to the cartilage of the rib above them instead of the sternum.",
+        "<b>3. Floating Ribs:</b> The last <b>2 pairs</b>. They do not attach to anything at the front."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "Breathing Mechanics",
+      "points": [
+        "<b>Inspiration (Inhaling):</b> Ribs move <b>up and outwards</b>. Chest volume increases, air enters.",
+        "<b>Expiration (Exhaling):</b> Ribs move <b>down and inwards</b>. Chest volume decreases, air is pushed out."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "The rib cage is <b>flexible</b> because of <b>cartilage</b>. If ribs were attached by hard bone at the front, your chest could not expand to let you breathe!"
+    },
+    {
+      "type": "bullets",
+      "title": "Key Functions",
+      "points": [
+        "Protects vital organs: <b>Heart and Lungs</b>.",
+        "Provides a surface for <b>Intercostal muscles</b> to attach.",
+        "Manufactures <b>Red Blood Cells</b> in its red bone marrow."
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "term": "True Ribs",
+      "fact": "The first 7 pairs that touch the breastbone.",
+      "mnemonic": "7 is a <b>'True'</b> lucky number! (7 pairs of True ribs)."
+    },
+    {
+      "term": "Sternum",
+      "fact": "The flat bone in the middle of your chest.",
+      "mnemonic": "Think of it as the <b>'Shield'</b> for your heart."
+    },
+    {
+      "term": "Breathing Rule",
+      "fact": "Up and Out = In. Down and In = Out.",
+      "mnemonic": "<b>Up</b> and <b>Out</b> brings the oxygen <b>In</b>!"
+    }
+  ]
+}

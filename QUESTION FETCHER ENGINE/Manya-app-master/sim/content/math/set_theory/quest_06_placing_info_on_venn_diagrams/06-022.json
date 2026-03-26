@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Shading Regions",
+  "variantTitle": "Quest 6-023: Region Painter",
+  "sets": { "A": { "label": "X", "color": "#9333ea" }, "B": { "label": "Y", "color": "#db2777" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "complement_left",
+      "prompt": "Tap regions to shade <span style='color:#9333ea'>X '</span> (Complement of X).",
+      "hint": "Everything NOT in circle X. (Y Only + Outside)."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "intersection",
+      "prompt": "Tap to shade <span style='color:#64748b'>X ∩ Y</span>.",
+      "hint": "The overlapping middle part."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "Tap to shade <span style='color:#0f172a'>(X ∪ Y) - (X ∩ Y)</span>.",
+      "hint": "Everything in the circles EXCEPT the middle."
+    }
+  ]
+}

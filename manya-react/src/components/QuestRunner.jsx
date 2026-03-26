@@ -290,17 +290,14 @@ export default function QuestRunner() {
             return;
         }
 
-        setStepIdx(prevIdx => {
-            const nextIdx = prevIdx + 1;
-            console.log(`[QuestRunner] Attempting to advance from ${prevIdx} to ${nextIdx} (Total: ${steps.length})`);
-            
-            if (nextIdx < steps.length) {
-                return nextIdx;
-            } else {
-                finishQuest();
-                return prevIdx;
-            }
-        });
+        const nextIdx = stepIdx + 1;
+        console.log(`[QuestRunner] Attempting to advance from ${stepIdx} to ${nextIdx} (Total: ${steps.length})`);
+        
+        if (nextIdx < steps.length) {
+            setStepIdx(nextIdx);
+        } else if (phase !== 'finished') {
+            finishQuest();
+        }
     }
 
     // ── FINISH ────────────────────────────────────────────────────────────────

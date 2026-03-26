@@ -151,3 +151,42 @@
 @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
 @keyframes floatSideways { 0%, 100% { transform: translateY(-50%) translateX(0); } 50% { transform: translateY(-50%) translateX(-8px); } }
+
+/* ── UNLOCK BURST EFFECT ── */
+.unlock-burst-effect {
+    position: absolute; inset: -40px;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 100;
+}
+.burst-ring {
+    position: absolute; width: 80px; height: 80px;
+    border: 4px solid var(--biome-color); border-radius: 50%;
+    animation: burstRing 0.8s ease-out forwards;
+}
+.burst-particles .particle {
+    position: absolute; width: 6px; height: 18px;
+    background: var(--biome-color); border-radius: 10px;
+    transform: rotate(var(--angle)) translateY(-40px);
+    animation: particleFly 0.6s ease-out forwards;
+}
+
+@keyframes burstRing {
+    0% { transform: scale(1); opacity: 1; border-width: 10px; }
+    100% { transform: scale(2.5); opacity: 0; border-width: 1px; }
+}
+@keyframes particleFly {
+    0% { transform: rotate(var(--angle)) translateY(0); opacity: 1; height: 4px; }
+    100% { transform: rotate(var(--angle)) translateY(-80px); opacity: 0; height: 20px; }
+}
+
+/* ── ANIMATING HERO ── */
+.hero-path-pointer.animating {
+    z-index: 5000 !important;
+}
+.hero-path-pointer.animating .hero-bubble {
+    animation: bounceWhileMoving 0.4s infinite ease-in-out;
+}
+@keyframes bounceWhileMoving {
+    0%, 100% { transform: translateY(-50%) scale(1); }
+    50% { transform: translateY(-60%) scale(1.1); }
+}

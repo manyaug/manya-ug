@@ -1,24 +1,29 @@
 /**
- * MANYA QUEST PATH VIEW - v2.0
- * All 5 nodes visible in ONE screen — no vertical scroll.
- * Locked from horizontal movement. Gem pill → achievements.
+ * MANYA QUEST PATH VIEW - v4.0 (Dynamic Progress)
+ * =================================================
+ * Nodes unlock based on real student mastery from questProgressService.
+ * Shows mastery %, retry indicators, and earned gems dynamically.
  */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ChevronLeft } from 'lucide-react';
-import { setAmbientMode, setRainy } from '../store/audioSlice';
+import { setAmbientMode } from '../store/audioSlice';
+import { buildSteps } from '../utils/questFactory';
+import {
+    getQuestProgress, getCurrentNodeIndex, getEarnedGems,
+    getJustFinished, clearJustFinished, UNLOCK_THRESHOLDS, NODE_ORDER
+} from '../services/questProgressService';
 import '../styles/quest-path.css';
 
 const STEPS = [
-    { id: 'warmup',        label: 'Warmup',      icon: '⚡', color: '#10B981' },
-    { id: 'exploration',   label: 'Explore',     icon: '🔍', color: '#3B82F6' },
-    { id: 'practice',      label: 'Practice',    icon: '🧠', color: '#8B5CF6' },
-    { id: 'reinforcement', label: 'Reinforce',   icon: '💎', color: '#EC4899' },
-    { id: 'mastery',       label: 'Boss Chest',  icon: '🎁', color: '#F59E0B', isChest: true },
+    { id: 'warmup',        label: 'Warmup',      icon: '⚡', nodeType: 'WARMUP' },
+    { id: 'exploration',   label: 'Explore',     icon: '🔍', nodeType: 'EXPLORE' },
+    { id: 'practice',      label: 'Practice',    icon: '🧠', nodeType: 'PRACTICE' },
+    { id: 'reinforcement', label: 'Reinforce',   icon: '💎', nodeType: 'REINFORCE' },
+    { id: 'mastery',       label: 'Boss Chest',  icon: '🎁', isChest: true, nodeType: 'MASTERY' },
 ];
 
-// Zigzag X positions for each node (in %)
 const ZIG_X = [30, 65, 30, 65, 50];
 
 function QuestPathView() {
@@ -28,18 +33,14 @@ function QuestPathView() {
     const user = useSelector(s => s.user.data);
     const { isNightMode } = useSelector(s => s.audio);
 
-    // Maintain Ambient Audio based on local cycle
-    useEffect(() => {
-        dispatch(setAmbientMode(isNightMode ? 'night' : 'day'));
-    }, [dispatch, isNightMode]);
-
-    // Entry Whoosh
-    useEffect(() => {
-        const whooshTimer = setTimeout(() => {
-            window.ManyaAudio?.whoosh();
-        }, 300);
-        return () => clearTimeout(whooshTimer);
-    }, []);
+    const [curriculum, setCurriculum] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(null);
+    
+    // Animation states
+    const [animatingUnlock, setAnimatingUnlock] = useState(null); // { from, to }
+    const [showBurst, setShowBurst] = useState(null); // nodeId
+    const [iconPos, setIconPos] = useState(null); // { x, y }
 
     const {
         subject = 'math',
@@ -49,34 +50,167 @@ function QuestPathView() {
         biomeColor = '#7c3aed',
     } = state || {};
 
-    const currentStep = 1; // step 1 = active, 0 = completed, 2-4 = locked
+    // Build a stable quest key
+    const questKey = `${subject}/${unitId}/${title.replace(/\s+/g, '_').toLowerCase()}`;
+
+    // Load progress and check for just-finished-unlock
+    useEffect(() => {
+        const prog = getQuestProgress(subject, questKey);
+        setProgress(prog);
+        console.log(`🗺️ [QuestPath] Loaded progress for ${questKey}:`, prog);
+        
+        const justFinished = getJustFinished();
+        console.log(`🚩 [QuestPath] Just Finished:`, justFinished);
+
+        if (justFinished && justFinished.questKey === questKey && justFinished.unlocked) {
+            const fromIdx = NODE_ORDER.indexOf(justFinished.nodeType);
+            const toIdx = NODE_ORDER.indexOf(justFinished.nextNode);
+            
+            console.log(`🎬 [QuestPath] Starting unlock animation: ${fromIdx} -> ${toIdx}`);
+
+            if (fromIdx !== -1 && toIdx !== -1) {
+                // Prepare animation
+                setAnimatingUnlock({ from: fromIdx, to: toIdx });
+                setIconPos({ x: ZIG_X[fromIdx], y: 90 - (fromIdx * 20) });
+                
+                // Clear the flag NOW that we've started the animation
+                clearJustFinished();
+
+                // Start movement after brief pause
+                setTimeout(() => {
+                    setIconPos({ x: ZIG_X[toIdx], y: 90 - (toIdx * 20) });
+                    window.ManyaAudio?.whoosh?.();
+                    
+                    // Trigger burst after move duration (matches CSS transition)
+                    setTimeout(() => {
+                        setShowBurst(justFinished.nextNode);
+                        window.ManyaAudio?.success?.();
+                        
+                        // IMPORTANT: Refresh local state to show the node as UNLOCKED after animation
+                        // This ensures the "locked" icon disappears at the exact moment of the burst
+                        const updatedProg = getQuestProgress(subject, questKey);
+                        setProgress(updatedProg);
+
+                        setTimeout(() => {
+                            setShowBurst(null);
+                            setAnimatingUnlock(null);
+                        }, 1000);
+                    }, 800);
+                }, 1000);
+            }
+        }
+    }, [subject, questKey]);
+
+    // Ambient audio
+    useEffect(() => {
+        dispatch(setAmbientMode(isNightMode ? 'night' : 'day'));
+    }, [dispatch, isNightMode]);
+
+    // Entry whoosh
+    useEffect(() => {
+        const t = setTimeout(() => window.ManyaAudio?.whoosh(), 300);
+        return () => clearTimeout(t);
+    }, []);
+
+    // Load curriculum
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await fetch('/curriculum-master.json');
+                const raw = await res.json();
+                const norm = {};
+                Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
+                setCurriculum(norm);
+            } catch (e) {
+                console.error('[QuestPath] Curriculum load failed:', e);
+            }
+        })();
+    }, []);
+
+    // Find quest data from curriculum
+    const getQuestData = () => {
+        if (!curriculum || !curriculum[subject]) return null;
+        const units = curriculum[subject]?.units || [];
+        for (const unit of units) {
+            if (unit.id === unitId) {
+                const quest = unit.quests?.find(q => q.title === title);
+                return quest ? { ...quest, unitId: unit.id } : unit.quests?.[0] ? { ...unit.quests[0], unitId: unit.id } : null;
+            }
+        }
+        for (const unit of units) {
+            for (const quest of (unit.quests || [])) {
+                if (quest.title === title || quest.folder === unitId) {
+                    return { ...quest, unitId: unit.id };
+                }
+            }
+        }
+        return null;
+    };
+
+    // Dynamic derived values from progress
+    const currentStep = progress ? getCurrentNodeIndex(subject, questKey) : 0;
     const totalGems = STEPS.length * 3;
-    const earnedGems = currentStep * 3;
+    const earnedGems = progress ? getEarnedGems(subject, questKey) : 0;
     const progressPct = (earnedGems / totalGems) * 100;
 
-    const handleStepTap = (idx, stepId, isLocked) => {
-        if (isLocked) return;
+    const handleStepTap = async (idx, stepDef, isLocked) => {
+        if (isLocked || loading) return;
         window.ManyaAudio?.click();
-        navigate('/quest', {
-            state: { subject, unit: unitId, quest: unitId, stepID: stepId, title }
-        });
+        setLoading(true);
+
+        const nodeType = stepDef.nodeType;
+
+        try {
+            const questData = getQuestData();
+            if (!questData) {
+                console.error('[QuestPath] No quest data found');
+                setLoading(false);
+                return;
+            }
+
+            const steps = await buildSteps({
+                subject,
+                unitId: questData.unitId,
+                questFolder: questData.folder,
+                prefix: questData.prefix || '',
+                practiceCount: questData.practiceCount || 0,
+                resources: questData.resources || [],
+                nodeType,
+            });
+
+            if (steps.length > 0) {
+                navigate('/quest', {
+                    state: {
+                        steps,
+                        title: `${title} — ${stepDef.label}`,
+                        subject,
+                        gemFile,
+                        biomeColor,
+                        // Pass context so SSTFetcherEngine can save progress
+                        questKey,
+                        nodeType,
+                    }
+                });
+            } else {
+                console.warn('[QuestPath] No steps generated for:', nodeType);
+            }
+        } catch (err) {
+            console.error('[QuestPath] Failed to build steps:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div
             className="quest-path-root animate-in"
-            style={{
-                '--biome-color': biomeColor,
-                overflowX: 'hidden',  /* lock horizontal scroll */
-                overflowY: 'hidden',
-            }}
+            style={{ '--biome-color': biomeColor, overflowX: 'hidden', overflowY: 'hidden' }}
         >
             {/* ── TOP HEADER ── */}
             <div className="quest-top-header">
                 <button className="back-to-map-btn" onClick={() => navigate(-1)}>
                     <ChevronLeft size={20} strokeWidth={3} />
                 </button>
-
                 <div className="header-info">
                     <div className="header-subtitle">{subject.toUpperCase()} QUEST</div>
                     <div className="header-title">{title}</div>
@@ -84,8 +218,6 @@ function QuestPathView() {
                         <div className="header-progress-fill" style={{ width: `${progressPct}%` }} />
                     </div>
                 </div>
-
-                {/* Gem pill → gem vault */}
                 <div
                     className="header-stats quest-gem-pill"
                     onClick={() => navigate('/achievements')}
@@ -96,67 +228,90 @@ function QuestPathView() {
                 </div>
             </div>
 
-            {/* ── FIXED HEIGHT PATH AREA (all 5 nodes, no scroll) ── */}
+            {/* Loading overlay */}
+            {loading && (
+                <div style={{
+                    position: 'absolute', inset: 0, zIndex: 100,
+                    background: 'rgba(0,0,0,0.3)', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center'
+                }}>
+                    <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                </div>
+            )}
+
+            {/* ── PATH AREA ── */}
             <div className="quest-path-body">
-                {/* SVG connecting path line */}
                 <svg className="quest-svg-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path
-                        d="M30,90 Q65,70 65,70 Q30,50 30,50 Q65,30 65,30 Q50,10 50,10"
-                        fill="none"
-                        stroke="rgba(0,0,0,0.08)"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                    <path
-                        d="M30,90 Q65,70 65,70 Q30,50 30,50 Q65,30 65,30 Q50,10 50,10"
-                        fill="none"
-                        stroke={biomeColor}
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                    <path d="M30,90 Q65,70 65,70 Q30,50 30,50 Q65,30 65,30 Q50,10 50,10"
+                        fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M30,90 Q65,70 65,70 Q30,50 30,50 Q65,30 65,30 Q50,10 50,10"
+                        fill="none" stroke={biomeColor} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                         strokeDasharray="200"
-                        strokeDashoffset={200 - (200 * (currentStep / STEPS.length))}
-                        style={{ transition: 'stroke-dashoffset 1.2s ease' }}
-                    />
+                        strokeDashoffset={200 - (200 * ((currentStep + 1) / STEPS.length))}
+                        style={{ transition: 'stroke-dashoffset 1.2s ease' }} />
                 </svg>
 
-                {/* NODES — absolutely placed at zigzag positions */}
+                {/* NODES */}
                 {STEPS.map((step, i) => {
-                    const isCompleted = i < currentStep;
-                    const isActive = i === currentStep;
-                    const isLocked = i > currentStep;
+                    const nodeType = step.nodeType;
+                    const nodeProgress = progress?.[nodeType];
+                    const nodeStatus = nodeProgress?.status || (i === 0 ? 'available' : 'locked');
+                    const nodeMastery = nodeProgress?.mastery || 0;
+
+                    const isCompleted = nodeStatus === 'completed';
+                    const isActive = nodeStatus === 'available';
+                    const isLocked = nodeStatus === 'locked';
 
                     const stateClass = isCompleted ? 'completed' : isActive ? 'active' : 'locked';
-                    const gemsEarned = isCompleted ? 3 : isActive ? 2 : 0;
 
-                    // Y spread from bottom to top (90% bottom, 10% top)
+                    // Gems: 3 if completed with high mastery, 2 if decent, 1 if barely passed
+                    const gemsForNode = isCompleted
+                        ? (nodeMastery >= 85 ? 3 : nodeMastery >= 70 ? 2 : 1)
+                        : 0;
+
                     const yPct = 90 - (i * 20);
                     const xPct = ZIG_X[i];
+
+                    // Check if this node needs retry (completed but didn't unlock next)
+                    const nextNode = i < NODE_ORDER.length - 1 ? NODE_ORDER[i + 1] : null;
+                    const nextThreshold = nextNode ? UNLOCK_THRESHOLDS[nextNode] : 0;
+                    const needsRetry = isCompleted && nextNode && nodeMastery < nextThreshold;
 
                     return (
                         <div
                             key={step.id}
                             className={`quest-node-abs ${stateClass} ${step.isChest ? 'chest-node' : ''}`}
                             style={{ left: `${xPct}%`, top: `${yPct}%` }}
-                            onClick={() => handleStepTap(i, step.id, isLocked)}
+                            onClick={() => handleStepTap(i, step, isLocked)}
                         >
                             {/* Gem row */}
                             {!step.isChest && (
                                 <div className="node-gem-rating">
-                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem ${gemsEarned >= 1 ? 'earned' : 'empty'}`} alt="" />
-                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem top-gem ${gemsEarned >= 2 ? 'earned' : 'empty'}`} alt="" />
-                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem ${gemsEarned >= 3 ? 'earned' : 'empty'}`} alt="" />
+                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem ${gemsForNode >= 1 ? 'earned' : 'empty'}`} alt="" />
+                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem top-gem ${gemsForNode >= 2 ? 'earned' : 'empty'}`} alt="" />
+                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem ${gemsForNode >= 3 ? 'earned' : 'empty'}`} alt="" />
+                                </div>
+                            )}
+
+                            {/* Burst effect layer */}
+                            {showBurst === nodeType && (
+                                <div className="unlock-burst-effect">
+                                    <div className="burst-ring" />
+                                    <div className="burst-particles">
+                                        {[...Array(8)].map((_, i) => <div key={i} className="particle" style={{ '--angle': `${i * 45}deg` }} />)}
+                                    </div>
                                 </div>
                             )}
 
                             {/* Main button */}
                             <button className="tactile-node">
-                                {isActive && <div className="active-pulse-ring" />}
+                                {isActive && !animatingUnlock && <div className="active-pulse-ring" />}
                                 <div className="node-icon-inner">
-                                    {isLocked && !step.isChest ? '🔒' : step.icon}
+                                    {isLocked && !step.isChest ? '🔒' :
+                                     isCompleted ? '✅' :
+                                     step.icon}
                                 </div>
-                                {isActive && (
+                                {isActive && !animatingUnlock && (
                                     <div className="hero-path-pointer">
                                         <div className="hero-bubble">
                                             <img
@@ -168,10 +323,43 @@ function QuestPathView() {
                                 )}
                             </button>
 
+                            {/* Mastery indicator on completed nodes */}
+                            {isCompleted && (
+                                <div style={{
+                                    fontSize: '9px', fontWeight: 900, marginTop: '2px',
+                                    color: needsRetry ? '#ef4444' : '#10b981',
+                                    textAlign: 'center', letterSpacing: '0.5px'
+                                }}>
+                                    {nodeMastery}% {needsRetry && '↻'}
+                                </div>
+                            )}
+
                             <span className="path-step-label">{step.label}</span>
                         </div>
                     );
                 })}
+
+                {/* ANIMATING HERO ICON */}
+                {animatingUnlock && iconPos && (
+                    <div 
+                        className="hero-path-pointer animating"
+                        style={{ 
+                            position: 'absolute',
+                            left: `${iconPos.x}%`,
+                            top: `${iconPos.y}%`,
+                            transform: 'translate(-50%, -50%)',
+                            transition: 'left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                            zIndex: 50
+                        }}
+                    >
+                        <div className="hero-bubble active">
+                            <img
+                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed}`}
+                                alt="Hero"
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
