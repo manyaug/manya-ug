@@ -11,7 +11,7 @@
  */
 
 import { loadQuestSteps, contentUrl } from './questLoader.js';
-import { getNodeMastery, getQuestProgress } from '../services/questProgressService.js';
+import { getQuestKey, getNodeMastery, getQuestProgress } from '../services/questProgressService.js';
 
 
 /**
@@ -19,71 +19,32 @@ import { getNodeMastery, getQuestProgress } from '../services/questProgressServi
  */
 export async function buildSteps({ subject, unitId, questFolder, prefix, practiceCount, resources, nodeType }) {
 
-    // ── EXPLORE: serve study JSONs ONE AT A TIME ─────────────────────────────
-    if (nodeType === 'EXPLORE') {
-        if (!resources || resources.length === 0) return [];
-
-        // Filter to study/recap resources only (not practice files)
-        const studyResources = resources.filter(r =>
-            r.file.startsWith('study_') ||
-            r.file.startsWith('recap_') ||
-            r.file.includes('_study') ||
-            r.file.includes('_recap')
-        );
-
-        if (studyResources.length === 0) {
-            // Fallback: use all resources
-            const allSteps = [];
-            for (const res of resources) {
-                try {
-                    const { steps } = await loadQuestSteps(subject, unitId, questFolder, res.file);
-                    allSteps.push(...steps);
-                } catch (e) {
-                    console.warn(`[QuestFactory] Could not load resource: ${res.file}`, e);
-                }
-            }
-            return allSteps;
-        }
-
-        // Cycle through study resources — use attempt count to pick the next one
-        const progressKey = `${subject}/${unitId}/${questFolder.replace(/\s+/g, '_').toLowerCase()}`;
-        const exploreAttempt = getExploreAttempt(subject, progressKey);
-        const resourceIdx = exploreAttempt % studyResources.length;
-        const selectedResource = studyResources[resourceIdx];
-
-        try {
-            const { steps } = await loadQuestSteps(subject, unitId, questFolder, selectedResource.file);
-            incrementExploreAttempt(subject, progressKey);
-            return steps;
-        } catch (e) {
-            console.warn(`[QuestFactory] Could not load study resource: ${selectedResource.file}`, e);
-            return [];
-        }
-    }
-
     // ─────────────────────────────────────────────────────────────────────────
     // ADAPTIVE FETCHER INJECTION
     // ─────────────────────────────────────────────────────────────────────────
 
     // ── SST: Adaptive Fetcher with content sequencing ────────────────────────
-    if (subject === 'sst' && (nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+    if (subject === 'sst' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
         const steps = [];
 
-        // WARMUP gets a study sim first (from legacy: questId === 1 → study sim at start)
-        if (nodeType === 'WARMUP' && resources && resources.length > 0) {
+        // WARMUP and EXPLORE get a study/recap sim first
+        if ((nodeType === 'WARMUP' || nodeType === 'EXPLORE') && resources && resources.length > 0) {
             const studyRes = resources.find(r =>
-                r.file.startsWith('study_') || r.file.includes('_study')
+                r.file.startsWith('study_') || r.file.includes('_study') ||
+                r.file.startsWith('recap_') || r.file.includes('_recap')
             );
             if (studyRes) {
+                // Determine whether it needs .json suffix
+                const fileName = studyRes.file.endsWith('.json') ? studyRes.file : `${studyRes.file}.json`;
                 try {
-                    const { steps: studySteps } = await loadQuestSteps(subject, unitId, questFolder, studyRes.file);
+                    const { steps: studySteps } = await loadQuestSteps(subject, unitId, questFolder, fileName);
                     if (studySteps.length > 0) {
                         // Mark as a study sim intro step
                         studySteps[0].isStudySim = true;
                         steps.push(...studySteps);
                     }
                 } catch (e) {
-                    console.warn(`[QuestFactory] Could not load warmup study sim:`, e);
+                    console.warn(`[QuestFactory] Could not load warmup/explore study sim:`, e);
                 }
             }
         }
@@ -91,17 +52,19 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         // PRACTICE/REINFORCE: insert recap if previous node mastery was low
         if (nodeType === 'PRACTICE' || nodeType === 'REINFORCE') {
             const prevNode = nodeType === 'PRACTICE' ? 'EXPLORE' : 'PRACTICE';
-            const questKey = `${subject}/${unitId}/${questFolder.replace(/\s+/g, '_').toLowerCase()}`;
+            const questKey = getQuestKey(subject, unitId, questFolder);
             const prevMastery = getNodeMastery(subject, questKey, prevNode);
 
             if (prevMastery < 60 && resources && resources.length > 0) {
                 // Insert a recap step
                 const recapRes = resources.find(r =>
-                    r.file.startsWith('recap_') || r.file.includes('_recap')
+                    r.file.startsWith('recap_') || r.file.includes('_recap') ||
+                    r.file.startsWith('study_') || r.file.includes('_study')
                 );
                 if (recapRes) {
+                    const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
                     try {
-                        const { steps: recapSteps } = await loadQuestSteps(subject, unitId, questFolder, recapRes.file);
+                        const { steps: recapSteps } = await loadQuestSteps(subject, unitId, questFolder, fileName);
                         steps.push(...recapSteps);
                     } catch (e) {
                         console.warn(`[QuestFactory] Could not load recap:`, e);
@@ -120,7 +83,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                 nodeType,
                 subject: 'sst',
                 unitId,
-                questKey: `sst/${unitId}/${questFolder}`,
+                questKey: getQuestKey('sst', unitId, questFolder),
             }
         });
 
@@ -128,7 +91,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
     }
 
     // ── English: same pattern ────────────────────────────────────────────────
-    if (subject === 'english' && (nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+    if (subject === 'english' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
         return [{
             engineType: 'ENGLISH_FETCHER',
             topic: questFolder,
@@ -138,7 +101,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                 nodeType,
                 subject: 'english',
                 unitId,
-                questKey: `english/${unitId}/${questFolder}`,
+                questKey: getQuestKey('english', unitId, questFolder),
             }
         }];
     }

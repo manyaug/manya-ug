@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw } from 'lucide-react';
 import { fetchSstQuestions } from '../../services/sstMockDB';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateProfile } from '../../store/userSlice';
 import { generateAdaptiveQuest, selectGameMode } from '../../services/adaptiveEngine';
 import {
     getSession, updateSessionAfterAnswer, recordAnswer,
@@ -20,6 +22,9 @@ import {
  * - Shows completion screen with unlock status or retry prompt
  */
 export default function SSTFetcherEngine({ data, onComplete, onResult }) {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user.data);
+    
     const [questions, setQuestions] = useState([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -35,6 +40,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const [showGemToast, setShowGemToast] = useState(false);
     const [showCompletion, setShowCompletion] = useState(false);
     const [completionResult, setCompletionResult] = useState(null);
+    const [isFinished, setIsFinished] = useState(false);
 
     // All questions from bank (for variant lookup)
     const allBankRef = useRef([]);
@@ -107,20 +113,25 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         return null; // No rephrase available
     };
 
-    const handleAnswer = (option) => {
+    const handleSelect = (option) => {
         if (isAnswered) return;
 
-        if (firstSelection.current && firstSelection.current !== option) {
+        if (selectedOption !== null && selectedOption !== option) {
             setAnswerChanged(true);
             setChangeCount(c => c + 1);
         }
         if (!firstSelection.current) firstSelection.current = option;
 
         setSelectedOption(option);
+        window.ManyaAudio?.pop?.();
+    };
+
+    const handleSubmit = () => {
+        if (isAnswered || selectedOption === null) return;
         setIsAnswered(true);
 
         const q = questions[currentIdx];
-        const isCorrect = option === q.answer;
+        const isCorrect = selectedOption === q.answer;
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
@@ -150,7 +161,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         recordAnswer(subject, {
             questionId: q.id,
             isCorrect,
-            selectedAnswer: option,
+            selectedAnswer: selectedOption,
             correctAnswer: q.answer,
             timeSpentMs,
             hintUsed,
@@ -184,9 +195,9 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             setChangeCount(0);
             firstSelection.current = null;
             questionStartTime.current = Date.now();
-        } else if (!isFinished) {
+        } else if (isFinished !== undefined && !isFinished) {
             // ── QUEST COMPLETE ──
-            setIsFinished(true); // LOCK IT
+            if (setIsFinished) setIsFinished(true); // LOCK IT
             const finalScore = score;
             const mastery = Math.round((finalScore / questions.length) * 100);
 
@@ -202,6 +213,30 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                 unlocked: result.unlocked,
                 nextNode: result.nextNode
             });
+
+            // ─── GLOBAL SPIRAL PROGRESS SYNC ───
+            // If this was the MASTERY node and they passed (>= 60%),
+            // check if we need to unlock the next quest on the SST World map.
+            if (nodeType === 'MASTERY' && mastery >= 60) {
+                const QUEST_INDEX_MAP = {
+                    'quest_1_world_stage': 0,
+                    'quest_2_grid_master': 1,
+                    'quest_3_calculating_time': 2,
+                    'quest_4_water_bodies': 3,
+                    'quest_5_coastal_features': 4,
+                    'quest_6_regional_division_capital_cities': 5,
+                    'quest_7_landlocked_countries': 6
+                };
+
+                const currentQuestIdx = QUEST_INDEX_MAP[topicId];
+                const currentGlobalProg = user?.prog_sst || 0;
+
+                if (currentQuestIdx !== undefined && currentQuestIdx === currentGlobalProg) {
+                    const nextProg = currentGlobalProg + 1;
+                    console.log(`🌍 [SST Sync] Unlocking next quest on map! prog_sst: ${currentGlobalProg} -> ${nextProg}`);
+                    dispatch(updateProfile({ prog_sst: nextProg }));
+                }
+            }
 
             // Also save to userStateService
             saveQuestCompletion(questKey, mastery);
@@ -485,24 +520,47 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                     {q.options.map((opt, i) => {
                         const isCorrect = opt === q.answer;
                         const isSelected = opt === selectedOption;
-                        let stateStyles = "bg-slate-50 border-slate-200 hover:border-amber-400 hover:shadow-md";
+                        // ── DYNAMIC STYLING ──
+                        let boxStyle = {
+                            background: '#f8fafc',
+                            borderColor: '#e2e8f0',
+                            color: '#334155',
+                            transform: 'scale(1)',
+                            boxShadow: 'none'
+                        };
 
                         if (isAnswered) {
-                            if (isCorrect) stateStyles = "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm";
-                            else if (isSelected) stateStyles = "bg-rose-50 border-rose-500 text-rose-700 opacity-80";
-                            else stateStyles = "opacity-40 grayscale-[0.5]";
+                            if (isCorrect) {
+                                boxStyle = { background: '#ecfdf5', borderColor: '#10b981', color: '#064e3b', boxShadow: '0 4px 12px rgba(16,185,129,0.1)' };
+                            } else if (isSelected) {
+                                boxStyle = { background: '#fef2f2', borderColor: '#ef4444', color: '#7f1d1d', boxShadow: '0 4px 12px rgba(239,68,68,0.1)' };
+                            } else {
+                                boxStyle = { background: '#f8fafc', borderColor: '#e2e8f0', color: '#94a3b8', opacity: 0.5, filter: 'grayscale(0.5)' };
+                            }
+                        } else if (isSelected) {
+                            // ── VIBRANT SELECTED STATE ──
+                            boxStyle = { 
+                                background: '#fffbeb', 
+                                border: '3px solid #f59e0b', 
+                                color: '#92400e', 
+                                transform: 'scale(1.02)', 
+                                boxShadow: '0 8px 20px rgba(245,158,11,0.2)',
+                                zIndex: 10
+                            };
                         }
 
                         return (
                             <button
                                 key={i}
-                                onClick={() => handleAnswer(opt)}
+                                onClick={() => handleSelect(opt)}
                                 disabled={isAnswered}
-                                className={`group relative w-full h-14 rounded-xl border-2 transition-all flex items-center px-5 text-sm font-bold ${stateStyles}`}
+                                style={boxStyle}
+                                className="group relative w-full h-14 rounded-2xl border-2 transition-all duration-300 flex items-center px-5 text-[15px] font-bold"
                             >
                                 <span className="flex-1 text-left">{opt}</span>
-                                {isAnswered && isCorrect && <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white"><Check size={14} /></div>}
-                                {isAnswered && isSelected && !isCorrect && <div className="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center text-white"><X size={14} /></div>}
+                                {isAnswered && isCorrect && <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0"><Check size={14} strokeWidth={4} /></div>}
+                                {isAnswered && isSelected && !isCorrect && <div className="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0"><X size={14} strokeWidth={4} /></div>}
+                                {!isAnswered && isSelected && <div className="w-5 h-5 rounded-full border-4 border-amber-500 flex items-center justify-center shrink-0"><div className="w-2 h-2 rounded-full bg-amber-500" /></div>}
                             </button>
                         );
                     })}
@@ -515,30 +573,50 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                 )}
 
                 {showExplanation && (
-                    <div className="mt-8 p-5 bg-amber-50/50 border border-amber-200/50 rounded-2xl animate-in slide-in-from-bottom duration-500">
-                        <div className="flex items-start gap-4">
-                            <div className="w-8 h-8 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 text-white shrink-0">
-                                <Lightbulb size={16} />
+                    <div className="mt-8 relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 shadow-sm animate-in slide-in-from-bottom-4 duration-500">
+                        {/* Decorative background icon */}
+                        <div className="absolute -right-4 -bottom-4 text-amber-500/10 -rotate-12">
+                            <Lightbulb size={120} />
+                        </div>
+                        
+                        <div className="flex items-start gap-4 relative z-10">
+                            <div className="w-10 h-10 bg-gradient-to-b from-amber-400 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 text-white shrink-0 ring-4 ring-white">
+                                <Lightbulb size={20} fill="currentColor" />
                             </div>
-                            <div>
-                                <h4 className="font-black text-amber-600 text-[10px] tracking-widest uppercase mb-1 flex items-center gap-2">
+                            <div className="pt-0.5 max-w-[85%]">
+                                <h4 className="font-black text-amber-500 text-[10px] tracking-widest uppercase mb-1.5 flex items-center gap-2">
                                     {hintUsed && !isAnswered ? 'Hint' : 'Explanation'}
                                 </h4>
-                                <p className="text-slate-600 font-bold text-[13px] leading-relaxed italic">"{q.explanation || 'Think about the location and context.'}"</p>
+                                <p className="text-slate-700 font-bold text-[14px] leading-relaxed">"{q.explanation || 'Think about the location and context.'}"</p>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {isAnswered && (
-                    <button
-                        onClick={nextQuestion}
-                        className="mt-8 w-full h-14 bg-slate-900 text-white rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
-                    >
-                        {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP'}
-                        <ArrowRight size={18} />
-                    </button>
-                )}
+                {/* ACTION BUTTON: SUBMIT OR NEXT */}
+                <div className="mt-8">
+                    {!isAnswered ? (
+                        <button
+                            onClick={handleSubmit}
+                            disabled={selectedOption === null}
+                            className={`w-full h-14 rounded-xl font-black text-xs tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${
+                                selectedOption !== null 
+                                ? 'bg-amber-500 text-white shadow-amber-500/20 active:scale-95' 
+                                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                            }`}
+                        >
+                            SUBMIT ANSWER <Zap size={14} />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={nextQuestion}
+                            className="w-full h-14 bg-slate-900 text-white rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
+                        >
+                            {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP'}
+                            <ArrowRight size={18} />
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );

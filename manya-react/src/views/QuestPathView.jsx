@@ -12,7 +12,7 @@ import { setAmbientMode } from '../store/audioSlice';
 import { buildSteps } from '../utils/questFactory';
 import {
     getQuestProgress, getCurrentNodeIndex, getEarnedGems,
-    getJustFinished, clearJustFinished, UNLOCK_THRESHOLDS, NODE_ORDER
+    getJustFinished, clearJustFinished, getQuestKey, UNLOCK_THRESHOLDS, NODE_ORDER
 } from '../services/questProgressService';
 import '../styles/quest-path.css';
 
@@ -50,8 +50,30 @@ function QuestPathView() {
         biomeColor = '#7c3aed',
     } = state || {};
 
-    // Build a stable quest key
-    const questKey = `${subject}/${unitId}/${title.replace(/\s+/g, '_').toLowerCase()}`;
+    // Find quest data from curriculum
+    const getQuestData = () => {
+        if (!curriculum || !curriculum[subject]) return null;
+        const units = curriculum[subject]?.units || [];
+        for (const unit of units) {
+            if (unit.id === unitId) {
+                const quest = unit.quests?.find(q => q.title === title);
+                return quest ? { ...quest, unitId: unit.id } : unit.quests?.[0] ? { ...unit.quests[0], unitId: unit.id } : null;
+            }
+        }
+        for (const unit of units) {
+            for (const quest of (unit.quests || [])) {
+                if (quest.title === title || quest.folder === unitId) {
+                    return { ...quest, unitId: unit.id };
+                }
+            }
+        }
+        return null;
+    };
+
+    const questData = getQuestData();
+    
+    // Build a stable quest key — Prefer questData.folder if available
+    const questKey = getQuestKey(subject, questData?.unitId || unitId, questData?.folder || title);
 
     // Load progress and check for just-finished-unlock
     useEffect(() => {
@@ -66,7 +88,7 @@ function QuestPathView() {
             const fromIdx = NODE_ORDER.indexOf(justFinished.nodeType);
             const toIdx = NODE_ORDER.indexOf(justFinished.nextNode);
             
-            console.log(`🎬 [QuestPath] Starting unlock animation: ${fromIdx} -> ${toIdx}`);
+            console.log(`🎬 [QuestPath] Starting unlock animation: ${fromIdx} -> ${toIdx} for key ${questKey}`);
 
             if (fromIdx !== -1 && toIdx !== -1) {
                 // Prepare animation
@@ -127,25 +149,6 @@ function QuestPathView() {
         })();
     }, []);
 
-    // Find quest data from curriculum
-    const getQuestData = () => {
-        if (!curriculum || !curriculum[subject]) return null;
-        const units = curriculum[subject]?.units || [];
-        for (const unit of units) {
-            if (unit.id === unitId) {
-                const quest = unit.quests?.find(q => q.title === title);
-                return quest ? { ...quest, unitId: unit.id } : unit.quests?.[0] ? { ...unit.quests[0], unitId: unit.id } : null;
-            }
-        }
-        for (const unit of units) {
-            for (const quest of (unit.quests || [])) {
-                if (quest.title === title || quest.folder === unitId) {
-                    return { ...quest, unitId: unit.id };
-                }
-            }
-        }
-        return null;
-    };
 
     // Dynamic derived values from progress
     const currentStep = progress ? getCurrentNodeIndex(subject, questKey) : 0;

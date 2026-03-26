@@ -24,7 +24,7 @@ import { parseQuestionId, areSameConcept } from '../utils/questionParser';
 
 const VARIANT_DISTRIBUTIONS = {
     WARMUP:    { V1: 0.80, V2: 0.20, V3: 0.00 },
-    EXPLORE:   { V1: 0.50, V2: 0.40, V3: 0.10 },  // If MCQs shown in explore
+    EXPLORE:   { V1: 0.50, V2: 0.40, V3: 0.10 },
     PRACTICE:  { V1: 0.30, V2: 0.45, V3: 0.25 },
     REINFORCE: { V1: 0.20, V2: 0.50, V3: 0.30 },
     MASTERY:   { V1: 0.10, V2: 0.15, V3: 0.75 },
@@ -35,9 +35,9 @@ const VARIANT_DISTRIBUTIONS = {
 //    Dynamic question count per node, adjusted by student state.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const BASE_LENGTHS = { WARMUP: 6, EXPLORE: 4, PRACTICE: 10, REINFORCE: 10, MASTERY: 12 };
-const MAX_LENGTHS  = { WARMUP: 8, EXPLORE: 6, PRACTICE: 15, REINFORCE: 15, MASTERY: 20 };
-const MIN_LENGTHS  = { WARMUP: 4, EXPLORE: 3, PRACTICE: 6,  REINFORCE: 6,  MASTERY: 8  };
+const BASE_LENGTHS = { WARMUP: 6, EXPLORE: 8, PRACTICE: 10, REINFORCE: 10, MASTERY: 12 };
+const MAX_LENGTHS  = { WARMUP: 8, EXPLORE: 10, PRACTICE: 15, REINFORCE: 15, MASTERY: 20 };
+const MIN_LENGTHS  = { WARMUP: 5, EXPLORE: 6, PRACTICE: 6,  REINFORCE: 7,  MASTERY: 8  };
 
 function calculateQuestLength(nodeType, session) {
     let length = BASE_LENGTHS[nodeType] || 8;
@@ -65,7 +65,7 @@ function calculateQuestLength(nodeType, session) {
 //    Determines what % of quest steps should be simulations.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SIM_RATIOS = { WARMUP: 0.10, EXPLORE: 0.15, PRACTICE: 0.20, REINFORCE: 0.22, MASTERY: 0.25 };
+const SIM_RATIOS = { WARMUP: 0.10, EXPLORE: 0.12, PRACTICE: 0.20, REINFORCE: 0.22, MASTERY: 0.25 };
 
 export function getSimulationRatio(nodeType) {
     return Math.min(0.30, SIM_RATIOS[nodeType] || 0.10);

@@ -55,6 +55,14 @@ function saveAllProgress(subject, data) {
     localStorage.setItem(getProgressKey(subject), JSON.stringify(data));
 }
 
+/**
+ * Build a stable quest key across the app.
+ */
+export function getQuestKey(subject, unitId, folderOrTitle) {
+    const slug = folderOrTitle.replace(/\s+/g, '_').toLowerCase();
+    return `${subject}/${unitId}/${slug}`;
+}
+
 // ─── Public API ─────────────────────────────────────────────────────────────
 
 /**

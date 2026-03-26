@@ -312,6 +312,9 @@ export default function QuestRunner() {
         
         // Trigger completion sound
         window.ManyaAudio?.finish();
+
+        // Exit seamlessly without legacy popup
+        setTimeout(() => navigate(-1), 300);
     }
 
     // ── PROGRESS ──────────────────────────────────────────────────────────────
@@ -400,47 +403,6 @@ export default function QuestRunner() {
                     )}
                 </QuestErrorBoundary>
             </main>
-            {phase === 'finished' && (
-                <div className="quest-finish-screen animate-in" style={{ background: `linear-gradient(135deg, ${biomeColor}, ${biomeColor}dd)` }}>
-                    <div className="finish-card bento-card-premium" style={{ border: `3px solid ${biomeColor}22` }}>
-                        <div className="confetti-bubble">🎊</div>
-                        <h1 style={{ fontWeight: 900, fontSize: '2rem', color: '#1e293b', marginBottom: '8px' }}>
-                            Mastery Achieved!
-                        </h1>
-                        <p style={{ color: '#64748b', fontWeight: 700, fontSize: '1.1rem', marginBottom: '32px' }}>
-                             {meta.title}
-                        </p>
-                        
-                        <div className="finish-stats-grid">
-                            <div className="stat-bento">
-                                <span className="stat-label">Subject</span>
-                                <span className="stat-value" style={{ color: biomeColor }}>{meta.subject.toUpperCase()}</span>
-                            </div>
-                            <div className="stat-bento">
-                                <span className="stat-label">Steps</span>
-                                <span className="stat-value">{steps.length} / {steps.length}</span>
-                            </div>
-                        </div>
-
-                        <div className="reward-reveal">
-                            <img src={`/assets/images/gems/${gemFile}`} className="floating-gem" alt="" />
-                            <div className="reward-text">
-                                <span className="plus">+</span>
-                                <span className="amount">3</span>
-                                <span className="unit">GEMS</span>
-                            </div>
-                        </div>
-
-                        <button 
-                            className="manya-btn-pro" 
-                            onClick={() => navigate(-1)}
-                            style={{ background: '#1e293b', boxShadow: '0 6px 0 #00000033', marginTop: '40px' }}
-                        >
-                            CLAIM REWARD
-                        </button>
-                    </div>
-                </div>
-            )}
 
             {/* ── FOOTER (CONTINUE button) ── */}
             {phase === 'running' && !activeEngine?.hideGlobalFooter && (!(steps[stepIdx]?.data?.mode === 'quiz' || steps[stepIdx]?.mode === 'quiz' || steps[stepIdx]?.data?.mode === 'puzzle' || steps[stepIdx]?.mode === 'puzzle') || meta.subject === 'english') && (

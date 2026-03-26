@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
+    "@supabase/supabase-js": "^2.100.1",
     "@tailwindcss/vite": "^4.2.1",
     "d3": "^7.9.0",
+    "dotenv": "^17.3.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.577.0",
     "react": "^19.2.4",
