@@ -3,8 +3,30 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+let client;
+
 if (!supabaseUrl || !supabaseAnonKey) {
-    console.error("Supabase URL or Anon Key is missing. Check your .env file.");
+    console.error("❌ [Supabase] URL or Anon Key is missing! Check your .env or Netlify Dashboard.");
+    
+    // Return a Safe Proxy to prevent "Cannot read property 'from' of undefined" crashes
+    client = new Proxy({}, {
+        get: (target, prop) => {
+            return () => ({
+                from: () => ({
+                    select: () => ({
+                        eq: () => Promise.resolve({ data: [], error: { message: `Supabase not configured. Missing: ${!supabaseUrl ? 'URL' : 'Key'}` } })
+                    })
+                })
+            });
+        }
+    });
+} else {
+    try {
+        client = createClient(supabaseUrl, supabaseAnonKey);
+    } catch (err) {
+        console.error("❌ [Supabase] Initialization failed:", err);
+        client = null;
+    }
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = client;

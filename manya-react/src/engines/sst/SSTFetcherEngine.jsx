@@ -25,6 +25,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
     
+    const [renderError, setRenderError] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -275,6 +276,30 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         </div>
     );
 
+    if (renderError) return (
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+            <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-4">
+                <X size={32} />
+            </div>
+            <h3 className="text-xl font-black text-slate-800 mb-2">Engine Render Crash</h3>
+            <p className="text-sm text-slate-500 font-bold mb-6 max-w-xs mx-auto">
+                A runtime error occurred while rendering the SST engine.
+            </p>
+            <div className="w-full max-w-md bg-slate-900 text-rose-400 p-4 rounded-xl text-left font-mono text-[10px] overflow-auto max-h-60 mb-6">
+                <strong>Error:</strong> {renderError.message}
+                <br /><br />
+                <strong>Stack:</strong>
+                <pre>{renderError.stack}</pre>
+            </div>
+            <button 
+                onClick={() => window.location.reload()}
+                className="px-6 h-12 bg-slate-800 text-white rounded-xl font-bold"
+            >
+                RELOAD APP
+            </button>
+        </div>
+    );
+
     if (questions.length === 0) return (
         <div className="flex-1 flex items-center justify-center text-slate-400 font-bold">
             No questions found for this topic.
@@ -419,205 +444,211 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     }
 
     // ── QUESTION UI ──
-    const q = questions[currentIdx];
-    if (!q) return null;
-    
-    const session = getSession();
-    const frustration = calculateFrustration(session);
+    try {
+        const q = questions[currentIdx];
+        if (!q) return null;
+        
+        const session = getSession();
+        const frustration = calculateFrustration(session);
 
-    // ── STUDY RECAP VIEW ──
-    if (q.type === 'STUDY_RECAP') {
+        // ── STUDY RECAP VIEW ──
+        if (q.type === 'STUDY_RECAP') {
+            return (
+                <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
+                    <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border-l-8 border-l-blue-500 p-10">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600">
+                                <Lightbulb size={24} />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-800">Quick Recap</h2>
+                                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Time to power up!</p>
+                            </div>
+                        </div>
+
+                        <p className="text-lg font-bold text-slate-600 mb-8 leading-relaxed">
+                            You've been working hard! Let's take a quick moment to review this concept more deeply before we continue.
+                        </p>
+
+                        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-10 flex items-center gap-4">
+                             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20">
+                                <ArrowRight size={20} />
+                             </div>
+                             <span className="font-bold text-blue-800 text-sm">
+                                 Loading simulation: <code className="bg-white/50 px-2 py-0.5 rounded">{q.file}</code>
+                             </span>
+                        </div>
+
+                        <button
+                            onClick={nextQuestion}
+                            className="w-full h-16 bg-blue-600 text-white rounded-2xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-blue-700 active:scale-98 transition-all shadow-xl shadow-blue-600/20"
+                        >
+                            I'M READY TO CONTINUE <ArrowRight size={20} />
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-                <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border-l-8 border-l-blue-500 p-10">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600">
-                            <Lightbulb size={24} />
-                        </div>
-                        <div>
-                            <h2 className="text-2xl font-black text-slate-800">Quick Recap</h2>
-                            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Time to power up!</p>
-                        </div>
+                <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-amber-100 p-8 relative overflow-hidden">
+
+                    <div className="absolute -top-10 -right-10 opacity-5 text-amber-900 rotate-12">
+                       <Globe size={240} />
                     </div>
 
-                    <p className="text-lg font-bold text-slate-600 mb-8 leading-relaxed">
-                        You've been working hard! Let's take a quick moment to review this concept more deeply before we continue.
-                    </p>
+                    {showGemToast && (
+                        <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1">
+                            <Trophy size={12} /> +{gemsEarned} gems
+                        </div>
+                    )}
 
-                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-10 flex items-center gap-4">
-                         <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20">
-                            <ArrowRight size={20} />
-                         </div>
-                         <span className="font-bold text-blue-800 text-sm">
-                             Loading simulation: <code className="bg-white/50 px-2 py-0.5 rounded">{q.file}</code>
-                         </span>
+                    {/* Rephrased question indicator */}
+                    {q.isRephrased && (
+                        <div className="text-xs text-blue-600 bg-blue-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
+                            🔄 Let's try this concept again with different wording
+                        </div>
+                    )}
+
+                    {frustration.level === 'high' && (
+                        <div className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
+                            💪 Take your time — you're doing great!
+                        </div>
+                    )}
+
+                    {/* Progress Bar */}
+                    <div className="flex gap-2 justify-center mb-10 overflow-x-auto no-scrollbar">
+                        {questions.map((_, i) => (
+                            <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-6' : (i < currentIdx ? 'bg-amber-500 opacity-40' : 'bg-slate-200')}`} />
+                        ))}
                     </div>
 
-                    <button
-                        onClick={nextQuestion}
-                        className="w-full h-16 bg-blue-600 text-white rounded-2xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-blue-700 active:scale-98 transition-all shadow-xl shadow-blue-600/20"
-                    >
-                        I'M READY TO CONTINUE <ArrowRight size={20} />
-                    </button>
+                    <div className="flex items-center gap-2 mb-4">
+                        <div className="w-6 h-6 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
+                            <Compass size={14} />
+                        </div>
+                        <div className="text-amber-600 font-black text-[10px] tracking-widest uppercase opacity-80">
+                            {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'Concept Mastery'} • {currentIdx + 1} / {questions.length}
+                        </div>
+                        {questMeta?.gameMode === 'quickfire' && (
+                            <div className="ml-auto flex items-center gap-1 text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
+                                <Zap size={10} /> QUICKFIRE
+                            </div>
+                        )}
+                    </div>
+
+                    <h2 className="text-xl font-bold text-slate-800 mb-8 leading-snug relative z-10">
+                        {q.question}
+                    </h2>
+
+                    <div className="grid gap-3 w-full relative z-10">
+                        {q.options?.map((opt, i) => {
+                            const isCorrect = opt === q.answer;
+                            const isSelected = opt === selectedOption;
+                            // ── DYNAMIC STYLING ──
+                            let boxStyle = {
+                                background: '#f8fafc',
+                                borderColor: '#e2e8f0',
+                                color: '#334155',
+                                transform: 'scale(1)',
+                                boxShadow: 'none'
+                            };
+
+                            if (isAnswered) {
+                                if (isCorrect) {
+                                    boxStyle = { background: '#ecfdf5', borderColor: '#10b981', color: '#064e3b', boxShadow: '0 4px 12px rgba(16,185,129,0.1)' };
+                                } else if (isSelected) {
+                                    boxStyle = { background: '#fef2f2', borderColor: '#ef4444', color: '#7f1d1d', boxShadow: '0 4px 12px rgba(239,68,68,0.1)' };
+                                } else {
+                                    boxStyle = { background: '#f8fafc', borderColor: '#e2e8f0', color: '#94a3b8', opacity: 0.5, filter: 'grayscale(0.5)' };
+                                }
+                            } else if (isSelected) {
+                                // ── VIBRANT SELECTED STATE ──
+                                boxStyle = { 
+                                    background: '#fffbeb', 
+                                    border: '3px solid #f59e0b', 
+                                    color: '#92400e', 
+                                    transform: 'scale(1.02)', 
+                                    boxShadow: '0 8px 20px rgba(245,158,11,0.2)',
+                                    zIndex: 10
+                                };
+                            }
+
+                            return (
+                                <button
+                                    key={i}
+                                    onClick={() => handleSelect(opt)}
+                                    disabled={isAnswered}
+                                    style={boxStyle}
+                                    className="group relative w-full h-14 rounded-2xl border-2 transition-all duration-300 flex items-center px-5 text-[15px] font-bold"
+                                >
+                                    <span className="flex-1 text-left">{opt}</span>
+                                    {isAnswered && isCorrect && <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0"><Check size={14} strokeWidth={4} /></div>}
+                                    {isAnswered && isSelected && !isCorrect && <div className="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0"><X size={14} strokeWidth={4} /></div>}
+                                    {!isAnswered && isSelected && <div className="w-5 h-5 rounded-full border-4 border-amber-500 flex items-center justify-center shrink-0"><div className="w-2 h-2 rounded-full bg-amber-500" /></div>}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {!isAnswered && !hintUsed && q.explanation && (
+                        <button onClick={showHint} className="mt-4 text-xs text-amber-500 font-bold flex items-center gap-1 mx-auto opacity-60 hover:opacity-100 transition-opacity">
+                            <Lightbulb size={12} /> Use Hint (−gems)
+                        </button>
+                    )}
+
+                    {showExplanation && (
+                        <div className="mt-8 relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 shadow-sm animate-in slide-in-from-bottom-4 duration-500">
+                            {/* Decorative background icon */}
+                            <div className="absolute -right-4 -bottom-4 text-amber-500/10 -rotate-12">
+                                <Lightbulb size={120} />
+                            </div>
+                            
+                            <div className="flex items-start gap-4 relative z-10">
+                                <div className="w-10 h-10 bg-gradient-to-b from-amber-400 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 text-white shrink-0 ring-4 ring-white">
+                                    <Lightbulb size={20} fill="currentColor" />
+                                </div>
+                                <div className="pt-0.5 max-w-[85%]">
+                                    <h4 className="font-black text-amber-500 text-[10px] tracking-widest uppercase mb-1.5 flex items-center gap-2">
+                                        {hintUsed && !isAnswered ? 'Hint' : 'Explanation'}
+                                    </h4>
+                                    <p className="text-slate-700 font-bold text-[14px] leading-relaxed">"{q.explanation || 'Think about the location and context.'}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ACTION BUTTON: SUBMIT OR NEXT */}
+                    <div className="mt-8">
+                        {!isAnswered ? (
+                            <button
+                                onClick={handleSubmit}
+                                disabled={selectedOption === null}
+                                className={`w-full h-14 rounded-xl font-black text-xs tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${
+                                    selectedOption !== null 
+                                    ? 'bg-amber-500 text-white shadow-amber-500/20 active:scale-95' 
+                                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                }`}
+                            >
+                                SUBMIT ANSWER <Zap size={14} />
+                            </button>
+                        ) : (
+                            <button
+                                onClick={nextQuestion}
+                                className="w-full h-14 bg-slate-900 text-white rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
+                            >
+                                {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP'}
+                                <ArrowRight size={18} />
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         );
+    } catch (err) {
+        console.error("🔥 Render Crash in SSTFetcherEngine:", err);
+        setRenderError(err);
+        return null;
     }
-
-    return (
-        <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-            <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-amber-100 p-8 relative overflow-hidden">
-
-                <div className="absolute -top-10 -right-10 opacity-5 text-amber-900 rotate-12">
-                   <Globe size={240} />
-                </div>
-
-                {showGemToast && (
-                    <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1">
-                        <Trophy size={12} /> +{gemsEarned} gems
-                    </div>
-                )}
-
-                {/* Rephrased question indicator */}
-                {q.isRephrased && (
-                    <div className="text-xs text-blue-600 bg-blue-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
-                        🔄 Let's try this concept again with different wording
-                    </div>
-                )}
-
-                {frustration.level === 'high' && (
-                    <div className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
-                        💪 Take your time — you're doing great!
-                    </div>
-                )}
-
-                {/* Progress Bar */}
-                <div className="flex gap-2 justify-center mb-10 overflow-x-auto no-scrollbar">
-                    {questions.map((_, i) => (
-                        <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-6' : (i < currentIdx ? 'bg-amber-500 opacity-40' : 'bg-slate-200')}`} />
-                    ))}
-                </div>
-
-                <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
-                        <Compass size={14} />
-                    </div>
-                    <div className="text-amber-600 font-black text-[10px] tracking-widest uppercase opacity-80">
-                        {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'Concept Mastery'} • {currentIdx + 1} / {questions.length}
-                    </div>
-                    {questMeta?.gameMode === 'quickfire' && (
-                        <div className="ml-auto flex items-center gap-1 text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
-                            <Zap size={10} /> QUICKFIRE
-                        </div>
-                    )}
-                </div>
-
-                <h2 className="text-xl font-bold text-slate-800 mb-8 leading-snug relative z-10">
-                    {q.question}
-                </h2>
-
-                <div className="grid gap-3 w-full relative z-10">
-                    {q.options.map((opt, i) => {
-                        const isCorrect = opt === q.answer;
-                        const isSelected = opt === selectedOption;
-                        // ── DYNAMIC STYLING ──
-                        let boxStyle = {
-                            background: '#f8fafc',
-                            borderColor: '#e2e8f0',
-                            color: '#334155',
-                            transform: 'scale(1)',
-                            boxShadow: 'none'
-                        };
-
-                        if (isAnswered) {
-                            if (isCorrect) {
-                                boxStyle = { background: '#ecfdf5', borderColor: '#10b981', color: '#064e3b', boxShadow: '0 4px 12px rgba(16,185,129,0.1)' };
-                            } else if (isSelected) {
-                                boxStyle = { background: '#fef2f2', borderColor: '#ef4444', color: '#7f1d1d', boxShadow: '0 4px 12px rgba(239,68,68,0.1)' };
-                            } else {
-                                boxStyle = { background: '#f8fafc', borderColor: '#e2e8f0', color: '#94a3b8', opacity: 0.5, filter: 'grayscale(0.5)' };
-                            }
-                        } else if (isSelected) {
-                            // ── VIBRANT SELECTED STATE ──
-                            boxStyle = { 
-                                background: '#fffbeb', 
-                                border: '3px solid #f59e0b', 
-                                color: '#92400e', 
-                                transform: 'scale(1.02)', 
-                                boxShadow: '0 8px 20px rgba(245,158,11,0.2)',
-                                zIndex: 10
-                            };
-                        }
-
-                        return (
-                            <button
-                                key={i}
-                                onClick={() => handleSelect(opt)}
-                                disabled={isAnswered}
-                                style={boxStyle}
-                                className="group relative w-full h-14 rounded-2xl border-2 transition-all duration-300 flex items-center px-5 text-[15px] font-bold"
-                            >
-                                <span className="flex-1 text-left">{opt}</span>
-                                {isAnswered && isCorrect && <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0"><Check size={14} strokeWidth={4} /></div>}
-                                {isAnswered && isSelected && !isCorrect && <div className="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0"><X size={14} strokeWidth={4} /></div>}
-                                {!isAnswered && isSelected && <div className="w-5 h-5 rounded-full border-4 border-amber-500 flex items-center justify-center shrink-0"><div className="w-2 h-2 rounded-full bg-amber-500" /></div>}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {!isAnswered && !hintUsed && q.explanation && (
-                    <button onClick={showHint} className="mt-4 text-xs text-amber-500 font-bold flex items-center gap-1 mx-auto opacity-60 hover:opacity-100 transition-opacity">
-                        <Lightbulb size={12} /> Use Hint (−gems)
-                    </button>
-                )}
-
-                {showExplanation && (
-                    <div className="mt-8 relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 shadow-sm animate-in slide-in-from-bottom-4 duration-500">
-                        {/* Decorative background icon */}
-                        <div className="absolute -right-4 -bottom-4 text-amber-500/10 -rotate-12">
-                            <Lightbulb size={120} />
-                        </div>
-                        
-                        <div className="flex items-start gap-4 relative z-10">
-                            <div className="w-10 h-10 bg-gradient-to-b from-amber-400 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 text-white shrink-0 ring-4 ring-white">
-                                <Lightbulb size={20} fill="currentColor" />
-                            </div>
-                            <div className="pt-0.5 max-w-[85%]">
-                                <h4 className="font-black text-amber-500 text-[10px] tracking-widest uppercase mb-1.5 flex items-center gap-2">
-                                    {hintUsed && !isAnswered ? 'Hint' : 'Explanation'}
-                                </h4>
-                                <p className="text-slate-700 font-bold text-[14px] leading-relaxed">"{q.explanation || 'Think about the location and context.'}"</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* ACTION BUTTON: SUBMIT OR NEXT */}
-                <div className="mt-8">
-                    {!isAnswered ? (
-                        <button
-                            onClick={handleSubmit}
-                            disabled={selectedOption === null}
-                            className={`w-full h-14 rounded-xl font-black text-xs tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${
-                                selectedOption !== null 
-                                ? 'bg-amber-500 text-white shadow-amber-500/20 active:scale-95' 
-                                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                            }`}
-                        >
-                            SUBMIT ANSWER <Zap size={14} />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={nextQuestion}
-                            className="w-full h-14 bg-slate-900 text-white rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
-                        >
-                            {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP'}
-                            <ArrowRight size={18} />
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
 }
