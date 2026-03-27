@@ -58,9 +58,13 @@ export const syncService = {
     /**
      * Push User Profile to Supabase.
      */
-    async uploadProfile(profileData) {
-        const uid = await this.getUserId();
-        if (!uid) return;
+    async uploadProfile(profileData, manualUid = null) {
+        const uid = manualUid || await this.getUserId();
+        if (!uid) {
+            console.warn("⚠️ [Sync] No UID found for profile upload. Aborting.");
+            return;
+        }
+        
         // Handle structural differences between userStateService and ManyaDB
         const xp = profileData.xp || profileData.totalPoints || 0;
         const gemsOverall = profileData.gems_overall || profileData.overallGems || profileData.diamonds || 0;
@@ -82,8 +86,8 @@ export const syncService = {
                 gems_math: g_math,
                 gems_english: g_eng,
                 gems_science: g_sci,
-                streak_current: profileData.currentStreak,
-                streak_longest: profileData.longestStreak,
+                streak_current: profileData.currentStreak || 0,
+                streak_longest: profileData.longestStreak || 0,
                 avatar_url: profileData.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData.avatarSeed}` : null,
                 preferences: profileData.preferences || {},
                 parent_email: profileData.parent?.email || profileData.parent_email,
@@ -92,7 +96,10 @@ export const syncService = {
                 last_active_at: new Date().toISOString()
             });
 
-        if (error) console.error("❌ Profile sync failed:", error.message);
+        if (error) {
+            console.error("❌ Profile sync failed:", error.message);
+            throw error; // Rethrow so caller (OnboardingView) can handle it
+        }
     },
 
     /**

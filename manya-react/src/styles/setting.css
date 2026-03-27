@@ -1,190 +1,163 @@
-/* MANYA HERO LAB v20.0 - IDENTITY MATRIX */
-.settings-page {
-    padding: 10px 20px 14px;
-    background: var(--bg-main);
-    transition: background 0.5s ease;
+/* 
+  MANYA HERO LAB (SETTINGS) PREMIUM STYLES
+  Theme: Dark Celestial Glassmorphism
+*/
+
+.settings-container {
+    max-width: 500px !important;
 }
 
-h2 {
-    color: var(--text-main);
-    font-size: 22px;
-    font-weight: 900;
-    margin-bottom: 10px;
+.lab-card {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1px solid rgba(129, 140, 248, 0.2) !important;
+    padding: 30px 20px !important;
 }
 
-/* 1. TACTICAL HEADER */
-.lab-header-row {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 35px;
-}
-
-.manya-back-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    background: var(--bg-card);
-    border: 2.5px solid var(--border-color);
-    color: var(--manya-purple);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 0 var(--border-color);
-}
-
-/* 2. THE DNA VAULT (Character Selector) */
-.dna-vault {
-    background: #1E1B4B;
-    border-radius: 35px;
-    padding: 25px;
-    border: 3px solid #312E81;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    margin-bottom: 30px;
+.lab-section {
+    width: 100%;
+    margin: 20px 0;
+    text-align: left;
 }
 
 .vault-label {
     display: block;
-    text-align: center;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 900;
-    color: #818CF8;
+    color: var(--ob-accent);
     letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    opacity: 0.8;
 }
 
-.lab-grid {
+.lab-grid-ob {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
+    margin-bottom: 15px;
 }
 
-.lab-avatar-item {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 18px;
-    border: 3px solid transparent;
-    aspect-ratio: 1/1;
+.lab-item-ob {
+    aspect-ratio: 1;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 16px;
+    padding: 8px;
+    border: 2px solid transparent;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.lab-avatar-item.active {
-    border-color: #7c3aed;
-    background: rgba(124, 58, 237, 0.2);
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+.lab-item-ob:hover {
+    background: rgba(129, 140, 248, 0.1);
+    transform: translateY(-2px);
 }
 
-/* 3. GAMIFIED INPUT GROUPS */
-.identity-matrix-grid {
+.lab-item-ob.active {
+    border-color: var(--ob-accent);
+    background: rgba(129, 140, 248, 0.15);
+    box-shadow: 0 0 20px rgba(129, 140, 248, 0.2);
+}
+
+.info-fields-stack {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
+    margin-top: 10px;
 }
 
-.lab-field {
-    background: var(--bg-card);
-    border-radius: 24px;
-    padding: 12px 20px;
-    border: 2px solid var(--border-color);
-    transition: 0.3s;
+.premium-ob-select {
+    width: 100%;
+    background: rgba(30, 41, 59, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 16px;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.lab-field:focus-within {
-    border-color: var(--manya-purple);
+.premium-ob-select:focus {
+    border-color: var(--ob-accent);
+    background: rgba(30, 41, 59, 0.8);
+}
+
+.danger-zone-elite {
+    width: 100%;
+    margin-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.danger-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.danger-row:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
     transform: translateX(5px);
 }
 
-.field-label {
-    font-size: 9px;
-    font-weight: 900;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 4px;
-    display: block;
+.danger-row.delete {
+    color: #fca5a5;
 }
 
-.lab-input-elite {
-    width: 100%;
+.danger-row.delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.btn-lab-shuffle {
     background: transparent;
     border: none;
-    font-family: inherit;
-    font-weight: 800;
-    font-size: 16px;
-    color: var(--text-main);
-    outline: none;
-    padding: 5px 0;
-}
-
-/* 4. THEME TOGGLE (Night Mode) */
-.lab-toggle-pill {
-    background: var(--bg-card);
-    border-radius: 20px;
-    padding: 15px 20px;
+    color: var(--ob-accent);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border: 2px solid var(--border-color);
-    margin-bottom: 30px;
+    gap: 8px;
+    margin-top: 10px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
 }
 
-.lab-toggle-pill span {
-    font-size: 10px;
-    font-weight: 900;
-    color: var(--text-main);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+.btn-lab-shuffle:hover {
+    opacity: 1;
 }
 
-.manya-switch {
-    width: 54px;
-    height: 28px;
-    background: #CBD5E1;
-    border-radius: 50px;
-    position: relative;
-    cursor: pointer;
-    transition: 0.3s;
+/* Scrollbar and polish */
+.lab-card {
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(129, 140, 248, 0.2) transparent;
 }
 
-.manya-switch::after {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 20px;
-    height: 20px;
-    background: white;
-    border-radius: 50%;
-    transition: 0.3s;
+.lab-card::-webkit-scrollbar {
+    width: 6px;
 }
 
-.manya-switch.active {
-    background: #7c3aed;
-}
-
-.manya-switch.active::after {
-    left: 30px;
-}
-
-/* 5. MASTER SAVE BUTTON */
-.btn-commit-identity {
-    width: 100%;
-    height: 70px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, #7c3aed, #db2777);
-    color: white;
-    border: none;
-    font-weight: 900;
-    font-size: 1.1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
-    cursor: pointer;
-}
-
-.btn-commit-identity:active {
-    transform: scale(0.97);
+.lab-card::-webkit-scrollbar-thumb {
+    background-color: rgba(129,140,248,0.2);
+    border-radius: 10px;
 }

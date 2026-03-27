@@ -74,14 +74,20 @@ function OnboardingView() {
 
                 if (error) throw error;
 
-                // 2. SYNC PROFILE EXTRA DATA
+                // 2. SYNC PROFILE EXTRA DATA (CRITICAL FIX: Passing manualUid)
                 await syncService.uploadProfile({
                     ...profile,
-                    uid: data.user.id
-                });
+                    parent_email: profile.parent.email,
+                    parent_phone: profile.parent.whatsapp
+                }, data.user.id);
 
                 // 3. UPDATE LOCAL STATE
-                dispatch(updateProfile({ ...profile, onboarded: true }));
+                dispatch(updateProfile({ 
+                    ...profile, 
+                    onboarded: true,
+                    parent_email: profile.parent.email,
+                    parent_phone: profile.parent.whatsapp
+                }));
                 dispatch(completeOnboarding());
 
                 dispatch(addToast({ message: "Welcome to Manya, Hero!", type: "success" }));
@@ -100,46 +106,49 @@ function OnboardingView() {
 
     const renderStep = () => {
         switch(step) {
-            case 1: // Identity
+            case 1: // Identity & Level
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><User size={40} /></div>
-                        <h3>Every Hero needs a Name</h3>
-                        <p>What shall we call you on the World Stage?</p>
-                        <input 
-                            type="text" 
-                            className="premium-ob-input" 
-                            placeholder="Hero Nickname" 
-                            value={profile.nickname} 
-                            onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} 
-                            autoFocus 
-                        />
+                        <div className="ob-icon-circle"><ShieldCheck size={44} /></div>
+                        <h3>Identity Initialization</h3>
+                        <p>Welcome to the Manya Council. What name shall be etched in our archives?</p>
                         
+                        <div className="input-with-icon">
+                            <User className="i-icon" size={20} />
+                            <input 
+                                type="text" 
+                                placeholder="Enter Hero Nickname" 
+                                value={profile.nickname} 
+                                onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} 
+                                autoFocus 
+                            />
+                        </div>
+
                         <div className="ob-select-group">
-                            <label><GraduationCap size={16} /> Select your Current Level</label>
+                            <label><GraduationCap size={16} /> Current Academic Sector</label>
                             <select 
                                 className="premium-ob-select"
                                 value={profile.grade_level}
                                 onChange={e => setProfile(p => ({ ...p, grade_level: e.target.value }))}
                             >
-                                <option value="Primary 5">Primary 5</option>
-                                <option value="Primary 6">Primary 6</option>
-                                <option value="Primary 7">Primary 7</option>
+                                <option value="Primary 5">Sector Primary 5</option>
+                                <option value="Primary 6">Sector Primary 6</option>
+                                <option value="Primary 7">Sector Primary 7</option>
                             </select>
                         </div>
                     </div>
                 );
-            case 2: // Guardian
+            case 2: // Guardian (Reports)
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><ShieldCheck size={40} /></div>
-                        <h3>Secure your Account</h3>
-                        <p>We need your Guardian's contact for safety and reports.</p>
+                        <div className="ob-icon-circle"><Mail size={40} /></div>
+                        <h3>The Guardian Shield</h3>
+                        <p>Link your Mentor's contact for safety and academic strategy reports.</p>
                         <div className="input-with-icon">
                             <Mail className="i-icon" size={18} />
                             <input 
                                 type="email" 
-                                placeholder="Guardian Email" 
+                                placeholder="Mentor's Email Address" 
                                 value={profile.parent.email} 
                                 onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, email: e.target.value } }))} 
                             />
@@ -148,35 +157,37 @@ function OnboardingView() {
                             <Phone className="i-icon" size={18} />
                             <input 
                                 type="tel" 
-                                placeholder="WhatsApp Number" 
+                                placeholder="WhatsApp (for alerts)" 
                                 value={profile.parent.whatsapp} 
                                 onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, whatsapp: e.target.value } }))} 
                             />
                         </div>
                     </div>
                 );
-            case 3: // Avatar (DNA)
+            case 3: // Avatar (DNA Sequence)
                 return (
                     <div className="ob-step-content animate-in">
-                        <h3>Hero DNA Sequence</h3>
-                        <p>Select your visual identity. You can shuffle these anytime.</p>
+                        <div className="ob-icon-circle"><Zap size={40} /></div>
+                        <h3>Visual Identity DNA</h3>
+                        <p>Construct your physical avatar through DiceBear sequences.</p>
                         <div className="lab-grid-ob">
                             {avatarOptions.map(seed => (
                                 <div key={seed} className={`lab-item-ob ${profile.avatarSeed === seed ? 'active' : ''}`} onClick={() => setProfile(p => ({ ...p, avatarSeed: seed }))}>
-                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="Avatar" />
+                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="DNA Sequence" />
                                 </div>
                             ))}
                         </div>
                         <button className="btn-lab-shuffle" onClick={() => generateSeeds(profile.nickname)}>
-                            🔄 SHUFFLE DNA
+                            🔄 SHUFFLE DNA SEQUENCES
                         </button>
                     </div>
                 );
-            case 4: // Auth
+            case 4: // Auth (Security Vault)
                 return (
                     <div className="ob-step-content animate-in">
+                        <div className="ob-icon-circle"><Lock size={40} /></div>
                         <h3>Secure the Vault</h3>
-                        <p>Final step: Set up your secret access credentials.</p>
+                        <p>Establish your secret encrypted access credentials.</p>
                         <div className="input-with-icon">
                             <Mail className="i-icon" size={18} />
                             <input 
@@ -190,12 +201,12 @@ function OnboardingView() {
                             <Lock className="i-icon" size={18} />
                             <input 
                                 type="password" 
-                                placeholder="Create Secret Password" 
+                                placeholder="Create Access PIN" 
                                 value={profile.auth.password} 
                                 onChange={e => setProfile(p => ({ ...p, auth: { ...p.auth, password: e.target.value } }))} 
                             />
                         </div>
-                        <div className="auth-helper">Min 6 characters. Use something memorable!</div>
+                        <p className="terms-notice">Access PIN must be at least 6 characters.</p>
                     </div>
                 );
             default: return null;
@@ -208,13 +219,15 @@ function OnboardingView() {
             
             <div className="ob-container">
                 <div className="ob-top-nav">
-                    {step > 1 && (
+                    {step > 1 ? (
                         <button className="ob-back-btn" onClick={() => setStep(step-1)}>
                             <ChevronLeft size={24} />
                         </button>
+                    ) : (
+                        <div style={{ width: 44 }}></div> // Placeholder for symmetry
                     )}
                     <div className="ob-logo-area">
-                        <img src="/assets/icons/pwa-192x192.png" alt="Manya" />
+                        <img src="/assets/icons/pwa-192x192.png" alt="Manya Council" />
                     </div>
                     <div className="ob-login-link">
                          <Link to="/login">Sign In</Link>
@@ -228,7 +241,7 @@ function OnboardingView() {
                         ))}
                     </div>
 
-                    <div className="ob-view-portal">
+                    <div className="ob-view-portal" style={{ width: '100%' }}>
                         {renderStep()}
                     </div>
                 </div>
@@ -239,9 +252,16 @@ function OnboardingView() {
                         onClick={handleNext}
                         disabled={loading}
                     >
-                        {loading ? "COMMITTING..." : step === 4 ? "INITIALIZE HERO →" : "CONTINUE PATH →"}
+                        {loading ? "INITIALIZING DNA..." : step === 4 ? "COMPLETE INITIALIZATION →" : "CONTINUE PATH →"}
                     </button>
-                    {step === 4 && <p className="terms-notice">By initializing, you agree to the Manya Scholar Protocol.</p>}
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', gap: '20px', opacity: 0.5 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 900 }}>
+                            <ShieldCheck size={12} /> SECURE VAULT
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 900 }}>
+                            <Globe size={12} /> UGANDA SECTOR
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

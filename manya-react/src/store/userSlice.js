@@ -62,6 +62,12 @@ export const userSlice = createSlice({
     },
     completeOnboarding: (state) => {
       state.data.onboarded = true;
+      ManyaDB.saveUser(state.data);
+    },
+    resetUser: (state) => {
+        state.data = ManyaDB.createDefaultRecord();
+        state.data.onboarded = false;
+        ManyaDB.saveUser(state.data);
     }
   },
   extraReducers: (builder) => {
