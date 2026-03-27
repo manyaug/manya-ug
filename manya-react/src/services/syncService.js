@@ -1,10 +1,12 @@
 import { supabase } from './supabaseClient';
+import { ManyaDB } from '../utils/manyaDB';
 
 /**
  * MANYA GLOBAL SYNC SERVICE
  * =========================
  * Bridges Local Storage (LocalStorage/IndexedDB) with Supabase PostgreSQL.
  * Handles profiles, user_answers, and quest_progress sync.
+ * Supports OFFLINE-FIRST writing via a persistent sync queue.
  */
 export const syncService = {
     
@@ -12,8 +14,10 @@ export const syncService = {
      * Get the current authenticated user ID.
      */
     async getUserId() {
-        const { data: { session } } = await supabase.auth.getSession();
-        return session?.user?.id || null;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            return session?.user?.id || null;
+        } catch(e) { return null; }
     },
 
     /**
@@ -43,15 +47,10 @@ export const syncService = {
 
     /**
      * Auth: Delete Account
-     * Requires the user to be recently signed in.
      */
     async deleteAccount() {
         const uid = await this.getUserId();
         if (!uid) return { error: { message: "Not logged in" } };
-        
-        // This usually requires a service role or a specific API call if delete is self-service
-        // In Supabase, users can't delete themselves easily via browser client for security.
-        // We'll mark the profile as 'deleted' or use a custom function.
         return await supabase.rpc('delete_user_data');
     },
 
@@ -60,42 +59,34 @@ export const syncService = {
      */
     async uploadProfile(profileData, manualUid = null) {
         const uid = manualUid || await this.getUserId();
-        if (!uid) return; // Silent return for local-only users
+        if (!uid) return; 
         
-        // Handle structural differences between userStateService and ManyaDB
-        const xp = profileData.xp || profileData.totalPoints || 0;
-        const gemsOverall = profileData.gems_overall || profileData.overallGems || profileData.diamonds || 0;
-        
-        const g_sst = profileData.subjectGems?.sst || profileData.sstGems || 0;
-        const g_math = profileData.subjectGems?.math || profileData.mathGems || 0;
-        const g_eng = profileData.subjectGems?.english || profileData.englishGems || 0;
-        const g_sci = profileData.subjectGems?.science || profileData.scienceGems || 0;
+        const payload = {
+            id: uid,
+            full_name: profileData.fullName || profileData.nickname,
+            xp: profileData.xp || profileData.totalPoints || 0,
+            gems_overall: profileData.gems_overall || profileData.overallGems || profileData.diamonds || 0,
+            gems_sst: profileData.subjectGems?.sst || profileData.sstGems || 0,
+            gems_math: profileData.subjectGems?.math || profileData.mathGems || 0,
+            gems_english: profileData.subjectGems?.english || profileData.englishGems || 0,
+            gems_science: profileData.subjectGems?.science || profileData.scienceGems || 0,
+            streak_current: profileData.currentStreak || 0,
+            streak_longest: profileData.longestStreak || 0,
+            avatar_url: profileData.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData.avatarSeed}` : null,
+            preferences: profileData.preferences || {},
+            parent_email: profileData.parent?.email || profileData.parent_email,
+            parent_phone: profileData.parent?.whatsapp || profileData.parent_phone,
+            grade_level: profileData.grade_level || profileData.goal,
+            last_active_at: new Date().toISOString()
+        };
 
-        console.log(`☁️ [Sync] Uploading profile for ${uid}...`);
-        const { error } = await supabase
-            .from('profiles')
-            .upsert({
-                id: uid,
-                full_name: profileData.fullName || profileData.nickname,
-                xp: xp,
-                gems_overall: gemsOverall,
-                gems_sst: g_sst,
-                gems_math: g_math,
-                gems_english: g_eng,
-                gems_science: g_sci,
-                streak_current: profileData.currentStreak || 0,
-                streak_longest: profileData.longestStreak || 0,
-                avatar_url: profileData.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData.avatarSeed}` : null,
-                preferences: profileData.preferences || {},
-                parent_email: profileData.parent?.email || profileData.parent_email,
-                parent_phone: profileData.parent?.whatsapp || profileData.parent_phone,
-                grade_level: profileData.grade_level || profileData.goal,
-                last_active_at: new Date().toISOString()
-            });
-
-        if (error) {
-            console.error("❌ Profile sync failed:", error.message);
-            throw error; // Rethrow so caller (OnboardingView) can handle it
+        try {
+            console.log(`☁️ [Sync] Uploading profile for ${uid}...`);
+            const { error } = await supabase.from('profiles').upsert(payload);
+            if (error) throw error;
+        } catch (err) {
+            console.warn("⚠️ Profile sync failed, queuing for later:", err.message);
+            await ManyaDB.addToSyncQueue('profile', payload);
         }
     },
 
@@ -106,24 +97,28 @@ export const syncService = {
         const uid = await this.getUserId();
         if (!uid) return;
 
-        console.log(`☁️ [Sync] Recording answer in user_answers...`);
-        const { error } = await supabase
-            .from('user_answers')
-            .insert({
-                user_id: uid,
-                question_id: answer.questionId,
-                is_correct: answer.isCorrect,
-                selected_option: String(answer.selectedAnswer || ''),
-                correct_option: String(answer.correctAnswer || ''),
-                time_spent_ms: answer.timeSpentMs,
-                hint_used: answer.hintUsed,
-                answer_changed: answer.answerChanged,
-                change_count: answer.changeCount || 0,
-                frustration_level: answer.frustrationLevel || 0,
-                pool: answer.pool || 'exam'
-            });
+        const payload = {
+            user_id: uid,
+            question_id: answer.questionId,
+            is_correct: answer.isCorrect,
+            selected_option: String(answer.selectedAnswer || ''),
+            correct_option: String(answer.correctAnswer || ''),
+            time_spent_ms: answer.timeSpentMs,
+            hint_used: answer.hintUsed,
+            answer_changed: answer.answerChanged,
+            change_count: answer.changeCount || 0,
+            frustration_level: answer.frustrationLevel || 0,
+            pool: answer.pool || 'exam'
+        };
 
-        if (error) console.error("❌ Answer sync failed:", error.message);
+        try {
+            console.log(`☁️ [Sync] Recording answer in user_answers...`);
+            const { error } = await supabase.from('user_answers').insert(payload);
+            if (error) throw error;
+        } catch (err) {
+            console.warn("⚠️ Answer sync failed, queuing for later:", err.message);
+            await ManyaDB.addToSyncQueue('answer', payload);
+        }
     },
 
     /**
@@ -133,21 +128,56 @@ export const syncService = {
         const uid = await this.getUserId();
         if (!uid) return;
 
-        // progress is { mastery, nodeType, attempts, status }
-        console.log(`☁️ [Sync] Updating quest progress for ${questKey}...`);
-        const { error } = await supabase
-            .from('quest_progress')
-            .upsert({
-                user_id: uid,
-                quest_key: questKey,
-                node_type: progress.nodeType,
-                mastery: progress.mastery,
-                status: progress.status,
-                attempts: progress.attempts,
-                last_attempted_at: new Date().toISOString()
-            }, { onConflict: 'user_id, quest_key, node_type' });
+        const payload = {
+            user_id: uid,
+            quest_key: questKey,
+            node_type: progress.nodeType,
+            mastery: progress.mastery,
+            status: progress.status,
+            attempts: progress.attempts,
+            last_attempted_at: new Date().toISOString()
+        };
 
-        if (error) console.error("❌ Progress sync failed:", error.message);
+        try {
+            console.log(`☁️ [Sync] Updating quest progress for ${questKey}...`);
+            const { error } = await supabase.from('quest_progress').upsert(payload, { onConflict: 'user_id, quest_key, node_type' });
+            if (error) throw error;
+        } catch (err) {
+            console.warn("⚠️ Progress sync failed, queuing for later:", err.message);
+            await ManyaDB.addToSyncQueue('progress', payload);
+        }
+    },
+
+    /**
+     * BACKGROUND SYNC PROCESSOR
+     * Flushes the IndexedDB sync queue when back online.
+     */
+    async processSyncQueue() {
+        if (!navigator.onLine) return;
+        const queue = await ManyaDB.getSyncQueue();
+        if (queue.length === 0) return;
+
+        console.log(`🔄 [Sync] Processing ${queue.length} queued items...`);
+
+        for (const item of queue) {
+            try {
+                let error;
+                if (item.type === 'profile') {
+                    ({ error } = await supabase.from('profiles').upsert(item.data));
+                } else if (item.type === 'answer') {
+                    ({ error } = await supabase.from('user_answers').insert(item.data));
+                } else if (item.type === 'progress') {
+                    ({ error } = await supabase.from('quest_progress').upsert(item.data));
+                }
+
+                if (!error) {
+                    await ManyaDB.removeSyncItem(item.id);
+                    console.log(`✅ [Sync] Successfully pushed queued ${item.type} item.`);
+                }
+            } catch (err) {
+                console.error(`❌ [Sync] Retry failed for ${item.type}:`, err.message);
+            }
+        }
     },
 
     /**
@@ -167,3 +197,12 @@ export const syncService = {
         return data;
     }
 };
+
+// Event listener for online status
+if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => {
+        console.log("🌐 [Sync] Network restored. Processing backlog...");
+        syncService.processSyncQueue();
+    });
+}
+

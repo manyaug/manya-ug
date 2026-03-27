@@ -2,6 +2,19 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import { registerSW } from 'virtual:pwa-register'
+
+// Automatic service worker registration and updates
+const updateSW = registerSW({
+  onNeedRefresh() {
+    if (confirm('New content available! Reload to update?')) {
+      updateSW(true);
+    }
+  },
+  onOfflineReady() {
+    console.log('App ready to work offline');
+  },
+});
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -9,11 +22,3 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// Register service worker for PWA offline support (production only)
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
-      console.warn('SW registration failed:', err)
-    })
-  })
-}

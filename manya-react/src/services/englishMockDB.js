@@ -1,19 +1,25 @@
 import { supabase } from './supabaseClient';
+import { ManyaDB } from '../utils/manyaDB';
 
 // Simple in-memory cache to speed up re-entry
 const BANK_CACHE = {};
 
 /**
  * Fetches and transforms questions from Supabase (English Bank).
+ * Implements OFFLINE-FIRST strategy using ManyaDB (IndexedDB).
  */
 export const fetchEnglishQuestions = async (topicId) => {
     try {
-        // TopicId normalization (e.g. '01_holiday_kickoff')
         const topic = topicId?.replace(/\.json$/, "");
         
-        // Return from cache if available
-        if (BANK_CACHE[topic]) {
-            return BANK_CACHE[topic];
+        // 1. Session Cache
+        if (BANK_CACHE[topic]) return BANK_CACHE[topic];
+
+        // 2. Persistent Cache (IndexedDB)
+        const cached = await ManyaDB.getCachedQuestions('english', topic);
+        if (cached && cached.length > 0) {
+            BANK_CACHE[topic] = cached;
+            return cached;
         }
 
         console.log(`🔍 [English Supabase] Fetching for topic: ${topic}`);
@@ -25,22 +31,24 @@ export const fetchEnglishQuestions = async (topicId) => {
 
         if (error) throw error;
         
-        // Fallback to 'default' if no questions found for specific topic
+        let transformed;
         if (!data || data.length === 0) {
-           const { data: defaultData } = await supabase
-                .from('questions_english')
-                .select('*')
-                .eq('topic', 'default')
-                .limit(5);
-           
-           if (defaultData && defaultData.length > 0) return transformData(defaultData);
-           return [];
+            const { data: defaultData } = await supabase
+                 .from('questions_english')
+                 .select('*')
+                 .eq('topic', 'default')
+                 .limit(5);
+            transformed = defaultData ? transformData(defaultData) : [];
+        } else {
+            transformed = transformData(data);
         }
 
-        const transformed = transformData(data);
-        BANK_CACHE[topic] = transformed;
+        if (transformed.length > 0) {
+            BANK_CACHE[topic] = transformed;
+            await ManyaDB.cacheQuestions(transformed);
+        }
+        
         return transformed;
-
     } catch (error) {
         console.error("[English Supabase Service] Fetch Error:", error.message);
         return [];
@@ -53,7 +61,8 @@ function transformData(data) {
             .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
         return {
-            id: q.qid,
+            qid: q.qid, // Key for IndexedDB
+            subject: 'english',
             topic: q.topic,
             subtopic: q.subtopic,
             difficulty: q.difficulty || 'E',
@@ -73,3 +82,4 @@ function transformData(data) {
         };
     });
 }
+

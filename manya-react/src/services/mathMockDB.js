@@ -1,11 +1,21 @@
 import { supabase } from './supabaseClient';
+import { ManyaDB } from '../utils/manyaDB';
 
 const BANK_CACHE = {};
 
 export const fetchMathQuestions = async (topicId) => {
     try {
         const topic = topicId?.replace(/\.json$/, "");
+        
+        // 1. Session Cache
         if (BANK_CACHE[topic]) return BANK_CACHE[topic];
+
+        // 2. Persistent Cache (IndexedDB)
+        const cached = await ManyaDB.getCachedQuestions('math', topic);
+        if (cached && cached.length > 0) {
+            BANK_CACHE[topic] = cached;
+            return cached;
+        }
 
         console.log(`🔍 [Math Supabase] Fetching for topic: ${topic}`);
 
@@ -16,17 +26,22 @@ export const fetchMathQuestions = async (topicId) => {
 
         if (error) throw error;
         
+        let transformed;
         if (!data || data.length === 0) {
-           const { data: defaultData } = await supabase
+            const { data: defaultData } = await supabase
                 .from('questions_math')
                 .select('*')
                 .limit(5);
-           if (defaultData) return transformData(defaultData);
-           return [];
+            transformed = defaultData ? transformData(defaultData) : [];
+        } else {
+            transformed = transformData(data);
         }
 
-        const transformed = transformData(data);
-        BANK_CACHE[topic] = transformed;
+        if (transformed.length > 0) {
+            BANK_CACHE[topic] = transformed;
+            await ManyaDB.cacheQuestions(transformed);
+        }
+        
         return transformed;
     } catch (error) {
         console.error("[Math Supabase Service] Fetch Error:", error.message);
@@ -40,7 +55,8 @@ function transformData(data) {
             .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
         return {
-            id: q.qid,
+            qid: q.qid, // Key for IndexedDB
+            subject: 'math',
             topic: q.topic,
             subtopic: q.subtopic,
             difficulty: q.difficulty || 'E',
@@ -60,3 +76,4 @@ function transformData(data) {
         };
     });
 }
+

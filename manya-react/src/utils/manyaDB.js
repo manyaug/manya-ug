@@ -1,17 +1,23 @@
-import { syncService } from '../services/syncService';
-
 export const ManyaDB = {
     DB_NAME: 'ManyaSystemDB',
-    VERSION: 1,
-    STORE_NAME: 'users',
+    VERSION: 2, // Incremented version to trigger onupgradeneeded
+    STORE_USERS: 'users',
+    STORE_QUESTIONS: 'questions',
+    STORE_SYNC_LOGS: 'sync_logs',
 
     async connect() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(this.DB_NAME, this.VERSION);
             request.onupgradeneeded = (e) => {
                 const db = e.target.result;
-                if (!db.objectStoreNames.contains(this.STORE_NAME)) {
-                    db.createObjectStore(this.STORE_NAME, { keyPath: 'uid' });
+                if (!db.objectStoreNames.contains(this.STORE_USERS)) {
+                    db.createObjectStore(this.STORE_USERS, { keyPath: 'uid' });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_QUESTIONS)) {
+                    db.createObjectStore(this.STORE_QUESTIONS, { keyPath: 'qid' });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_SYNC_LOGS)) {
+                    db.createObjectStore(this.STORE_SYNC_LOGS, { keyPath: 'id', autoIncrement: true });
                 }
             };
             request.onsuccess = () => resolve(request.result);
@@ -26,8 +32,8 @@ export const ManyaDB = {
         if (!db) return null;
         return new Promise((resolve) => {
             try {
-                const transaction = db.transaction(this.STORE_NAME, 'readonly');
-                const store = transaction.objectStore(this.STORE_NAME);
+                const transaction = db.transaction(this.STORE_USERS, 'readonly');
+                const store = transaction.objectStore(this.STORE_USERS);
                 const request = store.get(uid);
                 request.onsuccess = () => resolve(request.result || null);
                 request.onerror = () => resolve(null);
@@ -40,24 +46,100 @@ export const ManyaDB = {
         if (!db) return false;
         return new Promise((resolve, reject) => {
             try {
-                const transaction = db.transaction(this.STORE_NAME, 'readwrite');
-                const store = transaction.objectStore(this.STORE_NAME);
+                const transaction = db.transaction(this.STORE_USERS, 'readwrite');
+                const store = transaction.objectStore(this.STORE_USERS);
                 
                 // Set session ID immediately
                 localStorage.setItem('manya_session_id', userData.uid);
                 
                 const request = store.put(userData);
-                request.onsuccess = () => {
-                    // ☁️ BACKGROUND SYNC TO SUPABASE
-                    syncService.uploadProfile(userData).catch(console.error);
-                    resolve(true);
-                };
+                request.onsuccess = () => resolve(true);
                 request.onerror = () => resolve(false);
             } catch(e) { resolve(false); }
         });
     },
 
+
+    /**
+     * QUESTIONS CACHE METHODS
+     */
+    async getCachedQuestions(subject, topic = null) {
+        const db = await this.connect();
+        if (!db) return [];
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_QUESTIONS, 'readonly');
+            const store = transaction.objectStore(this.STORE_QUESTIONS);
+            const request = store.getAll();
+            
+            request.onsuccess = () => {
+                let filtered = request.result.filter(q => q.subject === subject);
+                if (topic) filtered = filtered.filter(q => q.topic === topic);
+                resolve(filtered);
+            };
+            request.onerror = () => resolve([]);
+        });
+    },
+
+    async cacheQuestions(questions) {
+        const db = await this.connect();
+        if (!db) return false;
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_QUESTIONS, 'readwrite');
+            const store = transaction.objectStore(this.STORE_QUESTIONS);
+            questions.forEach(q => store.put(q));
+            transaction.oncomplete = () => resolve(true);
+            transaction.onerror = () => resolve(false);
+        });
+    },
+
+    async clearQuestionCache() {
+        const db = await this.connect();
+        if (!db) return;
+        const transaction = db.transaction(this.STORE_QUESTIONS, 'readwrite');
+        transaction.objectStore(this.STORE_QUESTIONS).clear();
+    },
+
+    /**
+     * SYNC QUEUE METHODS (Offline Writing)
+     */
+    async addToSyncQueue(type, data) {
+        const db = await this.connect();
+        if (!db) return false;
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_SYNC_LOGS, 'readwrite');
+            const store = transaction.objectStore(this.STORE_SYNC_LOGS);
+            const request = store.add({ type, data, timestamp: new Date().toISOString() });
+            request.onsuccess = () => resolve(true);
+            request.onerror = () => resolve(false);
+        });
+    },
+
+    async getSyncQueue() {
+        const db = await this.connect();
+        if (!db) return [];
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_SYNC_LOGS, 'readonly');
+            const store = transaction.objectStore(this.STORE_SYNC_LOGS);
+            const request = store.getAll();
+            request.onsuccess = () => resolve(request.result || []);
+            request.onerror = () => resolve([]);
+        });
+    },
+
+    async removeSyncItem(id) {
+        const db = await this.connect();
+        if (!db) return false;
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_SYNC_LOGS, 'readwrite');
+            const store = transaction.objectStore(this.STORE_SYNC_LOGS);
+            const request = store.delete(id);
+            request.onsuccess = () => resolve(true);
+            request.onerror = () => resolve(false);
+        });
+    },
+
     createDefaultRecord() {
+
         return {
             uid: `ID_${Math.floor(Math.random() * 1000000)}`,
             onboarded: false,
@@ -80,3 +162,4 @@ export const ManyaDB = {
         };
     }
 };
+

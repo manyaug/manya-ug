@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
+import { ManyaDB } from '../utils/manyaDB';
 
-// Simple in-memory cache to speed up re-entry
+// Simple in-memory cache to speed up re-entry within the same session
 const BANK_CACHE = {};
 
 // Map subtopic names (from URL/Navigation) to 'subtopic' column in Supabase
@@ -17,15 +18,24 @@ const SUBTOPIC_MAP = {
 /**
  * Fetches and transforms questions from Supabase.
  * Returns a unified array containing both Raw and Rephrased questions for the subtopic.
+ * Implements OFFLINE-FIRST strategy using ManyaDB (IndexedDB).
  */
 export const fetchSstQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
         
-        // Return from cache if available (Speed!)
+        // 1. Return from in-memory cache if available (Fastest)
         if (BANK_CACHE[subtopic]) {
-            console.log(`⚡ [Supabase] Serving ${subtopic} from cache.`);
+            console.log(`⚡ [Cache] Serving ${subtopic} from in-memory cache.`);
             return BANK_CACHE[subtopic];
+        }
+
+        // 2. Try IndexedDB (Persistent Offline Cache)
+        const cached = await ManyaDB.getCachedQuestions('sst', subtopic);
+        if (cached && cached.length > 0) {
+            console.log(`📦 [ManyaDB] Serving ${subtopic} from IndexedDB.`);
+            BANK_CACHE[subtopic] = cached; // Update session cache
+            return cached;
         }
 
         console.log(`🔍 [Supabase] Fetching ALL questions (Raw + Rephrased) for subtopic: ${subtopic}`);
@@ -47,7 +57,8 @@ export const fetchSstQuestions = async (topicId) => {
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
             return {
-                id: q.qid,
+                qid: q.qid, // Ensuring naming consistency for ManyaDB
+                subject: 'sst',
                 topic: q.topic,
                 subtopic: q.subtopic,
                 difficulty: q.difficulty || 'E',
@@ -78,8 +89,9 @@ export const fetchSstQuestions = async (topicId) => {
 
         console.log(`✅ [Supabase] Loaded ${transformed.length} questions for ${subtopic}`);
         
-        // Save to cache for next time
+        // 3. Save to both caches for future use
         BANK_CACHE[subtopic] = transformed;
+        await ManyaDB.cacheQuestions(transformed);
         
         return transformed;
 
@@ -88,3 +100,4 @@ export const fetchSstQuestions = async (topicId) => {
         return [];
     }
 };
+
