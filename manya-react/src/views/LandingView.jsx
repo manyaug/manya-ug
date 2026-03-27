@@ -74,13 +74,13 @@ function LandingView() {
                     font-size: 32px;
                     font-weight: 900;
                     letter-spacing: 4px;
-                    color: white;
+                    color: var(--ob-text);
                     margin-bottom: 8px;
-                    text-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
+                    text-shadow: 0 4px 10px rgba(245, 158, 11, 0.1);
                 }
                 .landing-subtitle {
                     font-size: 14px;
-                    color: #94a3b8;
+                    color: var(--ob-text-muted);
                     font-weight: 600;
                     letter-spacing: 1px;
                 }
@@ -95,18 +95,19 @@ function LandingView() {
                     align-items: center;
                     gap: 20px;
                     padding: 24px;
-                    background: rgba(30, 41, 59, 0.6);
+                    background: rgba(255, 255, 255, 0.8);
                     backdrop-filter: blur(10px);
-                    border: 1px solid rgba(129, 140, 248, 0.2);
+                    border: 1px solid rgba(245, 158, 11, 0.2);
                     border-radius: 24px;
                     cursor: pointer;
                     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.05);
                 }
                 .choice-card:hover {
                     transform: translateY(-5px) scale(1.02);
-                    background: rgba(129, 140, 248, 0.1);
+                    background: #fffbeb;
                     border-color: var(--ob-accent);
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                    box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
                 }
                 .choice-icon {
                     width: 56px;
