@@ -86,7 +86,7 @@ export const userSlice = createSlice({
   }
 });
 
-export const { addDiamonds, addXP, updateProfile, completeOnboarding } = userSlice.actions;
+export const { addDiamonds, addXP, updateProfile, completeOnboarding, resetUser } = userSlice.actions;
 
 // Create a middleware to sync changes to ManyaDB automatically
 export const persistenceMiddleware = store => next => action => {
