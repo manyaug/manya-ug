@@ -60,10 +60,7 @@ export const syncService = {
      */
     async uploadProfile(profileData, manualUid = null) {
         const uid = manualUid || await this.getUserId();
-        if (!uid) {
-            console.warn("⚠️ [Sync] No UID found for profile upload. Aborting.");
-            return;
-        }
+        if (!uid) return; // Silent return for local-only users
         
         // Handle structural differences between userStateService and ManyaDB
         const xp = profileData.xp || profileData.totalPoints || 0;
