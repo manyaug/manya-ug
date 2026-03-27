@@ -31,7 +31,7 @@ export const fetchSstQuestions = async (topicId) => {
         console.log(`🔍 [Supabase] Fetching ALL questions (Raw + Rephrased) for subtopic: ${subtopic}`);
 
         const { data, error } = await supabase
-            .from('questions')
+            .from('questions_sst')
             .select('*')
             .eq('subtopic', subtopic);
 

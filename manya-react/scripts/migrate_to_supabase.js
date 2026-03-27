@@ -27,7 +27,25 @@ if (!supabaseUrl || !supabaseServiceKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
-const EXCEL_FILE = path.join(__dirname, '../public/content/sst/sst_p7_question_bank.xlsx');
+
+// --- Subject Configuration ---
+const subject = process.argv[2] || 'sst'; // Default to sst if not specified
+const VALID_SUBJECTS = ['sst', 'math', 'english', 'science'];
+
+if (!VALID_SUBJECTS.includes(subject)) {
+    console.error(`❌ Invalid subject: ${subject}. Must be one of: ${VALID_SUBJECTS.join(', ')}`);
+    process.exit(1);
+}
+
+const tableMap = {
+    sst: 'questions_sst',
+    math: 'questions_math',
+    english: 'questions_english',
+    science: 'questions_science'
+};
+
+const EXCEL_FILE = path.join(__dirname, `../public/content/${subject}/${subject}_p7_question_bank.xlsx`);
+const TARGET_TABLE = tableMap[subject];
 
 /**
  * Clean subtopic based on question content.
@@ -116,7 +134,7 @@ async function migrate() {
         for (let i = 0; i < allFormatted.length; i += BATCH_SIZE) {
             const batch = allFormatted.slice(i, i + BATCH_SIZE);
             const { error } = await supabase
-                .from('questions')
+                .from(TARGET_TABLE)
                 .upsert(batch, { onConflict: 'qid' });
 
             if (error) {

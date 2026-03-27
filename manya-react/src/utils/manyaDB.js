@@ -1,3 +1,5 @@
+import { syncService } from '../services/syncService';
+
 export const ManyaDB = {
     DB_NAME: 'ManyaSystemDB',
     VERSION: 1,
@@ -46,6 +48,8 @@ export const ManyaDB = {
                 
                 const request = store.put(userData);
                 request.onsuccess = () => {
+                    // ☁️ BACKGROUND SYNC TO SUPABASE
+                    syncService.uploadProfile(userData).catch(console.error);
                     resolve(true);
                 };
                 request.onerror = () => resolve(false);

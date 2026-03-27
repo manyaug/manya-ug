@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { updateProfile, completeOnboarding } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
+import { syncService } from '../services/syncService';
+import { ChevronRight, ChevronLeft, ShieldCheck, Mail, Lock, User, GraduationCap, Phone } from 'lucide-react';
 import '../styles/onboarding.css';
 
 function OnboardingView() {
@@ -10,15 +12,16 @@ function OnboardingView() {
     const navigate = useNavigate();
 
     const [step, setStep] = useState(1);
+    const [loading, setLoading] = useState(false);
     
-    // Default Profile Buffer
+    // Premium Profile State
     const [profile, setProfile] = useState({
-        goal: 'Agg 4-8',
         nickname: '',
-        school: '',
-        preferences: { likes: [], hates: [] },
-        avatarSeed: '',
-        parent: { name: '', whatsapp: '' }
+        grade_level: 'Primary 7',
+        goal: 'Agg 4-8',
+        parent: { name: '', whatsapp: '', email: '' },
+        avatarSeed: `Hero_${Math.floor(Math.random()*999)}`,
+        auth: { email: '', password: '' }
     });
 
     const [avatarOptions, setAvatarOptions] = useState([]);
@@ -31,93 +34,136 @@ function OnboardingView() {
     };
 
     useEffect(() => {
-        if (step === 4 && avatarOptions.length === 0) {
+        if (step === 3 && avatarOptions.length === 0) {
             generateSeeds(profile.nickname);
         }
     }, [step, profile.nickname, avatarOptions.length]);
 
-    const handleNext = () => {
-        if (step === 2) {
+    const handleNext = async () => {
+        // Validation Logic
+        if (step === 1) {
             if (!profile.nickname || profile.nickname.length < 2) {
-                dispatch(addToast({ message: "Enter a valid Hero name!", type: "error" }));
+                dispatch(addToast({ message: "Names make Heroes! Give us a nickname.", type: "error" }));
                 return;
             }
         }
         
-        if (step === 5) {
-            if (!profile.parent.name || !profile.parent.whatsapp) {
-                dispatch(addToast({ message: "Guardian info required!", type: "error" }));
+        if (step === 2) {
+             if (!profile.parent.email || !profile.parent.whatsapp) {
+                dispatch(addToast({ message: "Guardian details are required for security.", type: "error" }));
+                return;
+            }
+        }
+
+        if (step === 4) {
+            if (!profile.auth.email || profile.auth.password.length < 6) {
+                dispatch(addToast({ message: "Secure your Hero with an email and 6-char password.", type: "error" }));
                 return;
             }
 
-            dispatch(addToast({ message: "Securing Profile...", type: "info" }));
+            setLoading(true);
+            dispatch(addToast({ message: "Forging your Identity in the Council Database...", type: "info" }));
             
-            // Dispatch to Redux (which automatically triggers ManyaDB sync)
-            dispatch(updateProfile(profile));
-            dispatch(completeOnboarding());
-            
-            setTimeout(() => {
-                dispatch(addToast({ message: "Welcome, Hero!", type: "success" }));
+            try {
+                // 1. SIGN UP TO SUPABASE
+                const { data, error } = await syncService.signUp(
+                    profile.auth.email, 
+                    profile.auth.password,
+                    { full_name: profile.nickname, avatar_url: profile.avatarSeed }
+                );
+
+                if (error) throw error;
+
+                // 2. SYNC PROFILE EXTRA DATA
+                await syncService.uploadProfile({
+                    ...profile,
+                    uid: data.user.id
+                });
+
+                // 3. UPDATE LOCAL STATE
+                dispatch(updateProfile({ ...profile, onboarded: true }));
+                dispatch(completeOnboarding());
+
+                dispatch(addToast({ message: "Welcome to Manya, Hero!", type: "success" }));
                 navigate('/home');
-            }, 600);
+
+            } catch (err) {
+                dispatch(addToast({ message: `Forging Failed: ${err.message}`, type: "error" }));
+            } finally {
+                setLoading(false);
+            }
             return;
         }
 
         setStep(step + 1);
     };
 
-    const togglePref = (sub) => {
-        const likes = [...profile.preferences.likes];
-        const idx = likes.indexOf(sub);
-        if (idx > -1) likes.splice(idx, 1);
-        else likes.push(sub);
-        setProfile(p => ({ ...p, preferences: { ...p.preferences, likes } }));
-    };
-
-    const renderInputStage = () => {
+    const renderStep = () => {
         switch(step) {
-            case 1:
+            case 1: // Identity
                 return (
-                    <>
-                        <div className={`ob-goal-card ${profile.goal === 'Agg 4-8' ? 'active' : ''}`} onClick={() => setProfile(p => ({ ...p, goal: 'Agg 4-8' }))}>
-                            <div className="goal-icon">🏆</div>
-                            <div className="goal-text"><h4>Elite Scholar</h4><p>Targeting Aggregate 4 - 8</p></div>
+                    <div className="ob-step-content animate-in">
+                        <div className="ob-icon-circle"><User size={40} /></div>
+                        <h3>Every Hero needs a Name</h3>
+                        <p>What shall we call you on the World Stage?</p>
+                        <input 
+                            type="text" 
+                            className="premium-ob-input" 
+                            placeholder="Hero Nickname" 
+                            value={profile.nickname} 
+                            onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} 
+                            autoFocus 
+                        />
+                        
+                        <div className="ob-select-group">
+                            <label><GraduationCap size={16} /> Select your Current Level</label>
+                            <select 
+                                className="premium-ob-select"
+                                value={profile.grade_level}
+                                onChange={e => setProfile(p => ({ ...p, grade_level: e.target.value }))}
+                            >
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="Primary 7">Primary 7</option>
+                            </select>
                         </div>
-                        <div className={`ob-goal-card ${profile.goal === 'Agg 9-12' ? 'active' : ''}`} onClick={() => setProfile(p => ({ ...p, goal: 'Agg 9-12' }))}>
-                            <div className="goal-icon">⭐</div>
-                            <div className="goal-text"><h4>Solid Success</h4><p>Targeting Aggregate 9 - 12</p></div>
-                        </div>
-                    </>
-                );
-            case 2:
-                return (
-                    <>
-                        <div className="input-wrapper-elite">
-                            <input type="text" className="elite-input-ob" placeholder="Hero Nickname" value={profile.nickname} onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} autoFocus />
-                        </div>
-                        <div className="input-wrapper-elite">
-                            <input type="text" className="elite-input-ob" placeholder="Primary School Name" value={profile.school} onChange={e => setProfile(p => ({ ...p, school: e.target.value }))} />
-                        </div>
-                    </>
-                );
-            case 3:
-                const subs = ['Mathematics', 'Science', 'SST', 'English'];
-                return (
-                    <div className="chip-box">
-                        {subs.map(s => (
-                            <button key={s} className={`sub-chip ${profile.preferences.likes.includes(s) ? 'active-love' : ''}`} onClick={() => togglePref(s)}>
-                                {s}
-                            </button>
-                        ))}
                     </div>
                 );
-            case 4:
+            case 2: // Guardian
                 return (
-                    <div className="ob-avatar-lab">
+                    <div className="ob-step-content animate-in">
+                        <div className="ob-icon-circle"><ShieldCheck size={40} /></div>
+                        <h3>Secure your Account</h3>
+                        <p>We need your Guardian's contact for safety and reports.</p>
+                        <div className="input-with-icon">
+                            <Mail className="i-icon" size={18} />
+                            <input 
+                                type="email" 
+                                placeholder="Guardian Email" 
+                                value={profile.parent.email} 
+                                onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, email: e.target.value } }))} 
+                            />
+                        </div>
+                        <div className="input-with-icon">
+                            <Phone className="i-icon" size={18} />
+                            <input 
+                                type="tel" 
+                                placeholder="WhatsApp Number" 
+                                value={profile.parent.whatsapp} 
+                                onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, whatsapp: e.target.value } }))} 
+                            />
+                        </div>
+                    </div>
+                );
+            case 3: // Avatar (DNA)
+                return (
+                    <div className="ob-step-content animate-in">
+                        <h3>Hero DNA Sequence</h3>
+                        <p>Select your visual identity. You can shuffle these anytime.</p>
                         <div className="lab-grid-ob">
                             {avatarOptions.map(seed => (
                                 <div key={seed} className={`lab-item-ob ${profile.avatarSeed === seed ? 'active' : ''}`} onClick={() => setProfile(p => ({ ...p, avatarSeed: seed }))}>
-                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="Avatar" style={{ width: '100%' }} />
+                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="Avatar" />
                                 </div>
                             ))}
                         </div>
@@ -126,54 +172,76 @@ function OnboardingView() {
                         </button>
                     </div>
                 );
-            case 5:
+            case 4: // Auth
                 return (
-                    <>
-                        <div className="input-wrapper-elite">
-                            <input type="text" className="elite-input-ob" placeholder="Guardian's Name" value={profile.parent.name} onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, name: e.target.value } }))} />
+                    <div className="ob-step-content animate-in">
+                        <h3>Secure the Vault</h3>
+                        <p>Final step: Set up your secret access credentials.</p>
+                        <div className="input-with-icon">
+                            <Mail className="i-icon" size={18} />
+                            <input 
+                                type="email" 
+                                placeholder="My Educational Email" 
+                                value={profile.auth.email} 
+                                onChange={e => setProfile(p => ({ ...p, auth: { ...p.auth, email: e.target.value } }))} 
+                            />
                         </div>
-                        <div className="input-wrapper-elite">
-                            <input type="tel" className="elite-input-ob" placeholder="WhatsApp Number (07...)" value={profile.parent.whatsapp} onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, whatsapp: e.target.value } }))} />
+                        <div className="input-with-icon">
+                            <Lock className="i-icon" size={18} />
+                            <input 
+                                type="password" 
+                                placeholder="Create Secret Password" 
+                                value={profile.auth.password} 
+                                onChange={e => setProfile(p => ({ ...p, auth: { ...p.auth, password: e.target.value } }))} 
+                            />
                         </div>
-                    </>
+                        <div className="auth-helper">Min 6 characters. Use something memorable!</div>
+                    </div>
                 );
             default: return null;
         }
     };
 
-    const questions = [
-        "What is your Target PLE Aggregate?",
-        "What shall we call you, Hero?",
-        "Which subjects are your Superpowers?",
-        "Select your Hero DNA Sequence",
-        "Final Step: Connect your Guardian"
-    ];
-
     return (
-        <div className="ob-stage">
-            <div className="ob-card-container">
-                <div className="ob-nav">
-                    <span className="ob-step-indicator">Step {step} of 5</span>
-                    <div className="ob-progress-track">
-                        <div className="ob-progress-fill" style={{ width: `${(step / 5) * 100}%` }}></div>
+        <div className="premium-ob-shell">
+            <div className="ob-background-fx"></div>
+            
+            <div className="ob-container">
+                <div className="ob-top-nav">
+                    {step > 1 && (
+                        <button className="ob-back-btn" onClick={() => setStep(step-1)}>
+                            <ChevronLeft size={24} />
+                        </button>
+                    )}
+                    <div className="ob-logo-area">
+                        <img src="/assets/icons/pwa-192x192.png" alt="Manya" />
+                    </div>
+                    <div className="ob-login-link">
+                         <Link to="/login">Sign In</Link>
                     </div>
                 </div>
-                
-                <div className="ob-chat">
-                    <div className="manya-bubble-ob">
-                        <img src="/assets/icons/pwa-512x512.png" alt="Manya" />
-                        <h2>{questions[step - 1]}</h2>
+
+                <div className="ob-main-card">
+                    <div className="ob-progress-dots">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className={`dot ${step >= i ? 'active' : ''}`}></div>
+                        ))}
+                    </div>
+
+                    <div className="ob-view-portal">
+                        {renderStep()}
                     </div>
                 </div>
-                
-                <div className="ob-inputs animate-up" key={`step-${step}`}>
-                    {renderInputStage()}
-                </div>
-                
-                <div className="ob-footer">
-                    <button className={`manya-btn-primary-ob ${step === 5 ? 'finish' : ''}`} onClick={handleNext}>
-                        {step === 5 ? "GIVE ME MY POWER →" : "→"}
+
+                <div className="ob-footer-actions">
+                    <button 
+                        className={`ob-next-btn ${loading ? 'loading' : ''}`} 
+                        onClick={handleNext}
+                        disabled={loading}
+                    >
+                        {loading ? "COMMITTING..." : step === 4 ? "INITIALIZE HERO →" : "CONTINUE PATH →"}
                     </button>
+                    {step === 4 && <p className="terms-notice">By initializing, you agree to the Manya Scholar Protocol.</p>}
                 </div>
             </div>
         </div>

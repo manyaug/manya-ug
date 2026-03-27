@@ -1,48 +1,35 @@
 import { supabase } from './supabaseClient';
 
-// Simple in-memory cache to speed up re-entry
 const BANK_CACHE = {};
 
-/**
- * Fetches and transforms questions from Supabase (English Bank).
- */
-export const fetchEnglishQuestions = async (topicId) => {
+export const fetchMathQuestions = async (topicId) => {
     try {
-        // TopicId normalization (e.g. '01_holiday_kickoff')
         const topic = topicId?.replace(/\.json$/, "");
-        
-        // Return from cache if available
-        if (BANK_CACHE[topic]) {
-            return BANK_CACHE[topic];
-        }
+        if (BANK_CACHE[topic]) return BANK_CACHE[topic];
 
-        console.log(`🔍 [English Supabase] Fetching for topic: ${topic}`);
+        console.log(`🔍 [Math Supabase] Fetching for topic: ${topic}`);
 
         const { data, error } = await supabase
-            .from('questions_english')
+            .from('questions_math')
             .select('*')
             .eq('topic', topic);
 
         if (error) throw error;
         
-        // Fallback to 'default' if no questions found for specific topic
         if (!data || data.length === 0) {
            const { data: defaultData } = await supabase
-                .from('questions_english')
+                .from('questions_math')
                 .select('*')
-                .eq('topic', 'default')
                 .limit(5);
-           
-           if (defaultData && defaultData.length > 0) return transformData(defaultData);
+           if (defaultData) return transformData(defaultData);
            return [];
         }
 
         const transformed = transformData(data);
         BANK_CACHE[topic] = transformed;
         return transformed;
-
     } catch (error) {
-        console.error("[English Supabase Service] Fetch Error:", error.message);
+        console.error("[Math Supabase Service] Fetch Error:", error.message);
         return [];
     }
 };

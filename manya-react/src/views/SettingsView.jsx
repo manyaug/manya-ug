@@ -13,189 +13,180 @@ function SettingsView() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [formState, setFormState] = useState({
-    fullName: user?.fullName || '',
-    nickname: user?.nickname || '',
-    motto: user?.motto || '',
-    theme: user?.theme || 'light',
-    subject: user?.preferences?.likes?.[0] || 'Mathematics'
-  });
+    const [loading, setLoading] = useState(false);
 
-  const [selectedSeed, setSelectedSeed] = useState(user?.avatarSeed || 'Hero_1');
-  const [labSeeds, setLabSeeds] = useState([]);
+    const [formState, setFormState] = useState({
+        fullName: user?.fullName || '',
+        nickname: user?.nickname || '',
+        motto: user?.motto || '',
+        theme: user?.theme || 'light',
+        subject: user?.preferences?.likes?.[0] || 'Mathematics',
+        grade_level: user?.grade_level || 'Primary 7',
+        parent_email: user?.parent_email || user?.parent?.email || '',
+        parent_phone: user?.parent_phone || user?.parent?.whatsapp || ''
+    });
 
-  // Generate 6 random seeds
-  const generateSeeds = () => {
-    const base = formState.nickname || "Hero";
-    const seeds = Array.from({length: 6}, () => `${base}_${Math.floor(Math.random()*99999)}`);
-    setLabSeeds(seeds);
-    if (!seeds.includes(selectedSeed)) setSelectedSeed(seeds[0]);
-  };
+    const [selectedSeed, setSelectedSeed] = useState(user?.avatarSeed || 'Hero_1');
+    const [labSeeds, setLabSeeds] = useState([]);
 
-  useEffect(() => {
-    generateSeeds();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount
+    const generateSeeds = () => {
+        const base = formState.nickname || "Hero";
+        const seeds = Array.from({length: 6}, () => `${base}_${Math.floor(Math.random()*99999)}`);
+        setLabSeeds(seeds);
+        if (!seeds.includes(selectedSeed)) setSelectedSeed(seeds[0]);
+    };
 
-  const toggleTheme = () => {
-    const newTheme = formState.theme === 'dark' ? 'light' : 'dark';
-    setFormState(prev => ({ ...prev, theme: newTheme }));
-    
-    // Immediately apply to document for visual feedback
-    document.documentElement.setAttribute('data-theme', newTheme);
-    // TODO: Dispatch a toast notification here
-  };
+    useEffect(() => {
+        generateSeeds();
+    }, []);
 
-  const saveHeroChanges = () => {
-    // Construct the payload matching the schema of the Redux slice
-    dispatch(updateProfile({
-        fullName: formState.fullName,
-        nickname: formState.nickname,
-        motto: formState.motto,
-        theme: formState.theme,
-        avatarSeed: selectedSeed,
-        preferences: { likes: [formState.subject] }
-    }));
-    
-    // TODO: Dispatch Toast "Identity Stabilized!"
-    navigate('/profile');
-  };
+    const toggleTheme = () => {
+        const newTheme = formState.theme === 'dark' ? 'light' : 'dark';
+        setFormState(prev => ({ ...prev, theme: newTheme }));
+        document.documentElement.setAttribute('data-theme', newTheme);
+    };
 
-  return (
-    <div className="settings-page animate-in">
-        {/* HEADER */}
-        <div className="lab-header-row">
-            <button className="manya-back-btn" onClick={() => navigate('/profile')}>
-                <ChevronLeft size={24} strokeWidth={4} />
-            </button>
-            <h2 style={{ fontWeight: 900, margin: 0 }}>Hero Lab</h2>
-        </div>
+    const handleLogout = async () => {
+        try {
+            await syncService.signOut();
+            dispatch(addToast({ message: "Identity Decoupled. Goodbye, Hero.", type: "info" }));
+            navigate('/login');
+        } catch (err) {
+            dispatch(addToast({ message: "Logout Failed", type: "error" }));
+        }
+    };
 
-        {/* NIGHT MODE TOGGLE */}
-        <div className="lab-toggle-pill" onClick={toggleTheme} style={{ cursor: 'pointer' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '20px' }}>{formState.theme === 'dark' ? '🌕' : '🌑'}</span>
-                <span style={{ fontWeight: 900, fontSize: '14px' }}>Night Mode</span>
-            </div>
-            <div className={`manya-switch ${formState.theme === 'dark' ? 'active' : ''}`} id="theme-trigger"></div>
-        </div>
+    const handleDeleteAccount = async () => {
+        if (!window.confirm("CRITICAL: This will permanently purge your Hero Identity and all progress from the Manya Council. Proceed?")) return;
+        
+        setLoading(true);
+        try {
+            await syncService.deleteAccount();
+            dispatch(addToast({ message: "Identity Purged.", type: "warning" }));
+            navigate('/onboarding');
+        } catch (err) {
+            dispatch(addToast({ message: "Purge Failed: Contact Council Support", type: "error" }));
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        {/* AUDIO SETTINGS */}
-        <div className="dna-vault" style={{ marginTop: '20px', padding: '20px' }}>
-            <span className="vault-label">AUDIO MATRIX</span>
+    const saveHeroChanges = async () => {
+        setLoading(true);
+        try {
+            const updatedProfile = {
+                ...user,
+                fullName: formState.fullName,
+                nickname: formState.nickname,
+                motto: formState.motto,
+                theme: formState.theme,
+                avatarSeed: selectedSeed,
+                grade_level: formState.grade_level,
+                parent_email: formState.parent_email,
+                parent_phone: formState.parent_phone,
+                preferences: { ...user?.preferences, likes: [formState.subject] }
+            };
+
+            // 1. Update Redux (triggers local save)
+            dispatch(updateProfile(updatedProfile));
             
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', cursor: 'pointer' }} onClick={() => dispatch(toggleMute())}>
+            // 2. Explicit Cloud Sync
+            await syncService.uploadProfile(updatedProfile);
+
+            dispatch(addToast({ message: "Identity Stabilized!", type: "success" }));
+            navigate('/profile');
+        } catch (err) {
+            dispatch(addToast({ message: "Refraction Error: Sync failed", type: "error" }));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="settings-page animate-in">
+            <div className="lab-header-row">
+                <button className="manya-back-btn" onClick={() => navigate('/profile')}>
+                    <ChevronLeft size={24} strokeWidth={4} />
+                </button>
+                <h2 style={{ fontWeight: 900, margin: 0 }}>Hero Lab</h2>
+            </div>
+
+            <div className="lab-toggle-pill" onClick={toggleTheme} style={{ cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    {isMuted ? <VolumeX size={20} color="#EF4444" /> : <Volume2 size={20} color="#818CF8" />}
-                    <span style={{ fontWeight: 900, fontSize: '14px', color: 'var(--text-main)' }}>Master Audio</span>
+                    <span>{formState.theme === 'dark' ? '🌕' : '🌑'}</span>
+                    <span style={{ fontWeight: 900, fontSize: '14px' }}>Night Mode</span>
                 </div>
-                <div className={`manya-switch ${!isMuted ? 'active' : ''}`}></div>
+                <div className={`manya-switch ${formState.theme === 'dark' ? 'active' : ''}`}></div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Headphones size={16} color="#818CF8" />
-                        <span style={{ fontWeight: 800, fontSize: '12px', color: 'var(--text-muted)' }}>VOLUME</span>
+            {/* IDENTITY MATRIX */}
+            <div className="identity-matrix-grid">
+                <div className="dna-vault">
+                    <span className="vault-label">DNA SEQUENCE</span>
+                    <div className="lab-grid">
+                        {labSeeds.map(seed => (
+                            <div key={seed} className={`lab-avatar-item ${selectedSeed === seed ? 'active' : ''}`} onClick={() => setSelectedSeed(seed)}>
+                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="avatar" />
+                            </div>
+                        ))}
                     </div>
-                    <span style={{ fontWeight: 900, fontSize: '12px', color: '#818CF8' }}>{Math.round(volume * 100)}%</span>
+                    <button className="btn-lab-shuffle" onClick={generateSeeds}>
+                        <RefreshCw size={14} /> GENERATE NEW SEQUENCES
+                    </button>
                 </div>
-                <input 
-                    type="range" 
-                    min="0" 
-                    max="1" 
-                    step="0.01" 
-                    value={volume} 
-                    onChange={(e) => dispatch(setVolume(parseFloat(e.target.value)))}
-                    style={{ 
-                        width: '100%', 
-                        accentColor: '#818CF8',
-                        cursor: 'pointer'
-                    }}
-                />
-            </div>
-        </div>
 
-        {/* THE DNA VAULT */}
-        <div className="dna-vault">
-            <span className="vault-label">DNA SEQUENCE</span>
-            <div className="lab-grid">
-                {labSeeds.map(seed => (
-                    <div 
-                        key={seed}
-                        className={`lab-avatar-item ${selectedSeed === seed ? 'active' : ''}`} 
-                        onClick={() => setSelectedSeed(seed)}
-                    >
-                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="avatar" style={{ width: '100%' }} />
+                <div className="info-fields-stack">
+                    <div className="lab-field">
+                        <label className="field-label">Student Nickname</label>
+                        <input type="text" className="lab-input-elite" value={formState.nickname} onChange={e => setFormState(p => ({...p, nickname: e.target.value}))} />
                     </div>
-                ))}
+
+                    <div className="lab-field">
+                        <label className="field-label">Grade Level</label>
+                        <select className="lab-input-elite" value={formState.grade_level} onChange={e => setFormState(p => ({...p, grade_level: e.target.value}))}>
+                            <option value="Primary 5">Primary 5</option>
+                            <option value="Primary 6">Primary 6</option>
+                            <option value="Primary 7">Primary 7</option>
+                        </select>
+                    </div>
+
+                    <div className="lab-field">
+                        <label className="field-label">Guardian's Email</label>
+                        <input type="email" className="lab-input-elite" value={formState.parent_email} onChange={e => setFormState(p => ({...p, parent_email: e.target.value}))} />
+                    </div>
+
+                    <div className="lab-field">
+                        <label className="field-label">Guardian's WhatsApp</label>
+                        <input type="tel" className="lab-input-elite" value={formState.parent_phone} onChange={e => setFormState(p => ({...p, parent_phone: e.target.value}))} />
+                    </div>
+                </div>
             </div>
-            <button 
-                className="btn-lab-shuffle" 
-                style={{ width:'100%', marginTop:'20px', border:'none', background:'transparent', color:'#818CF8', fontWeight:900, fontSize:'11px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px'}} 
-                onClick={generateSeeds}
-            >
-               <RefreshCw size={14} /> GENERATE NEW SEQUENCES
+
+            <button className="btn-commit-identity" onClick={saveHeroChanges} disabled={loading}>
+                {loading ? "STABILIZING..." : "Commit Identity"}
             </button>
-        </div>
 
-        {/* IDENTITY MATRIX (FIELDS) */}
-        <div className="identity-matrix-grid">
-            <div className="lab-field">
-                <label className="field-label">Real Name</label>
-                <input 
-                    type="text" 
-                    className="lab-input-elite" 
-                    value={formState.fullName} 
-                    onChange={e => setFormState(p => ({...p, fullName: e.target.value}))}
-                    placeholder="E.g. Musa Okello" 
-                />
-            </div>
-
-            <div className="lab-field">
-                <label className="field-label">Hero Nickname</label>
-                <input 
-                    type="text" 
-                    className="lab-input-elite" 
-                    value={formState.nickname} 
-                    onChange={e => setFormState(p => ({...p, nickname: e.target.value}))}
-                    placeholder="E.g. BrainStorm" 
-                />
-            </div>
-
-            <div className="lab-field">
-                <label className="field-label">Hero Specialty</label>
-                <select 
-                    className="lab-input-elite"
-                    value={formState.subject}
-                    onChange={e => setFormState(p => ({...p, subject: e.target.value}))}
-                >
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Science">Science</option>
-                    <option value="SST">SST</option>
-                    <option value="English">English</option>
-                </select>
-            </div>
-
-            <div className="lab-field">
-                <label className="field-label">Battle Cry (Hero Motto)</label>
-                <input 
-                    type="text" 
-                    className="lab-input-elite" 
-                    value={formState.motto} 
-                    onChange={e => setFormState(p => ({...p, motto: e.target.value}))}
-                    placeholder="E.g. First Grade or Nothing!" 
-                />
+            <div className="danger-zone">
+                <h4 className="section-label" style={{ color: '#EF4444' }}>Security Clearing</h4>
+                <div className="service-list-elite">
+                    <div className="service-row" onClick={handleLogout}>
+                        <div className="service-icon logout">🔓</div>
+                        <div className="service-text">
+                            <span className="s-title">Sign Out</span>
+                            <span className="s-sub">Exit this Identity session</span>
+                        </div>
+                    </div>
+                    <div className="service-row" onClick={handleDeleteAccount}>
+                        <div className="service-icon delete">🗑️</div>
+                        <div className="service-text">
+                            <span className="s-title" style={{ color: '#EF4444' }}>Terminate Identity</span>
+                            <span className="s-sub">Permanent account deletion</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div style={{ height: '40px' }}></div>
-
-        <button className="btn-commit-identity" onClick={saveHeroChanges}>
-            Commit Identity
-        </button>
-    </div>
-  );
+    );
 }
 
 export default SettingsView;

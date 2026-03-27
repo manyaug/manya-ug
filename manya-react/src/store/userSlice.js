@@ -1,15 +1,42 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ManyaDB } from '../utils/manyaDB';
+import { syncService } from '../services/syncService';
 
 // Async thunk to boot user from IndexedDB
 export const initializeUser = createAsyncThunk(
   'user/initialize',
   async () => {
-    let user = await ManyaDB.getCurrentUser();
-    if (!user) {
-      user = ManyaDB.createDefaultRecord();
+    // 1. Try Cloud Pull first
+    const cloudProfile = await syncService.pullProfile();
+    
+    // 2. Fetch local as fallback/merge
+    let localUser = await ManyaDB.getCurrentUser();
+    
+    if (cloudProfile) {
+        console.log("☁️ [Sync] Profile restored from Supabase.");
+        // Merge cloud data into local structure
+        const merged = {
+            ...(localUser || ManyaDB.createDefaultRecord()),
+            nickname: cloudProfile.full_name,
+            xp: cloudProfile.xp,
+            diamonds: cloudProfile.gems_overall,
+            sstGems: cloudProfile.gems_sst,
+            mathGems: cloudProfile.gems_math,
+            englishGems: cloudProfile.gems_english,
+            scienceGems: cloudProfile.gems_science,
+            currentStreak: cloudProfile.streak_current,
+            longestStreak: cloudProfile.streak_longest,
+            onboarded: true // If they have a profile, they are onboarded
+        };
+        // Update local cache
+        await ManyaDB.saveUser(merged);
+        return merged;
     }
-    return user;
+
+    if (!localUser) {
+      localUser = ManyaDB.createDefaultRecord();
+      await ManyaDB.saveUser(localUser);
+    }
+    return localUser;
   }
 );
 

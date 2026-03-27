@@ -328,6 +328,10 @@ export function generateAdaptiveQuest(allQuestionsRaw, nodeType, subject, questK
         const score = scoreQuestion(q, history, subject, wrongQuestions);
         // BOOST simulations slightly so they appear as "rewards" or active learning steps
         if (q.isSimulation) score.score += 100; 
+        
+        // ADD JITTER: Ensures different questions are picked when scores are tied (e.g. many "New" questions)
+        score.score += (Math.random() * 8); 
+        
         return { ...q, _score: score };
     });
 
@@ -356,10 +360,12 @@ export function generateAdaptiveQuest(allQuestionsRaw, nodeType, subject, questK
     // STREAK PUZZLE (Fallback injection if no sims were picked naturally)
     const hasSim = finalQuestions.some(q => q.isSimulation);
     if (!hasSim && session.consecutiveCorrect >= 2 && nodeType !== 'MASTERY') {
-        const puzzle = allQuestions.find(q => q.isSimulation);
-        if (puzzle) {
+        const availableSims = allQuestions.filter(q => q.isSimulation && !finalQuestions.some(sq => sq.id === q.id));
+        if (availableSims.length > 0) {
+            // Pick a random simulation from the pool instead of just the first one
+            const puzzle = availableSims[Math.floor(Math.random() * availableSims.length)];
             finalQuestions.push(puzzle);
-            console.log(`🎁 [Adaptive] Injected Simulation via Streak: ${puzzle.id}`);
+            console.log(`🎁 [Adaptive] Injected Random Simulation via Streak: ${puzzle.id}`);
         }
     }
 

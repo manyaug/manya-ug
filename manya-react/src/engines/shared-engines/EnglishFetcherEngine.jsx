@@ -37,16 +37,24 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const questKey = data?.questKey || `english/${topicId}`;
 
     useEffect(() => {
-        resetSession();
-        const allQuestions = fetchEnglishQuestions(topicId);
-        const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey);
-        setQuestions(quest.questions);
-        setQuestMeta(quest);
+        const loadQuestions = async () => {
+            resetSession();
+            const allQuestions = await fetchEnglishQuestions(topicId);
+            if (allQuestions.length > 0) {
+                const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey);
+                setQuestions(quest.questions);
+                setQuestMeta(quest);
 
-        console.log(`📖 [English Adaptive] ${nodeType} quest generated:`, {
-            length: quest.questLength,
-            gameMode: quest.gameMode,
-        });
+                console.log(`📖 [English Adaptive] ${nodeType} quest generated:`, {
+                    length: quest.questLength,
+                    gameMode: quest.gameMode,
+                });
+            } else {
+                console.warn(`⚠️ No English questions loaded for ${topicId}`);
+            }
+        };
+
+        loadQuestions();
     }, [topicId, nodeType]);
 
     const handleAnswer = (option) => {

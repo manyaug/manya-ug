@@ -580,11 +580,25 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                     <SimulatorBridge 
                         step={q} 
                         onComplete={(results) => {
-                            // Grade the simulation!
                             const isSuccess = results?.score >= 60;
+                            const timeSpentMs = results?.duration || 30000;
+
+                            // ─── PERSIST SIMULATION RESULT ───
+                            updateSessionAfterAnswer(isSuccess, false, false, timeSpentMs);
+                            recordAnswer(subject, {
+                                questionId: q.id,
+                                isCorrect: isSuccess,
+                                selectedAnswer: 'COMPLETED',
+                                correctAnswer: 'COMPLETED',
+                                timeSpentMs,
+                                hintUsed: false,
+                                answerChanged: false,
+                                pool: 'simulation',
+                            });
+
                             if (isSuccess) {
                                 setScore(prev => prev + 1);
-                                setGemsEarned(prev => prev + 5); // Bonus for simulations
+                                setGemsEarned(prev => prev + 5); 
                             }
                             nextQuestion();
                         }} 

@@ -1,15 +1,4 @@
-/**
- * MANYA USER STATE SERVICE
- * ========================
- * Persists all adaptive learning state to localStorage.
- * Replaces the PostgreSQL/SQLite user_answer, user_sessions, user_stats tables
- * from the Question Fetcher Engine.
- *
- * Storage keys:
- *   manya_user_state    → global user profile (gems, streaks, XP)
- *   manya_answers_{sub} → per-subject answer history
- *   manya_session       → current session state (frustration, quest progress)
- */
+import { syncService } from './syncService';
 
 const KEYS = {
     USER_STATE: 'manya_user_state',
@@ -71,6 +60,8 @@ export function getUserState() {
 /** Save full user state */
 export function saveUserState(state) {
     writeJSON(KEYS.USER_STATE, state);
+    // ☁️ BACKGROUND SYNC TO SUPABASE
+    syncService.uploadProfile(state).catch(console.error);
 }
 
 /** Get current session */
@@ -98,13 +89,19 @@ export function getAnswerHistory(subject) {
 /** Record a single answer */
 export function recordAnswer(subject, answerData) {
     const history = getAnswerHistory(subject);
-    history.push({
+    const session = getSession();
+    const stamped = {
         ...answerData,
         answeredAt: new Date().toISOString(),
-    });
+        frustrationLevel: session.frustrationLevel || 0,
+    };
+    history.push(stamped);
     // Keep last 500 answers per subject to avoid localStorage bloat
     if (history.length > 500) history.splice(0, history.length - 500);
     writeJSON(KEYS.answers(subject), history);
+
+    // ☁️ BACKGROUND SYNC TO SUPABASE
+    syncService.pushAnswer(subject, stamped).catch(console.error);
 }
 
 // ─── Session Metrics (live, updated per-answer) ──────────────────────────────
@@ -174,12 +171,26 @@ export function getStreakMultiplier() {
 /** Save quest completion */
 export function saveQuestCompletion(questKey, mastery) {
     const state = getUserState();
-    state.questProgress[questKey] = {
+    const nodeType = questKey.split('/').pop()?.toUpperCase() || 'PRACTICE';
+    
+    const progressRecord = {
         mastery,
         completed: mastery >= 60,
         completedAt: new Date().toISOString(),
+        attempts: (state.questProgress[questKey]?.attempts || 0) + 1,
+        status: mastery >= 60 ? 'completed' : 'available'
     };
+
+    state.questProgress[questKey] = progressRecord;
     saveUserState(state);
+
+    // ☁️ BACKGROUND SYNC TO SUPABASE
+    syncService.updateProgress(questKey, {
+        mastery,
+        nodeType,
+        attempts: progressRecord.attempts,
+        status: progressRecord.status
+    }).catch(console.error);
 }
 
 /** Check if a quest was completed with sufficient mastery */

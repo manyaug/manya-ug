@@ -24,6 +24,7 @@ import MembershipView from './views/MembershipView';
 import SpiralView from './views/SpiralView';
 import QuestPathView from './views/QuestPathView';
 import OnboardingView from './views/OnboardingView';
+import LoginView from './views/LoginView';
 import SimulationTestingView from './views/SimulationTestingView';
 import SplashScreen from './components/SplashScreen';
 
@@ -105,13 +106,15 @@ function AppContent() {
         return <SplashScreen onFinish={() => setSplashFinished(true)} />;
     }
 
-    // TRAP ROUTER: If not onboarded, lock them to Onboarding
+    // TRAP ROUTER: If not onboarded, lock them to Onboarding / Login
     if (!user?.onboarded) {
         return (
             <Router>
                 <ManyaToaster />
                 <Routes>
-                    <Route path="*" element={<OnboardingView />} />
+                    <Route path="/login" element={<LoginView />} />
+                    <Route path="/onboarding" element={<OnboardingView />} />
+                    <Route path="*" element={<Navigate to="/onboarding" replace />} />
                 </Routes>
             </Router>
         );
