@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, RefreshCw } from 'lucide-react';
 import { updateProfile } from '../store/userSlice';
+import { addToast } from '../store/toastSlice';
+import { syncService } from '../services/syncService';
 import { setVolume, toggleMute } from '../store/audioSlice';
-import { Volume2, VolumeX, Headphones } from 'lucide-react';
+import { Volume2, VolumeX, Headphones, ChevronLeft, RefreshCw } from 'lucide-react';
 import '../styles/setting.css';
 
 function SettingsView() {
