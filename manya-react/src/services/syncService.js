@@ -70,13 +70,14 @@ export const syncService = {
             gems_math: profileData.subjectGems?.math || profileData.mathGems || 0,
             gems_english: profileData.subjectGems?.english || profileData.englishGems || 0,
             gems_science: profileData.subjectGems?.science || profileData.scienceGems || 0,
-            streak_current: profileData.currentStreak || 0,
-            streak_longest: profileData.longestStreak || 0,
+            streak_current: profileData.current_streak || 0,
+            streak_longest: profileData.longest_streak || 0,
             avatar_url: profileData.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData.avatarSeed}` : null,
             preferences: profileData.preferences || {},
             parent_email: profileData.parent?.email || profileData.parent_email,
             parent_phone: profileData.parent?.whatsapp || profileData.parent_phone,
             grade_level: profileData.grade_level || profileData.goal,
+            engagement_stats: profileData.engagement_stats || {},
             last_active_at: new Date().toISOString()
         };
 
@@ -108,7 +109,12 @@ export const syncService = {
             answer_changed: answer.answerChanged,
             change_count: answer.changeCount || 0,
             frustration_level: answer.frustrationLevel || 0,
-            pool: answer.pool || 'exam'
+            pool: answer.pool || 'exam',
+            engine_type: answer.engine_type || 'MCQ',
+            concept_id: answer.concept_id || null,
+            variant: answer.variant || null,
+            subject: subject,
+            session_id: answer.session_id || localStorage.getItem('manya_session_id')
         };
 
         try {
@@ -135,7 +141,8 @@ export const syncService = {
             mastery: progress.mastery,
             status: progress.status,
             attempts: progress.attempts,
-            last_attempted_at: new Date().toISOString()
+            last_attempted_at: new Date().toISOString(),
+            streak_broken_at: progress.streak_broken_at || null
         };
 
         try {

@@ -1,21 +1,49 @@
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { 
+    Sliders, 
+    UserCog, 
+    Crown, 
+    Flame, 
+    Target, 
+    Trophy,
+    ChevronRight,
+    BrainCircuit
+} from 'lucide-react';
 import '../styles/profile.css';
 
 function ProfileView() {
-  const user = useSelector((state) => state.user.data);
-  const navigate = useNavigate();
+    const user = useSelector((state) => state.user.data);
+    const navigate = useNavigate();
 
-  // --- ELITE LEVEL CALCULATOR ---
-  const xpToLevel = (xp) => {
-      const level = Math.floor((xp || 0) / 1000) + 1;
-      const progress = (xp % 1000) / 10; // Percentage of current level
-      const offset = 339.29 - (339.29 * (progress / 100)); // SVG Circumference
-      let rank = "Novice Hero";
-      if (level > 5) rank = "Elite Scholar";
-      if (level > 10) rank = "Manya Legend";
-      return { level, progress, offset, rank };
-  };
+    // --- NATIONAL ARENA VARIANTS ---
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+    };
+
+    // --- LEAGUE & LEVEL LOGIC ---
+    const xpToLevel = (xp) => {
+        const level = Math.floor((xp || 0) / 1000) + 1;
+        const progress = (xp % 1000) / 10;
+        const offset = 339.29 - (339.29 * (progress / 100));
+        
+        let rank = "Novice Hero";
+        let league = "Bronze League";
+        let leagueColor = "#CD7F32";
+
+        if (level > 2) { rank = "Rising Scholar"; league = "Silver League"; leagueColor = "#94a3b8"; }
+        if (level > 5) { rank = "Elite Hero"; league = "Gold League"; leagueColor = "#f59e0b"; }
+        if (level > 10) { rank = "Manya Legend"; league = "Crystal League"; leagueColor = "#06b6d4"; }
+
+        return { level, progress, offset, rank, league, leagueColor };
+    };
 
   const stats = xpToLevel(user?.xp || 150);
 
@@ -26,113 +54,191 @@ function ProfileView() {
       { name: 'English', val: 90, color: '#db2777', icon: '/assets/images/english_island.png' }
   ];
 
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat'];
-  const heights = [30, 20, 50, 70, 95, 60, 40];
+  const past7Days = Array.from({length: 7}, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return d;
+  });
+  
+  const days = past7Days.map(d => d.toLocaleDateString('en-US', { weekday: 'short' }));
+  const colors = ['#f87171', '#fb923c', '#fbbf24', '#4ade80', '#818cf8', '#a78bfa', '#f472b6'];
+  
+  const rawEngagementsHours = past7Days.map(d => {
+      const dateStr = d.toISOString().split('T')[0];
+      return (user?.engagement_stats?.[dateStr] || 0) / (1000 * 60 * 60);
+  });
+  
+  const totalWeeklyHours = rawEngagementsHours.reduce((a, b) => a + b, 0);
+  const totalWeeklyFormat = `${Math.floor(totalWeeklyHours)}hr ${Math.floor((totalWeeklyHours % 1) * 60)}min`;
+  
+  const maxHours = Math.max(...rawEngagementsHours, 1);
+  const heights = rawEngagementsHours.map(h => (h / maxHours) * 95);
+  
+  const maxIdx = heights.indexOf(Math.max(...heights));
 
-  return (
-    <div className="profile-page animate-in">
-        
-        {/* 1. HERO IDENTITY (XP RING) */}
-        <div className="hero-passport-header">
-            <div className="xp-ring-container">
-                <svg className="xp-ring-svg" viewBox="0 0 120 120">
-                    <circle className="ring-bg" cx="60" cy="60" r="54"></circle>
-                    <circle 
-                        className="ring-fill" 
-                        cx="60" cy="60" r="54" 
-                        style={{ strokeDasharray: 339.29, strokeDashoffset: stats.offset }}
-                    ></circle>
-                </svg>
-                <div className="avatar-circle">
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed || 'Hero'}`} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div className="level-badge">LVL {stats.level}</div>
+    return (
+        <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="profile-page"
+        >
+            {/* 0. DYNAMIC AURORA ENGINE */}
+            <div className="aurora-engine">
+                <div className="blob aurora-1"></div>
+                <div className="blob aurora-2"></div>
             </div>
-            <h2 className="hero-name-display">{(user?.nickname || 'Hero').toUpperCase()}</h2>
-            <div className="hero-rank-pill">{stats.rank === "Novice Hero" && (user?.xp || 0) === 0 ? "MANYA LEGEND" : stats.rank.toUpperCase()}</div>
-        </div>
 
-        {/* 2. ANALYTICS BENTO GRID */}
-        <div className="bento-grid">
-            <div className="bento-card" style={{ background: 'rgba(124, 58, 237, 0.1)', borderColor: 'var(--manya-purple)' }}>
-                <span className="card-icon">🔥</span>
-                <span className="card-label">Streak</span>
-                <div className="card-val">12 Days</div>
-            </div>
-            <div className="bento-card" style={{ background: 'rgba(6, 182, 212, 0.1)', borderColor: '#06B6D4' }}>
-                <span className="card-icon">🎯</span>
-                <span className="card-label">PLE Target</span>
-                <div className="card-val">{user?.goal || 'Agg 4'}</div>
-            </div>
-        </div>
-
-        {/* 3. LEARNING ACTIVITY */}
-        <div className="activity-card-elite">
-            <div className="activity-header">
-                <span className="card-icon">🧠</span>
-                <div>
-                    <div className="activity-title">Learning Activity</div>
-                    <div className="activity-sub">04hr 54min this week</div>
-                </div>
-            </div>
-            <div className="bar-chart-container">
-                {days.map((day, i) => (
-                    <div key={day} className="chart-bar-wrapper">
-                        <div className={`bar-fill ${day === 'Thr' ? 'active' : ''}`} style={{ height: `${heights[i]}px` }}>
-                            {day === 'Thr' && <div className="bar-tooltip">4.5h</div>}
-                        </div>
-                        <span className="bar-day-label">{day}</span>
+            {/* 1. HERO IDENTITY (XP RING) */}
+            <motion.div variants={itemVariants} className="hero-passport-header">
+                <div className="xp-ring-container">
+                    <svg className="xp-ring-svg" viewBox="0 0 120 120">
+                        <circle className="ring-bg" cx="60" cy="60" r="54"></circle>
+                        <motion.circle 
+                            initial={{ strokeDashoffset: 339.29 }}
+                            animate={{ strokeDashoffset: stats.offset }}
+                            transition={{ duration: 1.5, ease: "easeOut" }}
+                            className="ring-fill" 
+                            cx="60" cy="60" r="54" 
+                            style={{ strokeDasharray: 339.29 }}
+                        />
+                    </svg>
+                    <div className="avatar-circle">
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed || 'Hero'}`} alt="Avatar" />
+                        <div className="orb-thor-glow"></div>
                     </div>
+                    <div className="level-badge">LVL {stats.level}</div>
+                </div>
+                <h2 className="hero-display-name">{(user?.nickname || 'Hero').toUpperCase()}</h2>
+                <div className="hero-rank-pill">{stats.rank.toUpperCase()}</div>
+                <div className="hero-title-tag">System Administrator</div>
+            </motion.div>
+
+            {/* 2. ANALYTICS BENTO GRID (UPGRADED) */}
+            <motion.div variants={itemVariants} className="bento-grid">
+                <div className="bento-card-elite streak">
+                    <div className="card-glass-glow"></div>
+                    <div className="bento-icon-box">
+                        <Flame size={20} color="#f97316" />
+                    </div>
+                    <span className="bento-label">HERO STREAK</span>
+                    <div className="bento-val">{user?.current_streak || 0} DAYS</div>
+                </div>
+
+                <div className="bento-card-elite league">
+                    <div className="card-glass-glow" style={{ background: stats.leagueColor, opacity: 0.1 }}></div>
+                    <div className="bento-icon-box" style={{ background: `${stats.leagueColor}20` }}>
+                        <Trophy size={20} color={stats.leagueColor} />
+                    </div>
+                    <span className="bento-label">LEAGUE STATUS</span>
+                    <div className="bento-val" style={{ color: stats.leagueColor }}>{stats.league.toUpperCase()}</div>
+                </div>
+            </motion.div>
+
+            {/* 3. LEARNING ACTIVITY (GLASS) */}
+            <motion.div variants={itemVariants} className="activity-card-national">
+                <div className="activity-header">
+                    <div className="activity-icon-halo">
+                        <BrainCircuit size={20} color="#7c3aed" />
+                    </div>
+                    <div>
+                        <div className="activity-title">Matrix Engagement</div>
+                        <div className="activity-sub">{totalWeeklyFormat} focused this week</div>
+                    </div>
+                </div>
+                <div className="bar-chart-national">
+                    {days.map((day, i) => (
+                        <div key={day} className="chart-column">
+                            <motion.div 
+                                initial={{ height: 0 }}
+                                animate={{ height: `${heights[i]}px` }}
+                                transition={{ delay: 0.5 + (i * 0.05), duration: 1, ease: "easeOut" }}
+                                className={`bar-pillar ${i === maxIdx && heights[i] > 0 ? 'active' : ''}`}
+                                style={{ background: i === maxIdx && heights[i] > 0 ? undefined : colors[i] }}
+                            >
+                                {i === maxIdx && heights[i] > 0 && <div className="bar-callout">{rawEngagementsHours[i].toFixed(1)}h</div>}
+                                <div className="pillar-glow" style={{ background: colors[i], opacity: 0.3 }}></div>
+                            </motion.div>
+                            <span className="pillar-label">{day}</span>
+                        </div>
+                    ))}
+                </div>
+            </motion.div>
+
+            {/* 4. SUBJECT PROGRESS (GLASS STACK) */}
+            <motion.h4 variants={itemVariants} className="section-label">Curriculum Matrix</motion.h4>
+            <motion.div variants={itemVariants} className="subject-stack-national">
+                {subjectProgress.map((sub, idx) => (
+                    <motion.div 
+                        key={sub.name} 
+                        variants={itemVariants}
+                        className="sub-progress-elite"
+                    >
+                        <div className="sub-row">
+                            <div className="sub-meta">
+                                <img src={sub.icon} className="sub-avatar-tiny" alt={sub.name} />
+                                <span className="sub-name">{sub.name}</span>
+                            </div>
+                            <span className="sub-value">{sub.val}%</span>
+                        </div>
+                        <div className="matrix-track">
+                            <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${sub.val}%` }}
+                                transition={{ delay: 0.8 + (idx * 0.1), duration: 1.2 }}
+                                className="matrix-fill" 
+                                style={{ backgroundColor: sub.color }}
+                            >
+                                <div className="fill-shine"></div>
+                            </motion.div>
+                        </div>
+                    </motion.div>
                 ))}
-            </div>
-        </div>
-
-        {/* 4. SUBJECT PROGRESS */}
-        <h4 className="section-label">Curriculum Progress</h4>
-        <div className="subject-stack">
-            {subjectProgress.map(sub => (
-                <div key={sub.name} className="sub-progress-card">
-                    <div className="sub-row">
-                        <div className="sub-identity">
-                            <img src={sub.icon} className="sub-icon-tiny" alt={sub.name} />
-                            <span>{sub.name}</span>
-                        </div>
-                        <span className="sub-pct">{sub.val}%</span>
-                    </div>
-                    <div className="striped-track">
-                        <div className="striped-fill" style={{ width: `${sub.val}%`, backgroundColor: sub.color }}></div>
-                    </div>
-                </div>
-            ))}
-        </div>
+            </motion.div>
 
         {/* 5. HERO MANAGEMENT SERVICES */}
-        <h4 className="section-label">Hero Management</h4>
-        <div className="service-list-elite">
-            <div className="service-row" onClick={() => navigate('/settings')} style={{ cursor: 'pointer' }}>
-                <div className="service-icon" style={{ background: '#F5F3FF', color: '#7c3aed' }}>⚙️</div>
-                <div className="service-text">
-                    <span className="s-title">Hero Settings</span>
-                    <span className="s-sub">DNA, Nickname, and School</span>
+            {/* 5. HERO MANAGEMENT SERVICES */}
+            <motion.h4 variants={itemVariants} className="section-label">Hero Management</motion.h4>
+            <motion.div variants={itemVariants} className="service-list-national">
+                <div className="service-row-elite" onClick={() => navigate('/settings')}>
+                    <div className="s-icon-box" style={{ background: '#EEF2FF', color: '#6366F1' }}>
+                        <UserCog size={20} />
+                    </div>
+                    <div className="s-content">
+                        <span className="s-name">Profile Settings</span>
+                        <span className="s-desc">Nickname, DNA & Academic Grade</span>
+                    </div>
+                    <ChevronRight size={18} className="s-chevron" />
                 </div>
-                <span className="s-arrow">›</span>
-            </div>
 
-            <div className="service-row" onClick={() => navigate('/membership')} style={{ cursor: 'pointer' }}>
-                <div className="service-icon" style={{ background: '#FFF1F2', color: '#db2777' }}>👑</div>
-                <div className="service-text">
-                    <span className="s-title">Elite Hero Status</span>
-                    <span className="s-sub">{user?.status || 'Free Scholar'}</span>
+                <div className="service-row-elite" onClick={() => navigate('/preferences')}>
+                    <div className="s-icon-box" style={{ background: '#ECFDF5', color: '#10B981' }}>
+                        <Sliders size={20} />
+                    </div>
+                    <div className="s-content">
+                        <span className="s-name">App Preferences</span>
+                        <span className="s-desc">Audio, Theme & Matrix Sync</span>
+                    </div>
+                    <ChevronRight size={18} className="s-chevron" />
                 </div>
-                <span className="s-arrow">›</span>
-            </div>
-        </div>
+
+                <div className="service-row-elite deluxe" onClick={() => navigate('/membership')}>
+                    <div className="s-icon-box" style={{ background: '#FFF7ED', color: '#F59E0B' }}>
+                        <Crown size={20} />
+                    </div>
+                    <div className="s-content">
+                        <span className="s-name">Elite Hero Status</span>
+                        <span className="s-desc">{user?.status || 'Free Scholar'}</span>
+                    </div>
+                    <ChevronRight size={18} className="s-chevron" />
+                </div>
+            </motion.div>
 
         <div style={{ textAlign: 'center', marginTop: '40px', opacity: 0.2, paddingBottom: '50px' }}>
             <img src="/assets/images/manya_icon.png" style={{ width: '50px' }} alt="Manya Council" />
         </div>
-    </div>
-  );
+        </motion.div>
+    );
 }
 
 export default ProfileView;

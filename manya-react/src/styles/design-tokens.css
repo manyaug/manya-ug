@@ -1,0 +1,90 @@
+/* 
+  MANYA DESIGN SYSTEM - TOKENS
+  Centralized variables for a world-class educational experience.
+*/
+
+:root {
+  /* --- 1. CORE PALETTE (HSL) --- */
+  --manya-purple-h: 262;
+  --manya-purple-s: 83%;
+  --manya-purple-l: 58%;
+  
+  --manya-purple: hsl(var(--manya-purple-h), var(--manya-purple-s), var(--manya-purple-l));
+  --manya-purple-dark: hsl(var(--manya-purple-h), var(--manya-purple-s), calc(var(--manya-purple-l) - 15%));
+  --manya-purple-light: hsl(var(--manya-purple-h), var(--manya-purple-s), calc(var(--manya-purple-l) + 30%));
+
+  --manya-pink-h: 330;
+  --manya-pink-s: 70%;
+  --manya-pink-l: 51%;
+  --manya-pink: hsl(var(--manya-pink-h), var(--manya-pink-s), var(--manya-pink-l));
+
+  --manya-gold-h: 38;
+  --manya-gold-s: 92%;
+  --manya-gold-l: 50%;
+  --manya-gold: hsl(var(--manya-gold-h), var(--manya-gold-s), var(--manya-gold-l));
+
+  --manya-green-h: 161;
+  --manya-green-s: 84%;
+  --manya-green-l: 39%;
+  --manya-green: hsl(var(--manya-green-h), var(--manya-green-s), var(--manya-green-l));
+
+  /* --- 2. THEME-DEPENDENT COLORS --- */
+  --bg-primary: #FDFBF7;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --border-subtle: #F1F5F9;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+
+  /* --- 2b. ALIAS MAP (used throughout engines.css and components) --- */
+  /* These MUST match the above values. They fix white-on-white rendering. */
+  --bg-main:    #FDFBF7;   /* same as --bg-primary  */
+  --bg-card:    #FFFFFF;   /* same as --bg-secondary */
+  --text-main:  #1E293B;   /* same as --text-primary */
+  --text-sub:   #64748B;   /* same as --text-secondary */
+  --text-muted: #94A3B8;
+  --border-color: #E2E8F0;
+  --border-glass: rgba(0, 0, 0, 0.06);
+
+  /* --- 3. TYPOGRAPHY --- */
+  --font-main: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --weight-bold: 700;
+  --weight-black: 900;
+
+  /* --- 4. SHADOWS & RADII --- */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --shadow-premium: 0 10px 30px -10px rgba(124, 58, 237, 0.15);
+  
+  /* --- 5. MOTION --- */
+  --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] {
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border-subtle: #334155;
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+
+  /* Aliases for dark mode */
+  --bg-main:    #0F172A;
+  --bg-card:    #1E293B;
+  --text-main:  #F8FAFC;
+  --text-sub:   #94A3B8;
+  --text-muted: #64748B;
+  --border-color: #334155;
+  --border-glass: rgba(255, 255, 255, 0.08);
+}

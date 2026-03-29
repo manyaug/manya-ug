@@ -18,7 +18,7 @@ import {
  * - Flashcards: Interactive term/fact/mnemonic cards.
  * - Subject-Aware: Dynamic accents based on subject.
  */
-export function ReaderStudyEngine({ data, onComplete }) {
+export function ReaderStudyEngine({ data, onComplete, onResult }) {
     const [isVisible, setIsVisible] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
     const containerRef = useRef(null);
@@ -134,7 +134,17 @@ export function ReaderStudyEngine({ data, onComplete }) {
                     className={`mt-32 md:mt-48 transition-all duration-1000 delay-700 flex flex-col items-center ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                 >
                     <button 
-                        onClick={onComplete}
+                        onClick={() => {
+                            if (onResult) {
+                                onResult({
+                                    isCorrect: true,
+                                    score: 1,
+                                    total: 1,
+                                    type: 'study'
+                                });
+                            }
+                            onComplete();
+                        }}
                         className="w-full h-24 md:h-28 rounded-[2.5rem] md:rounded-[3.5rem] bg-[var(--accent-color)] text-white font-black text-xl md:text-3xl shadow-[0_20px_40px_-10px_rgba(124,58,237,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-6 md:gap-8 group relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />

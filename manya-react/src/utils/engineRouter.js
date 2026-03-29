@@ -173,8 +173,11 @@ export const ENGINE_REGISTRY = {
         hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/FunctionalComposerEngine.jsx'))
     },
-    'PROCEDURAL_CANVAS': { type: 'legacy' },
-    'MCQ_STANDALONE': { type: 'legacy' },
+    'MCQ_STANDALONE': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/shared-engines/MCQStandaloneEngine.jsx'))
+    },
 };
 
 export const getEngineMetadata = (engineType) => {

@@ -26,6 +26,7 @@ import QuestPathView from './views/QuestPathView';
 import OnboardingView from './views/OnboardingView';
 import LoginView from './views/LoginView';
 import LandingView from './views/LandingView';
+import PreferencesView from './views/PreferencesView';
 import SimulationTestingView from './views/SimulationTestingView';
 import SplashScreen from './components/SplashScreen';
 
@@ -64,6 +65,7 @@ function RouterLayout() {
                     <Route path="/achievements" element={<AchievementsView />} />
                     <Route path="/settings" element={<SettingsView />} />
                     <Route path="/membership" element={<MembershipView />} />
+                    <Route path="/preferences" element={<PreferencesView />} />
                     
                     {/* Quest Execution */}
                     <Route path="/quest" element={<QuestRunner />} />
@@ -76,6 +78,9 @@ function RouterLayout() {
 
                     {/* Simulation Tester */}
                     <Route path="/sim-test" element={<SimulationTestingView />} />
+
+                    {/* Catch-all for authenticated state: Redirect to home if path doesn't match */}
+                    <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
             </div>
 
@@ -110,7 +115,7 @@ function AppContent() {
     // TRAP ROUTER: If not onboarded, lock them to Landing / Onboarding / Login
     if (!user?.onboarded) {
         return (
-            <Router>
+            <>
                 <ManyaToaster />
                 <Routes>
                     <Route path="/" element={<LandingView />} />
@@ -118,22 +123,24 @@ function AppContent() {
                     <Route path="/onboarding" element={<OnboardingView />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
-            </Router>
+            </>
         );
     }
 
     return (
-        <Router>
+        <>
             <AudioManager />
             <RouterLayout />
-        </Router>
+        </>
     );
 }
 
 function App() {
     return (
         <Provider store={store}>
-            <AppContent />
+            <Router>
+                <AppContent />
+            </Router>
         </Provider>
     );
 }

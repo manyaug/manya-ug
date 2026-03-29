@@ -25,7 +25,21 @@ const STEPS = [
     { id: 'mastery',       label: 'Boss Chest',  icon: '🎁', isChest: true, nodeType: 'MASTERY' },
 ];
 
-const ZIG_X = [30, 65, 30, 65, 50];
+const PATH_LAYOUTS = {
+    math: [30, 65, 30, 65, 50],
+    science: [25, 75, 50, 25, 50],
+    sst: [50, 20, 80, 20, 50],
+    english: [70, 30, 70, 30, 50],
+    default: [35, 65, 35, 65, 50]
+};
+
+// Clean, subtle background assets styled per Duolingo aesthetic
+const BACKGROUND_ASSETS = {
+    math: ['➗', '∑', 'π', '△', '∞'],
+    science: ['🌿', '🧬', '🔬', '⚛️', '🦠'],
+    sst: ['🌍', '🧭', '🏛️', '🏺', '👑'],
+    english: ['✒️', '📖', 'Aa', '✨', '📝']
+};
 
 function QuestPathView() {
     const { state } = useLocation();
@@ -50,6 +64,9 @@ function QuestPathView() {
         gemFile = 'math_gem.svg',
         biomeColor = '#7c3aed',
     } = state || {};
+
+    const layoutX = PATH_LAYOUTS[subject] || PATH_LAYOUTS.default;
+    const assets = BACKGROUND_ASSETS[subject] || BACKGROUND_ASSETS.math;
 
     // Find quest data from curriculum
     const getQuestData = () => {
@@ -94,14 +111,14 @@ function QuestPathView() {
             if (fromIdx !== -1 && toIdx !== -1) {
                 // Prepare animation
                 setAnimatingUnlock({ from: fromIdx, to: toIdx });
-                setIconPos({ x: ZIG_X[fromIdx], y: 90 - (fromIdx * 20) });
+                setIconPos({ x: layoutX[fromIdx], y: 90 - (fromIdx * 20) });
                 
                 // Clear the flag NOW that we've started the animation
                 clearJustFinished();
 
                 // Start movement after brief pause
                 setTimeout(() => {
-                    setIconPos({ x: ZIG_X[toIdx], y: 90 - (toIdx * 20) });
+                    setIconPos({ x: layoutX[toIdx], y: 90 - (toIdx * 20) });
                     window.ManyaAudio?.whoosh?.();
                     
                     // Trigger burst after move duration (matches CSS transition)
@@ -188,6 +205,7 @@ function QuestPathView() {
                         // Pass context so SSTFetcherEngine can save progress
                         questKey,
                         nodeType,
+                        questIndex: state?.index !== undefined ? state.index : 0,
                     }
                 });
             } else {
@@ -200,10 +218,35 @@ function QuestPathView() {
         }
     };
 
+    // Bulletproof hex to rgb for browser compatibility instead of color-mix()
+    const hexToRgb = (hex) => {
+        let r = 0, g = 0, b = 0;
+        if (hex.startsWith('#')) {
+            const cleanHex = hex.slice(1);
+            if (cleanHex.length === 3) {
+                r = parseInt(cleanHex[0] + cleanHex[0], 16);
+                g = parseInt(cleanHex[1] + cleanHex[1], 16);
+                b = parseInt(cleanHex[2] + cleanHex[2], 16);
+            } else if (cleanHex.length === 6) {
+                r = parseInt(cleanHex.substring(0, 2), 16);
+                g = parseInt(cleanHex.substring(2, 4), 16);
+                b = parseInt(cleanHex.substring(4, 6), 16);
+            }
+        }
+        return `${r}, ${g}, ${b}`;
+    };
+
+    const biomeRGB = hexToRgb(biomeColor);
+
     return (
         <div
             className="quest-path-root animate-in"
-            style={{ '--biome-color': biomeColor, overflowX: 'hidden', overflowY: 'hidden' }}
+            style={{ 
+                '--biome-color': biomeColor, 
+                '--biome-color-rgb': biomeRGB,
+                overflowX: 'hidden', 
+                overflowY: 'hidden' 
+            }}
         >
             {/* ── TOP HEADER ── */}
             <div className="quest-top-header">
@@ -241,14 +284,27 @@ function QuestPathView() {
 
             {/* ── PATH AREA ── */}
             <div className="quest-path-body">
+                {/* Subject Specific Background Assets */}
+                <div className="quest-bg-assets">
+                    {assets.map((asset, i) => (
+                        <div key={i} className={`bg-asset asset-${i}`} style={{ color: biomeColor }}>
+                            {asset}
+                        </div>
+                    ))}
+                </div>
+
                 <svg className="quest-svg-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M30,90 Q65,70 65,70 Q30,50 30,50 Q65,30 65,30 Q50,10 50,10"
+                    <path d={`M${layoutX[0]},90 Q${layoutX[1]},70 ${layoutX[1]},70 Q${layoutX[2]},50 ${layoutX[2]},50 Q${layoutX[3]},30 ${layoutX[3]},30 Q${layoutX[4]},10 ${layoutX[4]},10`}
                         fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M30,90 Q65,70 65,70 Q30,50 30,50 Q65,30 65,30 Q50,10 50,10"
-                        fill="none" stroke={biomeColor} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-                        strokeDasharray="200"
-                        strokeDashoffset={200 - (200 * ((currentStep + 1) / STEPS.length))}
-                        style={{ transition: 'stroke-dashoffset 1.2s ease' }} />
+                    <path d={`M${layoutX[0]},90 Q${layoutX[1]},70 ${layoutX[1]},70 Q${layoutX[2]},50 ${layoutX[2]},50 Q${layoutX[3]},30 ${layoutX[3]},30 Q${layoutX[4]},10 ${layoutX[4]},10`}
+                        fill="none" stroke={biomeColor} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
+                        pathLength="100"
+                        strokeDasharray="100"
+                        strokeDashoffset={100 - (100 * ((currentStep + 1) / STEPS.length))}
+                        style={{ 
+                            transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                            filter: `drop-shadow(0 0 6px ${biomeRGB ? `rgba(${biomeRGB}, 0.8)` : biomeColor}) drop-shadow(0 0 2px ${biomeColor})`
+                        }} />
                 </svg>
 
                 {/* NODES */}
@@ -270,7 +326,12 @@ function QuestPathView() {
                         : 0;
 
                     const yPct = 90 - (i * 20);
-                    const xPct = ZIG_X[i];
+                    const xPct = layoutX[i];
+
+                    // Determine if the node is on the left side (xPct < 50)
+                    // If left, avatar goes to the right to avoid edge cutoff. If right, avatar goes to left.
+                    const isLeftSide = xPct < 50;
+                    const heroClass = isLeftSide ? "hero-right-side" : "hero-left-side";
 
                     // Check if this node needs retry (completed but didn't unlock next)
                     const nextNode = i < NODE_ORDER.length - 1 ? NODE_ORDER[i + 1] : null;
@@ -312,7 +373,7 @@ function QuestPathView() {
                                      step.icon}
                                 </div>
                                 {isActive && !animatingUnlock && (
-                                    <div className="hero-path-pointer">
+                                    <div className={`hero-path-pointer ${heroClass}`}>
                                         <div className="hero-bubble">
                                             <img
                                                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed}`}
@@ -342,7 +403,7 @@ function QuestPathView() {
                 {/* ANIMATING HERO ICON */}
                 {animatingUnlock && iconPos && (
                     <div 
-                        className="hero-path-pointer animating"
+                        className={`hero-path-pointer animating ${iconPos.x < 50 ? 'hero-right-side' : 'hero-left-side'}`}
                         style={{ 
                             position: 'absolute',
                             left: `${iconPos.x}%`,

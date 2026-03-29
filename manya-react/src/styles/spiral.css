@@ -15,7 +15,7 @@
 }
 
 .spiral-view.is-night {
-    filter: brightness(0.6) contrast(1.1) saturate(0.8);
+    filter: brightness(0.65) contrast(1.1) saturate(0.9);
     background: #020617 !important;
 }
 
@@ -36,44 +36,44 @@
     max-width: 480px;
     margin: 0 auto;
     height: 52px;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1.5px solid rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 8px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     pointer-events: all;
+    transition: 0.5s all ease;
 }
 
 .spiral-back-btn {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.05);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: white;
+    color: #1E293B;
     flex-shrink: 0;
     transition: 0.2s;
 }
 .spiral-back-btn:active {
     transform: scale(0.9);
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .spiral-hud-title {
     font-size: 14px;
     font-weight: 900;
-    color: white;
+    color: #1E293B;
     letter-spacing: 0.5px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     flex: 1;
     text-align: center;
 }
@@ -82,24 +82,44 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.05);
     padding: 5px 12px 5px 6px;
     border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
 }
 
 .spiral-gem-img {
     width: 22px;
     height: 22px;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
     animation: gemPulse 3s ease-in-out infinite;
 }
 
 .spiral-gem-count {
     font-size: 14px;
     font-weight: 900;
+    color: #1E293B;
+}
+
+/* SMART CONTRAST DARK OVERRIDES */
+.spiral-view.is-night .spiral-hud-shell {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.spiral-view.is-night .spiral-hud-title,
+.spiral-view.is-night .spiral-gem-count {
     color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.spiral-view.is-night .spiral-back-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+.spiral-view.is-night .spiral-gem-pill {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 @keyframes gemPulse {
@@ -133,8 +153,15 @@
     width: 100%;
     height: 850px;
     object-fit: fill;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+    /* Only fade the tiny bottom edge (98% to 100%) to blend tiles without cutting 5% of the absolute bottom tile */
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 98%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 98%, transparent 100%);
+}
+
+.physical-tile:first-of-type {
+    /* First tile is the very bottom of the map! No mask needed. */
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 /* ============================================
@@ -196,15 +223,23 @@
     50% { box-shadow: 0 0 0 8px rgba(255,255,255,0.6), 0 0 0 16px var(--biome-color-alpha, rgba(124,58,237,0.1)), 0 15px 40px var(--biome-color-alpha, rgba(0,0,0,0.2)); }
 }
 
-/* LOCKED — dim and grey */
+/* LOCKED — frosted glass */
 .game-node.locked-node .node-cap {
-    background: rgba(255,255,255,0.5);
-    border: 3px solid rgba(180,180,180,0.7);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    opacity: 0.75;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
     cursor: default;
 }
-.game-node.locked-node .node-cap svg { color: #94A3B8; }
+.game-node.locked-node .node-cap svg { color: #475569; }
+
+.spiral-view.is-night .game-node.locked-node .node-cap {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.spiral-view.is-night .game-node.locked-node .node-cap svg { color: #94A3B8; }
 
 /* ANIMATE FLOAT for active */
 .game-node.active-node {
@@ -235,25 +270,33 @@
 /* NODE LABEL */
 .node-label-elite {
     margin-top: 6px;
-    background: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.95);
     backdrop-filter: blur(8px);
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 100px;
     font-size: 10px;
-    font-weight: 900;
-    color: #1E293B;
-    border: 1.5px solid rgba(50,50,50,0.12);
+    font-weight: 950;
+    color: #0F172A;
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
     white-space: nowrap;
     max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     text-align: center;
+}
+.spiral-view.is-night .node-label-elite {
+    background: rgba(15, 23, 42, 0.85);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 .game-node.active-node .node-label-elite {
     background: var(--biome-color);
     color: white;
     border-color: var(--biome-color);
+    box-shadow: 0 6px 20px var(--biome-color-alpha);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
 /* ============================================
@@ -268,61 +311,87 @@
 }
 .weather-particle {
     position: absolute;
-    animation: wf linear infinite;
 }
+/* MATH: Soft White Snow */
 .snowflake {
-    background: rgba(255, 255, 255, 0.85);
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.4) 100%);
+    box-shadow: 0 0 12px rgba(255,255,255,0.8);
     border-radius: 50%;
-    width: 5px;
-    height: 5px;
+    width: 8px; height: 8px;
+    animation: snowFall 12s linear infinite;
 }
+
+@keyframes snowFall {
+    0% { transform: translateY(-100px) translateX(0) scale(0.8); opacity: 0; }
+    10% { opacity: 0.9; }
+    50% { transform: translateY(50vh) translateX(30px) scale(1.1); }
+    90% { opacity: 0.9; }
+    100% { transform: translateY(110vh) translateX(-20px) scale(0.8); opacity: 0; }
+}
+
+/* SCIENCE: Luminous Rain / Spores */
 .rain-drop {
-    background: var(--biome-color);
-    opacity: 0.5;
-    width: 2px;
-    height: 30px;
-    border-radius: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.9));
+    width: 2.5px; height: 40px;
+    border-radius: 3px;
+    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.8));
+    animation: rainFall 2.5s linear infinite;
 }
-.magic-star {
-    width: 6px;
-    height: 6px;
-    background: var(--biome-color);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--biome-color);
+
+@keyframes rainFall {
+    0% { transform: translateY(-100px) scaleY(1); opacity: 0; }
+    10% { opacity: 1; }
+    80% { transform: translateY(110vh) scaleY(1.5); opacity: 1; }
+    100% { transform: translateY(120vh) scaleY(0.5); opacity: 0; }
 }
-.dust-particle {
-    width: 4px;
-    height: 4px;
-    background: var(--biome-color);
-    opacity: 0.6;
-    border-radius: 50%;
-}
+
+/* SST: Sweeping Golden Sand Streaks */
 .sand-wind {
-    width: 25px;
-    height: 1.5px;
-    background: var(--biome-color);
-    opacity: 0.4;
+    width: 40px; height: 2px;
+    background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.9), transparent);
     border-radius: 10px;
-    animation: sand-blast 3s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
+    animation: sand-blast 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
+@keyframes sand-blast {
+    from { transform: translate(-100px, 0) scaleX(0.5); opacity: 0; }
+    20% { opacity: 0.8; transform: translate(20vw, 15px) scaleX(1.5); }
+    80% { opacity: 0.8; transform: translate(80vw, 35px) scaleX(1.2); }
+    to { transform: translate(110vw, 50px) scaleX(0.5); opacity: 0; }
+}
+
+/* ENGLISH: Pink Cascading Leaves */
 .floating-symbol {
-    font-weight: 900;
-    font-size: 14px;
-    color: var(--biome-color);
-    opacity: 0.7;
-    animation: symbol-float 10s linear infinite;
+    width: 14px; height: 14px;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(190, 24, 93, 0.9));
+    border-radius: 0 50% 0 50%; /* Perfect leaf shape */
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.6);
+    color: transparent; /* Hide original text */
+    animation: leaf-fall 14s ease-in-out infinite;
 }
+
+@keyframes leaf-fall {
+    0% { transform: translate(0, -10vh) rotate(-20deg) scale(0.8); opacity: 0; }
+    10% { opacity: 0.9; transform: translate(30px, 10vh) rotate(10deg) scale(1.1); }
+    40% { transform: translate(-40px, 40vh) rotate(-40deg) scale(1); }
+    70% { transform: translate(20px, 70vh) rotate(30deg) scale(1.1); }
+    90% { opacity: 0.9; }
+    100% { transform: translate(-10px, 110vh) rotate(-10deg) scale(0.8); opacity: 0; }
+}
+
+/* FIREFLY (NIGHT MODE EXCLUSIVE) */
 .firefly {
-    width: 5px;
-    height: 5px;
-    background: var(--biome-color);
+    width: 6px; height: 6px;
+    background: #FFD700;
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--biome-color), 0 0 20px var(--biome-color);
+    box-shadow: 0 0 12px #FFD700, 0 0 25px rgba(255, 215, 0, 0.5);
     animation: firefly-glow 2s ease-in-out infinite alternate, firefly-float 15s infinite ease-in-out;
 }
+
 @keyframes firefly-glow {
-    from { opacity: 0.2; transform: scale(0.6); }
-    to { opacity: 1; transform: scale(1.3); }
+    from { opacity: 0.3; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1.4); }
 }
 @keyframes firefly-float {
     0% { transform: translate(0, 110vh); }
@@ -348,16 +417,13 @@
 }
 
 /* ============================================
-   MIST VIGNETTE
+   MIST VIGNette (SOFT BLEND)
    ============================================ */
 .spiral-mist-vignette {
     position: fixed;
     inset: 0;
     z-index: 1000;
     pointer-events: none;
-    background:
-        linear-gradient(to bottom, var(--biome-bg, #e0f2fe) 0%, transparent 14%),
-        linear-gradient(to bottom, transparent 88%, var(--biome-bg, #e0f2fe) 100%),
-        linear-gradient(to right, var(--biome-bg, #e0f2fe) 0%, transparent 10%),
-        linear-gradient(to left, var(--biome-bg, #e0f2fe) 0%, transparent 10%);
+    background: linear-gradient(to bottom, var(--biome-bg, #e0f2fe) 0%, transparent 12%);
+    opacity: 0.95;
 }

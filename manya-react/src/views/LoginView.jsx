@@ -56,15 +56,15 @@ function LoginView() {
                 <div className="ob-main-card">
                     <div className="ob-step-content animate-in">
                         <div className="ob-icon-circle"><LogIn size={40} /></div>
-                        <h3>Hero Re-Entry</h3>
-                        <p>Reconnect your identity to the Manya Council.</p>
+                        <h3>Welcome Back</h3>
+                        <p>Sign in to continue learning.</p>
 
                         <form onSubmit={handleLogin} className="login-form-elite">
                             <div className="input-with-icon">
                                 <Mail className="i-icon" size={18} />
                                 <input 
                                     type="email" 
-                                    placeholder="Registered Email" 
+                                    placeholder="Email" 
                                     value={email} 
                                     onChange={e => setEmail(e.target.value)} 
                                     autoFocus 
@@ -74,7 +74,7 @@ function LoginView() {
                                 <Lock className="i-icon" size={18} />
                                 <input 
                                     type="password" 
-                                    placeholder="Secret Password" 
+                                    placeholder="Password" 
                                     value={password} 
                                     onChange={e => setPassword(e.target.value)} 
                                 />
@@ -86,20 +86,20 @@ function LoginView() {
                                 disabled={loading}
                                 style={{ marginTop: '30px', width: '100%' }}
                             >
-                                {loading ? "CONNECTING..." : "ACCESS VAULT →"}
+                                {loading ? "CONNECTING..." : "LOG IN →"}
                             </button>
                         </form>
                         
                         <div className="auth-footer-links">
-                            <Link to="/onboarding">New Hero? Sign Up</Link>
-                            <a href="#" onClick={(e) => { e.preventDefault(); dispatch(addToast({message: "Reset link sent (simulation)", type: "info" }))}}>Forgot Secret?</a>
+                            <Link to="/onboarding">New? Sign Up</Link>
+                            <a href="#" onClick={(e) => { e.preventDefault(); dispatch(addToast({message: "Reset link sent", type: "info" }))}}>Forgot Password?</a>
                         </div>
                     </div>
                 </div>
 
                 <div className="ob-footer-actions">
                      <div className="security-badge">
-                        <ShieldAlert size={14} /> Encrypted Session Active
+                        <ShieldAlert size={14} /> Encrypted Session
                      </div>
                 </div>
             </div>

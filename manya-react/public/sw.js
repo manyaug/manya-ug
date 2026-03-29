@@ -1,5 +1,13 @@
-const CACHE_NAME = 'manya-v7'
-const STATIC_ASSETS = [
+// MANYA SERVICE WORKER v8
+// Strategy:
+//   - BYPASS: Media files (mp3, wav, ogg) — prevents ERR_CACHE_OPERATION_NOT_SUPPORTED
+//   - CACHE FIRST: Static shell, icons, manifest
+//   - STALE-WHILE-REVALIDATE: All app assets (images, JS chunks, CSS)
+//   - NETWORK FIRST: Supabase API calls, navigation
+
+const CACHE_NAME = 'manya-v8'
+
+const STATIC_SHELL = [
   '/',
   '/manifest.json',
   '/favicon.svg',
@@ -9,36 +17,72 @@ const STATIC_ASSETS = [
   '/assets/icons/apple-touch-icon-180x180.png',
 ]
 
-// Install: cache static shell
+// Media file extensions to ALWAYS bypass (they use Range requests the cache API can't handle)
+const MEDIA_EXTENSIONS = ['.mp3', '.wav', '.ogg', '.webm', '.m4a', '.flac']
+
+// Helper: check if a URL is a media file
+function isMediaFile(url) {
+  return MEDIA_EXTENSIONS.some(ext => url.pathname.endsWith(ext))
+}
+
+// Helper: check if request has a Range header (partial content streaming)
+function isRangeRequest(request) {
+  return request.headers.has('range')
+}
+
+// Helper: check if a URL is an app asset we should cache
+function isCacheableAsset(url) {
+  return (
+    url.pathname.startsWith('/assets/') ||
+    url.pathname.startsWith('/src/') ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('.svg') ||
+    url.pathname.endsWith('.png') ||
+    url.pathname.endsWith('.jpg') ||
+    url.pathname.endsWith('.webp')
+  )
+}
+
+// ---- INSTALL: Cache static shell ----
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_SHELL))
   )
   self.skipWaiting()
 })
 
-// Activate: clear old caches
+// ---- ACTIVATE: Purge old caches ----
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => {
+        console.log('[SW] Purging old cache:', k)
+        return caches.delete(k)
+      }))
     )
   )
   self.clients.claim()
 })
 
-// Fetch: network-first for navigation, cache-first for assets
+// ---- FETCH: Intelligent routing ----
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
-  // Skip non-GET and cross-origin requests
-  if (request.method !== 'GET' || url.origin !== self.location.origin) return
+  // 1. Only handle GET requests
+  if (request.method !== 'GET') return
 
-  // ---- FIX: SKIP SERVICE WORKER FOR AUDIO FILES (Range Requests) ----
-  if (url.pathname.endsWith('.mp3') || request.headers.has('range')) return
+  // 2. BYPASS: Media files and Range requests — let browser handle natively
+  //    This is the critical fix for ERR_CACHE_OPERATION_NOT_SUPPORTED
+  if (isMediaFile(url) || isRangeRequest(request)) {
+    return // Do NOT call event.respondWith. Browser handles it natively.
+  }
 
-  // Navigation: network first, fallback to cached index
+  // 3. BYPASS: Cross-origin requests (Supabase API, DiceBear CDN, etc.)
+  if (url.origin !== self.location.origin) return
+
+  // 4. NETWORK FIRST: HTML navigation (always get fresh page shell)
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() => caches.match('/'))
@@ -46,19 +90,29 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Assets: cache first, then network
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached
-      return fetch(request).then((response) => {
-        // Cache successful responses for static assets
-        // SKIP caching for Partial Content (206) as it breaks cache.put
-        if (response.ok && response.status !== 206 && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/legacy/'))) {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
-        }
-        return response
+  // 5. STALE-WHILE-REVALIDATE: Static assets
+  //    Serve from cache immediately for speed, then update cache silently
+  if (isCacheableAsset(url)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(request)
+        
+        // Fetch fresh version in background
+        const networkFetch = fetch(request).then((response) => {
+          // Only cache valid, complete responses (NOT 206 Partial Content)
+          if (response.ok && response.status === 200) {
+            cache.put(request, response.clone())
+          }
+          return response
+        }).catch(() => cached) // If network fails, fall back to cached
+
+        // Return cached version immediately if available, otherwise wait for network
+        return cached || networkFetch
       })
-    })
-  )
+    )
+    return
+  }
+
+  // 6. NETWORK ONLY: Everything else (API calls, realtime)
+  // Just let it pass through without intercepting
 })

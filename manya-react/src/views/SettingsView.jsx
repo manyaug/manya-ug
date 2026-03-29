@@ -1,20 +1,43 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { updateProfile, resetUser } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
 import { syncService } from '../services/syncService';
-import { setVolume, toggleMute } from '../store/audioSlice';
-import { Volume2, VolumeX, Headphones, ChevronLeft, RefreshCw, LogOut, Trash2, ShieldCheck, User, Zap } from 'lucide-react';
+import { 
+    ChevronLeft, 
+    User, 
+    ShieldCheck, 
+    Trash2, 
+    LogOut, 
+    GraduationCap,
+    Mail,
+    Edit3,
+    RefreshCw
+} from 'lucide-react';
 import '../styles/setting.css';
 
 function SettingsView() {
     const user = useSelector((state) => state.user.data);
-    const { volume, isMuted } = useSelector((state) => state.audio);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
+    const [mutating, setMutating] = useState(false);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [syncStatus, setSyncStatus] = useState(navigator.onLine ? '100% SECURE' : 'OFFLINE (QUEUED)');
+
+    useEffect(() => {
+        const handleOnline = () => { setIsOnline(true); setSyncStatus('100% SECURE'); };
+        const handleOffline = () => { setIsOnline(false); setSyncStatus('OFFLINE (QUEUED)'); };
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
 
     const [formState, setFormState] = useState({
         nickname: user?.nickname || '',
@@ -23,31 +46,21 @@ function SettingsView() {
         parent_phone: user?.parent_phone || ''
     });
 
-    const [selectedSeed, setSelectedSeed] = useState(user?.avatarSeed || 'Hero_1');
-    const [labSeeds, setLabSeeds] = useState([]);
-
-    const generateSeeds = () => {
-        const base = formState.nickname || "Hero";
-        const seeds = Array.from({length: 3}, () => `${base}_${Math.floor(Math.random()*99999)}`);
-        setLabSeeds(seeds);
-        if (!seeds.includes(selectedSeed)) setSelectedSeed(seeds[0]);
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
     };
 
-    useEffect(() => {
-        generateSeeds();
-    }, []);
-
-    const toggleTheme = () => {
-        const newTheme = user?.theme === 'dark' ? 'light' : 'dark';
-        dispatch(updateProfile({ ...user, theme: newTheme }));
-        document.documentElement.setAttribute('data-theme', newTheme);
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
     };
 
     const handleLogout = async () => {
         try {
             await syncService.signOut();
             dispatch(resetUser());
-            dispatch(addToast({ message: "Identity Decoupled. Returning to Earth.", type: "info" }));
+            dispatch(addToast({ message: "Identity Decoupled Successfully.", type: "info" }));
             navigate('/');
         } catch (err) {
             dispatch(addToast({ message: "Logout Failed", type: "error" }));
@@ -56,7 +69,6 @@ function SettingsView() {
 
     const handleDeleteAccount = async () => {
         if (!window.confirm("CRITICAL: Permanent Identity Purge. All progress will be lost. Continue?")) return;
-        
         setLoading(true);
         try {
             await syncService.deleteAccount();
@@ -64,19 +76,64 @@ function SettingsView() {
             dispatch(addToast({ message: "Identity Purged.", type: "warning" }));
             navigate('/');
         } catch (err) {
-            dispatch(addToast({ message: "Purge Failed: Contact Council Support", type: "error" }));
+            dispatch(addToast({ message: "Purge Failed: Contact Council", type: "error" }));
         } finally {
             setLoading(false);
         }
     };
 
+    const shuffleDNA = async () => {
+        setMutating(true);
+        setSyncStatus('SYNCING...');
+        const newSeed = Math.random().toString(36).substring(7);
+        const updatedProfile = { ...user, avatarSeed: newSeed };
+        
+        try {
+            await syncService.uploadProfile(updatedProfile);
+            dispatch(updateProfile(updatedProfile));
+            dispatch(addToast({ message: "Identity Matrix Scrambled!", type: "info" }));
+            setSyncStatus(isOnline ? '100% SECURE' : 'OFFLINE (QUEUED)');
+        } catch (err) {
+            dispatch(updateProfile(updatedProfile));
+            dispatch(addToast({ message: "Shuffle Queued for Resync", type: "warning" }));
+            setSyncStatus('OFFLINE (QUEUED)');
+        } finally {
+            setTimeout(() => setMutating(false), 600);
+        }
+    };
+
+    const pickDNA = async (variant) => {
+        setMutating(true);
+        setSyncStatus('SYNCING...');
+        const newSeed = `${user?.avatarSeed}${variant}`;
+        const updatedProfile = { ...user, avatarSeed: newSeed };
+        
+        try {
+            await syncService.uploadProfile(updatedProfile);
+            dispatch(updateProfile(updatedProfile));
+            dispatch(addToast({ message: `DNA Branch ${variant} Stabilized!`, type: "success" }));
+            setSyncStatus(isOnline ? '100% SECURE' : 'OFFLINE (QUEUED)');
+        } catch (err) {
+            dispatch(updateProfile(updatedProfile));
+            dispatch(addToast({ message: "DNA Setup Queued", type: "warning" }));
+            setSyncStatus('OFFLINE (QUEUED)');
+        } finally {
+            setTimeout(() => setMutating(false), 600);
+        }
+    };
+
     const saveHeroChanges = async () => {
+        if (formState.parent_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.parent_email)) {
+            dispatch(addToast({ message: "CRITICAL: Invalid Guardian Email Format", type: "error" }));
+            return;
+        }
+
         setLoading(true);
+        setSyncStatus('SYNCING...');
         try {
             const updatedProfile = {
                 ...user,
                 nickname: formState.nickname,
-                avatarSeed: selectedSeed,
                 grade_level: formState.grade_level,
                 parent_email: formState.parent_email,
                 parent_phone: formState.parent_phone
@@ -85,85 +142,179 @@ function SettingsView() {
             dispatch(updateProfile(updatedProfile));
             await syncService.uploadProfile(updatedProfile);
 
-            dispatch(addToast({ message: "Identity Stabilized!", type: "success" }));
+            setSyncStatus('100% SECURE');
+            dispatch(addToast({ message: "Identity DNA Stabilized!", type: "success" }));
             navigate('/profile');
         } catch (err) {
-            dispatch(addToast({ message: "Sync Refraction Error", type: "error" }));
+            dispatch(addToast({ message: "Sync Refraction: Changes Queued", type: "warning" }));
+            setSyncStatus('OFFLINE (QUEUED)');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="premium-ob-shell">
-            <div className="ob-background-fx"></div>
-            
-            <div className="ob-container settings-container">
-                <div className="ob-top-nav">
-                    <button className="ob-back-btn" onClick={() => navigate('/profile')}>
-                        <ChevronLeft size={24} />
-                    </button>
-                    <div className="ob-logo-area">
-                        <img src="/assets/icons/pwa-192x192.png" alt="Manya" />
-                    </div>
-                </div>
-
-                <div className="ob-main-card lab-card">
-                    <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Zap size={40} /></div>
-                        <h3>Hero Lab</h3>
-                        <p>Adjust your Identity DNA and Security clearing.</p>
-
-                        <div className="lab-section">
-                            <span className="vault-label">DNA SEQUENCE</span>
-                            <div className="lab-grid-ob">
-                                {labSeeds.map(seed => (
-                                    <div key={seed} className={`lab-item-ob ${selectedSeed === seed ? 'active' : ''}`} onClick={() => setSelectedSeed(seed)}>
-                                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="avatar" />
-                                    </div>
-                                ))}
-                            </div>
-                            <button className="btn-lab-shuffle" onClick={generateSeeds}>
-                                <RefreshCw size={14} /> NEW SEQUENCES
-                            </button>
-                        </div>
-
-                        <div className="info-fields-stack">
-                            <div className="input-with-icon">
-                                <User className="i-icon" size={18} />
-                                <input type="text" placeholder="Nickname" value={formState.nickname} onChange={e => setFormState(p => ({...p, nickname: e.target.value}))} />
-                            </div>
-
-                            <select className="premium-ob-select" value={formState.grade_level} onChange={e => setFormState(p => ({...p, grade_level: e.target.value}))}>
-                                <option value="Primary 5">Primary 5</option>
-                                <option value="Primary 6">Primary 6</option>
-                                <option value="Primary 7">Primary 7</option>
-                            </select>
-
-                            <div className="input-with-icon" style={{ marginTop: '10px' }}>
-                                <ShieldCheck className="i-icon" size={18} />
-                                <input type="email" placeholder="Guardian Email" value={formState.parent_email} onChange={e => setFormState(p => ({...p, parent_email: e.target.value}))} />
-                            </div>
-                        </div>
-
-                        <button className="ob-next-btn" style={{ marginTop: '20px' }} onClick={saveHeroChanges} disabled={loading}>
-                            {loading ? "STABILIZING..." : "COMMIT IDENTITY"}
-                        </button>
-
-                        <div className="danger-zone-elite">
-                            <div className="danger-row" onClick={handleLogout}>
-                                <LogOut size={18} />
-                                <span>Sign Out Session</span>
-                            </div>
-                            <div className="danger-row delete" onClick={handleDeleteAccount}>
-                                <Trash2 size={18} />
-                                <span>Terminate Identity</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="sett-view"
+        >
+            {/* 0. DYNAMIC AURORA ENGINE */}
+            <div className="aurora-engine">
+                <div className="blob aurora-1"></div>
+                <div className="blob aurora-2"></div>
             </div>
-        </div>
+
+            {/* 1. ARENA-STYLE HEADER */}
+            <div className="rank-arena-header">
+                <button className="back-btn-elite" onClick={() => navigate('/profile')}>
+                    <ChevronLeft size={24} />
+                </button>
+                <h2 className="arena-title">Profile Settings</h2>
+                <p className="arena-subtitle">Identity DNA & Metadata</p>
+            </div>
+
+            {/* 2. USER STATUS BANNER (IDENTITY VAULT) */}
+            <motion.div variants={itemVariants} className="league-banner-elite identity-vault-banner">
+                <div className="vault-grid">
+                    <motion.div 
+                        whileHover={{ y: -5, scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => pickDNA('v1')}
+                        className="vault-slot side"
+                    >
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed}v1`} alt="DNA 1" />
+                        <div className="slot-glow"></div>
+                    </motion.div>
+
+                    <div className="vault-slot main">
+                        {mutating ? (
+                            <div className="w-20 h-20 rounded-2xl border-4 border-dashed border-[#6366F1] animate-spin opacity-50 m-auto" style={{ gridArea: '1/1' }}></div>
+                        ) : (
+                            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed || 'Hero'}`} alt="DNA Main" />
+                        )}
+                        <div className="orb-thor-glow"></div>
+                        <div className="active-dna-tag">ACTIVE DNA</div>
+                    </div>
+
+                    <motion.div 
+                        whileHover={{ y: -5, scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => pickDNA('v2')}
+                        className="vault-slot side"
+                    >
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed}v2`} alt="DNA 2" />
+                        <div className="slot-glow"></div>
+                    </motion.div>
+                </div>
+                
+                <div className="vault-info">
+                    <div className="vault-header-row">
+                        <span className="v-title">{user?.nickname || 'Hero Candidate'}</span>
+                        <button className="premium-shuffle-btn" onClick={shuffleDNA}>
+                            <RefreshCw size={14} />
+                            <span>Shuffle DNA</span>
+                        </button>
+                    </div>
+                    <div className="vault-sync-status">
+                        <div className={`sync-pulse ${syncStatus === 'SYNCING...' ? 'syncing' : isOnline ? 'active' : 'offline'}`}></div>
+                        <span style={{ color: !isOnline ? '#f87171' : syncStatus === 'SYNCING...' ? '#facc15' : '#10b981', fontWeight: 700 }}>
+                            Identity Sync: {syncStatus}
+                        </span>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* 3. INPUT GROUPS (LEADERBOARD CARD STYLE) */}
+            <motion.div variants={itemVariants} className="leaderboard-card-elite settings-main-card">
+                <div className="list-header">
+                    <span>IDENTITY FIELDS</span>
+                    <span>EDIT MODE</span>
+                </div>
+
+                <div className="rank-row-elite input-row">
+                    <div className="r-avatar input-icon-box" style={{ background: '#EEF2FF', color: '#6366F1' }}>
+                        <User size={22} />
+                    </div>
+                    <div className="r-info">
+                        <span className="r-name">Hero Nickname</span>
+                        <input 
+                            type="text" 
+                            className="premium-glass-input" 
+                            value={formState.nickname} 
+                            onChange={e => setFormState(p => ({...p, nickname: e.target.value}))} 
+                            placeholder="Enter Nickname"
+                        />
+                    </div>
+                </div>
+
+                <div className="rank-row-elite input-row">
+                    <div className="r-avatar input-icon-box" style={{ background: '#ECFDF5', color: '#10B981' }}>
+                        <GraduationCap size={22} />
+                    </div>
+                    <div className="r-info">
+                        <span className="r-name">Academic Grade</span>
+                        <select 
+                            className="premium-glass-select" 
+                            value={formState.grade_level} 
+                            onChange={e => setFormState(p => ({...p, grade_level: e.target.value}))}
+                        >
+                            <option value="Primary 5">Primary 5</option>
+                            <option value="Primary 6">Primary 6</option>
+                            <option value="Primary 7">Primary 7</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="rank-row-elite input-row">
+                    <div className="r-avatar input-icon-box" style={{ background: '#FFF7ED', color: '#F59E0B' }}>
+                        <Mail size={22} />
+                    </div>
+                    <div className="r-info">
+                        <span className="r-name">Guardian Contact</span>
+                        <input 
+                            type="email" 
+                            className="premium-glass-input" 
+                            value={formState.parent_email} 
+                            onChange={e => setFormState(p => ({...p, parent_email: e.target.value}))} 
+                            placeholder="Parent Email"
+                        />
+                    </div>
+                </div>
+
+                <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="save-hero-btn" 
+                    onClick={saveHeroChanges} 
+                    disabled={loading}
+                >
+                    {loading ? "STABILIZING DNA..." : "COMMIT IDENTITY DNA"}
+                </motion.button>
+            </motion.div>
+
+            {/* 4. DANGER ZONE */}
+            <motion.div variants={itemVariants} className="danger-zone-elite-v2">
+                <div className="danger-header">SECURITY CLEARANCE & PURGE</div>
+                
+                <div className="danger-actions-row">
+                    <button className="danger-action-btn logout" onClick={handleLogout}>
+                        <LogOut size={18} />
+                        <span>Sign Out</span>
+                    </button>
+                    <button className="danger-action-btn delete" onClick={handleDeleteAccount}>
+                        <Trash2 size={18} />
+                        <span>Purge Identity</span>
+                    </button>
+                </div>
+            </motion.div>
+
+            <div className="rank-footer">
+                <img src="/assets/images/manya_icon.png" alt="Manya Council" />
+                <p>Manya Security Protocol v50.0</p>
+            </div>
+        </motion.div>
     );
 }
 

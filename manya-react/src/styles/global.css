@@ -1,40 +1,35 @@
+@import './design-tokens.css';
+
 :root {
-  /* Manya Brand DNA */
-  --manya-purple: #7c3aed;
-  --manya-purple-dark: #5b21b6;
-  --manya-pink: #db2777;
-  --manya-gold: #f59e0b;
-  --manya-green: #10B981;
+  /* Inherit shared brand colors from tokens */
+  --manya-purple: var(--manya-purple);
+  --manya-pink: var(--manya-pink);
+  --manya-gold: var(--manya-gold);
+  --manya-green: var(--manya-green);
   
-  /* Light Mode Palette */
-  --bg-main: #FDFBF7;
-  --bg-card: #FFFFFF;
-  --text-main: #1E293B;
-  --text-muted: #94A3B8;
-  --border-color: #F1F5F9;
+  /* Theme-dependent aliases */
+  --bg-main: var(--bg-primary);
+  --bg-card: var(--bg-secondary);
+  --text-main: var(--text-primary);
+  --text-muted: var(--text-secondary);
+  --border-color: var(--border-subtle);
   
   /* Transitions */
-  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-[data-theme='dark'] {
-  --bg-main: #0F172A;
-  --bg-card: #1E293B;
-  --text-main: #F8FAFC;
-  --text-muted: #64748B;
-  --border-color: #334155;
+  --transition-smooth: var(--transition-smooth);
+  --transition-bounce: var(--transition-spring);
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-main);
   background-color: var(--bg-main);
   color: var(--text-main);
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .fullscreen-mode {
@@ -61,5 +56,5 @@ body {
 #view-mount::-webkit-scrollbar { display: none; }
 
 .view-container {
-  padding-top: 20px;
+  padding-top: 5px;
 }

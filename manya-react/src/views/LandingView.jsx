@@ -14,34 +14,22 @@ function LandingView() {
                     <div className="landing-logo-glitch">
                         <img src="/assets/icons/pwa-192x192.png" alt="Manya" className="manya-main-logo" />
                     </div>
-                    <h1 className="landing-title">MANYA COUNCIL</h1>
-                    <p className="landing-subtitle">The Adaptive Knowledge Engine for Elite Heroes.</p>
+                    <h1 className="landing-title">MANYA</h1>
+                    <p className="landing-subtitle">The Adaptive Knowledge Engine.</p>
                 </div>
 
-                <div className="landing-choices animate-up">
-                    <div className="choice-card create" onClick={() => navigate('/onboarding')}>
-                        <div className="choice-icon"><UserPlus size={28} /></div>
-                        <div className="choice-text">
-                            <h3>NEW HERO</h3>
-                            <span>Construct a new Identity DNA</span>
-                        </div>
-                    </div>
-
-                    <div className="choice-card login" onClick={() => navigate('/login')}>
-                        <div className="choice-icon"><LogIn size={28} /></div>
-                        <div className="choice-text">
-                            <h3>RE-ENTRY</h3>
-                            <span>Connect existing Hero Identity</span>
-                        </div>
-                    </div>
+                <div className="landing-actions animate-up">
+                    <button className="mobile-btn-elite primary" onClick={() => navigate('/onboarding')}>
+                        GET STARTED
+                    </button>
+                    <button className="mobile-btn-elite secondary" onClick={() => navigate('/login')}>
+                        LOG IN
+                    </button>
                 </div>
 
                 <div className="landing-footer">
                     <div className="security-status pulse">
-                        <ShieldCheck size={14} /> COUNCIL ENCRYPTED SESSION
-                    </div>
-                    <div className="region-info">
-                        <Globe size={14} /> MANYA-UG SECTOR
+                        <ShieldCheck size={14} /> SECURE SESSION
                     </div>
                 </div>
             </div>
@@ -58,7 +46,7 @@ function LandingView() {
                     text-align: center;
                 }
                 .landing-hero-area {
-                    margin-bottom: 60px;
+                    margin-bottom: 30px; /* Reduced to avoid scroll */
                 }
                 .landing-logo-glitch {
                     width: 120px;
@@ -84,63 +72,51 @@ function LandingView() {
                     font-weight: 600;
                     letter-spacing: 1px;
                 }
-                .landing-choices {
+                .landing-actions {
                     width: 100%;
                     display: flex;
                     flex-direction: column;
                     gap: 16px;
+                    padding: 0 20px;
                 }
-                .choice-card {
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                    padding: 24px;
-                    background: rgba(255, 255, 255, 0.8);
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(245, 158, 11, 0.2);
-                    border-radius: 24px;
-                    cursor: pointer;
-                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.05);
-                }
-                .choice-card:hover {
-                    transform: translateY(-5px) scale(1.02);
-                    background: #fffbeb;
-                    border-color: var(--ob-accent);
-                    box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
-                }
-                .choice-icon {
-                    width: 56px;
-                    height: 56px;
-                    background: rgba(129, 140, 248, 0.1);
-                    border-radius: 16px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: var(--ob-accent);
-                }
-                .choice-text {
-                    text-align: left;
-                }
-                .choice-text h3 {
-                    font-size: 18px;
+                .mobile-btn-elite {
+                    width: 100%;
+                    padding: 18px;
+                    border-radius: 20px;
+                    font-size: 14px;
                     font-weight: 900;
-                    margin: 0;
-                    letter-spacing: 1px;
+                    letter-spacing: 2px;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    border: none;
+                    backdrop-filter: blur(10px);
                 }
-                .choice-text span {
-                    font-size: 12px;
-                    color: #64748b;
-                    font-weight: 700;
+                .mobile-btn-elite.primary {
+                    background: linear-gradient(135deg, #7c3aed 0%, #9061f9 100%);
+                    color: white;
+                    box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.6);
+                }
+                .mobile-btn-elite.primary:active {
+                    transform: scale(0.96);
+                }
+                .mobile-btn-elite.secondary {
+                    background: var(--ob-btn-sec-bg);
+                    color: var(--ob-text);
+                    border: 1px solid var(--ob-border);
+                }
+                .mobile-btn-elite.secondary:active {
+                    background: var(--ob-input-border);
+                    transform: scale(0.96);
                 }
                 .landing-footer {
                     position: absolute;
-                    bottom: 40px;
+                    bottom: 20px; /* Pull tighter */
                     display: flex;
                     flex-direction: column;
                     gap: 8px;
                     align-items: center;
-                    opacity: 0.6;
+                    opacity: 0.8;
                 }
                 .security-status, .region-info {
                     display: flex;

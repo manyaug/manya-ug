@@ -1,0 +1,417 @@
+/* preferences.css - NATIONAL ARENA DNA */
+
+.pref-view {
+    padding: 10px 0 14px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 1. HEADER OVERRIDES */
+.back-btn-elite {
+    position: absolute;
+    left: 20px;
+    top: 25px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.back-btn-elite:hover {
+    transform: translateX(-4px);
+    background: white;
+}
+
+/* 2. PRESTIGE STATUS BANNER */
+.status-banner {
+    margin-top: 10px !important;
+    margin-bottom: 30px !important;
+    gap: 20px !important;
+}
+
+.status-orb {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    background: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(255, 255, 255, 1);
+    border: 1px solid var(--glass-border);
+    position: relative;
+}
+
+.orb-thor-glow {
+    position: absolute;
+    inset: -15px;
+    background: var(--manya-purple);
+    filter: blur(20px);
+    opacity: 0.2;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/* 3. SETTINGS GROUP */
+.prefs-main-card {
+    margin-top: 10px;
+}
+
+.pref-row {
+    cursor: pointer;
+    transition: 0.4s var(--transition-bounce);
+}
+
+.pref-row:hover {
+    background: rgba(124, 58, 237, 0.03);
+    padding-left: 10px;
+}
+
+.pref-row.no-interact {
+    cursor: default;
+}
+
+.pref-row.no-interact:hover {
+    padding-left: 0;
+    background: none;
+}
+
+.pref-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.p-icon {
+    color: var(--manya-purple);
+    z-index: 2;
+}
+
+.icon-thor-halo {
+    position: absolute;
+    inset: -5px;
+    background: var(--manya-purple);
+    filter: blur(12px);
+    opacity: 0.15;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.r-desc-wrap {
+    max-width: 140px;
+}
+
+.r-xp {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.r-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+.r-name {
+    display: block;
+    font-weight: 950;
+    color: var(--text-main);
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.r-xp {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    line-height: 1.2;
+}
+
+/* Ensure controls don't shrink and overlap text on mobile */
+.pref-row .r-stat {
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.pref-row .r-info {
+    padding-right: 10px;
+}
+
+/* THEME TOGGLE */
+.theme-toggle-elite {
+    width: 52px;
+    height: 28px;
+    background: #cbd5e1;
+    /* Darker track */
+    border-radius: 100px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+}
+
+.theme-toggle-elite.active {
+    background: var(--manya-purple);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.theme-toggle-elite .toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    /* Always white for visibility */
+    border-radius: 50%;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.theme-toggle-elite.active .toggle-thumb {
+    transform: translateX(24px);
+    /* 52 - 4 - 20 = 28 - 4 padding = 24 */
+}
+
+/* 4. PREMIUM VOLUME SLIDER */
+.volume-stat {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.slider-wrapper-elite {
+    width: 120px;
+    /* Slightly larger */
+    height: 6px;
+    background: #cbd5e1;
+    /* Darker for contrast */
+    border-radius: 100px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.manya-range-elite {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, var(--manya-purple) var(--progress), transparent var(--progress));
+    border-radius: 100px;
+    outline: none;
+    margin: 0;
+}
+
+.manya-range-elite::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background: white;
+    /* Always white */
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(124, 58, 237, 0.2);
+    /* Glow ring */
+    position: relative;
+    z-index: 2;
+    margin-top: -9px;
+    /* Centering the thumb on the track */
+    transition: all 0.2s;
+}
+
+.manya-range-elite::-webkit-slider-thumb::after {
+    display: none;
+}
+
+.manya-range-elite::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), 0 0 0 6px rgba(124, 58, 237, 0.3);
+}
+
+.vol-mute-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: 0.3s;
+}
+
+.vol-mute-trigger.muted {
+    color: #ef4444;
+}
+
+/* 5. PREMIUM TOGGLE (NOTIFICATION PULSE) */
+.premium-toggle-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.premium-toggle-input {
+    display: none;
+}
+
+.premium-toggle-label {
+    display: block;
+    width: 52px;
+    height: 28px;
+    background: #cbd5e1;
+    border-radius: 100px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+}
+
+.premium-toggle-input:checked+.premium-toggle-label {
+    background: var(--manya-purple);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.toggle-switch {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    /* Always white */
+    border-radius: 50%;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.premium-toggle-input:checked+.premium-toggle-label .toggle-switch {
+    transform: translateX(24px);
+}
+
+/* SYNC ICON */
+.sync-action-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* DARK MODE OVERRIDES */
+[data-theme='dark'] .back-btn-elite {
+    background: hsla(222, 47%, 18%, 0.8);
+    color: white;
+}
+
+[data-theme='dark'] .slider-wrapper-elite {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+}
+
+[data-theme='dark'] .manya-range-elite {
+    background: linear-gradient(to right, var(--manya-purple) var(--progress), rgba(255, 255, 255, 0.1) var(--progress));
+}
+
+[data-theme='dark'] .theme-toggle-elite {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .theme-toggle-elite .toggle-thumb {
+    background: white;
+}
+
+[data-theme='dark'] .premium-toggle-label {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .toggle-switch {
+    background: white;
+}
+
+[data-theme='dark'] .pref-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* MOBILE RESPONSIVE FIXES */
+@media (max-width: 768px) {
+    .pref-row {
+        flex-wrap: wrap;
+        /* Allow items to drop to the next line */
+        padding: 24px 0;
+        /* Add slightly more vertical padding when wrapping */
+    }
+
+    .pref-row .r-info {
+        flex: 1 1 calc(100% - 90px);
+        /* 100% width minus avatar and margins */
+    }
+
+    .pref-row .r-stat {
+        flex: 1 1 100%;
+        /* Force stat container to its own line */
+        margin-left: 0;
+        margin-top: 16px;
+        padding-left: 68px;
+        /* Align control perfectly under the text (Avatar 50px + 18px margin) */
+        justify-content: flex-start;
+        /* Align controls to the left instead of right */
+    }
+
+    .volume-stat {
+        justify-content: flex-start;
+        /* Ensure volume slider also aligns left when wrapped */
+    }
+
+    /* Center the sync action specifically for wide mode on mobile to make it look intentional */
+    .pref-row .sync-action-icon {
+        margin-right: 0;
+    }
+
+    /* Header Overlap Fix for Narrow Screens */
+    .pref-view .rank-arena-header {
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+
+    .pref-view .arena-title {
+        font-size: 20px;
+    }
+
+    .back-btn-elite {
+        left: 15px;
+        top: 20px;
+        width: 40px;
+        height: 40px;
+    }
+}

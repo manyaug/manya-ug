@@ -20,11 +20,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft, X, AlertTriangle, RefreshCw, SkipForward } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
-import { updateProfile } from '../store/userSlice';
+import { updateProfile, awardGems } from '../store/userSlice';
+
 import { loadQuestSteps } from '../utils/questLoader';
 import { ENGINE_REGISTRY } from '../utils/engineRouter';
+import { syncService } from '../services/syncService';
+import { masteryService } from '../services/masteryService';
+import { calculateFrustration } from '../services/psychTracker';
 import React, { Suspense } from 'react';
 import '../styles/engines.css';
+
 
 // Engines that handle their own "done" — hide the footer CONTINUE button
 const IMMERSIVE_ENGINES = new Set([
@@ -32,7 +37,7 @@ const IMMERSIVE_ENGINES = new Set([
     'HANGMAN_GAME', 'SET_CLASSIFIER', 'SUBSET_GAME', 'PIZZA_GAME',
     'BINARY_GAME', 'VENN_SPOTLIGHT', 'MEMORY_MATCH', 'GRAMMAR_MAZE',
     'SENTENCE_TRAIN', 'WORDGRID_ENGINE', 'MORPH_GAME', 'GALLERY_STUDY',
-    '2D_HOTSPOT', 'READER_STUDY', '3D_SKELETON',
+    '2D_HOTSPOT', 'READER_STUDY', '3D_SKELETON', 'MCQ_STANDALONE',
     // Grammar Simulation Engines
     'SENTENCE_BLOCKS', 'GARDEN_GUARD', 'PUNCTUATION_STICKERS', 'TENSE_TREEHOUSE'
 ]);
@@ -102,6 +107,10 @@ export default function QuestRunner() {
     const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE' });
     const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
     const [activeEngine, setActiveEngine] = useState(null); // { type: 'react', component: LazyEx }
+    
+    // Adaptive Tracking Refs
+    const wrongStreakRef = useRef(0);
+    const sessionStartTimeRef = useRef(Date.now());
 
     // ── Derive biome color ────────────────────────────────────────────────────
     const biomeColor = location.state?.biomeColor || SUBJECT_COLOR[meta.subject] || '#7c3aed';
@@ -143,7 +152,25 @@ export default function QuestRunner() {
             delete window.QuestRunner; 
             delete window.ManyaQuestRunner;
         };
-    });
+    }, []); // Added dependency array for safety
+
+    /**
+     * DYNAMIC METADATA EXTRACTOR
+     * Derives conceptId and variant from filename or step data
+     */
+    const deriveMetadata = useCallback((step) => {
+        const identifier = step.file || step.id || 'unknown';
+        const { conceptId, variant } = masteryService.parseId(identifier);
+        
+        let pool = 'no';
+        const isQuiz = step.mode === 'quiz' || (step.data?.mode === 'quiz') || step.engineType?.includes('FETCHER');
+        const isPuzzle = step.mode === 'puzzle' || (step.data?.mode === 'puzzle');
+        
+        if (isQuiz || isPuzzle) pool = 'yes';
+        if (identifier.includes('recap') || identifier.includes('study')) pool = 'recap';
+        
+        return { conceptId, variant, pool };
+    }, []);
 
     // ── Initial load: resolve steps from location.state ───────────────────────
     useEffect(() => {
@@ -226,48 +253,62 @@ export default function QuestRunner() {
             return;
         }
 
-        // 2. Load the legacy engine via the router (needs mountRef)
-        if (!mountRef.current) return;
-
-        setActiveEngine(null); // Clear react engine
-        try {
-            // Hide the dynamic import from Vite's bundler analysis
-            const importFn = new Function('url', 'return import(url)');
-            const routerMod = await importFn('/legacy/router.js');
-            const { ManyaRouter } = routerMod;
-
-            // The vanilla engines write innerHTML into this container
-            const contentBox = mountRef.current;
-            if (contentBox) {
-                contentBox.innerHTML = '';  // clear previous
-                await ManyaRouter.loadInline(engineType, data, contentBox);
-            }
-        } catch (err) {
-            console.error(`[QuestRunner] engine load error (${engineType}):`, err);
-            if (mountRef.current) {
-                mountRef.current.innerHTML = `
-                    <div style="padding:30px;text-align:center;color:#ef4444;font-weight:800">
-                        ⚠️ Engine "${engineType}" failed to load.<br>
-                        <small style="font-size:12px;opacity:0.7">${err.message}</small><br><br>
-                        <button onclick="window.QuestRunner.next()" style="padding:10px 20px;background:#7c3aed;color:white;border:none;border-radius:12px;font-weight:900;cursor:pointer">
-                            Skip →
-                        </button>
-                    </div>`;
-            }
-        }
+        // --- LEGACY ENGINE BRIDGE REMOVED ---
+        setActiveEngine(null); 
+        console.warn(`[QuestRunner] Attempted to load legacy engine "${engineType}" but the bridge was removed.`);
     }
 
     // ── RESULT HANDLING (DB BRIDGING) ─────────────────────────────────────────
     const handleEngineResult = useCallback((result) => {
         console.log("[QuestRunner] Received Engine Result:", result);
         
-        // 1. Update Score in Redux/LocalStorage
+        // 1. Update Score/XP in Redux
         if (result.isCorrect && result.score) {
-            const currentPoints = parseInt(localStorage.getItem('manya_points') || 0);
-            localStorage.setItem('manya_points', currentPoints + (result.score * 10)); 
+            dispatch(awardGems({ subject: meta.subject, amount: 0, xp: result.score * 10 }));
         }
 
-        // 2. Logic for specific engine types if needed
+        // 2. Intelligent Adaptive Tracking
+        const currentStep = steps[stepIdx];
+        const { conceptId, variant, pool } = deriveMetadata(currentStep);
+        
+        // Track Frustration
+        const frustration = calculateFrustration({
+            consecutiveWrong: wrongStreakRef.current + (result.isCorrect ? 0 : 1),
+            hintCount: 0, // TODO: Pull from engine state if available
+            questionsAnswered: stepIdx + 1
+        });
+
+        // Push to Supabase via SyncService
+        if (!result.type?.includes('adaptive_')) {
+            syncService.pushAnswer(meta.subject, {
+                questionId: currentStep.file || currentStep.id || currentStep.topic || 'unknown_step',
+                concept_id: conceptId,
+                variant: variant,
+                isCorrect: result.isCorrect,
+                selectedAnswer: result.selectedAnswer,
+                correctAnswer: result.correctAnswer,
+                timeSpentMs: result.timeSpentMs || 10000,
+                hintUsed: result.hintUsed || false,
+                frustrationLevel: frustration.score,
+                pool: pool,
+                engine_type: currentStep.engineType
+            });
+        }
+
+        // 3. Streak-based / Mercy Recap Injection
+        if (!result.isCorrect) {
+            wrongStreakRef.current++;
+            const threshold = meta.nodeType === 'PRACTICE' ? 1 : 3;
+            if (wrongStreakRef.current >= threshold) {
+                console.log(`🚨 [QuestRunner] ${wrongStreakRef.current} Wrong! Injecting Recap...`);
+                injectRecapStep(conceptId);
+                wrongStreakRef.current = 0;
+            }
+        } else {
+            wrongStreakRef.current = 0;
+        }
+
+        // 4. Logic for specific engine types if needed
         if (result.type === 'simulation') {
             dispatch(addToast({ message: "Simulation Complete!", type: "success" }));
         }
@@ -276,8 +317,35 @@ export default function QuestRunner() {
         if (result.isCorrect) {
             setBtnState(s => ({ ...s, enabled: true }));
         }
-        
-    }, [dispatch]);
+    }, [dispatch, meta.subject, steps, stepIdx, deriveMetadata]);
+
+    /**
+     * INJECT RECAP STEP
+     * Finds a study/recap resource for the current concept and inserts it into the queue
+     */
+    function injectRecapStep(conceptId) {
+        // Try to find a study card or recap json in the pre-loaded steps or common locations
+        // For now, we'll try to find any step that HAS 'study' or 'recap' in its name
+        // In a real scenario, we'd search the curriculumService
+        const recapStep = {
+            id: `injected-recap-${Date.now()}`,
+            engineType: 'GALLERY_STUDY', // Default recap engine
+            file: `study_${conceptId}.json`,
+            mode: 'study',
+            data: { isRecap: true, conceptId }
+        };
+
+        dispatch(addToast({ 
+            message: "Need a quick review? Let's take a look!", 
+            type: "info" 
+        }));
+
+        setSteps(prev => {
+            const newSteps = [...prev];
+            newSteps.splice(stepIdx + 1, 0, recapStep);
+            return newSteps;
+        });
+    }
 
     // ── ADVANCE ───────────────────────────────────────────────────────────────
     function advanceStep() {

@@ -52,7 +52,7 @@
 
 /* 2. PROGRESS HUD */
 .collection-card-elite {
-    background: linear-gradient(135deg, var(--manya-purple) 0%, var(--manya-purple-dark, #4c1d95) 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
     border-radius: 25px; padding: 25px;
     margin-bottom: 35px; color: white;
     box-shadow: 0 15px 30px rgba(124, 58, 237, 0.25);
@@ -65,7 +65,7 @@
 /* ZEBRA COLLECTION BAR */
 .vault-bar-track { height: 12px; background: rgba(0,0,0,0.2); border-radius: 20px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
 .vault-bar-fill {
-    height: 100%; background: var(--manya-gold);
+    height: 100%; background: #f59e0b;
     background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 6px, transparent 0, transparent 12px);
     transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -128,10 +128,10 @@
 /* Subject Accents (Tiny colored dot on the card) */
 .badge-item-elite::before { content: ''; position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; border-radius: 50%; opacity: 0; transition: 0.3s; }
 .badge-is-unlocked::before { opacity: 1; }
-.cat-math::before { background: var(--manya-purple); }
-.cat-science::before { background: var(--manya-green, #10B981); }
-.cat-sst::before { background: var(--manya-gold); }
-.cat-english::before { background: var(--manya-pink); }
+.cat-math::before { background: #7c3aed; }
+.cat-science::before { background: #10B981; }
+.cat-sst::before { background: #f59e0b; }
+.cat-english::before { background: #db2777; }
 
 /* --- DARK MODE OVERRIDES --- */
 [data-theme='dark'] .gem-treasury-card { background: #1E293B; border-color: #334155; box-shadow: inset 0 0 40px rgba(0,0,0,0.5); }

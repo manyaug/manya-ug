@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, X, ArrowRight, Lightbulb, BookOpen, Zap, Trophy } from 'lucide-react';
 import { fetchEnglishQuestions } from '../../services/englishMockDB';
+import { syncService } from '../../services/syncService';
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+    updateProfile, 
+    awardGems, 
+    resetSession, 
+    updateSessionAfterAnswer 
+} from '../../store/userSlice';
 import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
-import {
-    getSession, updateSessionAfterAnswer, recordAnswer,
-    awardGems, resetSession, saveQuestCompletion
-} from '../../services/userStateService';
+import { ManyaDB } from '../../utils/manyaDB';
 import { calculateFrustration, calculateHesitation } from '../../services/psychTracker';
+
 
 /**
  * MANYA ENGLISH FETCHER ENGINE v2.0 (Adaptive)
@@ -15,7 +21,13 @@ import { calculateFrustration, calculateHesitation } from '../../services/psychT
  * gem rewards, and dynamic quest length.
  */
 export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user.data);
+    const session = useSelector(state => state.user.session);
+
     const [questions, setQuestions] = useState([]);
+    const [history, setHistory] = useState([]);
+
     const [currentIdx, setCurrentIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -38,12 +50,17 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
     useEffect(() => {
         const loadQuestions = async () => {
-            resetSession();
+            dispatch(resetSession());
             const allQuestions = await fetchEnglishQuestions(topicId);
             if (allQuestions.length > 0) {
-                const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey);
+                // Fetch history from ManyaDB
+                const userHistory = await ManyaDB.getAnswerHistory(subject);
+                setHistory(userHistory);
+
+                const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
                 setQuestions(quest.questions);
                 setQuestMeta(quest);
+
 
                 console.log(`📖 [English Adaptive] ${nodeType} quest generated:`, {
                     length: quest.questLength,
@@ -80,8 +97,14 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             window.ManyaAudio?.error?.();
         }
 
-        updateSessionAfterAnswer(isCorrect, hintUsed, answerChanged, timeSpentMs);
-        recordAnswer(subject, {
+        dispatch(updateSessionAfterAnswer({ isCorrect, hintUsed, answerChanged, timeSpentMs }));
+
+        const frustration = calculateFrustration(session);
+        const { baseId, variant } = q.id?.includes('-V') 
+            ? { baseId: q.id.split('-V')[0], variant: 'V' + q.id.split('-V')[1] }
+            : { baseId: q.id, variant: 'V0' };
+
+        const answerLog = {
             questionId: q.id,
             isCorrect,
             selectedAnswer: option,
@@ -89,18 +112,34 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             timeSpentMs,
             hintUsed,
             answerChanged,
-            pool: 'exam',
-        });
+            changeCount,
+            pool: q.isPLE ? 'yes' : 'no',
+            concept_id: baseId,
+            variant: variant,
+            engine_type: 'MCQ',
+            frustrationLevel: frustration?.score || 0
+        };
+        ManyaDB.recordAnswer(subject, answerLog);
+        setHistory(prev => [...prev, answerLog]);
+        syncService.pushAnswer(subject, answerLog);
 
-        const gems = awardGems(subject, isCorrect, hintUsed);
-        if (gems.subjectGems > 0) {
-            setGemsEarned(g => g + gems.subjectGems);
+        // Gem Calculation
+        const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
+        const baseAmount = hintUsed ? 1 : 3;
+        const bonus = (!hintUsed && isCorrect) ? 1 : 0;
+        const totalGems = isCorrect ? Math.floor((baseAmount + bonus) * streakMultiplier) : 0;
+        const totalXP = hintUsed ? 5 : 10;
+
+        if (isCorrect) {
+            dispatch(awardGems({ subject, amount: totalGems, xp: totalXP }));
+            setGemsEarned(g => g + totalGems);
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
         }
 
         setTimeout(() => setShowExplanation(true), 500);
     };
+
 
     const nextQuestion = () => {
         if (currentIdx < questions.length - 1) {
@@ -116,7 +155,8 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         } else {
             const finalScore = score;
             const mastery = Math.round((finalScore / questions.length) * 100);
-            saveQuestCompletion(questKey, mastery);
+            // Progress saved via onResult -> QuestView
+
             onResult?.({
                 isCorrect: mastery >= 60,
                 score: finalScore,
@@ -138,9 +178,8 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
     if (questions.length === 0) return null;
 
-    const q = questions[currentIdx];
-    const session = getSession();
     const frustration = calculateFrustration(session);
+
 
     return (
         <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">

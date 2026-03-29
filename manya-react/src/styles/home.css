@@ -1,146 +1,229 @@
-/* home.css - MASTER HUB v45.0 (THE GEM BOUNTY UPDATE) */
+/* home.css - MASTER HUB v50.0 (WORLD-CLASS UPDATE) */
 
 .manya-hub {
     display: flex; flex-direction: column; gap: 25px;
-    padding: 10px 0 40px 0;
+    padding: 10px 0 60px 0;
 }
 
 /* --- DYNAMIC AURORAS --- */
-.aurora-engine .blob { position: absolute; width: 400px; height: 400px; filter: blur(120px); opacity: 0.2; animation: auroraBreathe 10s infinite alternate; }
-.aurora-1 { background: var(--manya-purple); top: -100px; left: -100px; }
-.aurora-2 { background: var(--manya-pink); bottom: -50px; right: -50px; animation-delay: -5s; }
-@keyframes auroraBreathe { 0% { transform: scale(1); opacity: 0.15; } 100% { transform: scale(1.3); opacity: 0.3; } }
+.aurora-engine .blob { position: absolute; width: 500px; height: 500px; filter: blur(150px); opacity: 0.15; animation: auroraBreathe 12s infinite alternate; }
+.aurora-1 { background: var(--manya-purple); top: -150px; left: -150px; }
+.aurora-2 { background: var(--manya-pink); bottom: -100px; right: -100px; animation-delay: -6s; }
+@keyframes auroraBreathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.1; } 100% { transform: scale(1.4) translate(20px, 20px); opacity: 0.25; } }
+
+/* --- 0. NEW PREMIUM HEADER --- */
+.home-status-header-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2px;
+}
+
+.status-user-info .hi-text {
+    display: block; font-size: 18px; font-weight: 900;
+    color: var(--text-primary); letter-spacing: -0.02em;
+}
+.status-user-info .status-subtext {
+    font-size: 10px; font-weight: 800; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;
+}
+
+.status-streak-pill {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    padding: 5px 12px; border-radius: 100px;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.streak-flame-glow {
+    width: 28px; height: 28px; background: #FFF7ED;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: #F97316; box-shadow: 0 0 12px rgba(249, 115, 22, 0.3);
+}
+.streak-stats { display: flex; flex-direction: column; line-height: 1; }
+.streak-stats .val { font-size: 12px; font-weight: 900; color: #F97316; }
+.streak-stats .lab { font-size: 8px; font-weight: 900; color: #94A3B8; margin-top: 1px; }
 
 /* --- 1. RESUME MISSION CARD (THE BOUNTY BOARD) --- */
 .resume-mission-card {
-    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
-    border-radius: 35px; padding: 22px;
+    background: linear-gradient(135deg, hsl(var(--manya-purple-h), 60%, 15%) 0%, hsl(var(--manya-purple-h), 60%, 25%) 100%);
+    border-radius: var(--radius-xl); padding: 18px;
     display: flex; align-items: center;
-    border: 2px solid #4338CA;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    border: 2px solid hsla(var(--manya-purple-h), 80%, 50%, 0.3);
+    box-shadow: var(--shadow-premium), 0 20px 40px rgba(0, 0, 0, 0.2);
     cursor: pointer; width: 100%; box-sizing: border-box;
     position: relative; overflow: hidden;
-    transition: var(--transition-bounce);
 }
-.resume-mission-card:active { transform: scale(0.96); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-/* The Giant Gem Watermark */
+/* Giant Gem Watermark */
 .hero-bg-gem-watermark {
-    position: absolute; right: -30px; bottom: -40px;
-    width: 200px; height: 200px;
-    opacity: 0.15; transform: rotate(15deg);
-    filter: drop-shadow(0 0 30px rgba(255,255,255,0.5));
+    position: absolute; right: -15px; bottom: -25px;
+    width: 80px; height: 80px;
+    opacity: 0.1; transform: rotate(15deg);
+    filter: drop-shadow(0 0 30px white);
     pointer-events: none;
 }
 
 .hero-avatar-mini-glow {
-    width: 65px; height: 65px; border-radius: 50%;
-    border: 2.5px solid #818CF8; background: rgba(255,255,255,0.1);
-    overflow: hidden; box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 2.5px solid white; background: rgba(255,255,255,0.1);
+    overflow: hidden; box-shadow: 0 0 25px hsla(var(--manya-purple-h), 80%, 60%, 0.5);
 }
 .hero-avatar-mini-glow img { width: 100%; }
 
-.mission-details { flex: 1; margin-left: 15px; z-index: 2; }
-.mission-kicker { font-size: 10px; font-weight: 900; color: #818CF8; letter-spacing: 2px; }
-.mission-title { margin: 4px 0 8px; color: white; font-size: 18px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.mission-details { flex: 1; margin-left: 14px; z-index: 2; }
+.mission-kicker { font-size: 10px; font-weight: 900; color: var(--manya-purple-light); letter-spacing: 1.5px; }
+.mission-title { margin: 4px 0 8px; color: white; font-size: 18px; font-weight: 900; line-height: 1.2; }
 
 .mission-tags { display: flex; gap: 8px; }
 .tag {
-    background: rgba(255,255,255,0.15); backdrop-filter: blur(5px);
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
     padding: 4px 10px; border-radius: 100px;
     font-size: 10px; font-weight: 900; color: white;
     display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1);
 }
 
 .play-pill-neon {
-    width: 55px; height: 55px; background: var(--manya-purple);
+    width: 48px; height: 48px; background: white;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 25px rgba(124, 58, 237, 0.8), inset 0 4px 10px rgba(255,255,255,0.4);
-    z-index: 2; border: 2px solid white; transition: 0.3s;
+    box-shadow: 0 0 25px white, inset 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 2; transition: 0.4s var(--transition-bounce);
 }
-.resume-mission-card:hover .play-pill-neon { transform: scale(1.1) rotate(10deg); }
-
+.play-pill-neon svg { width: 20px; height: 20px; fill: var(--manya-purple); }
 
 /* --- 2. THE 2x2 WORLD GRID --- */
-.subject-grid-elite { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.subject-grid-elite { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
 
 .world-card-elite {
-    border-radius: 35px; padding: 25px 15px 20px;
+    border-radius: var(--radius-xl); padding: 18px 12px 14px;
     display: flex; flex-direction: column; align-items: center;
-    border: 2.5px solid transparent;
-    transition: 0.4s var(--transition-bounce);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-    position: relative; overflow: hidden; cursor: pointer;
+    border: 1.5px solid var(--glass-border);
+    backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    position: relative; overflow: visible !important; cursor: pointer;
+    background: var(--glass-bg);
+    transition: transform 0.3s var(--transition-bounce), border-color 0.3s ease;
 }
-.world-card-elite:active { transform: scale(0.95); }
 
-/* NEW: FLOATING GEM PILL */
+[data-theme='dark'] .world-card-elite {
+    background: hsla(222, 47%, 18%, 0.7); /* Slightly lighter for contrast */
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* FLOATING GEM PILL - Dark Mode Fix */
 .card-gem-bounty {
-    position: absolute; top: 12px; right: 12px;
-    background: var(--bg-card);
-    padding: 4px 10px 4px 6px; border-radius: 100px;
-    display: flex; align-items: center; gap: 6px;
-    border: 1.5px solid var(--border-color);
+    position: absolute; top: 10px; right: 10px;
+    background: var(--bg-primary);
+    padding: 3px 8px 3px 5px; border-radius: 100px;
+    display: flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border-color);
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    z-index: 10; transition: all 0.3s ease;
+    z-index: 10;
 }
 .bounty-gem-icon {
-    width: 18px; height: 18px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    animation: gemHover 3s infinite ease-in-out;
-}
-.bounty-gem-count { font-weight: 900; font-size: 11px; }
-
-@keyframes gemHover { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.1); } }
-
-/* LIGHT MODE TINTS */
-.world-card-elite.math { background: #EEF2FF; border-color: #E0E7FF; }
-.world-card-elite.science { background: #F0FDF4; border-color: #DCFCE7; }
-.world-card-elite.sst { background: #FFFBEB; border-color: #FEF3C7; }
-.world-card-elite.english { background: #FDF2F8; border-color: #FCE7F3; }
-
-/* DARK MODE: THE "THOR" GLASS EFFECT */
-[data-theme='dark'] .world-card-elite {
-    background: rgba(15, 23, 42, 0.4) !important;
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.02);
+    width: 22px; height: 22px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    max-width: none !important;
 }
 [data-theme='dark'] .card-gem-bounty {
-    background: rgba(15, 23, 42, 0.8);
-    border-color: rgba(255,255,255,0.1);
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
-.island-stage { height: 110px; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+/* SUBJECT TINTS - ADAPTIVE */
+.world-card-elite.math { background: hsla(262, 80%, 97%, 0.65); }
+.world-card-elite.science { background: hsla(161, 80%, 97%, 0.65); }
+.world-card-elite.sst { background: hsla(38, 80%, 97%, 0.65); }
+.world-card-elite.english { background: hsla(330, 80%, 97%, 0.65); }
 
-/* THE "THOR" GLOW (HALO) */
+[data-theme='dark'] .world-card-elite.math { background: hsla(262, 60%, 20%, 0.45); border-color: hsla(262, 60%, 45%, 0.4); }
+[data-theme='dark'] .world-card-elite.science { background: hsla(161, 60%, 20%, 0.45); border-color: hsla(161, 60%, 45%, 0.4); }
+[data-theme='dark'] .world-card-elite.sst { background: hsla(38, 60%, 20%, 0.45); border-color: hsla(38, 60%, 45%, 0.4); }
+[data-theme='dark'] .world-card-elite.english { background: hsla(330, 60%, 20%, 0.45); border-color: hsla(330, 60%, 45%, 0.4); }
+
+.island-stage { 
+    height: 90px; 
+    width: 100%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+    overflow: visible; 
+    margin-top: 5px;
+}
+
+/* THE "THOR" GLOW (HALO) - VIVID & PULSATING */
 .island-halo {
-    position: absolute; width: 80px; height: 80px;
-    border-radius: 50%; filter: blur(25px); opacity: 0.35;
-    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: absolute; width: 100px; height: 100px;
+    border-radius: 50%; filter: blur(40px); opacity: 0.6;
+    transition: 0.6s var(--transition-bounce);
+    animation: haloPulse 4s infinite alternate ease-in-out;
+    pointer-events: none;
+    z-index: 1;
 }
-[data-theme='dark'] .island-halo { opacity: 0.6; filter: blur(30px); }
-.world-card-elite:hover .island-halo { opacity: 1; transform: scale(1.5); }
+@keyframes haloPulse { 
+    0% { transform: scale(0.7) translate(0,0); opacity: 0.4; } 
+    100% { transform: scale(1.4) translate(4px, 4px); opacity: 0.9; } 
+}
 
-/* FLOATING PHYSICS */
+[data-theme='dark'] .island-halo { 
+    opacity: 0.8; 
+    filter: blur(50px); 
+    mix-blend-mode: plus-lighter; 
+}
+
+/* FLOATING PHYSICS + DROP SHADOW BLOOM */
 .floating-island {
-    width: 90px; z-index: 5;
-    filter: drop-shadow(0 15px 15px rgba(0,0,0,0.15));
+    width: 65px; height: auto;
+    z-index: 5;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.25));
     animation: floatMaster 4s infinite ease-in-out;
+    position: relative;
+    z-index: 2;
+    object-fit: contain;
 }
-.math .floating-island { animation-duration: 4.2s; }
-.science .floating-island { animation-duration: 3.5s; animation-delay: 0.4s; }
-.sst .floating-island { animation-duration: 4.8s; animation-delay: 0.2s; }
-.english .floating-island { animation-duration: 3.9s; animation-delay: 0.6s; }
+@keyframes floatMaster { 
+    0%, 100% { transform: translateY(0) rotate(0deg); } 
+    50% { transform: translateY(-8px) rotate(2deg); } 
+}
 
-@keyframes floatMaster { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+/* TYPOGRAPHY & OVERFLOW FIXES */
+.card-footer-info { text-align: center; width: 100%; margin-top: 5px; }
+.card-footer-info h4 { 
+    margin: 8px 0 6px; 
+    font-size: 14px; 
+    font-weight: 950; 
+    color: var(--text-primary); 
+    letter-spacing: -0.01em; 
+}
 
-/* TYPOGRAPHY */
-.card-footer-info { text-align: center; width: 100%; }
-.card-footer-info h4 { margin: 12px 0 10px; font-size: 15px; font-weight: 900; color: var(--text-main); }
+[data-theme='dark'] .card-footer-info h4 {
+    text-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
 
-.mini-striped-track { width: 100%; height: 8px; background: rgba(0,0,0,0.08); border-radius: 20px; overflow: hidden; }
+.mini-striped-track { 
+    width: 100%; height: 6px; 
+    background: rgba(0,0,0,0.06); 
+    border-radius: 20px; 
+    overflow: hidden; 
+    padding: 1px; 
+    box-sizing: border-box; 
+}
 [data-theme='dark'] .mini-striped-track { background: rgba(255,255,255,0.1); }
 .mini-striped-fill { height: 100%; border-radius: 20px; transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-.pct-text { font-size: 9px; font-weight: 900; color: var(--text-muted); margin-top: 6px; display: block; letter-spacing: 1px; }
+.pct-text { 
+    font-size: 8px; 
+    font-weight: 950; 
+    color: var(--text-secondary); 
+    margin-top: 8px; 
+    display: block; 
+    letter-spacing: 1.5px; 
+    opacity: 0.6; 
+}
+[data-theme='dark'] .pct-text { opacity: 0.8; }

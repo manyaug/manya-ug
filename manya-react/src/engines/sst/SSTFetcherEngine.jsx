@@ -1,18 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw, Search, Puzzle, AlertCircle } from 'lucide-react';
 import { fetchSstQuestions } from '../../services/sstMockDB';
+import { syncService } from '../../services/syncService';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateProfile } from '../../store/userSlice';
-import { generateAdaptiveQuest, selectGameMode } from '../../services/adaptiveEngine';
-import {
-    getSession, updateSessionAfterAnswer, recordAnswer,
-    awardGems, resetSession, saveQuestCompletion
-} from '../../services/userStateService';
+import { 
+    updateProfile, 
+    awardGems, 
+    resetSession, 
+    updateSessionAfterAnswer 
+} from '../../store/userSlice';
+import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
+import { ManyaDB } from '../../utils/manyaDB';
 import { calculateFrustration, calculateHesitation } from '../../services/psychTracker';
 import {
     saveNodeCompletion, trackWrongAnswer, resolveRephrased,
     setJustFinished, UNLOCK_THRESHOLDS, NODE_ORDER
 } from '../../services/questProgressService';
+
 import { preloadCurriculum } from '../../services/curriculumService';
 import UniversalGlobeEngine from '../shared-engines/UniversalGlobeEngine';
 import ImageHotspotsEngine from '../shared-engines/ImageHotspotsEngine';
@@ -104,9 +108,11 @@ const SimulatorBridge = ({ step, onComplete }) => {
 export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
+    const session = useSelector(state => state.user.session);
     
     const [renderError, setRenderError] = useState(null);
     const [questions, setQuestions] = useState([]);
+    const [history, setHistory] = useState([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -136,24 +142,30 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     useEffect(() => {
         const loadQuestions = async () => {
             setIsLoading(true);
-            resetSession();
+            dispatch(resetSession());
             
             // Prime curriculum cache early so map exit is instant
             preloadCurriculum();
 
             try {
                 // 1. Fetch ALL questions from the bank
-                const allQuestions = await fetchSstQuestions(topicId);
+                const rawQuestions = await fetchSstQuestions(topicId);
+                const allQuestions = rawQuestions.map(q => ({ ...q, id: String(q.id || q.qid) }));
                 allBankRef.current = allQuestions;
 
-                // 2. Run them through the adaptive engine
-                const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, data?.resources || []);
+                // 2. Fetch history from ManyaDB
+                const userHistory = await ManyaDB.getAnswerHistory(subject);
+                setHistory(userHistory);
+
+                // 3. Run them through the adaptive engine
+                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, data?.resources || []);
                 setQuestions(quest.questions);
                 setQuestMeta(quest);
 
+
                 console.log(`🎯 [SST Adaptive v3] ${nodeType} quest:`, {
                     length: quest.questions.length,
-                    gameMode: quest.gameMode,
+                    gameMode: quest.metadata.gameMode,
                 });
                 
                 // Small delay to ensure smooth transition
@@ -247,9 +259,14 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             }
         }
 
-        const session = updateSessionAfterAnswer(isCorrect, hintUsed, answerChanged, timeSpentMs);
+        dispatch(updateSessionAfterAnswer({ isCorrect, hintUsed, answerChanged, timeSpentMs }));
 
-        recordAnswer(subject, {
+        const frustration = calculateFrustration(session);
+        const { baseId, variant } = q.id?.includes('-V') 
+            ? { baseId: q.id.split('-V')[0], variant: 'V' + q.id.split('-V')[1] }
+            : { baseId: q.id, variant: 'V0' };
+
+        const answerLog = {
             questionId: q.id,
             isCorrect,
             selectedAnswer: selectedOption,
@@ -257,17 +274,33 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             timeSpentMs,
             hintUsed,
             answerChanged,
-            pool: 'exam',
-        });
+            changeCount,
+            pool: q.isPLE ? 'yes' : 'no',
+            concept_id: baseId,
+            variant: variant,
+            engine_type: 'MCQ',
+            frustrationLevel: frustration?.score || 0
+        };
+        ManyaDB.recordAnswer(subject, answerLog);
+        setHistory(prev => [...prev, answerLog]);
+        syncService.pushAnswer(subject, answerLog);
 
-        const gems = awardGems(subject, isCorrect, hintUsed);
-        if (gems.subjectGems > 0) {
-            setGemsEarned(g => g + gems.subjectGems);
+        // Gem Calculation (Logic copied from awardGems for precision)
+        const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
+        const baseAmount = hintUsed ? 1 : 3;
+        const bonus = (!hintUsed && isCorrect) ? 1 : 0;
+        const totalGems = isCorrect ? Math.floor((baseAmount + bonus) * streakMultiplier) : 0;
+        const totalXP = hintUsed ? 5 : 10;
+
+        if (isCorrect) {
+            dispatch(awardGems({ subject, amount: totalGems, xp: totalXP }));
+            setGemsEarned(g => g + totalGems);
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
         }
 
         const hesitation = calculateHesitation({ answerChanged, changeCount, timeSpentMs, hintUsed });
+
         if (hesitation.level === 'high') {
             console.log('😰 High hesitation:', hesitation.events);
         }
@@ -309,28 +342,13 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             // If this was the MASTERY node and they passed (>= 60%),
             // check if we need to unlock the next quest on the SST World map.
             if (nodeType === 'MASTERY' && mastery >= 60) {
-                const QUEST_INDEX_MAP = {
-                    'quest_1_world_stage': 0,
-                    'quest_2_grid_master': 1,
-                    'quest_3_calculating_time': 2,
-                    'quest_4_water_bodies': 3,
-                    'quest_5_coastal_features': 4,
-                    'quest_6_regional_division_capital_cities': 5,
-                    'quest_7_landlocked_countries': 6
-                };
-
-                const currentQuestIdx = QUEST_INDEX_MAP[topicId];
-                const currentGlobalProg = user?.prog_sst || 0;
-
-                if (currentQuestIdx !== undefined && currentQuestIdx === currentGlobalProg) {
-                    const nextProg = currentGlobalProg + 1;
-                    console.log(`🌍 [SST Sync] Unlocking next quest on map! prog_sst: ${currentGlobalProg} -> ${nextProg}`);
-                    dispatch(updateProfile({ prog_sst: nextProg }));
+                const mapIndex = data?.questIndex ?? 0;
+                const progKey = `prog_${subject}`;
+                const currentProg = user[progKey] || 0;
+                if (mapIndex >= currentProg) {
+                    dispatch(updateProfile({ [progKey]: mapIndex + 1 }));
                 }
             }
-
-            // Also save to userStateService
-            saveQuestCompletion(questKey, mastery);
 
             setCompletionResult({ mastery, ...result, score: finalScore, total: questions.length });
             setShowCompletion(true);
@@ -546,13 +564,16 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                 onClick={() => {
                                     setShowCompletion(false); setCompletionResult(null); setCurrentIdx(0); setScore(0); setGemsEarned(0); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setIsLoading(true); resetSession();
                                     (async () => {
-                                        const allQ = await fetchSstQuestions(topicId);
+                                        const rawQ = await fetchSstQuestions(topicId);
+                                        const allQ = rawQ.map(q => ({ ...q, id: String(q.id || q.qid) }));
                                         allBankRef.current = allQ;
-                                        const quest = generateAdaptiveQuest(allQ, nodeType, subject, questKey);
+                                        const userHistory = await ManyaDB.getAnswerHistory(subject);
+                                        const quest = await generateAdaptiveQuest(allQ, nodeType, subject, questKey, session, userHistory);
                                         setQuestions(quest.questions);
                                         setQuestMeta(quest);
                                         setIsLoading(false);
                                     })();
+
                                 }}
                                 className="w-full h-14 bg-white text-slate-600 border-2 border-slate-100 rounded-3xl font-black text-[11px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
                             >
@@ -570,7 +591,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         const q = questions[currentIdx];
         if (!q) return null;
         
-        const session = getSession();
+        // Use session from Redux state (already imported above)
         const frustration = calculateFrustration(session);
 
         // ── SIMULATION / PUZZLE / RECAP VIEW ──
@@ -584,8 +605,13 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                             const timeSpentMs = results?.duration || 30000;
 
                             // ─── PERSIST SIMULATION RESULT ───
-                            updateSessionAfterAnswer(isSuccess, false, false, timeSpentMs);
-                            recordAnswer(subject, {
+                            dispatch(updateSessionAfterAnswer({
+                                isCorrect: isSuccess,
+                                hintUsed: false,
+                                answerChanged: false,
+                                timeSpentMs
+                            }));
+                            ManyaDB.recordAnswer(subject, {
                                 questionId: q.id,
                                 isCorrect: isSuccess,
                                 selectedAnswer: 'COMPLETED',

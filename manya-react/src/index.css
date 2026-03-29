@@ -72,7 +72,7 @@ h1,
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  color: var(--text-h);
+  color: inherit;  /* FIXED: was var(--text-h) which becomes white on OS dark mode */
 }
 
 h1 {

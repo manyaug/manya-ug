@@ -109,15 +109,15 @@ function OnboardingView() {
             case 1: // Identity & Level
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><ShieldCheck size={44} /></div>
-                        <h3>Identity Initialization</h3>
-                        <p>Welcome to the Manya Council. What name shall be etched in our archives?</p>
+                        <div className="ob-icon-circle"><ShieldCheck size={38} strokeWidth={2.5} /></div>
+                        <h3>Create Profile</h3>
+                        <p>Welcome to Manya! What's your nickname?</p>
                         
                         <div className="input-with-icon">
                             <User className="i-icon" size={20} />
                             <input 
                                 type="text" 
-                                placeholder="Enter Hero Nickname" 
+                                placeholder="Your Nickname" 
                                 value={profile.nickname} 
                                 onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} 
                                 autoFocus 
@@ -125,15 +125,15 @@ function OnboardingView() {
                         </div>
 
                         <div className="ob-select-group">
-                            <label><GraduationCap size={16} /> Current Academic Sector</label>
+                            <label><GraduationCap size={16} /> Grade Level</label>
                             <select 
                                 className="premium-ob-select"
                                 value={profile.grade_level}
                                 onChange={e => setProfile(p => ({ ...p, grade_level: e.target.value }))}
                             >
-                                <option value="Primary 5">Sector Primary 5</option>
-                                <option value="Primary 6">Sector Primary 6</option>
-                                <option value="Primary 7">Sector Primary 7</option>
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="Primary 7">Primary 7</option>
                             </select>
                         </div>
                     </div>
@@ -141,14 +141,14 @@ function OnboardingView() {
             case 2: // Guardian (Reports)
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Mail size={40} /></div>
-                        <h3>The Guardian Shield</h3>
-                        <p>Link your Mentor's contact for safety and academic strategy reports.</p>
+                        <div className="ob-icon-circle"><Mail size={34} strokeWidth={2.5} /></div>
+                        <h3>Parent or Guardian</h3>
+                        <p>We'll send your progress reports here.</p>
                         <div className="input-with-icon">
                             <Mail className="i-icon" size={18} />
                             <input 
                                 type="email" 
-                                placeholder="Mentor's Email Address" 
+                                placeholder="Parent's Email" 
                                 value={profile.parent.email} 
                                 onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, email: e.target.value } }))} 
                             />
@@ -157,7 +157,7 @@ function OnboardingView() {
                             <Phone className="i-icon" size={18} />
                             <input 
                                 type="tel" 
-                                placeholder="WhatsApp (for alerts)" 
+                                placeholder="Parent's WhatsApp" 
                                 value={profile.parent.whatsapp} 
                                 onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, whatsapp: e.target.value } }))} 
                             />
@@ -167,9 +167,9 @@ function OnboardingView() {
             case 3: // Avatar (DNA Sequence)
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Zap size={40} /></div>
-                        <h3>Visual Identity DNA</h3>
-                        <p>Construct your physical avatar through DiceBear sequences.</p>
+                        <div className="ob-icon-circle"><Zap size={34} strokeWidth={2.5} /></div>
+                        <h3>Choose Your Avatar</h3>
+                        <p>Pick a character that matches your vibe.</p>
                         <div className="lab-grid-ob">
                             {avatarOptions.map(seed => (
                                 <div key={seed} className={`lab-item-ob ${profile.avatarSeed === seed ? 'active' : ''}`} onClick={() => setProfile(p => ({ ...p, avatarSeed: seed }))}>
@@ -178,21 +178,21 @@ function OnboardingView() {
                             ))}
                         </div>
                         <button className="btn-lab-shuffle" onClick={() => generateSeeds(profile.nickname)}>
-                            🔄 SHUFFLE DNA SEQUENCES
+                            🔄 SHUFFLE AVATARS
                         </button>
                     </div>
                 );
             case 4: // Auth (Security Vault)
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Lock size={40} /></div>
-                        <h3>Secure the Vault</h3>
-                        <p>Establish your secret encrypted access credentials.</p>
+                        <div className="ob-icon-circle"><Lock size={34} strokeWidth={2.5} /></div>
+                        <h3>Account Setup</h3>
+                        <p>Create your login details.</p>
                         <div className="input-with-icon">
                             <Mail className="i-icon" size={18} />
                             <input 
                                 type="email" 
-                                placeholder="My Educational Email" 
+                                placeholder="Your Email" 
                                 value={profile.auth.email} 
                                 onChange={e => setProfile(p => ({ ...p, auth: { ...p.auth, email: e.target.value } }))} 
                             />
@@ -201,12 +201,12 @@ function OnboardingView() {
                             <Lock className="i-icon" size={18} />
                             <input 
                                 type="password" 
-                                placeholder="Create Access PIN" 
+                                placeholder="Password" 
                                 value={profile.auth.password} 
                                 onChange={e => setProfile(p => ({ ...p, auth: { ...p.auth, password: e.target.value } }))} 
                             />
                         </div>
-                        <p className="terms-notice">Access PIN must be at least 6 characters.</p>
+                        <p className="terms-notice">Password must be at least 6 characters.</p>
                     </div>
                 );
             default: return null;
@@ -227,7 +227,7 @@ function OnboardingView() {
                         <div style={{ width: 44 }}></div> // Placeholder for symmetry
                     )}
                     <div className="ob-logo-area">
-                        <img src="/assets/icons/pwa-192x192.png" alt="Manya Council" />
+                        <img src="/assets/icons/pwa-192x192.png" alt="Manya" />
                     </div>
                     <div className="ob-login-link">
                          <Link to="/login">Sign In</Link>
@@ -246,23 +246,24 @@ function OnboardingView() {
                     </div>
                 </div>
 
-                <div className="ob-footer-actions">
+                <footer className="ob-footer-actions">
                     <button 
                         className={`ob-next-btn ${loading ? 'loading' : ''}`} 
                         onClick={handleNext}
                         disabled={loading}
                     >
-                        {loading ? "INITIALIZING DNA..." : step === 4 ? "COMPLETE INITIALIZATION →" : "CONTINUE PATH →"}
+                        {loading ? "WORKING..." : step === 4 ? "FINISH SETUP →" : "NEXT →"}
                     </button>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', gap: '20px', opacity: 0.5 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 900 }}>
-                            <ShieldCheck size={12} /> SECURE VAULT
+                    
+                    <div className="ob-footer-badges">
+                        <div className="badge-item">
+                            <ShieldCheck size={12} strokeWidth={3} /> SECURE
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 900 }}>
-                            <Globe size={12} /> UGANDA SECTOR
+                        <div className="badge-item">
+                            <Globe size={12} strokeWidth={3} /> MANYA
                         </div>
                     </div>
-                </div>
+                </footer>
             </div>
         </div>
     );

@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight, Check, Sparkles } from 'lucide-react';
  * - Premium Glassmorphism & Micro-animations
  * - Full Dark/Light Theme support
  */
-export function GalleryStudyEngine({ data, onComplete }) {
+export function GalleryStudyEngine({ data, onComplete, onResult }) {
     const [currentIdx, setCurrentIdx] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
@@ -51,6 +51,14 @@ export function GalleryStudyEngine({ data, onComplete }) {
             setImageLoaded(false);
             setIsExpanded(false);
         } else if (allSeen) {
+            if (onResult) {
+                onResult({
+                    isCorrect: true,
+                    score: visitedIndices.size,
+                    total: slides.length,
+                    type: 'study'
+                });
+            }
             if (onComplete) onComplete();
         }
     };

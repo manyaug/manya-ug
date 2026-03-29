@@ -57,6 +57,7 @@ export const fetchSstQuestions = async (topicId) => {
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
             return {
+                id: q.qid,
                 qid: q.qid, // Ensuring naming consistency for ManyaDB
                 subject: 'sst',
                 topic: q.topic,

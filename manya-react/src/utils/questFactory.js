@@ -26,16 +26,34 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
     // ── SST: Adaptive Fetcher with content sequencing ────────────────────────
     if (subject === 'sst' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
         const steps = [];
+        let postWarmupSteps = []; // Holds the warmup recap to be injected *after* the test
 
-        // WARMUP and EXPLORE get a study/recap sim first (Broadened to include puzzles/quizzes)
+        // WARMUP gets 1 intro study sim, EXPLORE gets all available matching json activities
         if ((nodeType === 'WARMUP' || nodeType === 'EXPLORE') && resources && resources.length > 0) {
-            const studyRes = resources.find(r =>
+            const matchingResources = resources.filter(r =>
                 r.file.startsWith('study_') || r.file.includes('_study') ||
                 r.file.startsWith('recap_') || r.file.includes('_recap') ||
-                r.file.startsWith('puzzle_') || r.file.startsWith('quiz_') ||
-                r.file.includes('project_genesis')
+                r.file.startsWith('puzzle_') || r.file.includes('_puzzle') ||
+                r.file.startsWith('quiz_') || r.file.includes('_quiz') ||
+                r.file.includes('project_genesis') || r.file.includes('extremes_of_africa')
             );
-            if (studyRes) {
+
+            // WARMUP takes the first one, EXPLORE takes the whole battery
+            const targetResources = nodeType === 'EXPLORE' ? matchingResources : matchingResources.slice(0, 1);
+
+            // Orchestrate the sequence: 1. Recap (Refresh) -> 2. Study (Learn) -> 3. Quiz/Puzzle (Verify)
+            targetResources.sort((a, b) => {
+                const getWeight = (file) => {
+                    const lower = file.toLowerCase();
+                    if (lower.includes('recap')) return 1;
+                    if (lower.includes('study')) return 2;
+                    if (lower.includes('quiz') || lower.includes('puzzle') || lower.includes('project_') || lower.includes('extremes_')) return 3;
+                    return 4;
+                };
+                return getWeight(a.file) - getWeight(b.file);
+            });
+
+            for (const studyRes of targetResources) {
                 // Determine whether it needs .json suffix
                 const fileName = studyRes.file.endsWith('.json') ? studyRes.file : `${studyRes.file}.json`;
                 try {
@@ -43,10 +61,14 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     if (studySteps.length > 0) {
                         // Mark as a study sim intro step
                         studySteps[0].isStudySim = true;
-                        steps.push(...studySteps);
+                        if (nodeType === 'WARMUP') {
+                            postWarmupSteps.push(...studySteps);
+                        } else {
+                            steps.push(...studySteps);
+                        }
                     }
                 } catch (e) {
-                    console.warn(`[QuestFactory] Could not load warmup/explore study sim:`, e);
+                    console.warn(`[QuestFactory] Could not load study asset ${fileName}:`, e);
                 }
             }
         }
@@ -75,37 +97,51 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             }
         }
 
-        // Then the MCQ fetcher engine step
-        steps.push({
-            engineType: 'SST_FETCHER',
-            topic: questFolder,
-            mode: 'quiz',
-            data: {
+        // Then the MCQ fetcher engine step (except for EXPLORE which is just study/recap)
+        if (nodeType !== 'EXPLORE') {
+            steps.push({
+                engineType: 'SST_FETCHER',
                 topic: questFolder,
-                nodeType,
-                subject: 'sst',
-                unitId,
-                questKey: getQuestKey('sst', unitId, questFolder),
-            }
-        });
+                mode: 'quiz',
+                data: {
+                    topic: questFolder,
+                    nodeType,
+                    subject: 'sst',
+                    unitId,
+                    questKey: getQuestKey('sst', unitId, questFolder),
+                }
+            });
+        }
+
+        // Push Warmup recap *after* the fetcher step as requested by user
+        if (postWarmupSteps.length > 0) {
+            steps.push(...postWarmupSteps);
+        }
 
         return steps;
     }
 
     // ── English: same pattern ────────────────────────────────────────────────
     if (subject === 'english' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
-        return [{
-            engineType: 'ENGLISH_FETCHER',
-            topic: questFolder,
-            mode: 'quiz',
-            data: {
+        const steps = [];
+        
+        // TODO: English can also push JSON recaps here if available in the future.
+        
+        if (nodeType !== 'EXPLORE') {
+            steps.push({
+                engineType: 'ENGLISH_FETCHER',
                 topic: questFolder,
-                nodeType,
-                subject: 'english',
-                unitId,
-                questKey: getQuestKey('english', unitId, questFolder),
-            }
-        }];
+                mode: 'quiz',
+                data: {
+                    topic: questFolder,
+                    nodeType,
+                    subject: 'english',
+                    unitId,
+                    questKey: getQuestKey('english', unitId, questFolder),
+                }
+            });
+        }
+        return steps;
     }
 
     // ── NUMBERED FILES (math/science) ────────────────────────────────────────

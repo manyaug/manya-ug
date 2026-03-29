@@ -31,7 +31,7 @@ const CONTINENT_MAP = {
   "antarctica": ["010","260"]
 };
 
-const UniversalGlobeEngine = ({ data, onComplete }) => {
+const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [worldData, setWorldData] = useState(null);
   const [placedPieces, setPlacedPieces] = useState([]);
@@ -380,7 +380,17 @@ const UniversalGlobeEngine = ({ data, onComplete }) => {
   const submitQuizAnswer = () => {
     if (!selectedQuizOpt || quizFeedback?.type === 'success') return;
     const q = data.questions[activeTab];
-    if (selectedQuizOpt === q.correctAnswer) {
+        if (selectedQuizOpt === q.correctAnswer) {
+      if (onResult) {
+        onResult({
+          isCorrect: true,
+          score: 1,
+          total: 1,
+          type: 'quiz',
+          selectedAnswer: selectedQuizOpt,
+          correctAnswer: q.correctAnswer
+        });
+      }
       setQuizFeedback({ type: 'success', text: "Correct!" });
       setTimeout(() => {
         if (activeTab < data.questions.length - 1) {
@@ -392,6 +402,16 @@ const UniversalGlobeEngine = ({ data, onComplete }) => {
         }
       }, 1500);
     } else {
+      if (onResult) {
+        onResult({
+          isCorrect: false,
+          score: 0,
+          total: 1,
+          type: 'quiz',
+          selectedAnswer: selectedQuizOpt,
+          correctAnswer: q.correctAnswer
+        });
+      }
       setQuizFeedback({ type: 'error', text: q.explanation || "Try again!", selectedOpt: selectedQuizOpt });
     }
   };
@@ -424,7 +444,10 @@ const UniversalGlobeEngine = ({ data, onComplete }) => {
         if (d3.geoDistance(coords, piece.target) < 0.45) {
           setPlacedPieces(p => {
              const n = [...p, piece.id];
-             if (n.length === data.pieces.length && onComplete) setTimeout(onComplete, 1500);
+             if (n.length === data.pieces.length) {
+                if (onResult) onResult({ isCorrect: true, score: n.length, total: data.pieces.length, type: 'puzzle' });
+                if (onComplete) setTimeout(onComplete, 1500);
+             }
              return n;
           });
         }

@@ -1,9 +1,10 @@
 export const ManyaDB = {
     DB_NAME: 'ManyaSystemDB',
-    VERSION: 2, // Incremented version to trigger onupgradeneeded
+    VERSION: 3, // Incremented version to add 'answers' store
     STORE_USERS: 'users',
     STORE_QUESTIONS: 'questions',
     STORE_SYNC_LOGS: 'sync_logs',
+    STORE_ANSWERS: 'answers',
 
     async connect() {
         return new Promise((resolve, reject) => {
@@ -19,7 +20,13 @@ export const ManyaDB = {
                 if (!db.objectStoreNames.contains(this.STORE_SYNC_LOGS)) {
                     db.createObjectStore(this.STORE_SYNC_LOGS, { keyPath: 'id', autoIncrement: true });
                 }
+                if (!db.objectStoreNames.contains(this.STORE_ANSWERS)) {
+                    const store = db.createObjectStore(this.STORE_ANSWERS, { keyPath: 'id', autoIncrement: true });
+                    store.createIndex('subject', 'subject', { unique: false });
+                    store.createIndex('questionId', 'questionId', { unique: false });
+                }
             };
+
             request.onsuccess = () => resolve(request.result);
             request.onerror = () => resolve(null);
         });
@@ -126,7 +133,46 @@ export const ManyaDB = {
         });
     },
 
+    /**
+     * ANSWER HISTORY METHODS
+     */
+    async getAnswerHistory(subject) {
+        const db = await this.connect();
+        if (!db) return [];
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_ANSWERS, 'readonly');
+            const store = transaction.objectStore(this.STORE_ANSWERS);
+            const index = store.index('subject');
+            const request = index.getAll(subject);
+            
+            request.onsuccess = () => {
+                // Keep only last 500 for performance
+                const results = request.result || [];
+                resolve(results.slice(-500));
+            };
+            request.onerror = () => resolve([]);
+        });
+    },
+
+    async recordAnswer(subject, answerData) {
+        const db = await this.connect();
+        if (!db) return false;
+        return new Promise((resolve) => {
+            const transaction = db.transaction(this.STORE_ANSWERS, 'readwrite');
+            const store = transaction.objectStore(this.STORE_ANSWERS);
+            const entry = {
+                ...answerData,
+                subject,
+                answeredAt: new Date().toISOString()
+            };
+            const request = store.add(entry);
+            request.onsuccess = () => resolve(true);
+            request.onerror = () => resolve(false);
+        });
+    },
+
     async removeSyncItem(id) {
+
         const db = await this.connect();
         if (!db) return false;
         return new Promise((resolve) => {

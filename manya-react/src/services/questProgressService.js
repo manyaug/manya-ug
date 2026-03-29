@@ -15,6 +15,8 @@
  *   MASTERY  → Reinforce ≥ 75%
  */
 
+import { syncService } from './syncService';
+
 // ─── Node definitions ────────────────────────────────────────────────────────
 
 const NODE_ORDER = ['WARMUP', 'EXPLORE', 'PRACTICE', 'REINFORCE', 'MASTERY'];
@@ -151,6 +153,24 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
     }
 
     saveAllProgress(subject, all);
+
+    // ─── CLOUD SYNC: Push current node completion to Supabase ───
+    syncService.updateProgress(questKey, {
+        nodeType,
+        mastery: finalMastery,
+        status: 'completed',
+        attempts: all[questKey][nodeType].attempts
+    }).catch(e => console.warn('[Sync] Failed to fire progress sync:', e));
+
+    // ─── CLOUD SYNC: Push next node unlock to Supabase ───
+    if (unlocked && nextNode) {
+        syncService.updateProgress(questKey, {
+            nodeType: nextNode,
+            mastery: all[questKey][nextNode].mastery,
+            status: all[questKey][nextNode].status,
+            attempts: all[questKey][nextNode].attempts
+        }).catch(e => console.warn('[Sync] Failed to fire unlock sync:', e));
+    }
 
     return {
         unlocked,

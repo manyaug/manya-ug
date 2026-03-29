@@ -6,6 +6,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
 import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
 import '../styles/spiral.css';
@@ -22,9 +23,9 @@ const ROAD_PATH = [
 
 const BIOMES = {
     math: {
-        color: '#7c3aed',
-        alpha: 'rgba(124, 58, 237, 0.3)',
-        bg: '#ede9fe',
+        color: 'var(--manya-purple)',
+        alpha: 'hsla(var(--manya-purple-h), 80%, 60%, 0.2)',
+        bg: '#F5F3FF',
         icon: '📐',
         gemFile: 'math_gem.svg',
         folder: 'math_path',
@@ -34,9 +35,9 @@ const BIOMES = {
         gemsKey: 'mathGems',
     },
     science: {
-        color: '#10B981',
-        alpha: 'rgba(16, 185, 129, 0.3)',
-        bg: '#d1fae5',
+        color: 'var(--manya-green)',
+        alpha: 'hsla(var(--manya-green-h), 80%, 40%, 0.2)',
+        bg: '#F0FDF4',
         icon: '🌱',
         gemFile: 'science_svg.svg',
         folder: 'science_path',
@@ -46,9 +47,9 @@ const BIOMES = {
         gemsKey: 'scienceGems',
     },
     sst: {
-        color: '#f59e0b',
-        alpha: 'rgba(245, 158, 11, 0.3)',
-        bg: '#fef3c7',
+        color: 'var(--manya-gold)',
+        alpha: 'hsla(var(--manya-gold-h), 80%, 50%, 0.2)',
+        bg: '#FFFBEB',
         icon: '🌍',
         gemFile: 'sst_gem.svg',
         folder: 'sst_path',
@@ -58,9 +59,9 @@ const BIOMES = {
         gemsKey: 'sstGems',
     },
     english: {
-        color: '#db2777',
-        alpha: 'rgba(219, 39, 119, 0.3)',
-        bg: '#fce7f3',
+        color: 'var(--manya-pink)',
+        alpha: 'hsla(var(--manya-pink-h), 80%, 50%, 0.2)',
+        bg: '#FDF2F8',
         icon: '📖',
         gemFile: 'english_gem.svg',
         folder: 'english_path',
@@ -109,13 +110,26 @@ function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap
     const stateClass = isActive ? 'active-node' : isCompleted ? 'completed-node' : 'locked-node';
 
     return (
-        <div className={`game-node ${stateClass}`} onClick={() => onTap(unit, index, isUnlocked)}>
+        <motion.div 
+            whileHover={isUnlocked ? { scale: 1.1, y: -5 } : {}}
+            whileTap={isUnlocked ? { scale: 0.9 } : {}}
+            className={`game-node ${stateClass}`} 
+            onClick={() => onTap(unit, index, isUnlocked)}
+        >
             {/* Stars above */}
-            <div className="node-star-rating">
-                <span className={isCompleted ? 'earned' : ''}>★</span>
-                <span className={isCompleted ? 'earned' : ''}>★</span>
-                <span className={isCompleted ? 'earned' : ''}>★</span>
-            </div>
+            <AnimatePresence>
+                {isCompleted && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="node-star-rating"
+                    >
+                        <span className="earned">★</span>
+                        <span className="earned">★</span>
+                        <span className="earned">★</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Main circle */}
             <div className="node-cap">
@@ -130,7 +144,7 @@ function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap
 
             {/* Label below */}
             <div className="node-label-elite">{unit.title || `Node ${index + 1}`}</div>
-        </div>
+        </motion.div>
     );
 }
 
@@ -244,7 +258,7 @@ function SpiralView() {
     const EFFECTIVE_HEIGHT = TILE_HEIGHT - OVERLAP;
     const nodesPerTile = ROAD_PATH.length;
     const totalTiles = Math.max(1, Math.ceil(units.length / nodesPerTile));
-    const BOTTOM_BUFFER = 120;
+    const BOTTOM_BUFFER = -10; // Let the texture sink perfectly behind the nav bar
     const TOP_BUFFER = 20;
     const totalHeight = BOTTOM_BUFFER + TILE_HEIGHT + ((totalTiles > 1 ? totalTiles - 1 : 0) * EFFECTIVE_HEIGHT) + TOP_BUFFER;
 

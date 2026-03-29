@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronLeft, Crown, ShieldCheck } from 'lucide-react';
 import { updateProfile } from '../store/userSlice';
 import '../styles/membership.css';
 
@@ -13,8 +14,18 @@ function MembershipView() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // --- MOTION VARIANTS ---
+  const containerVariants = {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+      hidden: { y: 20, opacity: 0 },
+      visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  };
+
   const handleApplyPromo = () => {
-    // TODO: Dispatch Toast Notification "Invalid Hero Code. Check spelling!"
     alert("Invalid Hero Code System. Check spelling!");
   };
 
@@ -23,140 +34,154 @@ function MembershipView() {
   };
 
   const handleFinalCommit = () => {
-    // TODO: Dispatch Toast "Connecting to Network..."
     alert("Connecting to Network...");
-    
-    // Simulate network delay
     setTimeout(() => {
         dispatch(updateProfile({
             status: "Elite Hero",
             membershipTier: currentTier
         }));
-        
-        // TODO: Dispatch Toast "WELCOME TO ELITE!"
         navigate('/profile');
     }, 3000);
   };
 
   return (
-    <div className="membership-page animate-in">
-        {/* 1. HEADER (FIXED BACK BUTTON) */}
-        <div className="mem-header-row" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
-            <button 
-                className="manya-back-btn" 
-                onClick={() => navigate('/profile')} 
-                style={{ width:'45px', height:'45px', borderRadius:'15px', border:'2px solid var(--border-color)', background:'var(--bg-card)', cursor:'pointer', color:'var(--manya-purple)', display:'flex', alignItems:'center', justifyContent:'center'}}
-            >
-                <ChevronLeft size={24} strokeWidth={3} />
-            </button>
-            <div>
-                <h2 style={{ fontWeight: 900, margin: 0, fontSize: '22px', color: 'var(--text-main)' }}>Manya Elite Hub</h2>
-                <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)' }}>Unlock Your P.7 Potential</p>
-            </div>
+    <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="membership-page"
+    >
+        {/* 0. DYNAMIC AURORA ENGINE */}
+        <div className="aurora-engine">
+            <div className="blob aurora-1"></div>
+            <div className="blob aurora-2" style={{ background: '#f59e0b' }}></div>
         </div>
 
-        {/* 2. SOCIAL PROOF */}
-        <div className="testimonial-card">
-            <img src="/assets/images/manya_icon.png" className="test-av" alt="Testimonial" />
+        {/* 1. ARENA-STYLE HEADER */}
+        <div className="rank-arena-header mem-header">
+            <button className="back-btn-elite" onClick={() => navigate('/profile')}>
+                <ChevronLeft size={24} />
+            </button>
+            <h2 className="arena-title">Elite Hub</h2>
+            <p className="arena-subtitle">Unlock Your P.7 Potential</p>
+        </div>
+
+        {/* 2. SOCIAL PROOF (GLASSMORPHIC) */}
+        <motion.div variants={itemVariants} className="leaderboard-card-elite mem-testimonial-card">
+            <div className="test-avatar-wrap">
+                <img src="/assets/images/manya_icon.png" alt="Testimonial" />
+                <div className="test-glow"></div>
+            </div>
             <div className="test-text">
                 "Upgrading to Elite was the best decision for my PLE prep. I love the offline mode!"
                 <span className="test-name">Meda, P.7 Scholar</span>
             </div>
-        </div>
+        </motion.div>
 
         {/* 3. TIER STACK */}
-        <div className="tier-stack">
+        <motion.div variants={itemVariants} className="tier-stack">
             <div 
                 className={`tier-card-elite ${currentTier === 'Starter' ? 'selected' : ''}`} 
                 onClick={() => setCurrentTier('Starter')}
             >
+                <div className="card-glass-glow"></div>
                 <span className="tier-title-small">Hero Weekly</span>
-                <div className="tier-cost">UGX 5,000<span>/week</span></div>
+                <div className="tier-cost">UGX 5,000<span className="period">/wk</span></div>
             </div>
 
             <div 
-                className={`tier-card-elite ${currentTier === 'Scholar' ? 'selected' : ''}`} 
+                className={`tier-card-elite ${currentTier === 'Scholar' ? 'selected' : ''} elite-tier`} 
                 onClick={() => setCurrentTier('Scholar')}
             >
-                <div className="best-value-ribbon">🏆 MOST POPULAR</div>
-                <span className="tier-title-small">Termly Legend</span>
-                <div className="tier-cost">UGX 20,000<span>/term</span></div>
+                {/* Fixed "MOST POPULAR" Ribbon inside card to stop overlap */}
+                <div className="best-value-ribbon">
+                    <Crown size={12} color="#fff" style={{ marginRight: '4px' }} /> MOST POPULAR
+                </div>
+                <div className="card-glass-glow" style={{ background: '#f59e0b', opacity: 0.15 }}></div>
+                <span className="tier-title-small" style={{ color: '#f59e0b' }}>Termly Legend</span>
+                <div className="tier-cost">UGX 20,000<span className="period">/tm</span></div>
             </div>
-        </div>
+        </motion.div>
 
         {/* 4. FEATURE GRID */}
-        <div className="feature-compare-card">
-            <h4>ELITE BENEFITS</h4>
-            <div className="feature-row"><span>2,500+ Practice Questions</span> <span className="check-elite">✔</span></div>
-            <div className="feature-row"><span>Full Offline Access</span> <span className="check-elite">✔</span></div>
-            <div className="feature-row"><span>Parent Progress Sync</span> <span className="check-elite">✔</span></div>
-            <div className="feature-row"><span>Hero Badge Unlocks</span> <span className="check-elite">✔</span></div>
-        </div>
+        <motion.div variants={itemVariants} className="leaderboard-card-elite feature-compare-card">
+            <div className="list-header">
+                <span>ELITE BENEFITS</span>
+                <span>STATUS</span>
+            </div>
+            <div className="rank-row-elite mem-feature-row">
+                <span className="r-name">2,500+ Practice Questions</span>
+                <div className="r-stat"><ShieldCheck className="check-elite" size={20} /></div>
+            </div>
+            <div className="rank-row-elite mem-feature-row">
+                <span className="r-name">Full Offline Access</span>
+                <div className="r-stat"><ShieldCheck className="check-elite" size={20} /></div>
+            </div>
+            <div className="rank-row-elite mem-feature-row">
+                <span className="r-name">Parent Progress Sync</span>
+                <div className="r-stat"><ShieldCheck className="check-elite" size={20} /></div>
+            </div>
+            <div className="rank-row-elite mem-feature-row" style={{ borderBottom: 'none' }}>
+                <span className="r-name">Hero Badge Unlocks</span>
+                <div className="r-stat"><ShieldCheck className="check-elite" size={20} /></div>
+            </div>
+        </motion.div>
 
         {/* 5. PROMO AREA */}
-        <div className="promo-box">
-            <p style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '10px' }}>PROMO CODE</p>
-            <div style={{ display: 'flex', gap: '10px' }}>
-                <input type="text" className="promo-input" placeholder="Enter Code" />
-                <button 
-                    onClick={handleApplyPromo} 
-                    style={{ background: 'var(--manya-purple)', color: 'white', border: 'none', borderRadius: '12px', padding: '0 15px', fontWeight: 900, cursor: 'pointer' }}
-                >
-                    APPLY
-                </button>
+        <motion.div variants={itemVariants} className="promo-box-elite">
+            <p className="promo-label">PROMO CODE</p>
+            <div className="promo-input-row">
+                <input type="text" className="promo-input" placeholder="Enter Hero Code" />
+                <button className="promo-apply-btn" onClick={handleApplyPromo}>APPLY</button>
             </div>
-        </div>
+        </motion.div>
 
         {/* 6. MOMO DOCK */}
-        <div className="momo-dock" id="momo-mount">
+        <motion.div variants={itemVariants} className="momo-dock-elite" id="momo-mount">
             {activeProvider ? (
-                <>
-                    <h4 style={{ color: '#FBBF24' }}>UPGRADING VIA {activeProvider}</h4>
-                    <p style={{ color: 'white', fontSize: '12px', textAlign: 'center', marginBottom: '20px' }}>
-                        Total: UGX {currentTier === 'Starter' ? '5,000' : '20,000'}
+                <div className="momo-checkout-active">
+                    <h4>UPGRADING VIA {activeProvider}</h4>
+                    <p className="checkout-total">
+                        Total: <b>UGX {currentTier === 'Starter' ? '5,000' : '20,000'}</b>
                     </p>
                     <input 
                         type="tel" 
                         value={phoneInput}
                         onChange={(e) => setPhoneInput(e.target.value)}
                         placeholder="07... Number" 
-                        style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '2px solid rgba(255,255,255,0.2)', width: '100%', padding: '15px', borderRadius: '15px', marginBottom: '15px' }} 
+                        className="momo-phone-input"
                     />
-                    <button 
-                        onClick={handleFinalCommit} 
-                        style={{ width: '100%', height: '60px', borderRadius: '24px', background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: 'white', border: 'none', fontWeight: 900, fontSize: '1.1rem', cursor: 'pointer' }}
-                    >
-                        CONFIRM PAYMENT
+                    <button className="momo-confirm-btn" onClick={handleFinalCommit}>
+                        CONFIRM SECURE PAYMENT
                     </button>
-                    <button 
-                        onClick={() => setActiveProvider(null)} 
-                        style={{ width: '100%', background: 'none', border: 'none', color: '#94A3B8', marginTop: '15px', fontWeight: 800, fontSize: '11px', cursor: 'pointer' }}
-                    >
+                    <button className="momo-cancel-btn" onClick={() => setActiveProvider(null)}>
                         ← CANCEL
                     </button>
-                </>
+                </div>
             ) : (
-                <>
+                <div className="momo-checkout-idle">
                     <h4>SECURE CHECKOUT</h4>
                     <div className="momo-grid">
-                        <div className="momo-btn-elite" onClick={() => handleStartMomo('MTN')}>
-                            <div className="provider-logo" style={{ background: '#FFCC00', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '12px' }}>MTN</div>
-                            <span style={{ color: 'white', fontWeight: 900, fontSize: '11px' }}>MTN MoMo</span>
+                        <div className="momo-btn-elite mtn" onClick={() => handleStartMomo('MTN')}>
+                            <div className="provider-logo">MTN</div>
+                            <span>MTN MoMo</span>
                         </div>
-                        <div className="momo-btn-elite" onClick={() => handleStartMomo('Airtel')}>
-                            <div className="provider-logo" style={{ background: '#FF0000', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '11px' }}>Airtel</div>
-                            <span style={{ color: 'white', fontWeight: 900, fontSize: '11px' }}>Airtel Money</span>
+                        <div className="momo-btn-elite airtel" onClick={() => handleStartMomo('Airtel')}>
+                            <div className="provider-logo">airtel</div>
+                            <span>Airtel Money</span>
                         </div>
                     </div>
-                </>
+                </div>
             )}
-        </div>
+        </motion.div>
         
-        <div style={{ textAlign: 'center', marginTop: '50px', opacity: 0.3 }}>
-            <img src="/assets/images/manya_icon.png" style={{ width: '50px' }} alt="Manya Council" />
+        <div className="rank-footer">
+            <img src="/assets/images/manya_icon.png" alt="Manya Council" />
+            <p>Manya Elite Hub</p>
         </div>
-    </div>
+    </motion.div>
   );
 }
 
 export default MembershipView;
+
