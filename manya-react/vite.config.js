@@ -39,41 +39,69 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,mp3,wav}'],
+        // ⚠️ CRITICAL: Exclude .mp3/.wav/.ogg from precache!
+        // Audio files use HTTP Range requests (206 Partial Content) which
+        // the Cache Storage API cannot handle. Including them causes the fatal
+        // ERR_CACHE_OPERATION_NOT_SUPPORTED error loop.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
+          // DiceBear avatars - Cache First (SVG content, safe to cache)
           {
             urlPattern: /^https:\/\/.*\.dicebear\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'dicebear-avatars',
               expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30
               },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
+              cacheableResponse: { statuses: [0, 200] }
             }
           },
+          // Audio files - Network Only with rangeRequests plugin
+          // This correctly handles streaming Range requests without breaking
           {
-            urlPattern: /assets\/(images|audio)\/.*\.(mp3|wav|png|jpg|jpeg|svg|webp)$/i,
-            handler: 'CacheFirst',
+            urlPattern: /\.(?:mp3|wav|ogg|m4a|flac)$/i,
+            handler: 'NetworkOnly',
             options: {
-              cacheName: 'static-assets-cache',
-              expiration: {
-                maxEntries: 500,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
-              }
+              rangeRequests: true
             }
           },
+          // Images (no audio) - Stale While Revalidate for speed
+          {
+            urlPattern: /assets\/.*\.(?:png|jpg|jpeg|svg|webp|gif)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'static-images-cache',
+              expiration: {
+                maxEntries: 300,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+              },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
+          // Quest & engine JSON content - Stale While Revalidate
           {
             urlPattern: /content\/.*\.json$/i,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'content-json-cache',
               expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 Days
+                maxEntries: 300,
+                maxAgeSeconds: 60 * 60 * 24 * 7
+              }
+            }
+          },
+          // JS chunks - Stale While Revalidate (fast loads, silent background updates)
+          {
+            urlPattern: /\.(?:js|css)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'js-css-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 7
               }
             }
           }
