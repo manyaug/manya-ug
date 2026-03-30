@@ -11,39 +11,56 @@ const BANK_CACHE = {};
 export const fetchEnglishQuestions = async (topicId) => {
     try {
         const topic = topicId?.replace(/\.json$/, "");
+        console.log(`\ud83d\udcd3 [EnglishFetcher] topicId="${topicId}" \u2192 topic="${topic}"`);
         
         // 1. Session Cache
-        if (BANK_CACHE[topic]) return BANK_CACHE[topic];
+        if (BANK_CACHE[topic]) {
+            console.log(`\u26a1 [Cache] Serving ${topic} from in-memory cache.`);
+            return BANK_CACHE[topic];
+        }
 
         // 2. Persistent Cache (IndexedDB)
-        const cached = await ManyaDB.getCachedQuestions('english', topic);
+        const allCached = await ManyaDB.getCachedQuestions('english');
+        const cached = allCached.filter(q => q.topic === topic);
         if (cached && cached.length > 0) {
+            console.log(`\ud83d\udce6 [ManyaDB] Serving ${topic} from IndexedDB (${cached.length} Q).`);
             BANK_CACHE[topic] = cached;
             return cached;
         }
 
-        console.log(`🔍 [English Supabase] Fetching for topic: ${topic}`);
+        console.log(`\ud83d\udd0d [Supabase] Fetching English questions for topic="${topic}"...`);
 
         const { data, error } = await supabase
             .from('questions_english')
             .select('*')
             .eq('topic', topic);
 
-        if (error) throw error;
+        if (error) {
+            console.error(`\u274c [Supabase] RLS or query error for English topic "${topic}":`, error);
+            throw error;
+        }
         
         let transformed;
         if (!data || data.length === 0) {
+            console.warn(`\u26a0\ufe0f [Supabase] 0 rows returned for English topic="${topic}".`);
+            console.warn(`   Trying default fallback pool...`);
             const { data: defaultData } = await supabase
                  .from('questions_english')
                  .select('*')
                  .eq('topic', 'default')
                  .limit(5);
             transformed = defaultData ? transformData(defaultData) : [];
+            
+            if (transformed.length === 0) {
+                console.error(`\u274c [EnglishFetcher] Both specific topic and default pool returned 0 questions.`);
+                console.error(`   Likely RLS blocking anon reads on questions_english table.`);
+            }
         } else {
             transformed = transformData(data);
         }
 
         if (transformed.length > 0) {
+            console.log(`\u2705 [Supabase] Loaded ${transformed.length} English questions.`);
             BANK_CACHE[topic] = transformed;
             await ManyaDB.cacheQuestions(transformed);
         }

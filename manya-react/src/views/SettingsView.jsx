@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { updateProfile, resetUser } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
 import { syncService } from '../services/syncService';
+import { IMAGES } from '../config/assetUrls';
 import { 
     ChevronLeft, 
     User, 
@@ -311,7 +312,7 @@ function SettingsView() {
             </motion.div>
 
             <div className="rank-footer">
-                <img src="/assets/images/manya_icon.png" alt="Manya Council" />
+                <img src={IMAGES.manya_icon} alt="Manya Council" />
                 <p>Manya Security Protocol v50.0</p>
             </div>
         </motion.div>

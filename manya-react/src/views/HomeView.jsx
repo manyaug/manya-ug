@@ -6,6 +6,7 @@ import { Target, Zap, Trophy, FlaskConical } from 'lucide-react';
 import { setAmbientMode } from '../store/audioSlice';
 import { updateStreak } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
+import { getIsland, getGem, IMAGES } from '../config/assetUrls';
 import '../styles/home.css';
 
 function HomeView() {
@@ -84,10 +85,10 @@ function HomeView() {
   }, [curriculum, user]);
 
   const subjects = [
-    { id: 'math', name: 'Mathematics', progress: user.prog_math || 0, gems: user.mathGems || 0, gemFile: '/assets/images/gems/math_gem.svg', icon: '/assets/images/math_island.png', hue: 262, color: 'var(--manya-purple)' },
-    { id: 'science', name: 'Science', progress: user.prog_science || 0, gems: user.scienceGems || 0, gemFile: '/assets/images/gems/science_svg.svg', icon: '/assets/images/science_island.png', hue: 161, color: 'var(--manya-green)' },
-    { id: 'sst', name: 'SST', progress: user.prog_sst || 0, gems: user.sstGems || 0, gemFile: '/assets/images/gems/sst_gem.svg', icon: '/assets/images/sst_island.png', hue: 38, color: 'var(--manya-gold)' },
-    { id: 'english', name: 'English', progress: user.prog_english || 0, gems: user.englishGems || 0, gemFile: '/assets/images/gems/english_gem.svg', icon: '/assets/images/english_island.png', hue: 330, color: 'var(--manya-pink)' }
+    { id: 'math', name: 'Mathematics', progress: user.prog_math || 0, gems: user.mathGems || 0, gemFile: getGem('math_gem.svg'), icon: getIsland('math'), hue: 262, color: 'var(--manya-purple)' },
+    { id: 'science', name: 'Science', progress: user.prog_science || 0, gems: user.scienceGems || 0, gemFile: getGem('science_svg.svg'), icon: getIsland('science'), hue: 161, color: 'var(--manya-green)' },
+    { id: 'sst', name: 'SST', progress: user.prog_sst || 0, gems: user.sstGems || 0, gemFile: getGem('sst_gem.svg'), icon: getIsland('sst'), hue: 38, color: 'var(--manya-gold)' },
+    { id: 'english', name: 'English', progress: user.prog_english || 0, gems: user.englishGems || 0, gemFile: getGem('english_gem.svg'), icon: getIsland('english'), hue: 330, color: 'var(--manya-pink)' }
   ];
 
   const handleOpenSpiral = (subjectId) => {
@@ -155,7 +156,7 @@ function HomeView() {
         onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
       >
         <img 
-            src={`/assets/images/gems/${activeBounty?.sub || 'math'}_gem.svg`} 
+            src={getGem(activeBounty?.sub || 'math')} 
             className="hero-bg-gem-watermark" 
             alt="watermark" 
         />

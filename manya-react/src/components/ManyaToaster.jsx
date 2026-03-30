@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeToast } from '../store/toastSlice';
+import { IMAGES } from '../config/assetUrls';
 import '../styles/notify.css';
 
 // Individual Toast Component to handle its own lifecycle animations
@@ -39,7 +40,7 @@ function Toast({ toast }) {
         className={`manya-toast ${toast.type} ${isShowing ? 'show' : ''}`}
         onClick={handleClose}
     >
-        <img src="/assets/images/manya_icon.png" alt="Manya" />
+        <img src={IMAGES.manya_icon} alt="Manya" />
         <span style={{ flex: 1 }}>{toast.message}</span>
         <div className="toast-progress"></div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, ArrowRight, User, Sparkles, Zap } from 'lucide-react';
+import { IMAGES } from '../../config/assetUrls';
 
 /**
  * MANYA ENGLISH: CHAT ENGINE (React v1.0)
@@ -16,9 +17,9 @@ const ChatEngine = ({ data, onComplete }) => {
     const [isDark, setIsDark] = useState(false);
 
     const charMap = {
-        manya: { icon: "assets/images/manya_icon.png", name: "MANYA", color: "text-indigo-500", bg: "bg-indigo-500/10" },
-        polly: { icon: "assets/images/polly_icon.png", name: "POLLY", color: "text-emerald-500", bg: "bg-emerald-500/10" },
-        kiki: { icon: "assets/images/kiki_icon.png", name: "KIKI", color: "text-rose-500", bg: "bg-rose-500/10" }
+        manya: { icon: IMAGES.manya_icon, name: "MANYA", color: "text-indigo-500", bg: "bg-indigo-500/10" },
+        polly: { icon: IMAGES.polly_icon, name: "POLLY", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+        kiki: { icon: IMAGES.kiki_icon, name: "KIKI", color: "text-rose-500", bg: "bg-rose-500/10" }
     };
 
     const char = charMap[data.speaker] || charMap.manya;

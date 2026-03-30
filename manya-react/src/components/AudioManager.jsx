@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { AUDIO, getSfx } from '../config/assetUrls';
 
 /**
  * AudioManager - Central component for all sound and music.
@@ -9,10 +10,10 @@ export default function AudioManager() {
   const { volume, isMuted, ambientMode, isRainy } = useSelector((state) => state.audio);
   const theme = useSelector((state) => state.user.data?.theme || 'light');
 
-  // Audio References
-  const dayTrack = useRef(new Audio('/assets/shared/audios/day.mp3'));
-  const nightTrack = useRef(new Audio('/assets/shared/audios/night.mp3'));
-  const rainTrack = useRef(new Audio('/assets/shared/audios/rain.mp3'));
+  // Audio References (backed by Supabase Storage CDN)
+  const dayTrack = useRef(new Audio(AUDIO.day));
+  const nightTrack = useRef(new Audio(AUDIO.night));
+  const rainTrack = useRef(new Audio(AUDIO.rain));
 
   // Initial Setup
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function AudioManager() {
     // Expose global SFX trigger for legacy engines and functional components
     window.ManyaAudio = {
       playSFX: (name) => {
-        const sound = new Audio(`/assets/shared/audios/${name}.mp3`);
+        const sound = new Audio(getSfx(name));
         sound.volume = isMuted ? 0 : volume;
         sound.play().catch(() => {});
       },

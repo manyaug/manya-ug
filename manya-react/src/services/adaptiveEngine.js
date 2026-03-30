@@ -184,6 +184,19 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         selected.push(q);
     }
 
+    // ── SAFETY FALLBACK: if spacing/pool filters were too aggressive, relax them ──
+    if (selected.length < Math.ceil(questLength / 2)) {
+        console.warn(`⚠️ [Adaptive] Spacing filter left only ${selected.length}/${questLength} questions. Relaxing constraints.`);
+        const selectedIds = new Set(selected.map(q => q.id));
+        for (const q of candidates) {
+            if (selected.length >= questLength) break;
+            if (!selectedIds.has(q.id)) {
+                selected.push(q);
+                selectedIds.add(q.id);
+            }
+        }
+    }
+
     // 4. Final Processing & Jitter
     const finalQuestions = selected.sort(() => Math.random() - 0.5);
 

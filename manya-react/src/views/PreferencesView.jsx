@@ -6,6 +6,7 @@ import { updateProfile } from '../store/userSlice';
 import { setVolume, toggleMute as toggleAudioMute } from '../store/audioSlice';
 import { syncService } from '../services/syncService';
 import { addToast } from '../store/toastSlice';
+import { IMAGES } from '../config/assetUrls';
 import { 
     ChevronLeft, 
     Moon, 
@@ -341,7 +342,7 @@ function PreferencesView() {
             </motion.div>
 
             <div className="rank-footer">
-                <img src="/assets/images/manya_icon.png" alt="Manya Council" />
+                <img src={IMAGES.manya_icon} alt="Manya Council" />
                 <p>Manya System Preferences v50.0</p>
             </div>
         </motion.div>

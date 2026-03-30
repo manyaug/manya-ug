@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Crown, ShieldCheck } from 'lucide-react';
 import { updateProfile } from '../store/userSlice';
+import { IMAGES } from '../config/assetUrls';
 import '../styles/membership.css';
 
 function MembershipView() {
@@ -69,7 +70,7 @@ function MembershipView() {
         {/* 2. SOCIAL PROOF (GLASSMORPHIC) */}
         <motion.div variants={itemVariants} className="leaderboard-card-elite mem-testimonial-card">
             <div className="test-avatar-wrap">
-                <img src="/assets/images/manya_icon.png" alt="Testimonial" />
+                <img src={IMAGES.manya_icon} alt="Testimonial" />
                 <div className="test-glow"></div>
             </div>
             <div className="test-text">
@@ -176,7 +177,7 @@ function MembershipView() {
         </motion.div>
         
         <div className="rank-footer">
-            <img src="/assets/images/manya_icon.png" alt="Manya Council" />
+            <img src={IMAGES.manya_icon} alt="Manya Council" />
             <p>Manya Elite Hub</p>
         </div>
     </motion.div>

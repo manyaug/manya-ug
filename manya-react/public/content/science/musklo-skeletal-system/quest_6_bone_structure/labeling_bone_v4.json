@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Health & Vital Functions",
-  "modelUrl": "assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
   "hotspots": [
     { "id": "2", "label": "Produces White Blood Cells", "pos": "0.097 -0.041 0.002", "norm": "0 1 0" },
     { "id": "5", "label": "Stores Phosphorus", "pos": "0.000 -0.216 0.035", "norm": "0 1 0" },

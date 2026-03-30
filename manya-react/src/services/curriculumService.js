@@ -5,6 +5,8 @@
  * and ensure stable quest keys across the app.
  */
 
+import { assetUrl } from '../config/assetUrls';
+
 let curriculumCache = null;
 let fetchPromise = null;
 
@@ -17,8 +19,13 @@ export async function preloadCurriculum() {
 
     fetchPromise = (async () => {
         try {
-            console.log("☁️ [Curriculum] Fetching master curriculum...");
+            console.log("☁️ [Curriculum] Fetching master curriculum from local / public...");
             const res = await fetch('/curriculum-master.json');
+            
+            if (!res.ok) {
+                console.warn(`[Curriculum] Local fetch failed (${res.status}), trying bare...`);
+            }
+            
             const raw = await res.json();
             
             // Normalize keys to lowercase for resilient lookup

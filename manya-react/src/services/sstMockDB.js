@@ -23,31 +23,40 @@ const SUBTOPIC_MAP = {
 export const fetchSstQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
+        console.log(`📚 [SSTFetcher] topicId="${topicId}" → subtopic="${subtopic}"`);
         
         // 1. Return from in-memory cache if available (Fastest)
         if (BANK_CACHE[subtopic]) {
-            console.log(`⚡ [Cache] Serving ${subtopic} from in-memory cache.`);
+            console.log(`⚡ [Cache] Serving ${subtopic} from in-memory cache (${BANK_CACHE[subtopic].length} Q).`);
             return BANK_CACHE[subtopic];
         }
 
         // 2. Try IndexedDB (Persistent Offline Cache)
-        const cached = await ManyaDB.getCachedQuestions('sst', subtopic);
+        // NOTE: ManyaDB.getCachedQuestions filters by q.topic, but our transformed objects
+        // store the raw DB topic column. Fetch ALL sst questions and filter by subtopic manually.
+        const allCached = await ManyaDB.getCachedQuestions('sst');
+        const cached = allCached.filter(q => q.subtopic === subtopic);
         if (cached && cached.length > 0) {
-            console.log(`📦 [ManyaDB] Serving ${subtopic} from IndexedDB.`);
-            BANK_CACHE[subtopic] = cached; // Update session cache
+            console.log(`📦 [ManyaDB] Serving ${subtopic} from IndexedDB (${cached.length} Q).`);
+            BANK_CACHE[subtopic] = cached;
             return cached;
         }
 
-        console.log(`🔍 [Supabase] Fetching ALL questions (Raw + Rephrased) for subtopic: ${subtopic}`);
+        console.log(`🔍 [Supabase] Fetching questions for subtopic="${subtopic}" from questions_sst table...`);
 
         const { data, error } = await supabase
             .from('questions_sst')
             .select('*')
             .eq('subtopic', subtopic);
 
-        if (error) throw error;
+        if (error) {
+            console.error(`❌ [Supabase] RLS or query error for subtopic "${subtopic}":`, error);
+            throw error;
+        }
         if (!data || data.length === 0) {
-            console.warn(`⚠️ No questions found in Supabase for subtopic: ${subtopic}`);
+            console.warn(`⚠️ [Supabase] 0 rows returned for subtopic="${subtopic}".`);
+            console.warn(`   Likely causes: (1) RLS blocking anon reads, (2) subtopic value mismatch in DB, (3) table is empty.`);
+            console.warn(`   Check Supabase → Table Editor → questions_sst → RLS policies.`);
             return [];
         }
 

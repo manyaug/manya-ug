@@ -27,6 +27,8 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
     const [questions, setQuestions] = useState([]);
     const [history, setHistory] = useState([]);
+    const [renderError, setRenderError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [currentIdx, setCurrentIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -50,32 +52,54 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
     useEffect(() => {
         const loadQuestions = async () => {
+            setIsLoading(true);
             dispatch(resetSession());
-            const allQuestions = await fetchEnglishQuestions(topicId);
-            if (allQuestions.length > 0) {
+            
+            try {
+                console.log(`\ud83d\udcd9 [EnglishEngine] Loading quest for topic="${topicId}", nodeType="${nodeType}"`);
+                const allQuestions = await fetchEnglishQuestions(topicId);
+                
+                console.log(`\ud83d\udcca [EnglishEngine] Bank size: ${allQuestions.length} questions for "${topicId}"`);
+
+                if (allQuestions.length === 0) {
+                    const emptyErr = new Error(
+                        `No English questions found for "${topicId}". ` +
+                        `Check Supabase: questions_english table \u2192 RLS policy (needs anon SELECT) ` +
+                        `or verify the topic value exists in the DB.`
+                    );
+                    emptyErr.isEmptyBank = true;
+                    setRenderError(emptyErr);
+                    setIsLoading(false);
+                    return;
+                }
+
                 // Fetch history from ManyaDB
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
                 setHistory(userHistory);
 
-                const quest = generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
+                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
                 setQuestions(quest.questions);
                 setQuestMeta(quest);
 
-
-                console.log(`📖 [English Adaptive] ${nodeType} quest generated:`, {
-                    length: quest.questLength,
-                    gameMode: quest.gameMode,
+                console.log(`\ud83c\udfaf [English Adaptive] ${nodeType} quest generated:`, {
+                    bankSize: allQuestions.length,
+                    questLength: quest.questions.length,
+                    gameMode: quest.metadata.gameMode,
                 });
-            } else {
-                console.warn(`⚠️ No English questions loaded for ${topicId}`);
+                
+                setTimeout(() => setIsLoading(false), 300);
+            } catch (err) {
+                console.error("\ud83d\udd25 [English] Initialization Failed:", err);
+                setRenderError(err);
+                setIsLoading(false);
             }
         };
 
         loadQuestions();
-    }, [topicId, nodeType]);
+    }, [topicId, nodeType, questKey]);
 
     const handleAnswer = (option) => {
-        if (isAnswered) return;
+        if (isAnswered || questions.length === 0) return;
 
         if (firstSelection.current && firstSelection.current !== option) {
             setAnswerChanged(true);
@@ -113,7 +137,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             hintUsed,
             answerChanged,
             changeCount,
-            pool: q.isPLE ? 'yes' : 'no',
+            pool: (q.pool === 'yes' || q.isPLE) ? 'yes' : 'no',
             concept_id: baseId,
             variant: variant,
             engine_type: 'MCQ',
@@ -176,7 +200,33 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
-    if (questions.length === 0) return null;
+    if (isLoading) return (
+        <div className="flex-1 flex flex-col items-center justify-center p-10">
+            <div className={`w-12 h-12 border-4 border-[var(--biome-color)] border-t-transparent rounded-full animate-spin mb-4`} />
+            <div className="text-[var(--biome-color)] font-black text-xs tracking-widest animate-pulse uppercase">Preparing English Quest...</div>
+        </div>
+    );
+
+    if (renderError) return (
+        <div className="flex-1 flex flex-col items-center justify-center p-10 text-center max-w-md mx-auto">
+            <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mb-6">
+                <X size={32} />
+            </div>
+            <h3 className="text-xl font-black text-slate-900 mb-2">Initialization Failed</h3>
+            <p className="text-slate-500 font-bold text-sm leading-relaxed mb-8">
+                {renderError.message}
+            </p>
+            <button 
+                onClick={() => window.location.reload()}
+                className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest uppercase hover:scale-105 active:scale-95 transition-all"
+            >
+                RETRY LOAD
+            </button>
+        </div>
+    );
+
+    const q = questions[currentIdx];
+    if (!q) return null;
 
     const frustration = calculateFrustration(session);
 
@@ -193,7 +243,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 )}
 
                 {/* Frustration encouragement */}
-                {frustration.level === 'high' && (
+                {frustration.score > 50 && (
                     <div className="text-xs text-indigo-600 bg-indigo-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
                         💪 Take your time — you're doing great!
                     </div>
@@ -213,7 +263,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                     <div className="text-[var(--biome-color)] font-black text-xs tracking-widest uppercase opacity-60">
                         {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : `Question ${currentIdx + 1} of ${questions.length}`}
                     </div>
-                    {questMeta?.gameMode === 'quickfire' && (
+                    {questMeta?.metadata?.gameMode === 'quickfire' && (
                         <div className="ml-auto flex items-center gap-1 text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
                             <Zap size={10} /> QUICKFIRE
                         </div>
@@ -266,7 +316,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                             </div>
                             <div>
                                 <h4 className="font-black text-[var(--biome-color)] text-xs tracking-widest uppercase mb-1">
-                                    {hintUsed && !isAnswered ? 'Hint' : 'Coach Tip'}
+                                    {(hintUsed && !isAnswered) ? 'Hint' : 'Coach Tip'}
                                 </h4>
                                 <p className="text-[var(--text-sub)] font-bold text-sm leading-relaxed">{q.explanation}</p>
                             </div>
@@ -287,3 +337,5 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         </div>
     );
 }
+
+

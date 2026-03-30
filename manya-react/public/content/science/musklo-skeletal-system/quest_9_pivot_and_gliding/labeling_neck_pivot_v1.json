@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Quiz: Neck Pivot Anatomy",
-  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/pivot_joint_neck.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/pivot_joint_neck.glb",
   "hotspots": [
     { "id": "1", "label": "Atlas C1", "pos": "-34.806 138.805 -87.330" },
     { "id": "2", "label": "Axis C2", "pos": "-33.460 135.737 -83.528" }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
+import { assetUrl } from '../../config/assetUrls';
 import { 
   Map as MapIcon, 
   ChevronRight, 
@@ -64,7 +65,7 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
 
   // Load Map Data
   useEffect(() => {
-    fetch('/assets/data/world-atlas.json')
+    fetch(assetUrl('data/world-atlas.json'))
       .then(res => res.json())
       .then(json => {
         setWorldData(json);

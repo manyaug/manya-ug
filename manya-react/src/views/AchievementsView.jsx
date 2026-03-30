@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Award, Moon, Target, Crown, Coins, Megaphone, CheckCircle2, Hash, X, Ruler, Sparkles, Bone, Leaf, Zap, Cloud, FlaskConical, Map, Tent, Scale, Globe2, Shapes, Footprints, PenTool, BookOpen, Library, LibraryBig } from 'lucide-react';
+import { getGem, IMAGES } from '../config/assetUrls';
 import '../styles/achievement.css';
 
 function AchievementsView() {
@@ -90,7 +91,7 @@ function AchievementsView() {
                 {subjectGems.map(gem => (
                     <div key={gem.name} className="gem-item">
                         <div className="gem-stone" style={{ filter: `drop-shadow(0 8px 15px ${gem.glow})` }}>
-                            <img src={`/assets/images/gems/${gem.file}`} alt={gem.name} />
+                            <img src={getGem(gem.file)} alt={gem.name} />
                         </div>
                         <div className="gem-count" style={{ color: gem.color }}>{gem.val}</div>
                         <div className="gem-label">{gem.name}</div>
@@ -134,7 +135,7 @@ function AchievementsView() {
         ))}
 
         <div style={{ textAlign: 'center', marginTop: '60px', opacity: 0.1 }}>
-            <img src="/assets/images/manya_icon.png" style={{ width: '80px' }} alt="Manya Council" />
+            <img src={IMAGES.manya_icon} style={{ width: '80px' }} alt="Manya Council" />
         </div>
     </div>
   );

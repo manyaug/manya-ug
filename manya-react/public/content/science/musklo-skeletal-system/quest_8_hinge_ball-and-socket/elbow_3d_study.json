@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "study",
   "topic": "The Elbow Joint (Hinge)",
-  "modelUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_joint.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_joint.glb",
   "intro": "The elbow is a perfect example of a Hinge Joint, allowing movement in only one plane.",
   "notes": [
     "A hinge joint moves like a <b>door hinge</b>.",

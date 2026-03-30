@@ -14,7 +14,8 @@ import {
     getQuestProgress, getCurrentNodeIndex, getEarnedGems,
     getJustFinished, clearJustFinished, getQuestKey, UNLOCK_THRESHOLDS, NODE_ORDER
 } from '../services/questProgressService';
-import { preloadCurriculum, findQuestData, getCachedCurriculum } from '../services/curriculumService';
+import { findQuestData, preloadCurriculum } from '../services/curriculumService';
+import { getGem, IMAGES } from '../config/assetUrls';
 import '../styles/quest-path.css';
 
 const STEPS = [
@@ -265,7 +266,7 @@ function QuestPathView() {
                     onClick={() => navigate('/achievements')}
                     style={{ cursor: 'pointer' }}
                 >
-                    <img src={`/assets/images/gems/${gemFile}`} className="header-gem-icon" alt="gem" />
+                    <img src={getGem(gemFile)} className="header-gem-icon" alt="gem" />
                     <span>{earnedGems}/{totalGems}</span>
                 </div>
             </div>
@@ -348,9 +349,9 @@ function QuestPathView() {
                             {/* Gem row */}
                             {!step.isChest && (
                                 <div className="node-gem-rating">
-                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem ${gemsForNode >= 1 ? 'earned' : 'empty'}`} alt="" />
-                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem top-gem ${gemsForNode >= 2 ? 'earned' : 'empty'}`} alt="" />
-                                    <img src={`/assets/images/gems/${gemFile}`} className={`mini-gem ${gemsForNode >= 3 ? 'earned' : 'empty'}`} alt="" />
+                                    <img src={getGem(gemFile)} className={`mini-gem ${gemsForNode >= 1 ? 'earned' : 'empty'}`} alt="" />
+                                    <img src={getGem(gemFile)} className={`mini-gem top-gem ${gemsForNode >= 2 ? 'earned' : 'empty'}`} alt="" />
+                                    <img src={getGem(gemFile)} className={`mini-gem ${gemsForNode >= 3 ? 'earned' : 'empty'}`} alt="" />
                                 </div>
                             )}
 

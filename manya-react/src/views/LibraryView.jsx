@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, FlaskConical, Globe, BookA } from 'lucide-react';
+import { IMAGES } from '../config/assetUrls';
 import '../styles/library.css';
 
 function LibraryView() {
@@ -174,7 +175,7 @@ function LibraryView() {
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '50px', opacity: 0.1 }}>
-          <img src="/assets/images/manya_icon.png" style={{ width: '60px' }} alt="Manya Logo" />
+          <img src={IMAGES.manya_icon} style={{ width: '60px' }} alt="Manya Logo" />
       </div>
     </div>
   );

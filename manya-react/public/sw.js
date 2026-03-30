@@ -5,7 +5,7 @@
 //   - STALE-WHILE-REVALIDATE: All app assets (images, JS chunks, CSS)
 //   - NETWORK FIRST: Supabase API calls, navigation
 
-const CACHE_NAME = 'manya-v8'
+const CACHE_NAME = 'manya-v9'
 
 const STATIC_SHELL = [
   '/',
@@ -40,7 +40,11 @@ function isCacheableAsset(url) {
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.jpg') ||
-    url.pathname.endsWith('.webp')
+    url.pathname.endsWith('.webp') ||
+    url.pathname.endsWith('.json') ||
+    url.pathname.endsWith('.woff') ||
+    url.pathname.endsWith('.woff2') ||
+    url.pathname.endsWith('.ttf')
   )
 }
 
@@ -80,7 +84,10 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 3. BYPASS: Cross-origin requests (Supabase API, DiceBear CDN, etc.)
-  if (url.origin !== self.location.origin) return
+  // EXCEPT for curriculum manifest which must be cached offline
+  if (url.origin !== self.location.origin && !url.pathname.endsWith('curriculum-master.json')) {
+    return
+  }
 
   // 4. NETWORK FIRST: HTML navigation (always get fresh page shell)
   if (request.mode === 'navigate') {

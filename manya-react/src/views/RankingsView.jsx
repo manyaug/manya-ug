@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getGem, IMAGES } from '../config/assetUrls';
 import '../styles/ranking.css';
 
 function RankingsView() {
@@ -8,11 +9,11 @@ function RankingsView() {
   const [activeTabId, setActiveTabId] = useState('Overall');
 
   const subjects = [
-    { id: 'Overall', label: 'Overall', gem: 'master_gem.svg', color: '#7c3aed' },
-    { id: 'Math', label: 'Math', gem: 'math_gem.svg', color: '#6366F1' },
-    { id: 'Science', label: 'Science', gem: 'science_svg.svg', color: '#10B981' },
-    { id: 'SST', label: 'SST', gem: 'sst_gem.svg', color: '#F59E0B' },
-    { id: 'English', label: 'English', gem: 'english_gem.svg', color: '#DB2777' }
+    { id: 'Overall', label: 'Overall', gem: getGem('master'), color: '#7c3aed' },
+    { id: 'Math', label: 'Math', gem: getGem('math'), color: '#6366F1' },
+    { id: 'Science', label: 'Science', gem: getGem('science'), color: '#10B981' },
+    { id: 'SST', label: 'SST', gem: getGem('sst'), color: '#F59E0B' },
+    { id: 'English', label: 'English', gem: getGem('english'), color: '#DB2777' }
   ];
 
   const activeSub = subjects.find(s => s.id === activeTabId) || subjects[0];
@@ -79,7 +80,7 @@ function RankingsView() {
                     onClick={() => setActiveTabId(s.id)}
                     style={activeTabId === s.id ? { '--tab-color': s.color } : {}}
                 >
-                    <img src={`/assets/images/gems/${s.gem}`} className="tab-gem-icon" alt={s.label} />
+                    <img src={s.gem} className="tab-gem-icon" alt={s.label} />
                     <span>{s.label}</span>
                 </div>
             ))}
@@ -96,7 +97,7 @@ function RankingsView() {
                 </div>
                 <p className="pod-name">Sarah .A</p>
                 <div className="pod-score-pill">
-                    <img src={`/assets/images/gems/${activeSub.gem}`} className="pod-gem" alt="gem" />
+                    <img src={activeSub.gem} className="pod-gem" alt="gem" />
                     <span>14.2k</span>
                 </div>
             </motion.div>
@@ -109,7 +110,7 @@ function RankingsView() {
                 </div>
                 <p className="pod-name">YOU</p>
                 <div className="pod-score-pill">
-                    <img src={`/assets/images/gems/${activeSub.gem}`} className="pod-gem" alt="gem" />
+                    <img src={activeSub.gem} className="pod-gem" alt="gem" />
                     <span>{((user?.xp || 15000) / 1000).toFixed(1)}k</span>
                 </div>
             </motion.div>
@@ -121,7 +122,7 @@ function RankingsView() {
                 </div>
                 <p className="pod-name">Musa .O</p>
                 <div className="pod-score-pill">
-                    <img src={`/assets/images/gems/${activeSub.gem}`} className="pod-gem" alt="gem" />
+                    <img src={activeSub.gem} className="pod-gem" alt="gem" />
                     <span>12.8k</span>
                 </div>
             </motion.div>
@@ -149,7 +150,7 @@ function RankingsView() {
                         <span className="r-xp">{(12000 - (r * 750)).toLocaleString()} XP</span>
                     </div>
                     <div className="r-stat">
-                        <img src={`/assets/images/gems/${activeSub.gem}`} className="r-gem" alt="gem" />
+                        <img src={activeSub.gem} className="r-gem" alt="gem" />
                         <span className="r-gem-count">{35 - r}</span>
                     </div>
                 </motion.div>
@@ -170,14 +171,14 @@ function RankingsView() {
                     <span className="r-xp">{(user?.xp || 0).toLocaleString()} XP</span>
                 </div>
                 <div className="r-stat">
-                    <img src={`/assets/images/gems/${activeSub.gem}`} className="r-gem" alt="gem" />
+                    <img src={activeSub.gem} className="r-gem" alt="gem" />
                     <span className="r-gem-count">{user?.diamonds || 12}</span>
                 </div>
             </motion.div>
         </motion.div>
         
         <div className="rank-footer">
-            <img src="/assets/images/manya_icon.png" alt="Manya Council" />
+            <img src={IMAGES.manya_icon} alt="Manya Council" />
             <p>Manya National Hero Council</p>
         </div>
     </motion.div>

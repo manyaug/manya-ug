@@ -149,9 +149,25 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
             try {
                 // 1. Fetch ALL questions from the bank
+                console.log(`\ud83c\udf0d [SSTEngine] Loading quest for topic="${topicId}", nodeType="${nodeType}"`);
                 const rawQuestions = await fetchSstQuestions(topicId);
                 const allQuestions = rawQuestions.map(q => ({ ...q, id: String(q.id || q.qid) }));
                 allBankRef.current = allQuestions;
+
+                console.log(`\ud83d\udcca [SSTEngine] Bank size: ${allQuestions.length} questions for "${topicId}"`);
+
+                // Guard: if the bank is empty, show a clear RLS/data error
+                if (allQuestions.length === 0) {
+                    const emptyErr = new Error(
+                        `No questions found for "${topicId}". ` +
+                        `Check Supabase: questions_sst table → RLS policy (needs anon SELECT) ` +
+                        `or verify the subtopic value exists in the DB.`
+                    );
+                    emptyErr.isEmptyBank = true;
+                    setRenderError(emptyErr);
+                    setIsLoading(false);
+                    return;
+                }
 
                 // 2. Fetch history from ManyaDB
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
@@ -162,21 +178,24 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                 setQuestions(quest.questions);
                 setQuestMeta(quest);
 
-
-                console.log(`🎯 [SST Adaptive v3] ${nodeType} quest:`, {
-                    length: quest.questions.length,
+                console.log(`\ud83c\udfaf [SST Adaptive v3] ${nodeType} quest generated:`, {
+                    bankSize: allQuestions.length,
+                    questLength: quest.questions.length,
                     gameMode: quest.metadata.gameMode,
                 });
                 
                 // Small delay to ensure smooth transition
                 setTimeout(() => setIsLoading(false), 300);
             } catch (err) {
-                console.error("🔥 [SST] Initialization Failed:", err);
+                console.error("\ud83d\udd25 [SST] Initialization Failed:", err);
                 setRenderError(err);
+                setIsLoading(false);
             }
         };
         loadQuestions();
     }, [topicId, nodeType, questKey]);
+
+
 
     /**
      * Find a rephrased variant of a question in the bank.

@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "study",
   "topic": "Anatomy of Voluntary Muscles",
-  "modelUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles.glb",
   "intro": "Voluntary muscles attach to the skeleton to create movement. They work by contracting (shortening).",
   "notes": [
     "<b>Muscle Belly:</b> The thick, fleshy part that contracts.",

@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Diamond } from 'lucide-react';
+import { getGem } from '../config/assetUrls';
 import '../styles/globalHud.css';
 
 function GlobalHUD() {
@@ -27,7 +28,7 @@ function GlobalHUD() {
         </div>
 
         <div className="hud-pill-diamond" onClick={() => navigate('/achievements')} style={{ cursor: 'pointer' }}>
-          <img src="/assets/images/gems/master_gem.svg" className="hud-gem-img" alt="Gem" />
+          <img src={getGem('master_gem.svg')} className="hud-gem-img" alt="Gem" />
           <span className="count">{user.diamonds}</span>
         </div>
 

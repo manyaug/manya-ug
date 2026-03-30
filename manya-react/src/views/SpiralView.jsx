@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
 import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
+import { getPathImage, getGem } from '../config/assetUrls';
 import '../styles/spiral.css';
 
 // ---- HOTSPOT POSITIONS (exact from original engine) ----
@@ -264,7 +265,7 @@ function SpiralView() {
 
     const tiles = Array.from({ length: totalTiles }, (_, i) => ({
         i,
-        src: `/assets/images/${biome.folder}/way-${(i % 10) + 1}.png`,
+        src: getPathImage(biome.folder, `way-${(i % 10) + 1}.png`),
         bottom: BOTTOM_BUFFER + i * EFFECTIVE_HEIGHT,
         zIndex: i,
     }));
@@ -311,7 +312,7 @@ function SpiralView() {
                         style={{ cursor: 'pointer' }}
                     >
                         <img
-                            src={`/assets/images/gems/${biome.gemFile}`}
+                            src={getGem(biome.gemFile)}
                             alt="gem"
                             className="spiral-gem-img"
                         />

@@ -23,6 +23,7 @@ import { addToast } from '../store/toastSlice';
 import { updateProfile, awardGems } from '../store/userSlice';
 
 import { loadQuestSteps } from '../utils/questLoader';
+import { getGem } from '../config/assetUrls';
 import { ENGINE_REGISTRY } from '../utils/engineRouter';
 import { syncService } from '../services/syncService';
 import { masteryService } from '../services/masteryService';
@@ -412,7 +413,7 @@ export default function QuestRunner() {
 
                 <div className="qr-progress-counter">
                     <img
-                        src={`/assets/images/gems/${gemFile}`}
+                        src={getGem(gemFile)}
                         className="w-5 h-5 object-contain"
                         alt="gem"
                         onError={e => { e.target.style.display = 'none'; }}

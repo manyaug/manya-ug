@@ -11,6 +11,7 @@ import {
     ChevronRight,
     BrainCircuit
 } from 'lucide-react';
+import { getIsland, IMAGES } from '../config/assetUrls';
 import '../styles/profile.css';
 
 function ProfileView() {
@@ -48,10 +49,10 @@ function ProfileView() {
   const stats = xpToLevel(user?.xp || 150);
 
   const subjectProgress = [
-      { name: 'Mathematics', val: 78, color: '#7c3aed', icon: '/assets/images/math_island.png' },
-      { name: 'Science', val: 45, color: '#10b981', icon: '/assets/images/science_island.png' },
-      { name: 'SST', val: 62, color: '#f59e0b', icon: '/assets/images/sst_island.png' },
-      { name: 'English', val: 90, color: '#db2777', icon: '/assets/images/english_island.png' }
+    { name: 'Mathematics', val: 78, color: '#7c3aed', icon: getIsland('math') },
+    { name: 'Science', val: 45, color: '#10b981', icon: getIsland('science') },
+    { name: 'SST', val: 62, color: '#f59e0b', icon: getIsland('sst') },
+    { name: 'English', val: 90, color: '#db2777', icon: getIsland('english') }
   ];
 
   const past7Days = Array.from({length: 7}, (_, i) => {
@@ -235,7 +236,7 @@ function ProfileView() {
             </motion.div>
 
         <div style={{ textAlign: 'center', marginTop: '40px', opacity: 0.2, paddingBottom: '50px' }}>
-            <img src="/assets/images/manya_icon.png" style={{ width: '50px' }} alt="Manya Council" />
+            <img src={IMAGES.manya_icon} style={{ width: '50px' }} alt="Manya Council" />
         </div>
         </motion.div>
     );

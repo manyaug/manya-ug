@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "study",
   "topic": "The Axial Skeleton: The Skull",
-  "modelUrl": "assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
   "intro": "The skull is a collection of 22 bones that protect the brain and sense organs.",
   "notes": [
     "The <b>Cranium</b> is the 'brain box' that protects the brain.",
