@@ -252,7 +252,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 {/* Progress Mini-Dots */}
                 <div className="flex gap-2 justify-center mb-10">
                     {questions.map((_, i) => (
-                        <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentIdx ? 'bg-[var(--biome-color)] w-8' : (i < currentIdx ? 'bg-[var(--biome-color)] opacity-40' : 'bg-slate-200')}`} />
+                        <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentIdx ? 'bg-[var(--biome-color)] w-8' : (i < currentIdx ? 'bg-[var(--biome-color)] opacity-40' : 'bg-[var(--border-color)]')}`} />
                     ))}
                 </div>
 
@@ -278,7 +278,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                     {q.options.map((opt, i) => {
                         const isCorrect = opt === q.answer;
                         const isSelected = opt === selectedOption;
-                        let stateStyles = "bg-slate-50 border-slate-200 hover:border-[var(--biome-color)] hover:shadow-lg";
+                        let stateStyles = "bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-main)] hover:border-[var(--biome-color)] hover:shadow-lg";
 
                         if (isAnswered) {
                             if (isCorrect) stateStyles = "bg-emerald-500/10 border-emerald-500 text-emerald-700 shadow-xl shadow-emerald-500/5";

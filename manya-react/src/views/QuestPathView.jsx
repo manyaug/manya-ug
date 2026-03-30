@@ -123,6 +123,7 @@ function QuestPathView() {
                     window.ManyaAudio?.whoosh?.();
                     
                     // Trigger burst after move duration (matches CSS transition)
+                    // The character now moves "elegantly and slowly" over 2 seconds
                     setTimeout(() => {
                         setShowBurst(justFinished.nextNode);
                         window.ManyaAudio?.success?.();
@@ -136,7 +137,7 @@ function QuestPathView() {
                             setShowBurst(null);
                             setAnimatingUnlock(null);
                         }, 1000);
-                    }, 800);
+                    }, 2000); // Wait 2s for movement to finish
                 }, 1000);
             }
         }
@@ -410,7 +411,7 @@ function QuestPathView() {
                             left: `${iconPos.x}%`,
                             top: `${iconPos.y}%`,
                             transform: 'translate(-50%, -50%)',
-                            transition: 'left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                            transition: 'left 2s cubic-bezier(0.4, 0, 0.2, 1), top 2s cubic-bezier(0.4, 0, 0.2, 1)',
                             zIndex: 50
                         }}
                     >

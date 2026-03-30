@@ -47,6 +47,14 @@ function RouterLayout() {
     const hideHud = HIDE_HUD_ROUTES.some(r => location.pathname.startsWith(r));
     const hideNav = HIDE_NAV_ROUTES.some(r => location.pathname.startsWith(r));
 
+    // Reset scroll position to top on every route change
+    useEffect(() => {
+        const scroller = document.getElementById('view-mount');
+        if (scroller) {
+            scroller.scrollTo(0, 0);
+        }
+    }, [location.pathname]);
+
     return (
         <div className="fullscreen-mode">
             <ManyaToaster />

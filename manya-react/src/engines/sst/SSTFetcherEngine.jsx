@@ -474,8 +474,8 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         const isPerfect = mastery === 100;
 
         return (
-            <div className="flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 bg-slate-50/50">
-                <div className="w-full max-w-sm bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-100 p-8 text-center relative overflow-hidden">
+            <div className="flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 bg-[var(--bg-main)] bg-opacity-50">
+                <div className="w-full max-w-sm bg-[var(--bg-card)] rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-[var(--border-color)] p-8 text-center relative overflow-hidden">
                     
                     {/* Decorative Background Elements */}
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-amber-50 to-transparent opacity-50" />
@@ -501,16 +501,16 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                 {mastery >= 90 ? '🏆' : mastery >= 75 ? '🥈' : mastery >= 60 ? '🥉' : '💪'}
                              </div>
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">
+                        <h2 className="text-3xl font-black text-[var(--text-main)] tracking-tight leading-none mb-2">
                              {mastery >= 90 ? 'Outstanding!' : mastery >= 75 ? 'Great Job!' : mastery >= 60 ? 'Well Done!' : 'Keep Going!'}
                         </h2>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--bg-main)] rounded-full text-[10px] font-black text-[var(--text-sub)] uppercase tracking-widest">
                              <Compass size={10} /> {nodeType} COMPLETE
                         </div>
                     </div>
 
                     {/* Mastery Ring Card */}
-                    <div className="bg-slate-50 rounded-[2.5rem] p-6 mb-6 border border-slate-100/50">
+                    <div className="bg-[var(--bg-main)] rounded-[2.5rem] p-6 mb-6 border border-[var(--border-color)]">
                         <div className="relative w-32 h-32 mx-auto mb-4">
                             <svg className="w-full h-full -rotate-90">
                                 <circle 
@@ -529,15 +529,15 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-3xl font-black text-slate-800 leading-none">{mastery}%</span>
-                                <span className="text-[9px] font-black text-slate-400 tracking-widest uppercase mt-1">Mastery</span>
+                                <span className="text-3xl font-black text-[var(--text-main)] leading-none">{mastery}%</span>
+                                <span className="text-[9px] font-black text-[var(--text-sub)] tracking-widest uppercase mt-1">Mastery</span>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-around border-t border-slate-200/50 pt-4 mt-2">
+                        <div className="flex items-center justify-around border-t border-[var(--border-color)] pt-4 mt-2">
                             <div className="text-center">
-                                <div className="text-lg font-black text-slate-800">{completionResult.score}/{completionResult.total}</div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                                <div className="text-lg font-black text-[var(--text-main)]">{completionResult.score}/{completionResult.total}</div>
+                                <div className="text-[10px] font-bold text-[var(--text-sub)] uppercase tracking-wider">Correct</div>
                             </div>
                             <div className="w-[1px] h-8 bg-slate-200" />
                             <div className="text-center">
@@ -573,7 +573,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                     <div className="flex flex-col gap-3">
                          <button
                             onClick={handleFinish}
-                            className="w-full h-14 bg-slate-900 text-white rounded-3xl font-black text-[13px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-black active:scale-95 transition-all shadow-xl shadow-slate-900/10"
+                            className="w-full h-14 bg-[var(--text-main)] text-[var(--bg-main)] rounded-3xl font-black text-[13px] tracking-widest uppercase flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-slate-900/10"
                         >
                             {needsRetry ? 'EXIT QUEST' : 'COLLECT REWARDS'} <ArrowRight size={18} />
                         </button>
@@ -594,7 +594,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                     })();
 
                                 }}
-                                className="w-full h-14 bg-white text-slate-600 border-2 border-slate-100 rounded-3xl font-black text-[11px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
+                                className="w-full h-14 bg-[var(--bg-card)] text-[var(--text-sub)] border-2 border-[var(--border-color)] rounded-3xl font-black text-[11px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-[var(--bg-main)] transition-all"
                             >
                                 <RotateCcw size={16} /> REPLAY NODE
                             </button>
@@ -654,7 +654,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
         return (
             <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-                <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-amber-100 p-8 relative overflow-hidden">
+                <div className="w-full max-w-xl bg-[var(--bg-card)] rounded-[2.5rem] shadow-2xl border border-[var(--border-color)] p-8 relative overflow-hidden">
 
                     <div className="absolute -top-10 -right-10 opacity-5 text-amber-900 rotate-12">
                        <Globe size={240} />
@@ -682,7 +682,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                     {/* Progress Bar */}
                     <div className="flex gap-2 justify-center mb-10 overflow-x-auto no-scrollbar">
                         {questions.map((_, i) => (
-                            <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-6' : (i < currentIdx ? 'bg-amber-500 opacity-40' : 'bg-slate-200')}`} />
+                            <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-6' : (i < currentIdx ? 'bg-amber-500 opacity-40' : 'bg-[var(--border-color)]')}`} />
                         ))}
                     </div>
 
@@ -700,7 +700,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                         )}
                     </div>
 
-                    <h2 className="text-xl font-bold text-slate-800 mb-8 leading-snug relative z-10">
+                    <h2 className="text-xl font-bold text-[var(--text-main)] mb-8 leading-snug relative z-10">
                         {q.question}
                     </h2>
 
@@ -710,9 +710,9 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                             const isSelected = opt === selectedOption;
                             // ── DYNAMIC STYLING ──
                             let boxStyle = {
-                                background: '#f8fafc',
-                                borderColor: '#e2e8f0',
-                                color: '#334155',
+                                background: 'var(--bg-main)',
+                                borderColor: 'var(--border-color)',
+                                color: 'var(--text-main)',
                                 transform: 'scale(1)',
                                 boxShadow: 'none'
                             };
@@ -723,7 +723,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                 } else if (isSelected) {
                                     boxStyle = { background: '#fef2f2', borderColor: '#ef4444', color: '#7f1d1d', boxShadow: '0 4px 12px rgba(239,68,68,0.1)' };
                                 } else {
-                                    boxStyle = { background: '#f8fafc', borderColor: '#e2e8f0', color: '#94a3b8', opacity: 0.5, filter: 'grayscale(0.5)' };
+                                    boxStyle = { background: 'var(--bg-main)', borderColor: 'var(--border-color)', color: 'var(--text-muted)', opacity: 0.5, filter: 'grayscale(0.5)' };
                                 }
                             } else if (isSelected) {
                                 // ── VIBRANT SELECTED STATE ──
@@ -762,14 +762,14 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
                     {/* HINT DISPLAY (Only if requested and not yet answered) */}
                     {hintUsed && !isAnswered && (
-                        <div className="mt-6 relative overflow-hidden bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 shadow-sm animate-in slide-in-from-bottom-2 duration-300">
+                        <div className="mt-6 relative overflow-hidden bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-4 shadow-sm animate-in slide-in-from-bottom-2 duration-300">
                             <div className="flex items-start gap-3 relative z-10">
                                 <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white shrink-0">
                                     <Lightbulb size={16} fill="currentColor" />
                                 </div>
                                 <div>
-                                    <h4 className="font-black text-amber-600 text-[10px] tracking-widest uppercase mb-1">Quick Hint</h4>
-                                    <p className="text-slate-700 font-bold text-[13px] leading-relaxed">{q.hint || 'No hint available for this concept.'}</p>
+                                    <h4 className="font-black text-amber-500 text-[10px] tracking-widest uppercase mb-1">Quick Hint</h4>
+                                    <p className="text-[var(--text-main)] font-bold text-[13px] leading-relaxed">{q.hint || 'No hint available for this concept.'}</p>
                                 </div>
                             </div>
                         </div>
@@ -811,7 +811,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                         ) : (
                             <button
                                 onClick={nextQuestion}
-                                className="w-full h-14 bg-slate-900 text-white rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
+                                className="w-full h-14 bg-[var(--text-main)] text-[var(--bg-main)] rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
                             >
                                 {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP'}
                                 <ArrowRight size={18} />

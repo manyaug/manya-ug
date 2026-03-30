@@ -28,6 +28,7 @@ import { ENGINE_REGISTRY } from '../utils/engineRouter';
 import { syncService } from '../services/syncService';
 import { masteryService } from '../services/masteryService';
 import { calculateFrustration } from '../services/psychTracker';
+import { saveNodeCompletion, setJustFinished } from '../services/questProgressService';
 import React, { Suspense } from 'react';
 import '../styles/engines.css';
 
@@ -379,10 +380,28 @@ export default function QuestRunner() {
         dispatch(updateProfile({ diamonds: (user?.diamonds || 0) + gemsEarned }));
         dispatch(addToast({ message: `🏆 Quest complete! +${gemsEarned} gems earned`, type: 'success' }));
         
+        // NEW LOGIC TO UNLOCK NEXT NODE FOR PURE-SIMULATION PATHS (like EXPLORE)
+        const { subject, questKey, nodeType } = location.state || {};
+        const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
+        
+        // If there was no fetcher to record the mastery natively, we record a perfect score (100%) automatically
+        if (questKey && nodeType && !hasFetcher) {
+            const result = saveNodeCompletion(subject, questKey, nodeType, 100);
+            
+            setJustFinished({
+                subject,
+                questKey,
+                nodeType,
+                mastery: 100,
+                unlocked: result.unlocked,
+                nextNode: result.nextNode
+            });
+        }
+
         // Trigger completion sound
         window.ManyaAudio?.finish();
 
-        // Exit seamlessly without legacy popup
+        // Exit seamlessly
         setTimeout(() => navigate(-1), 300);
     }
 
