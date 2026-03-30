@@ -41,18 +41,7 @@ export default defineConfig({
               cacheableResponse: { statuses: [0, 200] }
             }
           },
-          // Supabase Storage (GLB, MP3 via CDN URL) — NetworkOnly with rangeRequests
-          {
-            urlPattern: /supabase\.co\/storage\/.*/i,
-            handler: 'NetworkOnly',
-            options: { rangeRequests: true }
-          },
-          // Audio files served locally — NetworkOnly (bypass cache for Range requests)
-          {
-            urlPattern: /\.(?:mp3|wav|ogg|m4a)$/i,
-            handler: 'NetworkOnly',
-            options: { rangeRequests: true }
-          },
+
           // Images
           {
             urlPattern: /assets\/.*\.(?:png|jpg|jpeg|svg|webp|gif)$/i,

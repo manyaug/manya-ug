@@ -8,18 +8,22 @@ let client;
 if (!supabaseUrl || !supabaseAnonKey) {
     // Silently handle missing keys for local development without spamming the console
     
-    // Return a Safe Proxy to prevent "Cannot read property 'from' of undefined" crashes
-    client = new Proxy({}, {
-        get: (target, prop) => {
-            return () => ({
-                from: () => ({
-                    select: () => ({
-                        eq: () => Promise.resolve({ data: [], error: { message: `Supabase not configured. Missing: ${!supabaseUrl ? 'URL' : 'Key'}` } })
-                    })
-                })
-            });
-        }
-    });
+    // Return a Safe Proxy to prevent fatal crashes
+    client = {
+        auth: {
+            getSession: async () => ({ data: { session: null }, error: null }),
+            onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+            signInWithPassword: async () => ({ data: null, error: { message: "Local Environment missing Supabase Keys. Check your .env file or refresh the server." } }),
+            signUp: async () => ({ data: null, error: { message: "Keys missing." } }),
+            signOut: async () => ({ error: null })
+        },
+        from: (table) => ({
+            select: () => ({ eq: () => ({ single: async () => ({ data: null, error: { message: "Offline Proxy" } }) }) }),
+            upsert: async () => ({ data: null, error: null }),
+            insert: async () => ({ data: null, error: null })
+        }),
+        rpc: async () => ({ data: null, error: null })
+    };
 } else {
     try {
         client = createClient(supabaseUrl, supabaseAnonKey);
