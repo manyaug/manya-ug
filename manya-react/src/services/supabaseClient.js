@@ -6,7 +6,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 let client;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-    console.error("❌ [Supabase] URL or Anon Key is missing! Check your .env or Netlify Dashboard.");
+    // Silently handle missing keys for local development without spamming the console
     
     // Return a Safe Proxy to prevent "Cannot read property 'from' of undefined" crashes
     client = new Proxy({}, {

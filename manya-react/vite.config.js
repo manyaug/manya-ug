@@ -27,6 +27,7 @@ export default defineConfig({
       workbox: {
         // ⚠️ No .mp3/.wav in precache — they use Range requests which break CacheStorage
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+        globIgnores: ['**/assets/icons/**/*'],
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB cap per file
         runtimeCaching: [
