@@ -23,8 +23,15 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
     // ADAPTIVE FETCHER INJECTION
     // ─────────────────────────────────────────────────────────────────────────
 
-    // ── SST: Adaptive Fetcher with content sequencing ────────────────────────
-    if (subject === 'sst' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+    const FETCHER_MAP = {
+        'sst': 'SST_FETCHER',
+        'math': 'MATH_FETCHER',
+        'science': 'SCIENCE_FETCHER',
+        'english': 'ENGLISH_FETCHER'
+    };
+
+    // ── SST, Math, Science: Adaptive Fetcher with content sequencing ────────
+    if (['sst', 'math', 'science'].includes(subject) && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
         const steps = [];
         let postWarmupSteps = []; // Holds the warmup recap to be injected *after* the test
 
@@ -73,6 +80,39 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             }
         }
 
+        // ── IDENTIFY SIMULATIONS ──
+        let selectedSims = [];
+        if ((nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+            // A. Check for explicit JSON resources
+            if (resources && resources.length > 0) {
+                const simResources = resources.filter(r =>
+                    !r.file.startsWith('study_') && !r.file.includes('_study') &&
+                    !r.file.startsWith('recap_') && !r.file.includes('_recap') &&
+                    !r.file.startsWith('puzzle_') && !r.file.includes('_puzzle') &&
+                    !r.file.startsWith('quiz_') && !r.file.includes('_quiz') &&
+                    !r.file.includes('project_genesis') && !r.file.includes('extremes_of_africa')
+                );
+                selectedSims.push(...simResources);
+            }
+
+            // B. Check for Numbered Practice convention (e.g. 02-001.json)
+            if (practiceCount > 0 && prefix) {
+                const numToPick = Math.min(practiceCount, 10); // Pick up to 10 numbered tasks
+                console.log(`🔢 [QuestFactory] Found ${practiceCount} numbered tasks for prefix "${prefix}". Adding ${numToPick} to simResources.`);
+                for (let i = 1; i <= numToPick; i++) {
+                    const fileName = `${prefix}-${String(i).padStart(3, '0')}.json`;
+                    selectedSims.push({
+                        label: `Task ${i}`,
+                        file: fileName
+                    });
+                }
+            }
+            
+            if (selectedSims.length > 0) {
+                console.log(`🎮 [QuestFactory] Total interactive items identified: ${selectedSims.length} for ${subject}/${questFolder}`);
+            }
+        }
+
         // PRACTICE/REINFORCE: insert recap if previous node mastery was low
         if (nodeType === 'PRACTICE' || nodeType === 'REINFORCE') {
             const prevNode = nodeType === 'PRACTICE' ? 'EXPLORE' : 'PRACTICE';
@@ -100,15 +140,16 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         // Then the MCQ fetcher engine step (except for EXPLORE which is just study/recap)
         if (nodeType !== 'EXPLORE') {
             steps.push({
-                engineType: 'SST_FETCHER',
+                engineType: FETCHER_MAP[subject],
                 topic: questFolder,
                 mode: 'quiz',
                 data: {
                     topic: questFolder,
                     nodeType,
-                    subject: 'sst',
+                    subject: subject,
                     unitId,
-                    questKey: getQuestKey('sst', unitId, questFolder),
+                    questKey: getQuestKey(subject, unitId, questFolder),
+                    simResources: selectedSims // <--- Hand off to the engine dynamically!
                 }
             });
         }

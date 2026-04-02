@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Construction",
+  "variantTitle": "Quest 7-018: Sports Build",
+  "sets": { "A": { "label": "R", "color": "#7c3aed" }, "B": { "label": "T", "color": "#db2777" } },
+  "zones": { "left": ["2n"], "center": ["10"], "right": ["n"], "outside": ["0"] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "<b>Phase 1: Build It</b><br>• R-only: <b>2n</b> &nbsp; • T-only: <b>n</b><br>• Both: <b>10</b>",
+      "items": [
+        { "val": "2n", "target": "left" },
+        { "val": "10", "target": "center" },
+        { "val": "n", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": false,
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total=40. Find <b>n</b>.",
+      "hint": "2n + 10 + n = 40 -> 3n = 30."
+    }
+  ]
+}

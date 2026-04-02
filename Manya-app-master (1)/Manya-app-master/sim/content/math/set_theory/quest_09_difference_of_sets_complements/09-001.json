@@ -1,0 +1,43 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Universal Sets & Complements",
+  "variantTitle": "Quest 9-001: The Universal Box",
+  "sets": {
+    "A": { "label": "F", "color": "#9333ea" },
+    "B": { "label": "T", "color": "#db2777" }
+  },
+  "zones": {
+    "left": [1, 2],
+    "center": [3, 6],
+    "right": [9, 12, 15],
+    "outside": [4, 5, 7, 8, 10, 11, 13, 14]
+  },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Drag numbers to correct places. Don't forget the <b>Universal Set</b>!<br>F={1,2,3,6}, T={3,6,9,12,15}",
+      "items": [
+        { "val": "1", "target": "left" }, { "val": "2", "target": "left" },
+        { "val": "3", "target": "center" }, { "val": "6", "target": "center" },
+        { "val": "9", "target": "right" }, { "val": "12", "target": "right" }, { "val": "15", "target": "right" },
+        { "val": "4", "target": "outside" }, { "val": "5", "target": "outside" }, { "val": "7", "target": "outside" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "List members of Intersection <span style='color:#64748b'>F ∩ T</span>.",
+      "hint": "Numbers inside BOTH circles."
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "universal_only",
+      "prompt": "List members of <span style='color:#64748b'>(F ∪ T)'</span> (Complement).",
+      "hint": "List numbers in the rectangle but outside the circles."
+    }
+  ]
+}

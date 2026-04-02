@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Factors",
+  "variantTitle": "Quest 6-001: Factors of 12 & 18",
+  "sets": { "A": { "label": "F12", "color": "#9333ea" }, "B": { "label": "F18", "color": "#db2777" } },
+  "zones": { "left": [4, 12], "center": [1, 2, 3, 6], "right": [9, 18], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Drag factors to the correct region.<br><b>F12</b> & <b>F18</b>",
+      "items": [
+        { "val": "1", "target": "center" }, { "val": "2", "target": "center" },
+        { "val": "3", "target": "center" }, { "val": "4", "target": "left" },
+        { "val": "6", "target": "center" }, { "val": "9", "target": "right" },
+        { "val": "12", "target": "left" }, { "val": "18", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "List the <b>GCF</b> (Highest Common Factor).",
+      "hint": "The largest number in the intersection is 6."
+    }
+  ]
+}

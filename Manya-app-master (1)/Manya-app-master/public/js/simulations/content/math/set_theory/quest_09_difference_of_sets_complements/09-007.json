@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Difference",
+  "variantTitle": "Quest 9-007: Science Test",
+  "sets": { "A": { "label": "M (25)", "color": "#2563eb" }, "B": { "label": "S", "color": "#db2777" } },
+  "zones": { "left": ["x+5"], "center": ["x"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 25,
+      "expected_x": 10,
+      "prompt": "Total Math = 25. Find <b>x</b>.",
+      "hint": "(x+5) + x = 25 -> 2x = 20"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 10,
+      "expression": "x+5",
+      "prompt": "How many passed <span style='color:#2563eb'>Math ONLY</span>?",
+      "hint": "10 + 5 = 15"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Complex Algebra",
+  "variantTitle": "Mastering Set Equations",
+  "slides": [
+    {
+      "title": "The 4 Main Exam Questions",
+      "text": "In hard exams, you won't just count numbers. You will solve for letters like <b>k</b>, <b>m</b>, or <b>y</b>.<br><br>There are 4 types of questions. Let's learn to spot them.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "3k", "center": "k", "right": "2k+1" },
+      "highlight": []
+    },
+    {
+      "title": "Type 1: The 'Whole Circle' Rule",
+      "text": "<b>Clue:</b> Question says \"n(A) = 24\".<br><br><b>Logic:</b> This means the <b>Entire Circle A</b> adds up to 24. Do not forget the intersection!<br><br><b>Equation:</b> (Left Only) + (Middle) = 24<br>2k + (k+3) = 24",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A (24)", "B"],
+      "elements": { "left": "2k", "center": "k+3", "right": "3k-1" },
+      "highlight": ["left", "center"]
+    },
+    {
+      "title": "Type 2: 'Only One' Activity",
+      "text": "<b>Clue:</b> \"36 pupils do <b>only one</b> activity\".<br><br><b>Logic:</b> This refers to the 'ears' of the diagram. We ignore the middle.<br><br><b>Equation:</b> (Left Only) + (Right Only) = 36<br>4k + (2k+6) = 36",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Dance", "Sing"],
+      "elements": { "left": "4k", "center": "k+2", "right": "2k+6" },
+      "highlight": ["left", "right"]
+    },
+    {
+      "title": "Type 3: Equal Sets",
+      "text": "<b>Clue:</b> \"n(L) = n(E)\".<br><br><b>Logic:</b> The total of the Left Circle equals the total of the Right Circle.<br><br><b>Equation:</b> (Left + Mid) = (Mid + Right)<br>5m+4 + m = m + 3m+12",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["L", "E"],
+      "elements": { "left": "5m+4", "center": "m", "right": "3m+12" },
+      "highlight": ["left", "center", "right"]
+    },
+    {
+      "title": "Type 4: The Universal Sum",
+      "text": "<b>Clue:</b> \"Total class = 90\" (and there are outsiders).<br><br><b>Logic:</b> Add EVERYTHING. Left + Middle + Right + Outside = Total.<br><br><b>Equation:</b> (3h+1) + 2h + (h-4) + (h+2) = 90",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["B", "N"],
+      "elements": { "left": "3h+1", "center": "2h", "right": "h-4", "outside": "h+2" },
+      "highlight": ["outside", "left", "center", "right"]
+    },
+    {
+      "title": "Final Step: Substitution",
+      "text": "Finding <b>x</b> is not the end!<br><br>If question asks: \"How many do <b>Dancing</b>?\", you must substitute x back into the expression.<br><br>If x=5, Dancing = 4(5) + (5+2) = <b>27</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Dance", "Sing"],
+      "elements": { "left": "20", "center": "7", "right": "16" },
+      "highlight": ["left", "center"]
+    }
+  ]
+}

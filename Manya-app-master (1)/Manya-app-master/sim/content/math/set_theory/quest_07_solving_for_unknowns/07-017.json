@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Totals",
+  "variantTitle": "Quest 7-012: Sports Algebra",
+  "sets": { "A": { "label": "F (40)", "color": "#16a34a" }, "B": { "label": "R", "color": "#f59e0b" } },
+  "zones": { "left": ["40-(x-5)"], "center": ["x-5"], "right": ["x"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 60,
+      "expected_x": 15,
+      "prompt": "Total=60. Total F=40. R-only=x. Outside=5. Find <b>x</b>.",
+      "hint": "40 + x + 5 = 60 -> x = 15."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "intersection",
+      "x_val": 15,
+      "expression": "x-5",
+      "prompt": "How many play <b>BOTH</b>?",
+      "hint": "x - 5 = 10."
+    }
+  ]
+}

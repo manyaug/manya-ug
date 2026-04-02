@@ -1,0 +1,12 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Elbow Diagram: Identification",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_image.png",
+  "hotspots": [
+    { "id": "p1", "label": "Humerus", "x": 35.94, "y": 42.42 },
+    { "id": "p2", "label": "Ulna", "x": 36.52, "y": 75.1 },
+    { "id": "p3", "label": "Radius", "x": 81.64, "y": 53.81 }
+  ],
+  "wordBank": ["Humerus", "Ulna", "Radius", "Tarsals", "Femur"]
+}

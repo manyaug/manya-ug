@@ -1,0 +1,44 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Gliding Joint: Wrist",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/wrist.glb",
+  "intro": "The wrist is a complex joint made of many small bones gliding against each other.",
+  "notes": [
+    "<b>Carpals:</b> 8 small bones arranged in two rows.",
+    "<b>Gliding:</b> Allows the hand to wave and circle.",
+    "Connects the forearm to the hand."
+  ],
+  "hotspots": [
+    { 
+      "id": "1", 
+      "label": "Radius", 
+      "region": "appendicular",
+      "pos": "79.251 114.275 -51.249", 
+      "norm": "-0.869 0.302 -0.393", 
+      "info": "Main wrist connection.",
+      "description": "The wide end of the Radius connects to the Carpal bones to form the main wrist joint.",
+      "examTip": "The Ulna does not actually touch the wrist bones directly (there is a disc in between)."
+    },
+    { 
+      "id": "3", 
+      "label": "Carpals", 
+      "region": "appendicular",
+      "pos": "72.424 136.091 -33.974", 
+      "norm": "-0.961 0.148 -0.234", 
+      "info": "8 gliding bones.",
+      "description": "These 8 pebble-like bones slide over each other to allow the wrist to bend, straighten, and move side-to-side.",
+      "examTip": "This gliding motion is what makes the wrist so flexible."
+    },
+    { 
+      "id": "4", 
+      "label": "Metacarpals", 
+      "region": "appendicular", 
+      "pos": "73.611 147.112 -32.010", 
+      "norm": "-0.102 0.070 -0.992", 
+      "info": "Palm bones.",
+      "description": "These bones connect the wrist (Carpals) to the fingers (Phalanges).",
+      "examTip": "The joints between Carpals and Metacarpals are also Gliding joints (except for the thumb)."
+    }
+  ]
+}

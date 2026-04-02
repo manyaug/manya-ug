@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4-007: Prime Proper",
+  "sets": { "A": { "label": "P", "color": "#16a34a" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [2, 3, 5, 7], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Find n(P) for Primes less than 10.",
+      "hint": "2, 3, 5, 7. Count is 4."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Calculate <b>Proper Subsets</b>.",
+      "hint": "Formula: 2ⁿ - 1. So 16 - 1 = 15."
+    }
+  ]
+}

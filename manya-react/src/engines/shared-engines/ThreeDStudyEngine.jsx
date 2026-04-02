@@ -10,7 +10,7 @@ import { RotateCcw, Box, Sparkles, Info, CheckCircle2, Trophy, ChevronRight, X, 
  * - Global Theme: Syncs with Manya's Light/Dark mode.
  * - Quiz/Study Modes: Interactive labeling and anatomical focus.
  */
-export function ThreeDStudyEngine({ data, onComplete }) {
+export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -18,6 +18,11 @@ export function ThreeDStudyEngine({ data, onComplete }) {
     const [isFinished, setIsFinished] = useState(false);
     const [showScrollHint, setShowScrollHint] = useState(false);
     
+    const [totalMistakes, setTotalMistakes] = useState(0);
+    
+    const globalStartTimeRef = useRef(Date.now());
+    const startTimeRef = useRef(Date.now());
+
     const viewerRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -43,6 +48,7 @@ export function ThreeDStudyEngine({ data, onComplete }) {
         setSelectedPinId(hs.id);
         if (!isQuiz) setIsDrawerOpen(true);
         playEffect('click');
+        startTimeRef.current = Date.now();
     };
 
     const handleResetCamera = () => {
@@ -59,7 +65,20 @@ export function ThreeDStudyEngine({ data, onComplete }) {
         if (!selectedPinId) return;
 
         const hs = hotspots.find(h => h.id === selectedPinId);
-        if (hs && hs.label.toLowerCase() === word.toLowerCase()) {
+        const isCorrect = hs && hs.label.toLowerCase() === word.toLowerCase();
+        const duration = Date.now() - startTimeRef.current;
+
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `3D Label: ${word}`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
+        if (isCorrect) {
             playEffect('success');
             setCorrectPinIds(prev => new Set([...prev, selectedPinId]));
             setFeedbackState({ type: 'success', id: selectedPinId });
@@ -68,8 +87,10 @@ export function ThreeDStudyEngine({ data, onComplete }) {
                 setSelectedPinId(null);
                 if (viewerRef.current) viewerRef.current.cameraTarget = "auto auto auto";
             }, 1200);
+            startTimeRef.current = Date.now();
         } else {
             playEffect('error');
+            setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: selectedPinId });
             setTimeout(() => setFeedbackState(null), 800);
         }
@@ -100,6 +121,9 @@ export function ThreeDStudyEngine({ data, onComplete }) {
                     isCorrect: score === total,
                     score,
                     total,
+                    mistakes: totalMistakes,
+                    accuracy: total > 0 ? (score / total) : 1,
+                    duration: Date.now() - globalStartTimeRef.current,
                     type: isQuiz ? 'labeling' : 'study'
                 });
             }
@@ -325,7 +349,17 @@ export function ThreeDStudyEngine({ data, onComplete }) {
                         </div>
                         <h2 className="text-4xl font-black text-[var(--text-main)] mb-12 uppercase tracking-tighter">Model Completed!</h2>
                         <button 
-                            onClick={onComplete}
+                            onClick={() => {
+                            if (onComplete) onComplete({
+                                isCorrect: correctPinIds.size === hotspots.length,
+                                score: correctPinIds.size,
+                                total: hotspots.length,
+                                mistakes: totalMistakes,
+                                accuracy: hotspots.length > 0 ? (correctPinIds.size / hotspots.length) : 1,
+                                duration: Date.now() - globalStartTimeRef.current,
+                                type: isQuiz ? 'labeling' : 'study'
+                            });
+                        }}
                             className="h-20 w-full max-w-[320px] rounded-[2.5rem] bg-[var(--accent-color)] text-white font-black text-xl shadow-2xl flex items-center justify-center gap-6 active:scale-95 transition-all"
                         >
                             CONTINUE <ChevronRight size={32} />

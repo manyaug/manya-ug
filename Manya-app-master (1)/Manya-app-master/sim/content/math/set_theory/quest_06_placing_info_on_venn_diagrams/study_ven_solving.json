@@ -1,0 +1,54 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Venn Strategy",
+  "variantTitle": "Placing Information",
+  "slides": [
+    {
+      "title": "The Golden Rule",
+      "text": "To fill a Venn Diagram correctly, there is one Golden Rule:<br><br><b>Fill the Intersection FIRST!</b><br><br>Let's see why, using Red shapes and Circles.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Red", "Circle"],
+      "elements": { "center": "Start Here!" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "1. Visual Sorting",
+      "text": "<b>Set A:</b> Red Objects.<br><b>Set B:</b> Circles.<br><br>Where does a <span style='color:#ef4444'>Red</span> <span style='color:#2563eb'>Circle</span> go?<br>It is BOTH, so it goes in the <b>Middle</b> (Intersection).",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Red", "Circle"],
+      "elements": { "left": "🟥", "center": "🔴", "right": "🔵" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "2. Decoding Lists",
+      "text": "Now let's use numbers. Sometimes lists are hidden in algebra!<br><br><b>A = { x : 2 < x < 6 }</b><br>This means 'numbers between 2 and 6'.<br>List: <b>{ 3, 4, 5 }</b>",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["3", "4", "5"]
+    },
+    {
+      "title": "3. Comparing Lists",
+      "text": "<b>Set A</b> = { 3, 4, 5 }<br><b>Set B</b> = { 4, 5, 6 }<br><br>What is in <b>BOTH</b>? { 4, 5 }.<br>We place these in the middle immediately.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "center": "4, 5" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "4. Subtract for 'Only'",
+      "text": "Set A has {3, 4, 5}. But {4, 5} are already in the middle!<br><br>So, <b>A Only</b> gets the remaining member: <b>3</b>.<br>Similarly, <b>B Only</b> gets <b>6</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "3", "center": "4, 5", "right": "6" },
+      "highlight": ["left", "right"]
+    },
+    {
+      "title": "5. The Outsiders",
+      "text": "What about numbers not in A or B?<br><br>If Total = {3, 4, 5, 6, 7, 8}, then <b>7 and 8</b> go <b>Outside</b>.<br>This is called the Complement <span class='sym'>(A ∪ B)'</span>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "3", "center": "4, 5", "right": "6", "outside": "7, 8" },
+      "highlight": ["outside"]
+    }
+  ]
+}

@@ -21,6 +21,15 @@ import { syncService } from './syncService';
 
 const NODE_ORDER = ['WARMUP', 'EXPLORE', 'PRACTICE', 'REINFORCE', 'MASTERY'];
 
+// XP rewards per node type (ported from Manya-app-master/quest-manager.js)
+const QUEST_XP_REWARDS = {
+    WARMUP:    50,
+    EXPLORE:   100,
+    PRACTICE:  150,
+    REINFORCE: 200,
+    MASTERY:   500,
+};
+
 const UNLOCK_THRESHOLDS = {
     WARMUP:    0,   // Always open
     EXPLORE:   60,  // Need 60% on Warmup
@@ -179,6 +188,7 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
         needsRetry,
         threshold: nextNode ? UNLOCK_THRESHOLDS[nextNode] : 0,
         attempts: all[questKey][nodeType].attempts,
+        xpReward: QUEST_XP_REWARDS[nodeType] || 100,
     };
 }
 

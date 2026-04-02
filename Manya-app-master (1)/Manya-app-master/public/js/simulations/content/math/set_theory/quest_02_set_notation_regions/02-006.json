@@ -1,0 +1,15 @@
+{
+  "engineType": "SUBSET_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Finding Subsets",
+  "variantTitle": "Quest 3-003: Flag Painter",
+  "questions": [
+    {
+      "theme": "flag",
+      "items": ["Black", "Yellow", "Red"],
+      "prompt": "Find all 8 subsets by painting the stripes.",
+      "hint": "Tap the paint buckets to color the flag stripes."
+    }
+  ]
+}

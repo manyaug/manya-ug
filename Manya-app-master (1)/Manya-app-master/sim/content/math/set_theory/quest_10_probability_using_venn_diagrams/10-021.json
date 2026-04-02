@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Missing Regions",
+  "variantTitle": "Topic 10: Harvest Time",
+  "sets": { "A": { "label": "R (60)", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  "zones": { "left": ["40"], "center": ["20"], "right": ["p"], "outside": ["10"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Total Rice is 60. Intersection is 20. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "40" },
+        { "region": "center", "expected": "20" },
+        { "region": "right", "expected": "p" },
+        { "region": "outside", "expected": "10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 100,
+      "expected_x": 30,
+      "prompt": "<b>Phase 2:</b> Total farmers = 100. Find <b>p</b>.",
+      "hint": "40 + 20 + p + 10 = 100 -> 70 + p = 100"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 30,
+      "prompt": "Find the <b>Total Beans</b> growers.",
+      "hint": "Intersection (20) + Beans Only (30) = 50."
+    }
+  ]
+}

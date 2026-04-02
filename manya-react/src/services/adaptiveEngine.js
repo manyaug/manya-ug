@@ -1,6 +1,8 @@
 import { calculateFrustration } from './psychTracker';
 import { parseQuestionId, areSameConcept } from '../utils/questionParser';
 import { masteryService } from './masteryService';
+import { conceptMasteryService } from './conceptMasteryService';
+import { spacedRepetitionService } from './spacedRepetitionService';
 
 /**
  * MANYA ADAPTIVE ENGINE (V2)
@@ -20,7 +22,10 @@ const VARIANT_DISTRIBUTIONS = {
     MASTERY:   { V1: 0.10, V2: 0.20, V3: 0.70 },
 };
 
+// Ported from quest-manager.js: Dynamic length with min/max bounds
 const BASE_LENGTHS = { WARMUP: 4, EXPLORE: 8, PRACTICE: 10, REINFORCE: 12, MASTERY: 15 };
+const MIN_LENGTHS  = { WARMUP: 3, EXPLORE: 5, PRACTICE: 7,  REINFORCE: 8,  MASTERY: 10 };
+const MAX_LENGTHS  = { WARMUP: 6, EXPLORE: 10, PRACTICE: 12, REINFORCE: 14, MASTERY: 18 };
 
 const MASTERY_WEIGHTS = {
     new: 100,
@@ -50,22 +55,51 @@ export async function scoreQuestion(question, history, subject, subjectMasteryMa
     score += baseWeight;
     factors.push(`mastery_${mastery}`);
 
-    // 2. Freshness / Spaced Repetition
+    // 2. Freshness / Spaced Repetition (UPGRADED from flat check to real scheduling)
+    const conceptRecord = await conceptMasteryService.getConceptRecord(subject, conceptId).catch(() => null);
     const conceptAnswers = history.filter(ans => (ans.concept_id || parseQuestionId(ans.questionId).baseId) === conceptId);
-    const lastSeen = conceptAnswers.length > 0 ? new Date(conceptAnswers[conceptAnswers.length - 1].answeredAt) : null;
     
-    if (lastSeen) {
-        const daysSince = (Date.now() - lastSeen.getTime()) / (1000 * 60 * 60 * 24);
-        if (daysSince > 7 && mastery === 'mastered') {
-            score += 40; // Due for review
-            factors.push('spaced_rep_due');
-        } else if (daysSince < 0.1) {
-            score -= 100; // Penalize repeats in same session (spacing)
-            factors.push('repeat_penalty');
+    if (conceptRecord && conceptRecord.nextReviewAt) {
+        const reviewPriority = spacedRepetitionService.getReviewPriority(conceptRecord);
+        if (reviewPriority > 0) {
+            score += reviewPriority;
+            factors.push(reviewPriority > 40 ? 'overdue_review' : 'scheduled_review');
         }
     } else {
-        score += 30; // Never seen bonus
-        factors.push('never_seen');
+        // Fallback: Check raw history if no concept record exists yet
+        const lastSeen = conceptAnswers.length > 0 ? new Date(conceptAnswers[conceptAnswers.length - 1].answeredAt) : null;
+        
+        if (lastSeen) {
+            const hoursSince = (Date.now() - lastSeen.getTime()) / (1000 * 60 * 60);
+            
+            // ─── STRICT EXCLUSION (24-Hour Rule) ───
+            if (hoursSince < 24) {
+                // If answered within the last 30 minutes, absolute exclusion
+                if (hoursSince < 0.5) {
+                    score -= 10000;
+                    factors.push('instant_repeat_exclusion');
+                } else {
+                    score -= 500;
+                    factors.push('24h_repeat_penalty');
+                }
+            }
+        } else {
+            score += 200; // BOOST: Never seen this concept!
+            factors.push('never_seen_concept');
+        }
+    }
+
+    // ─── INDIVIDUAL QUESTION EXCLUSION ───
+    const qLastSeen = history.filter(ans => (ans.questionId || ans.id) === question.id).pop();
+    if (qLastSeen) {
+        const hoursSince = (Date.now() - new Date(qLastSeen.answeredAt).getTime()) / (1000 * 60 * 60);
+        if (hoursSince < 24) {
+            score -= 10000; // Strict exclusion for identical Q_ID
+            factors.push('duplicate_exclusion');
+        }
+    } else {
+        score += 100; // Boost individual never-seen questions
+        factors.push('never_seen_question');
     }
 
     // 3. PLE Boost (Exam Readiness)
@@ -118,103 +152,147 @@ function validateSpacing(questionId, selected, minSpacing = 3) {
     return !window.some(q => parseQuestionId(q.id).baseId === conceptId);
 }
 
+// ── DYNAMIC QUEST LENGTH CALCULATOR ─────────────────────────────────────────
+// Ported from: Manya-app-master/quest-manager.js calculateQuestionCount()
+
+function calculateDynamicQuestLength(nodeType, frustrationScore, dominantMastery, topicComplexity = 'normal') {
+    let count = BASE_LENGTHS[nodeType] || 10;
+    const min = MIN_LENGTHS[nodeType] || 5;
+    const max = MAX_LENGTHS[nodeType] || 15;
+
+    // Mercy: Reduce if student is struggling
+    if (dominantMastery?.startsWith('struggling')) {
+        count = Math.max(min, count - 2);
+    }
+
+    // Mercy: Reduce if frustrated
+    if (frustrationScore > 70) {
+        count = Math.max(min, count - 2);
+    } else if (frustrationScore < 20 && !dominantMastery?.startsWith('struggling')) {
+        // Calm + not struggling → add 1 question for extra challenge
+        count = Math.min(max, count + 1);
+    }
+
+    // Complex topics get fewer questions (prevent cognitive overload)
+    if (topicComplexity === 'high') {
+        count = Math.max(min, count - 1);
+    }
+
+    // MASTERY node always uses maximum (exam stamina building)
+    if (nodeType === 'MASTERY') {
+        count = max;
+    }
+
+    return Math.min(max, Math.max(min, count));
+}
+
 // ── MAIN API — GENERATE ADAPTIVE QUEST ──────────────────────────────────────
 
 /**
  * The entry point for all Subject Fetcher Engines.
  */
-export async function generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, history, resources = []) {
-    console.log(`🧠 [Adaptive] Generating ${nodeType} quest for ${subject}...`);
+export async function generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, history, simResources = []) {
+    try {
+        console.log(`🧠 [Adaptive] Generating ${nodeType} quest for ${subject}. Bank: ${allQuestions.length}, Sims: ${simResources.length}`);
     
     const frustration = calculateFrustration(session);
     const subjectMasteryMap = await masteryService.getSubjectMasteryOverview(subject);
     const targetPool = selectTargetPool(history);
-    const questLength = BASE_LENGTHS[nodeType] || 10;
 
+    // Dynamic quest length (ported from quest-manager.js)
+    const dominantMastery = Object.values(subjectMasteryMap)[0] || 'learning';
+    const questLength = calculateDynamicQuestLength(nodeType, frustration.score, dominantMastery);
+
+    // 1. SELECT MCQs adaptively
     let availableQuestions = allQuestions;
-
-    // Boss Test Strict Constraint: Mastery must strictly be Hard + PLE questions
     if (nodeType === 'MASTERY') {
         const strictQuestions = allQuestions.filter(q => 
             (q.difficulty === 'hard' || q.difficulty === 'H') && 
             (q.pool === 'yes' || q.isPLE || q.is_ple)
         );
-        if (strictQuestions.length > 0) {
-            availableQuestions = strictQuestions;
-        } else {
-            console.warn("🚨 [Adaptive] Insufficient Hard/PLE questions for Mastery. Relaxing constraint to just PLE.");
-            const fallback = allQuestions.filter(q => q.pool === 'yes' || q.isPLE || q.is_ple);
-            availableQuestions = fallback.length > 0 ? fallback : allQuestions;
-        }
+        availableQuestions = strictQuestions.length > 0 ? strictQuestions : allQuestions;
     }
 
-    // 1. Filter & Score
-    const candidates = await Promise.all(availableQuestions.map(async q => {
+    const mcqCandidates = await Promise.all(availableQuestions.map(async q => {
         const metadata = await scoreQuestion(q, history, subject, subjectMasteryMap);
-        
-        // Mercy Rule: If frustrated, hard-block V3 and difficult MCQs
-        if (frustration.score > 70 && (q.variant === 'V3' || q.difficulty === 'H')) {
-            metadata.score = -1000;
-        }
-
+        if (frustration.score > 70 && (q.variant === 'V3' || q.difficulty === 'H')) metadata.score = -1000;
         return { ...q, _adaptive: metadata };
     }));
+    mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
 
-    // 2. Sort by Score
-    candidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
-
-    // 3. Selection with Spacing & Variety
-    const selected = [];
-    const usedConceptIds = new Set();
-
-    for (const q of candidates) {
-        if (selected.length >= questLength) break;
-        
-        // Ensure spacing (don't show same concept too close)
-        if (!validateSpacing(q.id, selected, 3)) continue;
-
-        // Try to maintain the target pool (PLE vs Practice) if possible
-        const isTargetMatch = (q.pool === targetPool || q.isPLE === (targetPool === 'yes'));
-        
-        // If we have enough candidates, be picky about the pool
-        if (selected.length < questLength - 2 && !isTargetMatch && Math.random() < 0.7) {
-            continue; 
-        }
-
-        selected.push(q);
+    const selectedMCQs = [];
+    for (const q of mcqCandidates) {
+        if (selectedMCQs.length >= questLength) break;
+        if (!validateSpacing(q.id, selectedMCQs, 3)) continue;
+        selectedMCQs.push(q);
     }
 
-    // ── SAFETY FALLBACK: if spacing/pool filters were too aggressive, relax them ──
-    if (selected.length < Math.ceil(questLength / 2)) {
-        console.warn(`⚠️ [Adaptive] Spacing filter left only ${selected.length}/${questLength} questions. Relaxing constraints.`);
-        const selectedIds = new Set(selected.map(q => q.id));
-        for (const q of candidates) {
-            if (selected.length >= questLength) break;
-            if (!selectedIds.has(q.id)) {
-                selected.push(q);
-                selectedIds.add(q.id);
+    // 2. PREPARE SIMULATIONS
+    const selectedSims = simResources.map(sim => {
+        // DETERMINISTIC ID: Use existing ID or filename-based ID (crucial for rep guard)
+        const stableId = sim.id || (sim.file ? `sim_${sim.file.replace('.json', '')}` : `sim_${Math.random().toString(36).substr(2, 5)}`);
+        return {
+            ...sim,
+            id: stableId,
+            isSimulation: true,
+            source: 'json_sim'
+        };
+    });
+
+    // Filter out recently seen simulations
+    const filteredSims = selectedSims.filter(sim => {
+        const lastSeen = history.filter(h => h.questionId === sim.id).pop();
+        if (!lastSeen) return true;
+        const hoursSince = (Date.now() - new Date(lastSeen.answeredAt).getTime()) / (1000 * 60 * 60);
+        return hoursSince >= 24; // Strict 24h simulation exclusion
+    });
+
+    // Shuffle sims for variety
+    const finalizedSims = (filteredSims.length > 0 ? filteredSims : selectedSims); 
+    finalizedSims.sort(() => 0.5 - Math.random());
+
+    // 3. INTERLEAVE MCQs AND SIMs
+    const finalQuestions = [];
+    const mcqStack = [...selectedMCQs];
+    const simStack = [...finalizedSims].reverse(); // pop() from end
+
+    // Target length is the maximum of the questLength or available sims
+    const mcqTargetCount = Math.min(mcqStack.length, questLength);
+    const totalTarget = Math.max(mcqTargetCount, simStack.length);
+
+    while (finalQuestions.length < totalTarget && (mcqStack.length > 0 || simStack.length > 0)) {
+        // Interleave logic: 
+        // WARMUP/PRACTICE: 1 Sim, 1 MCQ
+        // REINFORCE/MASTERY: 2 Sims, 1 MCQ
+        const simFrequency = (nodeType === 'REINFORCE' || nodeType === 'MASTERY') ? 2 : 1;
+
+        for (let i = 0; i < simFrequency; i++) {
+            if (simStack.length > 0) finalQuestions.push(simStack.pop());
+        }
+        if (mcqStack.length > 0 && finalQuestions.length < totalTarget) {
+            finalQuestions.push(mcqStack.pop());
+        }
+        
+        if (finalQuestions.length >= 30) break;
+    }
+
+    console.log(`\ud83c\udfaf [Adaptive] ${nodeType} final quest: ${finalQuestions.length} steps (${selectedSims.length} sims, ${selectedMCQs.length} MCQs)`);
+
+        return {
+            questions: finalQuestions,
+            metadata: {
+                questLength,
+                frustration: frustration.score,
+                gameMode: frustration.score > 60 ? 'MERCY' : 'NORMAL'
             }
-        }
+        };
+    } catch (err) {
+        console.warn(`⚠️ [Adaptive] Generation Error (Falling back to raw):`, err);
+        return { 
+            questions: allQuestions.slice(0, 10), 
+            metadata: { questLength: 10, frustration: 0, gameMode: 'SAFE_FALLBACK' } 
+        };
     }
-
-    // 4. Final Processing & Jitter
-    const finalQuestions = selected.sort(() => Math.random() - 0.5);
-
-    // 5. Mode Selection (Standard vs Quickfire)
-    const gameMode = (frustration.score < 30 && subjectMasteryMap['total'] > 50) ? 'quickfire' : 'standard';
-
-    return {
-        questions: finalQuestions,
-        questLength: finalQuestions.length,
-        metadata: {
-            frustration: frustration.score,
-            subjectMasteryMap,
-            nodeType,
-            subject,
-            pleRatio: targetPool,
-            gameMode
-        }
-    };
 }
 
 /**

@@ -1,0 +1,54 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Venn Strategy",
+  "variantTitle": "Solving & Placing Info",
+  "slides": [
+    {
+      "title": "The 3-Step Strategy",
+      "text": "To solve any Venn Diagram problem correctly, follow these three steps:<br><br>1. <b>List</b> the members (if hidden).<br>2. <b>Fill</b> the Intersection first.<br>3. <b>Subtract</b> to find the 'Only' regions.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Step 1", "Step 2"],
+      "elements": { "center": "Start Here!" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "Step 1: Decoding the List",
+      "text": "Sometimes sets are hidden in algebra!<br><br><b>Set A = { x : 2 < x < 6 }</b><br>This means 'integers between 2 and 6'.<br>List: <b>{ 3, 4, 5 }</b>",
+      "visualType": "FINITE_BASKET",
+      "visualData": ["3", "4", "5"]
+    },
+    {
+      "title": "Step 2: Finding the Intersection",
+      "text": "Let's compare two sets:<br>A = { 3, 4, 5 }<br>B = { 4, 5, 6 }<br><br>What is in <b>BOTH</b>? { 4, 5 }.<br>We place these in the middle immediately.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "center": "4, 5" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "Step 3: Calculating 'Only'",
+      "text": "Set A has {3, 4, 5}. But {4, 5} are already in the middle!<br><br>So, <b>A Only</b> gets the remaining member: <b>3</b>.<br>Similarly, <b>B Only</b> gets <b>6</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "3", "center": "4, 5", "right": "6" },
+      "highlight": ["left", "right"]
+    },
+    {
+      "title": "Strategy: Working with Counts",
+      "text": "Sometimes exam questions give you <b>Totals</b> instead of lists.<br><br>\"n(P) = 20. Intersection = 5. Find n(P Only).\"<br><br><b>Rule:</b> Whole Circle - Middle = Only.<br>20 - 5 = <b>15</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["P", "Q"],
+      "elements": { "left": "15", "center": "5", "right": "?" },
+      "highlight": ["left"]
+    },
+    {
+      "title": "Strategy: The Universal Set",
+      "text": "<b>Question:</b> \"Total pupils = 40. Union = 35. Find the Complement.\"'<br><br><b>Complement</b> means the Outside region.<br>Total - Union = Outside.<br>40 - 35 = <b>5</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "15", "center": "5", "right": "15", "outside": "5" },
+      "highlight": ["outside"]
+    }
+  ]
+}

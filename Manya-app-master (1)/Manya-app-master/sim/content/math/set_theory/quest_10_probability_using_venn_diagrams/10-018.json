@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Intersection",
+  "variantTitle": "Quest 10-006: Science Fair",
+  "sets": { "A": { "label": "Bio (40)", "color": "#059669" }, "B": { "label": "Chem (30)", "color": "#0284c7" } },
+  "zones": { "left": ["40-x"], "center": ["x"], "right": ["30-x"], "outside": ["5"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Both is x. Neither is 5. Fill diagram.",
+      "inputs": [
+        { "region": "left", "expected": "40-x" },
+        { "region": "right", "expected": "30-x" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 60,
+      "expected_x": 15,
+      "prompt": "<b>Phase 2:</b> Total = 60. Find <b>x</b>.",
+      "hint": "(40-x) + x + (30-x) + 5 = 60 -> 75 - x = 60"
+    }
+  ]
+}

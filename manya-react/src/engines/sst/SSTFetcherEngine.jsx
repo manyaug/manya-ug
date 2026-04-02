@@ -6,12 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { 
     updateProfile, 
     awardGems, 
+    addXP,
     resetSession, 
     updateSessionAfterAnswer 
 } from '../../store/userSlice';
 import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { ManyaDB } from '../../utils/manyaDB';
 import { calculateFrustration, calculateHesitation } from '../../services/psychTracker';
+import { conceptMasteryService } from '../../services/conceptMasteryService';
+import { achievementService } from '../../services/achievementService';
+import { parseQuestionId } from '../../utils/questionParser';
+import AchievementUnlocked from '../../components/AchievementUnlocked';
 import {
     saveNodeCompletion, trackWrongAnswer, resolveRephrased,
     setJustFinished, UNLOCK_THRESHOLDS, NODE_ORDER
@@ -22,37 +27,16 @@ import UniversalGlobeEngine from '../shared-engines/UniversalGlobeEngine';
 import ImageHotspotsEngine from '../shared-engines/ImageHotspotsEngine';
 import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import { loadQuestSteps } from '../../utils/questLoader';
+import { calculateUSP } from '../../utils/scoringUtility';
 
 /**
  * SIMULATOR BRIDGE
  * Connects the MCQ-based Fetcher to specialized Simulation Engines.
  */
-const SimulatorBridge = ({ step, onComplete }) => {
-    const [simData, setSimData] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchSim = async () => {
-            try {
-                // Use the shared loader to get the JSON content
-                const content = await loadQuestSteps([step]);
-                if (content && content[0]?.data) {
-                    setSimData(content[0].data);
-                }
-            } catch (err) {
-                console.error("Failed to load simulation data:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchSim();
-    }, [step]);
-
-    if (loading) return (
-        <div className="flex-1 flex items-center justify-center p-10">
-            <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-    );
+const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
+    // The step object was already fully loaded by `loadQuestSteps` during engine init!
+    const simData = step?.data || step;
+    const resultRef = useRef(null);
 
     if (!simData) return (
         <div className="flex-1 flex flex-col items-center justify-center p-10 text-rose-500 font-bold">
@@ -66,26 +50,51 @@ const SimulatorBridge = ({ step, onComplete }) => {
     const engineType = simData.engineType || simData.type || 'IMAGE_HOTSPOTS';
 
     const handleSimComplete = (results) => {
-        console.log(`🎮 [SimulatorBridge] Simulation Complete. Results:`, results);
-        // We wrap the result in a standard format
+        // results may come from common engines; resultRef.current may come from specialized engines
+        const finalResults = results || resultRef.current;
+        console.log(`🎮 [SimulatorBridge] Simulation Complete. Raw Results:`, finalResults);
+        
+        // APPLY UNIFIED SCORING PROTOCOL (USP)
+        const usp = calculateUSP({
+            accuracy: finalResults?.accuracy ?? (finalResults?.score && finalResults?.total ? (finalResults.score / finalResults.total) : 1.0),
+            mistakes: finalResults?.mistakes || 0,
+            timeSpentMs: finalResults?.duration || finalResults?.timeSpentMs || 30000,
+            engineType: engineType
+        }, 'sst');
+
+        console.log(`📊 [SimulatorBridge] USP Mastery Score: ${usp.masteryScore}%`, usp);
+
         onComplete({
-            success: true,
-            score: results?.accuracy ?? 100,
-            simResults: results
+            success: true, 
+            score: usp.masteryScore,
+            usp: usp,
+            simResults: finalResults
         });
+    };
+
+    const handleSimResult = (res) => {
+        console.log(`📊 [SimulatorBridge] Engine sent result:`, res);
+        resultRef.current = res;
+    };
+
+    const sharedProps = {
+        data: simData,
+        onComplete: handleSimComplete,
+        onResult: handleSimResult,
+        onAttempt // Forward attempt tracking to sub-engines
     };
 
     switch (engineType) {
         case 'GLOBE_TIME_ENGINE':
         case 'GLOBE_ENGINE':
         case 'UNIVERSAL_GLOBE':
-            return <UniversalGlobeEngine data={simData} onComplete={handleSimComplete} />;
+            return <UniversalGlobeEngine {...sharedProps} />;
         
         case 'IMAGE_HOTSPOTS':
-            return <ImageHotspotsEngine data={simData} onComplete={handleSimComplete} />;
+            return <ImageHotspotsEngine {...sharedProps} />;
         
         case 'GALLERY_STUDY':
-            return <GalleryStudyEngine data={simData} onComplete={handleSimComplete} />;
+            return <GalleryStudyEngine {...sharedProps} />;
 
         default:
             return (
@@ -128,6 +137,10 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const [showCompletion, setShowCompletion] = useState(false);
     const [completionResult, setCompletionResult] = useState(null);
     const [isFinished, setIsFinished] = useState(false);
+    const [earnedAchievements, setEarnedAchievements] = useState([]);
+    
+    // Efficiency: Prevent duplicate simulation logs
+    const lastSimAttemptRef = useRef({ time: 0, label: '' });
 
     // All questions from bank (for variant lookup)
     const allBankRef = useRef([]);
@@ -174,13 +187,33 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                 setHistory(userHistory);
 
                 // 3. Run them through the adaptive engine
-                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, data?.resources || []);
-                setQuestions(quest.questions);
+                // 3. Load all Interactive Simulations
+                const simCandidates = [];
+                if (data?.simResources && data.simResources.length > 0) {
+                    console.log(`🎮 [SSTEngine] Loading ${data.simResources.length} simulations...`);
+                    for (const simRes of data.simResources) {
+                        try {
+                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
+                            const { steps: simSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                            simSteps.forEach(s => { s.isSimulation = true; });
+                            simCandidates.push(...simSteps);
+                        } catch (e) {
+                            console.warn("Failed to load sim:", simRes.file);
+                        }
+                    }
+                }
+
+                // 4. Run them through the adaptive engine (now supports interleaving!)
+                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
+                const finalQuestions = quest.questions;
+                
+                setQuestions(finalQuestions);
                 setQuestMeta(quest);
 
-                console.log(`\ud83c\udfaf [SST Adaptive v3] ${nodeType} quest generated:`, {
+                console.log(`\ud83c\udfaf [SST Adaptive v4.1] ${nodeType} quest generated:`, {
                     bankSize: allQuestions.length,
-                    questLength: quest.questions.length,
+                    simCount: simCandidates.length,
+                    finalLength: finalQuestions.length,
                     gameMode: quest.metadata.gameMode,
                 });
                 
@@ -304,6 +337,10 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         setHistory(prev => [...prev, answerLog]);
         syncService.pushAnswer(subject, answerLog);
 
+        // ─── CONCEPT MASTERY TRACKING (Spaced Repetition) ───
+        conceptMasteryService.updateAfterAnswer(subject, baseId, isCorrect)
+            .catch(e => console.warn('[ConceptMastery] Update failed:', e));
+
         // Gem Calculation (Logic copied from awardGems for precision)
         const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
         const baseAmount = hintUsed ? 1 : 3;
@@ -371,6 +408,30 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
             setCompletionResult({ mastery, ...result, score: finalScore, total: questions.length });
             setShowCompletion(true);
+
+            // ─── XP REWARD ───
+            if (result.xpReward) {
+                dispatch(addXP(result.xpReward));
+            }
+
+            // ─── ACHIEVEMENT CHECK ───
+            const achieveCtx = {
+                questsCompleted: (user[`prog_${subject}`] || 0) + 1,
+                mastery,
+                streak: user.current_streak || 0,
+                questCompletedNoHints: session.hintCount === 0,
+                avgTime: questions.length > 0 ? (questions.reduce((sum, q) => sum + (q._timeSpent || 10000), 0)) / questions.length : 15000,
+                accuracy: questions.length > 0 ? finalScore / questions.length : 0,
+                totalCorrect: (user[`prog_${subject}`] || 0) * 6 + finalScore,
+                nodeType,
+                attempts: result.attempts || 1,
+                v3Mastered: 0,
+                gemsEarned: user[`${subject}Gems`] || 0,
+            };
+            const newBadges = achievementService.checkAchievements(subject, achieveCtx);
+            if (newBadges.length > 0) {
+                setEarnedAchievements(newBadges);
+            }
 
             console.log(`🏆 [SST] ${nodeType} complete:`, { mastery, ...result });
         }
@@ -475,6 +536,13 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
         return (
             <div className="flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 bg-[var(--bg-main)] bg-opacity-50">
+                {/* Achievement Celebration Overlay */}
+                {earnedAchievements.length > 0 && (
+                    <AchievementUnlocked 
+                        achievements={earnedAchievements} 
+                        onDismiss={() => setEarnedAchievements([])} 
+                    />
+                )}
                 <div className="w-full max-w-sm bg-[var(--bg-card)] rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-[var(--border-color)] p-8 text-center relative overflow-hidden">
                     
                     {/* Decorative Background Elements */}
@@ -616,12 +684,16 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         // ── SIMULATION / PUZZLE / RECAP VIEW ──
         if (q.isSimulation || q.type === 'STUDY_RECAP' || q.type === 'INTERACTIVE_PUZZLE') {
             return (
-                <div className="flex-1 flex flex-col items-center justify-center p-0 animate-in fade-in duration-500 overflow-hidden">
+                <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative">
                     <SimulatorBridge 
                         step={q} 
                         onComplete={(results) => {
-                            const isSuccess = results?.score >= 60;
-                            const timeSpentMs = results?.duration || 30000;
+                            // If engine provides USP, use its logic
+                            const usp = results?.usp;
+                            const isSuccess = usp ? usp.isPassing : (results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
+                            const timeSpentMs = usp ? usp.timeSpentMs : (results?.duration || 30000);
+
+                            console.log(`🏁 [SSTEngine] Simulation complete:`, results);
 
                             // ─── PERSIST SIMULATION RESULT ───
                             dispatch(updateSessionAfterAnswer({
@@ -630,7 +702,8 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                 answerChanged: false,
                                 timeSpentMs
                             }));
-                            ManyaDB.recordAnswer(subject, {
+
+                            const finalLog = {
                                 questionId: q.id,
                                 isCorrect: isSuccess,
                                 selectedAnswer: 'COMPLETED',
@@ -639,14 +712,48 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                                 hintUsed: false,
                                 answerChanged: false,
                                 pool: 'simulation',
-                            });
+                                mistakes: usp ? usp.mistakes : (results?.mistakes || 0),
+                                engine_type: q.engineType || q.type || 'SIMULATION',
+                                usp_data: usp // Store full USP breakdown
+                            };
+                            ManyaDB.recordAnswer(subject, finalLog);
+                            syncService.pushAnswer(subject, finalLog);
 
                             if (isSuccess) {
+                                // Add bonus gems for high accuracy
+                                const accuracyBonus = usp ? Math.floor(usp.accuracy / 20) : 0;
                                 setScore(prev => prev + 1);
-                                setGemsEarned(prev => prev + 5); 
+                                setGemsEarned(prev => prev + 5 + accuracyBonus); 
                             }
                             nextQuestion();
                         }} 
+                        onAttempt={(attempt) => {
+                            // ─── EFFICIENCY: PREVENT DUPLICATES ───
+                            const now = Date.now();
+                            if (now - lastSimAttemptRef.current.time < 500 && lastSimAttemptRef.current.label === attempt.label) {
+                                return;
+                            }
+                            lastSimAttemptRef.current = { time: now, label: attempt.label };
+
+                            // ─── GRANULAR SIMULATION TRACKING ───
+                            const frustration = calculateFrustration(session);
+                            const engineType = q.engineType || q.type || 'IMAGE_HOTSPOTS';
+                            const attemptLog = {
+                                questionId: q.id,
+                                isCorrect: attempt.isCorrect,
+                                selectedAnswer: attempt.label || 'SIM_ATTEMPT',
+                                correctAnswer: 'STEP_COMPLETE',
+                                timeSpentMs: attempt.duration || 0,
+                                pool: 'simulation_step',
+                                engine_type: engineType,
+                                frustrationLevel: frustration?.score || 0,
+                                mistakes: attempt.mistakes || 0
+                            };
+                            
+                            console.log(`📡 [SSTEngine] Recording granular attempt:`, attemptLog);
+                            ManyaDB.recordAnswer(subject, attemptLog);
+                            syncService.pushAnswer(subject, attemptLog);
+                        }}
                     />
                 </div>
             );

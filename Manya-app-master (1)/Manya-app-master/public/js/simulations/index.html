@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- THE HOME SCREEN ICON -->
+    <link rel="apple-touch-icon" href="assets/icons/pose_1_cut.png">
+
+    <!-- THE SYSTEM SPLASH (Fuzzy Purple Face) -->
+    <!-- This shows ONLY while the app is loading, before your video starts -->
+    <link rel="apple-touch-startup-image" href="assets/icons/splash-1.png">
+    <title>Manya Prep Hub</title>
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="./app-shell/css/style.css">
+    <link rel="stylesheet" href="./app-shell/css/spiral.css">
+    <link rel="stylesheet" href="./app-shell/css/boarding.css">
+    <link rel="stylesheet" href="./app-shell/css/home.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="./assets/fonts/fonts.css">
+    
+    <script type="module" src="./app-shell/js/lib/model-viewer.min.js"></script>
+
+    <!-- WORLD-CLASS "INFINITE FUR" SPLASH STYLES -->
+   
+</head>
+<body class="fullscreen-mode">
+
+    <!-- 1. SPLASH OVERLAY -->
+    <div id="manya-splash-overlay">
+        <div class="full-screen-mascot">
+            <video  id="splash-vid" autoplay muted playsinline loop preload="auto"  poster="assets/icons/splash-1.png"> 
+            <source src="assets/shared/videos/full-screen-splash.mp4" type="video/mp4">
+            </video>
+        </div>
+        
+        <div class="splash-brand">
+            <h1 class="brand-glow">Manya Prep Hub</h1>
+            <p class="brand-sub">Elite PLE Preparation</p>
+            <div class="splash-loader"><div class="fill"></div></div>
+        </div>
+    </div>
+
+  <header class="app-header-master">
+    <div class="header-shell">
+        <!-- 1. USER IDENTITY (Floating Circle) -->
+        <div class="hud-avatar" onclick="ViewManager.show('profile')">
+            <div class="avatar-ring">
+                <img src="assets/icons/manya_icon.png" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzdjM2FlZDtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2RiMjc3NztzdG9wLW9wYWNpdHk6MSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjIwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TTwvdGV4dD48L3N2Zz4='">
+            </div>
+            <div class="online-indicator"></div>
+        </div>
+
+        <!-- 2. NATIVE LOGO (Centered & Weighted) -->
+        <div class="hud-logo">
+            MANYA<span class="logo-dot">.</span><span class="logo-p7">P7</span>
+        </div>
+
+        <!-- 3. CURRENCY HUB (Glass Pill) -->
+        <div class="hud-stats">
+            <div class="stat-pill-diamond">
+                <span class="diamond-sparkle">💎</span>
+                <span class="count">120</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <!-- 3. CONTENT MOUNT -->
+    <div id="view-mount"></div>
+
+    <!-- 4. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="ViewManager.show('home', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="ViewManager.show('rankings', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Rankings</span>
+        </div>
+        <div class="nav-item" onclick="ViewManager.show('profile', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </div>
+    </nav>
+
+    <!-- 5. APP LOGIC ENGINE -->
+<script type="module">
+    import { ViewManager } from './app-shell/view-manager.js';
+    import { ManyaRouter } from './app-shell/router.js';
+    import { QuestFactory } from './app-shell/quest-factory.js';
+    import { QuestRunner } from './app-shell/quest-runner.js';
+    import { AudioManager } from './app-shell/js/audio-manager.js';
+
+    // --- CONFIGURATION ---
+    const DEV_MODE = true; // Set to TRUE to force Onboarding on every refresh
+    // ---------------------
+
+    window.ViewManager = ViewManager;
+    window.ManyaRouter = ManyaRouter;
+    window.AudioManager = AudioManager;
+    window.QuestFactory = QuestFactory;
+    window.QuestRunner = QuestRunner;
+
+    const splashOverlay = document.getElementById('manya-splash-overlay');
+    const splashVid = document.getElementById('splash-vid');
+
+    const startAppHandover = () => {
+        splashVid.play().catch(() => {});
+
+        setTimeout(() => {
+            try {
+                const userProfile = localStorage.getItem('manya_user_profile');
+
+                // Logic Gate: If DEV_MODE is on OR no profile exists, show onboarding
+                if (DEV_MODE || !userProfile) {
+                    console.log("Manya: Entering Onboarding (Dev Mode Active)");
+                    ViewManager.mount = document.getElementById('view-mount');
+                    ViewManager.show('onboarding'); 
+                } else {
+                    console.log("Manya: Welcome back! Starting Hub...");
+                    ViewManager.init();
+                }
+
+                document.body.classList.add('app-live');
+            } catch (e) { 
+                console.error("App Init Crash:", e); 
+                ViewManager.init(); 
+            }
+
+            splashOverlay.style.opacity = '0';
+            splashOverlay.style.pointerEvents = 'none';
+
+            setTimeout(() => { if(splashOverlay.parentNode) splashOverlay.remove(); }, 1000);
+        }, 3500);
+    };
+
+    if (document.readyState === 'complete') startAppHandover();
+    else window.addEventListener('load', startAppHandover);
+
+    // Global Launchers (Preserved)
+    // Global Launchers (Preserved)
+    window.launchLibraryStep = async (subject, unit, quest, step) => {
+        try {
+            // FIX: Ensure path starts with content/
+            const path = `content/${subject}/${unit}/${quest}/${step}.json`;
+            console.log("Fetching step:", path); // Debug log
+            
+            const res = await fetch(path);
+            if (!res.ok) throw new Error(`HTTP ${res.status} - File not found: ${path}`);
+            
+            const data = await res.json();
+            localStorage.setItem('last_sub', subject);
+            localStorage.setItem('last_idx', -1); 
+            localStorage.setItem('last_topic_name', data.title || "Lesson");
+            
+            const stepsToPlay = data.steps ? data.steps : [data];
+            QuestRunner.start(ViewManager.mount, stepsToPlay);
+            
+            ViewManager.mount.classList.add('engine-mode');
+            document.body.classList.add('fullscreen-mode');
+        } catch (err) { 
+            console.error("Launch Error:", err);
+            alert("Could not load this lesson. Please check the file path.");
+        }
+    };            
+</script>
+</body>
+</html>
+
+
+
+
+

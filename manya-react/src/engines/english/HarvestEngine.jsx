@@ -39,6 +39,8 @@ const HarvestEngine = ({ data, onComplete }) => {
   const doneRef    = useRef(false);
   const nextId     = useRef(0);
   const lastSpawn  = useRef(0);
+  const globalStartTimeRef = useRef(Date.now());
+  const mistakesRef = useRef(0);
   const raf        = useRef(null);
 
   const syncRefs = useCallback(() => {
@@ -142,6 +144,7 @@ const HarvestEngine = ({ data, onComplete }) => {
         const next = Math.max(0, livesRef.current - lifeLoss);
         livesRef.current = next;
         setLives(next);
+        mistakesRef.current += lifeLoss;
         setShakeKey(k => k + 1);
       }
       burstList.forEach(b => burst(b.x, b.y, b.color));
@@ -290,7 +293,18 @@ const HarvestEngine = ({ data, onComplete }) => {
             <p className="text-slate-400 text-sm mb-8">{won ? `Amazing! ${score} stars collected.` : `${score} stars — try again?`}</p>
             <div className="flex flex-col gap-3">
               <button
-                onClick={onComplete}
+                onClick={() => {
+                  if (onComplete) onComplete({
+                    isCorrect: won,
+                    accuracy: Math.max(0, (WIN - (mistakesRef.current * 5)) / WIN), // Heuristic: mistakes are costly
+                    score: score,
+                    total: WIN,
+                    mistakes: mistakesRef.current,
+                    duration: Date.now() - globalStartTimeRef.current,
+                    type: 'simulation',
+                    engineType: 'HARVEST_GAME'
+                  });
+                }}
                 className="w-full h-14 bg-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-transform"
               >
                 Continue Quest →

@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Total & Complements",
+  "variantTitle": "Quest 9-016: Market Data",
+  "sets": { "A": { "label": "A", "color": "#9333ea" }, "B": { "label": "B", "color": "#db2777" } },
+  "zones": { "left": ["20"], "center": ["5"], "right": ["15"], "outside": ["10"] },
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "Find the <b>Total Number</b> of people.",
+      "hint": "20 + 5 + 15 + 10."
+    },
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "universal_only", 
+      "prompt": "Find <span style='color:#64748b'>n(A ∩ B)'</span>.",
+      "hint": "Total (50) - Intersection (5) = 45."
+    }
+  ]
+}

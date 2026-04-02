@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Totals",
+  "variantTitle": "Quest 10: Drink Stand",
+  "sets": { "A": { "label": "Soda", "color": "#9333ea" }, "B": { "label": "Juice", "color": "#db2777" } },
+  "zones": { "left": ["k"], "center": ["10"], "right": ["2k"], "outside": ["5"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Juice Only is 2k. Soda Only is k. Fill diagram.",
+      "inputs": [
+        { "region": "left", "expected": "k" },
+        { "region": "right", "expected": "2k" },
+        { "region": "center", "expected": "10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total", 
+      "equation_target": 30,
+      "expected_x": 20,
+      "prompt": "<b>Phase 2:</b> Given n(Soda) = 30. Find <b>k</b>.",
+      "hint": "Soda is the whole Left Circle: k + 10 = 30."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 20,
+      "prompt": "Now find the <b>Total Number</b> of people.",
+      "hint": "Sum all regions: 20 + 10 + 40 + 5."
+    }
+  ]
+}

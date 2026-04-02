@@ -9,9 +9,9 @@ const SUBTOPIC_MAP = {
     'quest_1_world_stage': 'world_stage',
     'quest_2_grid_master': 'latitudes_longitudes',
     'quest_3_calculating_time': 'time_calc',
-    'quest_4_water_bodies': 'water_bodies',
-    'quest_5_coastal_features': 'water_borders',
-    'quest_6_regional_division_capital_cities': 'regional_division_capital_cities',
+    'quest_4_water_bodies': 'Water Bodies',
+    'quest_5_coastal_features': 'coastal_features',
+    'quest_6_regional_division_capital_cities': 'Regional Division Capital Cities',
     'quest_7_landlocked_countries': 'regions_capitals'
 };
 
@@ -42,19 +42,48 @@ export const fetchSstQuestions = async (topicId) => {
             return cached;
         }
 
+        // 3. Try Supabase with Primary Subtopic
         console.log(`🔍 [Supabase] Fetching questions for subtopic="${subtopic}" from questions_sst table...`);
-
-        const { data, error } = await supabase
+        let { data, error } = await supabase
             .from('questions_sst')
             .select('*')
             .eq('subtopic', subtopic);
+
+        // 4. SMART FALLBACK: If 0 rows, try sanitizing the name (stripping quest_ prefix)
+        if (!error && (!data || data.length === 0) && subtopic.includes('quest_')) {
+            const sanitized = subtopic.replace(/^quest_\d+_/, '');
+            console.warn(`⚠️ [Supabase] 0 rows for "${subtopic}". Retrying with sanitized name: "${sanitized}"...`);
+            
+            const retry = await supabase
+                .from('questions_sst')
+                .select('*')
+                .eq('subtopic', sanitized);
+            
+            if (retry.data && retry.data.length > 0) {
+                data = retry.data;
+                console.log(`✅ [Fallback Success] Found ${data.length} SST questions using sanitized name.`);
+            } else {
+                // Secondary Fallback: Try with spaces instead of underscores
+                const withSpaces = sanitized.replace(/_/g, ' ');
+                console.warn(`⚠️ [Supabase] Still 0 rows. Retrying with spaces: "${withSpaces}"...`);
+                const retry2 = await supabase
+                    .from('questions_sst')
+                    .select('*')
+                    .eq('subtopic', withSpaces);
+                if (retry2.data && retry2.data.length > 0) {
+                    data = retry2.data;
+                    console.log(`✅ [Secondary Fallback Success] Found ${data.length} questions using spaces.`);
+                }
+            }
+        }
 
         if (error) {
             console.error(`❌ [Supabase] RLS or query error for subtopic "${subtopic}":`, error);
             throw error;
         }
+
         if (!data || data.length === 0) {
-            console.warn(`⚠️ [Supabase] 0 rows returned for subtopic="${subtopic}".`);
+            console.warn(`⚠️ [Supabase] 0 rows returned for subtopic="${subtopic}" even after fallback.`);
             console.warn(`   Likely causes: (1) RLS blocking anon reads, (2) subtopic value mismatch in DB, (3) table is empty.`);
             console.warn(`   Check Supabase → Table Editor → questions_sst → RLS policies.`);
             return [];

@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Ratios",
+  "variantTitle": "Quest 10: The Pet Shop",
+  "sets": { "A": { "label": "C", "color": "#9333ea" }, "B": { "label": "D", "color": "#db2777" } },
+  "zones": { "left": ["2x"], "center": ["x"], "right": ["x+10"], "outside": ["0"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Cats only is 2x. Dogs only is x+10. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "2x" },
+        { "region": "right", "expected": "x+10" },
+        { "region": "center", "expected": "x" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 50,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total pets = 50. Find <b>x</b>.",
+      "hint": "2x + x + x + 10 = 50. Simplify: 4x = 40."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 10,
+      "prompt": "How many <b>Dogs</b> are there in total?",
+      "hint": "n(D) = Intersection + Dogs Only = x + (x+10)."
+    }
+  ]
+}

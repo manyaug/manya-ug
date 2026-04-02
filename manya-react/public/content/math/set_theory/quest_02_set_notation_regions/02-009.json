@@ -9,11 +9,18 @@
   "questions": [
     {
       "interaction": "DRAG_SORT",
-      "prompt": "Sort: X={a,b,c}, Y={1,2,3}. Are they overlapping?",
+      "prompt": "Sort the elements: <b>X={a,b,c}</b> and <b>Y={1,2,3}</b>.",
       "items": [
         { "val": "a", "target": "left" }, { "val": "b", "target": "left" }, { "val": "c", "target": "left" },
         { "val": "1", "target": "right" }, { "val": "2", "target": "right" }, { "val": "3", "target": "right" }
       ]
+    },
+    {
+      "retain_visuals": true,
+      "interaction": "BINARY",
+      "expected": "no",
+      "prompt": "Are these sets <b>Overlapping</b>?",
+      "hint": "Check if any elements are in the middle part (intersection)."
     },
     {
       "retain_visuals": true,

@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Intersections",
+  "variantTitle": "Quest 6-003: Word Sets",
+  "sets": { "A": { "label": "PEAR", "color": "#0891b2" }, "B": { "label": "REAP", "color": "#7c3aed" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Set A = {Letters in PEAR}. Set B = {Letters in REAP}.<br>Sort the letters.",
+      "items": [
+        { "val": "P", "target": "center" },
+        { "val": "E", "target": "center" },
+        { "val": "A", "target": "center" },
+        { "val": "R", "target": "center" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "BINARY",
+      "expected": "yes",
+      "prompt": "Are the sets <b>Equivalent</b>?",
+      "hint": "Yes, they have the exact same members."
+    }
+  ]
+}

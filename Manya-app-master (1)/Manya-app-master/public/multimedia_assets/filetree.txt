@@ -1,0 +1,31 @@
+File tree for: .
+
+.
+ ├── audios
+ │ ├── applause.mp3
+ │ ├── collect-points.mp3
+ │ ├── day.mp3
+ │ ├── error-mistake.mp3
+ │ ├── fanfare-trumpets.mp3
+ │ ├── freesound_community-night-cricket-ambience-22484.mp3
+ │ ├── game-bonus.mp3
+ │ ├── level-up.mp3
+ │ ├── night.mp3
+ │ ├── rain.mp3
+ │ ├── shine.mp3
+ │ ├── twin-sparkle.mp3
+ │ ├── ui-click.mp3
+ │ ├── video-game-bonus.mp3
+ │ └── whoosh.mp3
+ ├── characters
+ │ ├── kiki_icon.png
+ │ ├── manya_icon.png
+ │ ├── manya_master.png
+ │ └── polly_icon.png
+ ├── gems
+ │ ├── english_gem.svg
+ │ ├── master_gem.svg
+ │ ├── math_gem.svg
+ │ ├── science_svg.svg
+ │ └── sst_gem.svg
+ └── generate_tree.js

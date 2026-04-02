@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4: Proper Subsets",
+  "sets": {
+    "A": { "label": "X", "color": "#9333ea" },
+    "B": { "label": "Y", "color": "#db2777" }
+  },
+  "zones": {
+    "left": [10, 20], 
+    "center": [30, 40, 50], 
+    "right": [60], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "center",
+      "prompt": "How many <b>Proper Subsets</b> are in <span style='color:#64748b'>X ∩ Y</span>?",
+      "hint": "Intersection has 3 items. Formula: (2ⁿ) - 1. So 2³ - 1."
+    },
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "left_only",
+      "prompt": "Find number of proper subsets in <span style='color:#9333ea'>(X only)</span>.",
+      "hint": "X only has 2 items. Calculate 2² - 1."
+    },
+    {
+      "type": "REVERSE_SUBSET",
+      "targetRegion": "union", 
+      "prompt": "A set has <b>31 Proper Subsets</b>. Find the number of elements (n).",
+      "expected_val": 5,
+      "hint": "2ⁿ - 1 = 31. So 2ⁿ = 32. How many 2s multiply to make 32?"
+    }
+  ]
+}

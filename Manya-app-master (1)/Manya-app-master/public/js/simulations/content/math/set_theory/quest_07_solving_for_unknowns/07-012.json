@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Ratios",
+  "variantTitle": "Quest 7-007: Farmer's Market",
+  "sets": { "A": { "label": "B (30)", "color": "#16a34a" }, "B": { "label": "M (25)", "color": "#ea580c" } },
+  "zones": { "left": ["30-2x"], "center": ["2x"], "right": ["25-2x"], "outside": ["x"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> Both is 2x. Neither is x. Fill Diagram.",
+      "inputs": [
+        { "region": "left", "expected": "30-2x" },
+        { "region": "right", "expected": "25-2x" },
+        { "region": "outside", "expected": "x" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 50,
+      "expected_x": 5,
+      "prompt": "<b>Phase 2:</b> Total = 50. Find <b>x</b>.",
+      "hint": "(30-2x) + 2x + (25-2x) + x = 50 -> 55 - x = 50"
+    }
+  ]
+}

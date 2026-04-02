@@ -1,0 +1,13 @@
+LOAD DATABASE FROM sqlite://./manya.db
+INTO postgresql://postgres:postgres@localhost:5432/manya_db
+
+WITH include drop, create tables, create indexes, reset sequences,
+     disable triggers,
+     batch rows = 1000, batch concurrency = 1
+
+SET PostgreSQL PARAMETERS
+    maintenance_work_mem = '128MB',
+    work_mem = '12MB'
+
+CAST type datetime to timestamptz drop default drop not null using zero-dates-to-null,
+     type date drop default drop not null using zero-dates-to-null;

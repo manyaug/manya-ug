@@ -306,6 +306,8 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
 
   const theme = isDark ? { bg: 'bg-[#0B101A]', stage: 'from-[#0F172A] to-[#0B101A]', card: 'bg-[#151921]', text: 'text-white', sub: 'text-slate-400', b: 'border-white/5' } : { bg: 'bg-[#F8FAFC]', stage: 'from-[#FFFBF5] to-[#F8F9FA]', card: 'bg-white', text: 'text-[#0f172a]', sub: 'text-[#475569]', b: 'border-slate-100' };
 
+  if (!currentSlide) return null; // Safety guard
+
   return (
     <div ref={containerRef} className={`flex flex-col h-full ${theme.bg} font-jakarta transition-colors duration-500 overflow-hidden`}>
       {/* 1. STAGE (CURATED OVERLAP FIX) */}

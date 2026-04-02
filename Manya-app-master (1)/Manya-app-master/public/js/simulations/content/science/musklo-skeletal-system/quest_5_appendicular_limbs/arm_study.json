@@ -1,0 +1,68 @@
+{
+  "mode": "study",
+  "topic": "Appendicular Skeleton: The Arm",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",
+  "intro": "The upper limb is designed for flexibility and manipulation. Tap the parts to explore the Humerus, Forearm, and Hand.",
+  "hotspots": [
+    { 
+      "id": "3", 
+      "label": "Humerus", 
+      "region": "appendicular", 
+      "pos": "69.08 81.51 -101.92", 
+      "norm": "0.00 0.93 -0.36", 
+      "info": "Upper arm bone.",
+      "description": "The <b>Humerus</b> is the longest and largest bone of the upper limb. It connects the shoulder to the elbow.<br><br>The round head fits into the shoulder blade (scapula) to form a ball-and-socket joint.",
+      "examTip": "In exams, remember that the Humerus is a SINGLE bone, while the forearm has TWO bones."
+    },
+    { 
+      "id": "1", 
+      "label": "Radius", 
+      "region": "appendicular", 
+      "pos": "77.36 119.98 -49.19", 
+      "norm": "0.31 0.59 -0.74", 
+      "info": "Forearm bone on the thumb side.",
+      "description": "The <b>Radius</b> is the lateral bone of the forearm. It is located on the same side as the <b>Thumb</b>.<br><br>It allows the hand to rotate (like when you turn a doorknob).",
+      "examTip": "To identify it in a diagram: Look for the thumb! The Radius is always on the thumb side."
+    },
+    { 
+      "id": "2", 
+      "label": "Ulna", 
+      "region": "appendicular", 
+      "pos": "69.04 110.86 -56.59", 
+      "norm": "0.07 0.65 -0.74", 
+      "info": "Forearm bone on the pinky side.",
+      "description": "The <b>Ulna</b> is the longer of the two forearm bones. It is located on the side of the <b>Little Finger</b>.<br><br>It forms the major part of the hinge joint at the elbow.",
+      "examTip": "The top of the Ulna is shaped like a 'U' (wrench) which hinges with the Humerus."
+    },
+    { 
+      "id": "4", 
+      "label": "Carpals (Wrist)", 
+      "region": "appendicular", 
+      "pos": "72.85 138.14 -32.75", 
+      "norm": "-0.28 -0.90 -0.30", 
+      "info": "The 8 bones of the wrist.",
+      "description": "The wrist is made of <b>8 small irregular bones</b> called Carpals. They are arranged in two rows.<br><br>They glide over each other to allow flexible movement of the wrist.",
+      "examTip": "The joint formed here is called a GLIDING joint."
+    },
+    { 
+      "id": "5", 
+      "label": "Metacarpals", 
+      "region": "appendicular", 
+      "pos": "72.43 146.66 -29.81", 
+      "norm": "-0.95 -0.01 0.28", 
+      "info": "Bones forming the palm.",
+      "description": "These are the 5 long bones that form the <b>Palm</b> of the hand. They connect the wrist to the fingers.",
+      "examTip": "There are 5 metacarpals, numbered 1 to 5 starting from the thumb."
+    },
+    { 
+      "id": "6", 
+      "label": "Phalanges", 
+      "region": "appendicular", 
+      "pos": "72.63 160.57 -32.49", 
+      "norm": "-0.14 -0.19 -0.97", 
+      "info": "Bones of the fingers.",
+      "description": "The <b>Phalanges</b> are the bones of the fingers. Each finger has 3 phalanges, except the thumb which has only 2.",
+      "examTip": "Singular is Phalanx. Plural is Phalanges."
+    }
+  ]
+}

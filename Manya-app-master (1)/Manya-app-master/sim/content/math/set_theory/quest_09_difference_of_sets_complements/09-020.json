@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Not Set A",
+  "variantTitle": "Quest 9-023: Not A",
+  "sets": { "A": { "label": "A (30)", "color": "#059669" }, "B": { "label": "B (25)", "color": "#0891b2" } },
+  "zones": { "left": ["30-x"], "center": ["x"], "right": ["25-x"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "intersection",
+      "equation_target": 50,
+      "expected_x": 10,
+      "prompt": "Total=50. Neither=5. Find <b>x</b> (Both).",
+      "hint": "(30-x) + x + (25-x) + 5 = 50 -> 60 - x = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "complement_left", 
+      "x_val": 10,
+      "expression": "(25-x) + 5",
+      "prompt": "Find <span style='color:#059669'>n(A')</span> (Not A).",
+      "hint": "(B Only) + (Outside). (15) + 5 = 20."
+    }
+  ]
+}

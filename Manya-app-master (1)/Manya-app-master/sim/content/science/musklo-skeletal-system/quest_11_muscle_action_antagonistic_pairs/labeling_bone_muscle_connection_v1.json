@@ -1,0 +1,13 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Bones & Connectors",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/Relaxed_muscle.png",
+  "hotspots": [
+    { "id": "p1", "label": "Tendon", "x": 7.34, "y": 34.5 },
+    { "id": "p7", "label": "Humerus", "x": 23.52, "y": 61.12 },
+    { "id": "p8", "label": "Radius", "x": 38.28, "y": 77.88 },
+    { "id": "p6", "label": "Ulna", "x": 86.33, "y": 57.13 }
+  ],
+  "wordBank": ["Tendon", "Humerus", "Radius", "Ulna", "Femur", "Ligament"]
+}

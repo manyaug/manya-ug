@@ -1,0 +1,35 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Difference of Sets",
+  "variantTitle": "Quest 8-005: Science Project",
+  "sets": { "A": { "label": "P (30)", "color": "#7c3aed" }, "B": { "label": "B (25)", "color": "#db2777" } },
+  "zones": { "left": ["20"], "center": ["10"], "right": ["15"], "outside": ["k"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> P=30, B=25, Both=10. Fill Only regions.",
+      "inputs": [
+        { "region": "left", "expected": "20" },
+        { "region": "right", "expected": "15" },
+        { "region": "center", "expected": "10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 50,
+      "expected_x": 5,
+      "prompt": "<b>Phase 2:</b> Total = 50. Find <b>k</b> (Neither).",
+      "hint": "20 + 10 + 15 + k = 50."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "left_only",
+      "prompt": "Find <span style='color:#7c3aed'>n(P - B)</span> (Physics Only).",
+      "hint": "This is the region you calculated as 20."
+    }
+  ]
+}

@@ -296,16 +296,16 @@ function QuestPathView() {
                 </div>
 
                 <svg className="quest-svg-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d={`M${layoutX[0]},90 Q${layoutX[1]},70 ${layoutX[1]},70 Q${layoutX[2]},50 ${layoutX[2]},50 Q${layoutX[3]},30 ${layoutX[3]},30 Q${layoutX[4]},10 ${layoutX[4]},10`}
+                    <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
                         fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d={`M${layoutX[0]},90 Q${layoutX[1]},70 ${layoutX[1]},70 Q${layoutX[2]},50 ${layoutX[2]},50 Q${layoutX[3]},30 ${layoutX[3]},30 Q${layoutX[4]},10 ${layoutX[4]},10`}
-                        fill="none" stroke={biomeColor} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
+                    <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
+                        fill="none" stroke={biomeColor} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
                         pathLength="100"
                         strokeDasharray="100"
-                        strokeDashoffset={100 - (100 * ((currentStep + 1) / STEPS.length))}
+                        strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
                         style={{ 
                             transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                            filter: `drop-shadow(0 0 6px ${biomeRGB ? `rgba(${biomeRGB}, 0.8)` : biomeColor}) drop-shadow(0 0 2px ${biomeColor})`
+                            filter: `drop-shadow(0 0 8px ${biomeRGB ? `rgba(${biomeRGB}, 0.8)` : biomeColor}) drop-shadow(0 0 3px ${biomeColor})`
                         }} />
                 </svg>
 
@@ -327,7 +327,7 @@ function QuestPathView() {
                         ? (nodeMastery >= 85 ? 3 : nodeMastery >= 70 ? 2 : 1)
                         : 0;
 
-                    const yPct = 90 - (i * 20);
+                    const yPct = 85 - (i * 18);
                     const xPct = layoutX[i];
 
                     // Determine if the node is on the left side (xPct < 50)

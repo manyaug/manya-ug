@@ -1,0 +1,20 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "study",
+  "topic": "The Hip Joint (Diagram View)",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/hip joint.jfif",
+  "hotspots": [
+    { 
+      "id": "point_1", "label": "Femur", "x": 78.26, "y": 79.69, 
+      "info": "The thigh bone; the longest bone in the body." 
+    },
+    { 
+      "id": "point_2", "label": "The Socket", "x": 67.39, "y": 49.09, 
+      "info": "The hollow part of the pelvic bone." 
+    },
+    { 
+      "id": "point_3", "label": "Ball-and-Socket Joint", "x": 68.84, "y": 9.2, 
+      "info": "Allows movement in all directions." 
+    }
+  ]
+}

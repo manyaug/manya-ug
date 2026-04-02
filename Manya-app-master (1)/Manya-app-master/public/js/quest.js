@@ -1,0 +1,980 @@
+// quest.js - Complete Version with Coin System
+console.log('✅✅✅ QUEST.JS LOADING - COMPLETE VERSION ✅✅✅');
+
+const QuestScreen = {
+    questData: null,
+    challenge: null,
+    currentQuestionIndex: 0,
+    questions: [],
+    answers: [],
+    hintUsed: false,
+    hintDisplayed: false,
+    onComplete: null,
+    
+    // Study mode tracking
+    studySims: [],
+    currentStudySimIndex: -1,
+    isStudyMode: false,
+    
+    // Selection tracking
+    selectedOption: null,
+    answerSubmitted: false,
+    
+    // DOM elements
+    hintBtn: null,
+    submitBtn: null,
+    hintDisplay: null,
+    
+    // Tracking parameters
+    startTime: null,
+    questionStartTime: null,
+    hesitationCount: 0,
+    hesitationTimer: null,
+    answerChanged: false,
+    changeCount: 0,
+    
+    // Current labeling question reference
+    currentLabelingQuestion: null,
+    currentSubject: 'science',
+    
+    // Psychological parameters
+    params: {
+        accuracy: 0,
+        mastery: 0,
+        confidence: 70,
+        frustration: 0,
+        hintUsage: 0,
+        hesitationRate: 0
+    },
+    
+    init(questData, challenge, onComplete) {
+        console.log('🎮 Initializing quest:', questData);
+        
+        const template = document.getElementById('gameplay-view');
+        if (!template) {
+            console.error('❌ Template missing');
+            alert('System error: Game template missing.');
+            return;
+        }
+        
+        this.questData = questData;
+        this.challenge = challenge;
+        this.questions = questData.questions || [];
+        this.studySims = questData.studySims || [];
+        this.currentQuestionIndex = 0;
+        this.currentStudySimIndex = -1;
+        this.isStudyMode = false;
+        this.answers = [];
+        this.onComplete = onComplete;
+        
+        this.currentSubject = this.detectSubject(questData, challenge);
+        
+        this.startTime = Date.now();
+        this.params.frustration = 0;
+        this.params.confidence = 70;
+        this.hintUsed = false;
+        this.selectedOption = null;
+        this.answerSubmitted = false;
+        
+        this.render();
+        this.loadNextContent();
+        this.loadPsychologicalParams();
+        
+        if (questData.gameMode && questData.gameMode !== 'none' && window.GameModes) {
+            window.GameModes.init(questData.gameMode, questData.gameMode === 'timed' ? 30 : null, () => this.handleTimeUp(), questData.questId);
+        }
+    },
+    
+    detectSubject(questData, challenge) {
+        if (challenge && challenge.subject) return challenge.subject;
+        if (questData && questData.subject) return questData.subject;
+        return 'science';
+    },
+    
+    render() {
+        console.log('🎨 Rendering gameplay view...');
+        
+        try {
+            const template = document.getElementById('gameplay-view');
+            if (!template) return;
+            
+            const templateContent = template.content.cloneNode(true);
+            
+            const questNameEl = templateContent.querySelector('.current-quest-name');
+            const counterEl = templateContent.querySelector('.question-counter');
+            const backBtn = templateContent.querySelector('.back-btn');
+            const hintBtn = templateContent.querySelector('.hint-btn');
+            const submitBtn = templateContent.querySelector('.submit-btn');
+            
+            if (questNameEl) questNameEl.textContent = this.questData.name || 'Quest';
+            if (counterEl) counterEl.textContent = `0/${this.questions.length}`;
+            
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    if (confirm('Exit quest?')) this.exit();
+                });
+            }
+            
+            if (hintBtn) hintBtn.addEventListener('click', () => this.getHint());
+            if (submitBtn) submitBtn.addEventListener('click', () => this.submitAnswer());
+            
+            const contentArea = document.getElementById('content-area');
+            if (contentArea) {
+                contentArea.innerHTML = '';
+                contentArea.appendChild(templateContent);
+            }
+            
+            setTimeout(() => {
+                this.hintBtn = document.getElementById('hintBtn');
+                this.submitBtn = document.getElementById('submitBtn');
+                this.hintDisplay = document.getElementById('hintDisplay');
+            }, 100);
+            
+        } catch (err) {
+            console.error('Error in render:', err);
+        }
+    },
+    
+    loadNextContent() {
+        console.log('🔄 Loading next content...');
+        
+        if (this.currentStudySimIndex < this.studySims.length - 1) {
+            this.currentStudySimIndex++;
+            const studySim = this.studySims[this.currentStudySimIndex];
+            this.showStudySim(studySim);
+            return;
+        }
+        
+        if (this.currentQuestionIndex < this.questions.length) {
+            this.loadQuestion(this.currentQuestionIndex);
+        } else {
+            this.completeQuest();
+        }
+    },
+    
+    loadQuestion(index) {
+        if (index >= this.questions.length) {
+            this.completeQuest();
+            return;
+        }
+        
+        this.currentQuestionIndex = index;
+        const question = this.questions[index];
+        
+        const optionsContainer = document.getElementById('options-container');
+        if (optionsContainer) {
+            optionsContainer.style.display = 'grid';
+            optionsContainer.innerHTML = '';
+        }
+        
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) {
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '✅ Submit Answer';
+        }
+        
+        const hintBtn = document.querySelector('.hint-btn');
+        if (hintBtn) {
+            hintBtn.style.display = 'block';
+            hintBtn.disabled = false;
+        }
+        
+        if (question.question_type === 'SIM') {
+            this.loadSimulationQuestion(question);
+            return;
+        }
+        
+        if (this.hesitationTimer) clearInterval(this.hesitationTimer);
+        
+        this.selectedOption = null;
+        this.answerSubmitted = false;
+        this.hintUsed = false;
+        this.answerChanged = false;
+        this.changeCount = 0;
+        
+        const counterEl = document.querySelector('.question-counter');
+        if (counterEl) counterEl.textContent = `${index + 1}/${this.questions.length}`;
+        
+        const questionTextEl = document.querySelector('.question-text');
+        if (questionTextEl) questionTextEl.textContent = question.text || 'Question text missing';
+        
+        const topicBadgeEl = document.querySelector('.topic-badge');
+        if (topicBadgeEl) topicBadgeEl.textContent = this.challenge?.name || 'Topic';
+        
+        const difficultyEl = document.querySelector('.difficulty-badge');
+        if (difficultyEl) {
+            const difficulty = question.difficulty || 'M';
+            difficultyEl.textContent = difficulty === 'E' ? 'Easy' : difficulty === 'M' ? 'Medium' : 'Hard';
+            difficultyEl.className = 'difficulty-badge ' + (difficulty === 'E' ? 'easy' : difficulty === 'M' ? 'medium' : 'hard');
+        }
+        
+        this.renderOptions(question);
+        
+        if (this.hintDisplay) {
+            this.hintDisplay.style.display = 'none';
+            this.hintDisplay.textContent = '';
+        }
+        
+        this.questionStartTime = Date.now();
+        this.startHesitationTracking();
+    },
+    
+    renderOptions(question) {
+        const optionsContainer = document.getElementById('options-container');
+        if (!optionsContainer) return;
+        
+        optionsContainer.innerHTML = '';
+        const self = this;
+        const letters = ['A', 'B', 'C', 'D'];
+        
+        letters.forEach(letter => {
+            const optionText = question.options?.[letter];
+            if (!optionText) return;
+            
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option';
+            optionDiv.dataset.letter = letter;
+            optionDiv.innerHTML = `<span class="option-letter">${letter}.</span> ${optionText}`;
+            optionDiv.addEventListener('click', () => self.selectOption(letter));
+            optionsContainer.appendChild(optionDiv);
+        });
+    },
+    
+    selectOption(letter) {
+        if (this.answerSubmitted) return;
+        
+        if (this.selectedOption && this.selectedOption !== letter) {
+            this.answerChanged = true;
+            this.changeCount++;
+        }
+        
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.dataset.letter === letter) opt.classList.add('selected');
+        });
+        
+        this.selectedOption = letter;
+        if (this.submitBtn) this.submitBtn.disabled = false;
+    },
+    
+    async submitAnswer() {
+        console.log('🔵 submitAnswer called');
+        
+        if (!this.selectedOption || this.answerSubmitted) {
+            console.log('   Blocked - no selection or already submitted');
+            return;
+        }
+        
+        if (this.hesitationTimer) clearInterval(this.hesitationTimer);
+        
+        this.answerSubmitted = true;
+        if (this.submitBtn) this.submitBtn.disabled = true;
+        if (this.hintBtn) this.hintBtn.disabled = true;
+        
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.style.pointerEvents = 'none';
+        });
+        
+        const responseTime = Date.now() - this.questionStartTime;
+        const question = this.questions[this.currentQuestionIndex];
+        const correctAnswer = this.extractCorrectLetter(question.correctAnswer);
+        const isCorrect = this.selectedOption === correctAnswer;
+        
+        console.log(`   Answer: ${this.selectedOption}, Correct: ${correctAnswer}, Result: ${isCorrect ? '✅' : '❌'}`);
+        
+        // Track rewards
+        let coinResult = null;
+        try {
+            await this.trackEmotion(isCorrect ? 'confident' : 'frustrated', isCorrect ? 80 : 60, 'answer_submitted', responseTime);
+            await this.trackReward(isCorrect, this.hintUsed, this.currentSubject);
+            await this.updateStreak(isCorrect);
+            coinResult = await this.updateCoins(isCorrect, this.hintUsed);
+            
+            // Show coin animation
+            if (coinResult && coinResult.coinChange !== undefined) {
+                this.showCoinAnimation(coinResult.coinChange);
+            }
+            
+        } catch (err) {
+            console.error('Error tracking rewards:', err);
+        }
+        
+        // Update UI highlighting
+        document.querySelectorAll('.option').forEach(opt => {
+            if (opt.dataset.letter === correctAnswer) {
+                opt.classList.add('correct');
+            } else if (opt.dataset.letter === this.selectedOption && !isCorrect) {
+                opt.classList.add('incorrect');
+            }
+        });
+        
+        // Store the answer
+        this.answers.push({
+            questionId: question.id,
+            selectedAnswer: this.selectedOption,
+            correctAnswer: correctAnswer,
+            isCorrect: isCorrect,
+            timeSpent: responseTime,
+            hintUsed: this.hintUsed,
+            answerChanged: this.answerChanged,
+            changeCount: this.changeCount,
+            hesitationCount: this.hesitationCount
+        });
+        
+        console.log(`   Answer stored, total answers: ${this.answers.length}`);
+        
+        // Update points display
+        const pointsSpan = document.querySelector('.points-earned');
+        if (pointsSpan) {
+            const pointsEarned = isCorrect ? (this.hintUsed ? 2 : 3) : 0;
+            const currentPoints = parseInt(pointsSpan.textContent.split(' ')[1]) || 0;
+            pointsSpan.textContent = `⭐ ${currentPoints + pointsEarned}`;
+        }
+        
+        // Update accuracy
+        const correctSoFar = this.answers.filter(a => a.isCorrect).length;
+        this.params.accuracy = (correctSoFar / this.answers.length) * 100;
+        this.updateParameterDisplays();
+        
+        // Handle based on correct/wrong
+     if (isCorrect) {
+    console.log('   CORRECT - Playing effects, no modal');
+    
+    // Double screen flash
+    this.showDoubleScreenFlash('correct');
+    
+    // Play random sound and get the word (ONLY ONE AUDIO)
+    let word = null;
+    if (window.MANYAAudioSystem) {
+        word = await window.MANYAAudioSystem.playCorrect();
+    }
+    
+    // Show word flash
+    if (word) {
+        this.showWordFlash(word);
+    } else {
+        this.showWordFlash('Great');
+    }
+    
+    // Character reaction - WITHOUT AUDIO
+    if (window.MANYACharacterSystem && window.MANYACharacterSystem.onCorrectSilent) {
+        window.MANYACharacterSystem.onCorrectSilent();
+    } else if (window.MANYACharacterSystem) {
+        // Just show message without sound
+        window.MANYACharacterSystem.speak(window.MANYACharacterSystem.getCharacter().messages.correct, 2000);
+    }
+    
+    // Auto-advance after effects
+    setTimeout(() => {
+        this.currentQuestionIndex++;
+        console.log(`   Advancing to question ${this.currentQuestionIndex + 1}`);
+        this.loadNextContent();
+    }, 1500);
+} else {
+    console.log('   WRONG - Showing feedback modal');
+    
+    // Double red flash
+    this.showDoubleScreenFlash('wrong');
+    
+    // Play wrong sound (ONLY ONE AUDIO)
+    if (window.MANYAAudioSystem) {
+        window.MANYAAudioSystem.playWrong();
+    }
+    
+    // Character reaction - WITHOUT AUDIO
+    if (window.MANYACharacterSystem && window.MANYACharacterSystem.onWrongSilent) {
+        window.MANYACharacterSystem.onWrongSilent();
+    } else if (window.MANYACharacterSystem) {
+        window.MANYACharacterSystem.speak(window.MANYACharacterSystem.getCharacter().messages.wrong, 2000);
+    }
+    
+    // Show feedback modal
+    await this.showDetailedFeedbackModal(question, correctAnswer, responseTime);
+}
+    },
+    
+    showDoubleScreenFlash(type) {
+        const existing = document.querySelector('.screen-flash-double');
+        if (existing) existing.remove();
+        
+        const flash = document.createElement('div');
+        flash.className = `screen-flash-double ${type}`;
+        document.body.appendChild(flash);
+        
+        setTimeout(() => {
+            if (flash.parentNode) flash.remove();
+        }, 600);
+    },
+    
+    showWordFlash(word) {
+        const existing = document.querySelector('.word-flash');
+        if (existing) existing.remove();
+        
+        const wordEl = document.createElement('div');
+        wordEl.className = 'word-flash';
+        wordEl.textContent = word.toUpperCase();
+        document.body.appendChild(wordEl);
+        
+        setTimeout(() => {
+            if (wordEl.parentNode) wordEl.remove();
+        }, 600);
+    },
+    
+    showCoinAnimation(change) {
+        const animation = document.createElement('div');
+        animation.className = `coin-animation ${change > 0 ? 'gain' : 'loss'}`;
+        animation.innerHTML = change > 0 ? `+${change} 🪙` : `${change} 🪙`;
+        
+        document.body.appendChild(animation);
+        setTimeout(() => animation.remove(), 1000);
+        
+        if (window.MANYAAudioSystem) {
+            if (change > 0) {
+                window.MANYAAudioSystem.playCoinCollect();
+            } else if (change < 0) {
+                window.MANYAAudioSystem.playCoinDeduct();
+            }
+        }
+    },
+    
+    async showDetailedFeedbackModal(question, correctAnswer, responseTime) {
+        const feedbackModal = document.createElement('div');
+        feedbackModal.className = 'feedback-card-detailed';
+        feedbackModal.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 450px;
+            width: 90%;
+            z-index: 20000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        `;
+        
+        let detailedSolution = '';
+        try {
+            const response = await fetch(`/api/solution/${question.id}`);
+            if (response.ok) {
+                const data = await response.json();
+                detailedSolution = data.detailedSolution || '';
+            }
+        } catch (err) {}
+        
+        if (!detailedSolution) {
+            detailedSolution = `The correct answer is ${correctAnswer}. Review this topic to strengthen your understanding. 📚`;
+        }
+        
+        feedbackModal.innerHTML = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <span style="font-size: 3em;">💪</span>
+                <h2 style="color: #f56565; margin: 10px 0;">Not quite right</h2>
+            </div>
+            <div style="background: #f7fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <p><strong>Your answer:</strong> ${this.selectedOption} - ${this.getOptionText(question, this.selectedOption)}</p>
+                <p><strong>Correct answer:</strong> ${correctAnswer} - ${this.getOptionText(question, correctAnswer)}</p>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <h4>📚 Explanation</h4>
+                <p>${detailedSolution}</p>
+            </div>
+            <div style="text-align: center;">
+                <button id="continue-btn" style="
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    padding: 12px 40px;
+                    border-radius: 30px;
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                ">Continue →</button>
+            </div>
+        `;
+        
+        document.body.appendChild(feedbackModal);
+        
+        const continueBtn = feedbackModal.querySelector('#continue-btn');
+        continueBtn.onmouseover = () => continueBtn.style.transform = 'scale(1.05)';
+        continueBtn.onmouseout = () => continueBtn.style.transform = 'scale(1)';
+        
+        continueBtn.onclick = () => {
+            feedbackModal.remove();
+            this.currentQuestionIndex++;
+            console.log(`   Advancing to question ${this.currentQuestionIndex + 1}`);
+            this.loadNextContent();
+        };
+    },
+    
+    async updateCoins(isCorrect, hintUsed) {
+        const userId = window.App?.currentUser || 'student-001';
+        
+        console.log(`🪙 Updating coins for user ${userId}: isCorrect=${isCorrect}, hintUsed=${hintUsed}`);
+        
+        try {
+            const response = await fetch('/api/coins/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, isCorrect, hintUsed })
+            });
+            
+            if (!response.ok) {
+                console.error(`Coin update failed: ${response.status}`);
+                return null;
+            }
+            
+            const data = await response.json();
+            console.log(`🪙 Coin update result:`, data);
+            
+            if (data && data.newBalance !== undefined) {
+                this.updateCoinDisplay(data.newBalance);
+            }
+            return data;
+        } catch (err) {
+            console.error('Error updating coins:', err);
+            return null;
+        }
+    },
+    
+    updateCoinDisplay(balance) {
+        const coinEl = document.getElementById('coin-balance');
+        if (coinEl) {
+            coinEl.textContent = `🪙 ${balance}`;
+            console.log(`💰 Coin display updated: ${balance}`);
+        } else {
+            console.warn('Coin balance element not found');
+        }
+    },
+    
+    getOptionText(question, letter) {
+        return question.options?.[letter] || '';
+    },
+    
+    async trackReward(isCorrect, hintUsed, subject) {
+        const userId = window.App?.currentUser || 'student-001';
+        
+        try {
+            const response = await fetch('/api/gamification/award', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, subject, isCorrect, hintUsed, context: 'answer_correct' })
+            });
+            const data = await response.json();
+            if (data.awarded && (data.awarded.subjectGems > 0 || data.awarded.overallGems > 0)) {
+                this.showRewardAnimation(data.awarded);
+            }
+            return data;
+        } catch (err) {
+            console.error('Error tracking reward:', err);
+            return null;
+        }
+    },
+    
+   showRewardAnimation(awarded) {
+    if (!awarded.subjectGems && !awarded.overallGems) return;
+    
+    const animation = document.createElement('div');
+    animation.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:10000; background:rgba(0,0,0,0.8); color:gold; padding:15px 25px; border-radius:50px; font-weight:bold; font-size:1.2em; animation:floatUp 1s ease-out forwards;';
+    animation.innerHTML = `+${awarded.subjectGems} 🎨 +${awarded.overallGems} ⭐`;
+    document.body.appendChild(animation);
+    setTimeout(() => animation.remove(), 1000);
+    
+    // Only play sound if the method exists
+    if (window.MANYAAudioSystem && window.MANYAAudioSystem.playGemCollect && awarded.subjectGems > 0) {
+        window.MANYAAudioSystem.playGemCollect();
+    }
+},
+    
+    async trackEmotion(emotion, intensity, context, responseTime) {
+        const userId = window.App?.currentUser || 'student-001';
+        try {
+            await fetch('/api/gamification/emotion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, emotion, intensity, context, responseTime: Math.floor(responseTime) })
+            });
+        } catch (err) {}
+    },
+    
+    async updateStreak(isCorrect) {
+        const userId = window.App?.currentUser || 'student-001';
+        try {
+            const response = await fetch('/api/gamification/streak/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, isCorrect })
+            });
+            const data = await response.json();
+            if (window.MANYACharacterSystem && data.currentStreak > 0 && data.currentStreak % 3 === 0) {
+                window.MANYACharacterSystem.onStreak(data.currentStreak);
+            }
+            return data;
+        } catch (err) {
+            return null;
+        }
+    },
+    
+    async completeQuest() {
+        console.log('🏁 Completing quest...');
+        
+        const totalQuestions = this.questions.length;
+        const correctAnswers = this.answers.filter(a => a.isCorrect).length;
+        const mastery = Math.min(100, Math.max(0, Math.round((correctAnswers / totalQuestions) * 100)));
+        const isQuestPassed = mastery >= 75;
+        
+        console.log(`   Mastery: ${mastery}%, Passed: ${isQuestPassed}`);
+        
+        try {
+            await fetch('/api/quests/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: window.App?.currentUser || 'student-001',
+                    challengeId: this.challenge.id,
+                    questId: this.questData?.questId,
+                    mastery: mastery,
+                    answers: this.answers
+                })
+            });
+            
+            if (isQuestPassed) {
+                console.log('🎉 Quest completed! Playing celebration effects...');
+                
+                let celebrationWord = null;
+                if (window.MANYAAudioSystem && window.MANYAAudioSystem.playQuestComplete) {
+                    celebrationWord = await window.MANYAAudioSystem.playQuestComplete();
+                }
+                
+                if (celebrationWord) {
+                    this.showWordFlash(celebrationWord);
+                } else {
+                    this.showWordFlash('Complete');
+                }
+                
+                this.showDoubleScreenFlash('quest-complete');
+                this.showChestUnlockAnimation();
+                
+                if (window.MANYACharacterSystem && window.MANYACharacterSystem.onQuestComplete) {
+                    window.MANYACharacterSystem.onQuestComplete();
+                } else if (window.MANYACharacterSystem) {
+                    window.MANYACharacterSystem.speak("Quest completed! You're amazing! 🎉", 3000);
+                }
+                
+                setTimeout(() => {
+                    this.showCompletion(mastery);
+                }, 2000);
+            } else {
+                this.showCompletion(mastery);
+            }
+            
+        } catch (err) {
+            console.error('Error completing quest:', err);
+            this.exit();
+        }
+    },
+    
+    showChestUnlockAnimation() {
+        const chestAnimation = document.createElement('div');
+        chestAnimation.className = 'chest-unlock-animation';
+        chestAnimation.innerHTML = `
+            <div class="chest-unlock-content">
+                <div class="chest-icon">🎁</div>
+                <div class="chest-text">NEW CHEST UNLOCKED!</div>
+                <div class="chest-sparkles">✨ ✨ ✨</div>
+            </div>
+        `;
+        chestAnimation.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 50px;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            z-index: 20001;
+            animation: chestPop 0.5s ease-out;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        `;
+        
+        document.body.appendChild(chestAnimation);
+        
+        setTimeout(() => {
+            chestAnimation.style.animation = 'chestFadeOut 0.5s ease-out';
+            setTimeout(() => chestAnimation.remove(), 500);
+        }, 2000);
+    },
+    
+    showCompletion(mastery) {
+        const overlay = document.querySelector('.quest-complete-overlay');
+        if (!overlay) return;
+        
+        overlay.querySelector('.mastery-score').textContent = mastery + '%';
+        overlay.querySelector('.earned-rewards').innerHTML = `<div>✨ Mastery: ${mastery}%</div><div>📊 Accuracy: ${Math.round(this.params.accuracy)}%</div>`;
+        overlay.querySelector('.continue-btn').onclick = () => {
+            overlay.style.display = 'none';
+            this.exit();
+        };
+        overlay.style.display = 'flex';
+    },
+    
+    updateParameterDisplays() {
+        const accuracyEl = document.getElementById('param-accuracy');
+        if (accuracyEl) accuracyEl.textContent = Math.round(this.params.accuracy) + '%';
+        
+        const masteryEl = document.getElementById('param-mastery');
+        if (masteryEl) masteryEl.textContent = Math.round(this.params.mastery) + '%';
+        
+        const confidenceEl = document.getElementById('param-confidence');
+        if (confidenceEl) confidenceEl.textContent = Math.round(this.params.confidence) + '%';
+        
+        const confidenceBar = document.getElementById('confidence-bar');
+        if (confidenceBar) confidenceBar.style.width = this.params.confidence + '%';
+        
+        const frustrationEl = document.getElementById('param-frustration');
+        if (frustrationEl) frustrationEl.textContent = Math.round(this.params.frustration) + '%';
+        
+        const frustrationBar = document.getElementById('frustration-bar');
+        if (frustrationBar) frustrationBar.style.width = this.params.frustration + '%';
+        
+        const hintsEl = document.getElementById('param-hints');
+        if (hintsEl) hintsEl.textContent = Math.round(this.params.hintUsage) + '%';
+        
+        const hintCount = this.answers.filter(a => a.hintUsed).length;
+        const hintCountEl = document.getElementById('hint-count');
+        if (hintCountEl) hintCountEl.textContent = `${hintCount} used`;
+    },
+    
+    startHesitationTracking() {
+        this.questionStartTime = Date.now();
+        const self = this;
+        
+        if (this.hesitationTimer) clearInterval(this.hesitationTimer);
+        
+        this.hesitationTimer = setInterval(() => {
+            const timeOnQuestion = (Date.now() - self.questionStartTime) / 1000;
+            if (timeOnQuestion > 5 && !self.answerSubmitted && !self.selectedOption) {
+                self.hesitationCount++;
+            }
+        }, 1000);
+    },
+    
+    async loadPsychologicalParams() {
+        try {
+            const response = await fetch(`/api/psychological/state/${window.App?.currentUser || 'student-001'}`);
+            const data = await response.json();
+            this.params.confidence = data.confidence || 70;
+            this.params.frustration = data.frustration || 0;
+            this.updateParameterDisplays();
+        } catch (err) {}
+    },
+    
+    handleTimeUp() {
+        console.log('⏰ TIME\'S UP!');
+        this.completeQuest();
+    },
+    
+    async showStudySim(studySim) {
+        console.log('📚 Showing study simulation');
+        this.isStudyMode = true;
+        
+        const optionsContainer = document.getElementById('options-container');
+        if (optionsContainer) optionsContainer.style.display = 'none';
+        
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) submitBtn.style.display = 'none';
+        
+        const hintBtn = document.querySelector('.hint-btn');
+        if (hintBtn) hintBtn.style.display = 'none';
+        
+        const counterEl = document.querySelector('.question-counter');
+        if (counterEl) counterEl.innerHTML = '📚 <span style="color: #9f7aea;">Study Guide</span>';
+        
+        const questionText = document.querySelector('.question-text');
+        if (questionText) questionText.innerHTML = `<span style="color: #9f7aea;">📚 STUDY MODE:</span> ${studySim.title || 'Explore the model'}`;
+        
+        const simContainer = document.createElement('div');
+        simContainer.id = 'simulation-container';
+        simContainer.style.cssText = 'width:100%; min-height:500px; margin:20px 0;';
+        
+        const questionTextEl = document.querySelector('.question-text');
+        if (questionTextEl) questionTextEl.parentNode.insertBefore(simContainer, questionTextEl.nextSibling);
+        
+        try {
+            if (!window.SimulationLoader) {
+                await this.loadScript('/js/simulation-loader.js');
+                await SimulationLoader.init();
+            }
+            const simElement = await SimulationLoader.loadSimulation(studySim);
+            simContainer.appendChild(simElement);
+        } catch (err) {
+            simContainer.innerHTML = '<div style="color:red;">Failed to load study guide</div>';
+        }
+        
+        this.addStudyMessage();
+        this.setupStudyContinueButton(studySim);
+    },
+    
+    addStudyMessage() {
+        const questionArea = document.querySelector('.gameplay-area');
+        if (!questionArea) return;
+        
+        const studyMessage = document.createElement('div');
+        studyMessage.className = 'study-message';
+        studyMessage.style.cssText = 'background:#9f7aea20; border-left:4px solid #9f7aea; padding:15px; margin:20px 0; border-radius:8px;';
+        studyMessage.innerHTML = '<strong>📚 Study Guide</strong><p style="margin-top:8px;">Take your time to explore. Click "Continue" when ready.</p>';
+        questionArea.insertBefore(studyMessage, questionArea.firstChild);
+    },
+    
+    setupStudyContinueButton(studySim) {
+        const footer = document.querySelector('.gameplay-footer');
+        if (!footer) return;
+        
+        const existingBtn = document.getElementById('simulation-done-btn');
+        if (existingBtn) existingBtn.remove();
+        
+        const continueBtn = document.createElement('button');
+        continueBtn.id = 'simulation-done-btn';
+        continueBtn.className = 'submit-btn';
+        continueBtn.textContent = '📚 Continue to Questions';
+        continueBtn.style.cssText = 'margin:20px auto; width:250px; display:block; background:#9f7aea;';
+        
+        continueBtn.onclick = () => {
+            this.answers.push({ questionId: studySim.id, type: 'simulation', mode: 'study', timeSpent: (Date.now() - this.startTime) / 1000 });
+            this.isStudyMode = false;
+            
+            document.querySelector('.study-message')?.remove();
+            document.getElementById('simulation-container')?.remove();
+            
+            const optionsContainer = document.getElementById('options-container');
+            if (optionsContainer) optionsContainer.style.display = 'grid';
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            if (submitBtn) submitBtn.style.display = 'block';
+            
+            const hintBtn = document.querySelector('.hint-btn');
+            if (hintBtn) hintBtn.style.display = 'block';
+            
+            const counterEl = document.querySelector('.question-counter');
+            if (counterEl) counterEl.textContent = `${this.currentQuestionIndex + 1}/${this.questions.length}`;
+            
+            this.loadNextContent();
+        };
+        
+        footer.appendChild(continueBtn);
+    },
+    
+    async loadSimulationQuestion(question) {
+        console.log('🎮 Loading simulation question');
+        
+        try {
+            if (!window.SimulationLoader) {
+                await this.loadScript('/js/simulation-loader.js');
+                await SimulationLoader.init();
+            }
+            
+            const optionsContainer = document.getElementById('options-container');
+            if (optionsContainer) optionsContainer.style.display = 'none';
+            
+            const simContainer = document.createElement('div');
+            simContainer.id = 'simulation-container';
+            simContainer.style.cssText = 'width:100%; min-height:500px; margin:20px 0;';
+            
+            const questionText = document.querySelector('.question-text');
+            if (questionText) questionText.parentNode.insertBefore(simContainer, questionText.nextSibling);
+            
+            const simElement = await SimulationLoader.loadSimulation({ ...question, mode_sim: question.mode_sim || 'labeling' });
+            simContainer.appendChild(simElement);
+            
+            this.setupLabelingSim(question);
+        } catch (err) {
+            console.error('Error loading simulation:', err);
+        }
+    },
+    
+    setupLabelingSim(question) {
+        console.log('🏷️ Setting up LABELING mode');
+        
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) {
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '✅ Submit Answers';
+        }
+        
+        const hintBtn = document.querySelector('.hint-btn');
+        if (hintBtn) hintBtn.style.display = 'none';
+        
+        setTimeout(() => {
+            window.onSimulationSubmit = (result) => {
+                console.log('Simulation result:', result);
+                this.answers.push({
+                    questionId: question.id,
+                    type: 'simulation',
+                    mode: 'labeling',
+                    isCorrect: result.isCorrect,
+                    correctCount: result.correct,
+                    totalCount: result.total,
+                    timeSpent: (Date.now() - this.questionStartTime) / 1000
+                });
+                this.currentQuestionIndex++;
+                this.loadNextContent();
+            };
+        }, 1000);
+    },
+    
+    async getHint() {
+        if (this.hintUsed || this.answerSubmitted) return;
+        
+        const question = this.questions[this.currentQuestionIndex];
+        
+        try {
+            const response = await fetch(`/api/hint/${question.id}`);
+            const data = await response.json();
+            
+            if (this.hintDisplay) {
+                this.hintDisplay.textContent = data.hint || "Think carefully about what you've learned!";
+                this.hintDisplay.style.display = 'block';
+            }
+            
+            this.hintUsed = true;
+            if (this.hintBtn) this.hintBtn.disabled = true;
+        } catch (err) {
+            if (this.hintDisplay) {
+                this.hintDisplay.textContent = "Try to eliminate wrong answers first!";
+                this.hintDisplay.style.display = 'block';
+            }
+            this.hintUsed = true;
+            if (this.hintBtn) this.hintBtn.disabled = true;
+        }
+    },
+    
+    extractCorrectLetter(correctAnswer) {
+        if (!correctAnswer) return 'A';
+        if (correctAnswer.startsWith('Option_')) return correctAnswer.replace('Option_', '');
+        if (['A','B','C','D'].includes(correctAnswer)) return correctAnswer;
+        return 'A';
+    },
+    
+    loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    },
+    
+    exit() {
+        if (this.onComplete) this.onComplete();
+    }
+};
+
+window.QuestScreen = QuestScreen;
+console.log('✅ QuestScreen registered globally');

@@ -5,19 +5,35 @@
   "topic": "Set Notation & Regions",
   "variantTitle": "Quest 2: Reading Regions",
   "sets": {
-    "A": { "label": "Y", "color": "#9333ea" },
-    "B": { "label": "Z", "color": "#db2777" }
+    "A": {
+      "label": "Y",
+      "color": "#9333ea"
+    },
+    "B": {
+      "label": "Z",
+      "color": "#db2777"
+    }
   },
   "zones": {
-    "left": [2, 5, 9],
-    "center": [4, 6, 7],
-    "right": [2],
+    "left": [
+      5,
+      9
+    ],
+    "center": [
+      2,
+      4
+    ],
+    "right": [
+      6,
+      7
+    ],
     "outside": []
   },
   "questions": [
     {
       "type": "LIST",
       "targetRegion": "intersection",
+      "expected": [2, 4],
       "prompt": "List the elements of <span style='color:#64748b'>Y ∩ Z</span>",
       "hint": "List the numbers found in the overlapping middle part."
     },
@@ -25,6 +41,7 @@
       "retain_visuals": true,
       "type": "COUNT",
       "targetRegion": "intersection",
+      "expected": 2,
       "prompt": "Find <span style='color:#64748b'>n(Y ∩ Z)</span>",
       "hint": "Count how many numbers are in the overlap."
     },
@@ -32,6 +49,7 @@
       "retain_visuals": true,
       "type": "COUNT",
       "targetRegion": "left_only",
+      "expected": 2,
       "prompt": "Find <span style='color:#9333ea'>n(Y only)</span>",
       "hint": "Count items in circle Y that are NOT in Z."
     },
@@ -39,6 +57,7 @@
       "retain_visuals": true,
       "type": "COUNT",
       "targetRegion": "right_only",
+      "expected": 2,
       "prompt": "Find <span style='color:#db2777'>n(Z - Y)</span>",
       "hint": "This means 'Difference'. Count items in Z but NOT in Y."
     }

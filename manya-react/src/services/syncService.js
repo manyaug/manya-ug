@@ -98,6 +98,13 @@ export const syncService = {
         const uid = await this.getUserId();
         if (!uid) return;
 
+        // Analytics enrichment (ported from Manya-app-master)
+        const now = new Date();
+        const hour = now.getHours();
+        const timeOfDay = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : hour < 21 ? 'evening' : 'night';
+        const dayOfWeek = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][now.getDay()];
+        const pointsEarned = answer.isCorrect ? (answer.hintUsed ? 2 : 3) : 0;
+
         const payload = {
             user_id: uid,
             question_id: answer.questionId,
@@ -114,13 +121,22 @@ export const syncService = {
             concept_id: answer.concept_id || null,
             variant: answer.variant || null,
             subject: subject,
-            session_id: answer.session_id || localStorage.getItem('manya_session_id')
+            session_id: answer.session_id || localStorage.getItem('manya_session_id'),
+            time_of_day: timeOfDay,
+            day_of_week: dayOfWeek,
+            points_earned: pointsEarned
         };
 
         try {
-            console.log(`☁️ [Sync] Recording answer in user_answers...`);
-            const { error } = await supabase.from('user_answers').insert(payload);
-            if (error) throw error;
+            console.log(`☁️ [Sync] Recording answer in user_answers...`, { questionId: payload.question_id, pool: payload.pool });
+            const { data, error, status } = await supabase.from('user_answers').insert(payload);
+            
+            if (error) {
+                console.error(`❌ [Sync] Supabase Error (${status}):`, error.message, error.details, error.hint);
+                throw error;
+            }
+            
+            console.log(`✅ [Sync] Answer recorded successfully: ${status}`);
         } catch (err) {
             console.warn("⚠️ Answer sync failed, queuing for later:", err.message);
             await ManyaDB.addToSyncQueue('answer', payload);
@@ -156,6 +172,38 @@ export const syncService = {
     },
 
     /**
+     * Push Concept Mastery Record to Supabase.
+     */
+    async pushConceptMastery(subject, record) {
+        const uid = await this.getUserId();
+        if (!uid) return;
+
+        const payload = {
+            user_id: uid,
+            subject: subject,
+            base_id: record.baseId,
+            mastery_level: record.masteryLevel,
+            review_count: record.reviewCount,
+            last_reviewed_at: record.lastReviewedAt,
+            next_review_at: record.nextReviewAt,
+            correct_streak: record.correctStreak,
+            total_attempts: record.totalAttempts,
+            total_correct: record.totalCorrect,
+            updated_at: new Date().toISOString()
+        };
+
+        try {
+            const { error } = await supabase.from('concept_mastery').upsert(payload, {
+                onConflict: 'user_id, subject, base_id'
+            });
+            if (error) throw error;
+        } catch (err) {
+            console.warn('⚠️ Concept mastery sync failed, queuing:', err.message);
+            await ManyaDB.addToSyncQueue('concept_mastery', payload);
+        }
+    },
+
+    /**
      * BACKGROUND SYNC PROCESSOR
      * Flushes the IndexedDB sync queue when back online.
      */
@@ -175,6 +223,8 @@ export const syncService = {
                     ({ error } = await supabase.from('user_answers').insert(item.data));
                 } else if (item.type === 'progress') {
                     ({ error } = await supabase.from('quest_progress').upsert(item.data));
+                } else if (item.type === 'concept_mastery') {
+                    ({ error } = await supabase.from('concept_mastery').upsert(item.data, { onConflict: 'user_id, subject, base_id' }));
                 }
 
                 if (!error) {

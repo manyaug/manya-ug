@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "sync-assets": "node scripts/sync-assets.cjs"
+    "sync-assets": "node scripts/sync-assets.cjs",
+    "sync-db": "node scripts/sync-excel-db.cjs"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",

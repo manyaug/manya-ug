@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Party Drinks",
+  "variantTitle": "Topic 10: Party Drinks",
+  "sets": { "A": { "label": "A (24)", "color": "#9333ea" }, "B": { "label": "B (20)", "color": "#db2777" } },
+  "zones": { "left": [], "center": ["x"], "right": [], "outside": [] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> 2 guests drink neither. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "24-x" },
+        { "region": "right", "expected": "20-x" },
+        { "region": "outside", "expected": "2" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 40,
+      "expected_x": 6,
+      "prompt": "<b>Phase 2:</b> Total guests = 40. Find <b>x</b>.",
+      "hint": "(24-x) + x + (20-x) + 2 = 40"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "x_val": 6,
+      "prompt": "How many drink <b>one type only</b>?",
+      "hint": "(A Only) + (B Only). Substitute x=6."
+    }
+  ]
+}

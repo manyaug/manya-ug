@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Difference",
+  "variantTitle": "Quest 8-015: Sports Diff",
+  "sets": { "A": { "label": "F (40)", "color": "#16a34a" }, "B": { "label": "R", "color": "#f59e0b" } },
+  "zones": { "left": ["30"], "center": ["10"], "right": ["x"], "outside": ["x+10"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 60,
+      "expected_x": 5,
+      "prompt": "Total=60. n(F)=40. R-only=x. Outside=x+10. Find <b>x</b>.",
+      "hint": "40 + x + (x+10) = 60 -> 2x + 50 = 60."
+    }
+  ]
+}

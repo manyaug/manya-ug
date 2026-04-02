@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Large Numbers",
+  "variantTitle": "Quest 5-003: Library Logic",
+  "sets": { "A": { "label": "Books", "color": "#2563eb" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "REVERSE_SUBSET",
+      "targetRegion": "intersection",
+      "expected_val": 7,
+      "prompt": "A shelf has <b>128 arrangements</b> (Subsets). How many books (n)?",
+      "hint": "2, 4, 8, 16, 32, 64, 128. That is 7 steps."
+    },
+    {
+      "retain_visuals": true,
+      "type": "REVERSE_PROPER_SUBSET",
+      "targetRegion": "intersection",
+      "expected_val": 6,
+      "prompt": "Another shelf has <b>63 Proper Subsets</b>. Find n.",
+      "hint": "2ⁿ - 1 = 63 -> 2ⁿ = 64. n=6."
+    }
+  ]
+}

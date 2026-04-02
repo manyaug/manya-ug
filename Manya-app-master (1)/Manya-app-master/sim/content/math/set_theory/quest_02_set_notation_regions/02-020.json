@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Subset Notation",
+  "variantTitle": "Quest 2-018: Symbols",
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "items": [
+          { "val": "Q", "radius": 90, "color": "#f3e8ff", "locked": true, "label_dy": -60 }, 
+          { "val": "P", "radius": 45, "color": "#ffffff", "locked": true }
+      ],
+      "prompt": "Which statement matches the diagram?",
+      "options": [
+        "P ⊂ Q",
+        "Q ⊂ P",
+        "P ∩ Q = ∅",
+        "P = Q"
+      ],
+      "expected": "P ⊂ Q",
+      "hint": "P is inside Q. This means P is a 'Subset' of Q."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability Union",
+  "variantTitle": "Quest 10-011: Garden Prob",
+  "sets": { "A": { "label": "M (30)", "color": "#f59e0b" }, "B": { "label": "O (20)", "color": "#10b981" } },
+  "zones": { "left": ["25"], "center": ["5"], "right": ["15"], "outside": ["15"] },
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "prompt": "How many trees are Mango <b>OR</b> Orange?",
+      "hint": "n(M ∪ O) = 25 + 5 + 15 = 45."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "union",
+      "total": 60,
+      "expression": "45",
+      "prompt": "Probability of picking a fruit tree?",
+      "hint": "45/60 = 3/4"
+    }
+  ]
+}

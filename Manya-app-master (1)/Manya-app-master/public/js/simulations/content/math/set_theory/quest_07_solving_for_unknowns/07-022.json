@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Equal Totals",
+  "variantTitle": "Quest 7-017: Exam Build",
+  "sets": { "A": { "label": "M", "color": "#2563eb" }, "B": { "label": "E", "color": "#db2777" } },
+  "zones": { "left": ["x+10"], "center": ["5"], "right": ["2x"], "outside": ["0"] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "<b>Phase 1: Build It</b><br>• M-only: <b>x+10</b> &nbsp; • E-only: <b>2x</b><br>• Both: <b>5</b>",
+      "items": [
+        { "val": "x+10", "target": "left" },
+        { "val": "5", "target": "center" },
+        { "val": "2x", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": false,
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 0,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> If n(M) = n(E), find <b>x</b>.",
+      "hint": "(x+10) + 5 = 5 + 2x -> x+15 = 2x+5 -> x=10."
+    }
+  ]
+}

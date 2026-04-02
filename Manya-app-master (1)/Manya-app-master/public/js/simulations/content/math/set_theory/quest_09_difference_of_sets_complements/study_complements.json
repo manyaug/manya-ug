@@ -1,0 +1,48 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Complements",
+  "variantTitle": "Understanding 'Not'",
+  "slides": [
+    {
+      "title": "What is a Complement?",
+      "text": "The <b>Complement of Set A</b> (written A') means everything that is <b>NOT</b> in Circle A.<br><br>Imagine covering Circle A with your hand. What is left?",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["A", "B"],
+      "elements": { "left": "Left", "center": "Mid", "right": "Right", "outside": "Out" },
+      "highlight": ["right", "outside"]
+    },
+    {
+      "title": "Case 1: The Visual Test",
+      "text": "<b>Question:</b> Identify regions for \"Not Pizza\".<br><br><b>Logic:</b> We must exclude the Pizza Circle completely.<br>This leaves: <b>Burger Only</b> + <b>Neither</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Pizza", "Burger"],
+      "elements": { "left": "20", "center": "15", "right": "10", "outside": "15" },
+      "highlight": ["right", "outside"]
+    },
+    {
+      "title": "Case 2: Finding 'Neither'",
+      "text": "<b>Problem:</b> Total = 50. Find <b>y</b> (Neither).<br><br><b>Logic:</b> The Universal Set contains EVERYTHING.<br>Left + Mid + Right + Outside = Total.<br><br><b>Equation:</b><br>15 + 10 + 10 + y = 50<br>35 + y = 50<br>y = 15",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["S", "R"],
+      "elements": { "left": "15", "center": "10", "right": "10", "outside": "y" },
+      "highlight": ["outside"]
+    },
+    {
+      "title": "Case 3: 'Not Both'",
+      "text": "<b>Question:</b> \"n(S ∩ W)' = 32\". What does this mean?<br><br><b>Logic:</b> It means the Complement of the Intersection.<br>Everything EXCEPT the middle.<br><br>So, (Left + Right + Outside) = 32.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["S", "W"],
+      "elements": { "left": "3x", "center": "10", "right": "x+2", "outside": "2x" },
+      "highlight": ["left", "right", "outside"]
+    },
+    {
+      "title": "Solving Case 3",
+      "text": "If Total = 42, and 'Not Both' = 32, we can find the Middle easily.<br><br><b>Shortcut:</b> Total - Not Both = Both.<br>42 - 32 = <b>10</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["S", "W"],
+      "elements": { "left": "?", "center": "10", "right": "?", "outside": "?" },
+      "highlight": ["center"]
+    }
+  ]
+}

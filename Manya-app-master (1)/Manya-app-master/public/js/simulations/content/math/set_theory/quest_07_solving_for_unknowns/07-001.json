@@ -1,0 +1,43 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Solving for Unknowns",
+  "variantTitle": "Quest 7: Finding X",
+  "sets": {
+    "A": { "label": "R", "color": "#9333ea" },
+    "B": { "label": "M", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["x"],
+    "center": ["10"],
+    "right": ["2x"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 25,
+      "expected_x": 15,
+      "prompt": "Given <span style='color:#9333ea'>n(R) = 25</span>, find <b>x</b>.",
+      "hint": "The total of circle R is x + 10. So x + 10 = 25."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 15,
+      "prompt": "How many pupils eat <span style='color:#db2777'>Matooke</span>?",
+      "hint": "n(M) = Intersection + Right Only. Add 10 + 2x (using x=15)."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "x_val": 15,
+      "prompt": "How many eat <span style='font-style:italic'>one type</span> only?",
+      "hint": "Add (R Only) + (M Only). That is x + 2x."
+    }
+  ]
+}

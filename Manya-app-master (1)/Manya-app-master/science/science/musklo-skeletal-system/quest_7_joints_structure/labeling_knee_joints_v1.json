@@ -1,0 +1,13 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "labeling",
+  "variantTitle": "Knee Anatomy: Basic Labeling",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_7_joints_structure/joint_structure.glb",
+  "hotspots": [
+    { "id": "2", "label": "Patella", "pos": "0.158 0.058 0.011" },
+    { "id": "3", "label": "Tendon", "pos": "0.100 0.228 -0.011" },
+    { "id": "4", "label": "Cartilage", "pos": "0.121 -0.024 0.077" },
+    { "id": "5", "label": "Ligament", "pos": "-0.044 -0.069 0.169" }
+  ],
+  "wordBank": ["Patella", "Tendon", "Cartilage", "Ligament", "Femur", "Tibia"]
+}

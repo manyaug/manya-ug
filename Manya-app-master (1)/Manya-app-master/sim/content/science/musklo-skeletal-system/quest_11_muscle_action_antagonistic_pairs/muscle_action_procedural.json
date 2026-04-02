@@ -1,0 +1,21 @@
+{
+  "engineType": "PROCEDURAL_CANVAS",
+  "renderScript": "antagonistic-render.js",
+  "mode": "study",
+  "topic": "Antagonistic Muscle Action",
+  "intro": "Muscles work in pairs. When one contracts (shortens), the other relaxes (elongates).",
+  "labels": { "min": "EXTENDED", "max": "FLEXED" },
+  "actions": [
+    {"id": "flex", "label": "↑ FLEX ARM"},
+    {"id": "extend", "label": "↓ EXTEND ARM"}
+  ],
+  "parts": {
+    "BICEPS": { "title": "Biceps (The Flexor)", "desc": "Found at the front of the upper arm. It contracts to bend the arm at the elbow joint.", "tip": "In PLE diagrams, if the biceps is short and thick, the arm is flexing!" },
+    "TRICEPS": { "title": "Triceps (The Extensor)", "desc": "Found at the back of the arm. It contracts to straighten (extend) the arm.", "tip": "Biceps and Triceps are opposites. They never contract at the same time." }
+  },
+  "concepts": [
+    "Muscles only PULL; they cannot push.",
+    "Biceps/Triceps are an Antagonistic Pair.",
+    "Good nutrition (Protein) is needed for muscle repair."
+  ]
+}

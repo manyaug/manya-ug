@@ -1,0 +1,74 @@
+{
+  "engineType": "GLOBE_TIME_ENGINE",
+  "subject": "SOCIAL_STUDIES",
+  "topic": "Time Calculation",
+  "variantTitle": "Quest 3: PLE Time Exam",
+  "mode": "game",
+  
+  "questions": [
+    {
+      "title": "GMT to Uganda",
+      "question": "It is 3:00 PM at Greenwich (0°). What time will it be in Uganda which lies 45° East?",
+      "initialRotation": [-25, -5, 0],
+      "options": ["12:00 PM", "6:00 PM", "9:00 AM", "3:00 AM"],
+      "correctAnswer": "6:00 PM",
+      "explanation": "<b>Step 1:</b> Diff = 45°. <br><b>Step 2:</b> 45 ÷ 15 = 3 Hours. <br><b>Step 3:</b> East is Ahead (Add). <br><b>Step 4:</b> 3:00 PM + 3 Hours = 6:00 PM.",
+      "markers": [
+         { "label": "Greenwich (3:00 PM)", "lat": 51.5, "lon": 0, "color": "#f59e0b" },
+         { "label": "Uganda (?)", "lat": 1, "lon": 45, "color": "#6366f1" }
+      ],
+      "connection": { "from": [0, 51.5], "to": [45, 1] }
+    },
+    {
+      "title": "Uganda to London",
+      "question": "If it is 2:00 PM in Uganda (45°E), what time is it in London (0°)?",
+      "initialRotation": [-25, -5, 0],
+      "options": ["5:00 PM", "11:00 AM", "11:00 PM", "2:00 AM"],
+      "correctAnswer": "11:00 AM",
+      "explanation": "<b>Step 1:</b> Diff = 45°. <br><b>Step 2:</b> 45 ÷ 15 = 3 Hours. <br><b>Step 3:</b> London is West of Uganda (Behind). Subtract. <br><b>Step 4:</b> 2:00 PM - 3 Hours = 11:00 AM.",
+      "markers": [
+         { "label": "London (?)", "lat": 51.5, "lon": 0, "color": "#f59e0b" },
+         { "label": "Uganda (2:00 PM)", "lat": 1, "lon": 45, "color": "#6366f1" }
+      ],
+      "connection": { "from": [45, 1], "to": [0, 51.5] }
+    },
+    {
+      "title": "Uganda to Sydney (East-East)",
+      "question": "It is 2:00 PM in Uganda (45°E). What time is it in Sydney (150°E)?",
+      "initialRotation": [-100, -25, 0],
+      "options": ["9:00 PM", "7:00 AM", "9:00 AM", "7:00 PM"],
+      "correctAnswer": "9:00 PM",
+      "explanation": "<b>Step 1:</b> Both are East. Subtract degrees: 150° - 45° = 105°. <br><b>Step 2:</b> 105 ÷ 15 = 7 Hours. <br><b>Step 3:</b> Sydney is ahead. Add. <br><b>Step 4:</b> 2:00 PM + 7 Hours = 9:00 PM.",
+      "markers": [
+         { "label": "Uganda (2 PM)", "lat": 1, "lon": 45, "color": "#6366f1" },
+         { "label": "Sydney (?)", "lat": -33, "lon": 150, "color": "#f59e0b" }
+      ],
+      "connection": { "from": [45, 1], "to": [150, -33] }
+    },
+    {
+      "title": "Uganda to USA (Crossing GMT)",
+      "question": "It is 2:00 PM in Uganda (45°E). What time is it in New York (75°W)?",
+      "initialRotation": [15, 20, 0],
+      "options": ["10:00 PM", "6:00 AM", "8:00 AM", "6:00 PM"],
+      "correctAnswer": "6:00 AM",
+      "explanation": "<b>Step 1:</b> Cross GMT. Add degrees: 45° + 75° = 120°. <br><b>Step 2:</b> 120 ÷ 15 = 8 Hours. <br><b>Step 3:</b> West is Behind. Subtract. <br><b>Step 4:</b> 2:00 PM - 8 Hours = 6:00 AM.",
+      "markers": [
+         { "label": "New York (?)", "lat": 40, "lon": -75, "color": "#f59e0b" },
+         { "label": "Uganda (2 PM)", "lat": 1, "lon": 45, "color": "#6366f1" }
+      ],
+      "connection": { "from": [45, 1], "to": [-75, 40] }
+    },
+    {
+      "title": "Finding Longitude",
+      "question": "It is 12:00 Noon at GMT and 3:00 PM at City X. What is the longitude of City X?",
+      "initialRotation": [-20, 0, 0],
+      "options": ["45° West", "30° East", "45° East", "30° West"],
+      "correctAnswer": "45° East",
+      "explanation": "<b>Step 1:</b> Time diff = 3 hours. <br><b>Step 2:</b> 3 × 15 = 45°. <br><b>Step 3:</b> Time is Ahead (PM > Noon), so it must be <b>East</b>. <br><b>Answer:</b> 45° East.",
+      "markers": [
+         { "label": "GMT (12:00)", "lat": 51, "lon": 0, "color": "#6366f1" },
+         { "label": "City X (3:00)", "lat": 0, "lon": 45, "color": "#f59e0b" }
+      ]
+    }
+  ]
+}

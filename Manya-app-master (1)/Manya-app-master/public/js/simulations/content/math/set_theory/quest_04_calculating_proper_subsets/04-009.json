@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Concepts",
+  "variantTitle": "Quest 4-010: Concept Check",
+  "sets": { "A": { "label": "A", "color": "#9333ea" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": ["1", "2"], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Total Subsets of {1, 2}?",
+      "hint": "2² = 4."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Total <b>Proper</b> Subsets?",
+      "hint": "4 - 1 = 3."
+    },
+    {
+      "interaction": "CHOICE",
+      "prompt": "Which subset is removed to make them 'Proper'?",
+      "options": [
+        "The Empty Set",
+        "The Set Itself",
+        "Single Elements",
+        "None"
+      ],
+      "expected": "The Set Itself",
+      "hint": "Proper subsets cannot be equal to the original set."
+    }
+  ]
+}

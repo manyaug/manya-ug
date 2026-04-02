@@ -1,0 +1,14 @@
+{
+  "engineType": "SUBSET_GAME",
+  "mode": "game",
+  "subject": "MATH",
+  "topic": "Reverse Construction",
+  "variantTitle": "Quest 5-006: Build to Target",
+  "questions": [
+    {
+      "items": ["Apple", "Banana", "Orange", "Mango"],
+      "prompt": "Pack enough items to create exactly <b>8 Subsets</b>.",
+      "hint": "2ⁿ = 8. You need to pack 3 items."
+    }
+  ]
+}

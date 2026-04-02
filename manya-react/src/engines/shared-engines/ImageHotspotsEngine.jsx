@@ -18,13 +18,17 @@ import {
  * - Intelligent Feedback: Shake animations and completion overlay.
  * - Z-Fixed: Ensures the FINISH button is always accessible.
  */
-export function ImageHotspotsEngine({ data, onComplete, onResult }) {
+export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt }) {
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
     const [imageLoaded, setImageLoaded] = useState(false);
     const [feedbackState, setFeedbackState] = useState(null); // { type: 'error'|'success', id: string }
     const [showCompletion, setShowCompletion] = useState(false);
+    const [totalMistakes, setTotalMistakes] = useState(0);
+
+    const globalStartTimeRef = React.useRef(Date.now());
+    const startTimeRef = React.useRef(Date.now());
 
     const hotspots = data?.hotspots || [];
     const isQuizMode = data?.mode === 'quiz' || data?.mode === 'labeling' || !!data?.wordBank;
@@ -48,6 +52,8 @@ export function ImageHotspotsEngine({ data, onComplete, onResult }) {
                     isCorrect: score === total,
                     score,
                     total,
+                    mistakes: totalMistakes,
+                    duration: Date.now() - globalStartTimeRef.current,
                     type: isQuizMode ? 'labeling' : 'study'
                 });
             }
@@ -73,6 +79,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult }) {
     const handlePinClick = (pinId) => {
         playEffect('click');
         setSelectedPinId(pinId);
+        startTimeRef.current = Date.now();
         if (!isQuizMode) {
             setCorrectPinIds(prev => new Set([...prev, pinId]));
             setIsExpanded(true); // Only expand in study mode
@@ -86,7 +93,20 @@ export function ImageHotspotsEngine({ data, onComplete, onResult }) {
         }
 
         const hs = hotspots.find(h => h.id === selectedPinId);
-        if (hs && hs.label.toLowerCase() === word.toLowerCase()) {
+        const isCorrect = hs && hs.label.toLowerCase() === word.toLowerCase();
+        const duration = Date.now() - startTimeRef.current;
+
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `Image Hotspot: ${word}`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
+        if (isCorrect) {
             if (window.addToast) window.addToast({ message: "Correct! Great job Hero.", type: "success" });
             playEffect('success');
             setCorrectPinIds(prev => new Set([...prev, selectedPinId]));
@@ -95,9 +115,11 @@ export function ImageHotspotsEngine({ data, onComplete, onResult }) {
                 setFeedbackState(null);
                 setSelectedPinId(null);
             }, 800);
+            startTimeRef.current = Date.now();
         } else {
             if (window.addToast) window.addToast({ message: "Not quite. Try again!", type: "error" });
             playEffect('error');
+            setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: word });
             setTimeout(() => setFeedbackState(null), 600);
         }
@@ -115,7 +137,15 @@ export function ImageHotspotsEngine({ data, onComplete, onResult }) {
                 onClick={(e) => {
                     e.stopPropagation();
                     playEffect('success');
-                    if (onComplete) onComplete();
+                    if (onComplete) onComplete({
+                        isCorrect: correctPinIds.size === hotspots.length,
+                        score: correctPinIds.size,
+                        total: hotspots.length,
+                        mistakes: totalMistakes,
+                        accuracy: hotspots.length > 0 ? (correctPinIds.size / hotspots.length) : 1,
+                        duration: Date.now() - globalStartTimeRef.current,
+                        type: isQuizMode ? 'labeling' : 'study'
+                    });
                 }}
                 className={`fixed bottom-6 right-6 p-[14px_28px] rounded-[2rem] bg-[#7c3aed] text-white font-black text-[10px] tracking-widest shadow-strong active:scale-95 transition-all flex items-center gap-2 z-[3000] group/finish ${
                     showCompletion ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 scale-100'
@@ -238,7 +268,17 @@ export function ImageHotspotsEngine({ data, onComplete, onResult }) {
                         You correctly identified all {hotspots.length} parts.
                         </p>
                         <button 
-                        onClick={onComplete}
+                        onClick={() => {
+                            if (onComplete) onComplete({
+                                isCorrect: true,
+                                score: hotspots.length,
+                                total: hotspots.length,
+                                mistakes: totalMistakes,
+                                accuracy: 1.0,
+                                duration: Date.now() - globalStartTimeRef.current,
+                                type: isQuizMode ? 'labeling' : 'study'
+                            });
+                        }}
                         className="w-full max-w-[300px] h-20 rounded-[2.5rem] bg-[#7c3aed] text-white font-black text-xl shadow-xl shadow-[#7c3aed]/30 active:scale-95 transition-all flex items-center justify-center gap-4 group"
                         >
                             CONTINUE

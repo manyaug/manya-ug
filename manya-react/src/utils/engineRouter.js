@@ -38,6 +38,16 @@ export const ENGINE_REGISTRY = {
         hideGlobalFooter: true,
         component: lazy(() => import('../engines/sst/SSTFetcherEngine.jsx'))
     },
+    'MATH_FETCHER': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/math/MathFetcherEngine.jsx'))
+    },
+    'SCIENCE_FETCHER': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/science/ScienceFetcherEngine.jsx'))
+    },
 
     // Legacy Engines (Still in Public/Legacy)
     // These will be handled by the legacy loading path in QuestRunner

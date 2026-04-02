@@ -29,6 +29,7 @@ import { syncService } from '../services/syncService';
 import { masteryService } from '../services/masteryService';
 import { calculateFrustration } from '../services/psychTracker';
 import { saveNodeCompletion, setJustFinished } from '../services/questProgressService';
+import { calculateUSP } from '../utils/scoringUtility';
 import React, { Suspense } from 'react';
 import '../styles/engines.css';
 
@@ -264,13 +265,30 @@ export default function QuestRunner() {
     const handleEngineResult = useCallback((result) => {
         console.log("[QuestRunner] Received Engine Result:", result);
         
-        // 1. Update Score/XP in Redux
-        if (result.isCorrect && result.score) {
-            dispatch(awardGems({ subject: meta.subject, amount: 0, xp: result.score * 10 }));
+        const currentStep = steps[stepIdx];
+        const engineType = currentStep?.engineType || result.type || 'unknown';
+        const isSimulation = result.type === 'simulation' || result.type === 'legacy_capture' || IMMERSIVE_ENGINES.has(engineType);
+
+        // 1. APPLY UNIFIED SCORING PROTOCOL (USP) IF SIMULATION
+        let usp = null;
+        if (isSimulation) {
+            usp = calculateUSP({
+                accuracy: result.accuracy ?? (result.score && result.total ? (result.score / result.total) : (result.isCorrect ? 1.0 : 0.0)),
+                mistakes: result.mistakes || 0,
+                timeSpentMs: result.timeSpentMs || (Date.now() - sessionStartTimeRef.current), // Fallback to session start
+                engineType: engineType
+            }, meta.subject);
+            console.log(`📊 [QuestRunner] USP Mastery Score: ${usp.masteryScore}%`, usp);
+        }
+
+        // 2. Update Score/XP in Redux
+        const isCorrect = usp ? usp.isPassing : result.isCorrect;
+        if (isCorrect) {
+            const xpAmount = usp ? Math.floor(usp.masteryScore * 0.5) : (result.score ? result.score * 10 : 10);
+            dispatch(awardGems({ subject: meta.subject, amount: 0, xp: xpAmount }));
         }
 
         // 2. Intelligent Adaptive Tracking
-        const currentStep = steps[stepIdx];
         const { conceptId, variant, pool } = deriveMetadata(currentStep);
         
         // Track Frustration
@@ -286,14 +304,15 @@ export default function QuestRunner() {
                 questionId: currentStep.file || currentStep.id || currentStep.topic || 'unknown_step',
                 concept_id: conceptId,
                 variant: variant,
-                isCorrect: result.isCorrect,
-                selectedAnswer: result.selectedAnswer,
-                correctAnswer: result.correctAnswer,
-                timeSpentMs: result.timeSpentMs || 10000,
+                isCorrect: isCorrect,
+                selectedAnswer: result.selectedAnswer || 'SIM_COMPLETE',
+                correctAnswer: result.correctAnswer || 'SIM_COMPLETE',
+                timeSpentMs: result.timeSpentMs || (usp ? usp.timeSpentMs : 10000),
                 hintUsed: result.hintUsed || false,
                 frustrationLevel: frustration.score,
                 pool: pool,
-                engine_type: currentStep.engineType
+                engine_type: engineType,
+                usp_data: usp // Store full USP breakdown
             });
         }
 

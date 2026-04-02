@@ -1,0 +1,38 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Set Relationships",
+  "variantTitle": "Quest 2-003: Visual Relations",
+  "sets": { "A": { "label": "", "color": "transparent" }, "B": { "label": "", "color": "transparent" } }, 
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SETS",
+      "prompt": "Show that <b>All Mangoes (M)</b> are <b>Fruits (F)</b>.",
+      "hint": "Place M inside F.",
+      "items": [
+        { "val": "F", "radius": 90, "color": "#f3e8ff", "x": 100, "y": 200, "locked": true },
+        { "val": "M", "radius": 45, "color": "#fce7f3", "x": 300, "y": 200, "target": "inside_F" }
+      ]
+    },
+    {
+      "interaction": "DRAG_SETS",
+      "prompt": "Show that <b>No Cars (C)</b> are <b>Plants (P)</b>.",
+      "hint": "Keep them separate (Disjoint).",
+      "items": [
+        { "val": "C", "radius": 60, "color": "#f3e8ff", "x": 120, "y": 200, "target": "disjoint" },
+        { "val": "P", "radius": 60, "color": "#fce7f3", "x": 280, "y": 200, "target": "disjoint" }
+      ]
+    },
+    {
+      "interaction": "DRAG_SETS",
+      "prompt": "Show that <b>Some Singers (S)</b> are <b>Dancers (D)</b>.",
+      "hint": "Make them overlap (Intersection).",
+      "items": [
+        { "val": "S", "radius": 60, "color": "#f3e8ff", "x": 100, "y": 200, "target": "overlap" },
+        { "val": "D", "radius": 60, "color": "#fce7f3", "x": 300, "y": 200, "target": "overlap" }
+      ]
+    }
+  ]
+}

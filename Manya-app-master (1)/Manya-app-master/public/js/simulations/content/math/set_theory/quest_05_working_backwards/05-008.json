@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Concept Logic",
+  "variantTitle": "Quest 5-004: Fact Check",
+  "sets": { "A": { "label": "Set A", "color": "#16a34a" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "BINARY",
+      "expected": "no",
+      "prompt": "Can a set have exactly <b>100 Subsets</b>?",
+      "hint": "Is 100 a power of 2? (2, 4, 8, 16, 32, 64, 128...)"
+    },
+    {
+      "interaction": "BINARY",
+      "expected": "yes",
+      "prompt": "Can a set have <b>7 Proper Subsets</b>?",
+      "hint": "2³ - 1 = 8 - 1 = 7. Yes, if n=3."
+    }
+  ]
+}

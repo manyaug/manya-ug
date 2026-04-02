@@ -1,0 +1,46 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability III",
+  "variantTitle": "Topic 10: Language Village",
+  "sets": {
+    "A": { "label": "E (50)", "color": "#9333ea" },
+    "B": { "label": "S (45)", "color": "#db2777" }
+  },
+  "zones": {
+    "left": [],
+    "center": ["x"],
+    "right": [],
+    "outside": ["15"]
+  },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> 15 pupils speak neither. Fill the diagram.",
+      "inputs": [
+        { "region": "left", "expected": "50-x" },
+        { "region": "right", "expected": "45-x" },
+        { "region": "outside", "expected": "15" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 80,
+      "expected_x": 30,
+      "prompt": "<b>Phase 2:</b> Total pupils = 80. Find <b>x</b>.",
+      "hint": "(50-x) + x + (45-x) + 15 = 80"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "intersection",
+      "x_val": 30,
+      "total": 80,
+      "expression": "x",
+      "prompt": "Probability of choosing a pupil who speaks <span style='color:#64748b'>BOTH</span>?",
+      "hint": "n(Both) / Total Pupils. (30/80)"
+    }
+  ]
+}

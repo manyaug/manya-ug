@@ -1,0 +1,44 @@
+{
+  "engineType": "3D_SKELETON",
+  "mode": "study",
+  "topic": "The Gliding Joint: Ankle",
+  "modelUrl": "assets/science/musklo-skeletal-system/quest_9_pivot_and_gliding/ankle.glb",
+  "intro": "Gliding joints occur where flat bones slide over one another.",
+  "notes": [
+    "<b>Tarsals:</b> 7 irregular bones forming the ankle.",
+    "They slide to allow limited movement in many directions.",
+    "Crucial for balance on uneven ground."
+  ],
+  "hotspots": [
+    { 
+      "id": "1", 
+      "label": "Fibula", 
+      "region": "appendicular",
+      "pos": "-0.196 0.262 -0.146", 
+      "norm": "-0.990 -0.038 0.132", 
+      "info": "Outer leg bone.",
+      "description": "The Fibula forms the outer bump of the ankle (Lateral Malleolus). It stabilizes the ankle joint.",
+      "examTip": "It does not bear weight."
+    },
+    { 
+      "id": "2", 
+      "label": "Tibia", 
+      "region": "appendicular",
+      "pos": "-0.168 0.294 -0.105", 
+      "norm": "-0.993 -0.039 -0.113", 
+      "info": "Inner leg bone.",
+      "description": "The Tibia forms the inner bump of the ankle (Medial Malleolus). It transfers body weight to the foot.",
+      "examTip": "It connects directly to the Talus bone."
+    },
+    { 
+      "id": "3", 
+      "label": "Tarsals", 
+      "region": "appendicular",
+      "pos": "-0.162 0.004 -0.120", 
+      "norm": "-0.497 0.867 0.028", 
+      "info": "Gliding bones.",
+      "description": "The 7 Tarsal bones have flat surfaces that slide (glide) over each other. This allows the foot to adjust to uneven ground.",
+      "examTip": "Gliding joints are found in the Wrist (Carpals) and Ankle (Tarsals)."
+    }
+  ]
+}

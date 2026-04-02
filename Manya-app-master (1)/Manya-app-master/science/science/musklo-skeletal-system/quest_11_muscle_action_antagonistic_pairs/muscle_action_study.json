@@ -1,0 +1,15 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "study",
+  "topic": "Antagonistic Muscle Action",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/Relaxed_muscle.png",
+  "intro": "Muscles work in pairs called antagonistic pairs. They can only pull, not push.",
+  "hotspots": [
+    { "id": "p2", "label": "Relaxed Biceps", "x": 20.94, "y": 39.25, "info": "When the arm straightens, the biceps becomes longer and thinner (relaxed)." },
+    { "id": "p3", "label": "Contracted Triceps", "x": 15.08, "y": 56.75, "info": "The extensor muscle. It pulls to straighten the arm." },
+    { "id": "p5", "label": "Contracted Biceps", "x": 72.81, "y": 40.25, "info": "The flexor muscle. It bulges and shortens to bend the arm." },
+    { "id": "p4", "label": "Relaxed Triceps", "x": 65.47, "y": 51.13, "info": "It relaxes to allow the biceps to bend the arm." },
+    { "id": "p1", "label": "Tendons", "x": 7.34, "y": 34.5, "info": "Non-elastic fibers joining muscle to bone (T-M-B)." },
+    { "id": "p8", "label": "Radius", "x": 38.28, "y": 77.88, "info": "The moving bone that the biceps pulls on (thumb side)." }
+  ]
+}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, CheckCircle2, Zap, AlertTriangle, Minus, Plus } from 'lucide-react';
 
-export default function BinaryGameEngine({ data, onComplete, onResult }) {
+export default function BinaryGameEngine({ data, onComplete, onResult, onAttempt }) {
     // Data expected: data.questions[0].targetVal (e.g., 16), data.questions[0].prompt
     const target = data?.questions?.[0]?.targetVal || 16;
     const prompt = data?.questions?.[0]?.prompt || "Generate the target power!";
@@ -10,6 +10,9 @@ export default function BinaryGameEngine({ data, onComplete, onResult }) {
     const [n, setN] = useState(0);
     const [isResolved, setIsResolved] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [mistakes, setMistakes] = useState(0);
+
+    const startTimeRef = React.useRef(Date.now());
 
     // Stop propagation of typing events if any
     useEffect(() => {
@@ -30,7 +33,20 @@ export default function BinaryGameEngine({ data, onComplete, onResult }) {
         if (isResolved) return;
         
         const currentPower = Math.pow(2, n);
-        if (currentPower === target) {
+        const isCorrect = currentPower === target;
+        const duration = Date.now() - startTimeRef.current;
+
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `Binary Power: 2^${n} Target: ${target}`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
+        if (isCorrect) {
             setIsResolved(true);
             window.ManyaAudio?.success?.();
             if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
@@ -46,10 +62,17 @@ export default function BinaryGameEngine({ data, onComplete, onResult }) {
             }
 
             setTimeout(() => {
-                if (onComplete) onComplete();
+                if (onComplete) onComplete({
+                    isCorrect: true,
+                    score: 1,
+                    total: 1,
+                    mistakes: mistakes,
+                    type: 'simulation'
+                });
             }, 2500); // Wait for success animation before navigating
         } else {
             setIsError(true);
+            setMistakes(prev => prev + 1);
             window.ManyaAudio?.error?.();
             if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
             

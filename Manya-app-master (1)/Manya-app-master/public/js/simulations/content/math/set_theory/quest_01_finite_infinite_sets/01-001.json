@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finite vs. Infinite Sets",
+  "variantTitle": "Quest 1-001: Set Types",
+  "questions": [
+    {
+      "scene": "map",
+      "expected": "finite",
+      "prompt": "Set of <span style='color:#2563eb'>Districts in Uganda</span>."
+    },
+    {
+      "scene": "stars",
+      "expected": "infinite",
+      "prompt": "Set of <span style='color:#9333ea'>Whole Numbers</span> {0, 1, 2, ...}"
+    },
+    {
+      "scene": "cows",
+      "expected": "finite",
+      "prompt": "Set of <span style='color:#16a34a'>Cows in this Kraal</span>."
+    },
+    {
+      "scene": "rain",
+      "expected": "infinite",
+      "prompt": "Set of <span style='color:#16a34a'>Multiples of 7</span> {7, 14, 21, ...}"
+    }
+  ]
+}

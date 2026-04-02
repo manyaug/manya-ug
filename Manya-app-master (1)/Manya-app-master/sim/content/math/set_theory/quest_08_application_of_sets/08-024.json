@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Intersection Clicks",
+  "variantTitle": "Quest 8-029: Fruit Clicks",
+  "sets": { "A": { "label": "M", "color": "#f59e0b" }, "B": { "label": "O", "color": "#10b981" } },
+  "zones": { "left": [30], "center": [10], "right": [20], "outside": [0] }, 
+  "questions": [
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "intersection",
+      "prompt": "Tap the region for fruits that are <b>Both</b> Mango and Orange.",
+      "hint": "Click the middle overlap. Sum = 10."
+    },
+    {
+      "interaction": "CLICK_SUM",
+      "targetRegion": "right_total",
+      "prompt": "Tap all regions containing <b>Oranges</b>.",
+      "hint": "Click 'Both' (10) and 'Oranges Only' (20). Sum = 30."
+    }
+  ]
+}

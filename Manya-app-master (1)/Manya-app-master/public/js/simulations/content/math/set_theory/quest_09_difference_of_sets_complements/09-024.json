@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Finding Complement",
+  "variantTitle": "Quest 9-024: Missing Group",
+  "sets": { "A": { "label": "A (40)", "color": "#f59e0b" }, "B": { "label": "B (35)", "color": "#10b981" } },
+  "zones": { "left": ["25"], "center": ["15"], "right": ["20"], "outside": ["y"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "universal_only",
+      "equation_target": 80,
+      "expected_x": 20,
+      "prompt": "Total=80. Intersection=15. Find <b>y</b> (Neither).",
+      "hint": "(40+35-15) + y = 80 -> 60 + y = 80."
+    }
+  ]
+}

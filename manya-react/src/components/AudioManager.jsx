@@ -21,6 +21,14 @@ export default function AudioManager() {
     tracks.forEach(track => {
       track.loop = true;
       track.volume = 0;
+      
+      // ─── ERROR SUPPRESSION (v3.8) ───
+      // Suppress ERR_QUIC_PROTOCOL_ERROR logs which appear as red 'X' in console.
+      // These are often transient or related to Supabase storage behavior.
+      track.onerror = (e) => {
+          // Log as warning instead of allowing it to become a fatal browser error
+          console.warn(`🎧 [AudioManager] Ambient track throttled or load failed (handled):`, track.src);
+      };
     });
 
     // Expose global SFX trigger for legacy engines and functional components

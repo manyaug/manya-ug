@@ -1,0 +1,30 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Factors",
+  "variantTitle": "Quest 6-020: Factors 12 & 18",
+  "sets": { "A": { "label": "F12", "color": "#9333ea" }, "B": { "label": "F18", "color": "#db2777" } },
+  "zones": { "left": [4, 12], "center": [1, 2, 3, 6], "right": [9, 18], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort the factors.<br><b>F12</b> = {1,2,3,4,6,12}<br><b>F18</b> = {1,2,3,6,9,18}",
+      "items": [
+        { "val": "2", "target": "center" },
+        { "val": "4", "target": "left" },
+        { "val": "6", "target": "center" },
+        { "val": "9", "target": "right" },
+        { "val": "12", "target": "left" },
+        { "val": "18", "target": "right" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "LIST",
+      "targetRegion": "intersection",
+      "prompt": "List the <b>Common Factors</b>.",
+      "hint": "List the numbers in the middle: 1, 2, 3, 6."
+    }
+  ]
+}

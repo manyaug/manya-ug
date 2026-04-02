@@ -10,17 +10,22 @@ import { ChevronLeft, ChevronRight, Sparkles, Orbit, CheckCircle2, XCircle, Arro
  * - Atomic Compatibility: Optimized to handle single-question JSONs.
  */
 
-const SetClassifierEngine = ({ data, onComplete }) => {
+const SetClassifierEngine = ({ data, onComplete, onAttempt }) => {
   const [stepIdx, setStepIdx] = useState(0);
   const [isDark, setIsDark] = useState(false);
   const [feedback, setFeedback] = useState('idle'); 
   const [isResolved, setIsResolved] = useState(false);
+  const [totalMistakes, setTotalMistakes] = useState(0);
 
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const tickRef = useRef(0);
   const particlesRef = useRef([]);
   const requestRef = useRef();
+  const lastSimAttemptRef = useRef({ time: 0, label: '' });
+  
+  const startTimeRef = useRef(Date.now());
+  const globalStartTimeRef = useRef(Date.now());
 
   const questions = useMemo(() => data.questions || [], [data]);
   // Safety for empty or atomic questions
@@ -105,7 +110,7 @@ const SetClassifierEngine = ({ data, onComplete }) => {
     else { bg.addColorStop(0, "#FFFFFF"); bg.addColorStop(1, "#F9FBFD"); }
     ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
 
-    const margin = 65*s; // STRICT JAR BOUNDARY
+    const margin = 40*s; // REDUCED MARGIN (Defined for v6.5)
 
     particlesRef.current.forEach(p => {
         if (isFinite) { 
@@ -190,22 +195,57 @@ const SetClassifierEngine = ({ data, onComplete }) => {
 
   const handleChoice = (c) => {
     if (isResolved) return;
-    if (c === currentQ.expected) { setFeedback('correct'); setIsResolved(true); }
-    else { setFeedback('wrong'); setTimeout(() => setFeedback('idle'), 800); }
+    const isCorrect = c === currentQ.expected;
+    const duration = Date.now() - startTimeRef.current;
+
+    // ── RECORD GRANULAR ATTEMPT ──
+    if (onAttempt) {
+        onAttempt({
+            isCorrect,
+            label: `Classify [${stepIdx + 1}]`,
+            selectedAnswer: c,
+            correctAnswer: currentQ.expected,
+            duration,
+            mistakes: isCorrect ? 0 : 1
+        });
+    }
+
+    if (isCorrect) { 
+        setFeedback('correct'); 
+        setIsResolved(true); 
+    }
+    else { 
+        setFeedback('wrong'); 
+        setTotalMistakes(prev => prev + 1);
+        setTimeout(() => setFeedback('idle'), 800); 
+    }
   };
 
   const handleNext = () => {
     if (stepIdx < questions.length - 1) {
+       startTimeRef.current = Date.now();
        setStepIdx(s => s + 1); setFeedback('idle'); setIsResolved(false);
-    } else { onComplete(); }
+    } else { 
+       if (onComplete) onComplete({
+          isCorrect: totalMistakes === 0,
+          accuracy: Math.max(0, (questions.length - totalMistakes) / questions.length),
+          score: questions.length - totalMistakes,
+          total: questions.length,
+          mistakes: totalMistakes,
+          duration: Date.now() - globalStartTimeRef.current,
+          engineType: 'SET_CLASSIFIER'
+       }); 
+    }
   };
 
   const theme = isDark ? { bg: 'bg-[#0B101A]', stage: 'from-[#0F172A] to-[#0B101A]', card: 'bg-[#151921]', text: 'text-white', sub: 'text-slate-400', b: 'border-white/5' } : { bg: 'bg-[#F8FAFC]', stage: 'from-[#FFFFFF] to-[#F9FBFD]', card: 'bg-white', text: 'text-[#0f172a]', sub: 'text-[#475569]', b: 'border-slate-100' };
 
+  if (!currentQ || !data) return null; // Safety guard
+
   return (
     <div ref={containerRef} className={`flex flex-col h-full ${theme.bg} font-jakarta transition-all duration-500 overflow-hidden`}>
-      {/* 1. STAGE */}
-      <div className={`flex-[1.2] w-full relative bg-gradient-to-b ${theme.stage} border-b-2 ${theme.b} transition-all duration-700 ${feedback === 'correct' ? 'border-green-500 bg-green-500/5' : (feedback === 'wrong' ? 'border-red-500 bg-red-500/5' : theme.b)}`}>
+      {/* 1. STAGE - Dominant space for particle visual */}
+      <div className={`flex-[2.5] w-full relative bg-gradient-to-b ${theme.stage} border-b-2 ${theme.b} transition-all duration-700 ${feedback === 'correct' ? 'border-green-500 bg-green-500/5' : (feedback === 'wrong' ? 'border-red-500 bg-red-500/5' : theme.b)}`}>
          <canvas ref={canvasRef} className="w-full h-full block" />
          
          <div className="absolute top-4 inset-x-4 flex justify-between items-center z-10">
@@ -224,28 +264,27 @@ const SetClassifierEngine = ({ data, onComplete }) => {
       </div>
 
       {/* 2. LESSON CARD */}
-      <div className={`flex-1 flex flex-col ${theme.card} relative z-10 shadow-up`}>
-         <div className="flex-1 overflow-y-auto px-7 py-10 no-scrollbar text-center flex flex-col justify-center gap-4">
-            <h2 className={`text-2xl font-black leading-tight ${theme.text} tracking-tight`} dangerouslySetInnerHTML={{ __html: currentQ.prompt }} />
-            <p className={`text-[10px] font-black uppercase tracking-[0.4em] ${theme.sub} opacity-40`}>Determine Domain</p>
+      <div className={`flex-none flex flex-col ${theme.card} relative z-10 shadow-up overflow-hidden`}>
+         <div className="flex-none px-6 py-5 text-center flex flex-col justify-center gap-1.5">
+            <h2 className={`text-xl font-black leading-tight ${theme.text} tracking-tight`} dangerouslySetInnerHTML={{ __html: currentQ.prompt }} />
+            <p className={`text-[9px] font-black uppercase tracking-[0.3em] ${theme.sub} opacity-30`}>Determine Domain</p>
          </div>
 
          {/* 3. CONTROLS */}
          <div className={`p-6 flex flex-col gap-4 border-t ${theme.b}`}>
-            <div className={`grid grid-cols-2 gap-4 transition-all duration-500 ${isResolved ? 'opacity-0 scale-95 absolute inset-0 pointer-events-none' : 'opacity-100'}`}>
-                <button onClick={() => handleChoice('finite')} className={`h-16 rounded-[20px] font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_6px_0_rgba(5,150,105,1)] hover:shadow-[0_4px_0_rgba(5,150,105,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[6px] text-white bg-emerald-500 border border-emerald-400`}>
-                    FINITE <span className="text-[9px] opacity-70 mt-1 uppercase font-semibold">Limited</span>
+          <div className={`grid grid-cols-2 gap-4 transition-all duration-500 ${isResolved ? 'opacity-0 scale-95 absolute inset-0 pointer-events-none' : 'opacity-100'}`}>
+                <button onClick={() => handleChoice('finite')} className={`h-14 rounded-2xl font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_5px_0_rgba(5,150,105,1)] hover:shadow-[0_3px_0_rgba(5,150,105,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] text-white bg-emerald-500 border border-emerald-400`}>
+                    FINITE <span className="text-[8px] opacity-60 mt-0.5 uppercase font-semibold">Limited</span>
                 </button>
-                <button onClick={() => handleChoice('infinite')} className={`h-16 rounded-[20px] font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_6px_0_rgba(219,39,119,1)] hover:shadow-[0_4px_0_rgba(219,39,119,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[6px] text-white bg-pink-500 border border-pink-400`}>
-                    INFINITE <span className="text-[9px] opacity-70 mt-1 uppercase font-semibold">Endless</span>
+                <button onClick={() => handleChoice('infinite')} className={`h-14 rounded-2xl font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_5px_0_rgba(219,39,119,1)] hover:shadow-[0_3px_0_rgba(219,39,119,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] text-white bg-pink-500 border border-pink-400`}>
+                    INFINITE <span className="text-[8px] opacity-60 mt-0.5 uppercase font-semibold">Endless</span>
                 </button>
             </div>
 
             <button 
                 onClick={handleNext}
-                className={`w-full h-16 rounded-2xl font-black text-[11px] tracking-widest uppercase transition-all active:scale-95 shadow-glow-indigo flex items-center justify-center gap-3 relative z-30 ${isResolved ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute inset-x-5'} bg-indigo-600 text-white`}
-            >
-                {stepIdx === questions.length - 1 ? 'Finish' : 'Continue'} <ArrowRight size={18} strokeWidth={4} />
+                className={`w-full h-14 rounded-2xl font-black text-[11px] tracking-widest uppercase transition-all active:scale-95 shadow-glow-indigo flex items-center justify-center gap-3 relative z-30 ${isResolved ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute inset-x-5'} bg-indigo-600 text-white shadow-[0_5px_0_rgba(67,56,202,1)]`}>
+                {stepIdx === questions.length - 1 ? 'Finish Activity' : 'Next Question'} <ArrowRight size={18} strokeWidth={4} />
             </button>
          </div>
       </div>

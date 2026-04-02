@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Ratios",
+  "variantTitle": "Quest 7-009: Book Sale",
+  "sets": { "A": { "label": "F", "color": "#16a34a" }, "B": { "label": "N", "color": "#ea580c" } },
+  "zones": { "left": ["2y"], "center": ["10"], "right": ["y"], "outside": ["10"] },
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> F-only is twice N-only (y). Both=10. Outside=10.",
+      "inputs": [
+        { "region": "left", "expected": "2y" },
+        { "region": "right", "expected": "y" },
+        { "region": "center", "expected": "10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 80,
+      "expected_x": 20,
+      "prompt": "<b>Phase 2:</b> Total books = 80. Find <b>y</b>.",
+      "hint": "2y + 10 + y + 10 = 80 -> 3y = 60"
+    }
+  ]
+}

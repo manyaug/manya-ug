@@ -1,0 +1,391 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+}
+
+/* Header */
+header {
+    grid-column: 1 / -1;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.logo h1 {
+    color: #667eea;
+    font-size: 2em;
+}
+
+.tagline {
+    color: #999;
+    font-style: italic;
+}
+
+.user-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.user-selector select {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.stats-badge {
+    display: flex;
+    gap: 15px;
+}
+
+.stats-badge span {
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* Main Content */
+main {
+    grid-column: 1;
+}
+
+.question-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.topic {
+    background: #667eea;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.difficulty {
+    font-size: 20px;
+}
+
+.question-text {
+    font-size: 1.3em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #2d3748;
+}
+
+.options {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.option {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.option:hover:not(.disabled) {
+    background: #edf2f7;
+    border-color: #667eea;
+    transform: translateX(5px);
+}
+
+.option.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.option.correct {
+    background: #48bb78;
+    border-color: #48bb78;
+    color: white;
+}
+
+.option.incorrect {
+    background: #f56565;
+    border-color: #f56565;
+    color: white;
+}
+
+.option.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.option-letter {
+    font-weight: bold;
+    font-size: 1.2em;
+    min-width: 30px;
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+}
+
+.hint-btn, .next-btn, .continue-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.hint-btn {
+    background: #ed8936;
+    color: white;
+    flex: 1;
+}
+
+.hint-btn:hover:not(:disabled) {
+    background: #dd6b20;
+}
+
+.next-btn {
+    background: #48bb78;
+    color: white;
+    flex: 1;
+}
+
+.next-btn:hover:not(:disabled) {
+    background: #38a169;
+}
+
+.hint-btn:disabled, .next-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hint-display {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff3e0;
+    border-left: 4px solid #ed8936;
+    border-radius: 5px;
+    display: none;
+}
+
+/* Feedback Card */
+.feedback-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.feedback-icon {
+    font-size: 4em;
+    margin-bottom: 15px;
+}
+
+.feedback-message {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.feedback-details {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.continue-btn {
+    background: #667eea;
+    color: white;
+    min-width: 200px;
+}
+
+.continue-btn:hover {
+    background: #5a67d8;
+}
+
+/* Dashboard */
+.dashboard {
+    grid-column: 2;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    height: fit-content;
+}
+
+.dashboard h3 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.dashboard h4 {
+    color: #4a5568;
+    margin: 20px 0 10px;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    text-align: center;
+    padding: 10px;
+    background: #f7fafc;
+    border-radius: 8px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8em;
+    color: #718096;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.topics-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.topic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.topic-name {
+    font-size: 0.9em;
+    color: #4a5568;
+}
+
+.topic-accuracy {
+    font-weight: bold;
+    color: #48bb78;
+}
+
+.topic-accuracy.low {
+    color: #f56565;
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard {
+        grid-column: 1;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+/* Add to your existing CSS */
+.debug-console {
+    grid-column: 1/-1;
+    background: #1a1e24;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #4a5568;
+}
+
+.debug-console h4 {
+    color: #48bb78;
+    margin: 0;
+}
+
+#debugLog {
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+.topic-item {
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f8fafc;
+    border-radius: 6px;
+    transition: transform 0.2s;
+}
+.topic-item:hover {
+    transform: translateX(5px);
+    background: #edf2f7;
+}
+.mastery-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: white;
+}

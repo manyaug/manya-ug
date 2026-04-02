@@ -38,6 +38,8 @@ const SentenceTrainEngine = ({ data, onComplete }) => {
   const [phase, setPhase] = useState('play'); // 'play' | 'wrong' | 'depart'
   const [score, setScore] = useState(0);
   const trackRef = useRef(null);
+  const globalStartTimeRef = useRef(Date.now());
+  const mistakesRef = useRef(0);
   const q = questions[qIdx];
 
   /* ── init ── */
@@ -66,8 +68,29 @@ const SentenceTrainEngine = ({ data, onComplete }) => {
   useEffect(() => {
     if (pool.length > 0 || train.length === 0 || phase !== 'play') return;
     const ok = train.map(w => w.text).join(' ') === q.sentence;
-    if (ok)  { setPhase('depart'); setScore(s => s + 100); setTimeout(() => { if (qIdx + 1 < questions.length) setQIdx(i => i + 1); else onComplete?.(); }, 2500); }
-    else     { setPhase('wrong'); }
+    if (ok)  { 
+        setPhase('depart'); 
+        setScore(s => s + 100); 
+        setTimeout(() => { 
+            if (qIdx + 1 < questions.length) {
+                setQIdx(i => i + 1); 
+            } else { 
+                onComplete?.({
+                    isCorrect: mistakesRef.current === 0,
+                    accuracy: Math.max(0, (questions.length - mistakesRef.current) / questions.length),
+                    score: questions.length - mistakesRef.current,
+                    total: questions.length,
+                    mistakes: mistakesRef.current,
+                    duration: Date.now() - globalStartTimeRef.current,
+                    type: 'simulation'
+                }); 
+            }
+        }, 2500); 
+    }
+    else { 
+        setPhase('wrong'); 
+        mistakesRef.current += 1;
+    }
   }, [pool, train, phase, q, qIdx, questions.length, onComplete]);
 
   return (

@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Equations",
+  "variantTitle": "Topic 10: Sports Logic",
+  "sets": { "A": { "label": "F", "color": "#9333ea" }, "B": { "label": "R", "color": "#db2777" } },
+  "zones": { "left": ["p+5"], "center": ["6"], "right": ["2p"], "outside": ["p"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "complement_left", 
+      "equation_target": 18, 
+      "expected_x": 6,
+      "prompt": "Given n(F') = 18 (Not Football), find <b>p</b>.",
+      "hint": "(Rugby Only) + (Outside) = 18. So 2p + p = 18."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 6,
+      "prompt": "Find n(F ∪ R) (The Union).",
+      "hint": "(11) + 6 + (12) = 29."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "universal_only",
+      "x_val": 6,
+      "total": 35, 
+      "expression": "p", 
+      "prompt": "Probability of playing <span style='color:#ef4444'>neither</span>?",
+      "hint": "n(Outside) / Total. (6/35)"
+    }
+  ]
+}

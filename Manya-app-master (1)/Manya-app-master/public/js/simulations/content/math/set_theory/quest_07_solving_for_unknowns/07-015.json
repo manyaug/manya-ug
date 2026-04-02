@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebra via Total Set",
+  "variantTitle": "Quest 7-010: Subject Algebra",
+  "sets": { "A": { "label": "M (30)", "color": "#9333ea" }, "B": { "label": "S", "color": "#db2777" } },
+  "zones": { "left": ["x+10"], "center": ["x"], "right": ["2x"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_total",
+      "equation_target": 30,
+      "expected_x": 10,
+      "prompt": "Total Math pupils = 30. Find <b>x</b>.",
+      "hint": "n(M) = (x+10) + x = 30 -> 2x = 20."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 10,
+      "expression": "2x",
+      "prompt": "How many like <span style='color:#db2777'>Science ONLY</span>?",
+      "hint": "2(10) = 20"
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 10,
+      "prompt": "Find the <b>Total Number</b> of pupils in the class.",
+      "hint": "Sum all regions: (20) + (10) + (20) + (5)."
+    }
+  ]
+}

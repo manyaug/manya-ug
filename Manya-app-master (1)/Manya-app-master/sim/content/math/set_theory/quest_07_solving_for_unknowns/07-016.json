@@ -1,0 +1,28 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Solving via Total",
+  "variantTitle": "Quest 7-011: Art Class",
+  "sets": { "A": { "label": "S", "color": "#2563eb" }, "B": { "label": "P (25)", "color": "#db2777" } },
+  "zones": { "left": ["x"], "center": ["x-5"], "right": [], "outside": ["0"] }, 
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 40,
+      "expected_x": 15,
+      "prompt": "Total=40. Total Paint=25. Sketch Only=x. Find <b>x</b>.",
+      "hint": "x + 25 = 40."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "intersection",
+      "x_val": 15,
+      "expression": "x-5",
+      "prompt": "How many do <b>BOTH</b>?",
+      "hint": "15 - 5 = 10."
+    }
+  ]
+}

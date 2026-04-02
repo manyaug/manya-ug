@@ -32,7 +32,7 @@ const CONTINENT_MAP = {
   "antarctica": ["010","260"]
 };
 
-const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
+const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [worldData, setWorldData] = useState(null);
   const [placedPieces, setPlacedPieces] = useState([]);
@@ -41,6 +41,10 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
   const [isDark, setIsDark] = useState(false);
   const [isD3Ready, setIsD3Ready] = useState(false);
   
+  const startTimeRef = useRef(Date.now());
+  const globalStartTimeRef = useRef(Date.now());
+  const mistakesRef = useRef(0);
+
   const canvasRef = useRef(null);
   const projectionRef = useRef(null);
   const pathRef = useRef(null);
@@ -381,7 +385,20 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
   const submitQuizAnswer = () => {
     if (!selectedQuizOpt || quizFeedback?.type === 'success') return;
     const q = data.questions[activeTab];
-        if (selectedQuizOpt === q.correctAnswer) {
+    const isCorrect = selectedQuizOpt === q.correctAnswer;
+    const duration = Date.now() - startTimeRef.current;
+
+    // ── RECORD GRANULAR ATTEMPT ──
+    if (onAttempt) {
+        onAttempt({
+            isCorrect,
+            label: `Globe Quiz: ${activeTab + 1}`,
+            duration,
+            mistakes: isCorrect ? 0 : 1
+        });
+    }
+
+    if (isCorrect) {
       if (onResult) {
         onResult({
           isCorrect: true,
@@ -398,8 +415,18 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
           setActiveTab(prev => prev + 1);
           setQuizFeedback(null);
           setSelectedQuizOpt(null);
+          startTimeRef.current = Date.now();
         } else {
-          if (onComplete) onComplete();
+          if (onComplete) onComplete({
+            isCorrect: mistakesRef.current === 0,
+            accuracy: Math.max(0, (data.questions.length - mistakesRef.current) / data.questions.length),
+            score: data.questions.length - mistakesRef.current,
+            total: data.questions.length,
+            mistakes: mistakesRef.current,
+            duration: Date.now() - globalStartTimeRef.current,
+            type: 'simulation',
+            engineType: 'GLOBE_QUIZ'
+          });
         }
       }, 1500);
     } else {
@@ -410,9 +437,12 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
           total: 1,
           type: 'quiz',
           selectedAnswer: selectedQuizOpt,
-          correctAnswer: q.correctAnswer
+          correctAnswer: q.correctAnswer,
+          duration: Date.now() - startTimeRef.current,
+          mistakes: 1
         });
       }
+      mistakesRef.current += 1;
       setQuizFeedback({ type: 'error', text: q.explanation || "Try again!", selectedOpt: selectedQuizOpt });
     }
   };
@@ -442,15 +472,45 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
       const rect = canvasRef.current.getBoundingClientRect();
       if (uv_up.clientX >= rect.left && uv_up.clientX <= rect.right && uv_up.clientY >= rect.top && uv_up.clientY <= rect.bottom) {
         const coords = projectionRef.current.invert([uv_up.clientX - rect.left, uv_up.clientY - rect.top]);
-        if (d3.geoDistance(coords, piece.target) < 0.45) {
+        const isCorrect = d3.geoDistance(coords, piece.target) < 0.45;
+        const duration = Date.now() - startTimeRef.current;
+
+        if (isCorrect) {
+          // ── RECORD GRANULAR ATTEMPT ──
+          if (onAttempt) {
+            onAttempt({
+                isCorrect: true,
+                label: `Globe Puzzle Piece: ${piece.label}`,
+                duration,
+                mistakes: 0
+            });
+          }
+
           setPlacedPieces(p => {
              const n = [...p, piece.id];
              if (n.length === data.pieces.length) {
                 if (onResult) onResult({ isCorrect: true, score: n.length, total: data.pieces.length, type: 'puzzle' });
-                if (onComplete) setTimeout(onComplete, 1500);
+                if (onComplete) setTimeout(() => onComplete({
+                    isCorrect: true,
+                    score: data.pieces.length,
+                    total: data.pieces.length,
+                    type: 'puzzle'
+                }), 1500);
              }
              return n;
           });
+          startTimeRef.current = Date.now();
+        } else {
+          // Record mistake
+          mistakesRef.current += 1;
+          if (onAttempt) {
+            onAttempt({
+                isCorrect: false,
+                label: `Globe Puzzle Piece: ${piece.label}`,
+                duration,
+                mistakes: 1
+            });
+          }
         }
       }
     };
@@ -513,7 +573,14 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult }) => {
               
               {/* Localized Finish Button for Study Mode */}
               <button 
-                onClick={onComplete}
+                onClick={() => {
+                  if (onComplete) onComplete({
+                    isCorrect: true,
+                    score: data.cases.length,
+                    total: data.cases.length,
+                    type: 'study'
+                  });
+                }}
                 className="w-full mt-4 py-3 rounded-2xl bg-sky-500 text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-transform"
               >
                 Finish Activity

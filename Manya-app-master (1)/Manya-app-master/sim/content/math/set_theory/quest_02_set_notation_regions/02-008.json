@@ -1,0 +1,27 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Disjoint Sets",
+  "variantTitle": "Quest 2-005: Disjoint Logic",
+  "sets": { "A": { "label": "Evens", "color": "#16a34a" }, "B": { "label": "Odds", "color": "#ea580c" } },
+  "zones": { "left": [2,4,6], "center": [], "right": [1,3,5], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort numbers < 7 into Evens and Odds.",
+      "items": [
+        { "val": "1", "target": "right" }, { "val": "2", "target": "left" },
+        { "val": "3", "target": "right" }, { "val": "4", "target": "left" },
+        { "val": "5", "target": "right" }, { "val": "6", "target": "left" }
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "Find <b>n(Evens ∩ Odds)</b>.",
+      "hint": "The intersection is empty. The answer is 0."
+    }
+  ]
+}

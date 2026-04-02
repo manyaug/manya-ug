@@ -27,6 +27,7 @@
       "retain_visuals": true,
       "type": "COUNT_SUM",
       "targetRegion": "right_total",
+      "expected": 40,
       "x_val": 15,
       "prompt": "How many pupils eat <span style='color:#db2777'>Matooke</span>?",
       "hint": "n(M) = Intersection + Right Only. Add 10 + 2x (using x=15)."
@@ -35,6 +36,7 @@
       "retain_visuals": true,
       "type": "COUNT_SUM",
       "targetRegion": "symmetric_difference",
+      "expected": 45,
       "x_val": 15,
       "prompt": "How many eat <span style='font-style:italic'>one type</span> only?",
       "hint": "Add (R Only) + (M Only). That is x + 2x."

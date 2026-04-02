@@ -1,0 +1,29 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability Algebra",
+  "variantTitle": "Quest 10-006: Exam Results",
+  "sets": { "A": { "label": "M", "color": "#2563eb" }, "B": { "label": "E", "color": "#db2777" } },
+  "zones": { "left": ["x"], "center": ["10"], "right": ["x"], "outside": ["10"] },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union",
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "Total = 40. M-only = E-only = x. Find <b>x</b>.",
+      "hint": "2x + 20 = 40"
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "left_only",
+      "x_val": 10,
+      "total": 40,
+      "expression": "x",
+      "prompt": "Prob. of passing <b>Math Only</b>?",
+      "hint": "10/40 = 1/4"
+    }
+  ]
+}

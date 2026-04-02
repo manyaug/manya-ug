@@ -1,0 +1,48 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Applications",
+  "variantTitle": "Word Problems in Sets",
+  "slides": [
+    {
+      "title": "From Words to Diagrams",
+      "text": "In exams, Set Theory is often hidden inside stories about sports, food, or books.<br><br>Let's learn the secret language of these word problems.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Tea", "Cake"],
+      "elements": { "left": "20", "center": "15", "right": "10", "outside": "5" },
+      "highlight": []
+    },
+    {
+      "title": "1. 'Only One Item'",
+      "text": "<b>Question:</b> How many guests took <b>only one</b> item?<br><br><b>Logic:</b> This means people who took Tea Only OR Cake Only.<br><br>20 + 10 = <b>30 guests</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Tea", "Cake"],
+      "elements": { "left": "20", "center": "15", "right": "10", "outside": "5" },
+      "highlight": ["left", "right"]
+    },
+    {
+      "title": "2. 'At Least One'",
+      "text": "<b>Question:</b> How many took <b>at least one</b> item?<br><br><b>Logic:</b> This implies the <b>Union</b>. It means 'Anyone who took anything'.<br><br>20 + 15 + 10 = <b>45 guests</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Tea", "Cake"],
+      "elements": { "left": "20", "center": "15", "right": "10", "outside": "5" },
+      "highlight": ["left", "center", "right"]
+    },
+    {
+      "title": "3. 'Neither' or 'None'",
+      "text": "<b>Question:</b> How many guests took <b>neither</b>?<br><br><b>Logic:</b> This is the region <b>outside</b> the circles but inside the Universal box.<br><br>Answer = <b>5 guests</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Tea", "Cake"],
+      "elements": { "left": "20", "center": "15", "right": "10", "outside": "5" },
+      "highlight": ["outside"]
+    },
+    {
+      "title": "4. Probability",
+      "text": "<b>Question:</b> What is the probability a guest took <b>Both</b>?<br><br><b>Step 1:</b> Find Total Guests. (20+15+10+5 = 50)<br><b>Step 2:</b> Find 'Both'. (15)<br><br>Probability = 15/50.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Tea", "Cake"],
+      "elements": { "left": "20", "center": "15", "right": "10", "outside": "5" },
+      "highlight": ["center"]
+    }
+  ]
+}

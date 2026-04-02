@@ -1,0 +1,30 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Disjoint Sets",
+  "variantTitle": "Quest 2-016: Living vs Non-Living",
+  "sets": { "A": { "label": "Living", "color": "#16a34a" }, "B": { "label": "Non-Living", "color": "#64748b" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": [] },
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "Sort the objects. Do they overlap?",
+      "hint": "Can something be Living AND Non-Living? No. The middle stays empty.",
+      "items": [
+        { "val": "🌲", "target": "left" },  
+        { "val": "🪨", "target": "right" }, 
+        { "val": "🐈", "target": "left" },  
+        { "val": "🚗", "target": "right" }, 
+        { "val": "🍄", "target": "left" }   
+      ]
+    },
+    {
+      "retain_visuals": true,
+      "interaction": "BINARY",
+      "expected": "yes",
+      "prompt": "Is the Intersection (Middle) an <b>Empty Set</b>?",
+      "hint": "Yes, because no item belongs to both groups."
+    }
+  ]
+}

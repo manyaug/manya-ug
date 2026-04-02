@@ -29,6 +29,7 @@ import LandingView from './views/LandingView';
 import PreferencesView from './views/PreferencesView';
 import SimulationTestingView from './views/SimulationTestingView';
 import SplashScreen from './components/SplashScreen';
+import DebugAuditView from './views/DebugAuditView';
 
 import { initializeUser } from './store/userSlice';
 import './styles/global.css';
@@ -86,6 +87,9 @@ function RouterLayout() {
 
                     {/* Simulation Tester */}
                     <Route path="/sim-test" element={<SimulationTestingView />} />
+                    
+                    {/* Diagnostic Audit */}
+                    <Route path="/debug-audit" element={<DebugAuditView />} />
 
                     {/* Catch-all for authenticated state: Redirect to home if path doesn't match */}
                     <Route path="*" element={<Navigate to="/home" replace />} />

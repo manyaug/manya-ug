@@ -1,0 +1,26 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Probability Final",
+  "variantTitle": "Quest 10-017: Sports Final",
+  "sets": { "A": { "label": "F (20)", "color": "#7c3aed" }, "B": { "label": "R (20)", "color": "#db2777" } },
+  "zones": { "left": ["15"], "center": ["5"], "right": ["15"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "prompt": "How many play <b>only one</b> sport?",
+      "hint": "15 + 15 = 30."
+    },
+    {
+      "retain_visuals": true,
+      "type": "PROBABILITY",
+      "targetRegion": "symmetric_difference",
+      "total": 40,
+      "expression": "30",
+      "prompt": "Probability of playing <b>Only One</b>?",
+      "hint": "30/40 = 3/4"
+    }
+  ]
+}

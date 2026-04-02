@@ -1,0 +1,12 @@
+{
+  "engineType": "2D_HOTSPOT",
+  "mode": "labeling",
+  "variantTitle": "Quiz: Muscle Type Identification",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_10_muscular_system_types/3_muscle_types.png",
+  "hotspots": [
+    { "id": "q1", "label": "Cardiac Muscle", "x": 54.2, "y": 38.67 },
+    { "id": "q2", "label": "Involuntary Muscle", "x": 54.69, "y": 60.74 },
+    { "id": "q3", "label": "Voluntary Muscle", "x": 26.17, "y": 44.73 }
+  ],
+  "wordBank": ["Cardiac Muscle", "Involuntary Muscle", "Voluntary Muscle", "Ligament", "Cartilage"]
+}

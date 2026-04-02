@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Algebraic Word Problems",
+  "variantTitle": "Quest 8-007: Sports Algebra",
+  "sets": { "A": { "label": "F (25)", "color": "#16a34a" }, "B": { "label": "V", "color": "#f59e0b" } },
+  "zones": { "left": ["25-x"], "center": ["x"], "right": ["x"], "outside": ["5"] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> n(F)=25. V-only equals Both (x). Neither is 5.",
+      "inputs": [
+        { "region": "left", "expected": "25-x" },
+        { "region": "right", "expected": "x" },
+        { "region": "center", "expected": "x" },
+        { "region": "outside", "expected": "5" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 40,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total students = 40. Find <b>x</b>.",
+      "hint": "(Left Total) + (Right Only) + Outside = 40. So 25 + x + 5 = 40."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "right_total",
+      "x_val": 10,
+      "prompt": "Find Total Volleyball players.",
+      "hint": "Intersection (10) + V Only (10) = 20."
+    }
+  ]
+}

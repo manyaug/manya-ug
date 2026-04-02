@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANYA - PLE Exam Prep</title>
+    
+    <!-- Model Viewer for 3D simulations -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Additional simulation styles */
+        .simulation-container {
+            background: #f0f4ff;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            min-height: 500px;
+        }
+        
+        .hotspot-button {
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .hotspot-button:hover {
+            transform: scale(1.2);
+            background: #5a67d8;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .simulation-teaser {
+            animation: fadeIn 0.5s;
+        }
+        
+        .skip-teaser-btn:hover {
+            background: #5a67d8 !important;
+            transform: translateY(-2px);
+        }
+        
+        #simulation-done-btn {
+            margin: 20px auto;
+            width: 200px;
+            background: #48bb78;
+        }
+        
+        #simulation-done-btn:hover {
+            background: #38a169;
+        }
+        
+        .hesitation-details {
+            font-size: 0.8em;
+            color: #718096;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="logo">
+                <h1>🦆 MANYA</h1>
+                <span class="tagline">Your PLE Study Friend</span>
+            </div>
+            
+            <div class="user-controls">
+                <div class="user-selector">
+                    <select id="userSelect">
+                        <option value="student-001">🎓 Student 001</option>
+                        <option value="student-002">🎓 Student 002</option>
+                        <option value="new-user">✨ Create New User</option>
+                    </select>
+                </div>
+                <div class="user-stats">
+                    <span class="streak">🔥 <span id="streakCount">0</span></span>
+                    <span class="points">⭐ <span id="pointsTotal">0</span></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="main-nav">
+            <button class="nav-btn active" data-view="topics">📚 Topics</button>
+            <button class="nav-btn" data-view="profile">👤 Profile</button>
+            <button class="nav-btn" data-view="achievements">🏆 Achievements</button>
+        </nav>
+
+        <!-- Dashboard Section - Psychological Parameters -->
+        <div class="dashboard-section">
+            <div class="psych-params-grid">
+                <!-- Accuracy Card -->
+                <div class="param-card">
+                    <div class="param-header">
+                        <span class="param-icon">📊</span>
+                        <span class="param-label">Accuracy</span>
+                    </div>
+                    <div class="param-value" id="param-accuracy">0%</div>
+                    <div class="param-trend" id="trend-accuracy">→</div>
+                </div>
+                
+                <!-- Mastery Card -->
+                <div class="param-card">
+                    <div class="param-header">
+                        <span class="param-icon">🏆</span>
+                        <span class="param-label">Mastery</span>
+                    </div>
+                    <div class="param-value" id="param-mastery">0%</div>
+                    <div class="param-sub" id="mastery-level">learning</div>
+                </div>
+                
+                <!-- Confidence Card -->
+                <div class="param-card">
+                    <div class="param-header">
+                        <span class="param-icon">💪</span>
+                        <span class="param-label">Confidence</span>
+                    </div>
+                    <div class="param-value" id="param-confidence">0%</div>
+                    <div class="progress-bar-small">
+                        <div class="progress-fill-confidence" id="confidence-bar" style="width:0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Frustration Card -->
+                <div class="param-card">
+                    <div class="param-header">
+                        <span class="param-icon">😤</span>
+                        <span class="param-label">Frustration</span>
+                    </div>
+                    <div class="param-value" id="param-frustration">0%</div>
+                    <div class="progress-bar-small">
+                        <div class="progress-fill-frustration" id="frustration-bar" style="width:0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Hint Usage Card -->
+                <div class="param-card">
+                    <div class="param-header">
+                        <span class="param-icon">💡</span>
+                        <span class="param-label">Hints</span>
+                    </div>
+                    <div class="param-value" id="param-hints">0%</div>
+                    <div class="param-sub" id="hint-count">0 used</div>
+                </div>
+                
+                <!-- Hesitation Card -->
+                <div class="param-card">
+                    <div class="param-header">
+                        <span class="param-icon">⏱️</span>
+                        <span class="param-label">Hesitation</span>
+                    </div>
+                    <div class="param-value" id="param-hesitation">0%</div>
+                    <div class="param-sub" id="hesitation-count">0 changes</div>
+                    <div class="hesitation-details" id="hesitation-type"></div>
+                </div>
+            </div>
+            
+            <!-- Question Decision Card -->
+            <div class="decision-card">
+                <div class="decision-header">
+                    <span>🎯 Why This Question?</span>
+                    <span class="decision-score" id="question-score">0</span>
+                </div>
+                <div class="decision-reason" id="question-reason">Loading...</div>
+                <div class="decision-factors" id="question-factors"></div>
+            </div>
+        </div>
+
+        <!-- Dynamic Content Area -->
+        <main id="content-area">
+            <!-- Content loaded dynamically by JavaScript -->
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <div>Loading...</div>
+        </div>
+    </div>
+
+    <!-- Templates (hidden) -->
+    <template id="topics-view">
+        <div class="topics-container">
+            <h2>Your Learning Path</h2>
+            <div class="topics-grid" id="topics-grid"></div>
+        </div>
+    </template>
+
+    <template id="challenge-card">
+        <div class="challenge-card" data-challenge-id="">
+            <div class="challenge-icon"></div>
+            <div class="challenge-info">
+                <h3 class="challenge-name"></h3>
+                <div class="quest-progress">
+                    <div class="quest-dots"></div>
+                    <span class="progress-text"></span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="quest-detail-view">
+        <div class="quest-detail-container">
+            <button class="back-btn">← Back to Challenges</button>
+            
+            <div class="challenge-header">
+                <div class="challenge-icon-large"></div>
+                <div class="challenge-title">
+                    <h2 id="challenge-name"></h2>
+                    <p id="challenge-description"></p>
+                </div>
+            </div>
+
+            <div class="quests-grid" id="quests-grid"></div>
+        </div>
+    </template>
+
+    <template id="quest-card">
+        <div class="quest-card" data-quest-id="">
+            <div class="quest-status-icon"></div>
+            <div class="quest-info">
+                <h4 class="quest-name"></h4>
+                <div class="quest-meta">
+                    <span class="quest-length"></span>
+                    <span class="quest-mastery"></span>
+                </div>
+                <div class="progress-bar-container" style="display: none;">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            </div>
+            <div class="quest-action"></div>
+        </div>
+    </template>
+
+   <template id="gameplay-view">
+    <div class="gameplay-container">
+        <div class="gameplay-header">
+            <button class="back-btn">← Exit Quest</button>
+            <div class="quest-info-header">
+                <span class="current-quest-name"></span>
+                <span class="game-mode-badge"></span>
+            </div>
+            <div class="quest-progress-header">
+                <span class="question-counter">0/0</span>
+                <span class="points-earned">⭐ 0</span>
+            </div>
+        </div>
+
+        <div class="gameplay-area">
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="topic-badge"></span>
+                    <span class="difficulty-badge"></span>
+                </div>
+                <div class="question-text"></div>
+                
+                <!-- Options container for MCQ -->
+                <div class="options-container" id="options-container"></div>
+                
+                <!-- Hint display area -->
+                <div class="hint-display" id="hintDisplay" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- FOOTER - Moved OUTSIDE gameplay-area to ensure proper positioning -->
+        <div class="gameplay-footer">
+            <button class="hint-btn" id="hintBtn">💡 Hint</button>
+            <button class="submit-btn" id="submitBtn" disabled>✅ Submit Answer</button>
+            <div class="timer-display" style="display: none;">⏱️ <span>00</span></div>
+        </div>
+
+        <div class="quest-complete-overlay" style="display: none;">
+            <div class="complete-content">
+                <h2>🎉 Quest Complete!</h2>
+                <div class="mastery-score"></div>
+                <div class="earned-rewards"></div>
+                <button class="continue-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+</template>
+<!-- Load router as module (not regular script) -->
+<script type="module" src="/js/simulations/app-shell/router.js"></script>
+
+<!-- Also make it globally available with a small script -->
+<script>
+    // Wait for router to load
+    window.addEventListener('load', function() {
+        if (window.ManyaRouter) {
+            console.log('✅ ManyaRouter available');
+        } else {
+            console.warn('⚠️ ManyaRouter not found, will use fallback');
+        }
+    });
+</script>
+ <!-- 1. Pure UI/logic components (no dependencies on QuestScreen) -->
+<script src="js/components/challenge-card.js"></script>
+<script src="js/components/quest-progress.js"></script>
+<script src="js/components/game-modes.js"></script>
+
+<!-- 2. Simulation loader (prepares engines, no QuestScreen dependency) -->
+<script src="js/simulation-loader.js"></script>
+
+<!-- 3. Define QuestScreen FIRST — critical -->
+<script src="js/quest.js"></script>
+
+<!-- 4. Now safe to use QuestScreen -->
+<script src="js/challenges.js"></script>
+<script src="js/app.js"></script>
+
+<!-- 5. Final verification (should show ✅ for QuestScreen) -->
+<script>
+    console.log('🔍 FINAL LOAD CHECK AFTER ALL SCRIPTS:');
+    console.log('   QuestScreen:', typeof QuestScreen !== 'undefined' ? '✅' : '❌');
+    console.log('   ChallengesScreen:', typeof ChallengesScreen !== 'undefined' ? '✅' : '❌');
+    console.log('   GameModes:', typeof GameModes !== 'undefined' ? '✅' : '❌');
+</script>
+<!-- Add audio system -->
+<script src="js/components/audioSystem.js"></script>
+
+<!-- Add badge UI component -->
+<script src="js/components/badges.js"></script>
+
+<!-- Add chest UI component -->
+<script src="js/components/chest.js"></script>
+<!-- Gem Display -->
+<script src="js/components/gemDisplay.js"></script>
+
+<!-- Character System -->
+<script src="js/components/characterSystem.js"></script>
+
+<!-- Audio System (updated) -->
+<script src="js/components/audioSystem.js"></script>
+</body>
+</html>

@@ -11,12 +11,14 @@ const TOPPINGS = [
     { id: 5, icon: "🍍", label: "Pineapple" }
 ];
 
-export default function PizzaGameEngine({ data, onComplete, onResult }) {
+export default function PizzaGameEngine({ data, onComplete, onResult, onAttempt }) {
     const [currentLevel, setCurrentLevel] = useState(0);
     const [selected, setSelected] = useState(new Set());
     const [isResolved, setIsResolved] = useState(false);
     const [isError, setIsError] = useState(false);
     const [mistakes, setMistakes] = useState(0);
+
+    const startTimeRef = React.useRef(Date.now());
 
     const question = data?.questions?.[currentLevel];
     const totalLevels = data?.questions?.length || 1;
@@ -30,6 +32,11 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
     useEffect(() => {
         if (window.QuestRunner) window.QuestRunner.disableButton?.();
     }, []);
+
+    // Reset time per level
+    useEffect(() => {
+        startTimeRef.current = Date.now();
+    }, [currentLevel]);
 
     // Generate fixed random positions for toppings when level or selection changes
     const toppingPositions = useMemo(() => {
@@ -60,7 +67,22 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
     const serve = () => {
         if (isResolved) return;
 
-        if (result === targetVal) {
+        const isCorrect = result === targetVal;
+        const duration = Date.now() - startTimeRef.current;
+
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `Pizza Order ${currentLevel + 1}`,
+                selectedAnswer: `Total: ${result}`,
+                correctAnswer: `Target: ${targetVal}`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
+        if (isCorrect) {
             setIsResolved(true);
             window.ManyaAudio?.success?.();
             if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
@@ -81,7 +103,13 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
                             type: 'game'
                         });
                     }
-                    if (onComplete) onComplete();
+                    if (onComplete) onComplete({
+                        isCorrect: true,
+                        score: totalLevels,
+                        total: totalLevels,
+                        mistakes: mistakes,
+                        type: 'game'
+                    });
                 }
             }, 1800);
         } else {
@@ -109,7 +137,7 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
 
                 <motion.div 
                     className="relative rounded-full shadow-2xl border-[12px] border-amber-600 bg-amber-500 overflow-hidden"
-                    style={{ width: 'min(90vw, 300px)', aspectRatio: '1/1' }}
+                    style={{ width: 'min(85vw, 420px)', aspectRatio: '1/1' }}
                     animate={isResolved ? { scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] } : {}}
                     transition={{ duration: 0.5 }}
                 >

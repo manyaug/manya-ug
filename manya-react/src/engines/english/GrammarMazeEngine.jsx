@@ -21,6 +21,10 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
     const [obstacles, setObstacles] = useState([]);
     const [showFinish, setShowFinish] = useState(false);
     const [isGameOver, setIsGameOver] = useState(false);
+    const [totalMistakes, setTotalMistakes] = useState(0);
+
+    const globalStartTimeRef = useRef(Date.now());
+    const startTimeRef = useRef(Date.now());
 
     const currentLvl = levels[lvlIdx];
     const maze = currentLvl?.maze || [];
@@ -85,6 +89,7 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
             return next;
         });
         setFeedback({ type: 'error', msg: 'OUCH! Watch out!' });
+        setTotalMistakes(m => m + 1);
         window.ManyaAudio?.error?.();
         
         // Reset player to start
@@ -290,7 +295,18 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
                         
                         <div className="flex flex-col gap-3 w-full">
                             <button 
-                                onClick={onComplete}
+                                onClick={() => {
+                                    if (onComplete) onComplete({
+                                        isCorrect: showFinish && !isGameOver,
+                                        accuracy: Math.max(0, (score - (totalMistakes * 50)) / (levels.length * 250)),
+                                        score: score,
+                                        total: levels.length * 250,
+                                        mistakes: totalMistakes,
+                                        duration: Date.now() - globalStartTimeRef.current,
+                                        type: 'simulation',
+                                        engineType: 'GRAMMAR_MAZE'
+                                    });
+                                }}
                                 className="w-full h-16 bg-indigo-600 text-white rounded-2xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-indigo-500/20"
                             >
                                 Continue Quest

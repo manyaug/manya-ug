@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Difference of Sets",
+  "variantTitle": "Quest 2-008: Set Difference",
+  "sets": { "A": { "label": "M", "color": "#2563eb" }, "B": { "label": "N", "color": "#ea580c" } },
+  "zones": { "left": ["a", "b"], "center": ["c"], "right": ["d", "e"], "outside": [] },
+  "questions": [
+    {
+      "interaction": "CHOICE",
+      "prompt": "List the members of <span style='color:#2563eb'>M - N</span> (M only).",
+      "options": [
+        "{a, b}",
+        "{a, b, c}",
+        "{d, e}",
+        "{c}"
+      ],
+      "expected": "{a, b}",
+      "hint": "Remove the intersection 'c' from Set M."
+    }
+  ]
+}

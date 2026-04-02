@@ -1,0 +1,56 @@
+{
+  "engineType": "MATH_STUDY",
+  "mode": "study",
+  "topic": "Venn Diagrams",
+  "variantTitle": "Placing Info Correctly",
+  "slides": [
+    {
+      "title": "The Sorting Game",
+      "text": "Filling a Venn Diagram is just like sorting objects into baskets.<br><br>Let's sort shapes based on two rules:<br><b>Set A:</b> Must be <span style='color:#ef4444'>RED</span>.<br><b>Set B:</b> Must be a <span style='color:#2563eb'>CIRCLE</span>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Red", "Circle"],
+      "elements": { "left": "?", "center": "?", "right": "?" },
+      "highlight": []
+    },
+    {
+      "title": "Rule 1: The Middle First!",
+      "text": "<b>Pro Tip:</b> Always fill the Intersection first!<br><br>Ask: <i>\"Is there anything that is BOTH Red AND a Circle?\"</i><br><br>Yes! The <span style='color:#ef4444'>Red</span> <span style='color:#2563eb'>Circle</span> (🔴) goes in the center.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Red", "Circle"],
+      "elements": { "left": "", "center": "🔴", "right": "" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "Rule 2: Fill the Sides",
+      "text": "Now, place the rest:<br><br>1. <b>Red Square (🟥):</b> It is Red, but NOT a circle. It goes to the <b>Left</b> (Red Only).<br><br>2. <b>Blue Circle (🔵):</b> It is a Circle, but NOT red. It goes to the <b>Right</b> (Circle Only).",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Red", "Circle"],
+      "elements": { "left": "🟥", "center": "🔴", "right": "🔵" },
+      "highlight": ["left", "right"]
+    },
+    {
+      "title": "Rule 3: The Outsiders",
+      "text": "What about a <b>Blue Square (🟦)</b>?<br><br>It is NOT red. It is NOT a circle.<br>It gets kicked <b>outside</b> the rings, but stays inside the box (Universal Set).",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["Red", "Circle"],
+      "elements": { "left": "🟥", "center": "🔴", "right": "🔵", "outside": "🟦" },
+      "highlight": ["outside"]
+    },
+    {
+      "title": "Applying to Numbers",
+      "text": "Now let's try Math!<br><b>Set A = Factors of 6:</b> {1, 2, 3, 6}<br><b>Set B = Factors of 9:</b> {1, 3, 9}<br><br><b>Step 1:</b> Find the Middle (Common members).<br>Both have <b>1</b> and <b>3</b>.",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["F6", "F9"],
+      "elements": { "left": "", "center": "1, 3", "right": "" },
+      "highlight": ["center"]
+    },
+    {
+      "title": "Calculating 'Only'",
+      "text": "<b>Step 2:</b> Fill the rest.<br><br><b>Set A (Left):</b> We used {1,3}. Remaining: {2, 6}.<br><b>Set B (Right):</b> We used {1,3}. Remaining: {9}.<br><br>Notice: We don't write {1,3} again!",
+      "visualType": "VENN_DIAGRAM",
+      "labels": ["F6", "F9"],
+      "elements": { "left": "2, 6", "center": "1, 3", "right": "9" },
+      "highlight": ["left", "right"]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Nature Sets",
+  "variantTitle": "Quest 1-008: Nature Visuals",
+  "questions": [
+    {
+      "scene": "leaves",
+      "expected": "finite",
+      "prompt": "<b>Scene: Falling Leaves</b><br>Set of Leaves on a specific tree."
+    },
+    {
+      "scene": "fish",
+      "expected": "finite",
+      "prompt": "<b>Scene: Swimming Fish</b><br>Set of Fish in a tank."
+    },
+    {
+      "scene": "cows",
+      "expected": "finite",
+      "prompt": "<b>Scene: Grazing Cows</b><br>Set of Cattle on a farm."
+    },
+    {
+      "scene": "sand",
+      "expected": "infinite",
+      "prompt": "<b>Scene: Sand Grains</b><br>Set of Sand Grains on a beach (Too many to count!)."
+    },
+    {
+      "scene": "default",
+      "expected": "finite",
+      "prompt": "<b>Scene: Map Pins</b><br>Set of Districts in Uganda."
+    }
+  ]
+}

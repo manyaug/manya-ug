@@ -1,0 +1,44 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Complement Algebra",
+  "variantTitle": "Quest 10-019: Complement Solver",
+  "sets": { "A": { "label": "G", "color": "#9333ea" }, "B": { "label": "S", "color": "#db2777" } },
+  "zones": {
+    "left": ["15"],
+    "center": ["5"],
+    "right": ["2m"],
+    "outside": ["m+4"]
+  }, 
+  "questions": [
+    {
+      "interaction": "DRAG_SORT",
+      "prompt": "<b>Phase 1: Construct the Diagram</b><br><span style='font-size:0.9em'>• G only: <b>15</b> &nbsp; • S only: <b>2m</b><br>• Intersection: <b>5</b> &nbsp; • Outside: <b>m+4</b></span>",
+      "items": [
+        { "val": "15", "target": "left" },
+        { "val": "5", "target": "center" },
+        { "val": "2m", "target": "right" },
+        { "val": "m+4", "target": "outside" }
+      ]
+    },
+    {
+      "retain_visuals": false,
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "complement_left",
+      "equation_target": 25,
+      "expected_x": 7,
+      "prompt": "<b>Phase 2:</b> n(G)' = 25 (Not G). Find <b>m</b>.",
+      "hint": "(S Only) + (Outside) = 25 -> 2m + m + 4 = 25"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_total",
+      "x_val": 7,
+      "expression": "2m+5",
+      "prompt": "Find Total n(S).",
+      "hint": "Intersection (5) + S Only (14) = 19."
+    }
+  ]
+}

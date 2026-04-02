@@ -1,10 +1,11 @@
 export const ManyaDB = {
     DB_NAME: 'ManyaSystemDB',
-    VERSION: 3, // Incremented version to add 'answers' store
+    VERSION: 4, // v4: Added concept_mastery store for spaced repetition
     STORE_USERS: 'users',
     STORE_QUESTIONS: 'questions',
     STORE_SYNC_LOGS: 'sync_logs',
     STORE_ANSWERS: 'answers',
+    STORE_CONCEPT_MASTERY: 'concept_mastery',
 
     async connect() {
         return new Promise((resolve, reject) => {
@@ -24,6 +25,11 @@ export const ManyaDB = {
                     const store = db.createObjectStore(this.STORE_ANSWERS, { keyPath: 'id', autoIncrement: true });
                     store.createIndex('subject', 'subject', { unique: false });
                     store.createIndex('questionId', 'questionId', { unique: false });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_CONCEPT_MASTERY)) {
+                    const cmStore = db.createObjectStore(this.STORE_CONCEPT_MASTERY, { keyPath: 'id' });
+                    cmStore.createIndex('subject', 'subject', { unique: false });
+                    cmStore.createIndex('baseId', 'baseId', { unique: false });
                 }
             };
 
@@ -181,6 +187,51 @@ export const ManyaDB = {
             const request = store.delete(id);
             request.onsuccess = () => resolve(true);
             request.onerror = () => resolve(false);
+        });
+    },
+
+    // ── CONCEPT MASTERY METHODS ──────────────────────────────────────────────
+
+    async getConceptMastery(subject, baseId) {
+        const db = await this.connect();
+        if (!db) return null;
+        return new Promise((resolve) => {
+            try {
+                const tx = db.transaction(this.STORE_CONCEPT_MASTERY, 'readonly');
+                const store = tx.objectStore(this.STORE_CONCEPT_MASTERY);
+                const req = store.get(`${subject}::${baseId}`);
+                req.onsuccess = () => resolve(req.result || null);
+                req.onerror = () => resolve(null);
+            } catch(e) { resolve(null); }
+        });
+    },
+
+    async upsertConceptMastery(record) {
+        const db = await this.connect();
+        if (!db) return false;
+        return new Promise((resolve) => {
+            try {
+                const tx = db.transaction(this.STORE_CONCEPT_MASTERY, 'readwrite');
+                const store = tx.objectStore(this.STORE_CONCEPT_MASTERY);
+                const req = store.put(record);
+                req.onsuccess = () => resolve(true);
+                req.onerror = () => resolve(false);
+            } catch(e) { resolve(false); }
+        });
+    },
+
+    async getAllConceptMastery(subject) {
+        const db = await this.connect();
+        if (!db) return [];
+        return new Promise((resolve) => {
+            try {
+                const tx = db.transaction(this.STORE_CONCEPT_MASTERY, 'readonly');
+                const store = tx.objectStore(this.STORE_CONCEPT_MASTERY);
+                const index = store.index('subject');
+                const req = index.getAll(subject);
+                req.onsuccess = () => resolve(req.result || []);
+                req.onerror = () => resolve([]);
+            } catch(e) { resolve([]); }
         });
     },
 

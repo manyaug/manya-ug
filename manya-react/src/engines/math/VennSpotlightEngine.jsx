@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, ArrowRight, MousePointerClick } from 'lucide-react';
 
-export default function VennSpotlightEngine({ data, onComplete, onResult }) {
+export default function VennSpotlightEngine({ data, onComplete, onResult, onAttempt }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [litRegions, setLitRegions] = useState(new Set());
     
@@ -10,6 +10,8 @@ export default function VennSpotlightEngine({ data, onComplete, onResult }) {
     const [isResolved, setIsResolved] = useState(false);
     const [mistakes, setMistakes] = useState(0);
     
+    const startTimeRef = React.useRef(Date.now());
+
     const containerRef = useRef(null);
     const question = data?.questions?.[currentStep];
     const totalLevels = data?.questions?.length || 1;
@@ -23,6 +25,7 @@ export default function VennSpotlightEngine({ data, onComplete, onResult }) {
         setLitRegions(new Set());
         setIsResolved(false);
         setErrorAnim(false);
+        startTimeRef.current = Date.now();
     }, [currentStep]);
 
     const handleTap = (e) => {
@@ -83,7 +86,13 @@ export default function VennSpotlightEngine({ data, onComplete, onResult }) {
             if (currentStep < totalLevels - 1) {
                 setCurrentStep(prev => prev + 1);
             } else {
-                if (onComplete) onComplete();
+                if (onComplete) onComplete({
+                    isCorrect: true,
+                    score: totalLevels,
+                    total: totalLevels,
+                    mistakes: mistakes,
+                    type: 'quiz'
+                });
             }
             return;
         }
@@ -96,15 +105,24 @@ export default function VennSpotlightEngine({ data, onComplete, onResult }) {
             });
         }
 
+        const duration = Date.now() - startTimeRef.current;
+
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `Venn Spotlight [${currentStep + 1}]: ${question?.notation}`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
         if (isCorrect) {
             setIsResolved(true);
             window.ManyaAudio?.success?.();
             if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
 
-            // Final Level completion result?
-            // If it's the last level, we send the final score. 
-            // Since this engine seems to call check only when they click a button, 
-            // and maybe it auto-advances? No, handleCheck manages the advance.
+            // Final Level completion result
             if (currentStep === totalLevels - 1) {
                 if (onResult) {
                     onResult({

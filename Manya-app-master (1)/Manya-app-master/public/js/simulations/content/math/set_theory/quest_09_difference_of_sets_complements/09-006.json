@@ -1,0 +1,37 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Difference of Sets",
+  "variantTitle": "Quest 9-006: The Garden",
+  "sets": { "A": { "label": "M", "color": "#16a34a" }, "B": { "label": "B", "color": "#d97706" } },
+  "zones": { "left": ["x+5"], "center": ["x"], "right": ["x+10"], "outside": ["0"] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> M-only is x+5. B-only is x+10. Both is x.",
+      "inputs": [
+        { "region": "left", "expected": "x+5" },
+        { "region": "right", "expected": "x+10" },
+        { "region": "center", "expected": "x" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 45,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total gardeners = 45. Find <b>x</b>.",
+      "hint": "(x+5) + x + (x+10) = 45 -> 3x + 15 = 45"
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "left_only",
+      "x_val": 10,
+      "expression": "x+5",
+      "prompt": "How many grow <span style='color:#16a34a'>Maize Only</span>?",
+      "hint": "x + 5 = 10 + 5"
+    }
+  ]
+}

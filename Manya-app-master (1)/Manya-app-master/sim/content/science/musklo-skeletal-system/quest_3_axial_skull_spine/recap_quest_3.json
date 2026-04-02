@@ -1,0 +1,69 @@
+{
+  "engineType": "READER_STUDY",
+  "topic": "Axial Skeleton: Skull & Spine",
+  "variantTitle": "Quest 3 Master Recap",
+  "themeColor": "#06b6d4",
+  "sections": [
+    {
+      "type": "bullets",
+      "title": "The Human Skull",
+      "points": [
+        "The skull is made of <b>22 separate bones</b>.",
+        "<b>Cranium:</b> The 'Brain Box' part of the skull that houses the brain.",
+        "<b>Mandible:</b> The lower jawbone. It is the <b>only movable bone</b> in the skull.",
+        "<b>Sutures:</b> The fixed, saw-like joints that hold skull bones together rigidly."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "The Backbone (Vertebral Column)",
+      "points": [
+        "It forms the central axis of the body.",
+        "It protects the <b>Spinal Cord</b> and supports the head.",
+        "It consists of small bones called <b>Vertebrae</b>.",
+        "<b>Total vertebrae:</b> 33 (in infants) which fuse into <b>26 separate bones</b> in adults."
+      ]
+    },
+    {
+      "type": "bullets",
+      "title": "The 5 Regions of the Spine",
+      "points": [
+        "<b>1. Cervical (Neck):</b> 7 bones. Includes the <b>Atlas</b> (holds head) and <b>Axis</b> (turns head).",
+        "<b>2. Thoracic (Chest):</b> 12 bones. This is where the <b>ribs attach</b>.",
+        "<b>3. Lumbar (Abdomen):</b> 5 bones. These are the largest vertebrae to support weight.",
+        "<b>4. Sacral (Pelvis):</b> 5 vertebrae fused into 1 bone (the <b>Sacrum</b>).",
+        "<b>5. Coccyx (Tail):</b> 4 vertebrae fused into 1 bone (the <b>Tailbone</b>)."
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "The spine is <b>flexible</b> because it is made of many small vertebrae separated by <b>cartilage discs</b>. One solid bone would make you unable to bend!"
+    },
+    {
+      "type": "bullets",
+      "title": "Skull & Spine Protection Summary",
+      "points": [
+        "The <b>Eye Orbits</b> (sockets) protect the eyeballs.",
+        "The <b>Inner Ear</b> is encased deep within the skull bones for protection.",
+        "The <b>Neural Canal</b> is the hole in the vertebrae where the spinal cord passes."
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "term": "Mandible",
+      "fact": "The only movable bone in your head.",
+      "mnemonic": "<b>M</b>andible = <b>M</b>outh <b>M</b>over!"
+    },
+    {
+      "term": "Cervical Count",
+      "fact": "There are exactly 7 bones in the neck.",
+      "mnemonic": "Think: <b>'7-Up'</b> (7 bones at the top/neck)."
+    },
+    {
+      "term": "Sutures",
+      "fact": "Immovable saw-like joints in the skull.",
+      "mnemonic": "The skull is <b>'Sewn'</b> together with <b>Sutures</b>!"
+    }
+  ]
+}

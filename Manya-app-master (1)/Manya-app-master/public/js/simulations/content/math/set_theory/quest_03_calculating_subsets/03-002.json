@@ -1,0 +1,24 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Calculating Subsets",
+  "variantTitle": "Quest 3-005: Factors of 4",
+  "sets": { "A": { "label": "F4", "color": "#9333ea" }, "B": { "label": "", "color": "transparent" } },
+  "zones": { "left": [], "center": [1, 2, 4], "right": [], "outside": [] },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 1:</b> Count the Factors of 4.",
+      "hint": "1, 2, 4. There are 3 factors."
+    },
+    {
+      "retain_visuals": true,
+      "type": "SUBSET_COUNT",
+      "targetRegion": "intersection",
+      "prompt": "<b>Step 2:</b> Find the number of <b>Subsets</b>.",
+      "hint": "Formula: 2ⁿ. Calculate 2³ (2×2×2)."
+    }
+  ]
+}

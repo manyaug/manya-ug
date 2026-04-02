@@ -10,12 +10,14 @@ import { ChevronLeft, ChevronRight, Check, Sparkles } from 'lucide-react';
  * - Premium Glassmorphism & Micro-animations
  * - Full Dark/Light Theme support
  */
-export function GalleryStudyEngine({ data, onComplete, onResult }) {
+export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
     const [currentIdx, setCurrentIdx] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
     const [imageLoaded, setImageLoaded] = useState(false);
     
+    const startTimeRef = React.useRef(Date.now());
+
     const slides = useMemo(() => data?.slides || [], [data]);
     const currentSlide = slides[currentIdx];
     const isLastSlide = currentIdx === slides.length - 1;
@@ -46,10 +48,23 @@ export function GalleryStudyEngine({ data, onComplete, onResult }) {
     if (!currentSlide) return <div className="p-8 text-center text-red-500 font-bold">No slides found.</div>;
 
     const handleNext = () => {
+        const duration = Date.now() - startTimeRef.current;
+        
+        // ── RECORD GRANULAR ATTEMPT (Viewed Card) ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect: true,
+                label: `Gallery Slide: ${currentSlide.title || currentIdx + 1}`,
+                duration,
+                mistakes: 0
+            });
+        }
+
         if (currentIdx < slides.length - 1) {
             setCurrentIdx(idx => idx + 1);
             setImageLoaded(false);
             setIsExpanded(false);
+            startTimeRef.current = Date.now();
         } else if (allSeen) {
             if (onResult) {
                 onResult({
@@ -59,7 +74,12 @@ export function GalleryStudyEngine({ data, onComplete, onResult }) {
                     type: 'study'
                 });
             }
-            if (onComplete) onComplete();
+            if (onComplete) onComplete({
+                isCorrect: true,
+                score: visitedIndices.size,
+                total: slides.length,
+                type: 'study'
+            });
         }
     };
 

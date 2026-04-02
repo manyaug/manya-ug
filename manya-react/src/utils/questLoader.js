@@ -108,6 +108,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file) {
  */
 function normaliseStep(raw) {
     return {
+        id: raw.qid || raw.id || `sim_${Math.random().toString(36).substr(2, 9)}`,
         engineType: raw.engineType || raw.engine || 'UNKNOWN',
         mode: raw.mode || 'quiz',
         topic: raw.topic || raw.variantTitle || '',

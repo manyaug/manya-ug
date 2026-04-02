@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calculator, GripHorizontal, CheckCircle2, ChevronRight, XCircle } from 'lucide-react';
 
-export default function VennProbEngine({ data, onComplete, onResult }) {
+export default function VennProbEngine({ data, onComplete, onResult, onAttempt }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [phase, setPhase] = useState('setup'); // 'setup' | 'calc'
     
@@ -14,6 +14,8 @@ export default function VennProbEngine({ data, onComplete, onResult }) {
     const [isResolved, setIsResolved] = useState(false);
     const [mistakes, setMistakes] = useState(0);
     
+    const startTimeRef = React.useRef(Date.now());
+
     const containerRef = useRef(null);
     const question = data?.questions?.[currentStep];
     const totalLevels = data?.questions?.length || 1;
@@ -95,15 +97,30 @@ export default function VennProbEngine({ data, onComplete, onResult }) {
         chips.forEach(c => { counts[c.region]++; });
 
         const setup = question.setup;
-        if (
+        const isCorrect = (
             counts.left === setup.aOnly &&
             counts.right === setup.bOnly &&
             counts.center === setup.intersection &&
             counts.outside === setup.outside
-        ) {
+        );
+
+        const duration = Date.now() - startTimeRef.current;
+
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `Venn Setup [${currentStep + 1}]`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
+        if (isCorrect) {
             window.ManyaAudio?.success?.();
             setPhase('calc');
             setErrorMsg('');
+            startTimeRef.current = Date.now(); // Reset for next phase
         } else {
             window.ManyaAudio?.error?.();
             setMistakes(prev => prev + 1);
@@ -115,8 +132,20 @@ export default function VennProbEngine({ data, onComplete, onResult }) {
     const handleCheckProb = () => {
         const num = parseInt(numInput, 10);
         const den = parseInt(denInput, 10);
+        const isCorrect = num === question.expectedNumerator && den === question.expectedDenominator;
+        const duration = Date.now() - startTimeRef.current;
 
-        if (num === question.expectedNumerator && den === question.expectedDenominator) {
+        // ── RECORD GRANULAR ATTEMPT ──
+        if (onAttempt) {
+            onAttempt({
+                isCorrect,
+                label: `Venn Calc [${currentStep + 1}]`,
+                duration,
+                mistakes: isCorrect ? 0 : 1
+            });
+        }
+
+        if (isCorrect) {
             window.ManyaAudio?.success?.();
             setIsResolved(true);
             setErrorMsg('');
@@ -126,6 +155,7 @@ export default function VennProbEngine({ data, onComplete, onResult }) {
                 if (currentStep < totalLevels - 1) {
                     setCurrentStep(prev => prev + 1);
                     setPhase('setup');
+                    startTimeRef.current = Date.now();
                 } else {
                     // Final Completion
                     if (onResult) {
@@ -137,7 +167,13 @@ export default function VennProbEngine({ data, onComplete, onResult }) {
                             type: 'quiz'
                         });
                     }
-                    if (onComplete) onComplete();
+                    if (onComplete) onComplete({
+                        isCorrect: true,
+                        score: totalLevels,
+                        total: totalLevels,
+                        mistakes: mistakes,
+                        type: 'simulation'
+                    });
                 }
             }, 1500);
         } else {
@@ -152,6 +188,8 @@ export default function VennProbEngine({ data, onComplete, onResult }) {
     // Calculate grouping sizes
     const counts = { left: 0, right: 0, center: 0, outside: 0, storage: 0 };
     chips.forEach(c => { counts[c.region]++; });
+
+    if (!question || !data) return null; // Safety guard
 
     return (
         <div className="flex flex-col h-full w-full bg-slate-50 overflow-hidden relative selection:bg-transparent">

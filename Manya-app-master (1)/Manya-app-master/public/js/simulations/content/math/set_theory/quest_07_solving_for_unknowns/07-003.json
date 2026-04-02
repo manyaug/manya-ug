@@ -1,0 +1,44 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Solving from Regions",
+  "variantTitle": "Quest 7-003: Region Algebra",
+  "sets": {
+    "A": { "label": "M", "color": "#9333ea" },
+    "B": { "label": "O", "color": "#db2777" }
+  },
+  "zones": {
+    "left": ["3y+5"],
+    "center": ["y"],
+    "right": ["2y+8"],
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "left_only",
+      "equation_target": 20,
+      "expected_x": 5,
+      "prompt": "If <span style='color:#9333ea'>20 pupils</span> like Mangoes ONLY, find <b>y</b>.",
+      "hint": "Left Region = 20. Equation: 3y + 5 = 20."
+    },
+    {
+      "retain_visuals": true,
+      "type": "ALGEBRA_SUBSTITUTE",
+      "targetRegion": "right_only",
+      "x_val": 5,
+      "expression": "2y + 8",
+      "prompt": "How many like <span style='color:#db2777'>Oranges ONLY</span>?",
+      "hint": "Calculate 2(5) + 8."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "union",
+      "x_val": 5,
+      "prompt": "Find the <b>Total Number</b> of pupils.",
+      "hint": "Sum all regions: 20 + 5 + 18."
+    }
+  ]
+}

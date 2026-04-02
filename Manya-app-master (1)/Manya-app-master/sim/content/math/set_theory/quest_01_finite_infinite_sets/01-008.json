@@ -1,0 +1,19 @@
+{
+  "engineType": "SET_CLASSIFIER",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Social Sets",
+  "variantTitle": "Quest 1-009: Class Visuals",
+  "questions": [
+    {
+      "scene": "class",
+      "expected": "finite",
+      "prompt": "<b>Scene: Classroom</b><br>Set of Pupils in Primary Seven."
+    },
+    {
+      "scene": "vowels",
+      "expected": "finite",
+      "prompt": "<b>Scene: Bouncing Letters</b><br>Set of Vowels {A, E, I, O, U}."
+    }
+  ]
+}

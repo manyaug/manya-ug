@@ -1,0 +1,36 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Full Algebra",
+  "variantTitle": "Quest 10-008: Party Time",
+  "sets": { "A": { "label": "S", "color": "#e11d48" }, "B": { "label": "W", "color": "#3b82f6" } },
+  "zones": { "left": [], "center": [], "right": [], "outside": ["0"] }, 
+  "questions": [
+    {
+      "interaction": "DIAGRAM_FILL",
+      "prompt": "<b>Phase 1:</b> S only is <b>p+5</b>. Both is <b>p</b>. W only is <b>p+10</b>.",
+      "inputs": [
+        { "region": "left", "expected": "p+5" },
+        { "region": "center", "expected": "p" },
+        { "region": "right", "expected": "p+10" }
+      ]
+    },
+    {
+      "type": "ALGEBRA_SOLVE",
+      "targetRegion": "union", 
+      "equation_target": 45,
+      "expected_x": 10,
+      "prompt": "<b>Phase 2:</b> Total guests = 45. Find <b>p</b>.",
+      "hint": "(p+5) + p + (p+10) = 45. Simplify: 3p + 15 = 45."
+    },
+    {
+      "retain_visuals": true,
+      "type": "COUNT_SUM",
+      "targetRegion": "symmetric_difference",
+      "x_val": 10,
+      "prompt": "How many drink <b>only one</b> type?",
+      "hint": "(10+5) + (10+10) = 15 + 20."
+    }
+  ]
+}
