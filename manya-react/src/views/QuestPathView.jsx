@@ -112,14 +112,14 @@ function QuestPathView() {
             if (fromIdx !== -1 && toIdx !== -1) {
                 // Prepare animation
                 setAnimatingUnlock({ from: fromIdx, to: toIdx });
-                setIconPos({ x: layoutX[fromIdx], y: 90 - (fromIdx * 20) });
+                setIconPos({ x: layoutX[fromIdx], y: 85 - (fromIdx * 18) });
                 
                 // Clear the flag NOW that we've started the animation
                 clearJustFinished();
 
                 // Start movement after brief pause
                 setTimeout(() => {
-                    setIconPos({ x: layoutX[toIdx], y: 90 - (toIdx * 20) });
+                    setIconPos({ x: layoutX[toIdx], y: 85 - (toIdx * 18) });
                     window.ManyaAudio?.whoosh?.();
                     
                     // Trigger burst after move duration (matches CSS transition)

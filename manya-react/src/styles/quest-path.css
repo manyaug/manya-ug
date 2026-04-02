@@ -63,16 +63,31 @@
     100% { transform: translateY(-15px) rotate(8deg); }
 }
 
-/* ABSOLUTE NODE WRAPPER */
+/* ────────────────────────────────────────────────────────────
+   ABSOLUTE NODE WRAPPER 
+   - Uses separate bounce animation from child scale 
+   - translate(-50%, -50%) is core for centering
+   ──────────────────────────────────────────────────────────── */
 .quest-node-abs {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /* Centered on the path point */
     z-index: 10;
     cursor: pointer;
+    will-change: transform, top, left; /* Optimize for movement */
+}
+
+/* Move active bounce to the WRAPPER so it doesn't conflict with child :active scale */
+.quest-node-abs.active {
+    animation: nodeWrapperBounce 2.5s infinite ease-in-out;
+}
+
+@keyframes nodeWrapperBounce {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, calc(-50% - 6px)); }
 }
 
 /* ── HEADER ── */
@@ -144,10 +159,14 @@
     position: relative; width: var(--node-size); height: var(--node-size); border-radius: 50%;
     border: none; cursor: pointer; outline: none;
     display: flex; align-items: center; justify-content: center;
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+    /* transition: transform is fast for scale, box-shadow for depth */
+    transition: transform 0.1s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .tactile-node:active { transform: scale(0.92); }
-.node-icon-inner { font-size: 32px; z-index: 2; }
+.node-icon-inner { font-size: 32px; z-index: 2; transition: transform 0.2s; }
+.tactile-node:active .node-icon-inner { transform: scale(0.95); }
 
 /* LOCKED NODE */
 .quest-node-abs.locked .tactile-node { 
@@ -175,7 +194,7 @@
         0 0 0 6px rgba(255, 255, 255, 0.6), 
         0 0 0 12px rgba(var(--biome-color-rgb), 0.25), 
         0 15px 35px rgba(var(--biome-color-rgb), 0.40); 
-    animation: activeBounce 2.5s infinite ease-in-out;
+    /* Animation removed from here, moved to .quest-node-abs.active */
 }
 
 /* BOSS CHEST */
@@ -212,23 +231,35 @@
 }
 
 /* ── SMART AVATAR POSITIONING ── */
-.hero-path-pointer { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; }
-.hero-left-side { left: calc(var(--hero-offset) * -1); }
+.hero-path-pointer { 
+    position: absolute; 
+    top: 50%; 
+    z-index: 10; 
+    transform: translateY(-50%);
+    pointer-events: none;
+    will-change: left, right, transform;
+}
+.hero-left-side { left: calc(var(--hero-offset) * -1); right: auto; }
 .hero-right-side { right: calc(var(--hero-offset) * -1); left: auto; }
 
 .hero-bubble { 
     width: var(--hero-size); height: var(--hero-size); 
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 3px solid var(--biome-color); border-radius: 14px;
     box-shadow: 0 8px 24px rgba(var(--biome-color-rgb), 0.30);
     display: flex; align-items: center; justify-content: center;
     position: relative;
+    /* REMOVE Float animation from here, it uses transforms that conflict */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.hero-left-side .hero-bubble { animation: floatLeftSideways 2.5s infinite ease-in-out; }
-.hero-right-side .hero-bubble { animation: floatRightSideways 2.5s infinite ease-in-out; }
 
-.hero-bubble img { width: 85%; border-radius: 10px; }
+/* Apply float on a nested img wrapper or use a dedicated keyframe that respects layout */
+.hero-left-side .hero-bubble { animation: floatLeftSideways 3s infinite ease-in-out; }
+.hero-right-side .hero-bubble { animation: floatRightSideways 3s infinite ease-in-out; }
+
+.hero-bubble img { width: 85%; height: 85%; border-radius: 10px; object-fit: contain; }
 
 /* Pointer arrow styling */
 .hero-bubble::after { 
@@ -267,17 +298,20 @@
 }
 
 /* ── KEYFRAMES ── */
-@keyframes activeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes nodeWrapperBounce {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, calc(-50% - 6px)); }
+}
 @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
 @keyframes floatLeftSideways { 
-    0%, 100% { transform: translateY(-50%) translateX(0); } 
-    50% { transform: translateY(-50%) translateX(-8px); } 
+    0%, 100% { transform: translateX(0); } 
+    50% { transform: translateX(-8px); } 
 }
 @keyframes floatRightSideways { 
-    0%, 100% { transform: translateY(-50%) translateX(0); } 
-    50% { transform: translateY(-50%) translateX(8px); } 
+    0%, 100% { transform: translateX(0); } 
+    50% { transform: translateX(8px); } 
 }
 
 /* ── UNLOCK BURST EFFECT ── */

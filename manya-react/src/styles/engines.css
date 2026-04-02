@@ -395,6 +395,92 @@
     border: 2px solid #fecaca;
 }
 
+/* ================================================================
+   MCQ FETCHER ENGINE — Option Button States (mcq-fe-*)
+   ================================================================ */
+.mcq-fe-btn {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 20px;
+    border: 2px solid var(--border-color); background: var(--bg-card);
+    cursor: pointer; text-align: left;
+    box-shadow: 0 4px 0 var(--border-color), 0 10px 20px -5px rgba(0,0,0,0.1);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    z-index: 1;
+}
+.mcq-fe-btn:not(:disabled):hover { border-color: var(--manya-purple-light); transform: translateY(-2px); box-shadow: 0 6px 0 var(--border-color), 0 12px 24px -5px rgba(0,0,0,0.15); }
+.mcq-fe-btn:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 var(--border-color); }
+.mcq-fe-btn:disabled { cursor: default; }
+
+.mcq-fe-letter {
+    width: 36px; height: 36px; border-radius: 12px;
+    background: var(--bg-main); display: flex; align-items: center; justify-content: center;
+    font-weight: 950; font-size: 13px; color: var(--text-sub); flex-shrink: 0;
+    transition: all 0.2s;
+    border: 1.5px solid var(--border-color);
+}
+.mcq-fe-text { flex: 1; font-size: 15.5px; font-weight: 700; color: var(--text-main); transition: color 0.2s; }
+.mcq-fe-icon { flex-shrink: 0; }
+.mcq-fe-icon.correct-icon { color: #10b981; }
+.mcq-fe-icon.wrong-icon   { color: #ef4444; }
+
+.mcq-fe-selected {
+    border-color: #f59e0b; background: rgba(245, 158, 11, 0.05);
+    box-shadow: 0 4px 0 #fde68a, 0 15px 30px -10px rgba(245, 158, 11, 0.2);
+}
+.mcq-fe-selected .mcq-fe-letter { background: #f59e0b; color: white; border-color: #f59e0b; }
+.mcq-fe-selected .mcq-fe-text   { color: #f59e0b; font-weight: 800; }
+
+.mcq-fe-correct {
+    border-color: #10b981; background: rgba(16, 185, 129, 0.05);
+    box-shadow: 0 4px 0 #bbf7d0, 0 15px 30px -10px rgba(16, 185, 129, 0.2);
+    animation: mcqCorrectPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.mcq-fe-correct .mcq-fe-letter { background: #10b981; color: white; border-color: #10b981; }
+.mcq-fe-correct .mcq-fe-text   { color: #10b981; font-weight: 800; }
+
+.mcq-fe-wrong {
+    border-color: #ef4444; background: rgba(239, 68, 68, 0.05);
+    box-shadow: 0 4px 0 #fecaca, 0 15px 30px -10px rgba(239, 68, 68, 0.2);
+    animation: mcqWrongShake 0.45s ease;
+}
+.mcq-fe-wrong .mcq-fe-letter { background: #ef4444; color: white; border-color: #ef4444; }
+.mcq-fe-wrong .mcq-fe-text   { color: #ef4444; }
+
+.mcq-fe-faded { opacity: 0.4; filter: grayscale(30%); }
+
+/* ── MCQ Popup & Flash Keyframes ── */
+@keyframes mcqCorrectPop {
+    0% { transform: scale(0.97); }
+    60% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+@keyframes mcqWrongShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+@keyframes mcqBurstPop {
+    0%   { transform: scale(0.4) rotate(-15deg); opacity: 0; }
+    70%  { transform: scale(1.15) rotate(8deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes mcqSlideUpOut {
+    from { transform: translateY(120%) scale(0.9); opacity: 0; }
+    to   { transform: translateY(0) scale(1);    opacity: 1; }
+}
+@keyframes mcqFadeScaleIn {
+    from { transform: scale(0.9) translateY(20px); opacity: 0; }
+    to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+@keyframes mcqStepIn {
+    from { transform: translateX(-15px); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+}
+
 /* =========================================
 1. UNIFIED QUEST RUNNER LAYOUT
 ========================================= */

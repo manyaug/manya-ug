@@ -1,8 +1,11 @@
 import { supabase } from './supabaseClient';
 import { ManyaDB } from '../utils/manyaDB';
+import { resolveSolutionJSON } from '../utils/questionParser';
+import { parseSolutionToSteps } from '../utils/solutionVisualizer';
 
 // Simple in-memory cache to speed up re-entry within the same session
 const BANK_CACHE = {};
+let CACHE_CLEARED = false; // Forced one-time clear per session for v3.6 update
 
 // Map curriculum folder names to 'subtopic' column in Supabase
 const SUBTOPIC_MAP = {
@@ -26,6 +29,13 @@ export const fetchMathQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
         console.log(`📚 [MathFetcher] topicId="${topicId}" → subtopic="${subtopic}"`);
+        
+        // --- V3.6 Cache Migration: Clear IndexedDB one time to add 'raw_explanation' field ---
+        if (!CACHE_CLEARED) {
+            console.log("🛠️ [MathFetcher] Performing one-time IndexedDB cache clear for metadata upgrade...");
+            await ManyaDB.clearQuestionCache();
+            CACHE_CLEARED = true;
+        }
         
         // 1. Return from in-memory cache if available
         if (BANK_CACHE[subtopic]) {
@@ -101,7 +111,8 @@ export const fetchMathQuestions = async (topicId) => {
                 question: q.questiontext,
                 options: options,
                 answer: q.correctanswer,
-                explanation: q.detailedsolution,
+                explanation: parseSolutionToSteps(q.detailedsolution),
+                raw_explanation: q.detailedsolution, // keep for debugging
                 hint: q.hint,
                 image_url: q.imagelocation === 'null' ? null : q.imagelocation,
                 variant: q.qid.includes('-V') ? q.qid.split('-V')[1] : 'V0',

@@ -53,7 +53,7 @@ function getProgressKey(subject) {
     return `manya_quest_progress_${subject}`;
 }
 
-function loadAllProgress(subject) {
+export function loadAllProgress(subject) {
     try {
         const raw = localStorage.getItem(getProgressKey(subject));
         return raw ? JSON.parse(raw) : {};
@@ -62,7 +62,7 @@ function loadAllProgress(subject) {
     }
 }
 
-function saveAllProgress(subject, data) {
+export function saveAllProgress(subject, data) {
     localStorage.setItem(getProgressKey(subject), JSON.stringify(data));
 }
 
@@ -315,6 +315,15 @@ export function getJustFinished() {
  */
 export function clearJustFinished() {
     localStorage.removeItem('manya_just_finished');
+}
+
+/**
+ * Check if a quest is fully completed (MASTERY node is status === 'completed').
+ */
+export function isQuestCompleted(subject, questKey) {
+    const all = loadAllProgress(subject);
+    const quest = all[questKey] || {};
+    return quest.MASTERY?.status === 'completed';
 }
 
 // Export constants

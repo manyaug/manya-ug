@@ -1,139 +1,224 @@
-import React, { useState, useEffect } from 'react';
-import { CheckCircle2, AlertCircle, Lightbulb } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { CheckCircle2, XCircle, Lightbulb, ChevronRight, BookOpen, Zap, Target } from 'lucide-react';
+import '../../styles/mcq-engine.css';
 
 /**
- * MCQ STANDALONE ENGINE (React v1.0)
- * ---------------------------------
- * A premium, reactive version of the legacy MCQ engine.
+ * MCQ STANDALONE ENGINE — v3.0 (World-Class Edition)
+ * ────────────────────────────────────────────────────
+ * ✅ Correct: Instant celebration, no solution shown.
+ * ❌ Wrong:   Highlight wrong + correct, then show
+ *            step-by-step solution popup (no scroll).
  */
-const MCQStandaloneEngine = ({ data, onComplete, onResult }) => {
-    const [selected, setSelected] = useState(null);
-    const [status, setSelectedStatus] = useState(null); // 'correct' | 'wrong' | null
-    const [showFeedback, setShowFeedback] = useState(false);
-    const [isResolved, setIsResolved] = useState(false);
 
-    // Filter valid options (A_Option1, B_Option2, etc.)
-    const options = Object.entries(data.options || {})
-        .filter(([key, val]) => val && val !== "null" && val !== "")
-        .map(([key, val]) => ({
-            id: key,
-            letter: key.split('_')[1] || key[0],
-            text: val
-        }));
+// ── Parse solution safely ──────────────────────────────────────────
+const parseSolution = (raw) => {
+    if (!raw) return null;
+    if (typeof raw === 'object') return raw;
+    try {
+        const parsed = JSON.parse(raw);
+        return parsed;
+    } catch {
+        // Plain text fallback
+        return { explanation: raw };
+    }
+};
 
-    const handleLevelCheck = (choiceId) => {
-        if (isResolved) return;
-        
-        setSelected(choiceId);
-        const isCorrect = choiceId === data.correct;
+// ── Solution Popup Component ─────────────────────────────────────
+function SolutionPopup({ solution, correctText, onContinue }) {
+    const steps = [];
 
-        if (isCorrect) {
-            setSelectedStatus('correct');
-            setShowFeedback(true);
-            setIsResolved(true);
-            
-            // Audio feedback
-            window.ManyaAudio?.success();
+    if (solution) {
+        if (solution.logic)        steps.push({ icon: <Lightbulb size={16} />, label: 'Logic',       text: solution.logic });
+        if (solution.calculation)  steps.push({ icon: <Zap size={16} />,       label: 'Working',     text: solution.calculation });
+        if (solution.answer)       steps.push({ icon: <Target size={16} />,    label: 'Answer',      text: solution.answer });
+        if (solution.explanation)  steps.push({ icon: <BookOpen size={16} />,  label: 'Explanation', text: solution.explanation });
 
-            // Notify parent
-            if (onResult) {
-                onResult({
-                    isCorrect: true,
-                    score: data.points || 1,
-                    total: data.points || 1,
-                    type: 'mcq'
+        // Handle arbitrary step arrays: [{step, explanation}]
+        if (Array.isArray(solution.steps)) {
+            solution.steps.forEach((s, i) => {
+                steps.push({
+                    icon: <span style={{ fontWeight: 900, fontSize: 13 }}>{i + 1}</span>,
+                    label: s.step || `Step ${i + 1}`,
+                    text: s.explanation || s.text || s.step
                 });
-            }
-
-            // Small delay before allowing "Continue" if needed, 
-            // but for MCQ we can usually just enable the parent button.
-            // QuestRunner handles the "Immersive" check to show its own footer.
-        } else {
-            setSelectedStatus('wrong');
-            setShowFeedback(true);
-            window.ManyaAudio?.error();
-            
-            // Reset "wrong" state after a pulse
-            setTimeout(() => {
-                setSelectedStatus(null);
-            }, 1000);
+            });
         }
-    };
+    }
+
+    // If nothing parsed, just show the correct answer
+    if (steps.length === 0) {
+        steps.push({ icon: <Target size={16} />, label: 'Answer', text: correctText });
+    }
 
     return (
-        <div className="mcq-pro-layout animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* Question Card */}
-            <div className="mcq-q-bubble shadow-xl shadow-slate-200/50">
-                <h2 className="font-black text-slate-800 leading-tight">
-                    {data.text}
-                </h2>
-            </div>
+        <>
+            {/* Backdrop */}
+            <div className="mcq-popup-backdrop" />
 
-            {/* Hint Box (if available and wrong answer selected) */}
-            {data.hint && (
-                <div className={`mcq-hint-card transition-all duration-500 overflow-hidden flex items-start gap-3 p-4 bg-amber-50 border-2 border-amber-200 rounded-3xl mb-6 w-full max-w-[450px] ${status === 'wrong' || (!isResolved && selected) ? 'opacity-100 translate-y-0' : 'opacity-60 grayscale'}`}>
-                    <Lightbulb size={20} className="text-amber-500 shrink-0 mt-0.5" />
-                    <div className="text-[13px] font-extrabold text-amber-900/80 leading-relaxed">
-                        {data.hint}
+            {/* Panel */}
+            <div className="mcq-solution-popup">
+                {/* Header */}
+                <div className="mcq-popup-header">
+                    <div className="mcq-popup-icon-wrap wrong">
+                        <XCircle size={22} />
+                    </div>
+                    <div>
+                        <div className="mcq-popup-title">Not quite!</div>
+                        <div className="mcq-popup-subtitle">Here's how to solve it</div>
                     </div>
                 </div>
-            )}
 
-            {/* Options Grid */}
-            <div className="mcq-options-grid">
-                {options.map((opt) => (
-                    <button
-                        key={opt.id}
-                        className={`mcq-btn-elite transition-all duration-200 ${
-                            selected === opt.id 
-                                ? (opt.id === data.correct ? 'correct' : (selected === opt.id && status === 'wrong' ? 'wrong' : ''))
-                                : ''
-                        } ${isResolved && opt.id !== data.correct ? 'opacity-40 grayscale pointer-events-none' : ''}`}
-                        onClick={() => handleLevelCheck(opt.id)}
-                        disabled={isResolved}
-                    >
-                        <div className="elite-letter">
-                            {opt.letter}
+                {/* Correct answer chip */}
+                <div className="mcq-correct-chip">
+                    <CheckCircle2 size={14} />
+                    <span>Correct answer: <strong>{correctText}</strong></span>
+                </div>
+
+                {/* Steps */}
+                <div className="mcq-solution-steps">
+                    {steps.map((s, i) => (
+                        <div key={i} className="mcq-step-row" style={{ '--step-delay': `${i * 0.08}s` }}>
+                            <div className="mcq-step-icon">{s.icon}</div>
+                            <div className="mcq-step-body">
+                                <div className="mcq-step-label">{s.label}</div>
+                                <div className="mcq-step-text">{s.text}</div>
+                            </div>
                         </div>
-                        <div className="elite-text">
-                            {opt.text}
-                        </div>
-                    </button>
-                ))}
+                    ))}
+                </div>
+
+                {/* Continue button */}
+                <button className="mcq-popup-continue" onClick={onContinue}>
+                    Continue <ChevronRight size={18} strokeWidth={3} />
+                </button>
+            </div>
+        </>
+    );
+}
+
+// ── Success Flash ─────────────────────────────────────────────────
+function SuccessFlash({ pointsLabel, onContinue }) {
+    return (
+        <div className="mcq-success-flash">
+            <div className="mcq-success-inner">
+                <div className="mcq-success-burst">🎯</div>
+                <div className="mcq-success-label">CORRECT!</div>
+                {pointsLabel && <div className="mcq-success-pts">{pointsLabel}</div>}
+            </div>
+            <button className="mcq-popup-continue success" onClick={onContinue}>
+                Continue <ChevronRight size={18} strokeWidth={3} />
+            </button>
+        </div>
+    );
+}
+
+// ── Main Engine ───────────────────────────────────────────────────
+const MCQStandaloneEngine = ({ data, onComplete, onResult }) => {
+    const [selected, setSelected]         = useState(null);
+    const [phase, setPhase]               = useState('idle'); // idle | checking | correct | wrong | show-solution
+
+    // Build options list
+    const options = (() => {
+        // Support both array and object formats
+        if (Array.isArray(data.options)) {
+            return data.options.map((text, i) => ({
+                id: text,
+                letter: String.fromCharCode(65 + i),
+                text
+            }));
+        }
+        return Object.entries(data.options || {})
+            .filter(([, v]) => v && v !== 'null' && v !== '')
+            .map(([key, val]) => ({
+                id: key,
+                letter: key.split('_')[1] || key[0],
+                text: val
+            }));
+    })();
+
+    // Identify correct option text for display
+    const correctId   = data.correct || data.answer;
+    const correctOpt  = options.find(o => o.id === correctId || o.text === correctId);
+    const correctText = correctOpt?.text || correctId || '';
+    const solution    = parseSolution(data.explanation);
+
+    const handlePick = useCallback((opt) => {
+        if (phase !== 'idle') return;
+        setSelected(opt.id);
+        setPhase('checking');
+
+        const isCorrect = opt.id === correctId || opt.text === correctId;
+
+        if (isCorrect) {
+            window.ManyaAudio?.success?.();
+            setPhase('correct');
+            onResult?.({ isCorrect: true, score: data.points || 1, total: data.points || 1, type: 'mcq' });
+        } else {
+            window.ManyaAudio?.error?.();
+            // Brief wrong flash, then open solution panel
+            setTimeout(() => setPhase('wrong'), 100);
+            setTimeout(() => setPhase('show-solution'), 950);
+            onResult?.({ isCorrect: false, score: 0, total: data.points || 1, type: 'mcq' });
+        }
+    }, [phase, correctId, data.points, onResult]);
+
+    const isLocked = phase !== 'idle';
+
+    return (
+        <div className="mcq-world-root">
+            {/* ── Question bubble ── */}
+            <div className="mcq-q-card">
+                {data.image_url && (
+                    <div className="mcq-q-image">
+                        <img src={data.image_url} alt="Question visual" />
+                    </div>
+                )}
+                <p className="mcq-q-text" dangerouslySetInnerHTML={{ __html: data.text || data.question }} />
             </div>
 
-            {/* Dynamic Feedback Box */}
-            {showFeedback && (
-                <div className={`msg-box animate-in zoom-in duration-300 ${isResolved ? 'success' : 'error'}`}>
-                    <div className="flex items-center justify-center gap-2">
-                        {isResolved ? (
-                            <>
-                                <CheckCircle2 size={18} />
-                                <span>EXCELLENT! +{data.points} PTS</span>
-                            </>
-                        ) : (
-                            <>
-                                <AlertCircle size={18} />
-                                <span>THINK AGAIN...</span>
-                            </>
-                        )}
-                    </div>
-                </div>
+            {/* ── Options ── */}
+            <div className="mcq-options">
+                {options.map((opt) => {
+                    const isThis    = selected === opt.id;
+                    const isCorrect = opt.id === correctId || opt.text === correctId;
+
+                    let state = '';
+                    if (phase === 'checking' && isThis) state = 'selected';
+                    if ((phase === 'wrong' || phase === 'show-solution') && isThis)  state = 'wrong';
+                    if ((phase === 'wrong' || phase === 'show-solution') && isCorrect) state = 'reveal-correct';
+                    if (phase === 'correct' && isThis) state = 'correct';
+
+                    return (
+                        <button
+                            key={opt.id}
+                            className={`mcq-option-btn ${state}`}
+                            onClick={() => handlePick(opt)}
+                            disabled={isLocked}
+                        >
+                            <span className="mcq-opt-letter">{opt.letter}</span>
+                            <span className="mcq-opt-text">{opt.text}</span>
+                            {state === 'correct'        && <CheckCircle2 size={20} className="mcq-opt-icon" />}
+                            {state === 'wrong'          && <XCircle      size={20} className="mcq-opt-icon" />}
+                            {state === 'reveal-correct' && <CheckCircle2 size={20} className="mcq-opt-icon reveal" />}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* ── Overlays ── */}
+            {phase === 'correct' && (
+                <SuccessFlash
+                    pointsLabel={data.points ? `+${data.points} pts` : null}
+                    onContinue={onComplete}
+                />
             )}
 
-            {/* Result Feedback Animation / Overlay */}
-            {isResolved && (
-                <div className="mt-8 animate-in fade-in zoom-in duration-500 text-center">
-                    <button 
-                        className="manya-btn-pro w-full shadow-lg shadow-emerald-500/20 bg-emerald-500 hover:bg-emerald-600 mb-2"
-                        onClick={onComplete}
-                    >
-                        CONTINUE →
-                    </button>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 opacity-60">
-                        Step Complete
-                    </p>
-                </div>
+            {phase === 'show-solution' && (
+                <SolutionPopup
+                    solution={solution}
+                    correctText={correctText}
+                    onContinue={onComplete}
+                />
             )}
         </div>
     );

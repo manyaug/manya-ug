@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
 import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
 import { getPathImage, getGem } from '../config/assetUrls';
+import { getQuestKey, loadAllProgress } from '../services/questProgressService';
 import '../styles/spiral.css';
 
 // ---- HOTSPOT POSITIONS (exact from original engine) ----
@@ -17,9 +18,9 @@ const ROAD_PATH = [
     { id: "point_1", x: 47.28, y: 85.79 },
     { id: "point_2", x: 50.68, y: 69.21 },
     { id: "point_3", x: 49.32, y: 54.19 },
-    { id: "point_4", x: 57.15, y: 39.96 },
-    { id: "point_5", x: 43.19, y: 25.92 },
-    { id: "point_6", x: 56.47, y: 10.9  },
+    { id: "point_4", x: 54.15, y: 39.96 }, // Refined: 57 -> 54
+    { id: "point_5", x: 45.19, y: 25.92 }, // Refined: 43 -> 45
+    { id: "point_6", x: 53.47, y: 10.9  }, // Refined: 56 -> 53
 ];
 
 const BIOMES = {
@@ -107,45 +108,53 @@ function WeatherLayer({ type, count = 50 }) {
 }
 
 // ---- NODE COMPONENT ----
-function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap }) {
+function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap, style }) {
     const stateClass = isActive ? 'active-node' : isCompleted ? 'completed-node' : 'locked-node';
 
     return (
-        <motion.div 
-            whileHover={isUnlocked ? { scale: 1.1, y: -5 } : {}}
-            whileTap={isUnlocked ? { scale: 0.9 } : {}}
-            className={`game-node ${stateClass}`} 
+        // OUTER DIV: Only handles absolute positioning and centering.
+        // MUST NOT be a motion element — Framer Motion would wipe out translate(-50%, -50%).
+        <div
+            style={style}
+            className={`game-node ${stateClass}`}
             onClick={() => onTap(unit, index, isUnlocked)}
         >
-            {/* Stars above */}
-            <AnimatePresence>
-                {isCompleted && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="node-star-rating"
-                    >
-                        <span className="earned">★</span>
-                        <span className="earned">★</span>
-                        <span className="earned">★</span>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {/* INNER motion element: Only controls hover/tap scale. No position transform conflict. */}
+            <motion.div
+                className="game-node-inner"
+                whileHover={isUnlocked ? { scale: 1.1, y: -5 } : {}}
+                whileTap={isUnlocked ? { scale: 0.9 } : {}}
+            >
+                {/* Stars above */}
+                <AnimatePresence>
+                    {isCompleted && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="node-star-rating"
+                        >
+                            <span className="earned">★</span>
+                            <span className="earned">★</span>
+                            <span className="earned">★</span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-            {/* Main circle */}
-            <div className="node-cap">
-                {isCompleted ? (
-                    <CheckCheck size={26} strokeWidth={3} />
-                ) : isActive ? (
-                    <span className="node-cap-icon">{biome.icon}</span>
-                ) : (
-                    <Lock size={21} strokeWidth={2.5} />
-                )}
-            </div>
+                {/* Main circle */}
+                <div className="node-cap">
+                    {isCompleted ? (
+                        <CheckCheck size={26} strokeWidth={3} />
+                    ) : isUnlocked ? (
+                        <span className="node-cap-icon">{biome.icon}</span>
+                    ) : (
+                        <Lock size={21} strokeWidth={2.5} />
+                    )}
+                </div>
 
-            {/* Label below */}
-            <div className="node-label-elite">{unit.title || `Node ${index + 1}`}</div>
-        </motion.div>
+                {/* Label below */}
+                <div className="node-label-elite">{unit.title || `Node ${index + 1}`}</div>
+            </motion.div>
+        </div>
     );
 }
 
@@ -233,34 +242,47 @@ function SpiralView() {
 
     const handleNodeTap = (unit, index, isUnlocked) => {
         if (!isUnlocked) return;
-        // Navigate to quest path view
+        
+        const biome = curriculum[sub] || {};
+
         navigate('/quest-path', {
             state: {
                 subject: sub,
-                unitId: unit.id || unit.folder,
+                unitId: unit.unitId,
                 title: unit.title,
-                index,
-                biomeColor: biome.color,
-                gemFile: biome.gemFile,
+                gemFile: biome.gemFile || 'math_gem.svg',
+                biomeColor: biome.theme || '#7c3aed',
             }
         });
     };
-
-    // Flatten curriculum into a linear node list
-    const units = curriculum
-        ? (curriculum[sub]?.units?.flatMap(u =>
-            u.quests?.map(q => ({ ...q, unitId: u.id })) || []
-          ) || [])
-        : [];
 
     // Layout constants matching original engine
     const TILE_HEIGHT = 850;
     const OVERLAP = 85;
     const EFFECTIVE_HEIGHT = TILE_HEIGHT - OVERLAP;
     const nodesPerTile = ROAD_PATH.length;
-    const totalTiles = Math.max(1, Math.ceil(units.length / nodesPerTile));
     const BOTTOM_BUFFER = -10; // Let the texture sink perfectly behind the nav bar
     const TOP_BUFFER = 20;
+
+    // STABILITY LOCK: Calculate units once and hold them
+    const [stableUnits, setStableUnits] = useState([]);
+
+    useEffect(() => {
+        if (curriculum && curriculum[sub] && stableUnits.length === 0) {
+            const flat = curriculum[sub].units.flatMap(u =>
+                u.quests?.map(q => ({ 
+                    ...q, 
+                    unitId: u.id,
+                    uniqueKey: `${sub}-${u.id}-${q.folder || q.title}`
+                })) || []
+            );
+            setStableUnits(flat);
+        }
+    }, [curriculum, sub, stableUnits.length]);
+
+    const units = stableUnits;
+
+    const totalTiles = Math.max(1, Math.ceil(units.length / nodesPerTile));
     const totalHeight = BOTTOM_BUFFER + TILE_HEIGHT + ((totalTiles > 1 ? totalTiles - 1 : 0) * EFFECTIVE_HEIGHT) + TOP_BUFFER;
 
     const tiles = Array.from({ length: totalTiles }, (_, i) => ({
@@ -270,20 +292,32 @@ function SpiralView() {
         zIndex: i,
     }));
 
-    const nodes = units.map((unit, i) => {
-        const coord = ROAD_PATH[i % nodesPerTile];
-        const tileIdx = Math.floor(i / nodesPerTile);
-        const yPxFromTileBottom = ((100 - coord.y) / 100) * TILE_HEIGHT;
-        const bottomOffset = BOTTOM_BUFFER + (tileIdx * EFFECTIVE_HEIGHT) + yPxFromTileBottom;
-        return {
-            unit, i,
-            coord,
-            bottomOffset,
-            isUnlocked: i <= progress,
-            isActive: i === progress,
-            isCompleted: i < progress,
-        };
-    });
+    const allQuestProgress = useMemo(() => loadAllProgress(sub), [sub]);
+
+    // MEMOIZE NODES FOR STABILITY
+    const nodes = useMemo(() => {
+        return units.map((unit, i) => {
+            const coord = ROAD_PATH[i % nodesPerTile];
+            const tileIdx = Math.floor(i / nodesPerTile);
+            const yPxFromTileBottom = ((100 - coord.y) / 100) * TILE_HEIGHT;
+            const bottomOffset = BOTTOM_BUFFER + (tileIdx * EFFECTIVE_HEIGHT) + yPxFromTileBottom;
+
+            // Check actual completion status from questProgressService
+            const qKey = getQuestKey(sub, unit.unitId, unit.folder || unit.title);
+            const qProg = allQuestProgress[qKey] || {};
+            const isFinished = qProg.MASTERY?.status === 'completed';
+
+            return {
+                unit, i,
+                coord,
+                bottomOffset,
+                isUnlocked: true, // ALL QUESTS OPEN (as requested)
+                isActive: i === progress, // suggested/linear pointer
+                isCompleted: isFinished,
+                uniqueKey: unit.uniqueKey
+            };
+        });
+    }, [units, allQuestProgress, progress]);
 
     return (
         <div className={`spiral-view animate-in ${isNightMode ? 'is-night' : ''}`}>
@@ -338,26 +372,23 @@ function SpiralView() {
                     ))}
 
                     {/* NODES */}
-                    {nodes.map(({ unit, i, coord, bottomOffset, isUnlocked, isActive, isCompleted }) => (
-                        <div
-                            key={`node-${i}`}
+                    {nodes.map((node) => (
+                        <GameNode
+                            key={node.uniqueKey}
+                            unit={node.unit}
+                            index={node.i}
+                            isUnlocked={node.isUnlocked}
+                            isActive={node.isActive}
+                            isCompleted={node.isCompleted}
+                            biome={biome}
+                            onTap={handleNodeTap}
                             style={{
                                 position: 'absolute',
-                                bottom: `${bottomOffset}px`,
-                                left: `${coord.x}%`,
+                                bottom: `${node.bottomOffset}px`,
+                                left: `${node.coord.x}%`,
                                 zIndex: 20,
                             }}
-                        >
-                            <GameNode
-                                unit={unit}
-                                index={i}
-                                isCompleted={isCompleted}
-                                isActive={isActive}
-                                isUnlocked={isUnlocked}
-                                biome={biome}
-                                onTap={handleNodeTap}
-                            />
-                        </div>
+                        />
                     ))}
 
                     {/* LOADING SCREEN */}

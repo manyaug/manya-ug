@@ -136,12 +136,16 @@
     overflow-y: scroll;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    display: flex;
+    justify-content: center;
 }
 .spiral-map-container::-webkit-scrollbar { display: none; }
 
 .map-canvas {
     position: relative;
     width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
 }
 
 /* ============================================
@@ -172,10 +176,27 @@
     transform: translate(-50%, -50%);
     width: 80px;
     z-index: 20;
+    /* No animation here: Framer Motion or CSS animation on this element
+       would wipe out the translate(-50%, -50%) centering. */
+}
+
+/* INNER WRAPPER: This is where Framer Motion and CSS animations live.
+   It is a normal flex column, not positioned, so transforms are safe here. */
+.game-node-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
+    width: 100%;
+}
+
+/* Active node float: applied to INNER so the outer centering is untouched */
+.game-node.active-node .game-node-inner {
+    animation: nodeFloat 3s ease-in-out infinite;
+}
+@keyframes nodeFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
 }
 
 /* MAIN CIRCLE BUTTON */
@@ -241,14 +262,7 @@
 }
 .spiral-view.is-night .game-node.locked-node .node-cap svg { color: #94A3B8; }
 
-/* ANIMATE FLOAT for active */
-.game-node.active-node {
-    animation: nodeFloat 3s ease-in-out infinite;
-}
-@keyframes nodeFloat {
-    0%, 100% { transform: translate(-50%, -50%); }
-    50% { transform: translate(-50%, calc(-50% - 6px)); }
-}
+/* ANIMATE FLOAT — moved to .game-node-inner so outer wrapper is safe */
 
 /* STAR RATING */
 .node-star-rating {
