@@ -24,7 +24,7 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
   const particlesRef = useRef([]);
 
   const slides = useMemo(() => data.slides || [], [data]);
-  const currentSlide = slides[stepIdx];
+  const currentSlide = slides[stepIdx] || { title: "Concept Study", text: "Explore the details of this topic below." };
   const isLast = stepIdx === slides.length - 1;
   const allSeen = visitedIndices.size === slides.length;
 
@@ -95,12 +95,12 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
           ctx.beginPath(); ctx.arc(ix, iy, sz, 0, Math.PI * 2);
           ctx.fillStyle = isDark ? "#4c1d95" : "#ede9fe"; ctx.fill();
           ctx.strokeStyle = "#7e22ce"; ctx.lineWidth = 2 * s; ctx.stroke();
-          ctx.fillStyle = isDark ? "#fff" : "#581c87"; ctx.font = `900 ${sz * 0.85}px sans-serif`;
+          ctx.fillStyle = isDark ? "#fff" : "#581c87"; ctx.font = `800 ${sz * 0.85}px 'Plus Jakarta Sans', sans-serif`;
           ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(it, ix, iy);
         }
       });
       if (slide.showCount && tick > 60) {
-        ctx.fillStyle = "#DB2777"; ctx.font = `900 ${36 * s}px sans-serif`; ctx.textAlign = "center";
+        ctx.fillStyle = "#DB2777"; ctx.font = `800 ${36 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center";
         ctx.fillText(`n(Set) = ${items.length}`, cx, cy + rBase * 1.05);
       }
     }
@@ -118,11 +118,11 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
         const w = 30 * s + (sf * 500 * s);
         if (yPos > cy - 80 * s) {
           ctx.beginPath(); ctx.moveTo(cx - w, yPos); ctx.lineTo(cx + w, yPos); ctx.stroke();
-          ctx.fillStyle = isDark ? "#fda4af" : "#9F1239"; ctx.font = `900 ${42 * s * (sf + 0.1)}px sans-serif`; ctx.textAlign = "center";
+          ctx.fillStyle = isDark ? "#fda4af" : "#9F1239"; ctx.font = `800 ${42 * s * (sf + 0.1)}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center";
           ctx.fillText(Math.floor(tick / 30) + i, cx, yPos - 10 * s);
         }
       }
-      ctx.font = `900 ${90 * s}px serif`; ctx.fillStyle = "#7C3AED"; ctx.textAlign = "center";
+      ctx.font = `800 ${90 * s}px 'Plus Jakarta Sans', serif`; ctx.fillStyle = "#7C3AED"; ctx.textAlign = "center";
       ctx.fillText("...", cx, cy - 20 * s + Math.sin(tick * 0.05) * 5 * s);
     }
 
@@ -171,13 +171,13 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
       ctx.strokeStyle = "#DB2777"; ctx.beginPath(); ctx.arc(c2.x, c2.y, r2, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
 
-      ctx.font = `900 ${22 * s}px sans-serif`; ctx.textAlign = "center";
+      ctx.font = `800 ${22 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center";
       ctx.fillStyle = isDark ? "#64748b" : "#94a3b8"; ctx.fillText("ξ", cx - r * 2.3, cy - r * 1.3);
       ctx.fillStyle = "#7C3AED"; ctx.fillText(slide.labels?.[1] || "A", c1.x - (isSubset ? 0 : r * 0.85), cy - r * 1.0);
       ctx.fillStyle = "#DB2777"; ctx.fillText(slide.labels?.[0] || "B", isSubset ? cx : (c2.x + r * 0.85), isSubset ? cy + c2.y - cy + 5 * s : (cy - r * 1.0));
 
       if (slide.elements) {
-        ctx.font = `900 ${20 * s}px sans-serif`; ctx.fillStyle = isDark ? "#fff" : "#0f172a";
+        ctx.font = `800 ${20 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.fillStyle = isDark ? "#fff" : "#0f172a";
         if (slide.elements.left) ctx.fillText(slide.elements.left, c1.x - (isSubset ? 0 : r * 0.5), isSubset ? cy - r * 0.4 : cy);
         if (slide.elements.center || slide.elements.subset) ctx.fillText(slide.elements.center || slide.elements.subset, isSubset ? cx : cx, isSubset ? c2.y + 5 * s : cy);
         if (slide.elements.right) ctx.fillText(slide.elements.right, c2.x + r * 0.5, cy);
@@ -189,7 +189,7 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
     // 4. POWER SET TREE (1:1 IMPROVED)
     else if (slide.visualType === 'POWER_SET_TREE') {
       const items = slide.items || ["a", "b"];
-      ctx.fillStyle = isDark ? "#fff" : "#1e293b"; ctx.font = `900 ${28 * s}px sans-serif`; ctx.textAlign = "center";
+      ctx.fillStyle = isDark ? "#fff" : "#1e293b"; ctx.font = `800 ${28 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center";
       ctx.fillText(`Set { ${items.join(', ')} }`, cx, cy - 100 * s);
       const total = Math.pow(2, items.length);
       const isProper = slide.showProper === true;
@@ -232,7 +232,7 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
       itemsA.forEach((it, i) => {
         const y = cy - ry * 0.65 + i * (ry * 1.3 / (itemsA.length - 1 || 1));
         const p = Math.min(1, Math.max(0, (tick - i * 15) / 45));
-        ctx.fillStyle = isDark ? "#fff" : "#1e293b"; ctx.font = `900 ${22 * s}px sans-serif`; ctx.textAlign = "center";
+        ctx.fillStyle = isDark ? "#fff" : "#1e293b"; ctx.font = `800 ${22 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center";
         ctx.fillText(it, x1, y + 8 * s); ctx.fillText(itemsB[i], x2, y + 8 * s);
         if (p > 0.5) {
           const lp = (p - 0.5) * 2;
@@ -250,14 +250,14 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
         ctx.lineWidth = 6 * s;
         ctx.strokeStyle = "#7C3AED"; ctx.beginPath(); ctx.arc(x1, cy, r, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = "#DB2777"; ctx.beginPath(); ctx.arc(x2, cy, r, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = "#7C3AED"; ctx.font = `900 ${24 * s}px sans-serif`; ctx.textAlign = "center"; ctx.fillText(slide.labels?.[0] || "A", x1, cy - r - 20 * s);
+        ctx.fillStyle = "#7C3AED"; ctx.font = `800 ${24 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center"; ctx.fillText(slide.labels?.[0] || "A", x1, cy - r - 20 * s);
         ctx.fillStyle = "#DB2777"; ctx.fillText(slide.labels?.[1] || "B", x2, cy - r - 20 * s);
         const p = 1 + Math.sin(tick * 0.1) * 0.1; ctx.save(); ctx.translate(cx, cy); ctx.scale(p, p);
         ctx.fillStyle = "#ef4444"; ctx.font = `bold ${50 * s}px sans-serif`; ctx.fillText("≠", 0, 15 * s); ctx.restore();
       } else {
         ctx.lineWidth = 6 * s; ctx.strokeStyle = "#7C3AED"; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = "#7C3AED"; ctx.font = `900 ${24 * s}px sans-serif`; ctx.textAlign = "center"; ctx.fillText((slide.labels?.[0] || 'A') + " = " + (slide.labels?.[1] || 'B'), cx, cy - r - 25 * s);
-        ctx.fillStyle = isDark ? "#fff" : "#1e293b"; ctx.font = `900 ${28 * s}px sans-serif`; ctx.fillText(slide.items || "", cx, cy + 10 * s);
+        ctx.fillStyle = "#7C3AED"; ctx.font = `800 ${24 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center"; ctx.fillText((slide.labels?.[0] || 'A') + " = " + (slide.labels?.[1] || 'B'), cx, cy - r - 25 * s);
+        ctx.fillStyle = isDark ? "#fff" : "#1e293b"; ctx.font = `800 ${28 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.fillText(slide.items || "", cx, cy + 10 * s);
       }
     }
   };

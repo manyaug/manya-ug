@@ -9,13 +9,13 @@
   "questions": [
     {
       "type": "COUNT_SUM",
-      "targetRegion": "union",
+      "targetRegion": "universal_total",
       "prompt": "Find the <b>Total Number</b> of people.",
       "hint": "20 + 5 + 15 + 10."
     },
     {
       "type": "COUNT_SUM",
-      "targetRegion": "universal_only", 
+      "targetZones": ["left", "right", "outside"], 
       "prompt": "Find <span style='color:#64748b'>n(A ∩ B)'</span>.",
       "hint": "Total (50) - Intersection (5) = 45."
     }

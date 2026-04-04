@@ -140,7 +140,7 @@ const SetClassifierEngine = ({ data, onComplete, onAttempt }) => {
             ctx.fillStyle = isDark ? "#4ade80" : "#059669"; ctx.font = `bold ${22*s}px monospace`;
             ctx.globalAlpha = 0.4 + Math.sin(tick*0.02 + p.id)*0.2; ctx.fillText(p.label, p.x, p.y);
         } else if (p.type === 'label') {
-            ctx.fillStyle = isDark ? "#fff" : "#7c3aed"; ctx.font = `900 ${p.size*s}px sans-serif`;
+            ctx.fillStyle = isDark ? "#fff" : "#7c3aed"; ctx.font = `800 ${p.size*s}px 'Plus Jakarta Sans', sans-serif`;
             ctx.textAlign="center"; ctx.fillText(p.label, p.x, p.y);
         } else if (p.type === 'emoji' || p.type === 'student') {
             ctx.font = `${p.size*s}px serif`;
@@ -166,7 +166,7 @@ const SetClassifierEngine = ({ data, onComplete, onAttempt }) => {
     } else {
         // Infinite indicator: Ellipsis
         if (tick % 180 > 90) {
-            ctx.fillStyle = isDark ? "#475569" : "#cbd5e1"; ctx.font = `900 ${80*s}px serif`;
+            ctx.fillStyle = isDark ? "#475569" : "#cbd5e1"; ctx.font = `800 ${80*s}px 'Plus Jakarta Sans', serif`;
             ctx.textAlign = "center"; ctx.fillText("...", w/2, h - 20*s);
         }
     }

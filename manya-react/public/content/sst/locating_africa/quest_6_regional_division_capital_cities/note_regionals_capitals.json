@@ -1,0 +1,86 @@
+{
+    "topic": "Locating Africa on the World Stage",
+    "subtopic": "Regions and Capitals",
+    "mode": "note_explorer",
+    "study_notes": {
+        "title": "Understanding the Regions and Capital Cities of Africa",
+        "introduction": "A capital city is the municipality holding primary status in a country, usually serving as the seat of the government. Africa is a vast continent divided into several major geographical regions, each containing countries with unique and historically significant capital cities.",
+        "key_regions_and_capitals": {
+            "East_Africa": [
+                "Uganda - Kampala (Commercial and Administrative center)",
+                "Kenya - Nairobi (Started as a railway camp, known as the 'Green City in the Sun')",
+                "Tanzania - Dodoma (Official inland capital) / Dar es Salaam (Major coastal commercial port)",
+                "Rwanda - Kigali (Located in the 'Land of a Thousand Hills')",
+                "Burundi - Gitega (Recently moved from Bujumbura to centralize administration)",
+                "South Sudan - Juba (Located on the White Nile, capital of Africa's newest nation)"
+            ],
+            "Horn_of_Africa": [
+                "Ethiopia - Addis Ababa",
+                "Somalia - Mogadishu (Major Indian Ocean port)",
+                "Djibouti - Djibouti (City shares the same name as the country)",
+                "Eritrea - Asmara"
+            ],
+            "North_Africa": [
+                "Egypt - Cairo (Located near the River Nile delta)",
+                "Libya - Tripoli",
+                "Algeria - Algiers",
+                "Morocco - Rabat (Political capital, while Casablanca is the commercial center)",
+                "Tunisia - Tunis"
+            ],
+            "West_Africa": [
+                "Nigeria - Abuja (Planned inland capital, moved from Lagos)",
+                "Ghana - Accra (Located exactly on the Prime Meridian)",
+                "Senegal - Dakar (The westernmost city on mainland Africa)",
+                "Mali - Bamako (Located on the River Niger)",
+                "Liberia - Monrovia (Named after US President James Monroe, settled by freed slaves)",
+                "Sierra Leone - Freetown (Known for its deep-water harbor, settled by freed slaves)"
+            ],
+            "Central_Africa": [
+                "Democratic Republic of Congo (DRC) - Kinshasa",
+                "Republic of Congo - Brazzaville",
+                "Cameroon - Yaoundé",
+                "Gabon - Libreville (Name means 'Free Town' in French)"
+            ],
+            "Southern_Africa": [
+                "South Africa - Pretoria (Administrative), Cape Town (Legislative), Bloemfontein (Judicial)",
+                "Zambia - Lusaka",
+                "Zimbabwe - Harare (Formerly known as Salisbury)",
+                "Angola - Luanda",
+                "Namibia - Windhoek",
+                "Botswana - Gaborone"
+            ],
+            "Island_Nations": [
+                "Madagascar - Antananarivo",
+                "Seychelles - Victoria",
+                "Mauritius - Port Louis",
+                "Cape Verde - Praia",
+                "São Tomé and Príncipe - São Tomé"
+            ]
+        },
+        "unique_capital_facts": [
+            "Kinshasa (DRC) and Brazzaville (Republic of Congo) are the closest capital cities in the world, sitting directly across the Congo River from each other.",
+            "South Africa is the only country in the world with three official capital cities.",
+            "Accra (Ghana) is geographically significant because the Prime Meridian (0° Longitude) passes directly through it.",
+            "Equatorial Guinea is unique because its capital, Malabo, is located on an offshore island (Bioko), not on its mainland territory."
+        ],
+        "reasons_for_moving_capitals": {
+            "examples": [
+                "Nigeria: Moved from Lagos to Abuja.",
+                "Tanzania: Moved from Dar es Salaam to Dodoma.",
+                "Ivory Coast: Moved from Abidjan to Yamoussoukro.",
+                "Burundi: Moved from Bujumbura to Gitega."
+            ],
+            "reasons": [
+                "To promote even economic development in the interior of the country.",
+                "To centralize government administration, making it accessible to all citizens.",
+                "To escape extreme overcrowding, traffic congestion, and poor sanitation in the old coastal cities.",
+                "To promote national unity by placing the capital in a neutral, central location."
+            ]
+        },
+        "capitals_hosting_international_organizations": [
+            "Addis Ababa (Ethiopia) - Headquarters of the African Union (AU).",
+            "Arusha (Tanzania) - Headquarters of the East African Community (EAC).",
+            "Abuja (Nigeria) - Headquarters of the Economic Community of West African States (ECOWAS)."
+        ]
+    }
+}

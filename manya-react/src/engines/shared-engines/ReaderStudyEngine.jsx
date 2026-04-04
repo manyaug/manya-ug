@@ -63,39 +63,28 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
             style={{ '--accent-color': accent }}
             onScroll={handleScroll}
         >
-            {/* PROGRESS BAR */}
-            <div className="fixed top-0 left-0 right-0 h-2 bg-transparent z-[3000] overflow-hidden">
-                <div 
-                    className="h-full bg-[var(--accent-color)] transition-all duration-300 ease-out shadow-[0_4px_15px_var(--accent-color)] rounded-r-full"
-                    style={{ width: `${scrollProgress}%` }}
-                />
-            </div>
-
-            <div className="max-w-[800px] mx-auto p-4 sm:p-8 md:p-16">
+            <div className="max-w-[800px] mx-auto p-4 sm:p-8 md:p-12">
                 
                 {/* HEADER - Responsive Typography */}
-                <header className={`mb-12 md:mb-20 transition-all duration-1000 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-[var(--accent-color)] text-white shadow-lg flex items-center justify-center transform rotate-3">
-                            <BookOpen size={24} />
+                <header className={`mb-8 transition-all duration-1000 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 rounded-[10px] bg-[var(--accent-color)] text-white flex items-center justify-center">
+                            <BookOpen size={16} />
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-[10px] md:text-[11px] font-black text-[var(--accent-color)] tracking-[0.3em] uppercase opacity-70">
-                                {data.variantTitle || data.subject || 'MASTER CLASS'}
-                            </span>
-                            <div className="h-0.5 w-8 bg-[var(--accent-color)] rounded-full mt-1 opacity-30" />
-                        </div>
+                        <span className="text-[10px] font-black text-[var(--accent-color)] tracking-[0.2em] uppercase opacity-80">
+                            {data.variantTitle || data.subject || 'MASTER CLASS'}
+                        </span>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-[var(--text-main)] leading-[1.1] tracking-tight mb-6">
+                    <h1 className="text-3xl md:text-5xl font-black text-[var(--text-main)] leading-tight tracking-tight mb-3">
                         {data.topic || 'Concept Study'}
                     </h1>
-                    <p className="text-lg md:text-xl text-[var(--text-sub)] font-medium opacity-60 leading-relaxed max-w-[500px]">
+                    <p className="text-base text-[var(--text-sub)] font-medium opacity-80 leading-relaxed max-w-[600px]">
                         Dive deep into the core principles of this unit with Manya's premium study guides.
                     </p>
                 </header>
 
                 {/* CONTENT BENTO - Adaptive Spacing */}
-                <div className="flex flex-col gap-8 md:gap-14">
+                <div className="flex flex-col gap-6 md:gap-8">
                     {(data.sections || []).map((sec, idx) => (
                         <div 
                             key={idx}
@@ -115,13 +104,13 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
                 {data.cards && data.cards.length > 0 && (
                     <div className={`mt-24 md:mt-32 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                         <div className="flex flex-col items-center gap-4 mb-12 text-center px-4">
-                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-[1.5rem] bg-amber-100 text-amber-600 flex items-center justify-center shadow-inner mb-2">
-                                <Zap size={24} className="animate-pulse" />
+                            <div className="w-10 h-10 rounded-[1rem] bg-amber-100 text-amber-600 flex items-center justify-center mb-1">
+                                <Zap size={18} />
                             </div>
-                            <h2 className="text-2xl md:text-3xl font-black text-[var(--text-main)] tracking-tight">Rapid Recall Cards</h2>
-                            <p className="text-[10px] md:text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">Tap to flip & test your knowledge</p>
+                            <h2 className="text-xl md:text-2xl font-black text-[var(--text-main)] tracking-tight">Rapid Recall Cards</h2>
+                            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Tap to flip & test your knowledge</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                             {data.cards.map((card, i) => (
                                 <Flashcard key={i} card={card} accent={accent} />
                             ))}
@@ -130,38 +119,18 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
                 )}
 
                 {/* FINISH ACTIONS */}
-                <div 
-                    className={`mt-32 md:mt-48 transition-all duration-1000 delay-700 flex flex-col items-center ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-                >
+                <div className={`mt-16 flex justify-center transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                     <button 
                         onClick={() => {
                             if (onResult) {
-                                onResult({
-                                    isCorrect: true,
-                                    score: 1,
-                                    total: 1,
-                                    type: 'study'
-                                });
+                                onResult({ isCorrect: true, score: 1, total: 1, type: 'study' });
                             }
                             onComplete();
                         }}
-                        className="w-full h-24 md:h-28 rounded-[2.5rem] md:rounded-[3.5rem] bg-[var(--accent-color)] text-white font-black text-xl md:text-3xl shadow-[0_20px_40px_-10px_rgba(124,58,237,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-6 md:gap-8 group relative overflow-hidden"
+                        className="h-14 px-10 rounded-2xl bg-[var(--accent-color)] text-white font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
                     >
-                        <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        READ & FINISH
-                        <ChevronRight size={32} className="group-hover:translate-x-3 transition-transform duration-500" />
+                        COMPLETE READING <ChevronRight size={18} />
                     </button>
-                    
-                    <div className="mt-12 flex flex-col items-center gap-3">
-                         <div className="flex gap-1.5">
-                            {[1,2,3].map(i => (
-                                <div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--accent-color)] animate-bounce" style={{ animationDelay: `${i*0.2}s` }} />
-                            ))}
-                         </div>
-                         <span className="text-[10px] font-black text-[var(--text-main)] tracking-[0.3em] uppercase opacity-40">
-                            Unit Mastered • 100% Progress
-                         </span>
-                    </div>
                 </div>
 
             </div>
@@ -185,63 +154,38 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
                 }
 
                 .bento-section {
-                    background: var(--bg-card);
-                    border: 1.5px solid var(--border-subtle);
-                    border-radius: 32px;
-                    padding: 32px;
-                    position: relative;
-                    overflow: hidden;
-                    transition: all 0.5s ease;
+                    position: relative; padding-bottom: 24px;
+                    border-bottom: 1px solid var(--border-subtle); margin-bottom: 24px;
                 }
-
-                @media (min-width: 768px) {
-                    .bento-section { border-radius: 48px; padding: 56px; }
-                    .bento-section:hover { transform: translateY(-8px); border-color: var(--accent-color); }
-                }
+                .bento-section:last-child { border-bottom: none; }
 
                 .p-point-v2 {
-                    display: flex; gap: 16px; padding: 20px;
-                    background: var(--bg-main); border: 1.5px solid var(--border-subtle);
-                    border-radius: 24px; transition: all 0.3s ease;
-                }
-                
-                @media (min-width: 768px) {
-                    .p-point-v2 { gap: 24px; padding: 32px; border-radius: 32px; }
-                    .p-point-v2:hover { border-color: var(--accent-color); transform: scale(1.02); background: var(--bg-card); }
+                    display: flex; gap: 16px; align-items: flex-start;
+                    transition: all 0.3s ease; margin-bottom: 24px;
                 }
                 
                 .p-marker-v2 {
-                    width: 32px; height: 32px; border-radius: 10px;
+                    width: 24px; height: 24px; border-radius: 8px;
                     background: var(--accent-color); color: white;
-                    display: flex; items-center; justify-content: center;
-                    font-weight: 900; font-size: 14px; flex-shrink: 0;
-                    box-shadow: 0 5px 15px -3px var(--accent-color);
-                }
-                
-                @media (min-width: 768px) {
-                    .p-marker-v2 { width: 42px; height: 42px; border-radius: 14px; font-size: 16px; transform: rotate(-10deg); }
+                    display: flex; align-items: center; justify-content: center;
+                    font-weight: 900; font-size: 12px; flex-shrink: 0; margin-top: 2px;
                 }
 
-                .flashcard-root { perspective: 1200px; width: 100%; }
+                .flashcard-root { perspective: 1200px; width: 100%; height: 100%; }
                 .flashcard-inner {
-                    position: relative; width: 100%; height: 320px;
-                    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    width: 100%; height: 100%;
+                    display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr;
+                    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
                     transform-style: preserve-3d; cursor: pointer;
                 }
-                
-                @media (min-width: 768px) { .flashcard-inner { height: 360px; } }
-                
                 .flashcard-inner.flipped { transform: rotateY(180deg); }
                 .card-face {
-                    position: absolute; width: 100%; height: 100%;
-                    backface-visibility: hidden; border-radius: 32px;
-                    display: flex; flex-direction: column; items-center; justify-content: center;
-                    padding: 32px; text-align: center; border: 2.5px solid var(--border-subtle);
-                    box-shadow: var(--shadow-md); overflow: hidden;
+                    grid-column: 1 / 2; grid-row: 1 / 2;
+                    backface-visibility: hidden; border-radius: 24px;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    padding: 24px; text-align: center; border: 2px solid var(--border-subtle);
+                    box-shadow: var(--shadow-md);
                 }
-                
-                @media (min-width: 768px) { .card-face { border-radius: 48px; padding: 48px; } }
-                
                 .card-front { background: var(--bg-card); z-index: 2; }
                 .card-back { transform: rotateY(180deg); background: var(--bg-main); border-color: var(--accent-color); }
                 
@@ -259,13 +203,13 @@ function SectionRenderer({ section, accent, index }) {
     if (section.type === 'bullets') {
         return (
             <div className="bento-section">
-                <div className="flex items-center gap-2 mb-6 md:mb-10">
+                <div className="flex items-center gap-2 mb-4 md:mb-6">
                     <div className="w-1.5 h-6 rounded-full bg-[var(--accent-color)]" />
                     <span className="text-[10px] font-black text-[var(--accent-color)] tracking-[0.2em] uppercase opacity-60">
                         SECTION {index + 1}
                     </span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl md:text-5xl font-black text-[var(--text-main)] mb-6 md:mb-10 tracking-tight leading-tight">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[var(--text-main)] mb-6 tracking-tight leading-tight">
                     {section.title}
                 </h3>
                 <div className="flex flex-col gap-4 md:gap-6">
@@ -375,7 +319,7 @@ function Flashcard({ card, accent }) {
                         </div>
                         <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-[var(--text-muted)]">TERM</h4>
                         <span 
-                            className="text-2xl md:text-4xl font-black text-[var(--text-main)] tracking-tighter leading-tight"
+                            className="text-xl md:text-3xl font-black text-[var(--text-main)] tracking-tighter leading-tight mt-2"
                             dangerouslySetInnerHTML={{ __html: card.term }}
                         />
                     </div>
@@ -384,7 +328,7 @@ function Flashcard({ card, accent }) {
                 <div className="card-face card-back">
                     <div className="flex flex-col gap-6 items-center">
                         <p 
-                            className="text-lg md:text-xl font-bold text-[var(--text-main)] leading-relaxed text-center px-4"
+                            className="text-base md:text-lg font-bold text-[var(--text-main)] leading-relaxed text-center px-4"
                             dangerouslySetInnerHTML={{ __html: card.fact }}
                         />
                         {card.mnemonic && (

@@ -107,9 +107,24 @@ export async function loadQuestSteps(subject, unitId, questFolder, file) {
  *   { engineType, data, topic, mode }
  */
 function normaliseStep(raw) {
+    let engineType = raw.engineType || raw.engine;
+
+    // AUTO-DETECT ENGINE IF MISSING
+    if (!engineType) {
+        if (raw.mode === 'note_explorer' || raw.study_notes) {
+            engineType = 'NOTE_EXPLORER';
+        } else if (raw.mode === 'recap' || raw.recap_facts || raw.sections) {
+            engineType = 'READER_STUDY';
+        } else if (raw.cases) {
+            engineType = 'GLOBE_TIME_ENGINE';
+        } else {
+            engineType = 'UNKNOWN';
+        }
+    }
+
     return {
         id: raw.qid || raw.id || `sim_${Math.random().toString(36).substr(2, 9)}`,
-        engineType: raw.engineType || raw.engine || 'UNKNOWN',
+        engineType,
         mode: raw.mode || 'quiz',
         topic: raw.topic || raw.variantTitle || '',
         // Pass the whole JSON as `data` — engines know what to use

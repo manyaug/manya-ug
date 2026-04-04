@@ -41,6 +41,7 @@ const IMMERSIVE_ENGINES = new Set([
     'BINARY_GAME', 'VENN_SPOTLIGHT', 'MEMORY_MATCH', 'GRAMMAR_MAZE',
     'SENTENCE_TRAIN', 'WORDGRID_ENGINE', 'MORPH_GAME', 'GALLERY_STUDY',
     '2D_HOTSPOT', 'READER_STUDY', '3D_SKELETON', 'MCQ_STANDALONE',
+    'NOTE_EXPLORER',
     // Grammar Simulation Engines
     'SENTENCE_BLOCKS', 'GARDEN_GUARD', 'PUNCTUATION_STICKERS', 'TENSE_TREEHOUSE'
 ]);
@@ -533,20 +534,7 @@ export default function QuestRunner() {
                 </footer>
             )}
 
-            {/* Developer Skip Button (Floating - Global for Story/Engines) */}
-            {phase === 'running' && (
-                <button 
-                    onClick={() => {
-                        console.log("[QuestRunner] Global Dev Skip Triggered");
-                        advanceStep();
-                    }}
-                    className="fixed top-3 right-4 z-[9999] p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all flex items-center gap-2 group backdrop-blur-md shadow-2xl"
-                    title="Skip (Dev Only)"
-                >
-                    <span className="text-[8px] font-black uppercase tracking-widest hidden group-hover:block transition-all">Skip Story</span>
-                    <SkipForward size={14} />
-                </button>
-            )}
+
         </div>
     );
 }

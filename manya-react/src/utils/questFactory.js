@@ -37,13 +37,21 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
 
         // WARMUP gets 1 intro study sim, EXPLORE gets all available matching json activities
         if ((nodeType === 'WARMUP' || nodeType === 'EXPLORE') && resources && resources.length > 0) {
-            const matchingResources = resources.filter(r =>
-                r.file.startsWith('study_') || r.file.includes('_study') ||
-                r.file.startsWith('recap_') || r.file.includes('_recap') ||
-                r.file.startsWith('puzzle_') || r.file.includes('_puzzle') ||
-                r.file.startsWith('quiz_') || r.file.includes('_quiz') ||
-                r.file.includes('project_genesis') || r.file.includes('extremes_of_africa')
-            );
+            const matchingResources = resources.filter(r => {
+                // EXPLORE is strictly for note_ files only
+                if (nodeType === 'EXPLORE') {
+                    return r.file.startsWith('note_') || r.file.includes('_note');
+                }
+                // WARMUP and others maintain the broader set
+                return (
+                    r.file.startsWith('study_') || r.file.includes('_study') ||
+                    r.file.startsWith('recap_') || r.file.includes('_recap') ||
+                    r.file.startsWith('note_') || r.file.includes('_note') ||
+                    r.file.startsWith('puzzle_') || r.file.includes('_puzzle') ||
+                    r.file.startsWith('quiz_') || r.file.includes('_quiz') ||
+                    r.file.includes('project_genesis') || r.file.includes('extremes_of_africa')
+                );
+            });
 
             // WARMUP takes the first one, EXPLORE takes the whole battery
             const targetResources = nodeType === 'EXPLORE' ? matchingResources : matchingResources.slice(0, 1);
@@ -52,6 +60,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             targetResources.sort((a, b) => {
                 const getWeight = (file) => {
                     const lower = file.toLowerCase();
+                    if (lower.includes('note_')) return 0;
                     if (lower.includes('recap')) return 1;
                     if (lower.includes('study')) return 2;
                     if (lower.includes('quiz') || lower.includes('puzzle') || lower.includes('project_') || lower.includes('extremes_')) return 3;
@@ -82,29 +91,27 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
 
         // ── IDENTIFY SIMULATIONS ──
         let selectedSims = [];
-        if ((nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
-            // A. Check for explicit JSON resources
+        if ((nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+            // A. Check for explicit JSON resources (Note: We no longer exclude study/recap here)
             if (resources && resources.length > 0) {
-                const simResources = resources.filter(r =>
-                    !r.file.startsWith('study_') && !r.file.includes('_study') &&
-                    !r.file.startsWith('recap_') && !r.file.includes('_recap') &&
-                    !r.file.startsWith('puzzle_') && !r.file.includes('_puzzle') &&
-                    !r.file.startsWith('quiz_') && !r.file.includes('_quiz') &&
-                    !r.file.includes('project_genesis') && !r.file.includes('extremes_of_africa')
-                );
-                selectedSims.push(...simResources);
+                selectedSims.push(...resources);
             }
 
             // B. Check for Numbered Practice convention (e.g. 02-001.json)
-            if (practiceCount > 0 && prefix) {
-                const numToPick = Math.min(practiceCount, 10); // Pick up to 10 numbered tasks
-                console.log(`🔢 [QuestFactory] Found ${practiceCount} numbered tasks for prefix "${prefix}". Adding ${numToPick} to simResources.`);
-                for (let i = 1; i <= numToPick; i++) {
-                    const fileName = `${prefix}-${String(i).padStart(3, '0')}.json`;
-                    selectedSims.push({
-                        label: `Task ${i}`,
-                        file: fileName
-                    });
+            // If prefix is missing but folder starts with quest_NN, infer prefix NN
+            const inferredPrefix = prefix || (questFolder.startsWith('quest_') ? questFolder.split('_')[1] : null);
+
+            if (practiceCount > 0 && inferredPrefix) {
+                console.log(`🔢 [QuestFactory] Adding ${practiceCount} numbered tasks for prefix "${inferredPrefix}".`);
+                for (let i = 1; i <= practiceCount; i++) {
+                    const fileName = `${inferredPrefix}-${String(i).padStart(3, '0')}.json`;
+                    // Avoid duplicates if already in resources
+                    if (!selectedSims.find(s => s.file === fileName)) {
+                        selectedSims.push({
+                            label: `Task ${i}`,
+                            file: fileName
+                        });
+                    }
                 }
             }
             

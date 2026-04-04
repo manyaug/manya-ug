@@ -3,16 +3,16 @@ import { Lightbulb, CheckCircle2, AlertCircle, Compass, Zap, ArrowRight, RotateC
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * MANYA SET THEORY ENGINE v6.3 (Absolute Zero Stability)
+ * MANYA SET THEORY ENGINE v7.0 (OmniVenn)
  * -------------------------------------------------------------
- * - FIX: Correctly grades '0' as a valid result (v6.3).
- * - FIX: Universal Geometry for order-independent dragging (v6.2).
- * - TRUTH-FIRST: Derives mathematical reality from data.zones.
+ * - ADAPTIVE LAYOUT: Detects n=1 vs n=2 sets and centers with halo effects.
+ * - MULTI-SLOT INPUT: Decentralized answers inside the Venn regions.
+ * - UNIFIED ARCHITECTURE: Consistent visual language for all 6 interaction modes.
  */
 
 const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   const [stepIdx, setStepIdx] = useState(0);
-  const [userText, setUserText] = useState("");
+  const [userAnswers, setUserAnswers] = useState({}); // v7.0: { left: '', center: '', right: '', outside: '' }
   const [selectedRegions, setSelectedRegions] = useState(new Set());
   const [chips, setChips] = useState([]);
   const [activeSets, setActiveSets] = useState({ a: null, b: null });
@@ -20,8 +20,8 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   const [feedback, setFeedback] = useState({ text: '', type: '' });
   const [isResolved, setIsResolved] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [isHintVisible, setIsHintVisible] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
-  const [pulseAlpha, setPulseAlpha] = useState(1.0);
 
   const canvasRef = useRef(null);
   const draggingRef = useRef(null);
@@ -49,31 +49,65 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
     return `${hex.substring(0, 7)}${alpha}`; 
   };
 
+  const REGION_MAP = {
+      'intersection': ['center'],
+      'union': ['left', 'center', 'right'],
+      'left_total': ['left', 'center'],
+      'right_total': ['right', 'center'],
+      'complement_left': ['right', 'outside'],
+      'complement_right': ['left', 'outside'],
+      'outside': ['outside'],
+      'left': ['left'],
+      'right': ['right'],
+      'center': ['center'],
+      'symmetric_difference': ['left', 'right'],
+      'universal_only': ['outside'],
+      'left_only': ['left'],
+      'right_only': ['right'],
+      'universal_total': ['left', 'center', 'right', 'outside']
+  };
+
+
   const computeLayout = useCallback(() => {
     if (canvasSize.width === 0 || canvasSize.height === 0) return null;
     const { width, height } = canvasSize;
     const isMobile = width <= 480;
     
-    // DISJOINT DETECTION (v5.8)
+    // DISJOINT DETECTION
     const isDisjoint = (data.topic || "").toLowerCase().includes("disjoint") || 
                       (data.variantTitle || "").toLowerCase().includes("disjoint") ||
                       (data.zones && data.zones.center && data.zones.center.length === 0 && currentStep.interaction === 'DRAG_SORT');
 
     const r = Math.min(isMobile ? 85 : 120, width * 0.28);
-    const offset = isDisjoint ? r * 1.05 : r * 0.55; 
-    const cy = currentStep.interaction === 'DRAG_SORT' ? height * 0.42 : height * 0.5;
+    // v7.0: If one set, offset is 0. If two sets, they overlap.
+    const offset = !isTwoSet ? 0 : (isDisjoint ? r * 1.05 : r * 0.55); 
+    const cy = (currentStep.interaction === 'DRAG_SORT' && !isMobile) ? height * 0.42 : height * 0.5;
 
     return {
       c1: { x: width/2 - offset, y: cy, color: data.sets.A.color || "#16a34a" },
       c2: { x: width/2 + offset, y: cy, color: data.sets.B.color || "#ea580c" },
-      r, cx: width/2, cy, width, height, s: window.devicePixelRatio || 2, isMobile, pad: isMobile ? 12 : 20, isDisjoint
+      r, cx: width/2, cy, width, height, s: window.devicePixelRatio || 2, isMobile, pad: isMobile ? 12 : 20, isDisjoint, offset
     };
-  }, [canvasSize, currentStep, data]);
+  }, [canvasSize, currentStep, data, isTwoSet]);
 
   const normX = (val) => (val / 400) * canvasSize.width;
   const normY = (val) => (val / 400) * canvasSize.height;
 
-  // --- 🎨 RENDER ENGINE ---
+  const getFirstUserAnswer = () => Object.values(userAnswers).find(v => v !== '') || '';
+
+  const evaluateExpr = (expr, val) => {
+    if (!expr || typeof expr !== 'string') return expr;
+    const cleanVal = String(val || "").trim();
+    if (!cleanVal || isNaN(cleanVal)) return expr;
+    try {
+        const num = parseFloat(cleanVal);
+        const resolved = expr.toLowerCase().replace(/[a-z]/g, `(${num})`).replace(/ /g, '');
+        if (!/^[0-9+\-*/().\s]+$/.test(resolved)) return expr;
+        return eval(resolved);
+    } catch { return expr; }
+  };
+
+  // --- 🎨 RENDER ENGINE (OmniVenn v7.0) ---
   const draw = useCallback(() => {
     const canvas = canvasRef.current; if (!canvas || canvasSize.width === 0) return;
     const ctx = canvas.getContext('2d'); const l = computeLayout(); if (!l) return;
@@ -81,9 +115,29 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
 
     if (canvas.width !== width * s) canvas.width = width * s;
     if (canvas.height !== height * s) canvas.height = height * s;
-    ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.save(); ctx.scale(s, s);
 
-    const colors = { text: isDark ? "#FFFFFF" : "#1E293B", border: isDark ? "rgba(255,255,255,0.1)" : "#F1F5F9" };
+    // Reset transform completely before clearing to prevent subpixel antialiasing accumulation
+    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+    ctx.scale(s, s);
+
+    const colors = { 
+        text: isDark ? "#FFFFFF" : "#1E293B", 
+        border: isDark ? "rgba(255,255,255,0.1)" : "#F1F5F9",
+        universe: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)"
+    };
+
+    // ─── 📦 UNIVERSAL SET FRAME ───
+    const boxPad = isMobile ? 10 : 20;
+    ctx.beginPath(); ctx.roundRect(boxPad, boxPad, width - boxPad*2, height - boxPad*2, 24);
+    ctx.fillStyle = colors.universe; ctx.fill(); ctx.strokeStyle = colors.border; ctx.lineWidth = 2; ctx.stroke();
+
+    // Universal Set Symbols
+    ctx.fillStyle = colors.text; ctx.font = "800 20px 'Plus Jakarta Sans', serif"; ctx.fillText("\u03BE", boxPad + 15, boxPad + 35);
+    if (data.universal_total) {
+        ctx.font = "800 12px 'Plus Jakarta Sans', sans-serif"; ctx.fillStyle = isDark ? "#94a3b8" : "#64748b"; ctx.textAlign = "right";
+        ctx.fillText(`Total = ${data.universal_total}`, width - boxPad - 20, boxPad + 35);
+    }
 
     if (currentStep.interaction === 'DRAG_SETS' && activeSets.a) {
         const drawMovable = (obj, label, col) => {
@@ -93,33 +147,35 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             g.addColorStop(0, hexAlpha(col, '00')); g.addColorStop(1, hexAlpha(col, '20')); ctx.fillStyle = g; ctx.fill();
             ctx.lineWidth = isMobile ? 6 : 8; ctx.shadowBlur = isResolved ? 30 : 15; ctx.shadowColor = isResolved ? "#22c55e" : col;
             ctx.strokeStyle = isResolved ? "#22c55e" : col; ctx.stroke();
-            ctx.fillStyle = col; ctx.font = "900 24px sans-serif"; ctx.textAlign="center"; 
+            ctx.fillStyle = col; ctx.font = "800 24px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign="center"; 
             ctx.fillText(label, obj.x, obj.y - obj.r - 20); ctx.restore();
         };
         drawMovable(activeSets.a, activeSets.a.label, activeSets.a.color);
         if (activeSets.b) drawMovable(activeSets.b, activeSets.b.label, activeSets.b.color);
     } else {
-        const { c1, c2, r, cy } = l;
+        const { c1, c2, r, cy, offset } = l;
         const activeShades = new Set(selectedRegions);
-        if (currentStep.targetRegion && currentStep.interaction === 'SHADE_REGION') {
-           const map = { 'intersection': ['center'], 'union': ['left','center', 'right'] };
-           (map[currentStep.targetRegion] || [currentStep.targetRegion]).forEach(z => activeShades.add(z));
+        // v7.1: Anti-Spoiler. Only auto-highlight regions if Hint is active or step is resolved!
+        if (currentStep.targetRegion && (isHintVisible || isResolved) && !['CLICK_SUM', 'SHADE_REGION'].includes(currentStep.interaction)) {
+           (REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion]).forEach(z => activeShades.add(z));
         }
+
         const drawRegion = (type, col) => {
             ctx.save(); ctx.fillStyle = col; 
-            if (type === 'center' && !isDisjoint) {
+            if (type === 'center' && !isDisjoint && isTwoSet) {
                 ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
                 ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
             } else if (type === 'left') {
                 ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill();
-                if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill(); }
-            } else if (type === 'right') {
+                if (!isDisjoint && isTwoSet) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill(); }
+            } else if (type === 'right' && isTwoSet) {
                 ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
                 if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill(); }
             }
             ctx.restore();
         };
         activeShades.forEach(reg => drawRegion(reg, "rgba(251, 191, 36, 0.4)"));
+
         const drawStatic = (x, y, rad, col) => {
             ctx.save(); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI*2);
             const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
@@ -128,131 +184,212 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         };
         drawStatic(c1.x, cy, r, c1.color);
         if (isTwoSet) drawStatic(c2.x, cy, r, c2.color);
-        const drawLabel = (x, y, txt, col) => {
-            ctx.save(); ctx.font = "900 24px sans-serif"; ctx.fillStyle = col; ctx.textAlign="center"; ctx.fillText(txt, x, y-r-25); ctx.restore();
-        };
-        drawLabel(c1.x, cy, data.sets.A.label, c1.color);
-        if (isTwoSet) drawLabel(c2.x, cy, data.sets.B.label, c2.color);
+
+        const labelSize = isMobile ? 18 : 22;
+        ctx.font = `800 ${labelSize}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign="center";
+        ctx.fillStyle = c1.color; ctx.fillText(data.sets.A.label, c1.x, cy - r - (isMobile ? 15 : 25));
+        if (isTwoSet) { ctx.fillStyle = c2.color; ctx.fillText(data.sets.B.label, c2.x, cy - r - (isMobile ? 15 : 25)); }
+
+        const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.engineType);
+        let iZones = [];
+        if (currentStep.interaction === 'DIAGRAM_FILL' && currentStep.inputs) {
+            iZones = currentStep.inputs.map(i => i.region);
+        } else if (!isSingleInput) {
+            iZones = ['left', 'center', 'right', 'outside'].filter(zone => {
+               const expectedRegions = REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion];
+               const isTarget = expectedRegions.includes(zone) || (currentStep.targetZones && currentStep.targetZones.includes(zone));
+               return isTarget || (data.zones[zone] && data.zones[zone].includes('?'));
+            });
+        }
+
         const renderMembers = (src) => {
             if (!src) return;
             ['left','center','right','outside'].forEach(reg => {
                 const arr = src[reg]; if (!arr) return;
                 arr.forEach((v, i) => {
-                    let lx = width - 50, ly = height - 50; 
-                    if (reg === 'left') { lx = c1.x; ly = cy + (i - (arr.length-1)/2)*40; }
-                    else if (reg === 'right') { lx = c2.x; ly = cy + (i - (arr.length-1)/2)*40; }
-                    else if (reg === 'center' && !isDisjoint) { lx = width/2; ly = cy + (i - (arr.length-1)/2)*40; }
-                    ctx.save(); ctx.beginPath(); ctx.arc(lx, ly-8, 20, 0, Math.PI*2);
-                    ctx.fillStyle = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.04)"; ctx.fill();
-                    ctx.fillStyle = colors.text; ctx.font = "900 24px sans-serif"; ctx.textAlign="center"; ctx.fillText(v, lx, ly); ctx.restore();
+                    let lx, ly;
+                    if (reg === 'left') { lx = c1.x - (isDisjoint ? 0 : offset * 0.85); ly = cy; }
+                    else if (reg === 'right') { lx = c2.x + (isDisjoint ? 0 : offset * 0.85); ly = cy; }
+                    else if (reg === 'center') { lx = width/2; ly = cy; }
+                    else if (reg === 'outside') { lx = width - boxPad - 50; ly = height - boxPad - 50; }
+
+                    const isWordList = arr.some(x => String(x).length > 1);
+                    if (arr.length > 1) {
+                         if (isWordList && arr.length <= 5) {
+                             const stackSpacing = 32;
+                             const startY = cy - ((arr.length - 1) * stackSpacing) / 2;
+                             ly = startY + (i * stackSpacing);
+                         } else {
+                             const spread = isMobile ? 18 : 28;
+                             if (arr.length === 2) {
+                                 lx += (i === 0 ? -spread : spread);
+                             } else if (arr.length === 3) {
+                                 const angle = (i === 0 ? -Math.PI/2 : (i === 1 ? Math.PI*1/6 : Math.PI*5/6));
+                                 lx += Math.cos(angle) * spread;
+                                 ly += Math.sin(angle) * spread;
+                             } else {
+                                 const angle = (i / arr.length) * Math.PI * 2;
+                                 lx += Math.cos(angle) * spread;
+                                 ly += Math.sin(angle) * spread;
+                             }
+                         }
+                    }
+
+                    const valToEval = currentStep.x_val;
+                    const displayVal = evaluateExpr(v, valToEval);
+                    const isEquation = v !== String(displayVal) || /^[0-9+\-*/().\s]*[a-z][0-9+\-*/().\s]*$/i.test(String(v));
+                    if (v === '?' || (!isResolved && iZones.includes(reg))) return; // v7.0: Handled by HTML InputSlots
+
+                    let baseSize = isMobile ? 22 : 28;
+                    const strLen = String(displayVal).length;
+                    if (isEquation) baseSize = isMobile ? 16 : 20;
+                    else if (strLen > 4) baseSize = isMobile ? 14 : 16;
+                    else if (strLen > 3) baseSize = isMobile ? 16 : 18;
+                    else if (strLen > 2) baseSize = isMobile ? 18 : 22;
+
+                    ctx.save(); 
+                    if (isEquation) {
+                        ctx.fillStyle = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)";
+                        ctx.beginPath(); ctx.roundRect(lx - (baseSize*1.5), ly - (baseSize*1.1), baseSize*3, baseSize*2.2, 12); ctx.fill();
+                    }
+                    ctx.fillStyle = isEquation ? (isDark ? "#fcd34d" : "#d97706") : colors.text; 
+                    ctx.font = isEquation ? `800 ${baseSize}px 'Plus Jakarta Sans', ui-monospace, monospace` : `800 ${baseSize}px 'Plus Jakarta Sans', sans-serif`; 
+                    ctx.textAlign="center"; ctx.fillText(displayVal, lx, ly + (baseSize * 0.35)); ctx.restore();
                 });
             });
         };
         if (currentStep.retain_visuals && frozenZones) renderMembers(frozenZones);
         else if (currentStep.interaction !== 'DRAG_SORT') renderMembers(data.zones);
     }
-    ctx.strokeStyle = colors.border; ctx.lineWidth = 2; ctx.strokeRect(pad, pad, width-pad*2, height-pad*2);
-    ctx.fillStyle = colors.text; ctx.font = "900 18px sans-serif"; ctx.fillText("\u03BE", pad+12, pad+28);
+
     chips.forEach(c => {
         ctx.save(); ctx.beginPath(); ctx.arc(c.x, c.y, 22, 0, Math.PI*2);
         ctx.fillStyle = isDark ? "#1e293b" : "#ffffff"; ctx.shadowBlur=10; ctx.shadowColor="rgba(0,0,0,0.2)"; ctx.fill();
         ctx.strokeStyle = isResolved ? "#16a34a" : (isDark?"#4b5563":"#cbd5e1"); ctx.lineWidth=2; ctx.stroke();
-        ctx.fillStyle=colors.text; ctx.font="900 22px sans-serif"; ctx.textAlign="center"; ctx.fillText(c.val, c.x, c.y + 8); ctx.restore();
+        ctx.fillStyle=colors.text; ctx.font="800 20px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign="center"; ctx.fillText(c.val, c.x, c.y + 7); ctx.restore();
     });
-    ctx.restore();
-  }, [computeLayout, canvasSize, isDark, selectedRegions, currentStep, chips, frozenZones, isTwoSet, pulseAlpha, activeSets, isResolved]);
+  }, [computeLayout, canvasSize, isDark, selectedRegions, currentStep, chips, frozenZones, isTwoSet, activeSets, isResolved, userAnswers, data, isHintVisible]);
 
-  // --- 🧠 LOGIC ENGINE (v6.3 Absolute Zero Stability) ---
+
+  // --- 🧠 LOGIC ENGINE (OmniVenn v7.0) ---
   const validate = useCallback(() => {
     let isCorrect = false; let corrected = "";
-    const normalize = (t) => {
-        // v6.3: Strictly handle '0' (prevents stripping zero as falsy empty)
-        const clean = String(t !== undefined && t !== null ? t : "").toLowerCase().trim().replace(/[\{\}\s]/g, '');
-        return clean.split(',').filter(x => x !== "").sort().join(',');
-    };
+    const normalize = (t) => String(t || "").toLowerCase().trim().replace(/[\{\}\s]/g, '').split(',').filter(x => x !== "").sort().join(',');
 
-    if (currentStep.interaction === 'DRAG_SETS' && activeSets.a && activeSets.b) {
+    if (currentStep.interaction === 'DRAG_SETS') {
         const d = Math.hypot(activeSets.a.x - activeSets.b.x, activeSets.a.y - activeSets.b.y);
-        const subIdx = currentStep.items.findIndex(it => it.target);
-        const subject = subIdx === 0 ? activeSets.a : activeSets.b;
-        const other = subIdx === 0 ? activeSets.b : activeSets.a;
-        const target = currentStep.items[subIdx]?.target || "";
-        const tol = 12; // Radius tolerance
-
-        if (target === 'inside_F' || target === 'subset') {
-            isCorrect = d + subject.r <= other.r + tol;
-        } else if (target === 'disjoint') {
-            isCorrect = d > (subject.r + other.r) - tol;
-        } else if (target === 'overlap') {
-            isCorrect = d < (subject.r + other.r) - tol && d > Math.abs(subject.r - other.r) + tol;
-        }
+        const target = currentStep.items.find(it => it.target)?.target || "";
+        if (target === 'inside_F' || target === 'subset') isCorrect = d + activeSets.a.r <= activeSets.b.r + 15;
+        else if (target === 'disjoint') isCorrect = d > (activeSets.a.r + activeSets.b.r) - 15;
+        else if (target === 'overlap') isCorrect = d < (activeSets.a.r + activeSets.b.r) - 15 && d > Math.abs(activeSets.a.r - activeSets.b.r) + 15;
     } else if (currentStep.interaction === 'DRAG_SORT') {
-        const l = computeLayout(); if (!l) return { isCorrect: false };
+        const l = computeLayout(); 
         isCorrect = chips.every(c => {
             let actual = "outside";
-            const dist1 = Math.hypot(c.x - l.c1.x, c.y - l.cy), dist2 = Math.hypot(c.x - l.c2.x, c.y - l.cy);
-            if (!l.isDisjoint && dist1 < l.r && dist2 < l.r) actual = "center";
-            else if (dist1 < l.r) actual = "left";
-            else if (dist2 < l.r) actual = "right";
+            const d1 = Math.hypot(c.x - l.c1.x, c.y - l.cy), d2 = Math.hypot(c.x - l.c2.x, c.y - l.cy);
+            if (!l.isDisjoint && isTwoSet && d1 < l.r && d2 < l.r) actual = "center";
+            else if (d1 < l.r) actual = "left"; else if (d2 < l.r && isTwoSet) actual = "right";
             return actual === c.target;
         });
-    } else {
-        const region = currentStep.targetRegion || 'outside';
-        const mapped = { 
-            'intersection': ['center'], 'union': ['left','center', 'right'], 
-            'left_only': ['left'], 'right_only': ['right'], 
-            'x_exclusive': ['left','right'], 'complement_left': ['right', 'outside'],
-            'complement_right': ['left', 'outside'], 'universal': ['left','center','right','outside']
-        };
-        const targets = mapped[region] || (Array.isArray(region) ? region : [region]);
-        const truthElements = targets.flatMap(t => data.zones[t] || []);
-        const expectedVal = currentStep.expected || currentStep.expected_x;
-        
-        // TRUTH CHECK: DERIVE FROM ZONES FIRST (v6.3 Zero-Safe)
-        if (truthElements.length > 0 || (region === 'intersection' && data.zones?.center?.length === 0)) {
-            const isCountQ = currentStep.type === 'COUNT' || currentStep.engineType?.includes('COUNT');
-            const truthCount = truthElements.length;
-            const truthList = truthElements.join(',');
-            
-            corrected = isCountQ ? String(truthCount) : truthElements.join(', ');
-            isCorrect = normalize(userText) === (isCountQ ? normalize(truthCount) : normalize(truthList));
-        } else if (expectedVal !== undefined) {
-            corrected = String(expectedVal);
-            isCorrect = normalize(userText) === normalize(expectedVal);
+    } else if (currentStep.interaction === 'CLICK_SUM' || currentStep.interaction === 'SHADE_REGION') {
+        const expectedRegions = REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion];
+        const selectedArr = Array.from(selectedRegions);
+        isCorrect = selectedArr.length === expectedRegions.length && expectedRegions.every(r => selectedArr.includes(r));
+        corrected = expectedRegions.join(', ');
+    } else if (currentStep.interaction === 'CHOICE') {
+        isCorrect = normalize(getFirstUserAnswer()) === normalize(currentStep.expected);
+        corrected = String(currentStep.expected);
+    } else if (currentStep.interaction === 'DIAGRAM_FILL') {
+        isCorrect = (currentStep.inputs || []).every(inp => {
+             return normalize(userAnswers[inp.region] || '') === normalize(inp.expected);
+        });
+        corrected = (currentStep.inputs || []).map(inp => `${inp.region}:${inp.expected}`).join(' | ');
+    } else if (['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.engineType)) {
+        const expected = currentStep.type === 'ALGEBRA_SOLVE' ? (currentStep.expected_x !== undefined ? currentStep.expected_x : (currentStep.x_val !== undefined ? currentStep.x_val : currentStep.total)) : undefined;
+        if (expected !== undefined) {
+             isCorrect = normalize(getFirstUserAnswer()) === normalize(String(expected));
+             corrected = String(expected);
+        } else {
+             const targetZones = currentStep.targetZones || REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion || 'center'];
+             
+             if (currentStep.type === 'COUNT' || currentStep.type === 'SUBSET_COUNT' || (currentStep.engineType && currentStep.engineType.includes('COUNT'))) {
+                 const count = targetZones.reduce((acc, z) => acc + (data.zones[z] || []).length, 0);
+                 const expectedVal = currentStep.type === 'SUBSET_COUNT' ? String(Math.pow(2, count)) : String(count);
+                 isCorrect = normalize(getFirstUserAnswer()) === normalize(expectedVal);
+                 corrected = expectedVal;
+             } else if (currentStep.type === 'COUNT_SUM') {
+                 const passVal = currentStep.x_val !== undefined ? currentStep.x_val : (getFirstUserAnswer() || 0);
+                 const sum = targetZones.reduce((acc, z) => {
+                     return acc + (data.zones[z] || []).reduce((inAcc, val) => inAcc + (parseFloat(evaluateExpr(val, passVal)) || 0), 0);
+                 }, 0);
+                 isCorrect = normalize(getFirstUserAnswer()) === normalize(String(sum));
+                 corrected = String(sum);
+             } else {
+                 isCorrect = targetZones.every(zone => {
+                     const input = userAnswers[zone] || getFirstUserAnswer(); // Fallback for single input
+                     const truth = data.zones[zone] || [];
+                     const expected = currentStep.x_val !== undefined ? truth.map(t => evaluateExpr(t, currentStep.x_val)).join(',') : truth.join(',');
+                     return normalize(input) === normalize(expected);
+                 });
+                 corrected = targetZones.map(z => {
+                     const truth = data.zones[z] || [];
+                     return currentStep.x_val !== undefined ? truth.map(t => evaluateExpr(t, currentStep.x_val)).join(',') : truth.join(',');
+                 }).join(' | ');
+             }
         }
+    } else {
+        // v7.0: Multi-Slot Validation
+        const targetZones = currentStep.targetZones || REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion || 'center'];
+        isCorrect = targetZones.every(zone => {
+           const input = userAnswers[zone];
+           const truth = data.zones[zone] || [];
+           const isCountQ = currentStep.type === 'COUNT' || currentStep.engineType?.includes('COUNT');
+           const expected = isCountQ ? String(truth.length) : (currentStep.x_val !== undefined ? truth.map(t => evaluateExpr(t, currentStep.x_val)).join(',') : truth.join(','));
+           return normalize(input) === normalize(expected);
+        });
+        corrected = targetZones.map(z => {
+           const truth = data.zones[z] || [];
+           return currentStep.x_val !== undefined ? truth.map(t => evaluateExpr(t, currentStep.x_val)).join(',') : truth.join(',');
+        }).join(' | ');
     }
     return { isCorrect, corrected };
-  }, [currentStep, userText, chips, activeSets, computeLayout, data.zones]);
+  }, [currentStep, userAnswers, chips, activeSets, computeLayout, data.zones, isTwoSet, selectedRegions]);
 
   const handleInteraction = useCallback(() => {
     if (isResolved) { 
-        if (stepIdx < data.questions.length - 1) {
-            setStepIdx(p => p+1); setUserText(""); setIsResolved(false); setFeedback({text:'', type:''});
-            return;
-        } else { onComplete(); return; }
+        if (stepIdx < data.questions.length - 1) { 
+            setStepIdx(p => p+1); 
+            setUserAnswers({}); 
+            setSelectedRegions(new Set());
+            setIsResolved(false); 
+            setFeedback({text:'', type:''}); 
+            return; 
+        }
+        else { onComplete(); return; }
     }
     const { isCorrect, corrected } = validate();
-    if (onResult) onResult({ isCorrect, selectedAnswer: userText || 'Interaction', correctAnswer: corrected, type: 'simulation' });
+    if (onResult) onResult({ isCorrect, selectedAnswer: Object.values(userAnswers).join('|'), correctAnswer: corrected, type: 'simulation' });
     if (isCorrect) { setIsResolved(true); setFeedback({ text: '🌟 EXCELLENT!', type: 'success' }); window.ManyaAudio?.correct(); }
-    else { setFeedback({ text: 'TRY AGAIN!', type: 'error' }); window.ManyaAudio?.wrong(); }
-  }, [isResolved, stepIdx, data, validate, onComplete, onResult, userText]);
+    else { 
+        setFeedback({ text: 'TRY AGAIN!', type: 'error' }); window.ManyaAudio?.wrong(); 
+        setTimeout(() => setFeedback(prev => prev.type === 'error' ? {text:'', type:''} : prev), 2000);
+    }
+  }, [isResolved, stepIdx, data, validate, onComplete, onResult, userAnswers]);
 
-  // --- 🪄 EFFECTS ---
   useEffect(() => {
-    const observer = new ResizeObserver(entries => { 
-        if (entries[0]) setCanvasSize({ width: entries[0].contentRect.width, height: entries[0].contentRect.height }); 
-    }); 
+    const observer = new ResizeObserver(entries => { if (entries[0]) setCanvasSize({ width: entries[0].contentRect.width, height: entries[0].contentRect.height }); }); 
     if (canvasRef.current) observer.observe(canvasRef.current); 
     return () => observer.disconnect(); 
   }, []);
 
   useEffect(() => {
     if (canvasSize.width === 0 || !currentStep) return;
+    setSelectedRegions(new Set());
     if (currentStep.interaction === 'DRAG_SORT') {
-        setChips((currentStep.items || []).map((it, i) => ({ ...it, id: `chip-${i}`, x: normX(50 + i*60), y: normY(350) })));
+        const l = computeLayout();
+        setChips((currentStep.items || []).map((it, i) => ({ ...it, id: `chip-${i}`, x: normX(50 + i*60), y: l.height - 50 })));
     } else if (currentStep.interaction === 'DRAG_SETS') {
         const sA = currentStep.items[0], sB = currentStep.items[1];
-        if (!sA || !sB) return;
         setActiveSets({
             a: { x: normX(sA.x || 100), y: normY(sA.y || 200), r: sA.radius || 60, label: sA.val, color: sA.color || "#16a34a", locked: sA.locked, id: 'a' },
             b: { x: normX(sB.x || 300), y: normY(sB.y || 200), r: sB.radius || 60, label: sB.val, color: sB.color || "#ea580c", locked: sB.locked, id: 'b' }
@@ -272,6 +409,20 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
     } else if (currentStep.interaction === 'DRAG_SORT') {
         const chip = [...chips].reverse().find(c => Math.hypot(c.x - px, c.y - py) < 22);
         if (chip) { draggingRef.current = chip; dragOffsetRef.current = { x: px - chip.x, y: py - chip.y }; }
+    } else if (currentStep.interaction === 'CLICK_SUM' || currentStep.interaction === 'SHADE_REGION') {
+        const l = computeLayout();
+        if (!l) return;
+        const d1 = Math.hypot(px - l.c1.x, py - l.cy), d2 = Math.hypot(px - l.c2.x, py - l.cy);
+        let tappedZone = 'outside';
+        if (!l.isDisjoint && isTwoSet && d1 < l.r && d2 < l.r) tappedZone = 'center';
+        else if (d1 < l.r) tappedZone = 'left';
+        else if (d2 < l.r && isTwoSet) tappedZone = 'right';
+        
+        setSelectedRegions(prev => {
+             const next = new Set(prev);
+             if (next.has(tappedZone)) next.delete(tappedZone); else next.add(tappedZone);
+             return next;
+        });
     }
   };
 
@@ -283,34 +434,136 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
     const py = Math.max(25, Math.min(canvasSize.height-25, (cy - rect.top) * (canvasSize.height / rect.height)));
     const dragTarget = draggingRef.current;
     if (currentStep.interaction === 'DRAG_SETS') {
-        const dragId = dragTarget.id;
-        setActiveSets(prev => {
-            if (!prev[dragId]) return prev;
-            return { ...prev, [dragId]: { ...prev[dragId], x: px - dragOffsetRef.current.x, y: py - dragOffsetRef.current.y } };
-        });
+        setActiveSets(prev => ({ ...prev, [dragTarget.id]: { ...prev[dragTarget.id], x: px - dragOffsetRef.current.x, y: py - dragOffsetRef.current.y } }));
     } else {
-        const dragId = dragTarget.id;
-        setChips(prev => prev.map(c => c.id === dragId ? { ...c, x: px - dragOffsetRef.current.x, y: py - dragOffsetRef.current.y } : c));
+        setChips(prev => prev.map(c => c.id === dragTarget.id ? { ...c, x: px - dragOffsetRef.current.x, y: py - dragOffsetRef.current.y } : c));
     }
   };
 
-  if (!currentStep || !data) return null; // Safety guard
+  const getSlotPos = (zone) => {
+    const l = computeLayout(); if (!l) return { x: 0, y: 0 };
+    const { c1, c2, r, cy, width, height, offset } = l;
+    if (zone === 'left') return { x: c1.x - (l.isDisjoint ? 0 : offset * 0.85), y: cy };
+    if (zone === 'right') return { x: c2.x + (l.isDisjoint ? 0 : offset * 0.85), y: cy };
+    if (zone === 'center' || zone === 'intersection') return { x: width/2, y: cy };
+    if (zone === 'outside') return { x: width - (l.isMobile ? 10 : 20) - 50, y: height - (l.isMobile ? 10 : 20) - 55 };
+    return { x: width/2, y: cy };
+  };
+
+  if (!currentStep || !data) return null;
+
+  // v7.1: Single-Input requirements
+  const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.engineType);
+
+  let interactiveZones = [];
+  if (currentStep.interaction === 'DIAGRAM_FILL' && currentStep.inputs) {
+      interactiveZones = currentStep.inputs.map(i => i.region);
+  } else if (!isSingleInput) { // STRICT GUARDBAND: Never obscure region visuals for single math questions
+      interactiveZones = ['left', 'center', 'right', 'outside'].filter(zone => {
+        const expectedRegions = REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion];
+        const isTarget = expectedRegions.includes(zone) || 
+                        (currentStep.targetZones && currentStep.targetZones.includes(zone));
+        const hasPrompt = (data.zones[zone] && data.zones[zone].includes('?'));
+        return isTarget || hasPrompt;
+      });
+  }
+
+  const showFallback = isSingleInput || (!['BINARY','DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM', 'DIAGRAM_FILL'].includes(currentStep.interaction) && interactiveZones.length === 0);
+
+  const isMobile = window.innerWidth <= 480;
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center p-0 sm:p-6 h-full w-full dark:bg-[#0F172A] bg-[#FDFBF7] font-jakarta transition-colors duration-300">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-xl dark:bg-[#1E293B] dark:border-white/10 bg-white border-slate-100 rounded-none sm:rounded-[2.5rem] shadow-2xl border p-4 sm:p-8 relative overflow-hidden flex flex-col">
-        <div className="flex gap-2 justify-center mb-6 sm:mb-8">{data.questions.map((_, i) => (<div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === stepIdx ? 'bg-amber-500 w-6' : (i < stepIdx ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700')}`} />))}</div>
-        <div className="flex items-center gap-2 mb-4"><Zap size={14} className="text-violet-500" /><div className="text-violet-500 font-black text-[10px] tracking-widest uppercase opacity-80">{data.topic} \u2022 {stepIdx + 1} / {data.questions.length}</div></div>
-        <h2 className="text-xl sm:text-2xl font-bold dark:text-white text-slate-900 mb-6 leading-snug" dangerouslySetInnerHTML={{ __html: currentStep.prompt }} />
-        <div className="relative w-full aspect-square sm:aspect-video rounded-3xl overflow-hidden mb-6 bg-slate-50 dark:bg-slate-900 border dark:border-white/5 border-slate-100 shadow-inner">
-            <canvas ref={canvasRef} className="w-full h-full block touch-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={() => draggingRef.current = null} onTouchStart={onMouseDown} onTouchMove={onMouseMove} onTouchEnd={() => draggingRef.current = null} />
-            {feedback.text && <div className={`absolute bottom-4 left-4 right-4 p-3 rounded-xl border text-[11px] font-black uppercase tracking-widest flex items-center gap-3 backdrop-blur-md ${feedback.type==='success'?'bg-emerald-500/10 border-emerald-500/20 text-emerald-500':'bg-rose-500/10 border-rose-500/20 text-rose-500'}`}>{feedback.text}</div>}
+    <div ref={containerRef} className={`flex flex-col items-center justify-center p-0 sm:p-6 h-full w-full ${isDark ? 'bg-[#0F172A]' : 'bg-[#FDFBF7]'} font-jakarta transition-colors duration-300`}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`w-full max-w-xl ${isDark ? 'bg-[#1E293B] border-white/10' : 'bg-white border-slate-100'} rounded-none sm:rounded-[2.5rem] shadow-2xl border p-4 sm:p-8 relative overflow-hidden flex flex-col`}>
+        {/* Header HUD */}
+        <div className="flex gap-2 justify-center mb-6">{data.questions.map((_, i) => (<div key={i} className={`w-2 h-2 rounded-full transition-all ${i === stepIdx ? 'bg-amber-500 w-6' : (i < stepIdx ? 'bg-emerald-500' : (isDark ? 'bg-slate-700' : 'bg-slate-200'))}`} />))}</div>
+        <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+                <Zap size={14} className="text-violet-500" />
+                <div className="text-violet-500 font-black text-[10px] tracking-widest uppercase opacity-80">{data.topic} &bull; {stepIdx + 1} / {data.questions.length}</div>
+            </div>
+            <button key="hint-btn" onClick={() => setIsHintVisible(!isHintVisible)} className={`p-2 rounded-xl transition-all ${isHintVisible ? 'bg-amber-500 text-white' : (isDark ? 'bg-slate-800' : 'bg-slate-100') + ' text-slate-400'}`}><Lightbulb size={18} /></button>
         </div>
-        {!isResolved && currentStep.interaction === 'BINARY' && (<div className="grid grid-cols-2 gap-4">{['Yes', 'No'].map(v => <button key={v} className={`h-16 rounded-2xl font-black text-xl border-2 transition-all ${userText===v?'bg-violet-600 text-white border-violet-600':'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-white/5 text-slate-500'}`} onClick={()=>setUserText(v)}>{v}</button>)}</div>)}
-        {!isResolved && !['BINARY','DRAG_SETS','DRAG_SORT'].includes(currentStep.interaction) && (<input type="text" className="w-full h-16 rounded-2xl text-center font-black text-2xl outline-none focus:ring-4 ring-violet-500/20 border-2 transition-all dark:bg-slate-800 dark:border-white/5 dark:text-white bg-slate-50 border-slate-100 text-slate-900" placeholder="Answer..." value={userText} onChange={e => setUserText(e.target.value)} />)}
-        <button disabled={!isResolved && !userText && !['DRAG_SETS','DRAG_SORT'].includes(currentStep.interaction)} className={`w-full mt-6 h-14 sm:h-16 rounded-[1.25rem] font-black text-xs sm:text-sm tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${isResolved ? 'bg-emerald-500 text-white shadow-emerald-500/20 active:scale-95' : 'bg-violet-600 text-white shadow-violet-600/20 active:scale-95'}`} onClick={handleInteraction}>{isResolved ? (stepIdx === data.questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP') : 'CHECK ANSWER'}</button>
+
+        <AnimatePresence>
+            {isHintVisible && (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className={`mb-4 p-4 rounded-2xl ${isDark ? 'bg-amber-900/20 border-amber-900/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-800'} border text-xs font-medium leading-relaxed`}>
+                    <span className="font-bold flex items-center gap-2 mb-1"><AlertCircle size={14} /> HINT:</span>
+                    {currentStep.hint || (data.universal_total ? `The sum of ALL zones (left, center, right, outside) must balance the Total: ${data.universal_total}.` : "Look closely at the overlap and counts!")}
+                </motion.div>
+            )}
+        </AnimatePresence>
+
+        <h2 className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'} mb-6 leading-snug`} dangerouslySetInnerHTML={{ __html: currentStep.prompt }} />
+        
+        <div className={`relative w-full aspect-square sm:aspect-video rounded-3xl overflow-hidden mb-6 ${isDark ? 'bg-slate-900 border-white/5' : 'bg-slate-50 border-slate-100'} border shadow-inner`}>
+            <AnimatePresence>
+                {data.universal_total && !['DRAG_SETS','DRAG_SORT'].includes(currentStep.interaction) && (Object.values(userAnswers).some(v => v !== '')) && (
+                    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-4 left-4 right-4 z-20 flex justify-center">
+                        <div className={`${isDark ? 'bg-slate-800/80 border-white/10' : 'bg-white/80 border-slate-200'} backdrop-blur-md px-4 py-2 rounded-full border shadow-lg flex items-center gap-3`}>
+                            <Compass size={14} className="text-violet-500" />
+                            <div className={`text-[11px] font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'} gap-1 flex items-center`}>
+                                {['left','center','right','outside'].map(reg => {
+                                    const val = data.zones[reg]?.[0]; if (!val) return null;
+                                    const ev = evaluateExpr(val, currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()));
+                                    return isNaN(ev) ? null : ev;
+                                }).filter(v => v !== null).join(' + ')}
+                                <span className="text-violet-500 mx-2">=</span>
+                                <span className={Math.abs((['left','center','right','outside'].reduce((acc, reg) => acc + (parseFloat(evaluateExpr(data.zones[reg]?.[0], currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()))) || 0), 0)) - (data.universal_total || 0)) < 0.1 ? "text-emerald-500" : "text-slate-400"}>
+                                    {['left','center','right','outside'].reduce((acc, reg) => acc + (parseFloat(evaluateExpr(data.zones[reg]?.[0], currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()))) || 0), 0)}
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <canvas ref={canvasRef} className="w-full h-full block touch-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={() => draggingRef.current = null} onTouchStart={onMouseDown} onTouchMove={onMouseMove} onTouchEnd={() => draggingRef.current = null} />
+            
+            {/* 🎯 GENTLE NEON HALO FOR TARGET (v7.1) */}
+            {!isResolved && interactiveZones.length > 0 && interactiveZones.map(zone => {
+                const pos = getSlotPos(zone);
+                return (
+                    <motion.div key={`halo-${zone}`} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2, repeat: Infinity }} style={{ position: 'absolute', left: pos.x - (isMobile ? 32 : 45), top: pos.y - (isMobile ? 20 : 25) }} className={`${isMobile ? 'w-[64px] h-[40px]' : 'w-[90px] h-[50px]'} rounded-2xl border-2 border-violet-500/30 blur-sm pointer-events-none`} />
+                );
+            })}
+
+            {/* 🎯 DISTRIBUTED INPUT SLOTS (OmniVenn v7.1 Revised) */}
+            {!isResolved && !isSingleInput && !['BINARY','DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction) && (
+                <div className="absolute inset-0 pointer-events-none">
+                    {interactiveZones.map(zone => {
+                        const pos = getSlotPos(zone); if (pos.x === 0) return null;
+                        return (
+                            <motion.div key={`slot-${zone}`} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ position: 'absolute', left: pos.x - (isMobile ? 28 : 40), top: pos.y - (isMobile ? 18 : 22) }} className="pointer-events-auto z-30">
+                                <input type="text" autoFocus className={`${isMobile ? 'w-14 h-9 text-base' : 'w-20 h-11 text-lg'} rounded-xl text-center font-black outline-none ring-4 ring-violet-500/20 border-2 border-violet-500 shadow-2xl bg-slate-900/90 backdrop-blur-md text-white placeholder-violet-300/30 transition-all focus:scale-110 active:scale-95`} placeholder="?" value={userAnswers[zone] || ''} onChange={e => setUserAnswers(prev => ({ ...prev, [zone]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleInteraction()} />
+                            </motion.div>
+                        );
+                    })}
+                </div>
+            )}
+
+        </div>
+
+        {/* 🛡️ FAIL-SAFE INPUT FIELD (v7.1) */}
+        {!isResolved && (showFallback || (interactiveZones.length > 0 && isSingleInput)) && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-center">
+                 {!['BINARY', 'CHOICE', 'DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction) && (
+                    <input type="text" className={`w-full h-16 rounded-2xl text-center font-black text-2xl outline-none focus:ring-4 ring-violet-500/20 border-2 transition-all ${isDark ? 'bg-slate-800 border-white/5 text-white' : 'bg-slate-50 border-slate-100 text-slate-900'}`} placeholder="Type answer..." value={Object.values(userAnswers).join('')} onChange={e => setUserAnswers({ [interactiveZones[0] || 'center']: e.target.value })} onKeyDown={e => e.key === 'Enter' && handleInteraction()} />
+                 )}
+            </motion.div>
+        )}
+
+        {!isResolved && currentStep.interaction === 'BINARY' && (<div className="grid grid-cols-2 gap-4 mt-2">{['Yes', 'No'].map(v => <button key={v} className={`h-16 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===v?'bg-violet-600 text-white border-violet-600' : (isDark ? 'bg-slate-800 border-white/5 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500')}`} onClick={()=>setUserAnswers({ center: v })}>{v}</button>)}</div>)}
+        {!isResolved && currentStep.interaction === 'CHOICE' && currentStep.options && (<div className="grid grid-cols-2 gap-4 mt-2">{currentStep.options.map(opt => <button key={opt} className={`h-16 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===opt?'border-violet-500 bg-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] scale-[1.02]' : (isDark ? 'bg-slate-800 border-white/10 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700') + ' active:scale-95'}`} onClick={()=>setUserAnswers({ center: opt })}>{opt}</button>)}</div>)}
+        
+        <button disabled={!isResolved && !Object.values(userAnswers).some(v => v !== '') && !['DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction)} 
+                className={`w-full mt-6 h-14 sm:h-16 rounded-[1.25rem] font-black text-xs sm:text-sm tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${feedback.text && !isResolved ? (feedback.type==='success' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-rose-500/20') : (isResolved ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-violet-600 text-white shadow-violet-600/20 active:scale-95')}`} 
+                onClick={handleInteraction}>
+            {feedback.text && !isResolved ? feedback.text : (isResolved ? (stepIdx === data.questions.length - 1 ? 'CONTINUE' : 'NEXT STEP') : 'CHECK ANSWER')}
+        </button>
       </motion.div>
     </div>
   );
 };
+
 export default SetTheoryEngine;

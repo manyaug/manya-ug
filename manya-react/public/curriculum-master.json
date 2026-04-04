@@ -690,6 +690,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: World Stage",
+                "file": "note_world_stage"
+              },
+              {
                 "label": "Extremes Of Africa",
                 "file": "extremes_of_africa"
               },
@@ -720,14 +724,6 @@
               {
                 "label": "Study Continents",
                 "file": "study_continents"
-              },
-              {
-                "label": "Study Landlocked",
-                "file": "study_landlocked"
-              },
-              {
-                "label": "Study Water Bodies",
-                "file": "study_water_bodies"
               }
             ],
             "practiceCount": 0
@@ -737,6 +733,10 @@
             "title": "2 Grid Master",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Grid System",
+                "file": "note_grid"
+              },
               {
                 "label": "Basics: Equator 0°",
                 "file": "quiz_grid_basics_01"
@@ -846,6 +846,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Time Calculations",
+                "file": "note_time_calc"
+              },
+              {
                 "label": "Recap Time Calc",
                 "file": "recap_time_calc"
               },
@@ -946,6 +950,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Water Bodies",
+                "file": "note_water_bodies"
+              },
+              {
                 "label": "Ocean: Largest Pacific",
                 "file": "quiz_water_01"
               },
@@ -1005,6 +1013,10 @@
             "title": "5 Coastal Features",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Coastal Features",
+                "file": "note_coastal_features"
+              },
               {
                 "label": "Gulf: Guinea",
                 "file": "quiz_coastal_01"
@@ -1098,6 +1110,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Regions & Capitals",
+                "file": "note_regionals_capitals"
+              },
+              {
                 "label": "Region: East Africa",
                 "file": "quiz_reg_cap_01"
               },
@@ -1165,6 +1181,10 @@
             "title": "7 Landlocked Countries",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Landlocked Countries",
+                "file": "note_landlocked"
+              },
               {
                 "label": "Recap: Landlocked Nations",
                 "file": "recap_landlocked"

@@ -203,14 +203,54 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
     const dominantMastery = Object.values(subjectMasteryMap)[0] || 'learning';
     const questLength = calculateDynamicQuestLength(nodeType, frustration.score, dominantMastery);
 
-    // 1. SELECT MCQs adaptively
-    let availableQuestions = allQuestions;
+    // 1. DISCOVERY & HYDRATION (v4.7)
+    // We separate DB rows into MCQs and Simulation Pointers
+    const mcqPool = [];
+    const discoveredSims = [];
+    const usedJsonFiles = new Set();
+    const cleanName = (n) => n ? n.toLowerCase().replace(/\.json$/, '').replace(/\\/g, '/').split('/').pop() : "";
+
+    allQuestions.forEach(q => {
+        const jsonRef = (q.json_reference_path && q.json_reference_path !== 'null') ? q.json_reference_path : null;
+        const normType = (q.questiontype || q.type || "").toLowerCase();
+        const normEngine = (q.engine_type || "").toUpperCase();
+        const isSimPointer = jsonRef || normType.includes('simulation') || normEngine === 'SIM';
+
+        if (isSimPointer) {
+            // Try to HYDRATE this pointer with a real JSON resource
+            const dbFileName = cleanName(q.filename || jsonRef);
+            
+            const matchingSim = simResources.find(s => {
+                const sName = cleanName(s.file || s.id);
+                return sName && (sName === dbFileName || dbFileName.includes(sName) || sName.includes(dbFileName));
+            });
+
+            if (matchingSim) {
+                console.log(`🧠 [Discovery] HYDRATED: DB Pointer "${dbFileName}" -> JSON "${cleanName(matchingSim.file)}"`);
+                discoveredSims.push({
+                    ...matchingSim,
+                    ...q, 
+                    id: matchingSim.id || q.id,
+                    isSimulation: true,
+                    source: 'hybrid_sim'
+                });
+                if (matchingSim.file) usedJsonFiles.add(matchingSim.file.toLowerCase());
+            } else {
+                console.warn(`🧠 [Discovery] FAIL: No JSON match for DB Pointer "${dbFileName}". Pool has ${simResources.length} items. [${simResources.map(s => cleanName(s.file)).slice(0, 5).join(', ')}...]`);
+            }
+        } else {
+            mcqPool.push(q);
+        }
+    });
+
+    // 2. SELECT MCQs adaptively
+    let availableQuestions = mcqPool;
     if (nodeType === 'MASTERY') {
-        const strictQuestions = allQuestions.filter(q => 
+        const strictQuestions = availableQuestions.filter(q => 
             (q.difficulty === 'hard' || q.difficulty === 'H') && 
             (q.pool === 'yes' || q.isPLE || q.is_ple)
         );
-        availableQuestions = strictQuestions.length > 0 ? strictQuestions : allQuestions;
+        availableQuestions = strictQuestions.length > 0 ? strictQuestions : availableQuestions;
     }
 
     const mcqCandidates = await Promise.all(availableQuestions.map(async q => {
@@ -227,20 +267,20 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         selectedMCQs.push(q);
     }
 
-    // 2. PREPARE SIMULATIONS
-    const selectedSims = simResources.map(sim => {
-        // DETERMINISTIC ID: Use existing ID or filename-based ID (crucial for rep guard)
-        const stableId = sim.id || (sim.file ? `sim_${sim.file.replace('.json', '')}` : `sim_${Math.random().toString(36).substr(2, 5)}`);
-        return {
+    // 3. PREPARE SIMULATIONS (Merge Discovered + Fresh JSONs)
+    const freshJsonSims = simResources
+        .filter(s => s.file && !usedJsonFiles.has(s.file.toLowerCase()))
+        .map(sim => ({
             ...sim,
-            id: stableId,
+            id: sim.id || (sim.file ? `sim_${sim.file.replace('.json', '')}` : `sim_${Math.random().toString(36).substr(2, 5)}`),
             isSimulation: true,
             source: 'json_sim'
-        };
-    });
+        }));
+
+    const allSimCandidates = [...discoveredSims, ...freshJsonSims];
 
     // Filter out recently seen simulations
-    const filteredSims = selectedSims.filter(sim => {
+    const filteredSims = allSimCandidates.filter(sim => {
         const lastSeen = history.filter(h => h.questionId === sim.id).pop();
         if (!lastSeen) return true;
         const hoursSince = (Date.now() - new Date(lastSeen.answeredAt).getTime()) / (1000 * 60 * 60);
@@ -248,7 +288,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
     });
 
     // Shuffle sims for variety
-    const finalizedSims = (filteredSims.length > 0 ? filteredSims : selectedSims); 
+    const finalizedSims = (filteredSims.length > 0 ? filteredSims : allSimCandidates); 
     finalizedSims.sort(() => 0.5 - Math.random());
 
     // 3. INTERLEAVE MCQs AND SIMs
@@ -261,22 +301,27 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
     const totalTarget = Math.max(mcqTargetCount, simStack.length);
 
     while (finalQuestions.length < totalTarget && (mcqStack.length > 0 || simStack.length > 0)) {
-        // Interleave logic: 
-        // WARMUP/PRACTICE: 1 Sim, 1 MCQ
-        // REINFORCE/MASTERY: 2 Sims, 1 MCQ
-        const simFrequency = (nodeType === 'REINFORCE' || nodeType === 'MASTERY') ? 2 : 1;
-
-        for (let i = 0; i < simFrequency; i++) {
-            if (simStack.length > 0) finalQuestions.push(simStack.pop());
+        // Interleave logic (v4.5): 
+        // ─── PEDAGOGY: MCQs FIRST ───
+        const mcqBatchSize = (nodeType === 'WARMUP' || nodeType === 'PRACTICE') ? 2 : 1;
+        
+        for (let i = 0; i < mcqBatchSize; i++) {
+            if (mcqStack.length > 0 && finalQuestions.length < totalTarget) {
+                finalQuestions.push(mcqStack.pop());
+            }
         }
-        if (mcqStack.length > 0 && finalQuestions.length < totalTarget) {
-            finalQuestions.push(mcqStack.pop());
+
+        const simFrequency = (nodeType === 'REINFORCE' || nodeType === 'MASTERY') ? 2 : 1;
+        for (let i = 0; i < simFrequency; i++) {
+            if (simStack.length > 0 && finalQuestions.length < totalTarget) {
+                finalQuestions.push(simStack.pop());
+            }
         }
         
         if (finalQuestions.length >= 30) break;
     }
 
-    console.log(`\ud83c\udfaf [Adaptive] ${nodeType} final quest: ${finalQuestions.length} steps (${selectedSims.length} sims, ${selectedMCQs.length} MCQs)`);
+    console.log(`\ud83c\udfaf [Adaptive] ${nodeType} final quest: ${finalQuestions.length} steps (${allSimCandidates.length} sims, ${selectedMCQs.length} MCQs)`);
 
         return {
             questions: finalQuestions,

@@ -521,57 +521,67 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
   };
 
   return (
-    <div className="globe-engine-root flex flex-col h-full bg-[var(--bg-main)] overflow-hidden">
-      <style>{`
-        .globe-engine-root { --accent: #f59e0b; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .tab-btn.active { background: var(--accent); color: white !important; }
-        .glass-sheet { 
-          background: ${isDark ? 'rgba(21, 25, 33, 1)' : 'rgba(255, 255, 255, 1)'};
-          backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-          border-top: 2px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
-          color: ${isDark ? '#f8fafc' : '#0f172a'};
-        }
-        .tab-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 4px; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .tab-btn { font-size: 8px !important; padding: 4px 8px !important; border-radius: 6px; flex: 1 1 auto; max-width: 100px; text-align: center; font-weight: 800; border: 1px solid transparent; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-      `}</style>
-
-      <div className="relative w-full h-[40vh] flex-shrink-0 flex items-center justify-center overflow-hidden">
-        <canvas ref={canvasRef} className="w-full h-full drop-shadow-xl" />
-        <div className="absolute top-3 right-3">
-           <button onClick={() => focusOn([0, 0], 1.2)} className="w-8 h-8 rounded-lg bg-black/10 flex items-center justify-center backdrop-blur shadow-sm text-sky-500">
-             <Navigation className="w-4 h-4" />
-           </button>
+      <div className="globe-engine-root flex flex-col h-full bg-[var(--bg-main)] overflow-hidden">
+        <style>{`
+          .globe-engine-root { font-family: 'Plus Jakarta Sans', sans-serif; }
+          .glass-sheet { 
+            background: var(--bg-card);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+          }
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+        `}</style>
+  
+        <div className="relative w-full h-[45vh] flex-shrink-0 flex items-center justify-center overflow-hidden">
+          {/* Subtle atmospheric gradient behind globe */}
+          <div className="absolute inset-0 bg-gradient-to-b from-sky-400/20 to-transparent dark:from-sky-900/20 dark:to-transparent pointer-events-none" />
+          <canvas ref={canvasRef} className="w-full h-full drop-shadow-2xl" />
+          <div className="absolute top-4 right-4">
+             <button onClick={() => focusOn([0, 0], 1.2)} className="w-10 h-10 rounded-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md shadow-lg border border-white/20 dark:border-white/10 flex items-center justify-center text-sky-500 active:scale-90 transition-transform">
+               <Navigation className="w-5 h-5 drop-shadow-md" />
+             </button>
+          </div>
         </div>
-      </div>
 
-      <div className="glass-sheet flex-1 rounded-t-[32px] shadow-2xl relative z-30 flex flex-col overflow-hidden">
-        <div className="w-8 h-1 bg-current opacity-10 rounded-full mx-auto mt-3 mb-1" />
+      <div className="glass-sheet flex-1 rounded-t-[32px] relative z-30 flex flex-col overflow-hidden">
+        <div className="w-12 h-1.5 bg-black/10 dark:bg-white/20 rounded-full mx-auto mt-4 mb-2" />
 
         {data.mode === 'study' && (
-          <div className="tab-grid">
+          <div className="flex overflow-x-auto gap-2 px-4 py-3 no-scrollbar sticky top-0 z-10 bg-[var(--bg-card)]/80 backdrop-blur-md">
             {data.cases.map((c, i) => (
-              <button key={i} onClick={() => setActiveTab(i)} className={`tab-btn uppercase ${activeTab === i ? 'active' : 'opacity-40'}`}>
+              <button 
+                key={i} 
+                onClick={() => setActiveTab(i)} 
+                className={`uppercase text-[10px] whitespace-nowrap px-4 py-2 font-black rounded-full transition-all active:scale-95 ${
+                  activeTab === i 
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/30' 
+                    : 'bg-black/5 dark:bg-white/5 text-[var(--text-muted)] hover:bg-black/10 dark:hover:bg-white/10'
+                }`}
+              >
                 {c.tabTitle}
               </button>
             ))}
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-4 pt-1 pb-10 space-y-3 no-scrollbar">
+        <div className="flex-1 overflow-y-auto px-5 pt-2 pb-10 space-y-4 no-scrollbar text-[var(--text-main)]">
           {data.mode === 'study' && (
-            <div className="space-y-3">
-              <h1 className={`text-[15px] uppercase font-black tracking-wide leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{data.cases[activeTab].title}</h1>
-              <div className="space-y-2">
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <h1 className="text-[17px] uppercase font-black tracking-wide leading-tight mt-2 text-center text-sky-500 dark:text-sky-400">
+                {data.cases[activeTab].title}
+              </h1>
+              <div className="space-y-3 mt-4">
                 {data.cases[activeTab].steps.map((step, i) => (
-                  <div key={i} className={`flex gap-3 text-[11px] font-bold border-b pb-2 ${isDark ? 'text-slate-200 border-white/5' : 'text-slate-800 border-black/5'}`}>
-                    <span className="text-amber-500">{i + 1}.</span>
-                    <p className="opacity-95" dangerouslySetInnerHTML={{ __html: step }} />
+                  <div key={i} className="flex gap-3 items-start p-3.5 rounded-2xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 shadow-sm">
+                    <div className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center font-black text-[11px] shadow-inner shadow-amber-500/30">
+                      {i + 1}
+                    </div>
+                    <p className="text-[12px] font-bold leading-relaxed opacity-90 pt-0.5" dangerouslySetInnerHTML={{ __html: step }} />
                   </div>
                 ))}
               </div>
               
-              {/* Localized Finish Button for Study Mode */}
               <button 
                 onClick={() => {
                   if (onComplete) onComplete({
@@ -581,7 +591,7 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
                     type: 'study'
                   });
                 }}
-                className="w-full mt-4 py-3 rounded-2xl bg-sky-500 text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-transform"
+                className="w-full mt-6 py-3.5 rounded-2xl bg-sky-500 text-white font-black text-[13px] uppercase tracking-widest shadow-xl shadow-sky-500/20 active:scale-95 transition-all outline-none focus:ring-4 ring-sky-500/30"
               >
                 Finish Activity
               </button>
@@ -589,40 +599,60 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
           )}
 
           {data.mode === 'quiz' && (
-            <div className="space-y-3">
+            <div className="space-y-4 pt-2 animate-in slide-in-from-right-4 duration-300">
               <div className="flex flex-col items-center">
-                <span className={`text-[8px] font-black tracking-widest uppercase opacity-40`}>STAGE {activeTab + 1}</span>
+                <span className="text-[9px] font-black tracking-[0.2em] uppercase text-sky-500/80 bg-sky-500/10 px-3 py-1 rounded-full">
+                  STAGE {activeTab + 1}
+                </span>
               </div>
               
-              <div className={`${isDark ? 'bg-white/5' : 'bg-black/5'} p-3 rounded-2xl`}>
-                <p className="text-xs font-black leading-relaxed text-center">
+              <div 
+                className="p-5 rounded-3xl border shadow-sm relative overflow-hidden"
+                style={{ backgroundColor: 'var(--bg-main)', borderColor: 'rgba(0,0,0,0.1)' }}
+              >
+                {/* Decorative blob */}
+                <div className="absolute -top-10 -right-10 w-24 h-24 bg-sky-500/10 rounded-full blur-2xl" />
+                <p 
+                  className="text-[14px] font-black leading-relaxed text-center relative z-10"
+                  style={{ color: 'var(--text-main)' }}
+                >
                   {data.questions[activeTab].question}
                 </p>
               </div>
 
-              <div className="grid gap-1">
+              <div className="grid gap-2 outline-none">
                 {data.questions[activeTab].options.map((opt, i) => {
                   const isSelected = selectedQuizOpt === opt;
                   const isCorrect = quizFeedback?.type === 'success' && opt === data.questions[activeTab].correctAnswer;
                   const isWrong = quizFeedback?.type === 'error' && opt === quizFeedback.selectedOpt;
+
+                  let bgColor = 'var(--bg-card)';
+                  let textColor = 'var(--text-main)';
+                  let borderColor = 'rgba(0,0,0,0.1)';
+
+                  if (isCorrect) {
+                     bgColor = '#22c55e'; textColor = '#ffffff'; borderColor = '#16a34a';
+                  } else if (isWrong) {
+                     bgColor = '#f43f5e'; textColor = '#ffffff'; borderColor = '#e11d48';
+                  } else if (isSelected) {
+                     bgColor = 'var(--accent, #0ea5e9)'; textColor = '#ffffff'; borderColor = 'var(--accent, #0284c7)';
+                  }
 
                   return (
                     <button
                       key={i}
                       disabled={quizFeedback?.type === 'success'}
                       onClick={() => handleQuizAnswer(opt)}
-                      className={`w-full p-2.5 rounded-lg text-left font-bold text-[11px] border-2 transition-all flex items-center justify-between ${
-                        isCorrect
-                          ? 'bg-green-500/10 border-green-500 text-green-600'
-                          : isWrong
-                            ? 'bg-rose-500/10 border-rose-500 text-rose-600'
-                            : isSelected
-                              ? 'bg-sky-500/10 border-sky-500 text-sky-600 shadow-sm'
-                              : `${isDark ? 'bg-white/5 border-white/5' : 'bg-black/5 border-black/5'}`
-                      }`}
+                      className={`w-full p-4 rounded-2xl text-left font-black text-[12px] border transition-all active:scale-[0.98] outline-none flex items-center justify-between shadow-sm ${isSelected ? 'transform -translate-y-1' : ''}`}
+                      style={{ backgroundColor: bgColor, color: textColor, borderColor: borderColor }}
                     >
-                      <span>{opt}</span>
-                      {isSelected && !quizFeedback && <div className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" />}
+                      <span className="flex-1 pr-3">{opt}</span>
+                      {isSelected && !quizFeedback && (
+                         <div className="w-5 h-5 rounded-full bg-white text-sky-500 flex items-center justify-center animate-pulse shadow-sm">
+                            <div className="w-2 h-2 rounded-full bg-sky-500" />
+                         </div>
+                      )}
+                      {isCorrect && <CheckCircle2 className="w-5 h-5 text-white animate-in zoom-in" />}
                     </button>
                   );
                 })}
@@ -631,7 +661,7 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
               {selectedQuizOpt && !quizFeedback && (
                 <button
                   onClick={submitQuizAnswer}
-                  className="w-full py-1.5 bg-sky-500 text-white rounded-lg font-black text-[10px] uppercase tracking-widest shadow-lg shadow-sky-500/20 mt-1"
+                  className="w-full py-3.5 bg-sky-500 text-white rounded-2xl font-black text-[13px] uppercase tracking-widest shadow-xl shadow-sky-500/20 mt-4 active:scale-95 transition-transform animate-in slide-in-from-bottom-2"
                 >
                   SUBMIT
                 </button>
@@ -640,10 +670,14 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
           )}
 
           {data.mode === 'puzzle' && (
-             <div className="grid grid-cols-2 gap-2 pt-2">
+             <div className="grid grid-cols-2 gap-3 pt-4">
                 {data.pieces?.map((p, i) => (
                   <div key={i} onMouseDown={e => handleDragStart(e, p)} onTouchStart={e => handleDragStart(e, p)}
-                       className={`p-3 rounded-xl text-center font-black text-[10px] border-2 uppercase ${placedPieces.includes(p.id) ? 'bg-green-500/10 border-green-500 text-green-500 opacity-50' : 'bg-black/5 border-black/10'}`}>
+                       className={`p-3.5 rounded-2xl text-center font-black text-[11px] border-2 uppercase transition-all shadow-sm active:scale-90 select-none cursor-grab active:cursor-grabbing ${
+                         placedPieces.includes(p.id) 
+                           ? 'bg-green-500/10 border-green-500/50 text-green-500 opacity-50 scale-95' 
+                           : 'bg-white border-black/10 dark:bg-black/20 dark:border-white/10 dark:text-slate-300 shadow-black/5'
+                       }`}>
                     {p.label}
                   </div>
                 ))}

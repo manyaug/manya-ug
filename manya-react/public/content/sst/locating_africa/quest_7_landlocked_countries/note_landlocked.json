@@ -1,0 +1,65 @@
+{
+    "topic": "Locating Africa on the World Stage",
+    "subtopic": "Landlocked Countries",
+    "mode": "note_explorer",
+    "study_notes": {
+        "title": "Understanding Landlocked Countries in Africa",
+        "definition": "A landlocked country is a sovereign state that has no direct territorial access to a sea or ocean.",
+        "key_facts": [
+            "Africa has 16 landlocked countries, making it the continent with the highest number of landlocked nations in the world.",
+            "An 'enclave' is a special type of landlocked country that is entirely surrounded by the territory of one single country. Example: Lesotho (completely surrounded by South Africa).",
+            "Chad is the largest landlocked country in Africa by land area.",
+            "Ethiopia is the most populated landlocked country in the world.",
+            "South Sudan is Africa's newest landlocked country (gained independence in 2011).",
+            "Ethiopia became landlocked in 1993 when its coastal province of Eritrea gained independence."
+        ],
+        "examples_by_region": {
+            "East_Africa": [
+                "Uganda",
+                "Rwanda",
+                "Burundi",
+                "South Sudan",
+                "Ethiopia"
+            ],
+            "Southern_Africa": [
+                "Zambia",
+                "Zimbabwe",
+                "Malawi",
+                "Botswana",
+                "Lesotho",
+                "Eswatini (formerly Swaziland)"
+            ],
+            "West_and_Central_Africa": [
+                "Mali",
+                "Niger",
+                "Burkina Faso",
+                "Chad",
+                "Central African Republic (CAR)"
+            ]
+        },
+        "problems_faced": [
+            "High transport and transit costs for importing and exporting goods.",
+            "Delays in the clearance of cargo at foreign coastal seaports and border posts.",
+            "High final prices of imported goods for citizens due to added transportation costs.",
+            "Over-reliance on the political stability and infrastructure (roads/railways) of coastal neighbors.",
+            "Vulnerability during conflicts: Goods can be easily blocked if there is a war, strike, or political instability in the transit country.",
+            "High rates of smuggling across borders to avoid heavy transit taxes, leading to loss of government revenue.",
+            "Lack of direct access to marine resources like deep-sea fishing."
+        ],
+        "solutions_to_problems": [
+            "Promoting good diplomatic relations and peaceful co-existence with coastal neighbors.",
+            "Joining regional economic blocs (like the East African Community - EAC, or COMESA) to negotiate lower tariffs, Single Customs Territories, and free movement of goods.",
+            "Establishing 'Dry Ports' (Inland Container Depots) inside the country to clear customs and pay taxes locally, reducing delays at the ocean port.",
+            "Developing and maintaining reliable internal transport networks (railways and highways) that connect directly to the coast.",
+            "Diversifying trade routes (using more than one seaport) to avoid relying on a single neighbor in case of emergencies.",
+            "Using air transport for light, perishable, or highly valuable goods to bypass land borders."
+        ],
+        "ugandas_strategic_position": {
+            "main_seaports_used": [
+                "The Port of Mombasa in Kenya (accessed via the Northern Corridor road and rail network).",
+                "The Port of Dar es Salaam in Tanzania (accessed via the Central Corridor)."
+            ],
+            "inland_water_advantage": "Uganda uses Lake Victoria as a cheap inland water highway. Wagon ferries transport heavy cargo directly across the lake to the railway heads at Kisumu (Kenya) and Mwanza (Tanzania), reducing road transit costs."
+        }
+    }
+}

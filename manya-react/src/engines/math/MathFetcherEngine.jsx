@@ -59,7 +59,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
         </div>
     );
 
-    const engineType = simData.engineType || simData.type || 'IMAGE_HOTSPOTS';
+    const engineType = (simData.engineType || simData.type || 'IMAGE_HOTSPOTS').toUpperCase();
 
     const handleSimComplete = (results) => {
         // results may come from common engines; resultRef.current may come from specialized engines
@@ -128,6 +128,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
         case 'PIZZA_GAME':
             return <PizzaGameEngine {...sharedProps} />;
         
+        case 'BINARY_GENERATOR':
         case 'BINARY_GAME':
             return <BinaryGameEngine {...sharedProps} />;
         
@@ -332,7 +333,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             }
         };
         loadQuestions();
-    }, [topicId, nodeType, questKey]);
+    }, [topicId, nodeType, questKey, data?.simResources]);
 
 
 
@@ -459,15 +460,16 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             setGemsEarned(g => g + totalGems);
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
+
+            // ─── SEAMLESS AUTO-ADVANCE (v4.2) ───
+            // After a correct answer, wait 800ms to show the green state, then glide to next question.
+            setTimeout(() => nextQuestion(), 800);
+        } else {
+            // Wrong answer: Wait 500ms then show the Absolute Solution Portal
+            setTimeout(() => setShowExplanation(true), 500);
         }
 
         const hesitation = calculateHesitation({ answerChanged, changeCount, timeSpentMs, hintUsed });
-
-        if (hesitation.level === 'high') {
-            console.log('😰 High hesitation:', hesitation.events);
-        }
-
-        setTimeout(() => setShowExplanation(true), 500);
     };
 
     const nextQuestion = () => {
@@ -787,11 +789,17 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         // Use session from Redux state (already imported above)
         const frustration = calculateFrustration(session);
 
-        // ── SIMULATION / PUZZLE / RECAP VIEW ──
-        if (q.isSimulation || q.type === 'STUDY_RECAP' || q.type === 'INTERACTIVE_PUZZLE') {
+        // ── SIMULATION / PUZZLE / RECAP VIEW (v4.3 detects bank-sims) ──
+        const isSimulation = q.isSimulation || 
+                            q.type === 'STUDY_RECAP' || 
+                            q.type === 'INTERACTIVE_PUZZLE' ||
+                            (q.question || "").toLowerCase().includes('interactive study');
+
+        if (isSimulation) {
             return (
                 <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative">
                      <SimulatorBridge 
+                        key={q.id || currentIdx}
                         step={q} 
                         onComplete={(results) => {
                             // If engine provides USP, use its logic
@@ -900,13 +908,22 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                     {/* ── QUESTION TEXT ── */}
                     <div className="bg-[var(--bg-card)] rounded-[2rem] border-2 border-[var(--border-color)] px-6 py-6 mb-4 shadow-xl flex-shrink-0"
                          style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="w-5 h-5 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                                <Compass size={12} className="text-amber-500" />
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 bg-amber-500/10 rounded-lg flex items-center justify-center">
+                                    <Compass size={12} className="text-amber-500" />
+                                </div>
+                                <span className="text-amber-500 font-black text-[9px] tracking-widest uppercase opacity-80">
+                                    {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'Practice'} · {currentIdx + 1}/{questions.length}
+                                </span>
                             </div>
-                            <span className="text-amber-500 font-black text-[9px] tracking-widest uppercase opacity-80">
-                                {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'Practice'} · {currentIdx + 1}/{questions.length}
-                            </span>
+                            
+                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE */}
+                            {!isAnswered && q.hint && (
+                                <button key="hint-btn" onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                                    <Lightbulb size={18} />
+                                </button>
+                            )}
                         </div>
                         <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">
                             {q.question}
@@ -945,11 +962,6 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                     </div>
 
                     {/* ── HINT (only before answer) ── */}
-                    {!isAnswered && !hintUsed && q.hint && (
-                        <button onClick={showHint} className="mt-3 text-xs text-amber-500 font-bold flex items-center gap-1 mx-auto opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
-                            <Lightbulb size={12} /> Use Hint (−gems)
-                        </button>
-                    )}
                     {hintUsed && !isAnswered && (
                         <div className="mt-3 bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0">
                             <div className="flex items-center gap-2 mb-1">
@@ -977,28 +989,6 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                     )}
                 </div>
 
-                {/* ── CORRECT FLASH (full-screen overlay, no solution) ── */}
-                {isAnswered && selectedOption === q.answer && (
-                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 animate-in fade-in duration-300"
-                         style={{ background: 'rgba(240,253,244,0.96)', backdropFilter: 'blur(6px)' }}>
-                        <div style={{ fontSize: 68, animation: 'mcqBurstPop 0.45s cubic-bezier(0.34,1.56,0.64,1)' }}>🎯</div>
-                        <div style={{ fontWeight: 950, fontSize: 26, color: '#15803d', letterSpacing: '-0.5px' }}>CORRECT!</div>
-                        {q.points && <div style={{ background: '#dcfce7', color: '#16a34a', borderRadius: 100, padding: '4px 16px', fontWeight: 800, fontSize: 13 }}>+{q.points} pts</div>}
-                        <button
-                            onClick={nextQuestion}
-                            style={{
-                                marginTop: 8, display: 'flex', alignItems: 'center', gap: 8,
-                                height: 54, paddingLeft: 32, paddingRight: 32,
-                                borderRadius: 18, border: 'none',
-                                background: '#22c55e', color: 'white',
-                                fontWeight: 950, fontSize: 15, letterSpacing: 0.5,
-                                boxShadow: '0 6px 0 #15803d', cursor: 'pointer'
-                            }}
-                        >
-                            {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'Continue'} <ArrowRight size={18} strokeWidth={3} />
-                        </button>
-                    </div>
-                )}
 
                 {/* ── WRONG: SOLUTION POPUP (PORTAL TO BODY) ── */}
                 {isAnswered && selectedOption !== q.answer && showExplanation && createPortal(

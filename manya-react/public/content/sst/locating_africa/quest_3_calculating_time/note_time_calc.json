@@ -1,0 +1,52 @@
+{
+    "topic": "Locating Africa on the World Stage",
+    "subtopic": "Calculating Time",
+    "mode": "note_explorer",
+    "study_notes": {
+        "title": "Understanding Longitudes and Time Calculations",
+        "introduction": "Because the Earth is a sphere that rotates on its axis from West to East, different parts of the world face the sun at different times. Places located further East experience sunrise and sunset earlier than places to the West. Geographers use lines of longitude (meridians) to calculate these exact time differences.",
+        "the_golden_rules_of_time": [
+            "The Earth rotates 360 degrees in 24 hours.",
+            "The Earth rotates 15 degrees every 1 hour (360 ÷ 24 = 15).",
+            "The Earth takes 4 minutes to rotate through 1 degree of longitude (60 minutes ÷ 15 = 4).",
+            "East is Ahead: If you move East, time is later (Add time).",
+            "West is Behind: If you move West, time is earlier (Subtract time)."
+        ],
+        "important_time_reference_points": {
+            "Greenwich_Mean_Time_GMT": "The baseline for all world time, located at 0° longitude (the Prime Meridian) in Greenwich, London. In Africa, Accra (Ghana) lies exactly on this line.",
+            "East_African_Standard_Time_EAST": "The time zone used by Uganda, Kenya, and Tanzania. It is based on the 45° East longitude. Therefore, East Africa is exactly 3 hours ahead of GMT (45 ÷ 15 = 3).",
+            "The_International_Date_Line_IDL": "An imaginary line located at 180° longitude in the Pacific Ocean where the calendar day officially changes. It zig-zags to avoid cutting single countries into two different days."
+        },
+        "crossing_the_international_date_line": [
+            "Crossing from East to West (e.g., Americas to Asia): You move forward into the next time zone cycle, effectively skipping or 'losing' a calendar day (e.g., Tuesday instantly becomes Wednesday).",
+            "Crossing from West to East (e.g., Asia to Americas): You go back in time by 24 hours, effectively repeating or 'gaining' a calendar day (e.g., Wednesday goes back to Tuesday)."
+        ],
+        "time_zones": [
+            "A standard time zone represents a 15-degree slice of the Earth (equal to 1 hour).",
+            "Countries with a very wide landmass from West to East (like the DRC or Russia) must use multiple standard time zones because solar time differs greatly from one side of the country to the other."
+        ],
+        "how_to_calculate_time": {
+            "description": "To find the time of a new place when given the time of another place:",
+            "steps": [
+                "Step 1: Find the difference in degrees of longitude. (If both places are East or both are West, subtract them. If one is East and one is West, add them).",
+                "Step 2: Convert the degree difference into hours by dividing by 15 (or into minutes by multiplying by 4).",
+                "Step 3: Determine direction. If the place you are looking for is further East, ADD the time. If it is further West, SUBTRACT the time."
+            ],
+            "example": "If it is 10:00 a.m. in Kigali (30°E), what time is it in London (0°)? \n1. Difference in degrees = 30° - 0° = 30°.\n2. Convert to time: 30 ÷ 15 = 2 hours.\n3. London is West of Kigali, so subtract: 10:00 a.m. - 2 hours = 8:00 a.m."
+        },
+        "how_to_calculate_longitude": {
+            "description": "To find the longitude of a place when given the time difference:",
+            "steps": [
+                "Step 1: Find the difference in time (in hours) between the two places.",
+                "Step 2: Convert the hours into degrees by multiplying by 15.",
+                "Step 3: Determine the hemisphere. If the local time of the unknown place is ahead, it is East. If the local time is behind, it is West."
+            ],
+            "example": "It is 12:00 noon at the Prime Meridian (0°). At what longitude is the local time 6:00 p.m.? \n1. Time difference = 6 hours (from 12:00 noon to 6:00 p.m.).\n2. Convert to degrees: 6 x 15 = 90°.\n3. 6:00 p.m. is ahead of 12:00 noon, so the direction is East. Answer: 90° East."
+        },
+        "key_vocabulary": [
+            "A.M. (Ante Meridiem): Time before midday (midnight to 11:59 morning).",
+            "P.M. (Post Meridiem): Time after midday (12:00 noon to 11:59 night).",
+            "Solar Time: Time based on the position of the sun in the sky (e.g., noon is when the sun is exactly overhead)."
+        ]
+    }
+}
