@@ -1,0 +1,63 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Posture and Teeth",
+    "study_notes": {
+        "title": "Maintaining Good Posture and Dental Health",
+        "introduction": "The skeletal and muscular systems work together to provide structure, support, and the ability to chew food. Maintaining correct body posture and regular dental hygiene are essential habits for a healthy musculoskeletal system.",
+        "body_posture": {
+            "definition": "The habitual way a person positions their body while sitting, standing, or moving (walking/running).",
+            "importance": [
+                "Keeps the spine in its natural 'S-shape', preventing permanent bone deformities.",
+                "Prevents muscle strain, fatigue, and chronic backaches.",
+                "Allows internal organs (stomach and lungs) sufficient space to function efficiently.",
+                "Promotes a confident, smart, and healthy appearance."
+            ],
+            "rules_for_good_posture": [
+                "Sitting: Sit upright with the back against the chair's support, both feet flat on the floor.",
+                "Standing: Keep the head high, chin level, and shoulders relaxed.",
+                "Walking: Keep the back straight and swing arms rhythmically.",
+                "Sleeping: Use a firm surface/mattress to prevent spinal twisting.",
+                "Carrying bags: Distribute weight evenly across both shoulders to prevent scoliosis (sideways spinal curve)."
+            ]
+        },
+        "postural_disorders": {
+            "scoliosis": "A permanent, abnormal sideways curvature of the spine (often caused by uneven weight-bearing, like carrying bags on one shoulder).",
+            "kyphosis": "An excessive outward curvature of the upper back, commonly known as a hunchback.",
+            "lordosis": "An excessive inward curve of the lower back, often called a 'swayback'.",
+            "consequences": "Deformed bones, chronic pain, restricted breathing due to chest compression, and indigestion."
+        },
+        "dental_health": {
+            "teeth_anatomy": [
+                "Enamel: The hard, outer white layer; the hardest substance in the human body.",
+                "Dentine: The bone-like layer under the enamel that forms the bulk of the tooth.",
+                "Pulp Cavity: The living center containing nerves (for pain) and blood vessels (for nutrients).",
+                "Cementum: The tissue anchoring the tooth root to the jawbone."
+            ],
+            "types_of_teeth": {
+                "incisors": "Chisel-shaped; used for biting and cutting.",
+                "canines": "Pointed; used for tearing flesh.",
+                "premolars": "Broad with ridges; used for crushing.",
+                "molars": "Large and flat; used for grinding food."
+            },
+            "dental_hygiene_habits": [
+                "Brushing: Twice daily (morning and before sleep) to remove plaque.",
+                "Flossing: Using a string to clean hidden gaps where a brush cannot reach.",
+                "Diet: Reducing sugary foods (which bacteria turn into acid) and eating foods rich in Calcium and Phosphorus for enamel strength.",
+                "Fluoride: Using fluoridated toothpaste to harden enamel against acid decay."
+            ]
+        },
+        "nutrition_for_the_system": [
+            "Protein: Essential for the growth and repair of muscle fibers and tissues.",
+            "Calcium and Phosphorus: Mineral salts that provide the rigidity and strength for bones and tooth enamel.",
+            "Vitamin D: The 'key' that allows the body to absorb calcium. Lack of this causes soft, bending bones (Rickets in children, Osteomalacia in adults)."
+        ],
+        "study_tips_for_ple": [
+            "Scoliosis = Side-to-side curve; Kyphosis = Hunchback; Lordosis = Swayback.",
+            "A toothbrush cannot reach between teeth; only floss can!",
+            "Bacteria + Sugar = Acid; Acid + Enamel = Cavities (Dental Caries).",
+            "Sitting hunched over compresses the chest, making it harder for the diaphragm to pull air into the lungs.",
+            "Bones and teeth are both 'living' structures because they contain blood vessels and nerves."
+        ]
+    }
+}

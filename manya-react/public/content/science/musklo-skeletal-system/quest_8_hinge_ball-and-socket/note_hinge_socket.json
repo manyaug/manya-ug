@@ -1,0 +1,64 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Hinge and Ball-and-Socket Joints",
+    "study_notes": {
+        "title": "Hinge and Ball-and-Socket Joints: Biomechanics of Movement",
+        "introduction": "Freely movable joints (synovial joints) are mechanically structured to allow limbs and body parts to move in specific directions. The design of the bones at the joint determines the range of motion.",
+        "hinge_joints": {
+            "mechanism": "Operates like a mechanical door hinge.",
+            "movement": "Permits movement in only one plane (uni-axial). It allows flexion (bending) and extension (straightening).",
+            "anatomical_examples": [
+                "Elbow joint",
+                "Knee joint",
+                "Knuckles (fingers)"
+            ],
+            "structural_design": "One bone has a concave (hollow) shape, while the other has a convex (rounded) projection that fits securely into the groove, preventing sideways motion.",
+            "key_feature": "The knee is a 'modified' hinge joint because the patella (kneecap) adds complexity and prevents the leg from bending in the wrong direction."
+        },
+        "ball_and_socket_joints": {
+            "mechanism": "A rounded bone head (ball) fitting into a concave, cup-shaped cavity (socket).",
+            "movement": "Permits movement in all directions (multi-axial) and full circular rotation (circumduction).",
+            "anatomical_examples": [
+                "Shoulder joint",
+                "Hip joint"
+            ],
+            "structural_design": "The ball provides the surface for spinning, and the socket provides the housing for the ball.",
+            "stability_vs_mobility": {
+                "shoulder": "Shallow socket + loose ligaments = High mobility but easier to dislocate.",
+                "hip": "Deep socket (acetabulum) + tight ligaments = High stability for weight-bearing."
+            }
+        },
+        "comparison_table": {
+            "features": [
+                "Range of Motion",
+                "Movement Planes",
+                "Stability",
+                "Example"
+            ],
+            "hinge_joint": [
+                "Limited",
+                "One plane",
+                "High",
+                "Elbow/Knee"
+            ],
+            "ball_and_socket": [
+                "High/Extensive",
+                "Multi-axial",
+                "Lower (in shoulder)",
+                "Shoulder/Hip"
+            ]
+        },
+        "key_biomechanical_principles": {
+            "antagonistic_action": "These joints rely on muscle pairs (flexors and extensors). When the flexor (e.g., Biceps) contracts, it bends the hinge; when the extensor (e.g., Triceps) contracts, it straightens it.",
+            "lubrication": "Both hinge and ball-and-socket joints contain synovial fluid and articular cartilage to ensure that the massive bones move without grinding against each other."
+        },
+        "study_tips_for_ple": [
+            "Hinge = 'Door' movement (Back and Forth only).",
+            "Ball and Socket = 'Joystick' movement (All directions).",
+            "The Patella is a 'pulley' for the quadriceps muscle, making it easier to straighten the leg.",
+            "Always remember: Flexion is bending the joint, Extension is straightening the joint.",
+            "If a question asks which joint allows for the widest range of movement, the answer is always Ball-and-Socket."
+        ]
+    }
+}

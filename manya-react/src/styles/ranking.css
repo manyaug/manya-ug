@@ -38,16 +38,16 @@
 
 .rank-arena-header {
     text-align: center;
-    padding: 25px 0 10px;
+    padding: 15px 0 10px;
     position: relative;
 }
 
 .arena-title {
     font-weight: 950;
     margin: 0;
-    font-size: 26px;
+    font-size: 20px;
     color: var(--text-main);
-    letter-spacing: -0.8px;
+    letter-spacing: -0.6px;
 }
 
 .arena-subtitle {
@@ -77,30 +77,29 @@
     background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 255, 255, 0.4) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    margin: 15px 20px 25px;
-    padding: 20px;
-    border-radius: 32px;
+    margin: 10px 16px 20px;
+    padding: 14px;
+    border-radius: 24px;
     border: 1.5px solid var(--glass-border);
     display: flex;
     align-items: center;
-    gap: 18px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), inset 0 0 20px rgba(255, 255, 255, 0.5);
+    gap: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
     position: relative;
     overflow: hidden;
 }
 
 .league-medal-orb {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     background: var(--bg-main);
-    border-radius: 22px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
-    border: 2.5px solid var(--border-color);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-    transition: 0.3s var(--transition-bounce);
+    font-size: 22px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04);
 }
 
 .league-content {
@@ -153,12 +152,11 @@
 }
 
 .league-rank-badge {
-    padding: 10px 16px;
+    padding: 8px 12px;
     color: white;
-    border-radius: 18px;
+    border-radius: 14px;
     font-weight: 950;
-    font-size: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
 }
 
 /* 2. GEM SUBJECT TABS (PILL FLOW) */
@@ -227,10 +225,10 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    gap: 12px;
-    height: 260px;
-    margin-top: 25px;
-    margin-bottom: 50px;
+    gap: 10px;
+    height: 200px;
+    margin-top: 20px;
+    margin-bottom: 35px;
     padding: 0 15px;
     position: relative;
 }
@@ -263,14 +261,14 @@
 }
 
 .pod-avatar-wrap {
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: white;
-    margin-top: -32px;
-    margin-bottom: 15px;
-    border: 4px solid var(--bg-card);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    margin-top: -25px;
+    margin-bottom: 10px;
+    border: 3px solid var(--bg-card);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -320,37 +318,37 @@
 
 /* RANK SPECIFIC TUNING */
 .pod-rank-1 {
-    height: 220px;
+    height: 170px;
     z-index: 5;
-    border-top: 8px solid var(--manya-gold);
-    transform: scale(1.08);
-    box-shadow: 0 30px 60px rgba(245, 158, 11, 0.15);
+    border-top: 6px solid var(--manya-gold);
+    transform: scale(1.05);
+    box-shadow: 0 20px 45px rgba(245, 158, 11, 0.12);
     border-color: var(--manya-gold);
 }
 
 .pod-rank-1 .pod-avatar-wrap {
-    width: 95px;
-    height: 95px;
-    margin-top: -50px;
+    width: 70px;
+    height: 70px;
+    margin-top: -35px;
     border-color: var(--manya-gold);
 }
 
 .pod-rank-1 .crown-badge {
     position: absolute;
-    top: -75px;
-    font-size: 34px;
-    filter: drop-shadow(0 10px 20px rgba(245, 158, 11, 0.5));
+    top: -55px;
+    font-size: 28px;
+    filter: drop-shadow(0 8px 15px rgba(245, 158, 11, 0.4));
     animation: crownFloat 2.5s infinite ease-in-out;
 }
 
 .pod-rank-2 {
-    height: 170px;
-    border-top: 6px solid #CBD5E1;
+    height: 135px;
+    border-top: 5px solid #CBD5E1;
 }
 
 .pod-rank-3 {
-    height: 150px;
-    border-top: 6px solid #D97706;
+    height: 120px;
+    border-top: 5px solid #D97706;
 }
 
 @keyframes crownFloat {
@@ -368,11 +366,11 @@
 /* 4. LEADERBOARD LIST (GLASSMOPHIC ELITE) */
 .leaderboard-card-elite {
     background: var(--bg-card);
-    border-radius: 40px;
-    padding: 15px 25px 30px;
-    margin: 0 20px;
+    border-radius: 28px;
+    padding: 10px 18px 20px;
+    margin: 0 16px;
     border: 1.5px solid var(--glass-border);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.03);
 }
 
 .list-header {
@@ -390,7 +388,7 @@
 .rank-row-elite {
     display: flex;
     align-items: center;
-    padding: 20px 0;
+    padding: 12px 0;
     border-bottom: 1px solid var(--border-color);
     transition: 0.3s;
 }
@@ -400,21 +398,21 @@
 }
 
 .r-pos {
-    width: 40px;
+    width: 32px;
     font-weight: 950;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.5;
 }
 
 .r-avatar {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: white;
-    margin-right: 18px;
-    border: 3px solid white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    margin-right: 14px;
+    border: 2px solid white;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 }
 
@@ -431,7 +429,7 @@
     display: block;
     font-weight: 900;
     color: var(--text-main);
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: -0.01em;
 }
 
@@ -464,12 +462,12 @@
 /* THE "YOU" HIGHLIGHT - ACTIVE PULSE */
 .rank-row-elite.is-user {
     background: var(--bg-primary);
-    margin: 8px -25px;
-    padding: 20px 25px;
+    margin: 6px -18px;
+    padding: 14px 18px;
     border: none;
-    border-left: 8px solid var(--tab-color, var(--manya-purple));
-    border-radius: 0 20px 20px 0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-left: 6px solid var(--tab-color, var(--manya-purple));
+    border-radius: 0 16px 16px 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
 
 .rank-row-elite.is-user .r-avatar {

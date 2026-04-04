@@ -1,5 +1,20 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Check, Sparkles } from 'lucide-react';
+import { assetUrl } from '../../config/assetUrls';
+
+/**
+ * Resolves image paths:
+ * - Full URLs (https://...) → pass through
+ * - Relative paths (assets/science/...) → resolve via Supabase CDN
+ * - Root-relative paths (/content/...) → pass through
+ */
+const resolveImageUrl = (src) => {
+    if (!src) return '';
+    if (src.startsWith('http://') || src.startsWith('https://')) return src;
+    if (src.startsWith('/')) return src;
+    // Relative path like "assets/science/..." → resolve to Supabase CDN
+    return assetUrl(src.replace(/^assets\//, ''));
+};
 
 /**
  * GALLERY STUDY ENGINE (React Port) - v2.1
@@ -28,12 +43,12 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
         // Preload next image for instant transitions
         if (currentIdx + 1 < slides.length) {
             const nextImg = new Image();
-            nextImg.src = slides[currentIdx + 1].image;
+            nextImg.src = resolveImageUrl(slides[currentIdx + 1].image);
         }
         // Preload previous
         if (currentIdx - 1 >= 0) {
             const prevImg = new Image();
-            prevImg.src = slides[currentIdx - 1].image;
+            prevImg.src = resolveImageUrl(slides[currentIdx - 1].image);
         }
     }, [currentIdx, slides]);
 
@@ -94,7 +109,7 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
     const toggleDrawer = () => setIsExpanded(!isExpanded);
 
     return (
-        <div className="relative w-full h-full bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-hidden flex flex-col transition-colors duration-500">
+        <div className="gallery-engine-root relative w-full h-full bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-hidden flex flex-col transition-colors duration-500">
             
             {/* STAGE AREA */}
             <main className="flex-1 flex flex-col p-[10px_15px] relative overflow-hidden">
@@ -124,14 +139,14 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                     {/* SIDE NAVIGATION (Glassmorphism) */}
                     <div className="absolute top-[50%] -translate-y-1/2 w-full flex justify-between px-4 pointer-events-none z-[1000]">
                         <button 
-                            className="w-12 h-12 rounded-2xl bg-[var(--glass-bg)] backdrop-blur-xl text-[#7c3aed] flex items-center justify-center shadow-glass border border-[var(--glass-border)] transition-all active:scale-90 hover:scale-105 disabled:opacity-0 disabled:scale-90 pointer-events-auto"
+                            className="w-12 h-12 rounded-2xl bg-[var(--bg-main)] text-[#7c3aed] flex items-center justify-center shadow-glass border border-[var(--border-subtle)] transition-all active:scale-90 hover:scale-105 disabled:opacity-0 disabled:scale-90 pointer-events-auto"
                             onClick={handlePrev}
                             disabled={currentIdx === 0}
                         >
                             <ChevronLeft strokeWidth={3.5} size={24} />
                         </button>
                         <button 
-                            className={`w-12 h-12 rounded-2xl bg-[var(--glass-bg)] backdrop-blur-xl text-[#7c3aed] flex items-center justify-center shadow-glass border border-[var(--glass-border)] transition-all active:scale-90 hover:scale-105 pointer-events-auto ${!visitedIndices.has(currentIdx + 1) && !isLastSlide ? 'animate-pulse shadow-glow-purple' : ''}`}
+                            className={`w-12 h-12 rounded-2xl bg-[var(--bg-main)] text-[#7c3aed] flex items-center justify-center shadow-glass border border-[var(--border-subtle)] transition-all active:scale-90 hover:scale-105 pointer-events-auto ${!visitedIndices.has(currentIdx + 1) && !isLastSlide ? 'animate-pulse shadow-glow-purple' : ''}`}
                             onClick={handleNext}
                         >
                             {isLastSlide ? <Check strokeWidth={3.5} size={24} /> : <ChevronRight strokeWidth={3.5} size={24} />}
@@ -146,7 +161,7 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                         <div className={`absolute inset-0 bg-gradient-to-b from-[#7c3aed]/5 to-transparent transition-opacity duration-700 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`} />
                         <img 
                             key={currentIdx} 
-                            src={currentSlide.image} 
+                            src={resolveImageUrl(currentSlide.image)} 
                             alt={currentSlide.title}
                             onLoad={() => setImageLoaded(true)}
                             className={`max-w-[90%] max-h-[90%] object-contain rounded-[2.5rem] transition-all duration-700 ease-spring-heavy ${
@@ -156,9 +171,9 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                         />
                     </div>
 
-                    {/* PREMIUM GLASS DRAWER */}
+                    {/* PREMIUM SOLID DRAWER */}
                     <div 
-                        className={`absolute bottom-0 left-0 right-0 h-[65%] bg-[var(--drawer-bg)] backdrop-blur-3xl z-[1100] rounded-[50px_50px_0_0] border-t-2 border-[var(--glass-border)] shadow-up transition-all duration-700 ease-spring flex flex-col ${
+                        className={`absolute bottom-0 left-0 right-0 h-[65%] bg-[var(--drawer-bg)] z-[1100] rounded-[50px_50px_0_0] border-t-2 border-[var(--border-subtle)] shadow-up transition-all duration-700 ease-spring flex flex-col ${
                             isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-85px)]'
                         }`}
                     >
@@ -169,23 +184,23 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                         >
                             <div className="w-12 h-1.5 bg-[var(--text-muted)] opacity-20 rounded-full mb-5 group-hover/handle:opacity-40 transition-opacity" />
                             <div className="px-8 w-full flex justify-center items-center">
-                                <div className={`px-6 py-3 rounded-2xl transition-all duration-300 font-black text-[11px] tracking-widest uppercase flex items-center gap-3 active:scale-95 ${
-                                    isExpanded ? 'bg-[var(--text-muted)]/10 text-[var(--text-main)] px-10' : 'bg-[#7c3aed] text-white shadow-glow-purple'
+                                <div className={`px-8 py-4 rounded-3xl transition-all duration-300 font-black text-[14px] tracking-widest uppercase flex items-center gap-3 active:scale-95 shadow-xl ${
+                                    isExpanded ? 'bg-[var(--bg-main)] text-[var(--text-main)] border-2 border-[var(--border-subtle)]' : 'bg-[#7c3aed] text-white shadow-glow-purple'
                                 }`}>
-                                    {isExpanded ? 'CLOSE' : <><Sparkles size={16} /> VIEW DETAILS</>}
+                                    {isExpanded ? 'CLOSE' : <><Sparkles size={18} /> VIEW DETAILS</>}
                                 </div>
                             </div>
                         </div>
 
                         {/* CONTENT AREA */}
-                        <div className="flex-1 overflow-y-auto px-8 pb-16 text-[var(--text-sub)] text-base leading-[1.8] scroll-smooth">
-                            <div className="bg-[#7c3aed]/5 p-5 rounded-3xl border-l-[6px] border-[#7c3aed] mb-8 font-extrabold text-[var(--text-main)] text-[11px] flex items-start gap-4 shadow-sm">
-                                <div className="p-2 bg-[#7c3aed] rounded-xl text-white shadow-lg">
-                                    <Sparkles size={16} />
+                        <div className="flex-1 overflow-y-auto px-8 pb-16 text-[var(--text-sub)] text-[17.5px] leading-[1.7] font-medium scroll-smooth">
+                            <div className="bg-[var(--insight-bg)] p-6 rounded-[2.5rem] border-2 border-[var(--insight-border)] mb-8 font-black text-[var(--text-main)] text-[12px] flex items-start gap-5 shadow-sm">
+                                <div className="p-2.5 bg-[#7c3aed] rounded-2xl text-white shadow-lg shrink-0">
+                                    <Sparkles size={18} />
                                 </div>
-                                <div className="flex flex-col gap-1.5">
-                                    <span className="tracking-tighter">MANYA INSIGHT</span>
-                                    <span className="opacity-60 font-medium leading-relaxed">Swipe up to expand details. You must see all cards to complete this quest.</span>
+                                <div className="flex flex-col gap-1.5 pt-0.5">
+                                    <span className="tracking-tight text-[#7c3aed] uppercase text-[10px]">MANYA INSIGHT</span>
+                                    <span className="opacity-90 font-bold leading-snug text-sm">Swipe up to expand details. You must see all cards to complete this quest.</span>
                                 </div>
                             </div>
                             
@@ -212,9 +227,11 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                     --text-main: #1a1a1a;
                     --text-sub: #4a4a4a;
                     --text-muted: #a0a0a0;
-                    --glass-bg: rgba(255, 255, 255, 0.4);
-                    --glass-border: rgba(255, 255, 255, 0.2);
-                    --drawer-bg: rgba(255, 255, 255, 0.8);
+                    --glass-bg: #f8fafc;
+                    --glass-border: #e2e8f0;
+                    --drawer-bg: #ffffff;
+                    --insight-bg: #f6f1ff;
+                    --insight-border: #e9e0ff;
                 }
                 
                 [data-theme='dark'] .gallery-engine-root {
@@ -224,9 +241,11 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                     --text-main: #f8fafc;
                     --text-sub: #cbd5e1;
                     --text-muted: #707070;
-                    --glass-bg: rgba(42, 42, 42, 0.4);
-                    --glass-border: rgba(60, 60, 60, 0.2);
-                    --drawer-bg: rgba(42, 42, 42, 0.8);
+                    --glass-bg: #1e293b;
+                    --glass-border: #334155;
+                    --drawer-bg: #111827;
+                    --insight-bg: #251b3d;
+                    --insight-border: #3d2d63;
                 }
 
                 .shadow-premium { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08), 0 0 0 1px var(--border-subtle); }
@@ -238,24 +257,32 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
                 .ease-spring-heavy { transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
                 .prose-manya b { color: var(--text-main); font-weight: 900; }
+                .prose-manya p { margin-bottom: 1.5rem; }
                 .prose-manya .rule-box { 
-                    margin: 1.5rem 0; 
-                    padding: 1.5rem; 
-                    background: rgba(124,58,237, 0.06); 
-                    border-radius: 1.5rem; 
-                    border: 1px dashed rgba(124,58,237, 0.25);
-                    font-size: 0.95rem;
+                    margin: 2rem 0; 
+                    padding: 1.75rem; 
+                    background: #f8f6ff;
+                    border-radius: 2rem; 
+                    border: 2px dashed #7c3aed;
+                    font-size: 1.05rem;
                     line-height: 1.6;
+                    color: var(--text-main);
                 }
+                [data-theme='dark'] .prose-manya .rule-box { background: #1a1526; }
+                .prose-manya .rule-box b { color: #7c3aed; }
+                
                 .prose-manya .danger-box { 
-                    margin: 1.5rem 0; 
-                    padding: 1.5rem; 
-                    background: rgba(239, 68, 68, 0.06); 
-                    border-radius: 1.5rem; 
-                    border-left: 5px solid #ef4444;
-                    font-size: 0.95rem;
+                    margin: 2rem 0; 
+                    padding: 1.75rem; 
+                    background: #fff5f5;
+                    border-radius: 2rem; 
+                    border-left: 8px solid #ef4444;
+                    font-size: 1.05rem;
                     line-height: 1.6;
+                    color: var(--text-main);
                 }
+                [data-theme='dark'] .prose-manya .danger-box { background: #2d1616; }
+                .prose-manya .danger-box b { color: #ef4444; }
             `}</style>
         </div>
     );

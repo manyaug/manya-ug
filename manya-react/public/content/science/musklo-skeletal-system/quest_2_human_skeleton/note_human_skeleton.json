@@ -1,0 +1,68 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Human Skeleton",
+    "study_notes": {
+        "title": "The Human Skeleton: Structure and Function",
+        "introduction": "The human skeleton is an endoskeleton made of living bone and cartilage. It acts as the internal structural framework for the body, providing shape, protection, and the necessary levers for movement.",
+        "key_statistics": {
+            "adult_bone_count": "206 bones",
+            "newborn_bone_count": "300 to 305 bones",
+            "reason_for_difference": "Many small bones found in infants (especially in the skull and spine) fuse together into larger, stronger bones as the body grows."
+        },
+        "skeletal_divisions": {
+            "Axial_Skeleton": {
+                "bones": 80,
+                "components": [
+                    "Skull (Cranium and Facial bones)",
+                    "Vertebral Column (Spine/Backbone)",
+                    "Rib Cage (Ribs and Sternum)"
+                ],
+                "primary_function": "Protection of vital internal organs."
+            },
+            "Appendicular_Skeleton": {
+                "bones": 126,
+                "components": [
+                    "Limbs (Arms and Legs)",
+                    "Pectoral Girdle (Shoulder area: Scapula and Clavicle)",
+                    "Pelvic Girdle (Hip bones: Ilium, Ischium, Pubis)"
+                ],
+                "primary_function": "Locomotion and physical manipulation of objects."
+            }
+        },
+        "vital_functions_of_the_skeleton": [
+            "Protection: Shielding the brain (Skull), spinal cord (Vertebral Column), and heart/lungs (Rib cage).",
+            "Locomotion: Providing rigid levers that muscles pull against to create movement.",
+            "Support: Maintaining the body's structure and upright posture.",
+            "Mineral Storage: Acting as a 'bank' for Calcium and Phosphorus.",
+            "Blood Production: Manufacturing red and white blood cells in the bone marrow."
+        ],
+        "major_bones_of_the_body": {
+            "head_and_chest": {
+                "Skull": "Protects the brain; the Mandible (lower jaw) is the ONLY movable bone.",
+                "Vertebral_Column": "Protects the spinal cord; made of 33 vertebrae in infants.",
+                "Sternum": "The flat breastbone that anchors the ribs.",
+                "Rib_Cage": "12 pairs of ribs protecting the heart and lungs."
+            },
+            "limbs_and_girdles": {
+                "Pectoral_Girdle": "Connects arms to the spine (Scapula + Clavicle).",
+                "Pelvic_Girdle": "Connects legs to the spine; protects the bladder and reproductive organs.",
+                "Humerus": "The single, long bone of the upper arm.",
+                "Radius_and_Ulna": "The two bones of the forearm.",
+                "Femur": "The longest, strongest bone in the human body (Thigh bone).",
+                "Tibia_and_Fibula": "The two bones of the lower leg; Tibia is the thick 'shin' bone.",
+                "Patella": "The kneecap; a sesamoid bone that protects the knee joint."
+            }
+        },
+        "bone_growth_facts": [
+            "Ossification: The biological process where flexible, soft cartilage templates are replaced by hard bone tissue.",
+            "Living Tissue: Bones contain blood vessels, nerves, and living cells, meaning they can grow, feel pain, and repair themselves after injury."
+        ],
+        "study_tips_for_ple": [
+            "The 'P' in Patella stands for 'Protector' of the knee.",
+            "The 'T' in Tendon stands for 'Ties' muscle to bone (M-T-B).",
+            "The 'L' in Ligament stands for 'Link' bone to bone (B-L-B).",
+            "The Femur is the heavy-duty bone; do not confuse it with the Humerus (arm bone)."
+        ]
+    }
+}

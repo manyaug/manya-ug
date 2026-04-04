@@ -1,0 +1,60 @@
+{
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Types of Skeletons",
+    "mode": "note_explorer",
+    "study_notes": {
+        "title": "Types of Skeletal Systems in Animals",
+        "introduction": "A skeleton is the supportive framework of bones or hard tissues in an organism. It provides shape, protection for delicate organs, and a surface for muscle attachment for movement. All animals are classified based on the type of skeleton they possess.",
+        "key_skeleton_types": {
+            "Hydrostatic_Skeleton": {
+                "definition": "A skeleton formed by a fluid-filled body cavity kept under pressure by surrounding muscles.",
+                "movement": "Muscles squeeze against the internal fluid to change the body's shape and move.",
+                "examples": [
+                    "Earthworms",
+                    "Slugs and Snails (the soft body parts)",
+                    "Maggots and Caterpillars",
+                    "Jellyfish and Starfish"
+                ],
+                "vulnerability": "These animals are soft and depend on moisture; if they lose their internal fluid or dry out, their body structure collapses."
+            },
+            "Exoskeleton": {
+                "definition": "A hard, protective outer covering found on the outside of the animal's body.",
+                "composition": "Mostly made of a tough, waterproof substance called Chitin.",
+                "examples": [
+                    "Insects (e.g., Grasshoppers, Cockroaches, Bees, Houseflies)",
+                    "Arachnids (e.g., Spiders, Scorpions, Ticks, Mites)",
+                    "Crustaceans (e.g., Crabs, Prawns)",
+                    "Myriapods (e.g., Centipedes, Millipedes)"
+                ],
+                "limitation": "The exoskeleton is rigid and does not grow. To increase in size, the animal must periodically shed its old shell in a process called Ecdysis (Moulting)."
+            },
+            "Endoskeleton": {
+                "definition": "An internal framework of hard tissues (bone and cartilage) found inside the flesh.",
+                "growth": "Grows continuously with the animal; no shedding is required.",
+                "composition": "Made of living bone tissue (hardened by Calcium and Phosphorus) and flexible cartilage.",
+                "examples": [
+                    "All Vertebrates (Mammals like Humans/Cows/Dogs, Birds, Fish, Reptiles, Amphibians)"
+                ],
+                "unique_cases": "Some animals like Tortoises have both an internal bony endoskeleton and a protective outer shell (exoskeleton)."
+            }
+        },
+        "functions_of_the_skeleton": [
+            "Shape: Gives the body its specific framework.",
+            "Support: Keeps the body upright and prevents it from collapsing.",
+            "Protection: Shields delicate organs (e.g., Skull protects the Brain; Ribcage protects Heart and Lungs).",
+            "Movement: Provides surfaces for muscles to attach at joints, acting as levers.",
+            "Blood Manufacture: The Red Bone Marrow (in spongy bone) produces Red Blood Cells.",
+            "Storage: Acts as a bank for essential minerals like Calcium and Phosphorus."
+        ],
+        "key_biological_terms": {
+            "Ecdysis_Moulting": "The periodic shedding of an old exoskeleton to allow growth.",
+            "Ossification": "The biological process where flexible cartilage turns into hard bone tissue.",
+            "Cartilage": "A tough, flexible tissue found at bone ends to act as a cushion and shock absorber."
+        },
+        "study_tips_for_ple": [
+            "Remember: Insects shed their 'skin' (moulting) because their armor doesn't stretch.",
+            "Vertebrates have their 'bones on the inside', making them much better at supporting large body sizes.",
+            "Bone marrow isn't just one thing—Red marrow makes blood, while Yellow marrow stores fat."
+        ]
+    }
+}

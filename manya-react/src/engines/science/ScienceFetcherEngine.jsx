@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw, Search, Puzzle, AlertCircle } from 'lucide-react';
 import { fetchScienceQuestions } from '../../services/scienceMockDB';
 import { syncService } from '../../services/syncService';
@@ -29,7 +30,7 @@ import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import { loadQuestSteps } from '../../utils/questLoader';
 import { calculateUSP } from '../../utils/scoringUtility';
 
-// Specialized Science Engines
+import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
 import ThreeDStudyEngine from '../shared-engines/ThreeDStudyEngine';
 
 /**
@@ -50,7 +51,9 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
     );
 
     // Determine which engine to use
-    const engineType = simData.engineType || simData.type || 'IMAGE_HOTSPOTS';
+    let engineType = simData.engineType || simData.type || 'IMAGE_HOTSPOTS';
+    // AUTO-DETECT: If the JSON has study_notes or note_explorer mode, use NoteExplorerEngine
+    if (simData.study_notes || simData.mode === 'note_explorer') engineType = 'NOTE_EXPLORER';
 
     const handleSimComplete = (results) => {
         // results may come from common engines; resultRef.current may come from specialized engines
@@ -103,6 +106,8 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
         case 'THREE_D_STUDY':
             return <ThreeDStudyEngine {...sharedProps} />;
 
+        case 'NOTE_EXPLORER':
+            return <NoteExplorerEngine {...sharedProps} />;
         default:
             return (
                 <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-500">
@@ -293,7 +298,69 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         setIsAnswered(true);
 
         const q = questions[currentIdx];
-        const isCorrect = selectedOption === q.answer;
+        if (!q) return;
+
+        // ─── ULTRA-ROBUST ANSWER MATCHER (v5.1) ───
+        // Handles: direct text, "Option_A", "Option_B", "A/B/C/D", with space/case forgiveness
+        const normalize = (str) => String(str || '').trim().toLowerCase();
+
+        const checkCorrect = (selected, target, options) => {
+            if (!target || !options) return false;
+            const t = normalize(target);
+            const s = normalize(selected);
+            
+            console.log(`🔍 [Science Matcher] Selected: "${s}" | Target: "${t}"`);
+
+            // 1. Direct Text Match
+            if (s === t) return true;
+            
+            // 2. Option_X Key Match
+            const optMatch = t.match(/option_([a-d])/i);
+            if (optMatch) {
+                const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65;
+                const optText = normalize(options[idx]);
+                console.log(`   └─ Case: Option_X key detected. Index: ${idx}. OptionText: "${optText}"`);
+                if (optText === s) return true;
+            }
+            
+            // 3. Single Letter Match (A, B, C, D)
+            if (t.length === 1 && /^[a-d]$/i.test(t)) {
+                const idx = t.toUpperCase().charCodeAt(0) - 65;
+                const optText = normalize(options[idx]);
+                console.log(`   └─ Case: Single letter key. Index: ${idx}. OptionText: "${optText}"`);
+                if (optText === s) return true;
+            }
+            
+            return false;
+        };
+
+        const isCorrect = checkCorrect(selectedOption, q.answer, q.options);
+
+        // Derive Human-Readable Correct Text for the Portal
+        const getCorrectText = (target, options) => {
+            if (!target || !options) return 'N/A';
+            const t = normalize(target);
+            
+            // 1. If it matches an option exactly, it IS the text
+            const directIdx = options.findIndex(opt => normalize(opt) === t);
+            if (directIdx !== -1) return options[directIdx];
+            
+            // 2. Option_X Prefix
+            const optMatch = t.match(/option_([a-d])/i);
+            if (optMatch) {
+                const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65;
+                return options[idx] || t;
+            }
+            
+            // 3. Single Letter
+            if (t.length === 1 && /^[a-d]$/i.test(t)) {
+                return options[t.toUpperCase().charCodeAt(0) - 65] || t;
+            }
+            
+            return target; // Fallback to raw original string
+        };
+
+        const correctText = getCorrectText(q.answer, q.options);
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
@@ -329,7 +396,8 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             questionId: q.id,
             isCorrect,
             selectedAnswer: selectedOption,
-            correctAnswer: q.answer,
+            correctAnswer: correctText,
+            rawAnswerKey: q.answer,
             timeSpentMs,
             hintUsed,
             answerChanged,
@@ -360,15 +428,18 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             setGemsEarned(g => g + totalGems);
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
+
+            // ─── SEAMLESS AUTO-ADVANCE (v4.2) ───
+            setTimeout(() => nextQuestion(), 800);
+        } else {
+            // Wrong answer: Wait 500ms then show the Absolute Solution Portal
+            setTimeout(() => setShowExplanation(true), 500);
         }
 
         const hesitation = calculateHesitation({ answerChanged, changeCount, timeSpentMs, hintUsed });
-
         if (hesitation.level === 'high') {
             console.log('😰 High hesitation:', hesitation.events);
         }
-
-        setTimeout(() => setShowExplanation(true), 500);
     };
 
     const nextQuestion = () => {
@@ -766,175 +837,219 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             );
         }
 
-        return (
-            <div className="flex-1 flex flex-col items-center justify-center p-0 sm:p-6 animate-in fade-in duration-500">
-                <div className="w-full max-w-xl h-full sm:h-auto bg-[var(--bg-card)] rounded-none sm:rounded-[2.5rem] shadow-2xl border-x-0 sm:border border-[var(--border-color)] p-6 sm:p-8 relative overflow-hidden flex flex-col">
+        // ─── RENDER-SCOPE SMART MATCHING (v5.2) ───
+        const normalize = (str) => String(str || '').trim().toLowerCase();
+        const resolveCorrectText = (target, options) => {
+            if (!target || !options) return 'N/A';
+            const t = normalize(target);
+            const directIdx = options.findIndex(opt => normalize(opt) === t);
+            if (directIdx !== -1) return options[directIdx];
+            const optMatch = t.match(/option_([a-d])/i);
+            if (optMatch) { const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65; return options[idx] || target; }
+            if (t.length === 1 && /^[a-d]$/i.test(t)) { return options[t.toUpperCase().charCodeAt(0) - 65] || target; }
+            return target;
+        };
+        const isOptionCorrect = (opt, answer, options) => {
+            if (!answer || !options) return false;
+            const t = normalize(answer);
+            const o = normalize(opt);
+            if (o === t) return true;
+            const optMatch = t.match(/option_([a-d])/i);
+            if (optMatch) { const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65; return normalize(options[idx]) === o; }
+            if (t.length === 1 && /^[a-d]$/i.test(t)) { const idx = t.toUpperCase().charCodeAt(0) - 65; return normalize(options[idx]) === o; }
+            return false;
+        };
+        const correctText = resolveCorrectText(q.answer, q.options);
+        const userWasCorrect = isOptionCorrect(selectedOption, q.answer, q.options);
 
-                    <div className="absolute -top-10 -right-10 opacity-5 text-amber-900 rotate-12">
-                       <Globe size={240} />
+        return (
+            <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+                {/* ── GEM TOAST ── */}
+                {showGemToast && (
+                    <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1 pointer-events-none">
+                        <Trophy size={12} /> +{gemsEarned} gems
+                    </div>
+                )}
+
+                {/* ── QUESTION CARD ── */}
+                <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
+
+                    {/* Progress dots */}
+                    <div className="flex gap-1.5 justify-center mb-5 overflow-x-auto no-scrollbar flex-shrink-0">
+                        {questions.map((_, i) => (
+                            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-5' : (i < currentIdx ? 'bg-amber-500 opacity-35 w-1.5' : 'bg-slate-200 w-1.5')}`} />
+                        ))}
                     </div>
 
-                    {showGemToast && (
-                        <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1">
-                            <Trophy size={12} /> +{gemsEarned} gems
-                        </div>
-                    )}
-
-                    {/* Rephrased question indicator */}
+                    {/* Rephrased / frustration nudge */}
                     {q.isRephrased && (
-                        <div className="text-xs text-blue-600 bg-blue-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
+                        <div className="text-xs text-blue-600 bg-blue-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">
                             🔄 Let's try this concept again with different wording
                         </div>
                     )}
-
                     {frustration.level === 'high' && (
-                        <div className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5 font-bold mb-3 text-center">
+                        <div className="text-xs text-amber-600 bg-amber-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">
                             💪 Take your time — you're doing great!
                         </div>
                     )}
 
-                    {/* Progress Bar */}
-                    <div className="flex gap-2 justify-center mb-10 overflow-x-auto no-scrollbar">
-                        {questions.map((_, i) => (
-                            <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-6' : (i < currentIdx ? 'bg-amber-500 opacity-40' : 'bg-[var(--border-color)]')}`} />
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="w-6 h-6 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
-                            <Compass size={14} />
-                        </div>
-                        <div className="text-amber-600 font-black text-[10px] tracking-widest uppercase opacity-80">
-                            {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'Concept Mastery'} • {currentIdx + 1} / {questions.length}
-                        </div>
-                        {questMeta?.gameMode === 'quickfire' && (
-                            <div className="ml-auto flex items-center gap-1 text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
-                                <Zap size={10} /> QUICKFIRE
+                    {/* ── QUESTION TEXT ── */}
+                    <div className="bg-[var(--bg-card)] rounded-[2rem] border-2 border-[var(--border-color)] px-6 py-6 mb-4 shadow-xl flex-shrink-0"
+                         style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 bg-amber-500/10 rounded-lg flex items-center justify-center">
+                                    <Compass size={12} className="text-amber-500" />
+                                </div>
+                                <span className="text-amber-500 font-black text-[9px] tracking-widest uppercase opacity-80">
+                                    {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'Concept Practice'} · {currentIdx + 1}/{questions.length}
+                                </span>
                             </div>
-                        )}
+
+                            {questMeta?.gameMode === 'quickfire' && (
+                                <div className="flex items-center gap-1 text-[9px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
+                                    <Zap size={10} /> QUICKFIRE
+                                </div>
+                            )}
+                            
+                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE */}
+                            {!isAnswered && q.hint && (
+                                <button key="hint-btn" onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                                    <Lightbulb size={18} />
+                                </button>
+                            )}
+                        </div>
+                        <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">
+                            {q.question}
+                        </p>
                     </div>
 
-                    <h2 className="text-xl font-bold text-[var(--text-main)] mb-8 leading-snug relative z-10">
-                        {q.question}
-                    </h2>
-
-                    <div className="grid gap-3 w-full relative z-10">
+                    {/* ── OPTIONS ── */}
+                    <div className="flex flex-col gap-2.5 flex-shrink-0">
                         {q.options?.map((opt, i) => {
-                            const isCorrect = opt === q.answer;
+                            const isThisCorrect = isOptionCorrect(opt, q.answer, q.options);
                             const isSelected = opt === selectedOption;
-                            // ── DYNAMIC STYLING ──
-                            let boxStyle = {
-                                background: 'var(--bg-main)',
-                                borderColor: 'var(--border-color)',
-                                color: 'var(--text-main)',
-                                transform: 'scale(1)',
-                                boxShadow: 'none'
-                            };
 
+                            let cls = 'mcq-fe-btn';
                             if (isAnswered) {
-                                if (isCorrect) {
-                                    boxStyle = { background: '#ecfdf5', borderColor: '#10b981', color: '#064e3b', boxShadow: '0 4px 12px rgba(16,185,129,0.1)' };
-                                } else if (isSelected) {
-                                    boxStyle = { background: '#fef2f2', borderColor: '#ef4444', color: '#7f1d1d', boxShadow: '0 4px 12px rgba(239,68,68,0.1)' };
-                                } else {
-                                    boxStyle = { background: 'var(--bg-main)', borderColor: 'var(--border-color)', color: 'var(--text-muted)', opacity: 0.5, filter: 'grayscale(0.5)' };
-                                }
+                                if (isThisCorrect)      cls += ' mcq-fe-correct';
+                                else if (isSelected)    cls += ' mcq-fe-wrong';
+                                else                    cls += ' mcq-fe-faded';
                             } else if (isSelected) {
-                                // ── VIBRANT SELECTED STATE ──
-                                boxStyle = { 
-                                    background: '#fffbeb', 
-                                    border: '3px solid #f59e0b', 
-                                    color: '#92400e', 
-                                    transform: 'scale(1.02)', 
-                                    boxShadow: '0 8px 20px rgba(245,158,11,0.2)',
-                                    zIndex: 10
-                                };
+                                cls += ' mcq-fe-selected';
                             }
 
                             return (
                                 <button
                                     key={i}
+                                    className={cls}
                                     onClick={() => handleSelect(opt)}
                                     disabled={isAnswered}
-                                    style={boxStyle}
-                                    className={`group relative w-full h-14 rounded-2xl border-2 transition-all duration-300 flex items-center px-5 text-[15px] font-bold animate-in slide-in-from-bottom-${2 + i} fade-in duration-500`}
                                 >
-                                    <span className="flex-1 text-left">{opt}</span>
-                                    {isAnswered && isCorrect && <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0"><Check size={14} strokeWidth={4} /></div>}
-                                    {isAnswered && isSelected && !isCorrect && <div className="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0"><X size={14} strokeWidth={4} /></div>}
-                                    {!isAnswered && isSelected && <div className="w-5 h-5 rounded-full border-4 border-amber-500 flex items-center justify-center shrink-0"><div className="w-2 h-2 rounded-full bg-amber-500" /></div>}
+                                    <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
+                                    <span className="mcq-fe-text">{opt}</span>
+                                    {isAnswered && isThisCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
+                                    {isAnswered && isSelected && !isThisCorrect && <X size={16} className="mcq-fe-icon wrong-icon" strokeWidth={3} />}
                                 </button>
                             );
                         })}
                     </div>
 
-                    {!isAnswered && !hintUsed && q.explanation && (
-                        <button onClick={showHint} className="mt-4 text-xs text-amber-500 font-bold flex items-center gap-1 mx-auto opacity-60 hover:opacity-100 transition-opacity">
-                            <Lightbulb size={12} /> Use Hint (−gems)
+                    {/* ── HINT (only before answer) ── */}
+                    {hintUsed && !isAnswered && (
+                        <div className="mt-3 bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Lightbulb size={13} className="text-amber-500" />
+                                <span className="font-black text-amber-600 text-[9px] tracking-widest uppercase">Hint</span>
+                            </div>
+                            <p className="text-[var(--text-main)] font-bold text-[12px] leading-relaxed m-0">{q.hint}</p>
+                        </div>
+                    )}
+
+                    {/* ── SUBMIT BUTTON (only when not yet answered) ── */}
+                    {!isAnswered && (
+                        <button
+                            onClick={handleSubmit}
+                            disabled={selectedOption === null}
+                            className={`mt-4 w-full h-13 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+                                selectedOption !== null
+                                    ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/25 active:scale-95'
+                                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                            }`}
+                            style={{ height: 52 }}
+                        >
+                            SUBMIT ANSWER <Zap size={14} />
                         </button>
                     )}
+                </div>
 
-                    {/* HINT DISPLAY (Only if requested and not yet answered) */}
-                    {hintUsed && !isAnswered && (
-                        <div className="mt-6 relative overflow-hidden bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-4 shadow-sm animate-in slide-in-from-bottom-2 duration-300">
-                            <div className="flex items-start gap-3 relative z-10">
-                                <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white shrink-0">
-                                    <Lightbulb size={16} fill="currentColor" />
+
+                {/* ── WRONG: SOLUTION POPUP (PORTAL TO BODY) ── */}
+                {isAnswered && !userWasCorrect && showExplanation && createPortal(
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                        {/* Backdrop */}
+                        <div 
+                            className="fixed inset-0" 
+                            style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)' }} 
+                            onClick={nextQuestion}
+                        />
+
+                        {/* Floating panel */}
+                        <div className="relative w-full max-w-md z-[10000] rounded-[2.5rem] overflow-hidden"
+                             style={{ 
+                                 background: 'var(--bg-card)', 
+                                 animation: 'mcqFadeScaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)', 
+                                 padding: '24px 20px 24px',
+                                 boxShadow: '0 40px 100px -10px rgba(0,0,0,0.85)',
+                                 border: '1px solid var(--border-glass)'
+                             }}>
+
+                            {/* Header */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                                <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', flexShrink: 0 }}>
+                                    <X size={20} strokeWidth={3} />
                                 </div>
-                                <div>
-                                    <h4 className="font-black text-amber-500 text-[10px] tracking-widest uppercase mb-1">Quick Hint</h4>
-                                    <p className="text-[var(--text-main)] font-bold text-[13px] leading-relaxed">{q.hint || 'No hint available for this concept.'}</p>
+                                <div style={{ overflow: 'hidden' }}>
+                                    <div style={{ fontWeight: 950, fontSize: 18, color: 'var(--text-main)' }}>Not quite!</div>
+                                    <div style={{ fontSize: 12, color: 'var(--text-sub)', fontWeight: 700 }}>Here's how to solve it</div>
                                 </div>
                             </div>
-                        </div>
-                    )}
 
-                    {/* EXPLANATION / DETAILED SOLUTION (Only after answering) */}
-                    {isAnswered && (
-                        <div className="mt-8 relative overflow-hidden bg-slate-900 border-2 border-white/10 rounded-2xl p-6 shadow-2xl animate-in fade-in duration-500">
-                            <div className="absolute -right-8 -bottom-8 text-white/5 -rotate-12">
-                                <Search size={160} />
+                            {/* Correct answer chip */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(16, 185, 129, 0.1)', border: '1.5px solid rgba(16, 185, 129, 0.2)', borderRadius: 12, padding: '9px 14px', fontSize: 12, fontWeight: 700, color: '#10b981', marginBottom: 16 }}>
+                                <Check size={14} strokeWidth={3} style={{ flexShrink: 0 }} />
+                                <span style={{ flexShrink: 0 }}>Correct Answer:</span> 
+                                <strong style={{ marginLeft: 4 }}>{correctText}</strong>
                             </div>
-                            
-                            <div className="flex items-start gap-4 relative z-10">
-                                <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 text-white shrink-0">
-                                    <Check size={20} strokeWidth={4} />
-                                </div>
-                                <div className="pt-0.5">
-                                    <h4 className="font-black text-blue-400 text-[10px] tracking-widest uppercase mb-1.5">Detailed Solution</h4>
-                                    <p className="text-white font-bold text-[14px] leading-relaxed">{q.explanation || 'Detailed concept explanation coming soon.'}</p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
-                    {/* ACTION BUTTON: SUBMIT OR NEXT */}
-                    <div className="mt-8">
-                        {!isAnswered ? (
-                            <button
-                                onClick={handleSubmit}
-                                disabled={selectedOption === null}
-                                className={`w-full h-14 rounded-xl font-black text-xs tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${
-                                    selectedOption !== null 
-                                    ? 'bg-amber-500 text-white shadow-amber-500/20 active:scale-95' 
-                                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                                }`}
-                            >
-                                SUBMIT ANSWER <Zap size={14} />
-                            </button>
-                        ) : (
+                            {/* Steps Area */}
+                            <div className="no-scrollbar" style={{ marginBottom: 20, maxHeight: '45vh', overflowY: 'auto' }}>
+                                <p className="text-[var(--text-main)] font-bold text-[14px] leading-relaxed">{q.explanation || 'Detailed concept explanation coming soon.'}</p>
+                            </div>
+
+                            {/* Continue button */}
                             <button
                                 onClick={nextQuestion}
-                                className="w-full h-14 bg-[var(--text-main)] text-[var(--bg-main)] rounded-xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-black/10"
+                                style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                                    width: '100%', height: 56,
+                                    borderRadius: 20, border: 'none',
+                                    background: '#ef4444', color: 'white',
+                                    fontWeight: 950, fontSize: 15, letterSpacing: 0.5,
+                                    boxShadow: '0 6px 0 #b91c1c', cursor: 'pointer',
+                                    transition: 'transform 0.1s'
+                                }}
+                                className="active:scale-95"
                             >
-                                {currentIdx === questions.length - 1 ? 'FINISH QUEST' : 'NEXT STEP'}
-                                <ArrowRight size={18} />
+                                {currentIdx === (questions?.length || 0) - 1 ? 'FINISH QUEST' : 'Continue'} <ArrowRight size={18} strokeWidth={3} />
                             </button>
-                        )}
-                    </div>
-                </div>
+                        </div>
+                    </div>,
+                    document.body
+                )}
             </div>
         );
+
     } catch (err) {
         console.error("🔥 Render Crash in ScienceFetcherEngine:", err);
         setRenderError(err);

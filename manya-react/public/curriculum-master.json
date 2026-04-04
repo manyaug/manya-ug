@@ -251,6 +251,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Types of Skeletons",
+                "file": "note_types_skeleton"
+              },
+              {
                 "label": "Study Types Skeleton",
                 "file": "study_types_skeleton"
               },
@@ -266,6 +270,10 @@
             "title": "2 Human Skeleton",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Human Skeleton",
+                "file": "note_human_skeleton"
+              },
               {
                 "label": "Labeling V1",
                 "file": "labeling_v1"
@@ -298,6 +306,10 @@
             "title": "3 Axial Skull Spine",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Axial Skull & Spine",
+                "file": "note_axial_skull"
+              },
               {
                 "label": "Labeling Skull V1",
                 "file": "labeling_skull_v1"
@@ -335,6 +347,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Axial Rib Cage",
+                "file": "note_axial_ribs"
+              },
+              {
                 "label": "Labeling V1",
                 "file": "labeling_v1"
               },
@@ -362,6 +378,10 @@
             "title": "5 Appendicular Limbs",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Appendicular Limbs",
+                "file": "note_appendicular_limbs"
+              },
               {
                 "label": "Arm Study",
                 "file": "arm_study"
@@ -399,6 +419,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Bone Structure",
+                "file": "note_bone_structure"
+              },
+              {
                 "label": "Bone Study",
                 "file": "bone_study"
               },
@@ -430,6 +454,10 @@
             "title": "7 Joints Structure",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Joint Structure",
+                "file": "note_joints"
+              },
               {
                 "label": "Knee Study 3d",
                 "file": "knee_study_3d"
@@ -470,6 +498,10 @@
             "title": "8 Hinge Ball-and-socket",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Hinge & Ball-and-Socket",
+                "file": "note_hinge_socket"
+              },
               {
                 "label": "Elbow 2d Study",
                 "file": "elbow_2d_study"
@@ -515,6 +547,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Pivot & Gliding",
+                "file": "note_pivot_gliding"
+              },
+              {
                 "label": "Ankle Gliding Study",
                 "file": "ankle_gliding_study"
               },
@@ -555,6 +591,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Muscular System Types",
+                "file": "note_muscular_system"
+              },
+              {
                 "label": "Labeling Muscle Types V1",
                 "file": "labeling_muscle_types_v1"
               },
@@ -574,6 +614,10 @@
             "title": "11 Muscle Action Antagonistic Pairs",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Muscle Action & Antagonistic Pairs",
+                "file": "note_antagonistic_muscles"
+              },
               {
                 "label": "Labeling Arm Muscles",
                 "file": "labeling_arm_muscles"
@@ -615,6 +659,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Posture and Teeth",
+                "file": "note_posture_teeth"
+              },
+              {
                 "label": "Posture Maintenance Study",
                 "file": "posture_maintenance_study"
               },
@@ -647,6 +695,10 @@
             "prefix": "",
             "resources": [
               {
+                "label": "📚 Study Notes: Disorders and First Aid",
+                "file": "note_disorders_first_aid"
+              },
+              {
                 "label": "Recap Quest 13",
                 "file": "recap_quest_13"
               },
@@ -662,6 +714,10 @@
             "title": "14 Bone Diseases",
             "prefix": "",
             "resources": [
+              {
+                "label": "📚 Study Notes: Bone Diseases and Disorders",
+                "file": "note_bone_diseases"
+              },
               {
                 "label": "Recap Quest 14",
                 "file": "recap_quest_14"

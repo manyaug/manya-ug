@@ -1,0 +1,48 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Axial Rib Cage",
+    "study_notes": {
+        "title": "The Axial Skeleton: The Rib Cage",
+        "introduction": "The rib cage is a vital part of the axial skeleton, forming a protective, bony shield around the thoracic cavity. It is not just for protection; it acts as a flexible, mechanical pump that powers the respiratory system.",
+        "structural_anatomy": {
+            "total_bones": "25 bones (24 ribs and 1 sternum/breastbone).",
+            "rib_pairs": "12 pairs in total.",
+            "sternum": "A flat, dagger-shaped bone in the center of the chest. It acts as the primary anchor point for the true ribs at the front.",
+            "vertebral_attachment": "At the back, all 12 pairs of ribs are securely attached to the 12 thoracic vertebrae of the spine.",
+            "costal_cartilage": "Flexible, rubbery tissue connecting the ribs to the sternum. This flexibility is the biological 'key' to breathing; without it, the chest could not expand."
+        },
+        "classification_of_ribs": {
+            "true_ribs": "Pairs 1-7 (14 ribs total). They attach directly and independently to the sternum. They are the 'True' anchors of the chest wall.",
+            "false_ribs": "Pairs 8-10. These ribs do not attach directly to the sternum. They 'piggyback' onto the cartilage of the rib above them.",
+            "floating_ribs": "Pairs 11-12. These ribs have no attachment at the front (anterior) end. They protect the kidneys and lower abdominal organs from the back."
+        },
+        "the_mechanics_of_breathing": {
+            "inhalation": {
+                "rib_movement": "Muscles between the ribs (intercostals) contract, pulling the ribs UP and OUT.",
+                "effect": "The volume of the chest cavity increases, air pressure drops, and air rushes into the lungs."
+            },
+            "exhalation": {
+                "rib_movement": "The muscles relax, and the heavy rib cage moves DOWN and INWARD.",
+                "effect": "The chest volume decreases, internal pressure increases, and waste air is forcefully pushed out."
+            }
+        },
+        "primary_functions": {
+            "protection": "Shields vital cardiovascular and respiratory organs (Heart and Lungs) from physical impact.",
+            "respiration": "Acts as a mechanical bellows to facilitate the movement of air during inhalation and exhalation.",
+            "blood_factory": "The flat bones of the rib cage contain active red bone marrow, which is essential for manufacturing red blood cells.",
+            "mineral_storage": "Like all bones, ribs act as a storage bank for essential Calcium and Phosphorus."
+        },
+        "common_disorders_and_safety": {
+            "fractures": "A break in the rib bone. Because ribs are close to soft organs, broken shards can puncture lungs, leading to internal bleeding or lung collapse (pneumothorax).",
+            "CPR_safety": "During CPR, compressions must be applied to the sternum. Pressing too low can snap the fragile 'xiphoid process' (tip of the sternum), potentially damaging the liver.",
+            "postural_damage": "Slouching compresses the chest cavity, restricting the rib cage and preventing the lungs from inflating to their full capacity."
+        },
+        "study_tips_for_ple": [
+            "Remember: 12 pairs = 24 ribs.",
+            "True ribs (1-7) attach to the breastbone; False ribs (8-10) attach to cartilage; Floating ribs (11-12) attach to nothing at the front.",
+            "Intercostal muscles are the 'cables' between the ribs that power the breathing movement.",
+            "Cartilage is flexible; solid bone is not. We breathe because our chest is flexible!"
+        ]
+    }
+}

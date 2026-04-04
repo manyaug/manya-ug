@@ -178,7 +178,7 @@ function HomeView() {
         </div>
 
         <div className="play-pill-neon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style={{ marginLeft: '3px' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style={{ marginLeft: '3px' }}>
             <path d="M8 5v14l11-7z" />
           </svg>
         </div>
@@ -190,8 +190,8 @@ function HomeView() {
           <motion.div 
             key={sub.id} 
             variants={itemVariants}
-            whileHover={{ y: -5 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ y: -4 }}
+            whileTap={{ scale: 0.96 }}
             className={`world-card-elite ${sub.id}`} 
             onClick={() => handleOpenSpiral(sub.id)}
           >
@@ -202,7 +202,6 @@ function HomeView() {
 
             {/* INTENSIVE GLOW SYSTEM */}
             <div className="island-stage">
-              {/* THE "THOR" HALO - VIVID radial glow */}
               <div 
                 className="island-halo" 
                 style={{ 
@@ -215,7 +214,7 @@ function HomeView() {
                 alt={sub.name} 
                 className="floating-island"
                 style={{
-                  filter: `drop-shadow(0 0 35px hsla(${sub.hue}, 90%, 60%, 0.5))`
+                  filter: `drop-shadow(0 0 25px hsla(${sub.hue}, 90%, 60%, 0.4))`
                 }}
               />
             </div>
@@ -237,18 +236,18 @@ function HomeView() {
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         onClick={() => navigate('/sim-test')}
-        className="mb-10 w-full flex items-center justify-between p-4 bg-white rounded-2xl border-4 border-[#7c3aed]/10 hover:border-[#7c3aed]/30 transition-all group shadow-sm"
+        className="mb-8 w-full flex items-center justify-between p-3 bg-[var(--bg-primary)] rounded-2xl border-2 border-[var(--border-subtle)] hover:border-[#7c3aed]/30 transition-all group shadow-sm"
       >
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-[#7c3aed] rounded-xl flex items-center justify-center text-white scale-90 group-hover:scale-100 transition-transform shadow-lg shadow-purple-200">
-            <FlaskConical size={20} />
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-[#7c3aed] rounded-xl flex items-center justify-center text-white scale-90 group-hover:scale-100 transition-transform shadow-lg shadow-purple-200">
+            <FlaskConical size={18} />
           </div>
           <div className="text-left">
-            <h4 className="font-black text-slate-800 leading-none">Simulation Lab</h4>
-            <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Experimental Access</p>
+            <h4 className="font-black text-[var(--text-primary)] text-sm leading-none">Simulation Lab</h4>
+            <p className="text-[9px] font-bold text-[var(--text-secondary)] mt-0.5 uppercase tracking-wider">Experimental Access</p>
           </div>
         </div>
-        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-[#7c3aed] group-hover:text-white transition-colors">
+        <div className="w-7 h-7 rounded-full bg-[var(--glass-bg)] flex items-center justify-center text-[var(--text-secondary)] group-hover:bg-[#7c3aed] group-hover:text-white transition-colors">
           →
         </div>
       </motion.button>

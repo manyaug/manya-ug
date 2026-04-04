@@ -51,7 +51,7 @@ export const ENGINE_REGISTRY = {
     'NOTE_EXPLORER': {
         type: 'react',
         hideGlobalFooter: true,
-        component: lazy(() => import('../engines/sst/NoteExplorerEngine.jsx'))
+        component: lazy(() => import('../engines/shared-engines/NoteExplorerEngine.jsx'))
     },
 
     // Legacy Engines (Still in Public/Legacy)

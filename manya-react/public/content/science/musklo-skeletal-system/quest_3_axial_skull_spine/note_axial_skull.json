@@ -1,0 +1,58 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Axial Skeleton: Skull and Spine",
+    "study_notes": {
+        "title": "The Axial Skeleton: Protection and Support",
+        "introduction": "The axial skeleton forms the vertical, central axis of the human body. It is primarily designed to protect vital internal organs and support the weight of the head and trunk.",
+        "the_human_skull": {
+            "total_bones": "22 separate bones",
+            "major_parts": [
+                "Cranium: The rigid bony 'brain box' that shields the delicate brain.",
+                "Facial Bones: 14 bones that form the orbits (eye sockets), nasal cavity, and jaw.",
+                "Mandible: The only movable bone in the skull, used for chewing and speech.",
+                "Sutures: Immovable, jagged joints that lock skull bones together for maximum protection."
+            ],
+            "infant_skull_facts": "Newborns have soft spots called 'fontanelles'. These allow the skull bones to overlap slightly during birth and provide space for rapid brain growth."
+        },
+        "the_vertebral_column_spine": {
+            "definition": "A flexible column made of 33 small bones in infants, which fuse to 26 bones in adults.",
+            "primary_functions": [
+                "Protects the spinal cord (the body's main nerve highway).",
+                "Supports the head and upright posture of the trunk.",
+                "Provides an anchor point for the rib cage."
+            ],
+            "five_regions_of_the_spine": {
+                "Cervical": "7 bones (Neck). Contains the Atlas (supports skull) and Axis (allows head rotation).",
+                "Thoracic": "12 bones (Chest). Each attaches to a pair of ribs.",
+                "Lumbar": "5 bones (Lower back). The largest and thickest, supporting the most weight.",
+                "Sacral": "5 fused vertebrae (Sacrum). Connects the spine to the pelvic girdle.",
+                "Coccygeal": "4 fused vertebrae (Coccyx/Tailbone). The vestigial base of the spine."
+            }
+        },
+        "rib_cage": {
+            "structure": "12 pairs of ribs (24 total).",
+            "sternum": "The central, flat 'breastplate' that anchors the ribs at the front.",
+            "rib_classification": {
+                "True_Ribs": "Pairs 1-7. Attach directly to the sternum via their own costal cartilage.",
+                "False_Ribs": "Pairs 8-10. Attach indirectly to the sternum through the cartilage of the 7th rib.",
+                "Floating_Ribs": "Pairs 11-12. No front attachment; they protect the lower back and kidneys."
+            },
+            "breathing_mechanics": [
+                "Inhalation: Ribs move UP and OUT, increasing chest volume, lowering pressure, drawing air in.",
+                "Exhalation: Ribs move DOWN and IN, decreasing chest volume, forcing air out."
+            ]
+        },
+        "key_biomechanical_concepts": [
+            "Intervertebral Discs: Pads of shock-absorbing cartilage between vertebrae.",
+            "S-Shaped Curvature: The spine is not a straight stick; it is curved to act as a spring, balancing weight and absorbing shocks during walking/running.",
+            "Neural Arch: The bony hole in each vertebra that creates the protective tunnel for the spinal cord."
+        ],
+        "study_tips_for_ple": [
+            "Atlas (C1) = Nods 'Yes'; Axis (C2) = Rotates 'No'.",
+            "The Rib Cage protects the Heart and Lungs, while the Skull protects the Brain.",
+            "Costal cartilage is flexible, which is the ONLY reason we can breathe. Solid bone would make breathing impossible!",
+            "If you stand hunched (bad posture), you are compressing your own lungs and putting stress on your thoracic spine."
+        ]
+    }
+}

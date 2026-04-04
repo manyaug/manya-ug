@@ -1,0 +1,61 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Disorders and First Aid",
+    "study_notes": {
+        "title": "Musculo-Skeletal Disorders and First Aid Procedures",
+        "introduction": "Injuries to the skeleton and muscles are common, especially in childhood. Knowing the correct first aid can prevent permanent deformity, severe internal damage, or long-term disability.",
+        "common_skeletal_disorders": {
+            "fractures": {
+                "definition": "A crack or complete break in a bone.",
+                "types": [
+                    "Simple (Closed): The bone breaks but the skin remains intact.",
+                    "Compound (Open): The broken bone pierces through the skin; high risk of infection.",
+                    "Greenstick: The bone bends and cracks like a young twig. Common in children because their bones are flexible.",
+                    "Comminuted: The bone is shattered into several small pieces."
+                ]
+            },
+            "dislocation": "The displacement of a bone from its normal position at a joint (e.g., shoulder popping out).",
+            "sprain": "An injury where ligaments (bone-to-bone connectors) are overstretched or torn.",
+            "strain": "An injury where muscles or tendons (muscle-to-bone connectors) are overstretched or torn.",
+            "postural_defects": "Deformities caused by poor habit or growth, such as Scoliosis, Kyphosis, and Lordosis."
+        },
+        "first_aid_principles": {
+            "fractures": [
+                "Do NOT move the patient unless absolutely necessary to avoid further damage.",
+                "Stop any visible bleeding by applying pressure near the wound, not on the bone.",
+                "Use a splint to immobilize the limb. This prevents the sharp bone edges from cutting nerves or blood vessels.",
+                "Treat for shock by keeping the patient warm and calm.",
+                "Transport to a hospital using a firm stretcher (especially for spinal injuries)."
+            ],
+            "sprains_and_strains": {
+                "method": "R.I.C.E.",
+                "steps": [
+                    "Rest: Stop using the injured limb immediately.",
+                    "Ice: Apply cold compresses to reduce pain and swelling.",
+                    "Compression: Wrap with an elastic bandage to provide support and limit swelling.",
+                    "Elevation: Raise the injured limb above heart level to drain excess fluid."
+                ]
+            }
+        },
+        "key_first_aid_equipment": {
+            "splint": "A rigid object (wood, plastic) used to keep a broken bone straight.",
+            "arm_sling": "A triangular bandage used to cradle a broken arm and take the weight off the shoulder.",
+            "antiseptics": "Used to clean open (compound) fractures to prevent bacteria from causing osteomyelitis (bone infection)."
+        },
+        "bone_diseases_and_prevention": {
+            "rickets": "Caused by Vitamin D/Calcium deficiency. Prevented by balanced diet and sunlight.",
+            "polio": "Viral infection causing muscle paralysis. Prevented by immunization (drops/injections) and sanitation.",
+            "tuberculosis_of_spine": "Caused by TB bacteria spreading to the backbone. Prevented by BCG vaccine and boiling milk.",
+            "tetanus": "Caused by bacteria entering deep wounds (rust). Prevented by DPT vaccine.",
+            "leprosy": "Bacterial disease causing skin numbness. Prevented by early diagnosis and hygiene."
+        },
+        "study_tips_for_ple": [
+            "Mnemonic: B-L-B (Bone-Ligament-Bone) = Sprain; M-T-B (Muscle-Tendon-Bone) = Strain.",
+            "If you see 'Lockjaw' in a question, the answer is Tetanus.",
+            "Never attempt to push a protruding bone back inside; this introduces germs into the bone.",
+            "For a spinal injury, the priority is to keep the spine straight—a stretcher is mandatory.",
+            "Always check for a pulse in a limb after applying a splint to ensure circulation isn't blocked."
+        ]
+    }
+}

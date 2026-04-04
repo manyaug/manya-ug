@@ -29,7 +29,7 @@ import UniversalGlobeEngine from '../shared-engines/UniversalGlobeEngine';
 import ImageHotspotsEngine from '../shared-engines/ImageHotspotsEngine';
 import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
-import NoteExplorerEngine from './NoteExplorerEngine';
+import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
 import SSTStudyEngine from './SSTStudyEngine';
 
 /**

@@ -1,0 +1,62 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Muscular System Types and Action",
+    "study_notes": {
+        "title": "The Muscular System: Structure and Action",
+        "introduction": "Muscles are elastic tissues that generate force through contraction, allowing the body to move, circulate blood, and digest food. They work by pulling on bones through tendons.",
+        "key_properties": {
+            "contraction": "The process where muscle fibers shorten and thicken, becoming firm and exerting a pulling force.",
+            "relaxation": "The process where muscle fibers lengthen and soften, allowing the muscle to return to its resting state.",
+            "antagonism": "Because muscles can only PULL (and not push), they work in opposing pairs. When one contracts (shortens), the other must relax (lengthen) to allow movement."
+        },
+        "types_of_muscles": {
+            "voluntary_skeletal": {
+                "characteristics": "Striped (striated) appearance, consciously controlled by the brain.",
+                "location": "Attached to bones by tendons.",
+                "function": "Provides forceful, rapid movement for locomotion (walking, lifting).",
+                "example": "Biceps (front of arm), Triceps (back of arm), Quadriceps (front of thigh)."
+            },
+            "involuntary_smooth": {
+                "characteristics": "Non-striped (smooth) appearance, works automatically without conscious effort.",
+                "location": "Walls of internal organs (stomach, intestines, bladder, blood vessels).",
+                "function": "Manages slow, sustained internal movements like digestion (peristalsis) and blood pressure regulation.",
+                "example": "Stomach, intestines, arteries."
+            },
+            "cardiac": {
+                "characteristics": "Striped but involuntary; specialized to pump blood continuously.",
+                "location": "Exclusively in the walls of the heart.",
+                "function": "Rhythmic, tireless contraction to circulate blood throughout the body.",
+                "vital_fact": "It never gets 'tired' (fatigued) like skeletal muscle because it is rich in mitochondria and oxygen."
+            }
+        },
+        "biomechanics_of_antagonistic_pairs": {
+            "definition": "Pairs of muscles that work in opposition to move a joint.",
+            "example_1_the_elbow": {
+                "flexion": "Biceps contract (shorten/harden) to bend the elbow; Triceps relax.",
+                "extension": "Triceps contract (shorten/harden) to straighten the arm; Biceps relax."
+            },
+            "example_2_the_knee": {
+                "flexion": "Hamstrings contract to bend the knee.",
+                "extension": "Quadriceps contract to straighten the leg (e.g., kicking a ball)."
+            }
+        },
+        "essential_needs_for_muscles": [
+            "Oxygen: Required to release energy from food.",
+            "Glucose: The primary fuel for muscle contraction.",
+            "Protein: The building block needed to repair muscle fibers after use.",
+            "Rest: Necessary for recovery from fatigue (lactic acid buildup)."
+        ],
+        "muscle_fatigue": {
+            "cause": "Accumulation of lactic acid during intense physical activity when muscles don't get enough oxygen.",
+            "symptoms": "Pain, burning sensation, and inability to continue moving."
+        },
+        "study_tips_for_ple": [
+            "Mnemonic: B-L-B (Bone-Ligament-Bone) vs M-T-B (Muscle-Tendon-Bone).",
+            "Skeletal muscles are 'Voluntary' and 'Striped'.",
+            "Cardiac muscle is the 'Specialist'—striped but automatic.",
+            "If you are lifting something, the flexor is the one that bulges and gets hard.",
+            "The 'P' in Patella makes it a 'Pulley' for the quadriceps, helping the leg straighten easier!"
+        ]
+    }
+}

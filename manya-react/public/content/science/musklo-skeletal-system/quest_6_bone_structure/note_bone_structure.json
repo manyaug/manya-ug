@@ -1,0 +1,53 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Bone Structure and Function",
+    "study_notes": {
+        "title": "Anatomy and Physiology of Bone Tissue",
+        "introduction": "Bones are not just hard, dead sticks; they are complex, living organs. They provide the body's framework, store essential minerals, and act as a factory for blood cells.",
+        "bone_composition": {
+            "organic_matter": "Composed of protein fibers like collagen, which provide bones with flexibility and resistance to shattering.",
+            "inorganic_minerals": "Composed of crystallized mineral salts, primarily Calcium and Phosphorus, which give bones their characteristic rock-like hardness and structural strength."
+        },
+        "internal_layers": {
+            "periosteum": "A thin, tough membrane covering the entire outer surface of the bone. It is packed with nerves (causing pain when injured) and blood vessels (to nourish the bone and repair fractures).",
+            "compact_bone": "The dense, hard outer shell. It provides the structural strength to bear the body's weight and acts as a shield for the inner marrow cavity.",
+            "spongy_bone": "A porous, honeycomb-like layer found at the ends (epiphyses) of long bones. Its many tiny holes hold the red bone marrow.",
+            "articular_cartilage": "A smooth, slippery, rubbery tissue covering the ends of bones at joints. It acts as a cushion/shock absorber and reduces friction during movement."
+        },
+        "the_role_of_marrow": {
+            "red_bone_marrow": {
+                "location": "Located in the spongy bone at the ends of long bones and inside flat bones.",
+                "function": "The 'blood factory'. It manufactures new red blood cells, white blood cells, and platelets."
+            },
+            "yellow_bone_marrow": {
+                "location": "Located in the central, hollow medullary cavity of the long bones (shaft).",
+                "function": "Primarily stores fat (adipose tissue) for emergency energy. It can convert back into red marrow if the body experiences severe blood loss."
+            }
+        },
+        "bone_growth_and_health": {
+            "ossification": "The biological process where flexible cartilage templates are replaced by hard, mineralized bone tissue as a child grows.",
+            "living_tissue_evidence": [
+                "Growth: Bones actively increase in size and thickness.",
+                "Healing: Bones can mend themselves after a fracture by creating a 'bony callus'.",
+                "Sensation: Bones contain nerves that allow us to feel pain.",
+                "Nourishment: Bones have a continuous blood supply for oxygen and glucose."
+            ],
+            "essential_nutrients": [
+                "Calcium and Phosphorus: The raw building materials for bone hardness.",
+                "Vitamin D: The critical 'key' that allows the body to absorb calcium from food. Without it, bones become soft and deformed (Rickets in children, Osteomalacia in adults)."
+            ]
+        },
+        "key_biomechanical_facts": [
+            "Hollow Shafts: Long bones like the femur have a hollow medullary cavity to be light yet incredibly strong (like a steel pipe).",
+            "Haversian Canals: Microscopic tunnels that allow blood vessels and nerves to travel through the dense compact bone.",
+            "Fragility: If you burn away the protein, the bone becomes brittle. If you dissolve away the minerals (with acid), the bone becomes soft and rubbery."
+        ],
+        "study_tips_for_ple": [
+            "If you see a question about a child with 'bowlegs', the answer is Rickets (Vitamin D/Calcium deficiency).",
+            "Red = Red Blood Cells; Yellow = Fat Storage.",
+            "Bones feel pain because of the nerves in the Periosteum.",
+            "Cartilage + Synovial Fluid = Friction-free joints."
+        ]
+    }
+}

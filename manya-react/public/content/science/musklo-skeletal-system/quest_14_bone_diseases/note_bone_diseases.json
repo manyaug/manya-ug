@@ -1,0 +1,57 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Bone Diseases",
+    "study_notes": {
+        "title": "Bone Diseases and Disorders",
+        "introduction": "Bones are living tissues that can be affected by infections, nutritional deficiencies, and genetic disorders. Proper health care, hygiene, and nutrition are vital to keep the skeletal system strong and free from disease.",
+        "major_skeletal_diseases": {
+            "Polio": {
+                "cause": "Caused by the Polio virus.",
+                "transmission": "Fecal-oral route (contaminated food/water).",
+                "effect": "Attacks motor neurons, causing muscle wasting (atrophy) and permanent lameness in limbs.",
+                "prevention": "Routine immunization (drops) and proper sanitation (latrine use)."
+            },
+            "Rickets": {
+                "cause": "Deficiency of Vitamin D, Calcium, or Phosphorus.",
+                "effect": "Bones remain soft and bend, resulting in deformities like 'bowlegs' or 'knock-knees'.",
+                "prevention": "Balanced diet rich in Calcium (milk, fish, eggs) and adequate exposure to sunlight (Vitamin D)."
+            },
+            "Tuberculosis_of_the_Spine": {
+                "cause": "Bacteria (*Mycobacterium tuberculosis*).",
+                "effect": "Destroys bone tissue in the vertebrae, leading to pain, walking difficulty, and a physical hunchback (Kyphosis).",
+                "prevention": "BCG vaccination at birth and boiling all cow's milk (to avoid Bovine TB)."
+            },
+            "Tetanus": {
+                "cause": "Bacteria (*Clostridium tetani*) found in soil/rust.",
+                "effect": "Produces a toxin that causes painful, rigid muscle spasms, especially 'lockjaw'.",
+                "prevention": "DPT vaccination and proper cleaning of deep, dirty wounds."
+            },
+            "Leprosy": {
+                "cause": "Bacteria.",
+                "effect": "Destroys nerves in skin, leading to loss of sensation and permanent deformities like shortened fingers/toes.",
+                "prevention": "Early diagnosis and antibiotic treatment."
+            }
+        },
+        "age_related_disorders": {
+            "Osteomalacia": "The adult form of Rickets, where bones lose mineral density and become soft/fragile due to Vitamin D/Calcium deficiency.",
+            "Osteoporosis": "A condition where bones become porous and brittle with age (common in post-menopausal women) due to loss of mineral density."
+        },
+        "joint_disorders": {
+            "Arthritis": "Inflammation and stiffness of joints. Common in elderly people due to cartilage wear-and-tear (Osteoarthritis) or immune system attacks on joints (Rheumatoid Arthritis)."
+        },
+        "preventive_health_habits": [
+            "Immunization: Essential to prevent bacterial and viral diseases like Polio and Tetanus.",
+            "Balanced Nutrition: Calcium and Phosphorus harden the bone matrix; Vitamin D enables calcium absorption.",
+            "Hygiene: Proper sanitation and latrine use prevent the spread of Polio and other water-borne infections.",
+            "Wound Care: Cleaning deep wounds prevents the entry of Tetanus bacteria."
+        ],
+        "study_tips_for_ple": [
+            "If the question mentions 'bowlegs' or 'knock-knees', think Vitamin D/Calcium deficiency (Rickets).",
+            "If it mentions 'lockjaw' or 'rusty nails', the answer is Tetanus.",
+            "BCG is the vaccine for TB; DPT covers Tetanus.",
+            "Remember that Polio is a communicable disease spread by dirty water, not just a 'childhood problem'.",
+            "Always boil milk to kill TB germs that may have come from an infected cow!"
+        ]
+    }
+}

@@ -1,3 +1,4 @@
+// NOTE: This file is a copy of the existing NoteExplorerEngine after cleanup.
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -43,6 +44,7 @@ const CHEERS = [
 function flattenNotes(notes, parentTitle = '') {
     const cards = [];
     if (!notes || typeof notes !== 'object') return cards;
+
     for (const [key, value] of Object.entries(notes)) {
         if (['title', 'introduction', 'mode'].includes(key)) continue;
         const prettyTitle = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -56,24 +58,38 @@ function flattenNotes(notes, parentTitle = '') {
                 cards.push({ type: 'object_list', title: prettyTitle, items: value, section: parentTitle || prettyTitle });
             }
         } else if (typeof value === 'object' && value !== null) {
-            const childKeys = Object.keys(value);
-            const allStrings = childKeys.every(k => typeof value[k] === 'string');
-            if (allStrings) {
+            const childEntries = Object.entries(value);
+            
+            // SMART CONSOLIDATION (v4.0)
+            // If the object is a "Rich Detail" (mix of strings and maybe ONE list), don't recurse.
+            const hasNestedObjects = childEntries.some(([_, v]) => typeof v === 'object' && !Array.isArray(v));
+            const listCount = childEntries.filter(([_, v]) => Array.isArray(v)).length;
+            
+            if (!hasNestedObjects && listCount <= 1 && childEntries.length <= 6) {
+                // Treat as a single consolidated card
+                const description = childEntries.find(([_, v]) => typeof v === 'string' && !['title', 'name'].includes(_))?.[1] || '';
+                const list = childEntries.find(([_, v]) => Array.isArray(v))?.[1] || [];
+                const otherPairs = childEntries.filter(([k, v]) => typeof v === 'string' && v !== description).map(([k, v]) => ({
+                    label: k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                    value: v
+                }));
+
                 cards.push({
-                    type: 'key_value', title: prettyTitle,
-                    pairs: Object.entries(value).map(([k, v]) => ({
-                        label: k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), value: v
-                    })),
+                    type: 'rich_detail',
+                    title: prettyTitle,
+                    description,
+                    list,
+                    pairs: otherPairs,
                     section: parentTitle || prettyTitle
                 });
             } else {
+                // Too complex or has deeper nesting -> Recurse normally
                 cards.push(...flattenNotes(value, prettyTitle));
             }
         }
     }
     return cards;
 }
-
 
 // ── PROGRESS BAR ────────────────────────────────────────────────────────────
 const ProgressTrack = ({ current, total, theme }) => {
@@ -167,9 +183,7 @@ const ListCard = ({ card, theme }) => (
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.07, type: 'spring', stiffness: 140, damping: 18 }}
             >
-                <div className="ne-list-marker" style={{ background: theme.gradient }}>
-                    {i + 1}
-                </div>
+                <div className="ne-list-marker" style={{ background: theme.gradient }}>{i + 1}</div>
                 <p className="ne-list-text" dangerouslySetInnerHTML={{ __html: item }} />
             </motion.div>
         ))}
@@ -224,6 +238,42 @@ const KeyValueCard = ({ card, theme }) => (
     </div>
 );
 
+const RichDetailCard = ({ card, theme }) => (
+    <div className="ne-rich">
+        {card.description && (
+            <motion.p 
+                className="ne-rich-desc"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                dangerouslySetInnerHTML={{ __html: card.description }}
+            />
+        )}
+        
+        {card.pairs?.length > 0 && (
+            <div className="ne-rich-pairs">
+                {card.pairs.map((p, i) => (
+                    <motion.div key={i} className="ne-rich-pair" initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}>
+                        <span className="ne-rich-label" style={{ color: theme.accent }}>{p.label}:</span>
+                        <span className="ne-rich-val" dangerouslySetInnerHTML={{ __html: p.value }} />
+                    </motion.div>
+                ))}
+            </div>
+        )}
+
+        {card.list?.length > 0 && (
+            <div className="ne-rich-list">
+                <span className="ne-rich-list-title" style={{ color: theme.accent }}>Key Points / Examples:</span>
+                {card.list.map((item, i) => (
+                    <motion.div key={i} className="ne-rich-item" initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 + i * 0.05 }}>
+                        <div className="ne-rich-bullet" style={{ backgroundColor: theme.accent }} />
+                        <span dangerouslySetInnerHTML={{ __html: item }} />
+                    </motion.div>
+                ))}
+            </div>
+        )}
+    </div>
+);
+
 // ── MAIN ENGINE ─────────────────────────────────────────────────────────────
 
 const NoteExplorerEngine = ({ data, onComplete }) => {
@@ -237,7 +287,7 @@ const NoteExplorerEngine = ({ data, onComplete }) => {
         const intro = {
             type: 'intro',
             title: notes.title || data?.subtopic || 'Knowledge Quest',
-            content: notes.introduction || 'Let\'s discover something incredible!',
+            content: notes.introduction || "Let's discover something incredible!",
             section: 'Welcome'
         };
         return [intro, ...flattenNotes(notes)];
@@ -318,14 +368,13 @@ const NoteExplorerEngine = ({ data, onComplete }) => {
                         initial={{ opacity: 0, x: dir * 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: dir * -50 }}
-                        transition={{ type: 'spring', damping: 26, stiffness: 180 }}
                     >
                         {card.type === 'intro' && <IntroCard card={card} theme={theme} totalCards={allCards.length} />}
                         {card.type === 'fact' && <FactCard card={card} theme={theme} />}
                         {card.type === 'list' && <ListCard card={card} theme={theme} />}
                         {card.type === 'object_list' && <ObjectListCard card={card} theme={theme} />}
                         {card.type === 'key_value' && <KeyValueCard card={card} theme={theme} />}
-
+                        {card.type === 'rich_detail' && <RichDetailCard card={card} theme={theme} />}
                         {/* Manya encouragement every 3 cards */}
                         {idx > 0 && idx % 3 === 0 && (
                             <ManyaSpeech text={CHEERS[idx % CHEERS.length]} theme={theme} />
@@ -357,256 +406,12 @@ const NoteExplorerEngine = ({ data, onComplete }) => {
                     onClick={goNext}
                 >
                     {isLast ? (
-                        <>FINISH <GraduationCap size={20} /></>
+                        <><>FINISH </><GraduationCap size={20} /></>
                     ) : (
-                        <>NEXT <ChevronRight size={20} /></>
+                        <><>NEXT </><ChevronRight size={20} /></>
                     )}
                 </motion.button>
             </div>
-
-            {/* ── STYLES ── */}
-            <style>{`
-                /* ─── ROOT ─── */
-                .ne-root {
-                    display: flex; flex-direction: column;
-                    height: 100%; width: 100%;
-                    background: var(--bg-main);
-                    color: var(--text-main);
-                    font-family: var(--font-main, 'Plus Jakarta Sans', system-ui, sans-serif);
-                    overflow: hidden; position: relative;
-                    -webkit-user-select: none; user-select: none;
-                }
-                .ne-empty {
-                    display: flex; align-items: center; justify-content: center;
-                    height: 100%; color: var(--text-muted); font-weight: 800; font-size: 15px;
-                }
-
-                /* ─── HEADER ─── */
-                .ne-header {
-                    position: relative; flex-shrink: 0;
-                    padding: 18px 22px 24px;
-                    border-radius: 0 0 var(--radius-xl, 32px) var(--radius-xl, 32px);
-                    overflow: hidden; z-index: 5;
-                    box-shadow: 0 12px 40px -12px rgba(0,0,0,0.25);
-                }
-                .ne-header-inner { position: relative; z-index: 2; }
-
-                .ne-orb {
-                    position: absolute; border-radius: 50%;
-                    background: rgba(255,255,255,0.08);
-                }
-                .ne-orb-1 { width: 140px; height: 140px; top: -40px; right: -30px; filter: blur(30px); }
-                .ne-orb-2 { width: 90px; height: 90px; bottom: -20px; left: 10%; filter: blur(20px); }
-                .ne-orb-3 { width: 60px; height: 60px; top: 50%; left: 60%; filter: blur(15px); background: rgba(255,255,255,0.05); }
-
-                /* ─── PROGRESS BAR ─── */
-                .ne-progress-wrap {
-                    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-                }
-                .ne-progress-track {
-                    flex: 1; height: 6px; border-radius: 100px;
-                    background: rgba(255,255,255,0.18); overflow: hidden;
-                }
-                .ne-progress-fill {
-                    height: 100%; border-radius: 100px;
-                    position: relative; overflow: hidden;
-                }
-                .ne-progress-shimmer {
-                    position: absolute; inset: 0;
-                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-                    animation: ne-shimmer 2s infinite linear;
-                }
-                @keyframes ne-shimmer {
-                    from { transform: translateX(-100%); }
-                    to { transform: translateX(100%); }
-                }
-                .ne-progress-label {
-                    font-size: 11px; font-weight: 900; color: rgba(255,255,255,0.7);
-                    font-variant-numeric: tabular-nums;
-                }
-
-                /* ─── SECTION TAG ─── */
-                .ne-section-row {
-                    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
-                }
-                .ne-section-icon {
-                    width: 26px; height: 26px; border-radius: 9px;
-                    background: rgba(255,255,255,0.18);
-                    display: flex; align-items: center; justify-content: center;
-                }
-                .ne-section-text {
-                    font-size: 10px; font-weight: 900; color: rgba(255,255,255,0.6);
-                    text-transform: uppercase; letter-spacing: 0.15em;
-                }
-
-                /* ─── TITLE ─── */
-                .ne-title {
-                    font-size: 18px; font-weight: 900; color: white;
-                    line-height: 1.3; margin: 0;
-                    display: -webkit-box; -webkit-line-clamp: 3;
-                    -webkit-box-orient: vertical; overflow: hidden;
-                }
-
-                /* ─── CONTENT ─── */
-                .ne-content {
-                    flex: 1; overflow-y: auto; overflow-x: hidden;
-                    padding: 20px 20px 8px;
-                    -webkit-overflow-scrolling: touch;
-                }
-                .ne-content::-webkit-scrollbar { width: 3px; }
-                .ne-content::-webkit-scrollbar-track { background: transparent; }
-                .ne-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-
-                /* ─── INTRO ─── */
-                .ne-intro {
-                    text-align: center; padding: 8px 0;
-                    display: flex; flex-direction: column; align-items: center;
-                }
-                .ne-intro-mascot {
-                    width: 100px; height: 100px; object-fit: contain;
-                    margin-bottom: 20px;
-                    filter: drop-shadow(0 8px 20px rgba(124, 58, 237, 0.25));
-                }
-                .ne-intro-desc {
-                    font-size: 15px; font-weight: 600; line-height: 1.65;
-                    color: var(--text-sub); max-width: 320px; margin: 0 0 20px;
-                }
-                .ne-intro-badge {
-                    display: inline-flex; align-items: center; gap: 8px;
-                    padding: 10px 18px; border-radius: 100px;
-                    font-size: 12px; font-weight: 800;
-                }
-
-                /* ─── MANYA SPEECH ─── */
-                .ne-manya-row {
-                    display: flex; align-items: flex-end; gap: 10px;
-                    margin-top: 20px; padding: 0 4px;
-                }
-                .ne-manya-img {
-                    width: 44px; height: 44px; object-fit: contain; flex-shrink: 0;
-                    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-                }
-                .ne-speech-bubble {
-                    position: relative;
-                    padding: 10px 16px; border-radius: 16px 16px 16px 4px;
-                    background: var(--bg-card);
-                    border: 1.5px solid var(--border-color);
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-                }
-                .ne-speech-text {
-                    font-size: 12px; font-weight: 800; color: var(--text-main); margin: 0;
-                }
-
-                /* ─── FACT ─── */
-                .ne-fact {
-                    display: flex; flex-direction: column; align-items: center;
-                    text-align: center; padding: 28px 4px;
-                    min-height: 200px; justify-content: center;
-                }
-                .ne-fact-icon {
-                    width: 60px; height: 60px; border-radius: 18px;
-                    display: flex; align-items: center; justify-content: center;
-                    margin-bottom: 20px;
-                    box-shadow: 0 10px 28px -6px rgba(0,0,0,0.25);
-                }
-                .ne-fact-text {
-                    font-size: 16px; font-weight: 700; line-height: 1.65;
-                    color: var(--text-main); margin: 0;
-                }
-                .ne-fact-text b { font-weight: 900; }
-
-                /* ─── LIST ─── */
-                .ne-list { display: flex; flex-direction: column; gap: 10px; }
-                .ne-list-item {
-                    display: flex; gap: 12px; align-items: flex-start;
-                    padding: 14px; border-radius: var(--radius-md, 16px);
-                    background: var(--bg-card);
-                    border: 1.5px solid var(--border-color);
-                }
-                .ne-list-marker {
-                    width: 26px; height: 26px; border-radius: 9px; flex-shrink: 0;
-                    display: flex; align-items: center; justify-content: center;
-                    color: white; font-weight: 900; font-size: 11px;
-                    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
-                    margin-top: 1px;
-                }
-                .ne-list-text {
-                    font-size: 13.5px; font-weight: 600; line-height: 1.55;
-                    color: var(--text-main); margin: 0;
-                }
-                .ne-list-text b { font-weight: 900; }
-
-                /* ─── OBJECT LIST ─── */
-                .ne-obj-list { display: flex; flex-direction: column; gap: 12px; }
-                .ne-obj-card {
-                    padding: 16px; border-radius: var(--radius-md, 16px);
-                    background: var(--bg-card);
-                    border: 1.5px solid var(--border-color);
-                }
-                .ne-obj-header {
-                    display: flex; gap: 10px; align-items: center; margin-bottom: 10px;
-                }
-                .ne-obj-icon {
-                    width: 26px; height: 26px; border-radius: 9px;
-                    display: flex; align-items: center; justify-content: center;
-                }
-                .ne-obj-name {
-                    font-size: 14px; font-weight: 900; color: var(--text-main); margin: 0;
-                }
-                .ne-obj-row {
-                    display: flex; gap: 8px; margin-bottom: 5px;
-                    font-size: 12px; line-height: 1.4;
-                }
-                .ne-obj-label {
-                    font-weight: 800; color: var(--text-muted);
-                    text-transform: uppercase; letter-spacing: 0.04em;
-                    min-width: 65px; flex-shrink: 0;
-                }
-                .ne-obj-value { font-weight: 600; color: var(--text-main); }
-
-                /* ─── KEY VALUE ─── */
-                .ne-kv { display: flex; flex-direction: column; gap: 10px; }
-                .ne-kv-item {
-                    padding: 14px 16px; border-radius: var(--radius-md, 16px);
-                    background: var(--bg-card);
-                    border: 1.5px solid var(--border-color);
-                }
-                .ne-kv-label {
-                    font-size: 10px; font-weight: 900;
-                    text-transform: uppercase; letter-spacing: 0.12em;
-                    display: block; margin-bottom: 4px;
-                }
-                .ne-kv-value {
-                    font-size: 14px; font-weight: 700; line-height: 1.55;
-                    color: var(--text-main); margin: 0;
-                }
-                .ne-kv-value b { font-weight: 900; }
-
-                /* ─── FOOTER ─── */
-                .ne-footer {
-                    display: flex; gap: 10px; padding: 12px 20px 28px;
-                    flex-shrink: 0;
-                    background: linear-gradient(to top, var(--bg-main) 70%, transparent);
-                }
-                .ne-btn-back {
-                    height: 54px; border-radius: var(--radius-md, 16px);
-                    background: var(--bg-card);
-                    border: 1.5px solid var(--border-color);
-                    display: flex; align-items: center; justify-content: center;
-                    color: var(--text-main); cursor: pointer;
-                    flex-shrink: 0; overflow: hidden;
-                }
-                .ne-btn-next {
-                    flex: 1; height: 54px; border-radius: var(--radius-md, 16px);
-                    border: none;
-                    color: white; font-weight: 900; font-size: 14px;
-                    letter-spacing: 0.08em; text-transform: uppercase;
-                    display: flex; align-items: center; justify-content: center; gap: 8px;
-                    cursor: pointer;
-                    box-shadow: 0 6px 20px -4px rgba(0,0,0,0.2);
-                }
-
-            `}</style>
         </div>
     );
 };

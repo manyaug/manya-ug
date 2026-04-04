@@ -1,0 +1,83 @@
+{
+    "mode": "note_explorer",
+    "topic": "Musculo-Skeletal System",
+    "subtopic": "Joints Structure",
+    "study_notes": {
+        "title": "Anatomy and Function of Human Joints",
+        "introduction": "A joint (or articulation) is the physical meeting point of two or more bones. Joints are essential for bodily movement, allowing the rigid skeleton to bend, twist, and adapt to different positions.",
+        "classification_by_movement": {
+            "Immovable_Fixed_Joints": {
+                "description": "These joints allow absolutely no movement. They provide maximum structural protection.",
+                "examples": [
+                    "Sutures in the Skull: Zig-zag interlocking joints that fuse skull bones to protect the brain."
+                ]
+            },
+            "Slightly_Movable_Joints": {
+                "description": "These allow limited flexibility and act as shock absorbers.",
+                "examples": [
+                    "Vertebrae of the spine: Separated by cartilaginous discs to allow bending and twisting."
+                ]
+            },
+            "Freely_Movable_Synovial_Joints": {
+                "description": "Highly mobile joints that require specialized structures to prevent friction and wear.",
+                "components": [
+                    "Synovial Fluid: A thick, slippery liquid that acts as a lubricant.",
+                    "Articular Cartilage: A smooth, rubbery layer covering bone ends to prevent grinding and absorb shock.",
+                    "Synovial Membrane: The inner lining that produces the fluid.",
+                    "Ligaments: Tough, elastic bands that bind bone to bone."
+                ]
+            }
+        },
+        "key_joint_types": {
+            "Hinge_Joint": {
+                "movement": "Permits back-and-forth movement in one plane (like a door hinge).",
+                "examples": [
+                    "Elbow",
+                    "Knee",
+                    "Knuckles"
+                ]
+            },
+            "Ball_and_Socket": {
+                "movement": "Permits multi-directional movement and 360-degree rotation.",
+                "examples": [
+                    "Shoulder",
+                    "Hip"
+                ]
+            },
+            "Pivot": {
+                "movement": "Permits rotation of one bone around another.",
+                "examples": [
+                    "Neck (Atlas and Axis vertebrae)"
+                ]
+            },
+            "Gliding_Plane": {
+                "movement": "Allows flat bone surfaces to slide past each other.",
+                "examples": [
+                    "Wrist (Carpals)",
+                    "Ankle (Tarsals)"
+                ]
+            }
+        },
+        "anatomy_of_the_joint_connection": {
+            "ligaments": {
+                "function": "Join BONE to BONE (Mnemonic: B-L-B).",
+                "property": "Elastic/Stretchy to allow joint movement without snapping."
+            },
+            "tendons": {
+                "function": "Join MUSCLE to BONE (Mnemonic: M-T-B).",
+                "property": "Non-elastic/Tough to transfer the full force of muscle contraction."
+            }
+        },
+        "clinical_conditions": {
+            "dislocation": "When bones forming a joint are forcibly pushed out of their normal socket. Requires expert medical reset.",
+            "sprain": "A tear or severe overstretching of the ligaments at a joint.",
+            "arthritis": "Degenerative condition where articular cartilage wears away, causing bones to grind painfully against each other."
+        },
+        "study_tips_for_ple": [
+            "Synovial fluid = Oil for a car engine; Cartilage = Shock absorber/Cushion.",
+            "Ligaments prevent dislocation; Tendons transmit movement force.",
+            "The shoulder (Ball and Socket) has high mobility but is easy to dislocate; the Hip (Ball and Socket) is deep and stable.",
+            "Always remember: B-L-B (Bone-Ligament-Bone) and M-T-B (Muscle-Tendon-Bone)!"
+        ]
+    }
+}
