@@ -221,24 +221,24 @@ function HomeView() {
         ))}
       </div>
 
-      {/* SIMULATION LAB BUTTON */}
+      {/* COMPACT SIMULATION LAB FOOTER */}
       <motion.button
         variants={itemVariants}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         onClick={() => navigate('/sim-test')}
-        className="mb-8 w-full flex items-center justify-between p-3 bg-[var(--bg-primary)] rounded-2xl border-2 border-[var(--border-subtle)] hover:border-[#7c3aed]/30 transition-all group shadow-sm"
+        className="home-sim-lab-cta group"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#7c3aed] rounded-xl flex items-center justify-center text-white scale-90 group-hover:scale-100 transition-transform shadow-lg shadow-purple-200">
+        <div className="sim-lab-left">
+          <div className="sim-lab-icon-box">
             <FlaskConical size={18} />
           </div>
-          <div className="text-left">
-            <h4 className="font-black text-[var(--text-primary)] text-sm leading-none">Simulation Lab</h4>
-            <p className="text-[9px] font-bold text-[var(--text-secondary)] mt-0.5 uppercase tracking-wider">Experimental Access</p>
+          <div className="sim-lab-text">
+            <h4>Simulation Lab</h4>
+            <p>Experimental Access</p>
           </div>
         </div>
-        <div className="w-7 h-7 rounded-full bg-[var(--glass-bg)] flex items-center justify-center text-[var(--text-secondary)] group-hover:bg-[#7c3aed] group-hover:text-white transition-colors">
+        <div className="sim-lab-arrow">
           →
         </div>
       </motion.button>

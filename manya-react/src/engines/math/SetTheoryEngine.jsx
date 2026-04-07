@@ -83,15 +83,22 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
     const offset = !isTwoSet ? 0 : (isDisjoint ? r * 1.05 : r * 0.55); 
     const cy = (currentStep.interaction === 'DRAG_SORT' && !isMobile) ? height * 0.42 : height * 0.5;
 
+    // Safety check for sets data
+    const setAColor = data.sets?.A?.color || "#16a34a";
+    const setBColor = data.sets?.B?.color || "#ea580c";
+
     return {
-      c1: { x: width/2 - offset, y: cy, color: data.sets.A.color || "#16a34a" },
-      c2: { x: width/2 + offset, y: cy, color: data.sets.B.color || "#ea580c" },
+      c1: { x: width/2 - offset, y: cy, color: setAColor },
+      c2: { x: width/2 + offset, y: cy, color: setBColor },
       r, cx: width/2, cy, width, height, s: window.devicePixelRatio || 2, isMobile, pad: isMobile ? 12 : 20, isDisjoint, offset
     };
   }, [canvasSize, currentStep, data, isTwoSet]);
 
   const normX = (val) => (val / 400) * canvasSize.width;
   const normY = (val) => (val / 400) * canvasSize.height;
+
+  // v7.7: Move normalize to component scope so it's accessible by layout effects
+  const normalize = (t) => String(t || "").toLowerCase().trim().replace(/[\{\}\s]/g, '').split(',').filter(x => x !== "").sort().join(',');
 
   const getFirstUserAnswer = () => Object.values(userAnswers).find(v => v !== '') || '';
 
@@ -139,7 +146,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         ctx.fillText(`Total = ${data.universal_total}`, width - boxPad - 20, boxPad + 35);
     }
 
-    if (currentStep.interaction === 'DRAG_SETS' && activeSets.a) {
+    if ((currentStep.interaction === 'DRAG_SETS' || currentStep.items) && activeSets.a) {
         const drawMovable = (obj, label, col) => {
             if (!obj) return;
             ctx.save(); ctx.beginPath(); ctx.arc(obj.x, obj.y, obj.r, 0, Math.PI*2);
@@ -147,20 +154,54 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             g.addColorStop(0, hexAlpha(col, '00')); g.addColorStop(1, hexAlpha(col, '20')); ctx.fillStyle = g; ctx.fill();
             ctx.lineWidth = isMobile ? 6 : 8; ctx.shadowBlur = isResolved ? 30 : 15; ctx.shadowColor = isResolved ? "#22c55e" : col;
             ctx.strokeStyle = isResolved ? "#22c55e" : col; ctx.stroke();
-            ctx.fillStyle = col; ctx.font = "800 24px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign="center"; 
-            ctx.fillText(label, obj.x, obj.y - obj.r - 20); ctx.restore();
+            const txtCol = isDark ? "#FFFFFF" : "#1E293B"; // Use theme-aware solid color
+            ctx.fillStyle = txtCol; ctx.font = "800 24px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign="center"; 
+            ctx.shadowBlur = 0; // Disable shadow for text to keep it crisp
+            
+            // v7.2: Support custom label vertical/horizontal offset
+            const dy = obj.label_dy || -20;
+            const dx = obj.label_dx || 0;
+            ctx.fillText(label, obj.x + dx, obj.y - obj.r + dy); 
+            ctx.restore();
         };
         drawMovable(activeSets.a, activeSets.a.label, activeSets.a.color);
         if (activeSets.b) drawMovable(activeSets.b, activeSets.b.label, activeSets.b.color);
     } else {
         const { c1, c2, r, cy, offset } = l;
         const activeShades = new Set(selectedRegions);
-        // v7.1: Anti-Spoiler. Only auto-highlight regions if Hint is active or step is resolved!
-        if (currentStep.targetRegion && (isHintVisible || isResolved) && !['CLICK_SUM', 'SHADE_REGION'].includes(currentStep.interaction)) {
-           (REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion]).forEach(z => activeShades.add(z));
+
+        // v7.3: SMART SHADE LOGIC
+        // REGION_ID_QUIZ: The shading IS the question — always show it.
+        // Other types: Only show on hint or after resolution (anti-spoiler).
+        const isVisualQuestion = currentStep.type === 'REGION_ID_QUIZ';
+        if (currentStep.targetRegion && !['CLICK_SUM', 'SHADE_REGION'].includes(currentStep.interaction)) {
+            if (isVisualQuestion || isHintVisible || isResolved) {
+                (REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion]).forEach(z => activeShades.add(z));
+            }
         }
 
+        // v7.3: Create a diagonal-stripe pattern for extra clarity
+        const createHatchPattern = () => {
+            const patCanvas = document.createElement('canvas');
+            patCanvas.width = 12; patCanvas.height = 12;
+            const pCtx = patCanvas.getContext('2d');
+            pCtx.strokeStyle = 'rgba(251, 191, 36, 0.6)';
+            pCtx.lineWidth = 1.5;
+            pCtx.beginPath();
+            pCtx.moveTo(0, 12); pCtx.lineTo(12, 0);
+            pCtx.moveTo(-4, 4); pCtx.lineTo(4, -4);
+            pCtx.moveTo(8, 16); pCtx.lineTo(16, 8);
+            pCtx.stroke();
+            return ctx.createPattern(patCanvas, 'repeat');
+        };
+
+        // v7.3: Enhanced region drawing with solid fill + hatching + border
+        const SHADE_FILL = "rgba(251, 191, 36, 0.35)";
+        const SHADE_BORDER = "rgba(251, 191, 36, 0.8)";
+        const hatchPat = activeShades.size > 0 ? createHatchPattern() : null;
+
         const drawRegion = (type, col) => {
+            // First pass: solid fill
             ctx.save(); ctx.fillStyle = col; 
             if (type === 'center' && !isDisjoint && isTwoSet) {
                 ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
@@ -168,13 +209,57 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             } else if (type === 'left') {
                 ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill();
                 if (!isDisjoint && isTwoSet) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill(); }
-            } else if (type === 'right' && isTwoSet) {
-                ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
-                if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill(); }
+            } else if (type === 'right') {
+                if (isTwoSet) {
+                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
+                    if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill(); }
+                } else {
+                    // Single-set: 'right' doesn't exist, skip
+                }
+            } else if (type === 'outside') {
+                // v7.3: OUTSIDE region — fill the universal box, punch out circles
+                const bPad = isMobile ? 10 : 20;
+                ctx.beginPath(); 
+                ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24);
+                // v7.4: Always moveTo before punching a hole to avoid jagged bridge lines
+                ctx.moveTo(c1.x + r, cy);
+                ctx.arc(c1.x, cy, r, 0, Math.PI*2, true); // punch out A (counter-clockwise)
+                if (isTwoSet) {
+                    ctx.moveTo(c2.x + r, cy);
+                    ctx.arc(c2.x, cy, r, 0, Math.PI*2, true); // punch out B
+                }
+                ctx.fill();
             }
             ctx.restore();
+
+            // Second pass: hatch overlay for extra clarity
+            if (hatchPat) {
+                ctx.save(); ctx.fillStyle = hatchPat;
+                if (type === 'center' && !isDisjoint && isTwoSet) {
+                    ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
+                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
+                } else if (type === 'left') {
+                    ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill();
+                    if (!isDisjoint && isTwoSet) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill(); }
+                } else if (type === 'right' && isTwoSet) {
+                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
+                    if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill(); }
+                } else if (type === 'outside') {
+                    const bPad = isMobile ? 10 : 20;
+                    ctx.beginPath(); 
+                    ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24);
+                    ctx.moveTo(c1.x + r, cy);
+                    ctx.arc(c1.x, cy, r, 0, Math.PI*2, true);
+                    if (isTwoSet) {
+                        ctx.moveTo(c2.x + r, cy);
+                        ctx.arc(c2.x, cy, r, 0, Math.PI*2, true);
+                    }
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
         };
-        activeShades.forEach(reg => drawRegion(reg, "rgba(251, 191, 36, 0.4)"));
+        activeShades.forEach(reg => drawRegion(reg, SHADE_FILL));
 
         const drawStatic = (x, y, rad, col) => {
             ctx.save(); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI*2);
@@ -187,18 +272,23 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
 
         const labelSize = isMobile ? 18 : 22;
         ctx.font = `800 ${labelSize}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign="center";
-        ctx.fillStyle = c1.color; ctx.fillText(data.sets.A.label, c1.x, cy - r - (isMobile ? 15 : 25));
-        if (isTwoSet) { ctx.fillStyle = c2.color; ctx.fillText(data.sets.B.label, c2.x, cy - r - (isMobile ? 15 : 25)); }
+        if (data.sets?.A) {
+            ctx.fillStyle = c1.color; ctx.fillText(data.sets.A.label, c1.x, cy - r - (isMobile ? 15 : 25));
+        }
+        if (isTwoSet && data.sets?.B) { 
+            ctx.fillStyle = c2.color; ctx.fillText(data.sets.B.label, c2.x, cy - r - (isMobile ? 15 : 25)); 
+        }
 
-        const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.engineType);
+        const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType);
         let iZones = [];
         if (currentStep.interaction === 'DIAGRAM_FILL' && currentStep.inputs) {
             iZones = currentStep.inputs.map(i => i.region);
-        } else if (!isSingleInput) {
+        } else if (!isSingleInput && !['CHOICE', 'BINARY', 'SHADE_REGION', 'CLICK_SUM', 'DRAG_SORT', 'DRAG_SETS'].includes(currentStep.interaction)) {
+            // v7.3: Only auto-generate input slots for legacy fill modes or diagram identification
             iZones = ['left', 'center', 'right', 'outside'].filter(zone => {
                const expectedRegions = REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion];
                const isTarget = expectedRegions.includes(zone) || (currentStep.targetZones && currentStep.targetZones.includes(zone));
-               return isTarget || (data.zones[zone] && data.zones[zone].includes('?'));
+               return isTarget || (data.zones && data.zones[zone] && data.zones[zone].includes('?'));
             });
         }
 
@@ -259,7 +349,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             });
         };
         if (currentStep.retain_visuals && frozenZones) renderMembers(frozenZones);
-        else if (currentStep.interaction !== 'DRAG_SORT') renderMembers(data.zones);
+        else if (currentStep.interaction !== 'DRAG_SORT' && data.zones) renderMembers(data.zones);
     }
 
     chips.forEach(c => {
@@ -274,14 +364,21 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   // --- 🧠 LOGIC ENGINE (OmniVenn v7.0) ---
   const validate = useCallback(() => {
     let isCorrect = false; let corrected = "";
-    const normalize = (t) => String(t || "").toLowerCase().trim().replace(/[\{\}\s]/g, '').split(',').filter(x => x !== "").sort().join(',');
 
     if (currentStep.interaction === 'DRAG_SETS') {
         const d = Math.hypot(activeSets.a.x - activeSets.b.x, activeSets.a.y - activeSets.b.y);
-        const target = currentStep.items.find(it => it.target)?.target || "";
-        if (target === 'inside_F' || target === 'subset') isCorrect = d + activeSets.a.r <= activeSets.b.r + 15;
-        else if (target === 'disjoint') isCorrect = d > (activeSets.a.r + activeSets.b.r) - 15;
-        else if (target === 'overlap') isCorrect = d < (activeSets.a.r + activeSets.b.r) - 15 && d > Math.abs(activeSets.a.r - activeSets.b.r) + 15;
+        const rA = activeSets.a.r, rB = activeSets.b.r;
+        const target = String(currentStep.items.find(it => it.target)?.target || "").toLowerCase();
+        
+        if (target.includes('inside') || target.includes('subset')) {
+            // Subset: d + smaller_r < larger_r (Full containment)
+            // v7.8: Added a 20px tactile buffer so it's easier to satisfy
+            isCorrect = (d + Math.min(rA, rB)) < (Math.max(rA, rB) + 20);
+        } else if (target.includes('disjoint')) {
+            isCorrect = d > (rA + rB) - 15;
+        } else if (target.includes('overlap')) {
+            isCorrect = d < (rA + rB) - 15 && d > Math.abs(rA - rB) + 15;
+        }
     } else if (currentStep.interaction === 'DRAG_SORT') {
         const l = computeLayout(); 
         isCorrect = chips.every(c => {
@@ -296,7 +393,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         const selectedArr = Array.from(selectedRegions);
         isCorrect = selectedArr.length === expectedRegions.length && expectedRegions.every(r => selectedArr.includes(r));
         corrected = expectedRegions.join(', ');
-    } else if (currentStep.interaction === 'CHOICE') {
+    } else if (currentStep.interaction === 'CHOICE' || currentStep.interaction === 'BINARY') {
         isCorrect = normalize(getFirstUserAnswer()) === normalize(currentStep.expected);
         corrected = String(currentStep.expected);
     } else if (currentStep.interaction === 'DIAGRAM_FILL') {
@@ -304,7 +401,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
              return normalize(userAnswers[inp.region] || '') === normalize(inp.expected);
         });
         corrected = (currentStep.inputs || []).map(inp => `${inp.region}:${inp.expected}`).join(' | ');
-    } else if (['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.engineType)) {
+    } else if (['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType)) {
         const expected = currentStep.type === 'ALGEBRA_SOLVE' ? (currentStep.expected_x !== undefined ? currentStep.expected_x : (currentStep.x_val !== undefined ? currentStep.x_val : currentStep.total)) : undefined;
         if (expected !== undefined) {
              isCorrect = normalize(getFirstUserAnswer()) === normalize(String(expected));
@@ -312,9 +409,9 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         } else {
              const targetZones = currentStep.targetZones || REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion || 'center'];
              
-             if (currentStep.type === 'COUNT' || currentStep.type === 'SUBSET_COUNT' || (currentStep.engineType && currentStep.engineType.includes('COUNT'))) {
+             if (currentStep.type === 'COUNT' || currentStep.type === 'SUBSET_COUNT' || currentStep.type === 'PROPER_SUBSET_COUNT' || (currentStep.engineType && currentStep.engineType.includes('COUNT'))) {
                  const count = targetZones.reduce((acc, z) => acc + (data.zones[z] || []).length, 0);
-                 const expectedVal = currentStep.type === 'SUBSET_COUNT' ? String(Math.pow(2, count)) : String(count);
+                 const expectedVal = currentStep.type === 'PROPER_SUBSET_COUNT' ? String(Math.pow(2, count) - 1) : (currentStep.type === 'SUBSET_COUNT' ? String(Math.pow(2, count)) : String(count));
                  isCorrect = normalize(getFirstUserAnswer()) === normalize(expectedVal);
                  corrected = expectedVal;
              } else if (currentStep.type === 'COUNT_SUM') {
@@ -388,11 +485,59 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
     if (currentStep.interaction === 'DRAG_SORT') {
         const l = computeLayout();
         setChips((currentStep.items || []).map((it, i) => ({ ...it, id: `chip-${i}`, x: normX(50 + i*60), y: l.height - 50 })));
-    } else if (currentStep.interaction === 'DRAG_SETS') {
-        const sA = currentStep.items[0], sB = currentStep.items[1];
+    } else if (currentStep.interaction === 'DRAG_SETS' || currentStep.items) {
+        const sA = currentStep.items?.[0], sB = currentStep.items?.[1];
+        if (!sA) return;
+        
+        // v7.2: Smarter defaults for custom diagrams. Center if coords missing.
+        const centerX = canvasSize.width / 2;
+        const centerY = canvasSize.height / 2;
+        const r = sA.radius || 60;
+        
+        // v7.5 & v7.6: Relationship Positioning Logic (overlap, disjoint, subset)
+        let offA = 0, offB = 0;
+        if (sB) {
+            // Check target property OR infer from expected answer if missing
+            const normExpected = normalize(currentStep.expected);
+            const target = sA.target || sB.target || 
+                         (normExpected.includes('intersect') ? 'overlap' : 
+                         (normExpected.includes('disjoint') ? 'disjoint' : 
+                         (normExpected.includes('equal') ? 'equal' : "")));
+            
+            if (target === 'overlap') { offA = -r * 0.6; offB = r * 0.6; } 
+            else if (target === 'disjoint') { offA = -r * 1.25; offB = r * 1.25; }
+            else if (target === 'subset') { offA = -10; offB = 0; }
+            else if (target === 'equal') { 
+                // v7.7: For Equal Sets, we keep circles perfectly overlapping but nudge labels
+                // We'll handle this by giving them slightly different label offsets
+                sA.forced_label_dx = -25;
+                sB.forced_label_dx = 25;
+            }
+        }
+
         setActiveSets({
-            a: { x: normX(sA.x || 100), y: normY(sA.y || 200), r: sA.radius || 60, label: sA.val, color: sA.color || "#16a34a", locked: sA.locked, id: 'a' },
-            b: { x: normX(sB.x || 300), y: normY(sB.y || 200), r: sB.radius || 60, label: sB.val, color: sB.color || "#ea580c", locked: sB.locked, id: 'b' }
+            a: { 
+                x: sA.x !== undefined ? normX(sA.x) : centerX + offA, 
+                y: sA.y !== undefined ? normY(sA.y) : centerY, 
+                r: r, 
+                label: sA.val, 
+                color: sA.color || "#16a34a", 
+                locked: sA.locked, 
+                label_dy: sA.label_dy,
+                label_dx: sA.forced_label_dx || 0,
+                id: 'a' 
+            },
+            b: sB ? { 
+                x: sB.x !== undefined ? normX(sB.x) : centerX + offB, 
+                y: sB.y !== undefined ? normY(sB.y) : centerY, 
+                r: sB.radius || 60, 
+                label: sB.val, 
+                color: sB.color || "#ea580c", 
+                locked: sB.locked, 
+                label_dy: sB.label_dy,
+                label_dx: sB.forced_label_dx || 0,
+                id: 'b' 
+            } : null
         });
     } else { setChips([]); setActiveSets({a:null, b:null}); }
   }, [stepIdx, canvasSize, currentStep]);
@@ -453,17 +598,17 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   if (!currentStep || !data) return null;
 
   // v7.1: Single-Input requirements
-  const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT'].includes(currentStep.engineType);
+  const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType);
 
   let interactiveZones = [];
   if (currentStep.interaction === 'DIAGRAM_FILL' && currentStep.inputs) {
       interactiveZones = currentStep.inputs.map(i => i.region);
-  } else if (!isSingleInput) { // STRICT GUARDBAND: Never obscure region visuals for single math questions
+  } else if (!isSingleInput && !['CHOICE', 'BINARY', 'SHADE_REGION', 'CLICK_SUM', 'DRAG_SORT', 'DRAG_SETS'].includes(currentStep.interaction)) {
       interactiveZones = ['left', 'center', 'right', 'outside'].filter(zone => {
         const expectedRegions = REGION_MAP[currentStep.targetRegion] || [currentStep.targetRegion];
         const isTarget = expectedRegions.includes(zone) || 
                         (currentStep.targetZones && currentStep.targetZones.includes(zone));
-        const hasPrompt = (data.zones[zone] && data.zones[zone].includes('?'));
+        const hasPrompt = (data.zones && data.zones[zone] && data.zones[zone].includes('?'));
         return isTarget || hasPrompt;
       });
   }
@@ -503,14 +648,14 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
                         <div className={`${isDark ? 'bg-slate-800/80 border-white/10' : 'bg-white/80 border-slate-200'} backdrop-blur-md px-4 py-2 rounded-full border shadow-lg flex items-center gap-3`}>
                             <Compass size={14} className="text-violet-500" />
                             <div className={`text-[11px] font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'} gap-1 flex items-center`}>
-                                {['left','center','right','outside'].map(reg => {
+                                {data.zones && ['left','center','right','outside'].map(reg => {
                                     const val = data.zones[reg]?.[0]; if (!val) return null;
                                     const ev = evaluateExpr(val, currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()));
                                     return isNaN(ev) ? null : ev;
                                 }).filter(v => v !== null).join(' + ')}
                                 <span className="text-violet-500 mx-2">=</span>
-                                <span className={Math.abs((['left','center','right','outside'].reduce((acc, reg) => acc + (parseFloat(evaluateExpr(data.zones[reg]?.[0], currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()))) || 0), 0)) - (data.universal_total || 0)) < 0.1 ? "text-emerald-500" : "text-slate-400"}>
-                                    {['left','center','right','outside'].reduce((acc, reg) => acc + (parseFloat(evaluateExpr(data.zones[reg]?.[0], currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()))) || 0), 0)}
+                                <span className={(data.zones && Math.abs((['left','center','right','outside'].reduce((acc, reg) => acc + (parseFloat(evaluateExpr(data.zones[reg]?.[0], currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()))) || 0), 0)) - (data.universal_total || 0)) < 0.1) ? "text-emerald-500" : "text-slate-400"}>
+                                    {data.zones ? ['left','center','right','outside'].reduce((acc, reg) => acc + (parseFloat(evaluateExpr(data.zones[reg]?.[0], currentStep.x_val !== undefined ? currentStep.x_val : (userAnswers[reg] || getFirstUserAnswer()))) || 0), 0) : '0'}
                                 </span>
                             </div>
                         </div>

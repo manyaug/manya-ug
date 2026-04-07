@@ -63,8 +63,11 @@ function RouterLayout() {
             {/* Global HUD — hidden on views with their own header */}
             {!hideHud && <GlobalHUD />}
 
-            {/* MAIN SCROLLABLE VIEW */}
-            <div className="app-content-area" id="view-mount">
+            {/* MAIN SCROLLABLE VIEW — Lock scrolling on Home Screen */}
+            <div 
+                className={`app-content-area ${location.pathname === '/home' ? 'no-scroll-view' : ''}`} 
+                id="view-mount"
+            >
                 <Routes>
                     <Route path="/" element={<Navigate to="/home" replace />} />
                     <Route path="/home" element={<HomeView />} />

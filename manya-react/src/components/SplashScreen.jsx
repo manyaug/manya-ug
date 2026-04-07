@@ -1,101 +1,185 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../config/assetUrls';
+import '../styles/splash.css';
 
 function SplashScreen({ onFinish }) {
     const [isExiting, setIsExiting] = useState(false);
+    const [phase, setPhase] = useState(0);
 
-    const handleComplete = () => {
+    useEffect(() => {
+        const t1 = setTimeout(() => setPhase(1), 700);
+        const t2 = setTimeout(() => setPhase(2), 2000);
+        const t3 = setTimeout(() => {
+            setIsExiting(true);
+            setTimeout(onFinish, 800);
+        }, 3400);
+        return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    }, [onFinish]);
+
+    const handleSkip = () => {
         setIsExiting(true);
-        // Fire the parent finish callback after the exit animation completes
-        setTimeout(onFinish, 600); 
+        setTimeout(onFinish, 800);
     };
 
     return (
         <AnimatePresence>
             {!isExiting && (
-                <motion.div 
-                    key="splash-screen"
+                <motion.div
+                    key="splash"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-[#030712] overflow-hidden"
+                    exit={{ opacity: 0, scale: 1.08 }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    className="splash-screen"
+                    onClick={handleSkip}
                 >
-                    {/* Ambient Background Glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] max-w-[900px] max-h-[900px] bg-sky-900/15 rounded-full blur-[100px] pointer-events-none" />
-                    
-                    <div className="relative z-10 flex flex-col items-center">
-                        {/* Logo Reveal */}
+                    {/* Warm background blobs */}
+                    <div className="splash-blob splash-blob-1" />
+                    <div className="splash-blob splash-blob-2" />
+                    <div className="splash-blob splash-blob-3" />
+
+                    {/* Floating bubbles */}
+                    {[...Array(6)].map((_, i) => (
                         <motion.div
-                            initial={{ scale: 0.6, opacity: 0, y: 30 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                            className="relative w-32 h-32 mb-8"
+                            key={i}
+                            className={`splash-bubble splash-bubble-${i + 1}`}
+                            animate={{
+                                y: [0, -(15 + i * 8), 0],
+                                x: [0, (i % 2 === 0 ? 8 : -8), 0],
+                            }}
+                            transition={{
+                                duration: 4 + i * 1.2,
+                                repeat: Infinity,
+                                ease: 'easeInOut',
+                                delay: i * 0.3,
+                            }}
+                        />
+                    ))}
+
+                    {/* ── CENTER STAGE ── */}
+                    <div className="splash-stage">
+
+                        {/* MASCOT — the hero */}
+                        <motion.div
+                            className="splash-mascot-zone"
+                            initial={{ scale: 0, rotate: -15 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{
+                                type: 'spring',
+                                stiffness: 160,
+                                damping: 10,
+                                delay: 0.15,
+                            }}
                         >
-                            {/* Pulsing Backlight */}
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: [0, 1, 0.6], scale: [0.8, 1.25, 1] }}
-                                transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
-                                className="absolute inset-0 bg-sky-500/20 rounded-full blur-[35px]" 
+                            {/* Glowing backdrop circle */}
+                            <motion.div
+                                className="splash-mascot-glow"
+                                animate={{
+                                    scale: [1, 1.15, 1],
+                                    opacity: [0.5, 0.8, 0.5],
+                                }}
+                                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                             />
-                            <img 
-                                src={IMAGES.manya_icon} 
-                                alt="Manya Logo" 
-                                className="w-full h-full object-contain drop-shadow-2xl relative z-10"
+                            {/* Spinning dashed ring */}
+                            <motion.div
+                                className="splash-mascot-ring"
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                            />
+                            {/* The bird! Bobbing happily */}
+                            <motion.img
+                                src={IMAGES.manya_icon}
+                                alt="Manya"
+                                className="splash-mascot-img"
+                                animate={{ y: [0, -8, 0], rotate: [0, 2, -2, 0] }}
+                                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
                             />
                         </motion.div>
 
-                        {/* Typography */}
+                        {/* Star burst emojis */}
+                        <div className="splash-emoji-ring">
+                            {['⭐', '💜', '🌟', '🎮', '✨'].map((e, i) => (
+                                <motion.span
+                                    key={i}
+                                    className="splash-emoji"
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{ scale: [0, 1.4, 1], opacity: [0, 1, 0.85] }}
+                                    transition={{
+                                        delay: 0.6 + i * 0.12,
+                                        duration: 0.5,
+                                        ease: 'backOut',
+                                    }}
+                                >
+                                    {e}
+                                </motion.span>
+                            ))}
+                        </div>
+
+                        {/* Brand name — big, rounded, warm */}
                         <motion.h1
-                            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                            className="text-5xl font-black text-white tracking-[0.25em] uppercase mb-3 drop-shadow-xl"
+                            className="splash-title"
+                            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                            animate={{
+                                opacity: phase >= 1 ? 1 : 0,
+                                y: phase >= 1 ? 0 : 30,
+                                scale: phase >= 1 ? 1 : 0.8,
+                            }}
+                            transition={{ type: 'spring', stiffness: 180, damping: 14 }}
                         >
                             Manya
                         </motion.h1>
-                        
+
+                        {/* Tagline */}
                         <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.7 }}
-                            className="text-[11px] font-black text-sky-400/70 tracking-[0.4em] uppercase mb-16"
+                            className="splash-tagline"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{
+                                opacity: phase >= 1 ? 1 : 0,
+                                y: phase >= 1 ? 0 : 10,
+                            }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
                         >
-                            Cognitive Engine
+                            Learn · Play · Grow 🌱
                         </motion.p>
 
-                        {/* Smooth Loader Track */}
-                        <motion.div 
+                        {/* Chunky candy progress bar */}
+                        <motion.div
+                            className="splash-bar-track"
                             initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: 220 }}
-                            transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
-                            className="h-[3px] bg-slate-800/60 rounded-full overflow-hidden shadow-inner relative"
+                            animate={{
+                                opacity: phase >= 1 ? 1 : 0,
+                                width: phase >= 1 ? 200 : 0,
+                            }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
                         >
-                            {/* Moving Loading Bar */}
-                            <motion.div 
-                                initial={{ width: "0%" }}
-                                animate={{ width: "100%" }}
-                                transition={{ duration: 2.2, delay: 0.9, ease: "easeInOut" }}
-                                onAnimationComplete={() => {
-                                    setTimeout(handleComplete, 300); // Tiny pause at 100%
-                                }}
-                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-500 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.8)]"
+                            <motion.div
+                                className="splash-bar-fill"
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: phase >= 2 ? 1 : phase >= 1 ? 0.5 : 0 }}
+                                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                             />
                         </motion.div>
+
+                        {/* Fun loading text */}
+                        <motion.span
+                            className="splash-status"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: phase >= 1 ? 1 : 0 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            {phase < 2 ? 'Getting things ready...' : 'Here we go! 🚀'}
+                        </motion.span>
                     </div>
 
-                    {/* Subtle Skip Option */}
-                    <motion.button 
+                    {/* Tap hint */}
+                    <motion.span
+                        className="splash-tap-hint"
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 2.5 }}
-                        onClick={handleComplete}
-                        className="absolute bottom-12 text-[10px] font-black tracking-widest text-slate-600 uppercase hover:text-white transition-colors px-6 py-3 rounded-full hover:bg-white/5"
+                        animate={{ opacity: phase >= 2 ? 0.4 : 0 }}
                     >
-                        Skip
-                    </motion.button>
+                        tap to skip
+                    </motion.span>
                 </motion.div>
             )}
         </AnimatePresence>

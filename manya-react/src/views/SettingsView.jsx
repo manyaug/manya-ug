@@ -6,12 +6,12 @@ import { updateProfile, resetUser } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
 import { syncService } from '../services/syncService';
 import { IMAGES } from '../config/assetUrls';
-import { 
-    ChevronLeft, 
-    User, 
-    ShieldCheck, 
-    Trash2, 
-    LogOut, 
+import {
+    ChevronLeft,
+    User,
+    ShieldCheck,
+    Trash2,
+    LogOut,
     GraduationCap,
     Mail,
     Edit3,
@@ -88,7 +88,7 @@ function SettingsView() {
         setSyncStatus('SYNCING...');
         const newSeed = Math.random().toString(36).substring(7);
         const updatedProfile = { ...user, avatarSeed: newSeed };
-        
+
         try {
             await syncService.uploadProfile(updatedProfile);
             dispatch(updateProfile(updatedProfile));
@@ -108,7 +108,7 @@ function SettingsView() {
         setSyncStatus('SYNCING...');
         const newSeed = `${user?.avatarSeed}${variant}`;
         const updatedProfile = { ...user, avatarSeed: newSeed };
-        
+
         try {
             await syncService.uploadProfile(updatedProfile);
             dispatch(updateProfile(updatedProfile));
@@ -155,7 +155,7 @@ function SettingsView() {
     };
 
     return (
-        <motion.div 
+        <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -179,7 +179,7 @@ function SettingsView() {
             {/* 2. USER STATUS BANNER (IDENTITY VAULT) */}
             <motion.div variants={itemVariants} className="league-banner-elite identity-vault-banner">
                 <div className="vault-grid">
-                    <motion.div 
+                    <motion.div
                         whileHover={{ y: -5, scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => pickDNA('v1')}
@@ -199,7 +199,7 @@ function SettingsView() {
                         <div className="active-dna-tag">ACTIVE DNA</div>
                     </div>
 
-                    <motion.div 
+                    <motion.div
                         whileHover={{ y: -5, scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => pickDNA('v2')}
@@ -209,7 +209,7 @@ function SettingsView() {
                         <div className="slot-glow"></div>
                     </motion.div>
                 </div>
-                
+
                 <div className="vault-info">
                     <div className="vault-header-row">
                         <span className="v-title">{user?.nickname || 'Hero Candidate'}</span>
@@ -240,11 +240,11 @@ function SettingsView() {
                     </div>
                     <div className="r-info">
                         <span className="r-name">Hero Nickname</span>
-                        <input 
-                            type="text" 
-                            className="premium-glass-input" 
-                            value={formState.nickname} 
-                            onChange={e => setFormState(p => ({...p, nickname: e.target.value}))} 
+                        <input
+                            type="text"
+                            className="premium-glass-input"
+                            value={formState.nickname}
+                            onChange={e => setFormState(p => ({ ...p, nickname: e.target.value }))}
                             placeholder="Enter Nickname"
                         />
                     </div>
@@ -256,10 +256,10 @@ function SettingsView() {
                     </div>
                     <div className="r-info">
                         <span className="r-name">Academic Grade</span>
-                        <select 
-                            className="premium-glass-select" 
-                            value={formState.grade_level} 
-                            onChange={e => setFormState(p => ({...p, grade_level: e.target.value}))}
+                        <select
+                            className="premium-glass-select"
+                            value={formState.grade_level}
+                            onChange={e => setFormState(p => ({ ...p, grade_level: e.target.value }))}
                         >
                             <option value="Primary 5">Primary 5</option>
                             <option value="Primary 6">Primary 6</option>
@@ -274,21 +274,21 @@ function SettingsView() {
                     </div>
                     <div className="r-info">
                         <span className="r-name">Guardian Contact</span>
-                        <input 
-                            type="email" 
-                            className="premium-glass-input" 
-                            value={formState.parent_email} 
-                            onChange={e => setFormState(p => ({...p, parent_email: e.target.value}))} 
+                        <input
+                            type="email"
+                            className="premium-glass-input"
+                            value={formState.parent_email}
+                            onChange={e => setFormState(p => ({ ...p, parent_email: e.target.value }))}
                             placeholder="Parent Email"
                         />
                     </div>
                 </div>
 
-                <motion.button 
+                <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="save-hero-btn" 
-                    onClick={saveHeroChanges} 
+                    className="save-hero-btn"
+                    onClick={saveHeroChanges}
                     disabled={loading}
                 >
                     {loading ? "STABILIZING DNA..." : "COMMIT IDENTITY DNA"}
@@ -298,7 +298,7 @@ function SettingsView() {
             {/* 4. DANGER ZONE */}
             <motion.div variants={itemVariants} className="danger-zone-elite-v2">
                 <div className="danger-header">SECURITY CLEARANCE & PURGE</div>
-                
+
                 <div className="danger-actions-row">
                     <button className="danger-action-btn logout" onClick={handleLogout}>
                         <LogOut size={18} />
@@ -311,10 +311,7 @@ function SettingsView() {
                 </div>
             </motion.div>
 
-            <div className="rank-footer">
-                <img src={IMAGES.manya_icon} alt="Manya Council" />
-                <p>Manya Security Protocol v50.0</p>
-            </div>
+
         </motion.div>
     );
 }

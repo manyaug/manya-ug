@@ -49,11 +49,22 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  padding: 8px 16px 90px;
+  /* Increased padding to account for taller professional HUD and BottomNav */
+  padding: 106px 16px 120px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  /* Allow the hub to take full height if needed */
+  display: flex;
+  flex-direction: column;
 }
 #view-mount::-webkit-scrollbar { display: none; }
+
+/* Viewport Lock Utility for No-Scroll Home */
+.no-scroll-view {
+  overflow: hidden !important;
+  height: 100%;
+  padding-bottom: 120px !important; /* Keep bottom nav space */
+}
 
 .view-container {
   padding-top: 5px;

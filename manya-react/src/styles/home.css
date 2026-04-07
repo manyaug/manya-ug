@@ -3,19 +3,26 @@
 .manya-hub {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    /* Increased gap to add padding between cards */
-    padding: 4px 0 20px 0;
+    /* Forces the hub to fill available space between HUD and Nav */
+    height: 100%;
+    /* Distributes elements perfectly within the fixed screen */
+    justify-content: space-between;
+    /* Dynamic gaps that shrink on short screens */
+    gap: clamp(8px, 1.5vh, 16px);
+    padding: 0 0 10px 0;
     font-family: 'Nunito', 'Fredoka', 'Varela Round', sans-serif;
+    overflow: hidden; /* Local lock */
 }
 
 /* --- DYNAMIC AURORAS --- */
 .aurora-engine .blob {
     position: absolute;
-    width: 600px; /* Larger to spread color more evenly */
+    width: 600px;
+    /* Larger to spread color more evenly */
     height: 600px;
     filter: blur(120px);
-    opacity: 0.35; /* Much more vibrant background color splashes */
+    opacity: 0.35;
+    /* Much more vibrant background color splashes */
     animation: auroraBreathe 12s infinite alternate;
 }
 
@@ -47,16 +54,15 @@
 /* --- 0. STATUS HEADER --- */
 .home-status-header-glass {
     background: var(--bg-primary);
-    /* Soft solid base instead of transparent dark */
     border: 2px solid var(--border-subtle);
     border-radius: var(--radius-xl);
-    /* Maximum rounding */
-    padding: 10px 14px;
+    /* Slimmer padding for single-screen fit */
+    padding: clamp(6px, 1vh, 10px) 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    /* Soft, bright shadow */
+    flex-shrink: 0;
 }
 
 .status-user-info .hi-text {
@@ -121,7 +127,8 @@
 /* --- 1. RESUME MISSION CARD OVERHAUL --- */
 .resume-mission-card {
     border-radius: var(--radius-xl);
-    padding: 12px;
+    /* Slimmer padding to fit vertically */
+    padding: clamp(8px, 1.2vh, 14px);
     display: flex;
     align-items: center;
     box-shadow: inset 0 -6px 15px rgba(0, 0, 0, 0.1), 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -132,6 +139,7 @@
     overflow: hidden;
     color: white;
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    flex-shrink: 0;
 }
 
 /* DYNAMIC MISSION CARD COLORS - ELECTRIC BOOST */
@@ -168,8 +176,9 @@
 }
 
 .hero-avatar-mini-glow {
-    width: 44px;
-    height: 44px;
+    /* Adaptive avatar size */
+    width: clamp(34px, 5vh, 48px);
+    height: clamp(34px, 5vh, 48px);
     border-radius: 50%;
     border: 2.5px solid white;
     background: rgba(255, 255, 255, 0.1);
@@ -204,8 +213,9 @@
 }
 
 .play-pill-neon {
-    width: 44px;
-    height: 44px;
+    /* Adaptive CTA size */
+    width: clamp(36px, 5vh, 48px);
+    height: clamp(36px, 5vh, 48px);
     background: white;
     border-radius: 50%;
     display: flex;
@@ -267,13 +277,14 @@
 .subject-grid-elite {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px 14px;
-    /* Added breathing room between rows */
-    margin-top: 8px;
-    /* Added padding under Daily Mission */
-    max-width: 360px;
-    margin-left: auto;
-    margin-right: auto;
+    /* Adaptive gaps that compress to save height */
+    gap: clamp(8px, 1vh, 14px) clamp(10px, 2vh, 18px);
+    flex: 1; /* Takes most of the available "squish" space */
+    min-height: 0;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    align-content: center;
 }
 
 .world-card-elite {
@@ -289,9 +300,9 @@
 /* ── ORB WRAPPER ── */
 .orb-wrap {
     position: relative;
-    width: 85px;
-    /* Shrunk precisely by 10px to pay for the padding additions */
-    height: 85px;
+    /* ADAPTIVE ORB SIZES */
+    width: clamp(60px, 11vh, 90px);
+    height: clamp(60px, 11vh, 90px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -299,20 +310,22 @@
 
 /* ── THE VIBRANT CRYSTAL BUBBLE ── */
 .crystal-ball {
-    width: 80px;
-    /* Shrunk exactly to avoid scrolling */
-    height: 80px;
+    width: 95%;
+    height: 95%;
     border-radius: 50%;
     position: relative;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.1);
     box-shadow:
-        inset 0 -6px 20px rgba(0, 0, 0, 0.25), /* Deeper bottom shadow for contrast */
+        inset 0 -6px 20px rgba(0, 0, 0, 0.25),
+        /* Deeper bottom shadow for contrast */
         inset 0 8px 15px rgba(255, 255, 255, 0.5),
-        0 8px 20px rgba(0, 0, 0, 0.25); /* Stronger drop shadow */
+        0 8px 20px rgba(0, 0, 0, 0.25);
+    /* Stronger drop shadow */
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
-    backdrop-filter: blur(12px); /* Higher clarity */
+    backdrop-filter: blur(12px);
+    /* Higher clarity */
 }
 
 .world-card-elite:hover .crystal-ball {
@@ -476,10 +489,21 @@
 }
 
 /* DIFFERENT PACES FOR DIFFERENT WORLDS */
-.world-card-elite.math .crystal-island    { animation: islandFloat 4.2s ease-in-out infinite alternate; }
-.world-card-elite.science .crystal-island { animation: islandFloat 7.1s ease-in-out infinite alternate; }
-.world-card-elite.sst .crystal-island     { animation: islandFloat 5.4s ease-in-out infinite alternate; }
-.world-card-elite.english .crystal-island { animation: islandFloat 9.2s ease-in-out infinite alternate; }
+.world-card-elite.math .crystal-island {
+    animation: islandFloat 4.2s ease-in-out infinite alternate;
+}
+
+.world-card-elite.science .crystal-island {
+    animation: islandFloat 7.1s ease-in-out infinite alternate;
+}
+
+.world-card-elite.sst .crystal-island {
+    animation: islandFloat 5.4s ease-in-out infinite alternate;
+}
+
+.world-card-elite.english .crystal-island {
+    animation: islandFloat 9.2s ease-in-out infinite alternate;
+}
 
 @keyframes islandFloat {
     0% {
@@ -504,7 +528,8 @@
         radial-gradient(1.8px 1.8px at 30px 80px, #fff, rgba(255, 255, 255, 0)),
         radial-gradient(1px 1px at 70px 60px, #fff, rgba(255, 255, 255, 0));
     background-size: 100px 100px;
-    animation: starsTwinkle 1.5s infinite alternate-reverse; /* Much faster magic sparks */
+    animation: starsTwinkle 1.5s infinite alternate-reverse;
+    /* Much faster magic sparks */
     z-index: 2;
 }
 
@@ -534,8 +559,10 @@
     width: 60px;
     height: 10px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.25); /* Darker solid grounding shadow */
-    filter: blur(3px); /* Sharper */
+    background: rgba(0, 0, 0, 0.25);
+    /* Darker solid grounding shadow */
+    filter: blur(3px);
+    /* Sharper */
     z-index: -1;
     transition: all 0.4s ease;
 }
@@ -605,10 +632,25 @@
 }
 
 /* Solid bright colors with thick bottom borders for 3D depth - SATURATION BOOST */
-.world-card-elite.math .pct-text    { background: #6366f1; border-bottom: 4px solid #3730a3; }
-.world-card-elite.science .pct-text { background: #10b981; border-bottom: 4px solid #065f46; }
-.world-card-elite.sst .pct-text     { background: #f59e0b; border-bottom: 4px solid #b45309; }
-.world-card-elite.english .pct-text { background: #ec4899; border-bottom: 4px solid #be185d; }
+.world-card-elite.math .pct-text {
+    background: #6366f1;
+    border-bottom: 4px solid #3730a3;
+}
+
+.world-card-elite.science .pct-text {
+    background: #10b981;
+    border-bottom: 4px solid #065f46;
+}
+
+.world-card-elite.sst .pct-text {
+    background: #f59e0b;
+    border-bottom: 4px solid #b45309;
+}
+
+.world-card-elite.english .pct-text {
+    background: #ec4899;
+    border-bottom: 4px solid #be185d;
+}
 
 /* Squish animations on interaction */
 .world-card-elite:hover .pct-text {
@@ -663,4 +705,82 @@
 [data-theme='dark'] .pct-text {
     box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* THE COMPACT SIM LAB FOOTER */
+.home-sim-lab-cta {
+    width: 100%;
+    max-width: 420px;
+    margin: 5px auto 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(6px, 1vh, 10px) 14px;
+    background: var(--bg-primary);
+    border-radius: 18px;
+    border: 2px solid var(--border-subtle);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+[data-theme='dark'] .home-sim-lab-cta {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sim-lab-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sim-lab-icon-box {
+    width: clamp(30px, 4.5vh, 42px);
+    height: clamp(30px, 4.5vh, 42px);
+    background: #7c3aed;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+}
+
+.sim-lab-text {
+    text-align: left;
+}
+
+.sim-lab-text h4 {
+    margin: 0;
+    font-size: clamp(12px, 1.2vh, 14px);
+    font-weight: 900;
+    color: var(--text-primary);
+}
+
+.sim-lab-text p {
+    margin: 0;
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sim-lab-arrow {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-weight: 950;
+    transition: 0.3s;
+}
+
+.home-sim-lab-cta:hover .sim-lab-arrow {
+    background: #7c3aed;
+    color: white;
 }

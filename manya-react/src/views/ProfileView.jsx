@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-    Sliders, 
-    UserCog, 
-    Crown, 
-    Flame, 
-    Target, 
+import {
+    Sliders,
+    UserCog,
+    Crown,
+    Flame,
+    Target,
     Trophy,
     ChevronRight,
     BrainCircuit
@@ -34,7 +34,7 @@ function ProfileView() {
         const level = Math.floor((xp || 0) / 1000) + 1;
         const progress = (xp % 1000) / 10;
         const offset = 339.29 - (339.29 * (progress / 100));
-        
+
         let rank = "Novice Hero";
         let league = "Bronze League";
         let leagueColor = "#CD7F32";
@@ -46,39 +46,39 @@ function ProfileView() {
         return { level, progress, offset, rank, league, leagueColor };
     };
 
-  const stats = xpToLevel(user?.xp || 150);
+    const stats = xpToLevel(user?.xp || 150);
 
-  const subjectProgress = [
-    { name: 'Mathematics', val: 78, color: '#7c3aed', icon: getIsland('math') },
-    { name: 'Science', val: 45, color: '#10b981', icon: getIsland('science') },
-    { name: 'SST', val: 62, color: '#f59e0b', icon: getIsland('sst') },
-    { name: 'English', val: 90, color: '#db2777', icon: getIsland('english') }
-  ];
+    const subjectProgress = [
+        { name: 'Mathematics', val: 78, color: '#7c3aed', icon: getIsland('math') },
+        { name: 'Science', val: 45, color: '#10b981', icon: getIsland('science') },
+        { name: 'SST', val: 62, color: '#f59e0b', icon: getIsland('sst') },
+        { name: 'English', val: 90, color: '#db2777', icon: getIsland('english') }
+    ];
 
-  const past7Days = Array.from({length: 7}, (_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
-      return d;
-  });
-  
-  const days = past7Days.map(d => d.toLocaleDateString('en-US', { weekday: 'short' }));
-  const colors = ['#f87171', '#fb923c', '#fbbf24', '#4ade80', '#818cf8', '#a78bfa', '#f472b6'];
-  
-  const rawEngagementsHours = past7Days.map(d => {
-      const dateStr = d.toISOString().split('T')[0];
-      return (user?.engagement_stats?.[dateStr] || 0) / (1000 * 60 * 60);
-  });
-  
-  const totalWeeklyHours = rawEngagementsHours.reduce((a, b) => a + b, 0);
-  const totalWeeklyFormat = `${Math.floor(totalWeeklyHours)}hr ${Math.floor((totalWeeklyHours % 1) * 60)}min`;
-  
-  const maxHours = Math.max(...rawEngagementsHours, 1);
-  const heights = rawEngagementsHours.map(h => (h / maxHours) * 95);
-  
-  const maxIdx = heights.indexOf(Math.max(...heights));
+    const past7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d;
+    });
+
+    const days = past7Days.map(d => d.toLocaleDateString('en-US', { weekday: 'short' }));
+    const colors = ['#f87171', '#fb923c', '#fbbf24', '#4ade80', '#818cf8', '#a78bfa', '#f472b6'];
+
+    const rawEngagementsHours = past7Days.map(d => {
+        const dateStr = d.toISOString().split('T')[0];
+        return (user?.engagement_stats?.[dateStr] || 0) / (1000 * 60 * 60);
+    });
+
+    const totalWeeklyHours = rawEngagementsHours.reduce((a, b) => a + b, 0);
+    const totalWeeklyFormat = `${Math.floor(totalWeeklyHours)}hr ${Math.floor((totalWeeklyHours % 1) * 60)}min`;
+
+    const maxHours = Math.max(...rawEngagementsHours, 1);
+    const heights = rawEngagementsHours.map(h => (h / maxHours) * 95);
+
+    const maxIdx = heights.indexOf(Math.max(...heights));
 
     return (
-        <motion.div 
+        <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -95,12 +95,12 @@ function ProfileView() {
                 <div className="xp-ring-container">
                     <svg className="xp-ring-svg" viewBox="0 0 120 120">
                         <circle className="ring-bg" cx="60" cy="60" r="54"></circle>
-                        <motion.circle 
+                        <motion.circle
                             initial={{ strokeDashoffset: 339.29 }}
                             animate={{ strokeDashoffset: stats.offset }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="ring-fill" 
-                            cx="60" cy="60" r="54" 
+                            className="ring-fill"
+                            cx="60" cy="60" r="54"
                             style={{ strokeDasharray: 339.29 }}
                         />
                     </svg>
@@ -150,7 +150,7 @@ function ProfileView() {
                 <div className="bar-chart-national">
                     {days.map((day, i) => (
                         <div key={day} className="chart-column">
-                            <motion.div 
+                            <motion.div
                                 initial={{ height: 0 }}
                                 animate={{ height: `${heights[i]}px` }}
                                 transition={{ delay: 0.5 + (i * 0.05), duration: 1, ease: "easeOut" }}
@@ -170,8 +170,8 @@ function ProfileView() {
             <motion.h4 variants={itemVariants} className="section-label">Curriculum Matrix</motion.h4>
             <motion.div variants={itemVariants} className="subject-stack-national">
                 {subjectProgress.map((sub, idx) => (
-                    <motion.div 
-                        key={sub.name} 
+                    <motion.div
+                        key={sub.name}
                         variants={itemVariants}
                         className="sub-progress-elite"
                     >
@@ -183,11 +183,11 @@ function ProfileView() {
                             <span className="sub-value">{sub.val}%</span>
                         </div>
                         <div className="matrix-track">
-                            <motion.div 
+                            <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${sub.val}%` }}
                                 transition={{ delay: 0.8 + (idx * 0.1), duration: 1.2 }}
-                                className="matrix-fill" 
+                                className="matrix-fill"
                                 style={{ backgroundColor: sub.color }}
                             >
                                 <div className="fill-shine"></div>
@@ -197,7 +197,7 @@ function ProfileView() {
                 ))}
             </motion.div>
 
-        {/* 5. HERO MANAGEMENT SERVICES */}
+            {/* 5. HERO MANAGEMENT SERVICES */}
             {/* 5. HERO MANAGEMENT SERVICES */}
             <motion.h4 variants={itemVariants} className="section-label">Hero Management</motion.h4>
             <motion.div variants={itemVariants} className="service-list-national">
@@ -235,9 +235,7 @@ function ProfileView() {
                 </div>
             </motion.div>
 
-        <div style={{ textAlign: 'center', marginTop: '40px', opacity: 0.2, paddingBottom: '50px' }}>
-            <img src={IMAGES.manya_icon} style={{ width: '50px' }} alt="Manya Council" />
-        </div>
+
         </motion.div>
     );
 }

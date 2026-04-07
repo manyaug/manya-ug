@@ -1,7 +1,7 @@
 /* setting.css - NATIONAL ARENA DNA */
 
 .sett-view {
-    padding: 10px 0 14px;
+    padding: 10px 4px;
     position: relative;
     overflow-x: hidden;
 }
@@ -256,8 +256,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 60px;
-    padding-bottom: 40px;
+    margin-top: 2px;
+    padding-bottom: 5px;
     opacity: 0.5;
 }
 
