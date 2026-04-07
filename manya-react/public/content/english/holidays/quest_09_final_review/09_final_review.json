@@ -17,7 +17,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "image": "assets/english/quest_2/hday_2_chat_2.png",
+        "image": "assets/english/quest_2/hday_2_chat_2.webp",
         "text": "Meow! The farewell speech boards have <b>sick sentences</b>! Before Manya gives his speech, let's fix them together. Tap the wrong words to <b>heal the garden</b>!"
       }
     },
@@ -31,7 +31,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "image": "assets/english/quest_1/holiday_chat_5.webp",
         "text": "The farewell <b>LETTERS</b> are almost ready — they just need the right punctuation stickers to be perfect!"
       }
     },
@@ -44,7 +44,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "image": "assets/english/quest_2/hday_2_chat_6.png",
+        "image": "assets/english/quest_2/hday_2_chat_6.webp",
         "text": "Waddle! What an adventure. Ready for the badge?",
         "choices": [
           { "text": "Revise Chapter Rules", "targetId": "rule-review-selector-2" },

@@ -5,7 +5,7 @@
   "steps": [
     {
       "engineType": "CHAT",
-      "data": { "speaker": "kiki", "image": "assets/english/quest_2/hday_2_chat_5.png", "text": "<b>I am cooking</b> the food. In Passive voice: The food <b>is being cooked</b> by me!" }
+      "data": { "speaker": "kiki", "image": "assets/english/quest_2/hday_2_chat_5.webp", "text": "<b>I am cooking</b> the food. In Passive voice: The food <b>is being cooked</b> by me!" }
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
@@ -36,7 +36,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "image": "assets/english/quest_2/hday_2_chat_1.png",
+        "image": "assets/english/quest_2/hday_2_chat_1.webp",
         "text": "Waddle! Let's try building passive sentences ourselves using the <b>SENTENCE BLOCKS</b>. Where does the 'doer' go?"
       }
     },

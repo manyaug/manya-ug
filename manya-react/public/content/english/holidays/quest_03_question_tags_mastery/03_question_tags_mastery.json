@@ -8,7 +8,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "image": "assets/english/quest_1/holiday_chat_6.png",
+        "image": "assets/english/quest_1/holiday_chat_6.webp",
         "text": "Meow! While we ride, let's play <b>Question Tags</b>. If the statement is positive, the tag is negative. It's like a mirror, isn't it? Can you guess the tags?"
       }
     },
@@ -22,7 +22,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "image": "assets/english/quest_1/holiday_chat_5.png",
+        "image": "assets/english/quest_1/holiday_chat_5.webp",
         "text": "Before we guess the tags — the sentences on the roadside signs are <b>WILTING</b>! The verbs don't match their subjects. <b>Tap the sick word</b> to fix it first!"
       }
     },

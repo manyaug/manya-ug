@@ -2,7 +2,7 @@
   "engineType": "2D_HOTSPOT",
   "mode": "quiz",
   "variantTitle": "Master Quiz: The Complete Set",
-  "imageUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/tooth_anatomy.png",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/tooth_anatomy.webp",
   "hotspots": [
     { "id": "q1", "label": "Incisor", "x": 27.42, "y": 22.46 },
     { "id": "q2", "label": "Canine", "x": 35.88, "y": 28.91 },

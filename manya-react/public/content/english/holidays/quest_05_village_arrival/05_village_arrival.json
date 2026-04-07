@@ -5,11 +5,11 @@
   "steps": [
     {
       "engineType": "CHAT",
-      "data": { "speaker": "manya", "image": "assets/english/quest_2/hday_2_chat_1.png", "text": "Waddle! We are finally at the <b>FARM</b>. Kiki, what is our first <b>CHORE</b>?" }
+      "data": { "speaker": "manya", "image": "assets/english/quest_2/hday_2_chat_1.webp", "text": "Waddle! We are finally at the <b>FARM</b>. Kiki, what is our first <b>CHORE</b>?" }
     },
     {
       "engineType": "CHAT",
-      "data": { "speaker": "kiki", "image": "assets/english/quest_2/hday_2_chat_2.png", "text": "Meow! First is milking. It is part of our daily <b>ROUTINE</b>!" }
+      "data": { "speaker": "kiki", "image": "assets/english/quest_2/hday_2_chat_2.webp", "text": "Meow! First is milking. It is part of our daily <b>ROUTINE</b>!" }
     },
     {
       "engineType": "WORDGRID_ENGINE",
@@ -24,7 +24,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "image": "assets/english/quest_2/hday_2_chat_3.png",
+        "image": "assets/english/quest_2/hday_2_chat_3.webp",
         "text": "Look at the farm notices! Some of them are missing punctuation marks. Let's <b>fix the notices</b> by sticking the right marks in the gaps!"
       }
     },

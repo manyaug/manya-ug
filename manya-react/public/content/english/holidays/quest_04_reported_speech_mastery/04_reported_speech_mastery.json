@@ -8,7 +8,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "image": "assets/english/quest_1/holiday_chat_7.png",
+        "image": "assets/english/quest_1/holiday_chat_7.webp",
         "text": "Wait! Polly is telling everyone what the teacher said. She is using <b>Reported Speech</b>! You must shift the tense back in time."
       }
     },
@@ -35,7 +35,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "image": "assets/english/quest_1/holiday_chat_8.png",
+        "image": "assets/english/quest_1/holiday_chat_8.webp",
         "text": "We are here! The village is so <b>BEAUTIFUL</b>. I can make better adjectives by adding suffixes. Let's find the matching pairs!"
       }
     },
@@ -56,7 +56,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "image": "assets/english/quest_1/holiday_chat_9.png",
+        "image": "assets/english/quest_1/holiday_chat_9.webp",
         "text": "Waddle! We've reached our destination. Let's plan to meet tomorrow at the stream to swim together!",
         "choices": [
           { "text": "Revise Chapter Rules", "targetId": "rule-review-selector" },

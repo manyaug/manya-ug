@@ -1,5 +1,5 @@
 /**
- * MANYA QUEST FACTORY - v3.0 (Adaptive + Content Sequencing)
+ * MANYA QUEST FACTORY - v4.0 (English Data-Driven Refactor)
  * ===========================================================
  * Builds steps[] using the FULL legacy engine rules:
  *
@@ -29,6 +29,62 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         'science': 'SCIENCE_FETCHER',
         'english': 'ENGLISH_FETCHER'
     };
+
+    // ── English: Data-Driven Two-Layer Architecture ──────────────────────────
+    if (subject === 'english' && ['WARMUP', 'EXPLORE', 'PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType)) {
+        const steps = [];
+        const questKey = getQuestKey('english', unitId, questFolder);
+
+        // 1. EXPLORE: Load the narrative story JSON directly (CHAT + interactive games)
+        if (nodeType === 'EXPLORE') {
+            if (resources && resources.length > 0) {
+                const storyRes = resources[0];
+                const fileName = storyRes.file.endsWith('.json') ? storyRes.file : `${storyRes.file}.json`;
+                try {
+                    const { steps: storySteps } = await loadQuestSteps('english', unitId, questFolder, fileName);
+                    if (storySteps.length > 0) {
+                        steps.push(...storySteps);
+                    }
+                } catch (e) {
+                    console.warn(`[QuestFactory] Could not load English story: ${fileName}`, e);
+                }
+            }
+            return steps;
+        }
+
+        // 2. WARMUP: Rule Card Injection (e.g., rule_going_to)
+        if (nodeType === 'WARMUP' && resources && resources.length > 0) {
+            const ruleRes = resources.find(r => r.file.startsWith('rule_') || r.file.includes('_rule'));
+            if (ruleRes) {
+                const fileName = ruleRes.file.endsWith('.json') ? ruleRes.file : `${ruleRes.file}.json`;
+                try {
+                    const { steps: ruleSteps } = await loadQuestSteps('english', unitId, questFolder, fileName);
+                    if (ruleSteps.length > 0) {
+                        steps.push(...ruleSteps);
+                    }
+                } catch (e) {
+                    console.warn(`[QuestFactory] Could not load rule card: ${fileName}`, e);
+                }
+            }
+        }
+
+        // 3. ALL: MCQ Fetcher Engine (Adaptive Quiz Bank)
+        steps.push({
+            engineType: 'ENGLISH_FETCHER',
+            topic: questFolder,
+            mode: 'quiz',
+            data: {
+                topic: questFolder,
+                nodeType,
+                subject: 'english',
+                unitId,
+                questKey,
+                simResources: resources?.filter(r => !r.file.startsWith('rule_') && !r.file.includes('_rule')) || []
+            }
+        });
+
+        return steps;
+    }
 
     // ── SST, Math, Science: Adaptive Fetcher with content sequencing ────────
     if (['sst', 'math', 'science'].includes(subject) && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
@@ -92,31 +148,21 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         // ── IDENTIFY SIMULATIONS ──
         let selectedSims = [];
         if ((nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
-            // A. Check for explicit JSON resources (Note: We no longer exclude study/recap here)
+            // A. Check for explicit JSON resources
             if (resources && resources.length > 0) {
                 selectedSims.push(...resources);
             }
 
-            // B. Check for Numbered Practice convention (e.g. 02-001.json)
-            // If prefix is missing but folder starts with quest_NN, infer prefix NN
+            // B. Check for Numbered Practice convention
             const inferredPrefix = prefix || (questFolder.startsWith('quest_') ? questFolder.split('_')[1] : null);
 
             if (practiceCount > 0 && inferredPrefix) {
-                console.log(`🔢 [QuestFactory] Adding ${practiceCount} numbered tasks for prefix "${inferredPrefix}".`);
                 for (let i = 1; i <= practiceCount; i++) {
                     const fileName = `${inferredPrefix}-${String(i).padStart(3, '0')}.json`;
-                    // Avoid duplicates if already in resources
                     if (!selectedSims.find(s => s.file === fileName)) {
-                        selectedSims.push({
-                            label: `Task ${i}`,
-                            file: fileName
-                        });
+                        selectedSims.push({ label: `Task ${i}`, file: fileName });
                     }
                 }
-            }
-            
-            if (selectedSims.length > 0) {
-                console.log(`🎮 [QuestFactory] Total interactive items identified: ${selectedSims.length} for ${subject}/${questFolder}`);
             }
         }
 
@@ -127,7 +173,6 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             const prevMastery = getNodeMastery(subject, questKey, prevNode);
 
             if (prevMastery < 60 && resources && resources.length > 0) {
-                // Insert a recap step
                 const recapRes = resources.find(r =>
                     r.file.startsWith('recap_') || r.file.includes('_recap') ||
                     r.file.startsWith('study_') || r.file.includes('_study')
@@ -144,7 +189,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             }
         }
 
-        // Then the MCQ fetcher engine step (except for EXPLORE which is just study/recap)
+        // Then the MCQ fetcher engine step
         if (nodeType !== 'EXPLORE') {
             steps.push({
                 engineType: FETCHER_MAP[subject],
@@ -156,12 +201,11 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     subject: subject,
                     unitId,
                     questKey: getQuestKey(subject, unitId, questFolder),
-                    simResources: selectedSims // <--- Hand off to the engine dynamically!
+                    simResources: selectedSims
                 }
             });
         }
 
-        // Push Warmup recap *after* the fetcher step as requested by user
         if (postWarmupSteps.length > 0) {
             steps.push(...postWarmupSteps);
         }
@@ -169,47 +213,15 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         return steps;
     }
 
-    // ── English: same pattern ────────────────────────────────────────────────
-    if (subject === 'english' && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
-        const steps = [];
-        
-        // TODO: English can also push JSON recaps here if available in the future.
-        
-        if (nodeType !== 'EXPLORE') {
-            steps.push({
-                engineType: 'ENGLISH_FETCHER',
-                topic: questFolder,
-                mode: 'quiz',
-                data: {
-                    topic: questFolder,
-                    nodeType,
-                    subject: 'english',
-                    unitId,
-                    questKey: getQuestKey('english', unitId, questFolder),
-                }
-            });
-        }
-        return steps;
-    }
-
-    // ── NUMBERED FILES (math/science) ────────────────────────────────────────
+    // ── NUMBERED FILES (fallback) ──────────────────────────────────────────
     if (!practiceCount || practiceCount === 0 || !prefix) return [];
 
     const allIDs = Array.from({ length: practiceCount }, (_, i) =>
         `${prefix}-${String(i + 1).padStart(3, '0')}`
     );
 
-    let slice;
-    switch (nodeType) {
-        case 'WARMUP':     slice = allIDs.slice(0, Math.min(3, allIDs.length));  break;
-        case 'PRACTICE':   slice = allIDs.slice(0, Math.min(5, allIDs.length));  break;
-        case 'REINFORCE':  slice = allIDs.slice(Math.max(0, Math.floor(allIDs.length / 2)));  break;
-        case 'MASTERY':    slice = allIDs;  break;
-        default:           slice = allIDs.slice(0, 3);
-    }
-
     const allSteps = [];
-    for (const id of slice) {
+    for (const id of allIDs) {
         try {
             const { steps } = await loadQuestSteps(subject, unitId, questFolder, id);
             allSteps.push(...steps);
@@ -218,24 +230,4 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         }
     }
     return allSteps;
-}
-
-
-// ─── Explore cycling helpers ────────────────────────────────────────────────
-
-function getExploreAttempt(subject, questKey) {
-    try {
-        const key = `manya_explore_cycle_${subject}`;
-        const data = JSON.parse(localStorage.getItem(key) || '{}');
-        return data[questKey] || 0;
-    } catch { return 0; }
-}
-
-function incrementExploreAttempt(subject, questKey) {
-    try {
-        const key = `manya_explore_cycle_${subject}`;
-        const data = JSON.parse(localStorage.getItem(key) || '{}');
-        data[questKey] = (data[questKey] || 0) + 1;
-        localStorage.setItem(key, JSON.stringify(data));
-    } catch { /* silent */ }
 }

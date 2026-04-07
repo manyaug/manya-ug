@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
-    "analyze": "node scripts/analyze-topics.js",
-    "generate-quests": "node scripts/generate-quest-structure.js"
-  }
-}

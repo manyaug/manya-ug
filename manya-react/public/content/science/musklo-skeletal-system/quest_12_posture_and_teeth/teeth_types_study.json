@@ -2,7 +2,7 @@
   "engineType": "2D_HOTSPOT",
   "mode": "study",
   "topic": "Human Dentition: All 32 Teeth",
-  "imageUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/tooth_anatomy.png",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/tooth_anatomy.webp",
   "intro": "Humans have 4 types of teeth. Tap any tooth in the diagram to learn its name and PLE function.",
   "hotspots": [
     { "id": "i1", "label": "Incisor", "x": 18.25, "y": 25.16, "info": "Shape: Chisel-shaped. Function: Biting and cutting food." },

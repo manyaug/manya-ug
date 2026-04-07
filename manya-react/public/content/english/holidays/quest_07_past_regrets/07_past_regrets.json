@@ -5,7 +5,7 @@
   "steps": [
     {
       "engineType": "CHAT",
-      "data": { "speaker": "manya", "image": "assets/english/quest_2/hday_2_chat_4.png", "text": "<b>If I had remembered</b> my boots, <b>I would not have dirtied</b> my feet!" }
+      "data": { "speaker": "manya", "image": "assets/english/quest_2/hday_2_chat_4.webp", "text": "<b>If I had remembered</b> my boots, <b>I would not have dirtied</b> my feet!" }
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",
@@ -25,7 +25,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "image": "assets/english/quest_2/hday_2_chat_2.png",
+        "image": "assets/english/quest_2/hday_2_chat_2.webp",
         "text": "Meow! The Treehouse has <b>THREE FLOORS</b> — Past, Present, and Future. Climb to the right floor by choosing the correct verb tense!"
       }
     },

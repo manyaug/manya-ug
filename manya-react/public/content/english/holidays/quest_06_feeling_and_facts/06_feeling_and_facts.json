@@ -5,7 +5,7 @@
   "steps": [
     {
       "engineType": "CHAT",
-      "data": { "speaker": "polly", "image": "assets/english/quest_2/hday_2_chat_3.png", "text": "Manya, you look so <b>EXCITED</b> because the village is <b>EXCITING</b>!" }
+      "data": { "speaker": "polly", "image": "assets/english/quest_2/hday_2_chat_3.webp", "text": "Manya, you look so <b>EXCITED</b> because the village is <b>EXCITING</b>!" }
     },
     {
       "engineType": "ENGLISH_RULE_MASTER",

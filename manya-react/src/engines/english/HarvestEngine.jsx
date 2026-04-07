@@ -74,33 +74,34 @@ const HarvestEngine = ({ data, onComplete }) => {
 
   /* ── rAF game loop ── */
   useEffect(() => {
-    if (!wordPool.length) return;
+    if (!wordPool || !wordPool.length) return;
 
     const tick = (t) => {
       if (doneRef.current) return;
 
-      /* 1 — spawn every 2 s */
-      if (t - lastSpawn.current > 2000) {
+      /* 1 — Spawn every 1.8s for better pacing */
+      if (t - lastSpawn.current > 1800) {
         const word = wordPool[Math.floor(Math.random() * wordPool.length)];
-        const laneSide = Math.random() < 0.5 ? 'left' : 'right';
+        // Determine the correct lane for this word to avoid "Impossible Catch" scenarios
+        const isLeft = word.type.toUpperCase().trim() === leftCat.trim();
+        const laneSide = isLeft ? 'left' : 'right';
+        
         setItems(prev => [
           ...prev,
           {
             id: nextId.current++,
             text: word.text,
-            cat:  word.type.toUpperCase(),
+            cat:  word.type.toUpperCase().trim(),
             side: laneSide,
             x:    LANE_X[laneSide],
-            y:    -12,
-            vy:   0.65,
+            y:    -10,
+            vy:   0.55 + Math.random() * 0.2, // Variable speed
           }
         ]);
         lastSpawn.current = t;
       }
 
       /* 2 — move items + collision */
-      // ⚠️ We must NOT call setState inside a setState updater.
-      // Instead: compute events outside setItems, apply them after.
       let scoreGain = 0;
       let lifeLoss = 0;
       let burstList = [];
@@ -110,31 +111,37 @@ const HarvestEngine = ({ data, onComplete }) => {
         for (const item of prev) {
           const newY = item.y + item.vy;
 
-          /* catch zone */
-          if (newY >= 78 && newY <= 87 && item.side === sideRef.current) {
+          /* catch zone (widened slightly for mobile) */
+          if (newY >= 75 && newY <= 90 && item.side === sideRef.current) {
             const correct =
-              (item.side === 'left'  && item.cat === leftCat) ||
-              (item.side === 'right' && item.cat === rightCat);
+              (item.side === 'left'  && item.cat === leftCat.trim()) ||
+              (item.side === 'right' && item.cat === rightCat.trim());
 
             if (correct) {
-              scoreGain += 10;
-              burstList.push({ x: item.x, y: newY, color: '#f59e0b' });
+                scoreGain += 10;
+                burstList.push({ x: item.x, y: newY, color: '#f59e0b' });
             } else {
-              lifeLoss += 1;
-              burstList.push({ x: item.x, y: newY, color: '#f43f5e' });
+                lifeLoss += 1;
+                burstList.push({ x: item.x, y: newY, color: '#f43f5e' });
             }
-            continue; // remove item
+            continue; 
           }
 
-          /* missed — fell off screen */
-          if (newY > 100) continue;
+          /* missed correct item penalty */
+          if (newY > 100) {
+              const wasCorrect = 
+                (item.side === 'left' && item.cat === leftCat.trim()) ||
+                (item.side === 'right' && item.cat === rightCat.trim());
+              
+              if (wasCorrect) lifeLoss += 1;
+              continue;
+          }
 
           kept.push({ ...item, y: newY });
         }
         return kept;
       });
 
-      // Apply score/life changes OUTSIDE the updater to avoid nested setState
       if (scoreGain > 0) {
         const next = scoreRef.current + scoreGain;
         scoreRef.current = next;
@@ -149,7 +156,6 @@ const HarvestEngine = ({ data, onComplete }) => {
       }
       burstList.forEach(b => burst(b.x, b.y, b.color));
 
-      /* 3 — particles */
       setParticles(p =>
         p
           .map(pt => ({ ...pt, x: pt.x + pt.vx, y: pt.y + pt.vy, vy: pt.vy + 0.2, life: pt.life - 0.05 }))

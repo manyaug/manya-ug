@@ -94,14 +94,35 @@ export const ManyaDB = {
     },
 
     async cacheQuestions(questions) {
+        if (!questions || !Array.isArray(questions)) return false;
+        
         const db = await this.connect();
         if (!db) return false;
+
         return new Promise((resolve) => {
-            const transaction = db.transaction(this.STORE_QUESTIONS, 'readwrite');
-            const store = transaction.objectStore(this.STORE_QUESTIONS);
-            questions.forEach(q => store.put(q));
-            transaction.oncomplete = () => resolve(true);
-            transaction.onerror = () => resolve(false);
+            try {
+                const transaction = db.transaction(this.STORE_QUESTIONS, 'readwrite');
+                const store = transaction.objectStore(this.STORE_QUESTIONS);
+                
+                // CRITICAL: Filter out any objects missing the mandatory qid (primary key)
+                // to avoid DataError: "Evaluating the object store's key path did not yield a value."
+                const validQuestions = questions.filter(q => q && q.qid);
+                
+                if (validQuestions.length < questions.length) {
+                    console.warn(`[ManyaDB] Filtered out ${questions.length - validQuestions.length} corrupt questions missing QID.`);
+                }
+
+                validQuestions.forEach(q => store.put(q));
+                
+                transaction.oncomplete = () => resolve(true);
+                transaction.onerror = (e) => {
+                    console.error("[ManyaDB] Transaction Error:", e.target.error);
+                    resolve(false);
+                };
+            } catch(e) {
+                console.error("[ManyaDB] Cache Exception:", e);
+                resolve(false);
+            }
         });
     },
 

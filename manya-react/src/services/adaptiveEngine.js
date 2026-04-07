@@ -239,7 +239,14 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 console.warn(`🧠 [Discovery] FAIL: No JSON match for DB Pointer "${dbFileName}". Pool has ${simResources.length} items. [${simResources.map(s => cleanName(s.file)).slice(0, 5).join(', ')}...]`);
             }
         } else {
-            mcqPool.push(q);
+            // CRITICAL: Filter out any questions with missing or empty text to prevent "Invisible Question" bugs
+            // Note: englishMockDB maps Supabase 'questiontext' to 'question'
+            const hasText = q.question && q.question.trim() !== '' && q.question !== 'None';
+            if (hasText) {
+                mcqPool.push(q);
+            } else {
+                console.warn(`\ud83d\udeab [Adaptive] Skipping broken MCQ: ${q.qid || q.id} (Missing Question Text)`);
+            }
         }
     });
 
@@ -261,10 +268,27 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
     mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
 
     const selectedMCQs = [];
+    const poolSize = mcqCandidates.length;
+    const targetCount = Math.min(poolSize, questLength);
+
     for (const q of mcqCandidates) {
-        if (selectedMCQs.length >= questLength) break;
-        if (!validateSpacing(q.id, selectedMCQs, 3)) continue;
+        if (selectedMCQs.length >= targetCount) break;
+        
+        // RELAX EXCLUSION: If we have very few questions, ignore the 24h spacing rule
+        // to prevent the "Only 1 Question" bug during repeated testing.
+        const minSpacing = poolSize < (questLength * 2) ? 1 : 3;
+        if (!validateSpacing(q.id, selectedMCQs, minSpacing)) continue;
+        
         selectedMCQs.push(q);
+    }
+
+    // FINAL FALLBACK: If we still don't have enough questions due to extreme repetition,
+    // just pull the best remaining candidates regardless of spacing.
+    if (selectedMCQs.length < targetCount && poolSize > selectedMCQs.length) {
+        console.log(`⚠️ [Adaptive] Pool exhaustion! Pulling ${targetCount - selectedMCQs.length} fallback questions.`);
+        const selectedIds = new Set(selectedMCQs.map(s => s.id || s.qid));
+        const remainder = mcqCandidates.filter(c => !selectedIds.has(c.id || c.qid));
+        selectedMCQs.push(...remainder.slice(0, targetCount - selectedMCQs.length));
     }
 
     // 3. PREPARE SIMULATIONS (Merge Discovered + Fresh JSONs)
@@ -296,14 +320,32 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
     const mcqStack = [...selectedMCQs];
     const simStack = [...finalizedSims].reverse(); // pop() from end
 
+    // ─── STRICT EXPLORE RULE: STORY ONLY ───
+    if (nodeType === 'EXPLORE' && simStack.length > 0) {
+        console.log(`🎬 [Adaptive] EXPLORE Node: Enforcing PURE STORY mode (${simStack.length} sims).`);
+        return {
+            questions: simStack.reverse(),
+            metadata: { questLength: simStack.length, frustration: frustration.score, gameMode: 'STORY' }
+        };
+    }
+
     // Target length is the maximum of the questLength or available sims
     const mcqTargetCount = Math.min(mcqStack.length, questLength);
     const totalTarget = Math.max(mcqTargetCount, simStack.length);
 
+    // ─── PEDAGOGICAL SEQUENCING ─────
+    // For WARMUP/PRACTICE, we sometimes want the Sim (Rule) to be FIRST.
+    if ((nodeType === 'WARMUP' || nodeType === 'PRACTICE') && simStack.length > 0) {
+        // If it's a rule/note, put it at the very beginning
+        if (simStack[simStack.length - 1].engineType === 'ENGLISH_RULE_MASTER' || simStack[simStack.length - 1].isStudySim) {
+            finalQuestions.push(simStack.pop());
+        }
+    }
+
     while (finalQuestions.length < totalTarget && (mcqStack.length > 0 || simStack.length > 0)) {
-        // Interleave logic (v4.5): 
-        // ─── PEDAGOGY: MCQs FIRST ───
-        const mcqBatchSize = (nodeType === 'WARMUP' || nodeType === 'PRACTICE') ? 2 : 1;
+        // Interleave logic (v4.8)
+        // PRACTICE nodes get 2 questions then a drill
+        const mcqBatchSize = (nodeType === 'WARMUP' || nodeType === 'PRACTICE') ? 2 : 3;
         
         for (let i = 0; i < mcqBatchSize; i++) {
             if (mcqStack.length > 0 && finalQuestions.length < totalTarget) {
@@ -311,14 +353,10 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             }
         }
 
-        const simFrequency = (nodeType === 'REINFORCE' || nodeType === 'MASTERY') ? 2 : 1;
-        for (let i = 0; i < simFrequency; i++) {
-            if (simStack.length > 0 && finalQuestions.length < totalTarget) {
-                finalQuestions.push(simStack.pop());
-            }
+        // Inject 1 simulation if available
+        if (simStack.length > 0 && finalQuestions.length < totalTarget) {
+            finalQuestions.push(simStack.pop());
         }
-        
-        if (finalQuestions.length >= 30) break;
     }
 
     console.log(`\ud83c\udfaf [Adaptive] ${nodeType} final quest: ${finalQuestions.length} steps (${allSimCandidates.length} sims, ${selectedMCQs.length} MCQs)`);

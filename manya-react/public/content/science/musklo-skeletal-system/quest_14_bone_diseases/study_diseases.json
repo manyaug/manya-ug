@@ -4,22 +4,22 @@
   "topic": "Diseases of the Skeleton",
   "slides": [
     {
-      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/polio.png",
+      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/polio.webp",
       "title": "1. Polio (Poliomyelitis)",
       "description": "<p><b>Cause:</b> A Virus.</p><p><b>Spread:</b> Drinking contaminated water or eating contaminated food.</p><p><b>Effect:</b> It attacks the spinal cord and causes <b>Paralysis</b> (lameness) in the limbs.</p><div class='rule-box'><b>Prevention:</b> Immunisation with Polio Vaccine (Drops in the mouth). Drink boiled water.</div>"
     },
     {
-      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/rickets.png",
+      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/rickets.webp",
       "title": "2. Rickets & Osteomalacia",
       "description": "<p><b>Cause:</b> Deficiency (lack) of <b>Vitamin D</b>, Calcium, and Phosphorus.</p><p><b>Signs:</b> Bow-legs (bending of legs), knock-knees, and weak bones.</p><p><b>Prevention:</b> Eat foods rich in Calcium (Milk, Eggs) and expose the body to morning sunshine (Vitamin D).</p>"
     },
     {
-      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/tuberculosis.png",
+      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/tuberculosis.webp",
       "title": "3. Tuberculosis (TB) of the Spine",
       "description": "<p><b>Cause:</b> Bacteria (Mycobacterium).</p><p><b>Effect:</b> It destroys the vertebrae (backbone), causing a painful hunchback (Kyphosis).</p><p><b>Prevention:</b> Immunisation with <b>BCG Vaccine</b> at birth. Drinking boiled milk (to avoid bovine TB).</p>"
     },
     {
-      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/tetanus.png",
+      "image": "assets/science/musklo-skeletal-system/quest_14_bone_diseases/tetanus.webp",
       "title": "4. Tetanus (Lockjaw)",
       "description": "<p><b>Cause:</b> Bacteria (Clostridium tetani) found in soil.</p><p><b>Entry:</b> Enters the body through fresh cuts or wounds (especially from rusty metal).</p><p><b>Signs:</b> Stiff muscles, difficulty breathing, and lockjaw.</p><div class='rule-box'><b>Prevention:</b> DPT Vaccine. Cover wounds. Use sterilized tools.</div>"
     }

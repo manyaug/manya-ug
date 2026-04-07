@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { RotateCcw, Box, Sparkles, Info, CheckCircle2, Trophy, ChevronRight, X, ChevronDown } from 'lucide-react';
+import { resolveRemoteUrl } from '../../config/assetUrls';
 
 /**
  * THREE D STUDY ENGINE (React Port) - v1.1
@@ -174,7 +175,7 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
 
                     <model-viewer
                         ref={viewerRef}
-                        src={data.modelUrl}
+                        src={resolveRemoteUrl(data.modelUrl)}
                         camera-controls
                         shadow-intensity="1"
                         auto-rotate={!selectedPinId}

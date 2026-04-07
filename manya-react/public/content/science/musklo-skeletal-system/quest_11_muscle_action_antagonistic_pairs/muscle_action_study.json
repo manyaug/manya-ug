@@ -2,7 +2,7 @@
   "engineType": "2D_HOTSPOT",
   "mode": "study",
   "topic": "Antagonistic Muscle Action",
-  "imageUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/Relaxed_muscle.png",
+  "imageUrl": "assets/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/Relaxed_muscle.webp",
   "intro": "Muscles work in pairs called antagonistic pairs. They can only pull, not push.",
   "hotspots": [
     { "id": "p2", "label": "Relaxed Biceps", "x": 20.94, "y": 39.25, "info": "When the arm straightens, the biceps becomes longer and thinner (relaxed)." },

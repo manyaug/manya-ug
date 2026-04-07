@@ -38,3 +38,7 @@ Thumbs.db
 
 # Zips
 *.zip
+
+# Local archive - redundant migration data
+archives_2/
+

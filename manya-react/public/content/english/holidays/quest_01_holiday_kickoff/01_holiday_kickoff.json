@@ -8,7 +8,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "manya",
-        "image": "assets/english/quest_1/holiday_chat_1.png",
+        "image": "assets/english/quest_1/holiday_chat_1.webp",
         "text": "Waddle! My feathers are vibrating because the school term is finally <b>COMMENCING</b> its end. Do you know what that means?"
       }
     },
@@ -17,7 +17,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "polly",
-        "image": "assets/english/quest_1/holiday_chat_2.png",
+        "image": "assets/english/quest_1/holiday_chat_2.webp",
         "text": "It means <b>VACATION</b>, Manya! I’ve already contacted my <b>PEN-PAL</b> to tell her we are going <b>UP-COUNTRY</b> to the <b>RURAL</b> village!"
       }
     },
@@ -40,7 +40,7 @@
       "engineType": "CHAT",
       "data": {
         "speaker": "kiki",
-        "image": "assets/english/quest_1/holiday_chat_3.png",
+        "image": "assets/english/quest_1/holiday_chat_3.webp",
         "text": "Meow! Hold your whiskers. We need to <b>PREPARE</b>. Let's sort out our duties before we go. Catch the <b>CHORES</b> (Nouns) and <b>ACTIONS</b> (Verbs)!"
       }
     },
