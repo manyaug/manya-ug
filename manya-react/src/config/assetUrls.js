@@ -1,34 +1,84 @@
 /**
- * MANYA ASSET URL SYSTEM
- * =====================
+ * MANYA ASSET URL SYSTEM - v2.3 (GitHub + jsDelivr CDN - Production Ready)
+ * =====================================================================
  * Central registry for all remotely-hosted heavy assets.
- * Base URL: Supabase Storage (manya-assets bucket, public CDN)
- *
- * HOW TO ADD NEW ASSETS:
- *  1. Upload the file to Supabase Storage under the correct folder.
- *  2. Add the key here under the correct category.
- *  3. Import and use in your component: import { AUDIO } from '@/config/assetUrls'
- *
- * FOLDER STRUCTURE IN SUPABASE STORAGE (manya-assets bucket):
- *   audios/         → Ambient tracks (rain.mp3, night.mp3, etc.)
- *   sfx/            → Short sound effects (correct.mp3, wrong.mp3, etc.)
- *   science/glb/    → 3D .glb model files
- *   images/         → Large images not suitable for repo
  */
 
-const SUPABASE_URL = 'https://pmgdfuhqgwysequaopts.supabase.co'
-const BUCKET = 'manya-assets'
+const BASE_CDN_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/'
 
 /**
- * Builds a full Supabase Storage CDN URL for a given path.
- * The user uploaded mirroring the local public/assets folder.
+ * Maps subject keys to GitHub folder names (matching repo casing)
+ */
+const SUBJECT_MAP = {
+  'english': 'English',
+  'math': 'Math',
+  'science': 'science',
+  'sst': 'sst'
+};
+
+/**
+ * Builds a full jsDelivr CDN URL for a given path.
+ * Automatically flips .png/.jpg to .webp for consistency with migrated assets.
  */
 export function assetUrl(path) {
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/public/assets/${path}`
+  if (!path) return '';
+  let cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  
+  // Flip extension to webp for common image types (except SVGs/models)
+  if (cleanPath.match(/\.(png|jpg|jpeg)$/i)) {
+    cleanPath = cleanPath.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+  }
+  
+  return `${BASE_CDN_URL}${cleanPath}`;
+}
+
+/**
+ * INTERCEPTOR: Detects and rewrites legacy Supabase URLs to the new CDN.
+ */
+export function resolveRemoteUrl(url) {
+  if (!url) return '';
+  
+  // 1. If it's a legacy Supabase URL, strip it down to the relative path
+  if (url.includes('supabase.co')) {
+    // Extract path after "public/assets/" or "manya-assets/"
+    const match = url.match(/public\/assets\/(.+)$/);
+    const fallbackMatch = url.match(/manya-assets\/(.+)$/);
+    
+    let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
+    
+    if (relativePath) {
+        // Special case: scientific models need the _compressed suffix
+        if (relativePath.endsWith('.glb') && !relativePath.includes('_compressed')) {
+            relativePath = relativePath.replace(/\.glb$/, '_compressed.glb');
+        }
+        return assetUrl(relativePath);
+    }
+  }
+
+  // 2. Clear handling for "assets/" prefixed paths (common in quest JSONs)
+  if (url.startsWith('assets/')) {
+    return assetUrl(url.replace(/^assets\//, ''));
+  }
+
+  // 3. If it's already a clean local-style path or filename
+  return url;
+}
+
+/**
+ * Resolves a UI image URL with the industry-standard _compressed naming.
+ * e.g., 'math_island' -> 'math_island_compressed.webp'
+ */
+function uiImage(name, ext = 'webp') {
+    if (!name) return '';
+    let clean = name.replace(new RegExp(`\\.${ext}$`), '');
+    if (!clean.endsWith('_compressed')) {
+        clean = `${clean}_compressed`;
+    }
+    return assetUrl(`images/${clean}.${ext}`);
 }
 
 // ---------------------------------------------------------------------------
-// 🎵 AMBIENT AUDIO — Long looping background tracks
+// 🎵 AMBIENT AUDIO
 // ---------------------------------------------------------------------------
 export const AUDIO = {
   day:   assetUrl('shared/audios/day.mp3'),
@@ -37,9 +87,6 @@ export const AUDIO = {
   shine: assetUrl('shared/audios/shine.mp3'),
 }
 
-// ---------------------------------------------------------------------------
-// 🔊 SOUND EFFECTS — Short one-shot triggers
-// ---------------------------------------------------------------------------
 export const SFX = {
   correct:         assetUrl('shared/audios/collect-points.mp3'),
   wrong:           assetUrl('shared/audios/error-mistake.mp3'),
@@ -49,96 +96,91 @@ export const SFX = {
 }
 
 // ---------------------------------------------------------------------------
-// 🦴 3D MODELS — Skeletal & Science GLB files
+// 🦴 3D MODELS
 // ---------------------------------------------------------------------------
 const GLB_BASE = 'science/musklo-skeletal-system'
+
+function resolveCompressedGlb(path) {
+  if (!path) return '';
+  let clean = path.replace(/\.glb$/, '');
+  if (!clean.endsWith('_compressed')) {
+    clean = `${clean}_compressed`;
+  }
+  return assetUrl(`${clean}.glb`);
+}
+
 export const GLB = {
-  // Quest 2: Human Skeleton
-  male_skeleton:    assetUrl(`${GLB_BASE}/quest_2_human_skeleton/male_skeleton.glb`),
-  female_skeleton:  assetUrl(`${GLB_BASE}/quest_2_human_skeleton/female_skeleton.glb`),
-
-  // Quest 3: Axial — Skull & Spine
-  skull:            assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull.glb`),
-  spine:            assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/spine.glb`),
-  spinal_column:    assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column.glb`),
-
-  // Quest 4: Rib Cage
-  rib_cage:         assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart.glb`),
-  thoracic:         assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic__abdominal_skeleton_based_on_ct_data.glb`),
-
-  // Quest 5: Appendicular
-  lower_limb:       assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb.glb`),
-  skeleton_arm:     assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm.glb`),
-
-  // Quest 6: Bone Structure
-  bone_structure:   assetUrl(`${GLB_BASE}/quest_6_bone_structure/bone_structure.glb`),
-
-  // Quest 7: Joints
-  joint_structure:  assetUrl(`${GLB_BASE}/quest_7_joints_structure/joint_structure.glb`),
-
-  // Quest 8: Hinge & Ball-Socket
-  elbow_joint:      assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/elbow_joint.glb`),
-  hip_joint:        assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/hip_joint.glb`),
-
-  // Quest 9: Pivot & Gliding
-  ankle:            assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/ankle.glb`),
-  pivot_neck:       assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/pivot_joint_neck.glb`),
-  wrist:            assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/wrist.glb`),
-
-  // Quest 11: Muscle Action
-  upper_limb_muscles: assetUrl(`${GLB_BASE}/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles.glb`),
-
-  // Quest 12: Posture & Teeth
-  human_teeth:      assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/human_teeth.glb`),
-  inside_tooth:     assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/inside_my_tooth.glb`),
+  male_skeleton:    resolveCompressedGlb(`${GLB_BASE}/quest_2_human_skeleton/male_skeleton`),
+  female_skeleton:  resolveCompressedGlb(`${GLB_BASE}/quest_2_human_skeleton/female_skeleton`),
+  skull:            resolveCompressedGlb(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull`),
+  spine:            resolveCompressedGlb(`${GLB_BASE}/quest_3_axial_skull_spine/spine`),
+  spinal_column:    resolveCompressedGlb(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column`),
+  rib_cage:         resolveCompressedGlb(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart`),
+  thoracic:         resolveCompressedGlb(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic__abdominal_skeleton_based_on_ct_data`),
+  lower_limb:       resolveCompressedGlb(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb`),
+  skeleton_arm:     resolveCompressedGlb(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm`),
+  bone_structure:   resolveCompressedGlb(`${GLB_BASE}/quest_6_bone_structure/bone_structure`),
+  joint_structure:  resolveCompressedGlb(`${GLB_BASE}/quest_7_joints_structure/joint_structure`),
+  elbow_joint:      resolveCompressedGlb(`${GLB_BASE}/quest_8_hinge_ball-and-socket/elbow_joint`),
+  hip_joint:        resolveCompressedGlb(`${GLB_BASE}/quest_8_hinge_ball-and-socket/hip_joint`),
+  ankle:            resolveCompressedGlb(`${GLB_BASE}/quest_9_pivot_and_gliding/ankle`),
+  pivot_neck:       resolveCompressedGlb(`${GLB_BASE}/quest_9_pivot_and_gliding/pivot_joint_neck`),
+  wrist:            resolveCompressedGlb(`${GLB_BASE}/quest_9_pivot_and_gliding/wrist`),
+  upper_limb_muscles: resolveCompressedGlb(`${GLB_BASE}/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles`),
+  human_teeth:      resolveCompressedGlb(`${GLB_BASE}/quest_12_posture_and_teeth/human_teeth`),
+  inside_tooth:     resolveCompressedGlb(`${GLB_BASE}/quest_12_posture_and_teeth/inside_my_tooth`),
 }
 
 // ---------------------------------------------------------------------------
-// 🖼️ IMAGES — Backgrounds, Gems, and Static Graphics
+// 🖼️ UI IMAGES
 // ---------------------------------------------------------------------------
 export const IMAGES = {
-  // Gems (manya-assets/public/assets/images/gems/*.svg)
   math_gem:    assetUrl('images/gems/math_gem.svg'),
   science_gem: assetUrl('images/gems/science_svg.svg'),
   sst_gem:     assetUrl('images/gems/sst_gem.svg'),
   english_gem: assetUrl('images/gems/english_gem.svg'),
   master_gem:  assetUrl('images/gems/master_gem.svg'),
-
-  // UI Icons
-  manya_icon:  assetUrl('images/manya_icon.png'),
-  polly_icon:  assetUrl('images/polly_icon.png'),
-  kiki_icon:   assetUrl('images/kiki_icon.png'),
-  
-  // Characters & Splash
-  splash:      assetUrl('images/splash.png'),
-  kiki_full:   assetUrl('images/kiki.png'),
-  polly_full:  assetUrl('images/polly.jpeg'),
-
-  // Islands
-  math_island:    assetUrl('images/math_island.png'),
-  science_island: assetUrl('images/science_island.png'),
-  sst_island:     assetUrl('images/sst_island.png'),
-  english_island: assetUrl('images/english_island.png'),
+  manya_icon:  uiImage('manya_icon'),
+  polly_icon:  uiImage('polly_icon'),
+  kiki_icon:   uiImage('kiki_icon'),
+  splash:      uiImage('splash'),
+  kiki_full:   uiImage('kiki'),
+  polly_full:  uiImage('polly'),
+  math_island:    uiImage('math_island'),
+  science_island: uiImage('science_island'),
+  sst_island:     uiImage('sst_island'),
+  english_island: uiImage('english_island'),
 }
 
 /**
- * Resolves subject-specific path images (for SpiralView/LevelView)
+ * Resolves path tiles (the world map road).
+ * NOTE: English uses raw names (way-1.webp), others use _compressed (way-1_compressed.webp).
  */
-export function getPathImage(folder, fileName) {
-  return assetUrl(`images/${folder}/${fileName}`)
+export function getPathImage(subject, fileName) {
+  const sub = subject?.toLowerCase().replace('_path', ''); // handle safe subject key
+  const folder = `${sub}_path`;
+  
+  let finalFile = fileName.replace(/\.[^/.]+$/, ""); // strip ext
+  
+  // Apply _compressed suffix only if NOT english (per repo structure)
+  if (sub !== 'english' && !finalFile.endsWith('_compressed')) {
+      finalFile = `${finalFile}_compressed`;
+  }
+  
+  return assetUrl(`images/${folder}/${finalFile}.webp`);
 }
 
 export function getIsland(subject) {
-  const sub = subject.toLowerCase()
-  if (sub === 'math' || sub === 'mathematics') return IMAGES.math_island
-  if (sub === 'science') return IMAGES.science_island
-  if (sub === 'sst') return IMAGES.sst_island
-  if (sub === 'english') return IMAGES.english_island
-  return IMAGES.manya_icon
+  const sub = subject.toLowerCase();
+  if (sub === 'math' || sub === 'mathematics') return IMAGES.math_island;
+  if (sub === 'science') return IMAGES.science_island;
+  if (sub === 'sst') return IMAGES.sst_island;
+  if (sub === 'english') return IMAGES.english_island;
+  return IMAGES.manya_icon;
 }
 
 export function getGem(fileName) {
-  const file = fileName.toLowerCase()
+  const file = fileName.toLowerCase();
   if (file.includes('math')) return IMAGES.math_gem;
   if (file.includes('science')) return IMAGES.science_gem;
   if (file.includes('sst')) return IMAGES.sst_gem;
@@ -147,18 +189,10 @@ export function getGem(fileName) {
   return assetUrl(`images/gems/${fileName}`);
 }
 
-// ---------------------------------------------------------------------------
-// Convenience: resolve a model by any key (for engines using dynamic keys)
-// Usage: getGlb('male_skeleton') → full CDN URL
-// ---------------------------------------------------------------------------
 export function getGlb(key) {
-  if (GLB[key]) return GLB[key]
-  // Fallback: if key looks like a filename, build URL directly
-  if (key?.endsWith('.glb')) return assetUrl(`science/musklo-skeletal-system/quest_2_human_skeleton/${key}`) // Most common folder fallback
-  console.warn(`[Manya Assets] Unknown GLB key: "${key}"`)
-  return null
+  return GLB[key] || resolveRemoteUrl(key);
 }
 
 export function getSfx(name) {
-  return SFX[name] ?? assetUrl(`shared/audios/${name}.mp3`)
+  return SFX[name] ?? assetUrl('shared/audios/' + (name.endsWith('.mp3') ? name : name + '.mp3'));
 }

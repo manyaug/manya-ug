@@ -287,7 +287,7 @@ function SpiralView() {
 
     const tiles = Array.from({ length: totalTiles }, (_, i) => ({
         i,
-        src: getPathImage(biome.folder, `way-${(i % 10) + 1}.png`),
+        src: getPathImage(sub, `way-${(i % 10) + 1}.webp`),
         bottom: BOTTOM_BUFFER + i * EFFECTIVE_HEIGHT,
         zIndex: i,
     }));

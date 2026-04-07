@@ -14,13 +14,15 @@
 // Global in-memory cache for quest JSONs
 const JSON_CACHE = {};
 
+const BASE_CONTENT_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/content/';
+
 /**
  * Build the fetch URL for a content file.
  */
 export function contentUrl(subject, unitId, questFolder, file) {
     if (!file) return '';
     const cleanFile = file.replace(/\.json$/, '');
-    return `/content/${subject}/${unitId}/${questFolder}/${cleanFile}.json`;
+    return `${BASE_CONTENT_URL}${subject}/${unitId}/${questFolder}/${cleanFile}.json`;
 }
 
 /**
@@ -31,14 +33,28 @@ export function contentUrl(subject, unitId, questFolder, file) {
  */
 function resolveRef(referencePath, baseDir) {
     if (!referencePath) return null;
-    // Already a clean web path
-    if (referencePath.startsWith('/')) return referencePath;
-    // Windows absolute path — extract from "content" onwards
+    
+    // 1. Remote CDN Path (already resolved)
+    if (referencePath.startsWith('http')) return referencePath;
+
+    // 2. Absolute Web Path (legacy) -> Map to CDN
+    if (referencePath.startsWith('/content/')) {
+        return `${BASE_CONTENT_URL}${referencePath.replace(/^\/content\//, '')}`;
+    }
+
+    // 3. Absolute Windows Path -> Map to CDN
     const lc = referencePath.toLowerCase().replace(/\\/g, '/');
     const idx = lc.indexOf('content/');
-    if (idx !== -1) return '/' + referencePath.substring(idx).replace(/\\/g, '/');
-    // Relative path — resolve against the base directory
-    if (baseDir) return `/${baseDir}/${referencePath}`.replace(/\/+/g, '/');
+    if (idx !== -1) {
+        return `${BASE_CONTENT_URL}${referencePath.substring(idx + 8).replace(/\\/g, '/')}`;
+    }
+
+    // 4. Relative Path -> Resolve against the base directory
+    if (baseDir) {
+        const fullRel = `${baseDir}/${referencePath}`.replace(/\/+/g, '/').replace(/^content\//, '');
+        return `${BASE_CONTENT_URL}${fullRel}`;
+    }
+    
     return null;
 }
 

@@ -42,23 +42,25 @@ export default defineConfig({
             }
           },
 
-          // Images
+          // CDN - Quest JSON content
           {
-            urlPattern: /assets\/.*\.(?:png|jpg|jpeg|svg|webp|gif)$/i,
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets@main\/content\/.*\.json$/i,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'static-images-cache',
-              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheName: 'cdn-content-json-cache',
+              expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 7 }, // 1 week
               cacheableResponse: { statuses: [0, 200] }
             }
           },
-          // Quest JSON content
+
+          // CDN - Remote Images & Models
           {
-            urlPattern: /content\/.*\.json$/i,
-            handler: 'StaleWhileRevalidate',
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets@main\/(?:images|shared|science\/musklo-skeletal-system)\/.*\.(?:png|jpg|jpeg|svg|webp|gif|glb)$/i,
+            handler: 'CacheFirst',
             options: {
-              cacheName: 'content-json-cache',
-              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 7 }
+              cacheName: 'cdn-static-assets-cache',
+              expiration: { maxEntries: 1000, maxAgeSeconds: 60 * 60 * 24 * 30 }, // 30 days
+              cacheableResponse: { statuses: [0, 200] }
             }
           }
         ]

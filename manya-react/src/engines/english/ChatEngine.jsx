@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, ArrowRight, User, Sparkles, Zap } from 'lucide-react';
-import { IMAGES } from '../../config/assetUrls';
+import { IMAGES, resolveRemoteUrl } from '../../config/assetUrls';
 
 /**
  * MANYA ENGLISH: CHAT ENGINE (React v1.0)
@@ -43,9 +43,21 @@ const ChatEngine = ({ data, onComplete }) => {
 
         const interval = setInterval(() => {
             if (i < fullText.length) {
-                current += fullText[i];
+                // AUTO-SKIP HTML TAGS (Ensures they render as atomic units)
+                if (fullText[i] === '<') {
+                    const tagEnd = fullText.indexOf('>', i);
+                    if (tagEnd !== -1) {
+                        current += fullText.substring(i, tagEnd + 1);
+                        i = tagEnd + 1;
+                    } else {
+                        current += fullText[i];
+                        i++;
+                    }
+                } else {
+                    current += fullText[i];
+                    i++;
+                }
                 setDisplayedText(current);
-                i++;
             } else {
                 clearInterval(interval);
                 setIsTyping(false);
@@ -83,8 +95,8 @@ const ChatEngine = ({ data, onComplete }) => {
                 
                 {/* 1. Optional Character/Subject Image */}
                 {data.image && (
-                    <div className="w-full max-w-sm aspect-video rounded-[40px] overflow-hidden shadow-2xl border-4 border-white dark:border-white/10 animate-in zoom-in duration-700">
-                        <img src={data.image} className="w-full h-full object-cover" alt="Context" />
+                    <div className="w-full max-w-sm aspect-video rounded-[40px] overflow-hidden shadow-2xl border-4 border-white dark:border-white/10 animate-in zoom-in duration-700 bg-slate-200">
+                        <img src={resolveRemoteUrl(data.image)} className="w-full h-full object-cover" alt="Context" />
                     </div>
                 )}
 
@@ -104,9 +116,10 @@ const ChatEngine = ({ data, onComplete }) => {
                             <span className={`text-[10px] font-black tracking-widest uppercase ${char.color}`}>{char.name}</span>
                             {isTyping && <div className="flex gap-1"><div className="w-1 h-1 bg-current rounded-full animate-bounce" /><div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:0.2s]" /><div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:0.4s]" /></div>}
                         </div>
-                        <p className={`text-base sm:text-lg font-bold leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                            {displayedText}
-                        </p>
+                        <p 
+                            className={`text-base sm:text-lg font-bold leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
+                            dangerouslySetInnerHTML={{ __html: displayedText }}
+                        />
                     </div>
                 </div>
             </div>
