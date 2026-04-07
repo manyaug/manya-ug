@@ -31,11 +31,11 @@ function HomeView() {
              const newStreak = isYesterday ? oldStreak + 1 : 1;
 
              dispatch(updateStreak());
-             
+
              setTimeout(() => {
-                 dispatch(addToast({ 
-                     message: newStreak > 1 ? `🔥 Streak preserved! You're on a ${newStreak} day streak!` : `🔥 Start of a new streak! Log in tomorrow to keep it burning!`, 
-                     type: 'success' 
+                 dispatch(addToast({
+                     message: newStreak > 1 ? `🔥 Streak preserved! You're on a ${newStreak} day streak!` : `🔥 Start of a new streak! Log in tomorrow to keep it burning!`,
+                     type: 'success'
                  }));
              }, 800);
          }
@@ -67,11 +67,10 @@ function HomeView() {
     const subjects = ['math', 'science', 'sst', 'english'];
     let bestMatch = { sub: 'math', quest: null, index: 0 };
 
-    // Find the subject with the most progress (highest index)
     subjects.forEach(s => {
         const progKey = `prog_${s}`;
         const currentIdx = user[progKey] || 0;
-        
+
         const units = curriculum[s]?.units || [];
         const flatQuests = units.flatMap(u => u.quests || []);
         const quest = flatQuests[currentIdx] || flatQuests[flatQuests.length - 1];
@@ -85,10 +84,10 @@ function HomeView() {
   }, [curriculum, user]);
 
   const subjects = [
-    { id: 'math', name: 'Mathematics', progress: user.prog_math || 0, gems: user.mathGems || 0, gemFile: getGem('math_gem.svg'), icon: getIsland('math'), hue: 262, color: 'var(--manya-purple)' },
-    { id: 'science', name: 'Science', progress: user.prog_science || 0, gems: user.scienceGems || 0, gemFile: getGem('science_svg.svg'), icon: getIsland('science'), hue: 161, color: 'var(--manya-green)' },
-    { id: 'sst', name: 'SST', progress: user.prog_sst || 0, gems: user.sstGems || 0, gemFile: getGem('sst_gem.svg'), icon: getIsland('sst'), hue: 38, color: 'var(--manya-gold)' },
-    { id: 'english', name: 'English', progress: user.prog_english || 0, gems: user.englishGems || 0, gemFile: getGem('english_gem.svg'), icon: getIsland('english'), hue: 330, color: 'var(--manya-pink)' }
+    { id: 'math',    name: 'Mathematics', progress: user.prog_math    || 0, gems: user.mathGems    || 0, gemFile: getGem('math_gem.svg'),    icon: getIsland('math'),    color: 'var(--manya-purple)' },
+    { id: 'science', name: 'Science',     progress: user.prog_science || 0, gems: user.scienceGems || 0, gemFile: getGem('science_svg.svg'), icon: getIsland('science'), color: 'var(--manya-green)'  },
+    { id: 'sst',     name: 'SST',         progress: user.prog_sst     || 0, gems: user.sstGems     || 0, gemFile: getGem('sst_gem.svg'),     icon: getIsland('sst'),     color: 'var(--manya-gold)'   },
+    { id: 'english', name: 'English',     progress: user.prog_english || 0, gems: user.englishGems || 0, gemFile: getGem('english_gem.svg'), icon: getIsland('english'), color: 'var(--manya-pink)'   },
   ];
 
   const handleOpenSpiral = (subjectId) => {
@@ -98,23 +97,16 @@ function HomeView() {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1, 
-      transition: { type: 'spring', stiffness: 300, damping: 24 } 
-    }
+    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
 
   return (
-    <motion.div 
+    <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -122,61 +114,50 @@ function HomeView() {
     >
       {/* DYNAMIC AURORA BLOBS */}
       <div className="aurora-engine" style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none' }}>
-        <div className="blob aurora-1"></div>
-        <div className="blob aurora-2"></div>
+        <div className="blob aurora-1" />
+        <div className="blob aurora-2" />
       </div>
 
       {/* PREMIUM STATUS HEADER */}
-      <motion.div 
-        variants={itemVariants} 
-        className="home-status-header-glass"
-      >
-          <div className="status-user-info">
-              <span className="hi-text">Hi, {user.nickname || "Hero"} 👋</span>
-              <p className="status-subtext">Ready for today's mission?</p>
+      <motion.div variants={itemVariants} className="home-status-header-glass">
+        <div className="status-user-info">
+          <span className="hi-text">Hi, {user.nickname || 'Hero'} 👋</span>
+          <p className="status-subtext">Ready for today's mission?</p>
+        </div>
+        <div className="status-streak-pill">
+          <div className="streak-flame-glow">
+            <Zap size={16} fill="currentColor" />
           </div>
-          
-          <div className="status-streak-pill">
-             <div className="streak-flame-glow">
-                <Zap size={16} fill="currentColor" />
-             </div>
-             <div className="streak-stats">
-                 <span className="val">{user.current_streak || 0}</span>
-                 <span className="lab uppercase">Streak</span>
-             </div>
+          <div className="streak-stats">
+            <span className="val">{user.current_streak || 0}</span>
+            <span className="lab uppercase">Streak</span>
           </div>
+        </div>
       </motion.div>
 
       {/* HERO RESUME CARD */}
-      <motion.div 
-        variants={itemVariants} 
+      <motion.div
+        variants={itemVariants}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="resume-mission-card" 
+        className={`resume-mission-card bounty-card-${activeBounty?.sub || 'math'}`}
         onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
       >
-        <img 
-            src={getGem(activeBounty?.sub || 'math')} 
-            className="hero-bg-gem-watermark" 
-            alt="watermark" 
-        />
-
+        <img src={getGem(activeBounty?.sub || 'math')} className="hero-bg-gem-watermark" alt="watermark" />
         <div className="mission-visual">
           <div className="hero-avatar-mini-glow">
             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
           </div>
         </div>
-
         <div className="mission-details">
           <span className="mission-kicker flex items-center gap-1">
             <Target size={12} className="text-white/70" />
-            CURRENT BOUNTY
+            DAILY MISSION!
           </span>
           <h3 className="mission-title">
-            {activeBounty?.quest?.title || "Starting the Journey"}
+            {activeBounty?.quest?.title || 'Starting the Journey'}
           </h3>
         </div>
-
         <div className="play-pill-neon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style={{ marginLeft: '3px' }}>
             <path d="M8 5v14l11-7z" />
@@ -184,45 +165,55 @@ function HomeView() {
         </div>
       </motion.div>
 
-      {/* 2x2 GRID */}
+      {/* ── CRYSTAL BALL WORLD GRID ── */}
       <div className="subject-grid-elite">
         {subjects.map(sub => (
-          <motion.div 
-            key={sub.id} 
+          <motion.div
+            key={sub.id}
             variants={itemVariants}
             whileHover={{ y: -4 }}
-            whileTap={{ scale: 0.96 }}
-            className={`world-card-elite ${sub.id}`} 
+            whileTap={{ scale: 0.95 }}
+            className={`world-card-elite ${sub.id}`}
             onClick={() => handleOpenSpiral(sub.id)}
           >
-            <div className="card-gem-bounty">
-              <img src={sub.gemFile} className="bounty-gem-icon" alt={`${sub.name} Gem`} />
-              <span className="bounty-gem-count" style={{ color: sub.color }}>{sub.gems}</span>
+            {/* ORB */}
+            <div className="orb-wrap">
+              {/* Ambient halo (visible on hover via CSS) */}
+              <div className="orb-halo" />
+
+              {/* Crystal ball */}
+              <div className="crystal-ball">
+                {/* Animated swirling nebula */}
+                <div className="crystal-swirl" />
+                {/* Depth / hollow shadow */}
+                <div className="crystal-depth" />
+                {/* Island floats inside */}
+                <img src={sub.icon} alt={sub.name} className="crystal-island" />
+                {/* Glass specular overlay — topmost */}
+                <div className="crystal-glass" />
+              </div>
+
+              {/* Glow pool beneath orb */}
+              <div className="orb-glow" />
             </div>
 
-            {/* INTENSIVE GLOW SYSTEM */}
-            <div className="island-stage">
-              <div 
-                className="island-halo" 
-                style={{ 
-                  background: `radial-gradient(circle, hsla(${sub.hue}, 90%, 65%, 0.8) 0%, hsla(${sub.hue}, 90%, 65%, 0) 70%)`,
-                }}
-              />
-              
-              <img 
-                src={sub.icon} 
-                alt={sub.name} 
-                className="floating-island"
-                style={{
-                  filter: `drop-shadow(0 0 25px hsla(${sub.hue}, 90%, 60%, 0.4))`
-                }}
-              />
-            </div>
-
+            {/* Name + gem count + progress */}
             <div className="card-footer-info">
-              <h4>{sub.name}</h4>
+              <div className="subject-name-row">
+                <h4>{sub.name}</h4>
+                <div className="card-gem-bounty">
+                  <img src={sub.gemFile} className="bounty-gem-icon" alt={`${sub.name} Gem`} />
+                  <span className="bounty-gem-count" style={{ color: sub.color }}>{sub.gems}</span>
+                </div>
+              </div>
               <div className="mini-striped-track">
-                <div className="mini-striped-fill" style={{ width: `${sub.progress > 0 ? (sub.progress / 50 * 100) : 5}%`, backgroundColor: sub.color }}></div>
+                <div
+                  className="mini-striped-fill"
+                  style={{
+                    width: `${sub.progress > 0 ? (sub.progress / 50 * 100) : 5}%`,
+                    backgroundColor: sub.color,
+                  }}
+                />
               </div>
               <span className="pct-text uppercase">Explore World</span>
             </div>
