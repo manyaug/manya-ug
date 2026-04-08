@@ -279,7 +279,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             ctx.fillStyle = c2.color; ctx.fillText(data.sets.B.label, c2.x, cy - r - (isMobile ? 15 : 25)); 
         }
 
-        const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType);
+        const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType);
         let iZones = [];
         if (currentStep.interaction === 'DIAGRAM_FILL' && currentStep.inputs) {
             iZones = currentStep.inputs.map(i => i.region);
@@ -401,8 +401,10 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
              return normalize(userAnswers[inp.region] || '') === normalize(inp.expected);
         });
         corrected = (currentStep.inputs || []).map(inp => `${inp.region}:${inp.expected}`).join(' | ');
-    } else if (['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType)) {
-        const expected = currentStep.type === 'ALGEBRA_SOLVE' ? (currentStep.expected_x !== undefined ? currentStep.expected_x : (currentStep.x_val !== undefined ? currentStep.x_val : currentStep.total)) : undefined;
+    } else if (['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType)) {
+        const expected = currentStep.type === 'ALGEBRA_SOLVE' ? (currentStep.expected_x !== undefined ? currentStep.expected_x : (currentStep.x_val !== undefined ? currentStep.x_val : currentStep.total)) : 
+                       (['REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET'].includes(currentStep.type) ? currentStep.expected_val : undefined);
+        
         if (expected !== undefined) {
              isCorrect = normalize(getFirstUserAnswer()) === normalize(String(expected));
              corrected = String(expected);
@@ -482,6 +484,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   useEffect(() => {
     if (canvasSize.width === 0 || !currentStep) return;
     setSelectedRegions(new Set());
+    setFrozenZones(null); // v8.4: Clear visual persistence cache on new steps
     if (currentStep.interaction === 'DRAG_SORT') {
         const l = computeLayout();
         setChips((currentStep.items || []).map((it, i) => ({ ...it, id: `chip-${i}`, x: normX(50 + i*60), y: l.height - 50 })));
@@ -597,8 +600,8 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
 
   if (!currentStep || !data) return null;
 
-  // v7.1: Single-Input requirements
-  const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType);
+  // v7.1 / v8.2: Single-Input requirements — REVERSE_SUBSET uses bottom-docked input
+  const isSingleInput = ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType);
 
   let interactiveZones = [];
   if (currentStep.interaction === 'DIAGRAM_FILL' && currentStep.inputs) {
@@ -666,7 +669,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             <canvas ref={canvasRef} className="w-full h-full block touch-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={() => draggingRef.current = null} onTouchStart={onMouseDown} onTouchMove={onMouseMove} onTouchEnd={() => draggingRef.current = null} />
             
             {/* 🎯 GENTLE NEON HALO FOR TARGET (v7.1) */}
-            {!isResolved && interactiveZones.length > 0 && interactiveZones.map(zone => {
+            {!isResolved && !isSingleInput && currentStep.type !== 'REVERSE_SUBSET' && interactiveZones.length > 0 && interactiveZones.map(zone => {
                 const pos = getSlotPos(zone);
                 return (
                     <motion.div key={`halo-${zone}`} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2, repeat: Infinity }} style={{ position: 'absolute', left: pos.x - (isMobile ? 32 : 45), top: pos.y - (isMobile ? 20 : 25) }} className={`${isMobile ? 'w-[64px] h-[40px]' : 'w-[90px] h-[50px]'} rounded-2xl border-2 border-violet-500/30 blur-sm pointer-events-none`} />
@@ -674,7 +677,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             })}
 
             {/* 🎯 DISTRIBUTED INPUT SLOTS (OmniVenn v7.1 Revised) */}
-            {!isResolved && !isSingleInput && !['BINARY','DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction) && (
+            {!isResolved && !isSingleInput && currentStep.type !== 'REVERSE_SUBSET' && !['BINARY','DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction) && (
                 <div className="absolute inset-0 pointer-events-none">
                     {interactiveZones.map(zone => {
                         const pos = getSlotPos(zone); if (pos.x === 0) return null;

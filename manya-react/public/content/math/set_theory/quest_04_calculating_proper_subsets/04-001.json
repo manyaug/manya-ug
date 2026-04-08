@@ -28,11 +28,10 @@
       "hint": "X only has 2 items. Calculate 2² - 1."
     },
     {
-      "type": "REVERSE_SUBSET",
+      "type": "PROPER_SUBSET_COUNT",
       "targetRegion": "union", 
-      "prompt": "A set has <b>31 Proper Subsets</b>. Find the number of elements (n).",
-      "expected_val": 5,
-      "hint": "2ⁿ - 1 = 31. So 2ⁿ = 32. How many 2s multiply to make 32?"
+      "prompt": "Finally, find the number of <b>Proper Subsets</b> in the entire Union (X ∪ Y).",
+      "hint": "Total items = 6. Calculate 2⁶ - 1. So 64 - 1."
     }
   ]
 }
