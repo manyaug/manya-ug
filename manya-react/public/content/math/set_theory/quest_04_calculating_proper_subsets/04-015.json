@@ -1,0 +1,40 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4: The Prime Zone",
+  "sets": {
+    "A": {
+      "label": "Primes",
+      "color": "#14b8a6"
+    }
+  },
+  "zones": {
+    "left": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13
+    ],
+    "outside": [
+      1,
+      4,
+      6,
+      8,
+      9,
+      10,
+      12
+    ]
+  },
+  "questions": [
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "left",
+      "prompt": "Find the number of <b>Proper Subsets</b> for the set of Prime numbers {2, 3, 5, 7, 11, 13}.",
+      "hint": "n=6. Calculate 2⁶ - 1. (64 - 1)."
+    }
+  ]
+}

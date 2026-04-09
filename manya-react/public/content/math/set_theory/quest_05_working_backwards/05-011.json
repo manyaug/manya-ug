@@ -1,0 +1,22 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: The Subset Signal",
+  "sets": {
+    "A": { "label": "Set A", "color": "#6366f1" }
+  },
+  "zones": {
+    "left": ["?"], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "expected_x": 4,
+      "prompt": "If Set A has exactly <b>16 Subsets</b>, how many elements (n) must be inside circle A?",
+      "hint": "We know 2ⁿ = 16. What power of 2 equals 16?"
+    }
+  ]
+}

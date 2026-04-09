@@ -1,0 +1,22 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: The Proper Oracle",
+  "sets": {
+    "A": { "label": "Set A", "color": "#f97316" }
+  },
+  "zones": {
+    "left": ["?"], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "expected_x": 7,
+      "prompt": "The Oracle says Set A has <b>127 Proper Subsets</b>. How many elements are in Set A?",
+      "hint": "Proper Subsets = 2ⁿ - 1. So 2ⁿ - 1 = 127. Add 1 to both sides: 2ⁿ = 128."
+    }
+  ]
+}

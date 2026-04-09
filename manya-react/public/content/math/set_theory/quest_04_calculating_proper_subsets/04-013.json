@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4: Union Mystery",
+  "sets": {
+    "A": { "label": "A", "color": "#10b981" },
+    "B": { "label": "B", "color": "#3b82f6" }
+  },
+  "zones": {
+    "left": [1, 2], 
+    "center": [], 
+    "right": [3, 4, 5], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "union",
+      "prompt": "These sets are <b>Disjoint</b>. Find the number of <b>Proper Subsets</b> in <span style='color:#10b981'>A</span> ∪ <span style='color:#3b82f6'>B</span>.",
+      "hint": "Count all items in both circles. Total n=5. Calculate 2⁵ - 1."
+    }
+  ]
+}

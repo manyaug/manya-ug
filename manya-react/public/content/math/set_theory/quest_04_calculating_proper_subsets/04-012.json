@@ -1,0 +1,34 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4: The Triple Threat",
+  "sets": {
+    "A": { "label": "Tri", "color": "#f59e0b" }
+  },
+  "zones": {
+    "left": ["alpha", "beta", "gamma"], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "COUNT",
+      "targetRegion": "left",
+      "prompt": "Identify the number of elements in Set <b>Tri</b>.",
+      "hint": "Count the labels inside the circle."
+    },
+    {
+      "type": "SUBSET_COUNT",
+      "targetRegion": "left",
+      "prompt": "Calculate the total number of <b>Subsets</b> for Set Tri.",
+      "hint": "Use Formula 2ⁿ. Since n=3, calculate 2³."
+    },
+    {
+      "type": "PROPER_SUBSET_COUNT",
+      "targetRegion": "left",
+      "prompt": "Now, find the number of <b>Proper Subsets</b>.",
+      "hint": "Subtract the set itself from the total subsets. (2³ - 1)."
+    }
+  ]
+}

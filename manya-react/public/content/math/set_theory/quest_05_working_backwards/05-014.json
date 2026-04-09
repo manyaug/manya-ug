@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: Reverse Algebra",
+  "sets": {
+    "A": { "label": "Set A", "color": "#8b5cf6" }
+  },
+  "zones": {
+    "left": ["x + 3"], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "x_val": 2,
+      "expected_x": 2,
+      "prompt": "The total number of <b>Subsets</b> for A is 32. If A contains $(x + 3)$ elements, solve for <b>x</b>.",
+      "hint": "We know 2ⁿ = 32, so n = 5. Therefore, x + 3 = 5. Solve for x."
+    }
+  ]
+}

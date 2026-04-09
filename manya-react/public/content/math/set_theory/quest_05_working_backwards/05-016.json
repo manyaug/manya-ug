@@ -1,0 +1,14 @@
+{
+  "engineType": "BINARY_GENERATOR",
+  "mode": "puzzle",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: Reverse Generator",
+  "questions": [
+    {
+      "targetVal": 8192,
+      "prompt": "The system reports exactly <b>8,191 Proper Subsets</b>. Dial the Generator to the correct element count.",
+      "hint": "8,191 Proper Subsets = 8,192 Subsets. We know 2¹³ = 8192. Set n to 13."
+    }
+  ]
+}

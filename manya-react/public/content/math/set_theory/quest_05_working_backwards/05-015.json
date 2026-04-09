@@ -1,0 +1,25 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: Target Shading",
+  "sets": {
+    "A": { "label": "A", "color": "#06b6d4" },
+    "B": { "label": "B", "color": "#f43f5e" }
+  },
+  "zones": {
+    "left": [1, 2, 3, 4, 5, 6], 
+    "center": ["p", "q"], 
+    "right": ["apple"], 
+    "outside": [10, 20, 30]
+  },
+  "questions": [
+    {
+      "interaction": "SHADE_REGION",
+      "targetRegion": "left_only",
+      "prompt": "<b>Shade</b> the region that has exactly <b>63 Proper Subsets</b>.",
+      "hint": "Proper Subsets = 63 means Total Subsets = 64. Since 2⁶ = 64, look for the region with 6 elements."
+    }
+  ]
+}

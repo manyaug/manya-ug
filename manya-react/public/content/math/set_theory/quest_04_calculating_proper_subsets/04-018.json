@@ -1,0 +1,14 @@
+{
+  "engineType": "BINARY_GENERATOR",
+  "mode": "puzzle",
+  "subject": "MATH",
+  "topic": "Proper Subsets",
+  "variantTitle": "Quest 4: Proper Subset Ignite",
+  "questions": [
+    {
+      "targetVal": 32,
+      "prompt": "Set the Generator to match <b>31 Proper Subsets</b>.",
+      "hint": "Proper Subsets = 31 means Total Subsets (2ⁿ) = 32. Adjust the elements (n) until the count is 32."
+    }
+  ]
+}

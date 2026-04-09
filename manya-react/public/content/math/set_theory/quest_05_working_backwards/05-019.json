@@ -1,0 +1,23 @@
+{
+  "engineType": "SET_THEORY",
+  "mode": "quiz",
+  "subject": "MATH",
+  "topic": "Working Backwards",
+  "variantTitle": "Quest 5: Algebraic Backwards",
+  "sets": {
+    "A": { "label": "A", "color": "#14b8a6" }
+  },
+  "zones": {
+    "left": ["2x - 1"], 
+    "outside": []
+  },
+  "questions": [
+    {
+      "type": "ALGEBRA_SOLVE",
+      "x_val": 4.5,
+      "expected_x": 4.5,
+      "prompt": "Set A has <b>256 Subsets</b>. If A contains $(2x - 1)$ elements, solve for <b>x</b>.",
+      "hint": "2ⁿ = 256 → n = 8. So 2x - 1 = 8. Add 1: 2x = 9. Divide by 2: x = 4.5."
+    }
+  ]
+}
