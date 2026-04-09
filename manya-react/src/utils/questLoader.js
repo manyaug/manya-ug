@@ -14,7 +14,15 @@
 // Global in-memory cache for quest JSONs
 const JSON_CACHE = {};
 
-const BASE_CONTENT_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/content/';
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// PRODUCTION CDN (Fall-back)
+const CDN_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-ug@main/public/content/';
+
+// LOCAL BASE (Dev mode)
+const LOCAL_URL = '/content/';
+
+const BASE_CONTENT_URL = IS_LOCAL ? LOCAL_URL : CDN_URL;
 
 /**
  * Build the fetch URL for a content file.
@@ -22,6 +30,8 @@ const BASE_CONTENT_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets
 export function contentUrl(subject, unitId, questFolder, file) {
     if (!file) return '';
     const cleanFile = file.replace(/\.json$/, '');
+    
+    // In local dev, we don't need the 'public' prefix because Vite serves /public automatically
     return `${BASE_CONTENT_URL}${subject}/${unitId}/${questFolder}/${cleanFile}.json`;
 }
 
