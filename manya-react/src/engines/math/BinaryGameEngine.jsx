@@ -88,15 +88,17 @@ export default function BinaryGameEngine({ data, onComplete, onResult, onAttempt
     return (
         <div className="flex flex-col h-full w-full bg-slate-900 overflow-hidden relative selection:bg-transparent text-slate-100">
             {/* CANVAS / VISUALIZATION AREA */}
-            <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+            <div className="flex-1 relative flex items-center justify-center overflow-hidden z-0">
                 {/* Background Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-900 to-slate-900" />
 
                 {/* Orbit System */}
-                <div className="relative flex items-center justify-center" style={{ width: 300, height: 300 }}>
-                    {/* Orbit Rings */}
-                    <div className="absolute inset-0 border-2 border-slate-700/50 rounded-full scale-[0.6]" />
-                    <div className="absolute inset-0 border-2 border-slate-700/50 rounded-full scale-[1.2]" />
+                <div className="relative flex items-center justify-center pointer-events-none" style={{ width: 'min(75vw, 300px)', height: 'min(75vw, 300px)', transform: 'scale(min(1, 0.8 + (n*0.02)))' }}>
+                    {/* Orbit Rings (Multiple Shells) */}
+                    <div className="absolute inset-0 border-2 border-slate-700/30 rounded-full scale-[0.4]" />
+                    <div className="absolute inset-0 border-2 border-slate-700/30 rounded-full scale-[0.7]" />
+                    <div className="absolute inset-0 border-2 border-slate-700/30 rounded-full scale-[1.0]" />
+                    <div className="absolute inset-0 border-2 border-slate-700/30 rounded-full scale-[1.3]" />
 
                     {/* Core */}
                     <motion.div 
@@ -114,9 +116,14 @@ export default function BinaryGameEngine({ data, onComplete, onResult, onAttempt
                     {/* Electrons */}
                     <AnimatePresence>
                         {electrons.map((_, i) => {
-                            // Determine electron position on a circle
-                            const angle = (i / Math.max(1, n)) * 360;
-                            const radius = 90 + (i % 2 === 0 ? -10 : 10); // slightly varied orbit paths
+                            // Professional Atomic Distribution:
+                            // We distribute them across shells. Shell 1: 2, Shell 2: 8...
+                            // For simplicity in this game (max 8), we can just do 2 per shell.
+                            const shellIndex = Math.floor(i / 2); 
+                            const radius = 60 + (shellIndex * 45); 
+                            
+                            // Angle offset to spread them within the shell
+                            const angle = (i % 2) * 180 + (i * 15); 
                             
                             return (
                                 <motion.div
@@ -125,17 +132,14 @@ export default function BinaryGameEngine({ data, onComplete, onResult, onAttempt
                                     animate={{ 
                                         scale: 1, 
                                         opacity: 1,
-                                        rotate: [0, 360] 
+                                        rotate: [angle, angle + 360] 
                                     }}
                                     exit={{ scale: 0, opacity: 0 }}
                                     transition={{
                                         rotate: {
-                                            duration: isResolved ? 2 : 8,
+                                            duration: (isResolved ? 2 : 12 - (shellIndex * 1.5)), // Outer shells rotate slower
                                             repeat: Infinity,
-                                            ease: "linear",
-                                            // Offset rotation based on electron index so they spread out
-                                            from: angle,
-                                            to: angle + 360
+                                            ease: "linear"
                                         },
                                         scale: { duration: 0.3 }
                                     }}
@@ -145,13 +149,13 @@ export default function BinaryGameEngine({ data, onComplete, onResult, onAttempt
                                     <div 
                                         className="absolute bg-emerald-400 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(52,211,153,0.8)]"
                                         style={{ 
-                                            width: 24, height: 24, 
-                                            top: '0%', left: '50%', 
-                                            marginTop: -12, marginLeft: -12,
-                                            transform: `translateY(-${radius}px)`
+                                            width: 22, height: 22, 
+                                            top: '50%', left: '50%', 
+                                            marginTop: -11, marginLeft: -11,
+                                            transform: `rotate(${-angle}deg) translateY(-${radius}px)` 
                                         }}
                                     >
-                                        <span className="text-[10px] font-bold text-emerald-950">{i + 1}</span>
+                                        <span className="text-[9px] font-black text-emerald-950">{i + 1}</span>
                                     </div>
                                 </motion.div>
                             );
@@ -162,7 +166,7 @@ export default function BinaryGameEngine({ data, onComplete, onResult, onAttempt
 
             {/* CONTROL PANEL HUD */}
             <div className="flex-none bg-slate-800 border-t border-slate-700 p-5 rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-20 pb-safe">
-                <div className="text-center font-semibold text-slate-300 mb-4 whitespace-pre-wrap">{prompt}</div>
+                <div className="text-center font-bold text-slate-300 mb-4 text-[13px] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt }} />
                 
                 {/* Screen */}
                 <div className="bg-slate-950 border-2 border-slate-700 rounded-2xl p-4 flex justify-between items-center mb-5 shadow-inner">

@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Rib Cage: Bone Identification",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_4_axial_rib_cage/rib-cage-heart.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_4_axial_rib_cage/rib-cage-heart.glb",
   "hotspots": [
     { "id": "2", "label": "Ribs", "pos": "0.09 0.19 -0.13", "norm": "0 1 0" },
     { "id": "3", "label": "Sternum", "pos": "0.18 0.14 -0.01", "norm": "0 1 0" },

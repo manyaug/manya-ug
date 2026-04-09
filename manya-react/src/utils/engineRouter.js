@@ -23,6 +23,18 @@ export const ENGINE_REGISTRY = {
         floatingFooter: true,
         component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
     },
+    'GLOBE_ENGINE': {
+        type: 'react',
+        hideGlobalFooter: true,
+        floatingFooter: true,
+        component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
+    },
+    'UNIVERSAL_GLOBE': {
+        type: 'react',
+        hideGlobalFooter: true,
+        floatingFooter: true,
+        component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
+    },
     'READER_STUDY': {
         type: 'react',
         hideGlobalFooter: true,
@@ -82,6 +94,11 @@ export const ENGINE_REGISTRY = {
         component: lazy(() => import('../engines/math/PizzaGameEngine.jsx'))
     },
     'BINARY_GAME': {
+        type: 'react',
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/math/BinaryGameEngine.jsx'))
+    },
+    'BINARY_GENERATOR': {
         type: 'react',
         hideGlobalFooter: true,
         component: lazy(() => import('../engines/math/BinaryGameEngine.jsx'))

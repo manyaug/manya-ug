@@ -134,13 +134,14 @@ export default function SubsetGameEngine({ data, onComplete, onResult, onAttempt
     return (
         <div ref={containerRef} className="flex flex-col h-full w-full bg-[#0F172A] font-jakarta overflow-hidden relative selection:bg-transparent">
             {/* STAGE */}
-            <div className="flex-1 relative flex flex-col p-6 overflow-hidden">
-                <div className="flex items-center gap-2 mb-6">
+            <div className="flex-1 relative flex flex-col p-6 overflow-y-auto no-scrollbar">
+                <div className="flex items-center gap-2" style={{ marginBottom: 'clamp(8px, 1.5vh, 24px)' }}>
                     <div className="w-8 h-8 bg-violet-600/20 rounded-xl flex items-center justify-center text-violet-500"><Zap size={16} fill="currentColor" /></div>
-                    <div className="text-violet-500 font-extrabold text-[12px] tracking-widest uppercase">Subset Quest \u2022 Level {currentStep + 1}</div>
+                    <div className="text-violet-500 font-extrabold text-[12px] tracking-widest uppercase">Subset Quest • Level {currentStep + 1}</div>
                 </div>
                 
-                <h2 className="text-xl sm:text-2xl font-bold text-white mb-8 leading-tight">{currentQuestion?.prompt}</h2>
+                <h2 className="font-bold text-white leading-tight" style={{ fontSize: 'clamp(18px, 2.5vh, 24px)', marginBottom: 'clamp(12px, 2vh, 32px)' }}>{currentQuestion?.prompt}</h2>
+
                 
                 {/* Visual Glass Zone */}
                 <div className="flex-1 flex flex-col items-center justify-center relative">
@@ -153,7 +154,7 @@ export default function SubsetGameEngine({ data, onComplete, onResult, onAttempt
                         className={`relative flex flex-wrap content-center justify-center gap-6 p-8 shadow-2xl transition-all duration-300 ${
                             theme === 'flag' 
                                 ? 'w-[300px] h-[180px] bg-white/5 border-2 border-white/10 rounded-2xl flex-row overflow-hidden' 
-                                : 'w-full max-w-[340px] aspect-[4/3] bg-slate-900/50 backdrop-blur-xl border-4 border-slate-700/50 rounded-[40px]'
+                                : 'w-full max-w-[340px] aspect-[4/3] max-h-[35vh] bg-slate-900/50 backdrop-blur-xl border-4 border-slate-700/50 rounded-[40px]'
                         }`}
                     >
                         {theme === 'flag' ? (
@@ -180,19 +181,27 @@ export default function SubsetGameEngine({ data, onComplete, onResult, onAttempt
                     </motion.div>
                     
                     {/* Inventory */}
-                    <div className="mt-10 flex gap-6 h-24 items-center justify-center">
+                    <div className="flex gap-6 items-center justify-center" style={{ marginTop: 'clamp(16px, 3vh, 40px)', height: 'clamp(60px, 12vh, 96px)' }}>
                         {items.map(item => {
                             const isInside = insideItems.has(item);
                             return (
-                                <div key={item} className="w-20 h-20 relative">
+                                <div key={item} className="relative" style={{ width: 'clamp(50px, 10vh, 80px)', height: 'clamp(50px, 10vh, 80px)' }}>
                                     <AnimatePresence>
                                         {!isInside && (
-                                            <motion.div layoutId={`item-${item}`} drag dragSnapToOrigin onDragEnd={(e, info) => handleDragEnd(e, info, item)} onClick={() => toggleItem(item)} className="absolute inset-0 flex items-center justify-center text-6xl cursor-grab active:cursor-grabbing hover:-translate-y-2 transition-all active:scale-90 drop-shadow-2xl z-30">
+                                            <motion.div 
+                                                layoutId={`item-${item}`} 
+                                                drag 
+                                                dragSnapToOrigin 
+                                                onDragEnd={(e, info) => handleDragEnd(e, info, item)} 
+                                                onClick={() => toggleItem(item)} 
+                                                className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing hover:-translate-y-2 transition-all active:scale-90 drop-shadow-2xl z-30"
+                                                style={{ fontSize: 'clamp(32px, 6vh, 60px)' }}
+                                            >
                                                 {ICONS[item] || "📦"}
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
-                                    <div className="absolute inset-0 flex items-center justify-center text-5xl opacity-5 grayscale pointer-events-none">{ICONS[item] || "📦"}</div>
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-5 grayscale pointer-events-none" style={{ fontSize: 'clamp(24px, 5vh, 48px)' }}>{ICONS[item] || "📦"}</div>
                                 </div>
                             );
                         })}
@@ -201,7 +210,7 @@ export default function SubsetGameEngine({ data, onComplete, onResult, onAttempt
             </div>
 
             {/* HUD / Shelf */}
-            <div className="flex-none bg-slate-900/80 backdrop-blur-3xl p-6 pb-safe border-t border-white/10 rounded-t-[40px] z-20 flex flex-col gap-6 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+            <div className="flex-none bg-slate-900/80 backdrop-blur-3xl p-6 pb-safe border-t border-white/10 rounded-t-[40px] z-20 flex flex-col shadow-[0_-20px_50px_rgba(0,0,0,0.5)]" style={{ gap: 'clamp(12px, 2vh, 24px)' }}>
                 <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-2 text-slate-400 font-bold text-xs tracking-widest uppercase"><Target size={14} className="text-emerald-500" /> Progression</div>
                     <div className="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-xs font-black">{found.size} / {totalSubsets} FOUND</div>

@@ -469,7 +469,7 @@ export default function QuestRunner() {
             </header>
 
             {/* ── CONTENT AREA (Quest Engine Mount) ── */}
-            <main className="qr-content-area scroll-smooth">
+            <main className="qr-content-area scroll-smooth min-h-0">
                 <QuestErrorBoundary key={stepIdx + phase} onSkip={() => advanceStep()}>
                     {phase === 'loading' && (
                         <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
@@ -481,9 +481,9 @@ export default function QuestRunner() {
                     )}
 
                     {phase === 'running' && (
-                        <div className="w-full flex-1 flex flex-col animate-in fade-in duration-500">
+                        <div className="w-full flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden">
                             {activeEngine?.type === 'react' ? (
-                                <div className="flex-1 w-full bg-[var(--bg-main)]">
+                                <div className="flex-1 min-h-0 w-full bg-[var(--bg-main)]">
                                     <Suspense fallback={
                                         <div className="flex-1 flex items-center justify-center p-20">
                                             <div className="w-8 h-8 border-2 border-[var(--biome-color)] border-t-transparent rounded-full animate-spin" />

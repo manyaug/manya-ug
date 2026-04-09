@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Appendicular Skeleton Mastery",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_2_human_skeleton/male_skeleton.glb",
   "hotspots": [
     { "id": "10", "label": "Humerus", "pos": "-2.78 13.81 -0.38", "norm": "0 1 0" },
     { "id": "12", "label": "Femur", "pos": "1.35 7.51 0.36", "norm": "0 1 0" },

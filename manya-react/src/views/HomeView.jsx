@@ -181,6 +181,12 @@ function HomeView() {
               {/* Ambient halo (visible on hover via CSS) */}
               <div className="orb-halo" />
 
+              {/* CRYSTAL LUXURY GEM BADGE (Floating) */}
+              <div className="card-gem-bounty">
+                <img src={sub.gemFile} className="bounty-gem-icon" alt={`${sub.name} Gem`} />
+                <span className="bounty-gem-count">{sub.gems}</span>
+              </div>
+
               {/* Crystal ball */}
               <div className="crystal-ball">
                 {/* Animated swirling nebula */}
@@ -197,25 +203,11 @@ function HomeView() {
               <div className="orb-glow" />
             </div>
 
-            {/* Name + gem count + progress */}
+            {/* Nameplate consolidated into a button style footer */}
             <div className="card-footer-info">
               <div className="subject-name-row">
                 <h4>{sub.name}</h4>
-                <div className="card-gem-bounty">
-                  <img src={sub.gemFile} className="bounty-gem-icon" alt={`${sub.name} Gem`} />
-                  <span className="bounty-gem-count" style={{ color: sub.color }}>{sub.gems}</span>
-                </div>
               </div>
-              <div className="mini-striped-track">
-                <div
-                  className="mini-striped-fill"
-                  style={{
-                    width: `${sub.progress > 0 ? (sub.progress / 50 * 100) : 5}%`,
-                    backgroundColor: sub.color,
-                  }}
-                />
-              </div>
-              <span className="pct-text uppercase">Explore World</span>
             </div>
           </motion.div>
         ))}

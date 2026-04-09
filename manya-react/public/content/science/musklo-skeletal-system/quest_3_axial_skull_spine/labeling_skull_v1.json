@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Skull Anatomy Quiz",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_3_axial_skull_spine/manya-skull.glb",
   "hotspots": [
     {
       "id": "1",

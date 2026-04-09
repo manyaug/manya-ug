@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Quiz: Inside a Tooth",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/inside_my_tooth.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_12_posture_and_teeth/inside_my_tooth.glb",
   "hotspots": [
     { "id": "1", "label": "Enamel", "pos": "-62.27 83.68 -63.37" },
     { "id": "2", "label": "Dentine", "pos": "-60.19 45.50 -37.02" },

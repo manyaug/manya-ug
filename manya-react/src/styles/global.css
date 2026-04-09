@@ -49,8 +49,8 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  /* Increased padding to account for taller professional HUD and BottomNav */
-  padding: 106px 16px 120px;
+  /* Adaptive padding reclaiming space while respecting safe areas. HUD clearance ~96px. */
+  padding: calc(env(safe-area-inset-top, 0px) + 96px) 16px calc(env(safe-area-inset-bottom, 0px) + 94px);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   /* Allow the hub to take full height if needed */
@@ -63,7 +63,7 @@ body {
 .no-scroll-view {
   overflow: hidden !important;
   height: 100%;
-  padding-bottom: 120px !important; /* Keep bottom nav space */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 94px) !important;
 }
 
 .view-container {

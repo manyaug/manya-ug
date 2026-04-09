@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Joint Connections & Rules",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_7_joints_structure/joint_structure.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_7_joints_structure/joint_structure.glb",
   "hotspots": [
     { "id": "5", "label": "Ligament (Bone to Bone)", "pos": "-0.044 -0.069 0.169" },
     { "id": "3", "label": "Tendon (Muscle to Bone)", "pos": "0.100 0.228 -0.011" },

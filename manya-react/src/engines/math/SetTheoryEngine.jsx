@@ -476,7 +476,11 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   }, [isResolved, stepIdx, data, validate, onComplete, onResult, userAnswers]);
 
   useEffect(() => {
-    const observer = new ResizeObserver(entries => { if (entries[0]) setCanvasSize({ width: entries[0].contentRect.width, height: entries[0].contentRect.height }); }); 
+    const observer = new ResizeObserver(entries => { 
+        if (entries[0] && entries[0].contentRect.width > 0 && entries[0].contentRect.height > 0) {
+            setCanvasSize({ width: entries[0].contentRect.width, height: entries[0].contentRect.height }); 
+        }
+    }); 
     if (canvasRef.current) observer.observe(canvasRef.current); 
     return () => observer.disconnect(); 
   }, []);
@@ -621,30 +625,44 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   const isMobile = window.innerWidth <= 480;
 
   return (
-    <div ref={containerRef} className={`flex flex-col items-center justify-center p-0 sm:p-6 h-full w-full ${isDark ? 'bg-[#0F172A]' : 'bg-[#FDFBF7]'} font-jakarta transition-colors duration-300`}>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`w-full max-w-xl ${isDark ? 'bg-[#1E293B] border-white/10' : 'bg-white border-slate-100'} rounded-none sm:rounded-[2.5rem] shadow-2xl border p-4 sm:p-8 relative overflow-hidden flex flex-col`}>
+    <div ref={containerRef} className={`flex flex-col items-center justify-center p-0 sm:p-4 h-full w-full ${isDark ? 'bg-[#0F172A]' : 'bg-[#FDFBF7]'} font-jakarta transition-colors duration-300 overflow-hidden min-h-0`}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`w-full max-w-xl flex-1 min-h-0 ${isDark ? 'bg-[#1E293B] border-white/10' : 'bg-white border-slate-100'} rounded-none sm:rounded-[2.5rem] shadow-2xl border relative flex flex-col overflow-hidden`} style={{ padding: 'clamp(12px, 2vh, 32px)' }}>
         {/* Header HUD */}
-        <div className="flex gap-2 justify-center mb-6">{data.questions.map((_, i) => (<div key={i} className={`w-2 h-2 rounded-full transition-all ${i === stepIdx ? 'bg-amber-500 w-6' : (i < stepIdx ? 'bg-emerald-500' : (isDark ? 'bg-slate-700' : 'bg-slate-200'))}`} />))}</div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex gap-2 justify-center" style={{ marginBottom: 'clamp(4px, 1vh, 16px)' }}>{data.questions.map((_, i) => (<div key={i} className={`w-2 h-2 rounded-full transition-all ${i === stepIdx ? 'bg-amber-500 w-6' : (i < stepIdx ? 'bg-emerald-500' : (isDark ? 'bg-slate-700' : 'bg-slate-200'))}`} />))}</div>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'clamp(4px, 1vh, 16px)' }}>
             <div className="flex items-center gap-2">
                 <Zap size={14} className="text-violet-500" />
                 <div className="text-violet-500 font-black text-[10px] tracking-widest uppercase opacity-80">{data.topic} &bull; {stepIdx + 1} / {data.questions.length}</div>
             </div>
-            <button key="hint-btn" onClick={() => setIsHintVisible(!isHintVisible)} className={`p-2 rounded-xl transition-all ${isHintVisible ? 'bg-amber-500 text-white' : (isDark ? 'bg-slate-800' : 'bg-slate-100') + ' text-slate-400'}`}><Lightbulb size={18} /></button>
+            {/* Hint trigger — popup won't shift layout */}
+            <div className="relative">
+                <button key="hint-btn" onClick={() => setIsHintVisible(!isHintVisible)} className={`p-2 rounded-xl transition-all ${isHintVisible ? 'bg-amber-500 text-white' : (isDark ? 'bg-slate-800' : 'bg-slate-100') + ' text-slate-400'}`}><Lightbulb size={18} /></button>
+
+                {/* FLOATING HINT POPUP — zero DOM-flow impact */}
+                <AnimatePresence>
+                    {isHintVisible && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: -8 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: -8 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                            className={`absolute right-0 top-full mt-2 w-64 rounded-2xl border shadow-2xl z-50 p-4 text-xs font-medium leading-relaxed ${ isDark ? 'bg-slate-800 border-amber-700/50 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-800'}`}
+                            style={{ boxShadow: isDark ? '0 20px 40px rgba(0,0,0,0.5)' : '0 20px 40px rgba(0,0,0,0.15)' }}
+                        >
+                            {/* Arrow pointer */}
+                            <div className={`absolute -top-2 right-3 w-4 h-4 rotate-45 rounded-sm ${ isDark ? 'bg-slate-800 border-t border-l border-amber-700/50' : 'bg-amber-50 border-t border-l border-amber-200'}`} />
+                            <span className="font-bold flex items-center gap-2 mb-2"><AlertCircle size={14} /> HINT</span>
+                            {currentStep.hint || (data.universal_total ? `The sum of ALL zones (left, center, right, outside) must balance the Total: ${data.universal_total}.` : "Look closely at the overlap and counts!")}
+                            <button onClick={() => setIsHintVisible(false)} className="mt-3 w-full text-center text-[10px] font-black uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">Got it ✕</button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
 
-        <AnimatePresence>
-            {isHintVisible && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className={`mb-4 p-4 rounded-2xl ${isDark ? 'bg-amber-900/20 border-amber-900/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-800'} border text-xs font-medium leading-relaxed`}>
-                    <span className="font-bold flex items-center gap-2 mb-1"><AlertCircle size={14} /> HINT:</span>
-                    {currentStep.hint || (data.universal_total ? `The sum of ALL zones (left, center, right, outside) must balance the Total: ${data.universal_total}.` : "Look closely at the overlap and counts!")}
-                </motion.div>
-            )}
-        </AnimatePresence>
-
-        <h2 className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'} mb-6 leading-snug`} dangerouslySetInnerHTML={{ __html: currentStep.prompt }} />
+        <h2 className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'} leading-snug`} style={{ fontSize: 'clamp(16px, 2.5vh, 22px)', marginBottom: 'clamp(6px, 1.5vh, 24px)' }} dangerouslySetInnerHTML={{ __html: currentStep.prompt }} />
         
-        <div className={`relative w-full aspect-square sm:aspect-video rounded-3xl overflow-hidden mb-6 ${isDark ? 'bg-slate-900 border-white/5' : 'bg-slate-50 border-slate-100'} border shadow-inner`}>
+        <div className={`relative w-full flex-1 min-h-0 rounded-3xl overflow-hidden ${isDark ? 'bg-slate-900 border-white/5' : 'bg-slate-50 border-slate-100'} border shadow-inner`} style={{ marginBottom: 'clamp(6px, 1.5vh, 24px)' }}>
             <AnimatePresence>
                 {data.universal_total && !['DRAG_SETS','DRAG_SORT'].includes(currentStep.interaction) && (Object.values(userAnswers).some(v => v !== '')) && (
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-4 left-4 right-4 z-20 flex justify-center">
@@ -701,11 +719,12 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             </motion.div>
         )}
 
-        {!isResolved && currentStep.interaction === 'BINARY' && (<div className="grid grid-cols-2 gap-4 mt-2">{['Yes', 'No'].map(v => <button key={v} className={`h-16 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===v?'bg-violet-600 text-white border-violet-600' : (isDark ? 'bg-slate-800 border-white/5 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500')}`} onClick={()=>setUserAnswers({ center: v })}>{v}</button>)}</div>)}
-        {!isResolved && currentStep.interaction === 'CHOICE' && currentStep.options && (<div className="grid grid-cols-2 gap-4 mt-2">{currentStep.options.map(opt => <button key={opt} className={`h-16 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===opt?'border-violet-500 bg-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] scale-[1.02]' : (isDark ? 'bg-slate-800 border-white/10 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700') + ' active:scale-95'}`} onClick={()=>setUserAnswers({ center: opt })}>{opt}</button>)}</div>)}
+        {!isResolved && currentStep.interaction === 'BINARY' && (<div className="grid grid-cols-2 gap-3" style={{ marginTop: 'clamp(4px, 1vh, 8px)' }}>{['Yes', 'No'].map(v => <button key={v} className={`h-14 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===v?'bg-violet-600 text-white border-violet-600' : (isDark ? 'bg-slate-800 border-white/5 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500')}`} onClick={()=>setUserAnswers({ center: v })}>{v}</button>)}</div>)}
+        {!isResolved && currentStep.interaction === 'CHOICE' && currentStep.options && (<div className="grid grid-cols-2 gap-3" style={{ marginTop: 'clamp(4px, 1vh, 8px)' }}>{currentStep.options.map(opt => <button key={opt} className={`h-14 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===opt?'border-violet-500 bg-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] scale-[1.02]' : (isDark ? 'bg-slate-800 border-white/10 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700') + ' active:scale-95'}`} onClick={()=>setUserAnswers({ center: opt })}>{opt}</button>)}</div>)}
         
         <button disabled={!isResolved && !Object.values(userAnswers).some(v => v !== '') && !['DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction)} 
-                className={`w-full mt-6 h-14 sm:h-16 rounded-[1.25rem] font-black text-xs sm:text-sm tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 ${feedback.text && !isResolved ? (feedback.type==='success' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-rose-500/20') : (isResolved ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-violet-600 text-white shadow-violet-600/20 active:scale-95')}`} 
+                className={`w-full rounded-[1.25rem] font-black text-xs tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 flex-shrink-0 ${feedback.text && !isResolved ? (feedback.type==='success' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-rose-500/20') : (isResolved ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-violet-600 text-white shadow-violet-600/20 active:scale-95')}`}
+                style={{ height: 'clamp(44px, 7vh, 56px)', marginTop: 'clamp(6px, 1.5vh, 24px)' }}
                 onClick={handleInteraction}>
             {feedback.text && !isResolved ? feedback.text : (isResolved ? (stepIdx === data.questions.length - 1 ? 'CONTINUE' : 'NEXT STEP') : 'CHECK ANSWER')}
         </button>

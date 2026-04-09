@@ -250,35 +250,36 @@ export default function VennSpotlightEngine({ data, onComplete, onResult, onAtte
             </div>
 
             {/* HUD */}
-            <div className="flex-none bg-white p-5 pb-safe border-t border-slate-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-[32px] z-20 flex flex-col gap-4">
+            <div className="flex-none bg-white border-t border-slate-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-[32px] z-20 flex flex-col" style={{ padding: 'clamp(12px, 2vh, 20px)', gap: 'clamp(6px, 1.5vh, 16px)' }}>
                 
                 <motion.div 
                     animate={errorAnim ? { x: [-10, 10, -10, 10, 0] } : {}}
                     transition={{ duration: 0.4 }}
-                    className="bg-fuchsia-50 border border-fuchsia-200 rounded-2xl p-4 text-center relative overflow-hidden shadow-sm"
+                    className="bg-fuchsia-50 border border-fuchsia-200 rounded-2xl p-3 text-center relative overflow-hidden shadow-sm"
                 >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-fuchsia-500" />
-                    <div className="font-mono text-3xl font-black text-fuchsia-900 tracking-wide mb-1">
+                    <div className="font-mono font-black text-fuchsia-900 tracking-wide mb-0.5" style={{ fontSize: 'clamp(20px, 3.5vh, 30px)' }}>
                         {question?.notation}
                     </div>
-                    <div className="text-slate-600 font-semibold text-sm">
+                    <div className="text-slate-600 font-semibold" style={{ fontSize: 'clamp(11px, 1.5vh, 14px)' }}>
                         {question?.description}
                     </div>
                 </motion.div>
 
-                <div className="text-center text-sm font-bold min-h-[20px] text-rose-500">
+                <div className="text-center font-bold min-h-[16px] text-rose-500" style={{ fontSize: 'clamp(11px, 1.5vh, 14px)' }}>
                     {errorAnim ? (question?.hint || "Incorrect shading!") : (!isResolved && litRegions.size === 0 && <span className="text-slate-400">Tap regions to shade them</span>)}
                 </div>
 
                 <motion.button
                     onClick={handleCheck}
-                    className={`w-full py-4 rounded-xl font-black flex items-center justify-center gap-2 uppercase tracking-wide transition-all ${
+                    className={`w-full rounded-xl font-black flex items-center justify-center gap-2 uppercase tracking-wide transition-all ${
                         isResolved && currentStep === totalLevels - 1
                         ? 'bg-emerald-500 text-white shadow-none translate-y-[4px]'
                         : isResolved 
                         ? 'bg-blue-600 text-white shadow-none translate-y-[4px]'
                         : 'bg-purple-600 hover:bg-purple-700 text-white shadow-[0_4px_0_#6b21a8] active:translate-y-[4px] active:shadow-none'
                     }`}
+                    style={{ height: 'clamp(44px, 7vh, 56px)' }}
                 >
                     {isResolved ? (
                         currentStep < totalLevels - 1 ? (

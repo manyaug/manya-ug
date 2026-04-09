@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Arm Anatomy: Full Mastery",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_5_appendicular_limbs/skeleton_arm.glb",
   "hotspots": [
     { "id": "3", "label": "Humerus", "pos": "69.08 81.51 -101.92", "norm": "0 1 0" },
     { "id": "1", "label": "Radius", "pos": "77.36 119.98 -49.19", "norm": "0 1 0" },

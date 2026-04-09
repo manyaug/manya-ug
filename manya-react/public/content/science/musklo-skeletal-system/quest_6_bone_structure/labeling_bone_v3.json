@@ -2,7 +2,7 @@
   "engineType": "3D_SKELETON",
   "mode": "quiz",
   "variantTitle": "Bone Layers & Tissues",
-  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
+  "modelUrl": "https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/https://pmgdfuhqgwysequaopts.supabase.co/storage/v1/object/public/manya-assets/public/assets/science/musklo-skeletal-system/quest_6_bone_structure/bone_structure.glb",
   "hotspots": [
     { "id": "5", "label": "Compact Bone", "pos": "0.000 -0.216 0.035", "norm": "0 1 0" },
     { "id": "4", "label": "Spongy Bone", "pos": "0.094 -0.281 -0.001", "norm": "0 1 0" },

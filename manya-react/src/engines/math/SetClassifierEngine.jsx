@@ -265,25 +265,27 @@ const SetClassifierEngine = ({ data, onComplete, onAttempt }) => {
 
       {/* 2. LESSON CARD */}
       <div className={`flex-none flex flex-col ${theme.card} relative z-10 shadow-up overflow-hidden`}>
-         <div className="flex-none px-6 py-5 text-center flex flex-col justify-center gap-1.5">
-            <h2 className={`text-xl font-black leading-tight ${theme.text} tracking-tight`} dangerouslySetInnerHTML={{ __html: currentQ.prompt }} />
+         <div className="flex-none px-5 py-3 text-center flex flex-col justify-center gap-1">
+            <h2 className={`font-black leading-tight ${theme.text} tracking-tight`} style={{ fontSize: 'clamp(15px, 2.5vh, 20px)' }} dangerouslySetInnerHTML={{ __html: currentQ.prompt }} />
             <p className={`text-[9px] font-black uppercase tracking-[0.3em] ${theme.sub} opacity-30`}>Determine Domain</p>
          </div>
 
          {/* 3. CONTROLS */}
-         <div className={`p-6 flex flex-col gap-4 border-t ${theme.b}`}>
-          <div className={`grid grid-cols-2 gap-4 transition-all duration-500 ${isResolved ? 'opacity-0 scale-95 absolute inset-0 pointer-events-none' : 'opacity-100'}`}>
-                <button onClick={() => handleChoice('finite')} className={`h-14 rounded-2xl font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_5px_0_rgba(5,150,105,1)] hover:shadow-[0_3px_0_rgba(5,150,105,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] text-white bg-emerald-500 border border-emerald-400`}>
+         <div className={`flex flex-col border-t ${theme.b}`} style={{ padding: 'clamp(10px, 2vh, 24px)', gap: 'clamp(8px, 1.5vh, 16px)' }}>
+          <div className={`grid grid-cols-2 gap-3 transition-all duration-500 ${isResolved ? 'opacity-0 scale-95 absolute inset-0 pointer-events-none' : 'opacity-100'}`}>
+                <button onClick={() => handleChoice('finite')} className={`rounded-2xl font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_5px_0_rgba(5,150,105,1)] hover:shadow-[0_3px_0_rgba(5,150,105,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] text-white bg-emerald-500 border border-emerald-400`} style={{ height: 'clamp(48px, 7vh, 56px)' }}>
                     FINITE <span className="text-[8px] opacity-60 mt-0.5 uppercase font-semibold">Limited</span>
                 </button>
-                <button onClick={() => handleChoice('infinite')} className={`h-14 rounded-2xl font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_5px_0_rgba(219,39,119,1)] hover:shadow-[0_3px_0_rgba(219,39,119,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] text-white bg-pink-500 border border-pink-400`}>
+                <button onClick={() => handleChoice('infinite')} className={`rounded-2xl font-black text-[12px] tracking-widest uppercase transition-all active:scale-95 flex flex-col items-center justify-center shadow-[0_5px_0_rgba(219,39,119,1)] hover:shadow-[0_3px_0_rgba(219,39,119,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] text-white bg-pink-500 border border-pink-400`} style={{ height: 'clamp(48px, 7vh, 56px)' }}>
                     INFINITE <span className="text-[8px] opacity-60 mt-0.5 uppercase font-semibold">Endless</span>
                 </button>
             </div>
 
             <button 
                 onClick={handleNext}
-                className={`w-full h-14 rounded-2xl font-black text-[11px] tracking-widest uppercase transition-all active:scale-95 shadow-glow-indigo flex items-center justify-center gap-3 relative z-30 ${isResolved ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute inset-x-5'} bg-indigo-600 text-white shadow-[0_5px_0_rgba(67,56,202,1)]`}>
+                className={`w-full rounded-2xl font-black text-[11px] tracking-widest uppercase transition-all active:scale-95 shadow-glow-indigo flex items-center justify-center gap-3 relative z-30 ${isResolved ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute inset-x-5'} bg-indigo-600 text-white shadow-[0_5px_0_rgba(67,56,202,1)]`}
+                style={{ height: 'clamp(44px, 7vh, 56px)' }}
+            >
                 {stepIdx === questions.length - 1 ? 'Finish Activity' : 'Next Question'} <ArrowRight size={18} strokeWidth={4} />
             </button>
          </div>
