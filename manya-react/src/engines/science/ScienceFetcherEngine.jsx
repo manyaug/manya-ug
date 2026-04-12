@@ -151,6 +151,11 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const [isFinished, setIsFinished] = useState(false);
     const [earnedAchievements, setEarnedAchievements] = useState([]);
 
+    // ─── RESCUE RECAP STATE (v5.0) ───
+    const [recapSteps, setRecapSteps] = useState([]);    // Loaded recap sim steps (held, not in queue)
+    const consecutiveWrongRef = useRef(0);                // Local tracker for real-time recap trigger
+    const recapUsedIndexRef = useRef(0);                  // Tracks which recap we've used
+
     // Efficiency: Prevent duplicate simulation logs
     const lastSimAttemptRef = useRef({ time: 0, label: '' });
 
@@ -215,6 +220,28 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                     }
                 }
 
+                // 3b. Pre-load Recap Resources (held separately for 3-consecutive-wrong rescue)
+                const recapCandidates = [];
+                if (data?.recapResources && data.recapResources.length > 0) {
+                    console.log(`📖 [ScienceEngine] Pre-loading ${data.recapResources.length} recap resources for rescue...`);
+                    for (const recapRes of data.recapResources) {
+                        try {
+                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
+                            const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                            rSteps.forEach((s, idx) => {
+                                s.isSimulation = true;
+                                s.isRecap = true;
+                                s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
+                            });
+                            recapCandidates.push(...rSteps);
+                        } catch (e) {
+                            console.warn("[ScienceEngine] Failed to load recap:", recapRes.file);
+                        }
+                    }
+                    setRecapSteps(recapCandidates);
+                    console.log(`✅ [ScienceEngine] ${recapCandidates.length} recap steps ready for rescue.`);
+                }
+
                 // 4. Run them through the adaptive engine (now supports interleaving!)
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
                 const finalQuestions = quest.questions;
@@ -225,6 +252,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                 console.log(`\ud83c\udfaf [Science Adaptive v4.1] ${nodeType} quest generated:`, {
                     bankSize: allQuestions.length,
                     simCount: simCandidates.length,
+                    recapCount: recapCandidates.length,
                     finalLength: finalQuestions.length,
                     gameMode: quest.metadata.gameMode,
                 });
@@ -371,6 +399,9 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             if (q.isRephrased) {
                 resolveRephrased(subject, q.originalId);
             }
+
+            // Reset consecutive wrong counter on correct answer
+            consecutiveWrongRef.current = 0;
         } else {
             window.ManyaAudio?.error?.();
 
@@ -382,6 +413,23 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             if (rephrased) {
                 setQuestions(prev => [...prev, rephrased]);
                 console.log(`🔄 [Variant Retry] Queued rephrased Q after wrong: ${rephrased.id}`);
+            }
+
+            // ─── 🆘 RESCUE RECAP: 3 consecutive wrong → inject recap ───
+            consecutiveWrongRef.current += 1;
+            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0) {
+                const recapIdx = recapUsedIndexRef.current % recapSteps.length;
+                const recapToInject = { ...recapSteps[recapIdx] };
+                recapUsedIndexRef.current += 1;
+                consecutiveWrongRef.current = 0; // Reset after injection
+
+                // Insert recap as the NEXT question (right after current)
+                setQuestions(prev => {
+                    const copy = [...prev];
+                    copy.splice(currentIdx + 1, 0, recapToInject);
+                    return copy;
+                });
+                console.log(`🆘 [Rescue Recap] 3 consecutive wrong → Injecting recap: ${recapToInject.id}`);
             }
         }
 

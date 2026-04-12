@@ -69,26 +69,6 @@ function QuestPathView() {
     const layoutX = PATH_LAYOUTS[subject] || PATH_LAYOUTS.default;
     const assets = BACKGROUND_ASSETS[subject] || BACKGROUND_ASSETS.math;
 
-    // Find quest data from curriculum
-    const getQuestData = () => {
-        if (!curriculum || !curriculum[subject]) return null;
-        const units = curriculum[subject]?.units || [];
-        for (const unit of units) {
-            if (unit.id === unitId) {
-                const quest = unit.quests?.find(q => q.title === title);
-                return quest ? { ...quest, unitId: unit.id } : unit.quests?.[0] ? { ...unit.quests[0], unitId: unit.id } : null;
-            }
-        }
-        for (const unit of units) {
-            for (const quest of (unit.quests || [])) {
-                if (quest.title === title || quest.folder === unitId) {
-                    return { ...quest, unitId: unit.id };
-                }
-            }
-        }
-        return null;
-    };
-
     // 1. Initial stable key (from state)
     // 2. Refresh questData from curriculum when available
     const [questData, setQuestData] = useState(() => findQuestData(subject, unitId, title));
@@ -154,13 +134,27 @@ function QuestPathView() {
         return () => clearTimeout(t);
     }, []);
 
-    // ── DATA SYNC ──
     useEffect(() => {
         (async () => {
-            const curriculum = await preloadCurriculum();
-            const data = findQuestData(subject, unitId, title);
+            const { fetchDynamicCurriculum, preloadCurriculum } = await import('../services/curriculumService');
+            
+            // 1. Try to discover quest in established cached curriculum
+            let data = findQuestData(subject, unitId, title);
+            
+            // 2. If not found, it's likely a dynamic subject (SST, English, etc.) - Fetch from Vault
+            if (!data) {
+                console.log(`🌐 [QuestPath] Subject ${subject} not in static master. Fetching dynamic Vault...`);
+                const curr = await fetchDynamicCurriculum(subject);
+                setCurriculum(prev => ({ ...prev, [subject]: curr }));
+                data = findQuestData(subject, unitId, title);
+            } else {
+                // Background update for curriculum object
+                const curr = await preloadCurriculum();
+                setCurriculum(prev => ({ ...prev, [subject]: curr[subject] }));
+            }
+
+            console.log(`🔍 [QuestPath] Discovery result for ${title}:`, data);
             if (data) setQuestData(data);
-            setCurriculum(curriculum);
         })();
     }, [subject, unitId, title]);
 
@@ -179,9 +173,9 @@ function QuestPathView() {
         const nodeType = stepDef.nodeType;
 
         try {
-            const questData = getQuestData();
+            // Using the stable discovered questData from state
             if (!questData) {
-                console.error('[QuestPath] No quest data found');
+                console.error('[QuestPath] No quest data found in state');
                 setLoading(false);
                 return;
             }
@@ -211,7 +205,8 @@ function QuestPathView() {
                     }
                 });
             } else {
-                console.warn('[QuestPath] No steps generated for:', nodeType);
+                console.warn('[QuestPath] No steps generated for:', nodeType, '(Continuing with adaptive engine)');
+                // Optionally handle empty steps if needed, for now just log
             }
         } catch (err) {
             console.error('[QuestPath] Failed to build steps:', err);

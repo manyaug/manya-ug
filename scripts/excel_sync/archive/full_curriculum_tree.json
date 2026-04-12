@@ -1,0 +1,171 @@
+[
+  {
+    "name": "content",
+    "type": "folder",
+    "path": "content",
+    "children": [
+      {
+        "name": "english",
+        "type": "folder",
+        "path": "content/english",
+        "children": [
+          {
+            "name": "holidays",
+            "type": "folder",
+            "path": "content/english/holidays",
+            "children": [
+              { "name": "quest_01_holiday_kickoff", "children": [{ "name": "01_holiday_kickoff.json", "type": "file", "path": "content/english/holidays/quest_01_holiday_kickoff/01_holiday_kickoff.json" }] },
+              { "name": "quest_02_going_to_mastery", "children": [{ "name": "02_going_to_mastery.json", "type": "file", "path": "content/english/holidays/quest_02_going_to_mastery/02_going_to_mastery.json" }] },
+              { "name": "quest_03_question_tags_mastery", "children": [{ "name": "03_question_tags_mastery.json", "type": "file", "path": "content/english/holidays/quest_03_question_tags_mastery/03_question_tags_mastery.json" }] },
+              { "name": "quest_04_reported_speech_mastery", "children": [{ "name": "04_reported_speech_mastery.json", "type": "file", "path": "content/english/holidays/quest_04_reported_speech_mastery/04_reported_speech_mastery.json" }] },
+              { "name": "quest_05_village_arrival", "children": [{ "name": "05_village_arrival.json", "type": "file", "path": "content/english/holidays/quest_05_village_arrival/05_village_arrival.json" }] },
+              { "name": "quest_06_feeling_and_facts", "children": [{ "name": "06_feeling_and_facts.json", "type": "file", "path": "content/english/holidays/quest_06_feeling_and_facts/06_feeling_and_facts.json" }] },
+              { "name": "quest_07_past_regrets", "children": [{ "name": "07_past_regrets.json", "type": "file", "path": "content/english/holidays/quest_07_past_regrets/07_past_regrets.json" }] },
+              { "name": "quest_08_voice_mastery", "children": [{ "name": "08_voice_mastery.json", "type": "file", "path": "content/english/holidays/quest_08_voice_mastery/08_voice_mastery.json" }] },
+              { "name": "quest_09_final_review", "children": [{ "name": "09_final_review.json", "type": "file", "path": "content/english/holidays/quest_09_final_review/09_final_review.json" }] },
+              { 
+                "name": "quest_10_vault", 
+                "children": [
+                  { "name": "dict_activities.json", "type": "file", "path": "content/english/holidays/quest_10_vault/dict_activities.json" },
+                  { "name": "dict_holidays.json", "type": "file", "path": "content/english/holidays/quest_10_vault/dict_holidays.json" },
+                  { "name": "rule_active_passive.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_active_passive.json" },
+                  { "name": "rule_adj_ing_ed.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_adj_ing_ed.json" },
+                  { "name": "rule_going_to.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_going_to.json" },
+                  { "name": "rule_if_type_3.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_if_type_3.json" },
+                  { "name": "rule_question_tags.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_question_tags.json" },
+                  { "name": "rule_reported_speech.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_reported_speech.json" }
+                ] 
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "math",
+        "type": "folder",
+        "path": "content/math",
+        "children": [
+          {
+            "name": "set_theory",
+            "children": [
+              {
+                "name": "quest_01_finite_infinite_sets",
+                "children": [
+                  { "name": "01-001_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-001_2.json" },
+                  { "name": "01-001_3.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-001_3.json" },
+                  { "name": "01-001_4.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-001_4.json" },
+                  { "name": "01-002_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-002_2.json" },
+                  { "name": "01-002_3.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-002_3.json" },
+                  { "name": "01-003_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-003_2.json" },
+                  { "name": "01-004_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-004_2.json" },
+                  { "name": "01-005_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-005_2.json" },
+                  { "name": "01-006_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-006_2.json" },
+                  { "name": "01-007_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-007_2.json" },
+                  { "name": "study_finite_infinite.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/study_finite_infinite.json" }
+                ]
+              },
+              {
+                "name": "quest_02_set_notation_regions",
+                "children": [
+                  { "name": "02-001.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-001.json" },
+                  { "name": "02-002.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-002.json" },
+                  { "name": "02-003.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-003.json" },
+                  { "name": "02-004.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-004.json" },
+                  { "name": "02-010.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-010.json" },
+                  { "name": "02-020.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-020.json" },
+                  { "name": "study_operations_1.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/study_operations_1.json" }
+                ]
+              },
+              {
+                "name": "quest_03_calculating_subsets",
+                "children": [
+                  { "name": "03-001.json", "type": "file", "path": "content/math/set_theory/quest_03_calculating_subsets/03-001.json" },
+                  { "name": "03-010.json", "type": "file", "path": "content/math/set_theory/quest_03_calculating_subsets/03-010.json" },
+                  { "name": "study_subsets.json", "type": "file", "path": "content/math/set_theory/quest_03_calculating_subsets/study_subsets.json" }
+                ]
+              },
+              {
+                "name": "quest_04_calculating_proper_subsets",
+                "children": [
+                  { "name": "04-001.json", "type": "file", "path": "content/math/set_theory/quest_04_calculating_proper_subsets/04-001.json" },
+                  { "name": "04-010.json", "type": "file", "path": "content/math/set_theory/quest_04_calculating_proper_subsets/04-010.json" },
+                  { "name": "04-011.json", "type": "file", "path": "content/math/set_theory/quest_04_calculating_proper_subsets/04-011.json" },
+                  { "name": "study_proper_subsets.json", "type": "file", "path": "content/math/set_theory/quest_04_calculating_proper_subsets/study_proper_subsets.json" }
+                ]
+              },
+              {
+                "name": "quest_05_working_backwards",
+                "children": [
+                  { "name": "05-001.json", "type": "file", "path": "content/math/set_theory/quest_05_working_backwards/05-001.json" },
+                  { "name": "05-019.json", "type": "file", "path": "content/math/set_theory/quest_05_working_backwards/05-019.json" },
+                  { "name": "study_reverse_subsets.json", "type": "file", "path": "content/math/set_theory/quest_05_working_backwards/study_reverse_subsets.json" }
+                ]
+              },
+              {
+                "name": "quest_06_placing_info_on_venn_diagrams",
+                "children": [
+                  { "name": "06-001.json", "type": "file", "path": "content/math/set_theory/quest_06_placing_info_on_venn_diagrams/06-001.json" },
+                  { "name": "06-024.json", "type": "file", "path": "content/math/set_theory/quest_06_placing_info_on_venn_diagrams/06-024.json" },
+                  { "name": "study_venn_logic.json", "type": "file", "path": "content/math/set_theory/quest_06_placing_info_on_venn_diagrams/study_venn_logic.json" }
+                ]
+              },
+              {
+                "name": "quest_10_probability_using_venn_diagrams",
+                "children": [
+                  { "name": "10-001.json", "type": "file", "path": "content/math/set_theory/quest_10_probability_using_venn_diagrams/10-001.json" },
+                  { "name": "10-037.json", "type": "file", "path": "content/math/set_theory/quest_10_probability_using_venn_diagrams/10-037.json" },
+                  { "name": "study_probabilities.json", "type": "file", "path": "content/math/set_theory/quest_10_probability_using_venn_diagrams/study_probabilities.json" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "science",
+        "type": "folder",
+        "path": "content/science",
+        "children": [
+          {
+            "name": "musklo-skeletal-system",
+            "children": [
+              { "name": "quest_1_types_of_skeletons", "children": [{ "name": "note_types_skeleton.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_1_types_of_skeletons/note_types_skeleton.json" }, { "name": "study_types_skeleton.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_1_types_of_skeletons/study_types_skeleton.json" }] },
+              { "name": "quest_2_human_skeleton", "children": [{ "name": "labeling_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_2_human_skeleton/labeling_v1.json" }, { "name": "study_sim.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_2_human_skeleton/study_sim.json" }] },
+              { "name": "quest_3_axial_skull_spine", "children": [{ "name": "labeling_skull_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_3_axial_skull_spine/labeling_skull_v1.json" }, { "name": "skull_study.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_3_axial_skull_spine/skull_study.json" }] },
+              { "name": "quest_4_axial_rib_cage", "children": [{ "name": "labeling_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_4_axial_rib_cage/labeling_v1.json" }, { "name": "rib_study.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_4_axial_rib_cage/rib_study.json" }] },
+              { "name": "quest_5_appendicular_limbs", "children": [{ "name": "arm_study.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_5_appendicular_limbs/arm_study.json" }, { "name": "labeling_arm_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_5_appendicular_limbs/labeling_arm_v1.json" }] },
+              { "name": "quest_6_bone_structure", "children": [{ "name": "labeling_bone_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_6_bone_structure/labeling_bone_v1.json" }, { "name": "note_bone_structure.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_6_bone_structure/note_bone_structure.json" }] },
+              { "name": "quest_7_joints_structure", "children": [{ "name": "knee_study_3d.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_7_joints_structure/knee_study_3d.json" }, { "name": "note_joints.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_7_joints_structure/note_joints.json" }] },
+              { "name": "quest_8_hinge_ball-and-socket", "children": [{ "name": "elbow_3d_study.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/elbow_3d_study.json" }, { "name": "note_hinge_socket.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_8_hinge_ball-and-socket/note_hinge_socket.json" }] },
+              { "name": "quest_9_pivot_and_gliding", "children": [{ "name": "neck_pivot_study.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_9_pivot_and_gliding/neck_pivot_study.json" }, { "name": "note_pivot_gliding.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_9_pivot_and_gliding/note_pivot_gliding.json" }] },
+              { "name": "quest_10_muscular_system_types", "children": [{ "name": "labeling_muscle_types_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_10_muscular_system_types/labeling_muscle_types_v1.json" }, { "name": "note_muscular_system.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_10_muscular_system_types/note_muscular_system.json" }] },
+              { "name": "quest_11_muscle_action_antagonistic_pairs", "children": [{ "name": "labeling_arm_muscles.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/labeling_arm_muscles.json" }, { "name": "note_antagonistic_muscles.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_11_muscle_action_antagonistic_pairs/note_antagonistic_muscles.json" }] },
+              { "name": "quest_12_posture_and_teeth", "children": [{ "name": "note_posture_teeth.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_12_posture_and_teeth/note_posture_teeth.json" }, { "name": "teeth_types_study.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_12_posture_and_teeth/teeth_types_study.json" }] },
+              { "name": "quest_13_disorders_and_first_aid", "children": [{ "name": "note_disorders_first_aid.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_13_disorders_and_first_aid/note_disorders_first_aid.json" }, { "name": "study_disorders.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_13_disorders_and_first_aid/study_disorders.json" }] },
+              { "name": "quest_14_bone_diseases", "children": [{ "name": "note_bone_diseases.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_14_bone_diseases/note_bone_diseases.json" }, { "name": "study_diseases.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_14_bone_diseases/study_diseases.json" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "sst",
+        "type": "folder",
+        "path": "content/sst",
+        "children": [
+          {
+            "name": "locating_africa",
+            "children": [
+              { "name": "quest_1_world_stage", "children": [{ "name": "note_world_stage.json", "type": "file", "path": "content/sst/locating_africa/quest_1_world_stage/note_world_stage.json" }, { "name": "study_africa.json", "type": "file", "path": "content/sst/locating_africa/quest_1_world_stage/study_africa.json" }] },
+              { "name": "quest_2_grid_master", "children": [{ "name": "quiz_adv_grid_01.json", "type": "file", "path": "content/sst/locating_africa/quest_2_grid_master/quiz_adv_grid_01.json" }, { "name": "quiz_grid_master_05.json", "type": "file", "path": "content/sst/locating_africa/quest_2_grid_master/quiz_grid_master_05.json" }, { "name": "study_grid.json", "type": "file", "path": "content/sst/locating_africa/quest_2_grid_master/study_grid.json" }] },
+              { "name": "quest_3_calculating_time", "children": [{ "name": "note_time_calc.json", "type": "file", "path": "content/sst/locating_africa/quest_3_calculating_time/note_time_calc.json" }, { "name": "quiz_time_01.json", "type": "file", "path": "content/sst/locating_africa/quest_3_calculating_time/quiz_time_01.json" }, { "name": "quiz_time_21.json", "type": "file", "path": "content/sst/locating_africa/quest_3_calculating_time/quiz_time_21.json" }] },
+              { "name": "quest_4_water_bodies", "children": [{ "name": "note_water_bodies.json", "type": "file", "path": "content/sst/locating_africa/quest_4_water_bodies/note_water_bodies.json" }, { "name": "study_african_waters.json", "type": "file", "path": "content/sst/locating_africa/quest_4_water_bodies/study_african_waters.json" }] },
+              { "name": "quest_5_coastal_features", "children": [{ "name": "note_coastal_features.json", "type": "file", "path": "content/sst/locating_africa/quest_5_coastal_features/note_coastal_features.json" }, { "name": "study_coastal_features.json", "type": "file", "path": "content/sst/locating_africa/quest_5_coastal_features/study_coastal_features.json" }] },
+              { "name": "quest_6_regional_division_capital_cities", "children": [{ "name": "note_regionals_capitals.json", "type": "file", "path": "content/sst/locating_africa/quest_6_regional_division_capital_cities/note_regionals_capitals.json" }, { "name": "study_regions.json", "type": "file", "path": "content/sst/locating_africa/quest_6_regional_division_capital_cities/study_regions.json" }] },
+              { "name": "quest_7_landlocked_countries", "children": [{ "name": "note_landlocked.json", "type": "file", "path": "content/sst/locating_africa/quest_7_landlocked_countries/note_landlocked.json" }, { "name": "study_landlocked.json", "type": "file", "path": "content/sst/locating_africa/quest_7_landlocked_countries/study_landlocked.json" }] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

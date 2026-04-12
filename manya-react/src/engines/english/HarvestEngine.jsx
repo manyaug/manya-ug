@@ -204,15 +204,15 @@ const HarvestEngine = ({ data, onComplete }) => {
       onTouchStart={handleTap}
     >
       {/* ── HUD ── */}
-      <header className="flex-none flex items-center justify-between px-6 pt-10 pb-4 z-20">
-        <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-2xl px-4 py-2">
-          <span className="text-amber-400 text-sm">⭐</span>
-          <span className="text-lg font-black tabular-nums">{score}</span>
-          <span className="text-[10px] text-amber-500/60 font-bold ml-1">/ {WIN}</span>
+      <header className="flex-none flex items-center justify-between px-5 pt-6 sm:pt-10 pb-4 z-20">
+        <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2">
+          <span className="text-amber-400 text-xs sm:text-sm">⭐</span>
+          <span className="text-base sm:text-lg font-black tabular-nums">{score}</span>
+          <span className="text-[9px] sm:text-[10px] text-amber-500/60 font-bold ml-0.5 sm:ml-1">/ {WIN}</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           {[0,1,2].map(i => (
-            <span key={i} className={`text-2xl transition-all duration-300 ${i < lives ? 'opacity-100' : 'opacity-15'}`}>
+            <span key={i} className={`text-xl sm:text-2xl transition-all duration-300 ${i < lives ? 'opacity-100' : 'opacity-15'}`}>
               {i < lives ? '❤️' : '🖤'}
             </span>
           ))}
@@ -220,13 +220,13 @@ const HarvestEngine = ({ data, onComplete }) => {
       </header>
 
       {/* ── Lane labels ── */}
-      <div className="flex-none flex px-4 gap-4 pb-2 z-20">
-        <div className={`flex-1 text-center py-5 rounded-3xl border-2 transition-all duration-200 font-black text-sm uppercase tracking-widest ${side === 'left' ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg shadow-indigo-500/30' : 'bg-white/3 border-white/8 text-slate-500'}`}>
-          <div className="text-[9px] opacity-50 mb-1">Lane 01</div>
+      <div className="flex-none flex px-4 gap-3 sm:gap-4 pb-2 z-20">
+        <div className={`flex-1 text-center py-4 sm:py-5 rounded-[24px] sm:rounded-3xl border-2 transition-all duration-200 font-black text-xs sm:text-sm uppercase tracking-widest ${side === 'left' ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg shadow-indigo-500/30' : 'bg-white/3 border-white/8 text-slate-500'}`}>
+          <div className="text-[8px] sm:text-[9px] opacity-40 mb-1 leading-none">Lane 01</div>
           {leftCat}
         </div>
-        <div className={`flex-1 text-center py-5 rounded-3xl border-2 transition-all duration-200 font-black text-sm uppercase tracking-widest ${side === 'right' ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-500/30' : 'bg-white/3 border-white/8 text-slate-500'}`}>
-          <div className="text-[9px] opacity-50 mb-1">Lane 02</div>
+        <div className={`flex-1 text-center py-4 sm:py-5 rounded-[24px] sm:rounded-3xl border-2 transition-all duration-200 font-black text-xs sm:text-sm uppercase tracking-widest ${side === 'right' ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-500/30' : 'bg-white/3 border-white/8 text-slate-500'}`}>
+          <div className="text-[8px] sm:text-[9px] opacity-40 mb-1 leading-none">Lane 02</div>
           {rightCat}
         </div>
       </div>
@@ -265,14 +265,14 @@ const HarvestEngine = ({ data, onComplete }) => {
         {/* Basket */}
         <div
           className="absolute bottom-4 transition-all duration-150 ease-out pointer-events-none"
-          style={{ left: basketLeft, width: '36%' }}
+          style={{ left: basketLeft, width: '40%' }}
         >
-          <div className="relative mx-auto flex flex-col items-center" style={{ width: 120 }}>
+          <div className="relative mx-auto flex flex-col items-center w-[80px] sm:w-[120px]">
             {/* Shadow */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-4 bg-black/30 rounded-full blur-md" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 sm:w-28 h-4 bg-black/30 rounded-full blur-md" />
             {/* Basket body */}
-            <div className="w-full h-20 bg-gradient-to-b from-amber-500 to-amber-700 rounded-b-[40px] rounded-t-2xl border-t-8 border-amber-400 flex items-center justify-center shadow-2xl shadow-amber-500/30 overflow-hidden">
-              <span className="text-3xl">🧺</span>
+            <div className="w-full h-16 sm:h-20 bg-gradient-to-b from-amber-500 to-amber-700 rounded-b-[30px] sm:rounded-b-[40px] rounded-t-xl sm:rounded-t-2xl border-t-4 sm:border-t-8 border-amber-400 flex items-center justify-center shadow-2xl shadow-amber-500/30 overflow-hidden">
+              <span className="text-2xl sm:text-3xl">🧺</span>
             </div>
           </div>
         </div>
@@ -290,13 +290,13 @@ const HarvestEngine = ({ data, onComplete }) => {
 
       {/* ── End screen ── */}
       {done && (
-        <div className="absolute inset-0 z-50 bg-black/70 backdrop-blur-2xl flex items-center justify-center p-8">
-          <div className="w-full max-w-sm bg-[#151e2e] rounded-[44px] p-10 text-center shadow-2xl border border-white/8">
-            <div className={`w-24 h-24 rounded-3xl mx-auto mb-6 flex items-center justify-center text-5xl shadow-2xl ${won ? 'bg-amber-500' : 'bg-rose-600'}`}>
+        <div className="absolute inset-0 z-50 bg-black/70 backdrop-blur-2xl flex items-center justify-center p-6 sm:p-8">
+          <div className="w-full max-w-sm bg-[#151e2e] rounded-[40px] p-8 sm:p-10 text-center shadow-2xl border border-white/8">
+            <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl mx-auto mb-6 flex items-center justify-center text-4xl sm:text-5xl shadow-2xl ${won ? 'bg-amber-500' : 'bg-rose-600'}`}>
               {won ? '🏆' : '😔'}
             </div>
-            <h2 className="text-4xl font-black tracking-tighter mb-2">{won ? 'HARVEST DONE!' : 'MISSED IT!'}</h2>
-            <p className="text-slate-400 text-sm mb-8">{won ? `Amazing! ${score} stars collected.` : `${score} stars — try again?`}</p>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tighter mb-2 leading-none uppercase italic">{won ? 'Finished!' : 'Missed!'}</h2>
+            <p className="text-slate-400 text-[11px] sm:text-sm mb-6 sm:mb-8">{won ? `Amazing! ${score} stars collected.` : `${score} stars — try again?`}</p>
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => {

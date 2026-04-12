@@ -20,6 +20,7 @@
     },
     {
       "type": "BINARY",
+      "interaction": "BINARY",
       "expected": "No",
       "prompt": "Can a set be its own <b>Proper Subset</b>?",
       "hint": "Definition check: A proper subset must have AT LEAST one element fewer than the parent set. So it can't be exactly the same."

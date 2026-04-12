@@ -1,66 +1,90 @@
 /**
- * MANYA QUEST LOADER - v1.0
- * ===========================
- * Fetches and normalises any content JSON into a uniform steps[] array
- * that QuestRunner.jsx can iterate over step-by-step.
- *
- * Content path pattern:
- *   /content/{subject}/{unitId}/{questFolder}/{file}.json
- *
- * Each step has at least:
- *   { engineType, data, topic, mode }
+ * MANYA QUEST LOADER - v2.0 (Database-First)
+ * =========================================
+ * Now powered by the Manya Vault (Supabase).
+ * Fetches curriculum by QID and normalises it into a uniform steps[] array.
+ * Fallback to local /content/ folders if the database record is missing.
  */
+import { supabase } from '../services/supabaseClient';
 
-// Global in-memory cache for quest JSONs
 const JSON_CACHE = {};
 
 const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 // PRODUCTION CDN (Fall-back)
-const CDN_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-ug@main/public/content/';
-
-// LOCAL BASE (Dev mode)
+const CDN_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/content/';
 const LOCAL_URL = '/content/';
-
 const BASE_CONTENT_URL = IS_LOCAL ? LOCAL_URL : CDN_URL;
 
 /**
- * Build the fetch URL for a content file.
+ * Resolves the parameters into a standardized QID for Database lookup
+ */
+function resolveQid(subject, unitId, questFolder, file) {
+    if (!file) return null;
+    const filename = file.replace(/\.json$/, '');
+    
+    // Direct ID mapping (Handles ENG-quest-p7-001 etc)
+    if (filename.startsWith('ENG-') || filename.startsWith('PQ-')) {
+        return filename;
+    }
+
+    // Pattern: 04-015 (Standard Quest ID)
+    if (/^\d+-\d+/.test(filename)) {
+        return filename;
+    }
+    
+    // Pattern: TOPIC_SUBTOPIC_FILENAME (Standard Simulation/Note ID)
+    const topic = (unitId || 'GENERAL').toUpperCase();
+    const subtopic = (questFolder || 'QUEST').toUpperCase();
+    const cleanFile = filename.toUpperCase().replace(/-/g, '_');
+    
+    // 🧠 ADVANCED DEDUPLICATION:
+    // If Topic is "LOCATING_AFRICA" and Subtopic is "QUEST_1_WORLD_STAGE"
+    // and cleanFile is "QUEST_1_WORLD_STAGE" -> Merge them.
+    let parts = [topic, subtopic, cleanFile];
+    let uniqueParts = [];
+    parts.forEach(p => {
+        if (!uniqueParts.some(up => up.includes(p) || p.includes(up))) {
+            uniqueParts.push(p);
+        }
+    });
+
+    return uniqueParts.join('_');
+}
+
+/**
+ * Build the fetch URL for a content file (Legacy/Fallback mode)
  */
 export function contentUrl(subject, unitId, questFolder, file) {
     if (!file) return '';
     const cleanFile = file.replace(/\.json$/, '');
-    
-    // In local dev, we don't need the 'public' prefix because Vite serves /public automatically
     return `${BASE_CONTENT_URL}${subject}/${unitId}/${questFolder}/${cleanFile}.json`;
 }
 
 /**
- * Resolve a referencePath (which may be relative or Windows-style) to a
- * fetch-able URL.  The engine stores them as absolute Windows paths like
- * "D:\manya_app\content\math\set_theory\..." — we extract the part from
- * "content" onwards.
+ * Resolve a referencePath (which may be relative or Windows-style) to a fetch-able URL.
  */
 function resolveRef(referencePath, baseDir) {
     if (!referencePath) return null;
     
-    // 1. Remote CDN Path (already resolved)
     if (referencePath.startsWith('http')) return referencePath;
 
-    // 2. Absolute Web Path (legacy) -> Map to CDN
     if (referencePath.startsWith('/content/')) {
         return `${BASE_CONTENT_URL}${referencePath.replace(/^\/content\//, '')}`;
     }
 
-    // 3. Absolute Windows Path -> Map to CDN
     const lc = referencePath.toLowerCase().replace(/\\/g, '/');
     const idx = lc.indexOf('content/');
     if (idx !== -1) {
         return `${BASE_CONTENT_URL}${referencePath.substring(idx + 8).replace(/\\/g, '/')}`;
     }
 
-    // 4. Relative Path -> Resolve against the base directory
     if (baseDir) {
+        // If we have an originUrl (CDN), join against it for the most robust result
+        if (baseDir.startsWith('http')) {
+            try { return new URL(referencePath, baseDir).href; } catch (e) { }
+        }
+
         const fullRel = `${baseDir}/${referencePath}`.replace(/\/+/g, '/').replace(/^content\//, '');
         return `${BASE_CONTENT_URL}${fullRel}`;
     }
@@ -70,32 +94,130 @@ function resolveRef(referencePath, baseDir) {
 
 /**
  * Fetch a single content JSON and return a normalised steps[].
- *
- * @param {string} subject    e.g. 'math'
- * @param {string} unitId     e.g. 'set_theory'
- * @param {string} questFolder e.g. 'quest_01_finite_infinite_sets'
- * @param {string} file       e.g. 'study_finite_infinite' or '01-001'
- * @returns {Promise<{steps: Array, meta: object}>}
+ * Now powered by Manya Vault (Supabase).
  */
-export async function loadQuestSteps(subject, unitId, questFolder, file) {
-    const url = contentUrl(subject, unitId, questFolder, file);
+export async function loadQuestSteps(subject, unitId, questFolder, file, targetType = null) {
+    const qid = resolveQid(subject, unitId, questFolder, file);
+    const cacheKey = targetType ? `${qid}_${targetType}` : qid;
     
-    // Return from cache if available
-    if (JSON_CACHE[url]) {
-        console.log(`⚡ [QuestLoader] Serving from cache: ${url}`);
-        return JSON_CACHE[url];
+    // 1. Cache Check
+    if (JSON_CACHE[cacheKey]) {
+        console.log(`⚡ [QuestLoader] Serving from cache: ${cacheKey}`);
+        return JSON_CACHE[cacheKey];
     }
 
-    console.log(`[QuestLoader] Fetching: ${url}`);
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Content not found: ${url}`);
+    try {
+        console.log(`[QuestLoader] Fetching Vault Row: ${qid} (Sub: ${subject})`);
+        
+        // 2. Query Supabase Vault
+        // Note: Using case-insensitive ilike for subject to catch "English" / "english" / "ENGLISH"
+        let query = supabase
+            .from('manya_vault')
+            .select('interaction_config, topic, qid, item_type')
+            .eq('qid', qid)
+            .ilike('subject', subject);
 
-    const json = await res.json();
+        if (targetType) {
+            query = query.eq('item_type', targetType);
+        }
+
+        const { data: vaultRows, error } = await query;
+
+        if (error || !vaultRows || vaultRows.length === 0) {
+            console.warn(`[QuestLoader] Vault miss for ${qid} (Type: ${targetType}). Checking Legacy...`);
+            // 🛡️ Safety Guard: Only fallback if we have valid folder paths
+            if (!unitId || !questFolder) {
+                throw new Error(`Quest ${qid} missing from Vault and no local path provided.`);
+            }
+            return await loadQuestStepsLegacy(subject, unitId, questFolder, file);
+        }
+
+        // 3. Process All Rows from Vault (Merge steps)
+        let allSteps = [];
+        let masterMeta = { qid, topic: vaultRows[0].topic };
+
+        for (const row of vaultRows) {
+            let json = row.interaction_config;
+            if (typeof json === 'string') {
+                try { json = JSON.parse(json); } catch (e) { continue; }
+            }
+
+            // 🚀 REMOTE CDN REDIRECT: If the entry points to a CDN URL, fetch it now
+            if (json && json.cdn_url) {
+                const cleanCdnUrl = json.cdn_url.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                try {
+                    const remoteRes = await fetch(cleanCdnUrl);
+                    if (remoteRes.ok) {
+                        json = await remoteRes.json();
+                        json._originUrl = cleanCdnUrl; 
+                    }
+                } catch (e) { console.warn(`[QuestLoader] CDN redirect failed for row in ${qid}`); }
+            }
+
+            const result = await transformJsonToSteps(json, subject, unitId, questFolder, file);
+            allSteps.push(...result.steps);
+            if (result.meta) masterMeta = { ...masterMeta, ...result.meta };
+        }
+
+        const finalResult = { steps: allSteps, meta: masterMeta };
+
+        // Save to cache
+        JSON_CACHE[cacheKey] = finalResult;
+        return finalResult;
+
+    } catch (err) {
+        // 🤫 SILENT RESILIENCE: 
+        // If it's just a missing legacy file, don't scream "Major Error"
+        const isMiss = err.message?.includes('found after fallback') || err.message?.includes('Expected JSON');
+        if (isMiss) {
+            console.info(`[QuestLoader] Note: No optional story JSON at ${qid}. (Using Adaptive MCQs)`);
+            return { steps: [], meta: { status: 'adaptive_only' } };
+        }
+        
+        console.error(`❌ [QuestLoader] Major error loading ${qid}:`, err);
+        return { steps: [], meta: { status: 'error', error: err.message } };
+    }
+}
+
+async function loadQuestStepsLegacy(subject, unitId, questFolder, file) {
+    let url = contentUrl(subject, unitId, questFolder, file);
+    
+    try {
+        let res = await fetch(url);
+        
+        // 🛡️ FALLBACK: If folder-specific path fails (404), try the parent unit folder
+        if (!res.ok) {
+            const fallbackUrl = `${BASE_CONTENT_URL}${subject}/${unitId}/${file.replace(/\.json$/, '')}.json`;
+            res = await fetch(fallbackUrl);
+            
+            if (!res.ok) {
+                // Return empty instead of throwing to prevent console red-out
+                return { steps: [], meta: { status: 'missing', url } };
+            }
+        }
+
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            return { steps: [], meta: { status: 'not_json', url } };
+        }
+
+        const json = await res.json();
+        return await transformJsonToSteps(json, subject, unitId, questFolder, file);
+    } catch (e) {
+        return { steps: [], meta: { status: 'fetch_failed', error: e.message } };
+    }
+}
+
+/**
+ * Universal Step Transformer (JSON -> Standard Step Shape)
+ */
+async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
     let result;
 
-    // ── CASE 1: Already a steps[] array (multi-step quest) ──────────────────
     if (Array.isArray(json.steps)) {
-        const baseDir = `content/${subject}/${unitId}/${questFolder}`;
+        // If we have a CDN origin, that becomes our base context
+        const baseDir = json._originUrl || `content/${subject}/${unitId}/${questFolder}`;
+        
         const resolvedSteps = await Promise.all(
             json.steps.map(async (step) => {
                 if (step.referencePath) {
@@ -103,11 +225,16 @@ export async function loadQuestSteps(subject, unitId, questFolder, file) {
                     if (refUrl) {
                         try {
                             const refRes = await fetch(refUrl);
-                            if (refRes.ok) step.data = await refRes.json();
-                        } catch (_) { /* ignore fetch errors */ }
+                            const contentType = refRes.headers.get('content-type') || '';
+                            if (refRes.ok && contentType.includes('application/json')) {
+                                step.data = await refRes.json();
+                            } else {
+                                console.warn(`[QuestLoader] Skipping minor resource ${step.referencePath}: ${refRes.status}`);
+                            }
+                        } catch (_) { }
                     }
                 }
-                return normaliseStep(step);
+                return normaliseStep(step, json._originUrl);
             })
         );
         result = {
@@ -115,27 +242,21 @@ export async function loadQuestSteps(subject, unitId, questFolder, file) {
             meta: { topic: json.topic || file, variantTitle: json.variantTitle }
         };
     } else {
-        // ── CASE 2: Single step JSON ─────────────────────────────────────────────
-        const step = normaliseStep(json);
+        const step = normaliseStep(json, json._originUrl);
         result = {
             steps: [step],
             meta: { topic: json.topic || file, variantTitle: json.variantTitle }
         };
     }
-
-    // Save to cache
-    JSON_CACHE[url] = result;
     return result;
 }
 
 /**
- * Normalise a raw step object so QuestRunner always gets the same shape:
- *   { engineType, data, topic, mode }
+ * Normalise a raw step object
  */
-function normaliseStep(raw) {
+function normaliseStep(raw, originUrl = null) {
     let engineType = raw.engineType || raw.engine;
 
-    // AUTO-DETECT ENGINE IF MISSING
     if (!engineType) {
         if (raw.mode === 'note_explorer' || raw.study_notes) {
             engineType = 'NOTE_EXPLORER';
@@ -149,11 +270,11 @@ function normaliseStep(raw) {
     }
 
     return {
-        id: raw.qid || raw.id || `sim_${Math.random().toString(36).substr(2, 9)}`,
-        engineType,
-        mode: raw.mode || 'quiz',
-        topic: raw.topic || raw.variantTitle || '',
-        // Pass the whole JSON as `data` — engines know what to use
-        data: raw.data || raw,
+        ...raw,
+        engineType: engineType.toUpperCase(),
+        data: {
+            ...(raw.data || raw),
+            _originUrl: originUrl // Propagate origin for relative asset resolution
+        }
     };
 }

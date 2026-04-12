@@ -1,0 +1,199 @@
+[
+  {
+    "qid": "PQ-SIM-ENG-03-001",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "You are coming," },
+        { "id": "s2", "expected": "aren't" },
+        { "id": "s3", "expected": "you?" }
+      ],
+      "distractors": ["are", "don't"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-002",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        { "text": "She is happy, is she?", "error": "is", "correct": "isn't" },
+        { "text": "They won't go, won't they?", "error": "won't", "correct": "will" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-003",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "Manya can swim, ____?", "targetTense": "Question Tag", "options": ["can't he", "can he", "is he"], "correct": "can't he" },
+        { "base": "We haven't finished, ____?", "targetTense": "Question Tag", "options": ["have we", "haven't we", "did we"], "correct": "have we" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-004",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "It is raining," },
+        { "id": "s2", "expected": "isn't" },
+        { "id": "s3", "expected": "it?" }
+      ],
+      "distractors": ["is", "doesn't"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-005",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "title": "Helper Verbs",
+      "character": "Polly",
+      "size": 8,
+      "words": ["ISNT", "ARENT", "DONT", "WONT", "CANNT", "HAVENT"],
+      "hint": "Find the negative tag forms!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-006",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Kiki",
+      "winScore": 400,
+      "queries": [
+        { "text": "I am a student, am not I?", "error": "am not I", "correct": "aren't I" },
+        { "text": "Let's go, don't we?", "error": "don't we", "correct": "shall we" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-007",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "You will help," },
+        { "id": "s2", "expected": "won't" },
+        { "id": "s3", "expected": "you?" }
+      ],
+      "distractors": ["will", "can't"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-008",
+    "engine_type": "HARVEST_GAME",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Kiki",
+      "leftCategory": "Positive Tags",
+      "rightCategory": "Negative Tags",
+      "words": [
+        { "text": "will he", "category": "left" },
+        { "text": "did they", "category": "left" },
+        { "text": "isn't it", "category": "right" },
+        { "text": "don't you", "category": "right" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-009",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "You like mangoes, ____?", "targetTense": "Question Tag", "options": ["don't you", "do you", "aren't you"], "correct": "don't you" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-010",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "There is a pen," },
+        { "id": "s2", "expected": "isn't" },
+        { "id": "s3", "expected": "there?" }
+      ],
+      "distractors": ["it", "there is"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-011",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        { "text": "He has a car, hasn't he?", "error": "hasn't", "correct": "doesn't" },
+        { "text": "We must go, musn't we?", "error": "musn't", "correct": "mustn't" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-012",
+    "engine_type": "PUNCTUATION_PORTAL",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { 
+          "parts": ["You study hard", " don't you", "?"], 
+          "slots": [{ "index": 1, "expected": ",", "hint": "Tags are separated by a comma!" }]
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-013",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "Everything is ready," },
+        { "id": "s2", "expected": "isn't" },
+        { "id": "s3", "expected": "it?" }
+      ],
+      "distractors": ["everything", "is"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-014",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "I did it, ____?", "targetTense": "Question Tag", "options": ["didn't I", "did I", "wasn't I"], "correct": "didn't I" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-03-015",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_03_question_tags_mastery",
+    "data": {
+      "title": "Pronoun Power",
+      "character": "Polly",
+      "size": 8,
+      "words": ["THERE", "THEY", "YOU", "SHE", "SHALL", "WILL"],
+      "hint": "Find the pronouns we use in tag tails!"
+    }
+  }
+]

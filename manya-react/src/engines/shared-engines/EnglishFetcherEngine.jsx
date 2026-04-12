@@ -42,12 +42,36 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, nodeType }) => {
         </div>
     );
 
-    // Determine the specialized engine type
-    let engineType = simData.engine_type || simData.engineType || simData.type || 'CHAT';
+    // PRESERVE ROW METADATA: Use 'step' directly for engine mapping because 'simData'
+    // (the interaction_config) often lacks row-level metadata like engine_type.
+    let engineType = (step.engine_type || step.engineType || simData.engine_type || simData.engineType || simData.type || 'CHAT').toUpperCase();
+    const itemType = (step.item_type || simData.item_type || "").toUpperCase();
     
-    if (engineType.includes('RULE_MASTER')) engineType = 'ENGLISH_RULE_MASTER';
+    // GHOST HUNTER LOGGING
+    console.warn(`[Ghost Hunter] Bridge received step. id: ${step.id || step.qid}, itemType: ${itemType}, rawEngineType: ${step.engine_type}, simData.type: ${simData.type}, derivedEngine: ${engineType}`);
+
+    if (engineType === 'CHAT' && nodeType !== 'EXPLORE' && !simData.text) {
+        console.error(`[Ghost Hunter] Blocked Ghost Chat! It has no text and is outside Explore. Skipping automatically.`);
+        // Force an auto-skip using a zero timeout to avoid state mutation during render
+        setTimeout(() => onComplete({ isCorrect: true, score: 100, accuracy: 1 }), 100);
+        return (
+            <div className="flex-1 flex flex-col items-center justify-center p-10 text-rose-500 font-bold bg-white">
+                <AlertCircle size={40} className="mb-4" />
+                Blocking a Ghost Story (Auto-skipping...)
+            </div>
+        );
+    }
+    
+    // PEDAGOGICAL ROUTING: Ensure Grammar/Notes use the RuleMaster
+    if (engineType.includes('RULE_MASTER') || itemType === 'GRAMMAR' || itemType === 'NOTE') {
+        engineType = 'ENGLISH_RULE_MASTER';
+    }
     if (engineType.includes('WORDGRID')) engineType = 'WORDGRID_ENGINE';
     if (engineType.includes('HARVEST')) engineType = 'HARVEST_GAME';
+    if (engineType === 'SENTENCE_BLOCKS' || engineType === 'SYNTAX_ARCHITECT') engineType = 'SENTENCE_BLOCKS';
+    if (engineType === 'GARDEN_GUARD' || engineType === 'GRAMMAR_GUARD') engineType = 'GARDEN_GUARD';
+    if (engineType === 'PUNCTUATION_STICKERS') engineType = 'PUNCTUATION_STICKERS';
+    if (engineType === 'TENSE_TREEHOUSE') engineType = 'TENSE_TREEHOUSE';
 
     const engineMeta = ENGINE_REGISTRY[engineType];
 
@@ -64,11 +88,11 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, nodeType }) => {
 
     const EngineComponent = engineMeta.component;
 
-    // CUSTOM THEME: Stories (Explore) get a more immersive "Dark Narrator" or "Paper" feel
-    const isNarrative = engineType === 'CHAT' || nodeType === 'EXPLORE';
+    // CUSTOM THEME: Stories (Explore/Quest) get an immersive "Dark Narrative" feel
+    const isNarrative = engineType === 'CHAT' || nodeType === 'EXPLORE' || itemType === 'QUEST' || itemType === 'QUEST_STORY';
 
     return (
-        <div className={`flex-1 flex flex-col h-full ${isNarrative ? 'bg-slate-950' : 'bg-white'}`}>
+        <div className={`flex-1 flex flex-col h-full min-h-[85vh] ${isNarrative ? 'bg-slate-950 text-white' : 'bg-white'}`}>
             <Suspense fallback={
                 <div className="flex-1 flex flex-col items-center justify-center">
                     <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
@@ -79,7 +103,12 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, nodeType }) => {
                     data={simData} 
                     onComplete={(res) => {
                         console.log(`🎬 [Bridge] ${engineType} finished:`, res);
-                        onComplete({ success: true, score: 100, simResults: res });
+                        onComplete({ 
+                            success: res?.isCorrect ?? true, 
+                            score: res?.score ?? 100, 
+                            accuracy: res?.accuracy ?? 1,
+                            simResults: res 
+                        });
                     }}
                     onResult={(res) => console.debug(`📊 [Bridge] ${engineType} update:`, res)}
                     onAttempt={onAttempt}
@@ -90,13 +119,13 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, nodeType }) => {
 };
 
 /**
- * MANYA ENGLISH FETCHER ENGINE v5.0 (PREMIUM AESTHETIC)
- * =============================================================================
+ * MANYA ENGLISH FETCHER ENGINE v5.1 (ADAPTIVE REWARD EDITION)
  */
 export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
     const session = useSelector(state => state.user.session);
+    const globalTheme = useSelector(state => state.audio);
 
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -114,7 +143,6 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const [completionResult, setCompletionResult] = useState(null);
     const [isFinished, setIsFinished] = useState(false);
     
-    // NEW: Subject Standard UI State
     const [hintUsed, setHintUsed] = useState(false);
     const [answerChanged, setAnswerChanged] = useState(false);
     const [changeCount, setChangeCount] = useState(0);
@@ -129,6 +157,22 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const subject = 'english';
     const questKey = data?.questKey || `english/${topicId}`;
 
+    // ── LEVEL 1.0 HUD METADATA ──
+    const NODE_METADATA = {
+        WARMUP: { label: 'Warmup', icon: <Zap size={14} />, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-100' },
+        EXPLORE: { label: 'Story', icon: <BookOpen size={14} />, color: 'text-indigo-500', bg: 'bg-indigo-50', border: 'border-indigo-100' },
+        PRACTICE: { label: 'Practice', icon: <Layers size={14} />, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+        REINFORCE: { label: 'Reinforce', icon: <Sparkles size={14} />, color: 'text-purple-500', bg: 'bg-purple-50', border: 'border-purple-100' },
+        MASTERY: { label: 'Mastery', icon: <Trophy size={14} />, color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-100' }
+    };
+    const nodeMeta = NODE_METADATA[nodeType] || NODE_METADATA.PRACTICE;
+    const questTitle = topicId.replace(/^quest_\d+_/, '').split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+    const isNight = globalTheme?.isNightMode;
+    const currentQ = questions[currentIdx];
+    const engineType = (currentQ?.engine_type || currentQ?.engineType || currentQ?.type || "").toUpperCase();
+    const isNarrative = nodeType === 'EXPLORE' || engineType === 'CHAT' || engineType.includes('STORY') || isNight;
+
     useEffect(() => {
         const loadQuestions = async () => {
             if (fetchIterationRef.current === topicId) return;
@@ -142,59 +186,46 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 const allQuestions = await fetchEnglishQuestions(topicId);
                 allBankRef.current = allQuestions;
                 
-                const mapping = allQuestions.find(q => q.mapping)?.mapping;
-                const simulations = [];
+                const userHistory = await ManyaDB.getAnswerHistory(subject);
+                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
+                
+                // 🚀 PRE-FLATTEN STORIES: If the quest is a STORY unit, expand its steps immediately
+                let finalQuestions = quest.questions;
+                console.log("🕵️ [Tracer] Explore Node questions[0]:", finalQuestions[0]);
 
-                // 1. Load Mandatory Story (for EXPLORE)
-                if (nodeType === 'EXPLORE' && mapping && mapping.json_reference_path) {
-                    try {
-                        const { steps } = await loadQuestSteps(
-                            subject,
-                            data.unitId || 'holidays',
-                            topicId,
-                            mapping.json_reference_path
-                        );
-                        steps.forEach(s => {
-                            s.isSimulation = true;
-                            s.engine_type = s.engineType || mapping.engine_type;
-                        });
-                        simulations.push(...steps);
-                    } catch (e) {
-                        console.warn(`[EnglishEngine] Failed to load story quest: ${e.message}`);
-                    }
-                }
+                if (nodeType === 'EXPLORE' && finalQuestions.length > 0) {
+                    const storyAnchor = finalQuestions[0];
+                    const stepsToFlatten = storyAnchor.steps || storyAnchor.data?.steps || storyAnchor.interaction_config?.steps;
+                    const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url || storyAnchor.interaction_config?.cdn_url;
 
-                // 2. Load Interleaved Simulations (for PRACTICE/REINFORCE/MASTERY)
-                if (data?.simResources && data.simResources.length > 0) {
-                    console.log(`🎮 [EnglishEngine] Loading ${data.simResources.length} simulation resources...`);
-                    for (const simRes of data.simResources) {
+                    console.log("🕵️ [Tracer] Flatten Check:", { hasSteps: !!stepsToFlatten, hasCdn: !!cdnUrl });
+
+                    if (stepsToFlatten && stepsToFlatten.length > 0) {
+                         finalQuestions = stepsToFlatten.map(s => ({ ...s, item_type: 'QUEST_STORY' }));
+                    } else {
                         try {
-                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
-                            const { steps: simSteps } = await loadQuestSteps(
-                                subject, 
-                                data.unitId || 'holidays', 
-                                topicId, 
-                                fileName
-                            );
-                            simSteps.forEach(s => {
-                                s.isSimulation = true;
-                                s.id = s.id || `sim_${simRes.file.replace('.json', '')}`;
-                            });
-                            simulations.push(...simSteps);
-                        } catch (e) {
-                            console.warn(`[EnglishEngine] Failed to load interleaved sim: ${simRes.file}`);
+                            const qid = storyAnchor.qid || storyAnchor.id;
+                            console.log(`📡 [EnglishEngine] Fetching Story Steps for ${qid}...`);
+                            const loaded = await loadQuestSteps('english', null, null, qid);
+                            
+                            if (loaded && loaded.steps) {
+                                console.log(`✅ [EnglishEngine] Flattened ${loaded.steps.length} steps from CDN.`);
+                                finalQuestions = loaded.steps.map(s => ({ 
+                                    ...s, 
+                                    item_type: 'QUEST_STORY',
+                                    isSimulation: true // Force routing to Bridge
+                                }));
+                            } else {
+                                console.warn(`⚠️ [EnglishEngine] CDN Quest loaded but no steps found.`, loaded);
+                            }
+                        } catch (loadErr) {
+                            console.error("[EnglishEngine] Failed to flatten story steps:", loadErr);
                         }
                     }
                 }
 
-                if (allQuestions.length === 0 && simulations.length === 0) {
-                    throw new Error(`No content found for "${topicId}"`);
-                }
-
-                const userHistory = await ManyaDB.getAnswerHistory(subject);
-                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simulations);
-                setQuestions(quest.questions);
-                setQuestMeta({ ...quest, mapping });
+                setQuestions(finalQuestions);
+                setQuestMeta({ ...quest.metadata, questLength: finalQuestions.length });
                 
                 setTimeout(() => setIsLoading(false), 800);
             } catch (err) {
@@ -205,28 +236,40 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         };
 
         loadQuestions();
-    }, [topicId, nodeType, data?.simResources]);
+    }, [topicId, nodeType]);
 
-    const findRephrased = (wrongQuestion) => {
-        const bank = allBankRef.current;
-        const baseId = wrongQuestion.qid?.replace(/-V\d+$/, '');
-        const usedIds = new Set(questions.map(q => q.qid));
-        const variant = bank.find(q => q.qid.startsWith(baseId + '-V') && !usedIds.has(q.qid));
-        if (variant) return { ...variant, isRephrased: true, originalId: wrongQuestion.qid };
-        return null;
-    };
-
-    const handleSelect = (option) => {
-        if (isAnswered) return;
+    // ── ROBUST ANSWER VERIFICATION ──
+    const verifyAnswer = (selected, correct, options) => {
+        if (selected === undefined || selected === null || correct === undefined || correct === null) return false;
         
-        if (selectedOption !== null && selectedOption !== option) {
-            setAnswerChanged(true);
-            setChangeCount(c => c + 1);
-        }
-        if (!firstSelection.current) firstSelection.current = option;
+        const clean = str => String(str || "").trim().toLowerCase().replace(/\u00A0/g, ' ');
+        const sel = clean(selected);
+        
+        // 🔍 OPTION_X STRIPPER: Handle "Option_B", "Option B", "option_b"
+        const ans = clean(correct).replace(/^option[ _]?/i, ''); 
 
-        setSelectedOption(option);
-        window.ManyaAudio?.pop?.();
+        // 1. Direct Text/Key Match (e.g. 'Southern Hemisphere' === 'Southern Hemisphere' or 'B' === 'B')
+        if (sel === ans) return true;
+
+        // 2. Index/Letter Mapping
+        const letters = ['a', 'b', 'c', 'd'];
+        if (!isNaN(ans) && letters[parseInt(ans)] === sel) return true;
+        
+        // 3. Cross-Reference (DB says 'Option_B', User picked 'Southern Hemisphere')
+        if (options) {
+            // Find what the "Correct" text should be
+            const correctKey = ans.toUpperCase(); 
+            const correctIdx = letters.indexOf(ans);
+            const correctValue = options[correctKey] || (Array.isArray(options) ? options[correctIdx] : options[ans]);
+            
+            if (correctValue && clean(correctValue) === sel) return true;
+            
+            // Check if User picked the Key but DB has the Text
+            const userValue = options[selected] || (Array.isArray(options) ? options[letters.indexOf(sel)] : null);
+            if (userValue && clean(userValue) === ans) return true;
+        }
+
+        return false;
     };
 
     const handleSubmit = () => {
@@ -234,55 +277,36 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         setIsAnswered(true);
 
         const q = questions[currentIdx];
-        
-        // SUPPORT: Both literal matches and "Option_A" style mappings from DB
-        let isCorrect = selectedOption === q.answer;
-        if (!isCorrect && q.answer?.startsWith('Option_')) {
-            const letter = q.answer.split('_')[1]; // Get 'A', 'B', etc.
-            const index = letter.charCodeAt(0) - 65; // A=0, B=1, ...
-            if (q.options[index] === selectedOption) isCorrect = true;
-        }
+        const isCorrect = verifyAnswer(selectedOption, q.answer, q.options);
 
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
             setScore(s => s + 1);
             window.ManyaAudio?.success?.();
-            if (q.isRephrased) resolveRephrased(subject, q.qid); // Use qid for sync
         } else {
             window.ManyaAudio?.error?.();
-            trackWrongAnswer(subject, q.qid);
-            const rephrased = findRephrased(q);
-            if (rephrased) setQuestions(prev => [...prev, rephrased]);
+            trackWrongAnswer(subject, q.qid || q.id);
         }
 
         dispatch(updateSessionAfterAnswer({ isCorrect, timeSpentMs, hintUsed, answerChanged }));
         const frustration = calculateFrustration(session);
         
         ManyaDB.recordAnswer(subject, { 
-            questionId: q.qid, 
+            questionId: q.qid || q.id, 
             isCorrect, 
-            selectedAnswer: selectedOption, 
-            correctAnswer: q.answer, 
             timeSpentMs, 
-            hintUsed,
-            answerChanged,
-            changeCount,
             engine_type: 'MCQ', 
             frustrationLevel: frustration?.score || 0 
         });
-        
-        syncService.pushAnswer(subject, { 
-            questionId: q.qid, 
-            isCorrect, 
-            timeSpentMs, 
-            hintUsed,
-            engine_type: 'MCQ' 
-        });
 
         if (isCorrect) {
-            const amount = 4;
-            dispatch(awardGems({ subject, amount, xp: 10 }));
+            // REWARD LOGIC: 2x Gems/XP for Simulations and Rescue Items
+            const isSim = q.isSimulation || q.item_type === 'SIMULATION';
+            const amount = isSim ? 8 : 4;
+            const xp = isSim ? 20 : 10;
+            
+            dispatch(awardGems({ subject, amount, xp }));
             setGemsEarned(g => g + amount);
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
@@ -292,10 +316,9 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
-    const nextQuestion = (simResults = null) => {
+    const nextQuestion = () => {
         if (currentIdx < questions.length - 1) {
-            const nextIdx = currentIdx + 1;
-            setCurrentIdx(nextIdx);
+            setCurrentIdx(prev => prev + 1);
             setSelectedOption(null);
             setIsAnswered(false);
             setShowExplanation(false);
@@ -304,258 +327,308 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             setChangeCount(0);
             firstSelection.current = null;
             questionStartTime.current = Date.now();
-            
-            // If the next step is a simulation, we don't need a delay
-            if (questions[nextIdx]?.isSimulation) {
-                // Instantly move
-            }
         } else if (!isFinished) {
             setIsFinished(true);
             const pureMcqs = questions.filter(q => !q.isSimulation);
-            
-            // Unified Mastery: MCQs + Simulations (Sims count for 2x MCQ weight in English)
             const mcqScore = (score / Math.max(1, pureMcqs.length)) * 100;
-            const simCount = questions.filter(q => q.isSimulation).length;
-            const mastery = simCount > 0 && nodeType === 'EXPLORE' ? 100 : Math.round(mcqScore);
+            const mastery = Math.round(mcqScore);
 
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
-            setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked, nextNode: result.nextNode });
+            setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
             setCompletionResult({ mastery, ...result, score, total: questions.length });
             setShowCompletion(true);
-            
             if (mastery >= 60) window.ManyaAudio?.victory?.();
         }
     };
 
-    // ── PREMIUM RENDERING ──
-
     if (isLoading) return (
-        <div className="flex-1 flex flex-col items-center justify-center bg-indigo-50/30">
-            <div className="relative w-20 h-20 mb-6">
+        <div className="flex-1 flex flex-col items-center justify-center bg-indigo-50/30 backdrop-blur-xl">
+            <div className="relative w-20 h-20">
                 <div className="absolute inset-0 border-4 border-indigo-200 rounded-full" />
                 <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                <BookOpen className="absolute inset-0 m-auto text-indigo-600 animate-pulse" size={32} />
+                <Sparkles size={24} className="absolute inset-0 m-auto text-indigo-500 animate-pulse" />
             </div>
-            <p className="text-indigo-900 font-black tracking-widest text-xs uppercase animate-pulse">Initializing English Lab...</p>
+            <p className="mt-8 text-indigo-950 font-black text-sm uppercase tracking-[0.3em] animate-pulse">Entering English World...</p>
         </div>
     );
 
-    if (renderError) return (
-        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-rose-50">
-            <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                <AlertCircle size={32} />
-            </div>
-            <h3 className="text-2xl font-black text-rose-900 mb-2">Engine Glitch</h3>
-            <p className="text-sm text-rose-800/60 font-bold mb-8">"{renderError.message}"</p>
-            <button onClick={() => window.location.reload()} className="px-8 py-4 bg-rose-600 text-white rounded-2xl font-black shadow-xl">RELOAD</button>
-        </div>
-    );
+    if (showCompletion && completionResult) {
+        const { mastery, unlocked, nextNode, needsRetry, threshold, attempts } = completionResult;
+        const isPassing = mastery >= 60;
+        const isPerfect = mastery === 100;
 
-    if (showCompletion && completionResult) return (
-        <div className="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-600 to-purple-700 relative overflow-hidden">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white/10 blur-[100px] rounded-full" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/20 blur-[100px] rounded-full" />
-            
-            <div className="w-full max-w-sm bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[3rem] p-10 text-center shadow-2xl animate-in zoom-in-95 duration-500">
-                <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    {completionResult.mastery >= 60 ? <Trophy className="text-amber-400" size={48} /> : <Zap className="text-indigo-300" size={48} />}
-                </div>
-                <h2 className="text-white text-3xl font-black mb-2 uppercase tracking-tight">{completionResult.mastery >= 60 ? 'Excellence!' : 'Keep Pushing'}</h2>
-                <p className="text-indigo-200 text-sm font-bold mb-8">Node: {nodeType}</p>
-                <div className="text-6xl font-black text-white mb-10 drop-shadow-lg">{completionResult.mastery}%</div>
-                
-                <button onClick={onComplete} className="w-full h-16 bg-white text-indigo-900 rounded-2xl font-black text-sm tracking-widest shadow-xl active:scale-95 transition-all">
-                    COLLECT TREASURE
-                </button>
-            </div>
-        </div>
-    );
-
-    const q = questions[currentIdx];
-    if (!q) return null;
-
-    if (q.isSimulation) {
         return (
-            <div className="flex-1 flex flex-col relative bg-white">
-                {/* HUD for simulations (minimal) */}
-                {nodeType !== 'EXPLORE' && (
-                    <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between pointer-events-none">
-                        <div className="bg-white/90 backdrop-blur px-3 py-1.5 rounded-full border border-slate-100 flex items-center gap-2 shadow-sm">
-                            <Puzzle size={14} className="text-indigo-600" />
-                            <span className="text-[10px] font-black text-slate-800 uppercase tracking-tighter">Skill Drill</span>
+            <div className={`flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 ${isNight ? 'bg-[#0B0E14]' : 'bg-indigo-600'}`}>
+                <div className={`w-full max-w-sm ${isNight ? 'bg-[#151921] border border-white/5' : 'bg-white'} rounded-[3rem] shadow-2xl p-8 text-center relative overflow-hidden`}>
+                    
+                    {/* Decorative Background */}
+                    <div className={`absolute top-0 left-0 w-full h-32 ${isNight ? 'bg-gradient-to-b from-indigo-500/10 to-transparent' : 'bg-gradient-to-b from-indigo-50 to-transparent'} opacity-50`} />
+                    
+                    {/* Trophy/Status Icon */}
+                    <div className="relative mb-6 pt-4">
+                        <div className={`w-24 h-24 ${isNight ? 'bg-white/5' : 'bg-indigo-50'} rounded-[2rem] flex items-center justify-center mx-auto mb-4 rotate-3 shadow-inner`}>
+                             <div className="text-6xl animate-pulse">
+                                {mastery >= 90 ? '🏆' : mastery >= 75 ? '🥈' : mastery >= 60 ? '🥉' : '💪'}
+                             </div>
                         </div>
-                        <div className="bg-indigo-600 px-3 py-1.5 rounded-full text-white text-[10px] font-black shadow-lg">
-                            {currentIdx + 1} / {questions.length}
+                        <h2 className={`text-3xl font-black ${isNight ? 'text-white' : 'text-slate-900'} tracking-tight leading-none mb-2`}>
+                             {mastery >= 90 ? 'Brilliant!' : mastery >= 75 ? 'Great Job!' : mastery >= 60 ? 'Well Done!' : 'Keep Going!'}
+                        </h2>
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 ${isNight ? 'bg-white/5 text-indigo-400' : 'bg-slate-100 text-slate-500'} rounded-full text-[10px] font-black uppercase tracking-widest`}>
+                             <Sparkles size={10} className="text-indigo-500" /> {nodeMeta.label} Complete
                         </div>
                     </div>
-                )}
-                <SimulatorBridge step={q} onComplete={nextQuestion} nodeType={nodeType} />
+
+                    {/* Mastery Ring Card */}
+                    <div className={`${isNight ? 'bg-white/5 border-white/5' : 'bg-slate-50 border-slate-100'} rounded-[2.5rem] p-6 mb-6 border`}>
+                        <div className="relative w-32 h-32 mx-auto mb-4">
+                            <svg className="w-full h-full -rotate-90">
+                                <circle 
+                                    cx="64" cy="64" r="58"
+                                    fill="none" stroke={isNight ? 'rgba(255,255,255,0.05)' : '#e2e8f0'} strokeWidth="12"
+                                />
+                                <circle 
+                                    cx="64" cy="64" r="58"
+                                    fill="none" 
+                                    stroke={isPassing ? '#6366f1' : '#f43f5e'} 
+                                    strokeWidth="12"
+                                    strokeDasharray="364.4"
+                                    strokeDashoffset={364.4 - (364.4 * mastery) / 100}
+                                    strokeLinecap="round"
+                                    className="transition-all duration-1000 ease-out"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className={`text-3xl font-black ${isNight ? 'text-white' : 'text-slate-900'} leading-none`}>{mastery}%</span>
+                                <span className="text-[9px] font-black text-slate-400 tracking-widest uppercase mt-1">Mastery</span>
+                            </div>
+                        </div>
+
+                        <div className={`flex items-center justify-around border-t ${isNight ? 'border-white/5' : 'border-slate-200'} pt-4 mt-2`}>
+                            <div className="text-center">
+                                <div className={`text-lg font-black ${isNight ? 'text-white' : 'text-slate-900'}`}>{completionResult.score}/{completionResult.total}</div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                            </div>
+                            <div className={`w-[1px] h-8 ${isNight ? 'bg-white/5' : 'bg-slate-200'}`} />
+                            <div className="text-center">
+                                <div className="text-lg font-black text-amber-500 flex items-center gap-1">
+                                    <Trophy size={16} fill="currentColor" /> +{gemsEarned}
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gems</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Unlock Feedback */}
+                    {unlocked && (
+                         <div className="bg-indigo-600 text-white rounded-3xl p-4 mb-4 animate-bounce">
+                             <div className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">New Milestone</div>
+                             <div className="text-sm font-bold">Next Node Unlocked!</div>
+                         </div>
+                    )}
+
+                    <button
+                        onClick={onComplete}
+                        className="w-full h-16 bg-slate-900 text-white rounded-3xl font-black text-[13px] tracking-widest uppercase flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-indigo-900/10"
+                    >
+                        COLLECT REWARDS <ArrowRight size={18} />
+                    </button>
+                </div>
             </div>
         );
     }
 
-    return (
-        <div className="flex-1 flex flex-col bg-indigo-50/50 relative overflow-hidden">
-            {/* ── GEM TOAST ── */}
-            {showGemToast && (
-                <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-[100] flex items-center gap-1 pointer-events-none shadow-lg">
-                    <Trophy size={12} /> +{gemsEarned} gems
-                </div>
-            )}
+    // ── QUESTION UI ──
+    const q = questions[currentIdx];
+    if (!q) return null;
+    
+    const frustration = calculateFrustration(session);
 
-            {/* ── MAIN CONTENT AREA ── */}
-            <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
-
-                {/* 1. Progress Dots (Standard) */}
-                <div className="flex gap-1.5 justify-center mb-5 overflow-x-auto no-scrollbar flex-shrink-0">
-                    {questions.map((_, i) => (
-                        <div 
-                            key={i} 
-                            className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${
-                                i === currentIdx ? 'bg-indigo-600 w-5' : (i < currentIdx ? 'bg-indigo-600 opacity-35 w-1.5' : 'bg-indigo-200 w-1.5')
-                            }`} 
-                        />
-                    ))}
-                </div>
-
-                {/* 2. Topic/Node Header */}
-                <div className="flex items-center justify-between mb-4 px-2">
-                    <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 bg-indigo-600/10 rounded-lg flex items-center justify-center">
-                            <Compass size={12} className="text-indigo-600" />
+        if (q.isSimulation || q.item_type === 'QUEST_STORY') {
+            return (
+                <div className={`flex-1 flex flex-col relative h-full min-h-[85vh] ${isNarrative ? 'bg-[#0B0E14]' : 'bg-slate-50'}`}>
+                    {q.message && (
+                        <div className="absolute top-20 left-4 right-4 z-50 animate-in fade-in slide-in-from-top-4 duration-1000">
+                            <div className="bg-indigo-600 text-white px-6 py-4 rounded-3xl shadow-2xl font-black text-sm text-center border-2 border-indigo-400">
+                                {q.message}
+                            </div>
                         </div>
-                        <span className="text-indigo-600 font-black text-[9px] tracking-widest uppercase opacity-80">
-                            {nodeType} · {currentIdx + 1}/{questions.length}
-                        </span>
-                    </div>
-                    
-                    {!isAnswered && q.hint && (
-                        <button 
-                            onClick={() => setHintUsed(!hintUsed)} 
-                            className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-amber-500 text-white shadow-lg' : 'bg-white text-slate-400 border border-slate-100'}`}
-                        >
-                            <Lightbulb size={18} />
-                        </button>
                     )}
+                    <SimulatorBridge step={q} onComplete={nextQuestion} nodeType={nodeType} />
                 </div>
+            );
+        }
 
-                {/* 3. Question Card (Standard) */}
-                <div 
-                    className="bg-white rounded-[2.5rem] border-2 border-indigo-100 px-6 py-8 mb-4 shadow-xl shadow-indigo-200/20 flex-shrink-0 relative overflow-hidden"
-                >
-                    <p className="text-indigo-950 font-bold text-[18px] leading-snug m-0 relative z-10">
-                        {q.question}
-                    </p>
-                    
-                    {/* Decorative Background Icon */}
-                    <div className="absolute -bottom-4 -right-4 opacity-[0.03] pointer-events-none">
-                        <BookOpen size={120} />
+        // ─── RENDER-SCOPE SMART MATCHING (v5.2) ───
+        const normalize = (str) => String(str || '').trim().toLowerCase();
+        const resolveCorrectText = (target, options) => {
+            if (!target || !options) return 'N/A';
+            const t = normalize(target);
+            const directIdx = options.findIndex(opt => normalize(opt) === t);
+            if (directIdx !== -1) return options[directIdx];
+            const optMatch = t.match(/option_([a-d])/i);
+            if (optMatch) { const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65; return options[idx] || target; }
+            if (t.length === 1 && /^[a-d]$/i.test(t)) { return options[t.toUpperCase().charCodeAt(0) - 65] || target; }
+            return target;
+        };
+        const isOptionCorrect = (opt, answer, options) => {
+            if (!answer || !options) return false;
+            const t = normalize(answer);
+            const o = normalize(opt);
+            if (o === t) return true;
+            const optMatch = t.match(/option_([a-d])/i);
+            if (optMatch) { const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65; return normalize(options[idx]) === o; }
+            if (t.length === 1 && /^[a-d]$/i.test(t)) { const idx = t.toUpperCase().charCodeAt(0) - 65; return normalize(options[idx]) === o; }
+            return false;
+        };
+        const correctText = resolveCorrectText(q.answer, q.options);
+        const userWasCorrect = isOptionCorrect(selectedOption, q.answer, q.options);
+
+        return (
+            <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+                {/* ── GEM TOAST ── */}
+                {showGemToast && (
+                    <div className="absolute top-4 right-4 bg-indigo-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1 pointer-events-none shadow-xl">
+                        <Trophy size={12} /> +{gemsEarned} gems
                     </div>
-                </div>
+                )}
 
-                {/* 4. Options (Standard A,B,C,D) */}
-                <div className="flex flex-col gap-2.5 flex-shrink-0">
-                    {q.options?.map((opt, i) => {
-                        const isCorrect = opt === q.answer || (q.answer?.startsWith('Option_') && q.answer.split('_')[1].charCodeAt(0) - 65 === i);
-                        const isSelected = opt === selectedOption;
+                {/* ── QUESTION CARD ── */}
+                <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
 
-                        let cls = 'mcq-fe-btn';
-                        if (isAnswered) {
-                            if (isCorrect)          cls += ' mcq-fe-correct';
-                            else if (isSelected)    cls += ' mcq-fe-wrong';
-                            else                    cls += ' mcq-fe-faded';
-                        } else if (isSelected) {
-                            cls += ' mcq-fe-selected';
-                        }
+                    {/* Progress dots */}
+                    <div className="flex gap-1.5 justify-center mb-5 overflow-x-auto no-scrollbar flex-shrink-0">
+                        {questions.map((_, i) => (
+                            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-indigo-600 w-5' : (i < currentIdx ? 'bg-indigo-600 opacity-35 w-1.5' : 'bg-slate-200 w-1.5')}`} />
+                        ))}
+                    </div>
 
-                        // Apply subject theme overrides
-                        const btnStyle = isSelected && !isAnswered ? { backgroundColor: '#4f46e5', borderColor: '#4338ca', color: 'white' } : {};
+                    {/* Rephrased / frustration nudge */}
+                    {q.isRephrased && (
+                        <div className="text-xs text-blue-600 bg-blue-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">
+                            🔄 Let's try this rule again with different words
+                        </div>
+                    )}
+                    {frustration?.level === 'high' && (
+                        <div className="text-xs text-indigo-600 bg-indigo-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">
+                            💡 Remember to check the subject and verb agreement!
+                        </div>
+                    )}
 
-                        return (
-                            <button
-                                key={i}
-                                className={cls}
-                                style={btnStyle}
-                                onClick={() => handleSelect(opt)}
-                                disabled={isAnswered}
-                            >
-                                <span className={`mcq-fe-letter ${isSelected && !isAnswered ? 'bg-white/20 text-white' : ''}`}>
-                                    {String.fromCharCode(65 + i)}
+                    {/* ── QUESTION TEXT ── */}
+                    <div className="bg-[var(--bg-card)] rounded-[2rem] border-2 border-[var(--border-color)] px-6 py-6 mb-4 shadow-xl flex-shrink-0"
+                         style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 bg-indigo-500/10 rounded-lg flex items-center justify-center">
+                                    <Compass size={12} className="text-indigo-600" />
+                                </div>
+                                <span className="text-indigo-600 font-black text-[9px] tracking-widest uppercase opacity-80">
+                                    {nodeType === 'WARMUP' ? '🌅 Warm-up' : nodeType === 'MASTERY' ? '⚡ Mastery' : 'English Practice'} · {currentIdx + 1}/{questions.length}
                                 </span>
-                                <span className="mcq-fe-text">{opt}</span>
-                                {isAnswered && isCorrect    && <Check size={16} className="mcq-fe-icon correct-icon text-emerald-500" strokeWidth={3} />}
-                                {isAnswered && isSelected && !isCorrect && <X size={16} className="mcq-fe-icon wrong-icon text-rose-500" strokeWidth={3} />}
+                            </div>
+
+                            {questMeta?.gameMode === 'quickfire' && (
+                                <div className="flex items-center gap-1 text-[9px] font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full">
+                                    <Zap size={10} /> QUICKFIRE
+                                </div>
+                            )}
+                            
+                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE */}
+                            {!isAnswered && q.hint && (
+                                <button key="hint-btn" onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-indigo-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                                    <Lightbulb size={18} />
+                                </button>
+                            )}
+                        </div>
+                        <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">
+                            {q.question || q.question_text}
+                        </p>
+                    </div>
+
+                    {/* ── OPTIONS ── */}
+                    <div className="flex flex-col gap-2.5 flex-shrink-0">
+                        {q.options?.map((opt, i) => {
+                            const isThisCorrect = isOptionCorrect(opt, q.answer, q.options);
+                            const isSelected = opt === selectedOption;
+
+                            let cls = 'mcq-fe-btn';
+                            if (isAnswered) {
+                                if (isThisCorrect)      cls += ' mcq-fe-correct';
+                                else if (isSelected)    cls += ' mcq-fe-wrong';
+                                else                    cls += ' mcq-fe-faded';
+                            } else if (isSelected) {
+                                cls += ' mcq-fe-selected';
+                            }
+
+                            return (
+                                <button
+                                    key={i}
+                                    className={cls}
+                                    onClick={() => setSelectedOption(opt)}
+                                    disabled={isAnswered}
+                                >
+                                    <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
+                                    <span className="mcq-fe-text">{opt}</span>
+                                    {isAnswered && isThisCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
+                                    {isAnswered && isSelected && !isThisCorrect && <X size={16} className="mcq-fe-icon wrong-icon" strokeWidth={3} />}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* ── HINT CARD ── */}
+                    {hintUsed && !isAnswered && (
+                        <div className="mt-4 bg-amber-50 border-2 border-amber-200 rounded-[2rem] p-5 animate-in slide-in-from-bottom-4 duration-500 flex-shrink-0">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Sparkles size={14} className="text-amber-500" />
+                                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Tutor Hint</span>
+                            </div>
+                            <p className="text-sm font-bold text-amber-900 leading-relaxed m-0">{q.hint}</p>
+                        </div>
+                    )}
+
+                    {/* ── CHECK ANSWER / CONTINUE ── */}
+                    <div className="mt-auto pt-6 pb-6 w-full flex-shrink-0">
+                        {!isAnswered ? (
+                            <button
+                                onClick={handleSubmit}
+                                disabled={!selectedOption}
+                                className={`w-full h-14 rounded-full font-black text-[13px] tracking-[0.1em] uppercase transition-all flex items-center justify-center gap-2 ${selectedOption ? 'bg-[var(--text-main)] text-[var(--bg-main)] shadow-xl shadow-slate-900/10 hover:opacity-90 active:scale-95' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'}`}
+                            >
+                                Submit Answer <Zap size={16} />
                             </button>
-                        );
-                    })}
+                        ) : (
+                            <div className={`w-full h-14 rounded-full border-2 flex items-center justify-center gap-2 font-black text-[11px] tracking-widest uppercase transition-all ${userWasCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>
+                                {userWasCorrect ? (
+                                    <>Brilliant! Moving on... <Check size={16} /></>
+                                ) : (
+                                    <>Reviewing explanation... <AlertCircle size={16} /></>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* 5. Hint Box */}
-                {hintUsed && !isAnswered && (
-                    <div className="mt-4 bg-amber-50 border-2 border-amber-200 rounded-3xl p-4 animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0 shadow-lg">
-                        <div className="flex items-center gap-2 mb-1">
-                            <Lightbulb size={13} className="text-amber-500" />
-                            <span className="font-black text-amber-600 text-[9px] tracking-widest uppercase">Expert Tip</span>
-                        </div>
-                        <p className="text-indigo-900 font-bold text-[13px] leading-relaxed m-0">{q.hint}</p>
-                    </div>
-                )}
-
-                {/* 6. Submit Button */}
-                {!isAnswered && (
-                    <button
-                        onClick={handleSubmit}
-                        disabled={selectedOption === null}
-                        className={`mt-auto mb-6 w-full h-14 rounded-[2rem] font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 shadow-2xl ${
-                            selectedOption !== null
-                                ? 'bg-indigo-600 text-white shadow-indigo-500/30 active:scale-95'
-                                : 'bg-white text-slate-300 border border-slate-100 cursor-not-allowed'
-                        }`}
-                    >
-                        SUBMIT ANSWER <Zap size={14} fill={selectedOption ? "currentColor" : "none"} />
-                    </button>
-                )}
-            </div>
-
-            {/* ── WRONG: ABSOLUTE SOLUTION PORTAL (Standard) ── */}
+            {/* ── WRONG: EXPLANATION POPUP ── */}
             {isAnswered && selectedOption !== q.answer && showExplanation && createPortal(
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-                    <div 
-                        className="fixed inset-0 bg-slate-950/80 backdrop-blur-xl" 
-                        onClick={nextQuestion}
-                    />
-
-                    <div className="relative w-full max-w-md z-[10000] rounded-[3rem] overflow-hidden bg-white shadow-[0_40px_100px_-10px_rgba(0,0,0,0.5)] border border-indigo-100 p-8 flex flex-col animate-in zoom-in-95 duration-300">
-                        {/* Status Icon */}
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center flex-shrink-0 border border-rose-100">
-                                <X size={24} strokeWidth={3} />
-                            </div>
-                            <div>
-                                <h4 className="text-xl font-black text-slate-900 leading-tight">Keep Practicing!</h4>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Knowledge Deep Dive</p>
-                            </div>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[3rem] p-10 max-w-md w-full shadow-2xl animate-in zoom-in-95 duration-300">
+                        <div className="bg-indigo-50 dark:bg-white/5 text-indigo-600 dark:text-indigo-400 w-16 h-16 rounded-3xl flex items-center justify-center mb-6 mx-auto">
+                            <Lightbulb size={32} />
                         </div>
-
-                        {/* Concept Card */}
-                        <div className="bg-indigo-50 rounded-[2rem] p-6 mb-8 border border-indigo-100 flex flex-col gap-4">
-                            <div className="flex items-center gap-3 text-indigo-600 font-black text-[10px] uppercase tracking-widest">
-                                <Sparkles size={14} /> The Correct Path
-                            </div>
-                            <div className="bg-white rounded-2xl p-4 text-emerald-600 font-black text-sm border border-emerald-100 shadow-sm">
-                                {q.answer}
-                            </div>
-                            <p className="text-indigo-900 font-bold text-sm leading-relaxed p-2">
-                                {q.explanation || "After 'going to', we use the base form of the verb. 'Revise' is the correct base form here."}
-                            </p>
+                        <h4 className="text-[var(--text-main)] font-black mb-2 text-center text-xl">Let's Learn Why</h4>
+                        <div className="bg-emerald-50 text-emerald-700 p-5 rounded-[2rem] font-black mb-6 border-2 border-emerald-100 text-center text-lg italic animate-in fade-in slide-in-from-bottom-2 duration-700">
+                            "{correctText}"
                         </div>
-
-                        {/* Action */}
-                        <button
-                            onClick={nextQuestion}
-                            className="w-full h-16 bg-indigo-600 text-white rounded-2xl font-black text-sm tracking-widest shadow-xl shadow-indigo-500/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        <p className="text-[var(--text-sub)] text-base font-bold mb-8 text-center leading-relaxed">
+                            {q.explanation || "Take a look at this grammar pattern. You'll get another chance to try a similar concept later in this quest!"}
+                        </p>
+                        <button 
+                            onClick={nextQuestion} 
+                            className="w-full h-16 bg-indigo-600 text-white rounded-[2rem] font-black text-xs tracking-[0.2em] uppercase shadow-xl shadow-indigo-500/40 active:scale-95 transition-all"
                         >
-                            GOT IT <ArrowRight size={18} strokeWidth={3} />
+                            CONTINUE QUEST
                         </button>
                     </div>
                 </div>,

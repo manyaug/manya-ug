@@ -27,6 +27,12 @@ const ChatEngine = ({ data, onComplete }) => {
 
     // Typing Effect
     useEffect(() => {
+        if (!fullText || fullText.trim() === "") {
+             setIsTyping(false);
+             setDisplayedText("");
+             return;
+        }
+
         let current = "";
         let i = 0;
         setIsTyping(true);
@@ -91,33 +97,33 @@ const ChatEngine = ({ data, onComplete }) => {
     return (
         <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
             
-            <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-8 overflow-y-auto scrollbar-hide">
+            <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto scrollbar-hide">
                 
                 {/* 1. Optional Character/Subject Image */}
                 {data.image && (
-                    <div className="w-full max-w-sm aspect-video rounded-[40px] overflow-hidden shadow-2xl border-4 border-white dark:border-white/10 animate-in zoom-in duration-700 bg-slate-200">
-                        <img src={resolveRemoteUrl(data.image)} className="w-full h-full object-cover" alt="Context" />
+                    <div className="w-full max-w-sm aspect-video rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-2xl border-4 border-white dark:border-white/10 animate-in zoom-in duration-700 bg-slate-200">
+                        <img src={resolveRemoteUrl(data.image, data._originUrl)} className="w-full h-full object-cover" alt="Context" />
                     </div>
                 )}
 
                 {/* 2. Chat Row */}
-                <div className="w-full max-w-xl flex items-start gap-4">
+                <div className="w-full max-w-xl flex items-start gap-3 sm:gap-4">
                     {/* Avatar */}
-                    <div className={`w-16 h-16 rounded-3xl flex-none overflow-hidden border-4 shadow-xl ${isDark ? 'border-white/10' : 'border-white'} animate-in slide-in-from-left-4 duration-500`}>
+                    <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl flex-none overflow-hidden border-2 sm:border-4 shadow-xl ${isDark ? 'border-white/10' : 'border-white'} animate-in slide-in-from-left-4 duration-500`}>
                         <img src={char.icon} className="w-full h-full object-cover bg-white" alt={char.name} />
                     </div>
 
                     {/* Bubble */}
                     <div 
                         onClick={isTyping ? skipTyping : null}
-                        className={`flex-1 p-6 rounded-[32px] rounded-tl-none border transition-all animate-in slide-in-from-right-4 duration-500 cursor-pointer ${isDark ? 'bg-white/5 border-white/5 shadow-2xl shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-xl shadow-slate-200/50'}`}
+                        className={`flex-1 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] rounded-tl-none border transition-all animate-in slide-in-from-right-4 duration-500 cursor-pointer ${isDark ? 'bg-white/5 border-white/5 shadow-2xl shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-xl shadow-slate-200/50'}`}
                     >
                         <div className="flex justify-between items-center mb-2">
-                            <span className={`text-[10px] font-black tracking-widest uppercase ${char.color}`}>{char.name}</span>
+                            <span className={`text-[9px] sm:text-[10px] font-black tracking-widest uppercase ${char.color}`}>{char.name}</span>
                             {isTyping && <div className="flex gap-1"><div className="w-1 h-1 bg-current rounded-full animate-bounce" /><div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:0.2s]" /><div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:0.4s]" /></div>}
                         </div>
                         <p 
-                            className={`text-base sm:text-lg font-bold leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
+                            className={`text-sm sm:text-lg font-bold leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
                             dangerouslySetInnerHTML={{ __html: displayedText }}
                         />
                     </div>
@@ -125,13 +131,13 @@ const ChatEngine = ({ data, onComplete }) => {
             </div>
 
             {/* Footer Action */}
-            <div className={`flex-none p-8 pt-2 transition-opacity duration-500 ${isTyping ? 'opacity-30' : 'opacity-100'}`}>
+            <div className={`flex-none p-6 sm:p-8 pt-2 transition-opacity duration-500 ${isTyping ? 'opacity-30' : 'opacity-100'}`}>
                 <button 
                     onClick={onComplete}
                     disabled={isTyping}
-                    className={`w-full h-16 bg-indigo-600 text-white rounded-[24px] font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl shadow-indigo-500/30 active:scale-95 transition-all`}
+                    className={`w-full h-14 sm:h-16 bg-indigo-600 text-white rounded-[20px] sm:rounded-[24px] font-black text-[10px] sm:text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl shadow-indigo-500/30 active:scale-95 transition-all`}
                 >
-                    Continue Conversation <ArrowRight size={18} />
+                    Continue <ArrowRight size={18} />
                 </button>
             </div>
 

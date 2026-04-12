@@ -1,0 +1,328 @@
+[
+  {
+    "qid": "PQ-SIM-ENG-01-001",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "title": "Holiday Vocab Hunt",
+      "character": "Polly",
+      "size": 8,
+      "words": [
+        "FARE",
+        "BOARD",
+        "CHORE",
+        "PAL",
+        "SCRUB",
+        "TERM"
+      ],
+      "hint": "Find words related to transport and holiday tasks!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-002",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        {
+          "text": "The school will break out for holidays",
+          "error": "out",
+          "correct": "off"
+        },
+        {
+          "text": "I will break into with my friends",
+          "error": "into",
+          "correct": "up"
+        },
+        {
+          "text": "The bus fare is too high",
+          "error": "high",
+          "correct": "expensive"
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-003",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        {
+          "id": "s1",
+          "expected": "I have been"
+        },
+        {
+          "id": "s2",
+          "expected": "in the village"
+        },
+        {
+          "id": "s3",
+          "expected": "since Monday."
+        }
+      ],
+      "distractors": [
+        "for Monday",
+        "breaking"
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-004",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        {
+          "id": "s1",
+          "expected": "He has slept"
+        },
+        {
+          "id": "s2",
+          "expected": "for"
+        },
+        {
+          "id": "s3",
+          "expected": "three hours."
+        }
+      ],
+      "distractors": [
+        "since",
+        "breaking"
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-005",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "title": "Phrasal Verb Grid",
+      "character": "Polly",
+      "size": 8,
+      "words": [
+        "BREAKOFF",
+        "UPCOUNTRY",
+        "BOARD"
+      ],
+      "hint": "Find the key verbs we use when school closes!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-006",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Kiki",
+      "winScore": 400,
+      "queries": [
+        {
+          "text": "Wait since me",
+          "error": "since",
+          "correct": "for"
+        },
+        {
+          "text": "I am here for 2020",
+          "error": "for",
+          "correct": "since"
+        },
+        {
+          "text": "Starting morning since",
+          "error": "since",
+          "correct": "from"
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-008",
+    "engine_type": "HARVEST_GAME",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Kiki",
+      "leftCategory": "Holiday Tasks",
+      "rightCategory": "Travel Words",
+      "words": [
+        {
+          "text": "Scrubbing",
+          "category": "left"
+        },
+        {
+          "text": "Digging",
+          "category": "left"
+        },
+        {
+          "text": "Fare",
+          "category": "right"
+        },
+        {
+          "text": "Boarding",
+          "category": "right"
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-009",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        {
+          "id": "s1",
+          "expected": "We are"
+        },
+        {
+          "id": "s2",
+          "expected": "waiting for"
+        },
+        {
+          "id": "s3",
+          "expected": "the bus fare."
+        }
+      ],
+      "distractors": [
+        "since",
+        "breaking"
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-010",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        {
+          "base": "The term ____ off tomorrow",
+          "targetTense": "The Future",
+          "options": [
+            "breaks",
+            "will break",
+            "broke"
+          ],
+          "correct": "will break"
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-011",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        {
+          "text": "I have a pen friend in Kenya",
+          "error": "friend",
+          "correct": "pal"
+        },
+        {
+          "text": "The term start in September",
+          "error": "start",
+          "correct": "commences"
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-012",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "title": "Preposition Power",
+      "character": "Polly",
+      "size": 8,
+      "words": [
+        "SINCE",
+        "FOR",
+        "DURING",
+        "UNTIL",
+        "BEFORE"
+      ],
+      "hint": "Find the time prepositions we use for holidays!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-013",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        {
+          "id": "s1",
+          "expected": "I am traveling"
+        },
+        {
+          "id": "s2",
+          "expected": "to see my"
+        },
+        {
+          "id": "s3",
+          "expected": "pen pal."
+        }
+      ],
+      "distractors": [
+        "friend",
+        "breaking"
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-014",
+    "engine_type": "HARVEST_GAME",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Kiki",
+      "leftCategory": "Formal words",
+      "rightCategory": "Informal words",
+      "words": [
+        {
+          "text": "Commence",
+          "category": "left"
+        },
+        {
+          "text": "Start",
+          "category": "right"
+        },
+        {
+          "text": "Vacation",
+          "category": "left"
+        },
+        {
+          "text": "Holiday",
+          "category": "right"
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-01-015",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_01_holiday_kickoff",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        {
+          "base": "He ____ his room since Monday",
+          "targetTense": "Present Perfect",
+          "options": [
+            "scrubbed",
+            "has scrubbed",
+            "scrub"
+          ],
+          "correct": "has scrubbed"
+        }
+      ]
+    }
+  }
+]

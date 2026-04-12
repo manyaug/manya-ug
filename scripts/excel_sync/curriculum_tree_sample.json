@@ -1,0 +1,113 @@
+[
+  {
+    "name": "content",
+    "type": "folder",
+    "path": "content",
+    "children": [
+      {
+        "name": "english",
+        "type": "folder",
+        "path": "content/english",
+        "children": [
+          {
+            "name": "holidays",
+            "type": "folder",
+            "path": "content/english/holidays",
+            "children": [
+              {
+                "name": "quest_01_holiday_kickoff",
+                "type": "folder",
+                "path": "content/english/holidays/quest_01_holiday_kickoff",
+                "children": [
+                  {
+                    "name": "01_holiday_kickoff.json",
+                    "type": "file",
+                    "path": "content/english/holidays/quest_01_holiday_kickoff/01_holiday_kickoff.json"
+                  }
+                ]
+              },
+              {
+                "name": "quest_10_vault",
+                "type": "folder",
+                "path": "content/english/holidays/quest_10_vault",
+                "children": [
+                  { "name": "dict_activities.json", "type": "file", "path": "content/english/holidays/quest_10_vault/dict_activities.json" },
+                  { "name": "dict_holidays.json", "type": "file", "path": "content/english/holidays/quest_10_vault/dict_holidays.json" },
+                  { "name": "rule_active_passive.json", "type": "file", "path": "content/english/holidays/quest_10_vault/rule_active_passive.json" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "math",
+        "type": "folder",
+        "path": "content/math",
+        "children": [
+          {
+            "name": "set_theory",
+            "type": "folder",
+            "path": "content/math/set_theory",
+            "children": [
+              {
+                "name": "quest_01_finite_infinite_sets",
+                "children": [
+                   { "name": "01-001_2.json", "type": "file", "path": "content/math/set_theory/quest_01_finite_infinite_sets/01-001_2.json" }
+                ]
+              },
+              {
+                "name": "quest_02_set_notation_regions",
+                "children": [
+                   { "name": "02-001.json", "type": "file", "path": "content/math/set_theory/quest_02_set_notation_regions/02-001.json" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "science",
+        "type": "folder",
+        "path": "content/science",
+        "children": [
+          {
+            "name": "musklo-skeletal-system",
+            "children": [
+              {
+                "name": "quest_1_types_of_skeletons",
+                "children": [
+                  { "name": "note_types_skeleton.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_1_types_of_skeletons/note_types_skeleton.json" }
+                ]
+              },
+              {
+                "name": "quest_6_bone_structure",
+                "children": [
+                  { "name": "labeling_bone_v1.json", "type": "file", "path": "content/science/musklo-skeletal-system/quest_6_bone_structure/labeling_bone_v1.json" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "sst",
+        "type": "folder",
+        "path": "content/sst",
+        "children": [
+          {
+            "name": "locating_africa",
+            "children": [
+              {
+                "name": "quest_2_grid_master",
+                "children": [
+                  { "name": "quiz_adv_grid_01.json", "type": "file", "path": "content/sst/locating_africa/quest_2_grid_master/quiz_adv_grid_01.json" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -33,21 +33,49 @@ export function assetUrl(path) {
 }
 
 /**
- * INTERCEPTOR: Detects and rewrites legacy Supabase URLs to the new CDN.
+ * INTERCEPTOR: Detects and rewrites URLs to the correct CDN path.
+ * Supports context-aware resolution for relative links (../).
  */
-export function resolveRemoteUrl(url) {
+export function resolveRemoteUrl(url, contextUrl = null) {
   if (!url) return '';
+  if (url.startsWith('http')) return url; 
+
+  const rootFolders = ['english', 'math', 'science', 'sst', 'shared', 'images', 'data'];
   
-  // 1. If it's a legacy Supabase URL, strip it down to the relative path
-  if (url.includes('supabase.co')) {
-    // Extract path after "public/assets/" or "manya-assets/"
-    const match = url.match(/public\/assets\/(.+)$/);
-    const fallbackMatch = url.match(/manya-assets\/(.+)$/);
-    
+  // 🛡️ Pre-clean: Remove leading/trailing whitespace and leading slashes
+  const cleanUrl = url.trim().replace(/^\/+/, '');
+  const segments = cleanUrl.split('/');
+  const firstSeg = segments[0].toLowerCase();
+  
+  // 1. PROJECT ROOT PATHS: (e.g., english/chap-1/... or images/...)
+  // If explicitly starting with a known repo root folder, resolve from root.
+  if (rootFolders.includes(firstSeg)) {
+      const resolved = assetUrl(cleanUrl);
+      if (cleanUrl.includes('english')) {
+          console.debug(`📡 [Resolver] Global Route: ${cleanUrl} -> ${resolved}`);
+      }
+      return resolved;
+  }
+
+  // 2. ASSETS ALIAS: (Common legacy pattern)
+  if (cleanUrl.startsWith('assets/')) {
+    return assetUrl(cleanUrl.replace(/^assets\//, ''));
+  }
+
+  // 3. CONTEXT-BASED RELATIVE PATHS: (e.g., ../shared/ or filename.json)
+  if (contextUrl && (cleanUrl.startsWith('.') || !cleanUrl.includes('/'))) {
+    const resolved = joinUrls(contextUrl, cleanUrl);
+    console.debug(`📡 [Resolver] Relative Route: ${cleanUrl} (base: ${contextUrl}) -> ${resolved}`);
+    return resolved;
+  }
+
+  // 4. LEGACY SUPABASE REDIRECTOR
+  if (cleanUrl.includes('supabase.co')) {
+    const match = cleanUrl.match(/public\/assets\/(.+)$/);
+    const fallbackMatch = cleanUrl.match(/manya-assets\/(.+)$/);
     let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
     
     if (relativePath) {
-        // Special case: scientific models need the _compressed suffix
         if (relativePath.endsWith('.glb') && !relativePath.includes('_compressed')) {
             relativePath = relativePath.replace(/\.glb$/, '_compressed.glb');
         }
@@ -55,13 +83,31 @@ export function resolveRemoteUrl(url) {
     }
   }
 
-  // 2. Clear handling for "assets/" prefixed paths (common in quest JSONs)
-  if (url.startsWith('assets/')) {
-    return assetUrl(url.replace(/^assets\//, ''));
-  }
+  // 5. FALLBACK: Default to repo-root
+  return assetUrl(cleanUrl);
+}
 
-  // 3. If it's already a clean local-style path or filename
-  return url;
+/**
+ * Robustly joins a base URL and a relative path, handling "../" correctly.
+ */
+function joinUrls(base, relative) {
+    try {
+        // If base is a full URL, use the browser's URL constructor for smart joining
+        if (base.startsWith('http')) {
+            return new URL(relative, base).href;
+        }
+        // Fallback for local-ish paths
+        const baseParts = base.split('/').filter(p => p && !p.endsWith('.json'));
+        const relParts = relative.split('/');
+        
+        for (const part of relParts) {
+            if (part === '..') baseParts.pop();
+            else if (part !== '.') baseParts.push(part);
+        }
+        return (base.startsWith('/') ? '/' : '') + baseParts.join('/');
+    } catch (e) {
+        return relative;
+    }
 }
 
 /**
@@ -86,6 +132,9 @@ export const AUDIO = {
   rain:  assetUrl('shared/audios/rain.mp3'),
   shine: assetUrl('shared/audios/shine.mp3'),
 }
+
+// 🛡️ AUDIO PATH GUARD
+const normalizeAudio = (path) => path.replace('/audios/', '/audio/');
 
 export const SFX = {
   correct:         assetUrl('shared/audios/collect-points.mp3'),
@@ -194,5 +243,6 @@ export function getGlb(key) {
 }
 
 export function getSfx(name) {
-  return SFX[name] ?? assetUrl('shared/audios/' + (name.endsWith('.mp3') ? name : name + '.mp3'));
+  const filePart = name.endsWith('.mp3') ? name : name + '.mp3';
+  return SFX[name] ?? assetUrl('shared/audios/' + filePart);
 }

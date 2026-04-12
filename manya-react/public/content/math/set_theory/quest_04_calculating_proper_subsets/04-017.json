@@ -9,7 +9,7 @@
     "B": { "label": "B", "color": "#06b6d4" }
   },
   "zones": {
-    "left": [1, 2], 
+    "left": [1, 2, 9], 
     "center": [3, 4], 
     "right": [5], 
     "outside": [6, 7, 8]

@@ -1,13 +1,10 @@
 import { supabase } from './supabaseClient';
 import { ManyaDB } from '../utils/manyaDB';
-import { resolveSolutionJSON } from '../utils/questionParser';
 import { parseSolutionToSteps } from '../utils/solutionVisualizer';
 
-// Simple in-memory cache to speed up re-entry within the same session
 const BANK_CACHE = {};
-let CACHE_CLEARED = false; // Forced one-time clear per session for v3.6 update
+let CACHE_CLEARED = false;
 
-// Map curriculum folder names to 'subtopic' column in Supabase
 const SUBTOPIC_MAP = {
     'quest_01_finite_infinite_sets': 'finite_vs_infinite_sets',
     'quest_02_set_notation_regions': 'set_notation_regions',
@@ -22,83 +19,62 @@ const SUBTOPIC_MAP = {
 };
 
 /**
- * Fetches and transforms MATH questions from Supabase.
- * Implements SMART FALLBACK strategy: Try mapping -> Try sanitized -> Give up
+ * Fetches and transforms MATH questions from the unified Manya Vault.
  */
 export const fetchMathQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
-        console.log(`📚 [MathFetcher] topicId="${topicId}" → subtopic="${subtopic}"`);
         
-        // --- V3.6 Cache Migration: Clear IndexedDB one time to add 'raw_explanation' field ---
         if (!CACHE_CLEARED) {
-            console.log("🛠️ [MathFetcher] Performing one-time IndexedDB cache clear for metadata upgrade...");
             await ManyaDB.clearQuestionCache();
             CACHE_CLEARED = true;
         }
         
-        // 1. Return from in-memory cache if available
-        if (BANK_CACHE[subtopic]) {
-            console.log(`⚡ [Cache] Serving ${subtopic} from in-memory cache (${BANK_CACHE[subtopic].length} Q).`);
-            return BANK_CACHE[subtopic];
-        }
+        if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
 
-        // 2. Try IndexedDB (Persistent Offline Cache)
         const allCached = await ManyaDB.getCachedQuestions('math');
         const cached = allCached.filter(q => q.subtopic === subtopic);
         if (cached && cached.length > 0) {
-            console.log(`📦 [ManyaDB] Serving ${subtopic} from IndexedDB (${cached.length} Q).`);
             BANK_CACHE[subtopic] = cached;
             return cached;
         }
 
-        // 3. Try Supabase with Primary Subtopic
-        console.log(`🔍 [Supabase] Fetching questions for subtopic="${subtopic}" from questions_math table...`);
+        // --- RESILIENT VAULT QUERY ---
         let { data, error } = await supabase
-            .from('questions_math')
+            .from('manya_vault')
             .select('*')
-            .eq('subtopic', subtopic);
+            .ilike('subject', 'math')
+            .in('subtopic', [subtopic, topicId]) // Match both 'calculating_subsets' AND 'quest_03_...'
+            .ilike('item_type', '%MCQ%');        // Whitespace-resilient: catches ' MCQ '
 
-        // 4. SMART FALLBACK: If 0 rows, try sanitizing the name
+        // Fallback for sanitized names
         if (!error && (!data || data.length === 0) && subtopic.includes('quest_')) {
-            const sanitized = subtopic.replace(/^quest_\d+_/, ''); // "quest_02_..." -> "..."
-            console.warn(`⚠️ [Supabase] 0 rows for "${subtopic}". Retrying with sanitized name: "${sanitized}"...`);
-            
+            const sanitized = subtopic.replace(/^quest_\d+_/, '');
             const retry = await supabase
-                .from('questions_math')
+                .from('manya_vault')
                 .select('*')
-                .eq('subtopic', sanitized);
+                .eq('subject', 'MATH')
+                .eq('subtopic', sanitized)
+                .eq('item_type', 'MCQ');
             
-            if (retry.data && retry.data.length > 0) {
-                data = retry.data;
-                console.log(`✅ [Fallback Success] Found ${data.length} questions using sanitized name.`);
-            } else {
-                // Secondary Fallback: Try with spaces instead of underscores
+            if (retry.data?.length > 0) data = retry.data;
+            else {
                 const withSpaces = sanitized.replace(/_/g, ' ');
-                console.warn(`⚠️ [Supabase] Still 0 rows. Retrying with spaces: "${withSpaces}"...`);
                 const retry2 = await supabase
-                    .from('questions_math')
+                    .from('manya_vault')
                     .select('*')
-                    .eq('subtopic', withSpaces);
-                if (retry2.data && retry2.data.length > 0) {
-                    data = retry2.data;
-                    console.log(`✅ [Secondary Fallback Success] Found ${data.length} questions using spaces.`);
-                }
+                    .eq('subject', 'MATH')
+                    .eq('subtopic', withSpaces)
+                    .eq('item_type', 'MCQ');
+                if (retry2.data?.length > 0) data = retry2.data;
             }
         }
 
-        if (error) {
-            console.error(`❌ [Supabase] Query error for subtopic "${subtopic}":`, error);
-            throw error;
-        }
-        
-        if (!data || data.length === 0) {
-            console.warn(`⚠️ [Supabase] 0 rows returned for subtopic="${subtopic}" even after fallback.`);
-            return [];
-        }
+        if (error) throw error;
+        if (!data || data.length === 0) return [];
 
         const transformed = data.map(q => {
-            const options = [q.optiona, q.optionb, q.optionc, q.optiond]
+            const options = [q.option_a, q.option_b, q.option_c, q.option_d]
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
             return {
@@ -108,42 +84,28 @@ export const fetchMathQuestions = async (topicId) => {
                 topic: q.topic,
                 subtopic: q.subtopic,
                 difficulty: q.difficulty || 'E',
-                question: q.questiontext,
+                question: q.question_text,
                 options: options,
-                answer: q.correctanswer,
-                explanation: parseSolutionToSteps(q.detailedsolution),
-                raw_explanation: q.detailedsolution, // keep for debugging
+                answer: q.correct_answer,
+                explanation: parseSolutionToSteps(q.explanation),
+                raw_explanation: q.explanation,
                 hint: q.hint,
-                image_url: q.imagelocation === 'null' ? null : q.imagelocation,
+                image_url: q.image_location === 'null' ? null : q.image_location,
                 variant: q.qid.includes('-V') ? q.qid.split('-V')[1] : 'V0',
-                isPLE: q.marked_ple === 'yes',
-                type: q.questiontype || 'MCQ',
-                tags: q.tags || [],
-                source: q.source_sheet,
-                parentid: q.parentid,
-                json_reference_path: q.json_reference_path,
+                isPLE: q.metadata?.is_ple || false,
+                type: q.item_type || 'MCQ',
+                tags: q.metadata?.tags || [],
                 engine_type: q.engine_type,
-                mode: q.mode,
-                model_url: q.model_url,
-                has_hotspots: q.has_hotspots,
-                variant_title: q.variant_title,
-                question_count: q.question_count,
-                full_json_raw: q.full_json_raw,
-                filename: q.filename,
-                folder: q.folder
+                interaction_config: q.interaction_config
             };
         });
 
-        console.log(`✅ [Supabase] Loaded ${transformed.length} questions for ${subtopic}`);
-        
-        // 5. Save to both caches for future use
         BANK_CACHE[subtopic] = transformed;
         await ManyaDB.cacheQuestions(transformed);
-        
         return transformed;
 
     } catch (error) {
-        console.error("[Math Supabase Service] Fetch Error:", error.message);
+        console.error("[Math Vault Service] Fetch Error:", error.message);
         return [];
     }
 };

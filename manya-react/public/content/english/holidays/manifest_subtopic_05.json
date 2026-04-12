@@ -1,0 +1,199 @@
+[
+  {
+    "qid": "PQ-SIM-ENG-05-001",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "title": "Farm Life Vocab",
+      "character": "Polly",
+      "size": 8,
+      "words": ["FARM", "SCRUB", "DIG", "GOAT", "HERD", "GARDEN"],
+      "hint": "Find words for things you do on a farm!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-002",
+    "engine_type": "HARVEST_GAME",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Kiki",
+      "leftCategory": "Farm Chores",
+      "rightCategory": "Town Jobs",
+      "words": [
+        { "text": "Herding", "category": "left" },
+        { "text": "Mowing", "category": "right" },
+        { "text": "Digging", "category": "left" },
+        { "text": "Typing", "category": "right" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-003",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "We arrived at" },
+        { "id": "s2", "expected": "the village" },
+        { "id": "s3", "expected": "late in the evening." }
+      ],
+      "distractors": ["to", "starting"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-004",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "Granny ____ a big meal for us.", "targetTense": "Past Simple", "options": ["prepared", "prepares", "preparing"], "correct": "prepared" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-005",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "title": "Village Welcome",
+      "character": "Polly",
+      "size": 8,
+      "words": ["GOATS", "REVISE", "ROUTINE", "TOUR", "UPCOUNTRY"],
+      "hint": "Find words related to visiting the village!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-006",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        { "text": "We did a tour in the farm", "error": "in", "correct": "of" },
+        { "text": "I will scrub the cattle", "error": "scrub", "correct": "water" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-007",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "Manya helped" },
+        { "id": "s2", "expected": "his mother" },
+        { "id": "s3", "expected": "with household chores." }
+      ],
+      "distractors": ["her", "doing"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-008",
+    "engine_type": "HARVEST_GAME",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Kiki",
+      "leftCategory": "Living things",
+      "rightCategory": "Tools",
+      "words": [
+        { "text": "Cattle", "category": "left" },
+        { "text": "Hoe", "category": "right" },
+        { "text": "Granny", "category": "left" },
+        { "text": "Pail", "category": "right" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-009",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "Yesterday we ____ to the garden.", "targetTense": "Past Simple", "options": ["went", "go", "gone"], "correct": "went" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-010",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "The village" },
+        { "id": "s2", "expected": "is very" },
+        { "id": "s3", "expected": "peaceful and quiet." }
+      ],
+      "distractors": ["are", "noisy"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-011",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "title": "Action Verbs",
+      "character": "Polly",
+      "size": 8,
+      "words": ["WASH", "HELP", "PLAY", "EAT", "SLEEP", "SING"],
+      "hint": "Find the things you do in the village!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-012",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Kiki",
+      "winScore": 400,
+      "queries": [
+        { "text": "My routine are boring", "error": "are", "correct": "is" },
+        { "text": "The cows was eating grass", "error": "was", "correct": "were" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-013",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "Kiki saw" },
+        { "id": "s2", "expected": "a large" },
+        { "id": "s3", "expected": "herd of cattle." }
+      ],
+      "distractors": ["seen", "group"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-014",
+    "engine_type": "PUNCTUATION_PORTAL",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { 
+          "parts": ["Granny's farm is", " incredible", "!"], 
+          "slots": [{ "index": 1, "expected": "so", "hint": "Describe how much!" }]
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-05-015",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_05_village_arrival",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "I ____ to revise my notes later.", "targetTense": "Future Intent", "options": ["am going", "went", "going"], "correct": "am going" }
+      ]
+    }
+  }
+]

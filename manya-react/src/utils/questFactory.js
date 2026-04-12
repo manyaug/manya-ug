@@ -11,6 +11,7 @@
  */
 
 import { loadQuestSteps, contentUrl } from './questLoader.js';
+import { fetchEnglishQuestions } from '../services/englishMockDB.js';
 import { getQuestKey, getNodeMastery, getQuestProgress } from '../services/questProgressService.js';
 
 
@@ -37,18 +38,45 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
 
         // 1. EXPLORE: Load the narrative story JSON directly (CHAT + interactive games)
         if (nodeType === 'EXPLORE') {
-            if (resources && resources.length > 0) {
-                const storyRes = resources[0];
-                const fileName = storyRes.file.endsWith('.json') ? storyRes.file : `${storyRes.file}.json`;
-                try {
-                    const { steps: storySteps } = await loadQuestSteps('english', unitId, questFolder, fileName);
-                    if (storySteps.length > 0) {
-                        steps.push(...storySteps);
+            try {
+                // Try to find the QUEST_STORY item in the database bank first
+                const allQuestions = await fetchEnglishQuestions(questFolder);
+                const storyAnchor = allQuestions.find(q => q.type === 'QUEST_STORY' || q.item_type === 'QUEST_STORY');
+                
+                if (storyAnchor) {
+                    const stepsToFlatten = storyAnchor.steps || storyAnchor.data?.steps || storyAnchor.interaction_config?.steps;
+                    const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url || storyAnchor.interaction_config?.cdn_url;
+
+                    if (stepsToFlatten && stepsToFlatten.length > 0) {
+                        return stepsToFlatten.map(s => ({ ...s, item_type: 'QUEST_STORY' }));
+                    } else if (cdnUrl || storyAnchor.qid) {
+                        // If it's a pointer, use the smart loader to follow the CDN link
+                        const qid = storyAnchor.qid || storyAnchor.id;
+                        const loaded = await loadQuestSteps('english', unitId, questFolder, qid);
+                        if (loaded.steps) {
+                            return loaded.steps.map(s => ({ ...s, item_type: 'QUEST_STORY' }));
+                        }
                     }
-                } catch (e) {
-                    console.warn(`[QuestFactory] Could not load English story: ${fileName}`, e);
                 }
+
+                // Fallback to legacy file-based loader
+                const storyFile = deriveStoryFile(questFolder);
+                const fileName = storyFile.endsWith('.json') ? storyFile : `${storyFile}.json`;
+                const { steps: storySteps } = await loadQuestSteps('english', unitId, questFolder, fileName);
+                if (storySteps.length > 0) {
+                    return storySteps;
+                }
+            } catch (e) {
+                console.warn(`[QuestFactory] Could not load English story steps:`, e);
             }
+            
+            // Fallback: Use FETCHER in story mode if all else fails
+            steps.push({
+                engineType: 'ENGLISH_FETCHER',
+                topic: questFolder,
+                mode: 'story',
+                data: { topic: questFolder, nodeType: 'EXPLORE', subject: 'english', unitId, questKey }
+            });
             return steps;
         }
 
@@ -84,6 +112,12 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         });
 
         return steps;
+    }
+
+    // Helper: quest_01_holiday_kickoff -> "01_holiday_kickoff"
+    function deriveStoryFile(subName) {
+        if (!subName) return null;
+        return subName.replace(/^quest_/, '');
     }
 
     // ── SST, Math, Science: Adaptive Fetcher with content sequencing ────────
@@ -145,12 +179,20 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             }
         }
 
-        // ── IDENTIFY SIMULATIONS ──
+        // ── IDENTIFY SIMULATIONS (Partitioned: Recap vs Quiz/Sim) ──
         let selectedSims = [];
+        let recapSims = [];
         if ((nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
-            // A. Check for explicit JSON resources
+            // A. Check for explicit JSON resources — partition into recap vs quiz
             if (resources && resources.length > 0) {
-                selectedSims.push(...resources);
+                for (const r of resources) {
+                    const lower = (r.file || '').toLowerCase();
+                    if (lower.startsWith('recap_') || lower.includes('_recap')) {
+                        recapSims.push(r);
+                    } else {
+                        selectedSims.push(r);
+                    }
+                }
             }
 
             // B. Check for Numbered Practice convention
@@ -166,25 +208,21 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             }
         }
 
-        // PRACTICE/REINFORCE: insert recap if previous node mastery was low
+        // PRACTICE/REINFORCE: insert recap upfront if previous node mastery was low
         if (nodeType === 'PRACTICE' || nodeType === 'REINFORCE') {
             const prevNode = nodeType === 'PRACTICE' ? 'EXPLORE' : 'PRACTICE';
             const questKey = getQuestKey(subject, unitId, questFolder);
             const prevMastery = getNodeMastery(subject, questKey, prevNode);
 
-            if (prevMastery < 60 && resources && resources.length > 0) {
-                const recapRes = resources.find(r =>
-                    r.file.startsWith('recap_') || r.file.includes('_recap') ||
-                    r.file.startsWith('study_') || r.file.includes('_study')
-                );
-                if (recapRes) {
-                    const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                    try {
-                        const { steps: recapSteps } = await loadQuestSteps(subject, unitId, questFolder, fileName);
-                        steps.push(...recapSteps);
-                    } catch (e) {
-                        console.warn(`[QuestFactory] Could not load recap:`, e);
-                    }
+            if (prevMastery < 60 && recapSims.length > 0) {
+                // Pre-inject the first recap as an intro step when previous mastery was low
+                const recapRes = recapSims[0];
+                const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
+                try {
+                    const { steps: recapSteps } = await loadQuestSteps(subject, unitId, questFolder, fileName);
+                    steps.push(...recapSteps);
+                } catch (e) {
+                    console.warn(`[QuestFactory] Could not load recap:`, e);
                 }
             }
         }
@@ -201,7 +239,8 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     subject: subject,
                     unitId,
                     questKey: getQuestKey(subject, unitId, questFolder),
-                    simResources: selectedSims
+                    simResources: selectedSims,
+                    recapResources: recapSims  // NEW: Separate channel for 3-consecutive-wrong rescue
                 }
             });
         }

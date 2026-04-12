@@ -163,22 +163,22 @@ export const ENGINE_REGISTRY = {
     'SENTENCE_BLOCKS': {
         type: 'react',
         hideGlobalFooter: true,
-        component: lazy(() => import('../components/simulations/SyntaxArchitect.jsx'))
+        component: lazy(() => import('../engines/english/SentenceBlocksEngine.jsx'))
     },
     'GARDEN_GUARD': {
         type: 'react',
         hideGlobalFooter: true,
-        component: lazy(() => import('../components/simulations/GrammarGuard.jsx'))
+        component: lazy(() => import('../engines/english/GardenGuardEngine.jsx'))
     },
     'PUNCTUATION_STICKERS': {
         type: 'react',
         hideGlobalFooter: true,
-        component: lazy(() => import('../components/simulations/PunctuationPortal.jsx'))
+        component: lazy(() => import('../engines/english/PunctuationPortalEngine.jsx'))
     },
     'TENSE_TREEHOUSE': {
         type: 'react',
         hideGlobalFooter: true,
-        component: lazy(() => import('../components/simulations/TenseTransformer.jsx'))
+        component: lazy(() => import('../engines/english/TenseTreehouseEngine.jsx'))
     },
     'DEEP_READER': {
         type: 'react',
@@ -193,7 +193,7 @@ export const ENGINE_REGISTRY = {
     'SYNTAX_ARCHITECT': {
         type: 'react',
         hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/SyntaxArchitectEngine.jsx'))
+        component: lazy(() => import('../engines/english/SentenceBlocksEngine.jsx'))
     },
     'CHAT': {
         type: 'react',

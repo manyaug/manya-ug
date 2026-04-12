@@ -11,6 +11,7 @@ import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
 import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
 import { getPathImage, getGem } from '../config/assetUrls';
 import { getQuestKey, loadAllProgress } from '../services/questProgressService';
+import { fetchDynamicCurriculum } from '../services/curriculumService';
 import '../styles/spiral.css';
 
 // ---- HOTSPOT POSITIONS (exact from original engine) ----
@@ -215,21 +216,28 @@ function SpiralView() {
         return () => clearTimeout(whooshTimer);
     }, []);
 
-    // Load curriculum JSON
+    // Load curriculum JSON or Dynamic DB content
     useEffect(() => {
         const load = async () => {
             try {
-                const res = await fetch('/curriculum-master.json');
-                const raw = await res.json();
-                const norm = {};
-                Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
-                setCurriculum(norm);
+                if (sub === 'english') {
+                    // Level 1.0: Dynamic DB-Driven World
+                    const dynamic = await fetchDynamicCurriculum('english');
+                    setCurriculum(prev => ({ ...prev, english: dynamic }));
+                } else {
+                    // Legacy: JSON-Driven World
+                    const res = await fetch('/curriculum-master.json');
+                    const raw = await res.json();
+                    const norm = {};
+                    Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
+                    setCurriculum(prev => ({ ...prev, ...norm }));
+                }
             } catch (e) {
                 console.error('Spiral curriculum load failed:', e);
             }
         };
         load();
-    }, []);
+    }, [sub]);
 
     // Scroll to active node after curriculum loaded
     useEffect(() => {

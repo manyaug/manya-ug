@@ -154,6 +154,11 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const [isFinished, setIsFinished] = useState(false);
     const [earnedAchievements, setEarnedAchievements] = useState([]);
     
+    // ─── RESCUE RECAP STATE (v5.0) ───
+    const [recapSteps, setRecapSteps] = useState([]);    // Loaded recap sim steps (held, not in queue)
+    const consecutiveWrongRef = useRef(0);                // Local tracker for real-time recap trigger
+    const recapUsedIndexRef = useRef(0);                  // Tracks which recap we've used
+
     // Efficiency: Prevent duplicate simulation logs
     const lastSimAttemptRef = useRef({ time: 0, label: '' });
 
@@ -188,11 +193,20 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                     for (const simRes of data.simResources) {
                         try {
                             const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
+                            const fullPath = `content/${subject}/${data.unitId || 'default'}/${topicId}/${fileName}`;
+                            
+                            // 🔍 TYPE-AWARE LOADING: 
+                            // If node is "EXPLORE", prioritize "NOTE" item_type from Vault.
+                            const targetType = nodeType === 'EXPLORE' ? 'NOTE' : 'SIMULATION';
+                            
+                            console.log(`📡 [SSTEngine] Attempting ${targetType} load: ${fullPath}`);
+                            
                             const { steps: simSteps } = await loadQuestSteps(
                                 subject,
                                 data.unitId || 'default',
                                 topicId,
-                                fileName
+                                fileName,
+                                targetType
                             );
                             simSteps.forEach((s, idx) => { 
                                 s.isSimulation = true;
@@ -201,10 +215,37 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                             });
                             simCandidates.push(...simSteps);
                         } catch (e) {
-                            console.warn(`[SSTEngine] Skipped sim "${simRes.file}": ${e.message}`);
+                            console.warn(`[SSTEngine] Sim Error "${simRes.file}":`, e.message);
                         }
                     }
                     console.log(`✅ [SSTEngine] Loaded ${simCandidates.length} simulation steps from JSON.`);
+                }
+
+                // ── 1b. PRE-LOAD RECAP RESOURCES (separate channel for 3-consecutive-wrong rescue) ──
+                const recapCandidates = [];
+                if (data?.recapResources && data.recapResources.length > 0) {
+                    console.log(`📖 [SSTEngine] Pre-loading ${data.recapResources.length} recap resources for rescue...`);
+                    for (const recapRes of data.recapResources) {
+                        try {
+                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
+                            const { steps: rSteps } = await loadQuestSteps(
+                                subject,
+                                data.unitId || 'default',
+                                topicId,
+                                fileName
+                            );
+                            rSteps.forEach((s, idx) => {
+                                s.isSimulation = true;
+                                s.isRecap = true;
+                                s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
+                            });
+                            recapCandidates.push(...rSteps);
+                        } catch (e) {
+                            console.warn(`[SSTEngine] Recap Error "${recapRes.file}":`, e.message);
+                        }
+                    }
+                    setRecapSteps(recapCandidates);
+                    console.log(`✅ [SSTEngine] ${recapCandidates.length} recap steps ready for rescue.`);
                 }
 
                 // ── 2. FETCH SUPABASE MCQs (OPTIONAL for SST) ───────────────
@@ -216,7 +257,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                     console.warn(`[SSTEngine] Supabase fetch failed (non-fatal): ${dbErr.message}`);
                 }
                 allBankRef.current = allQuestions;
-                console.log(`📊 [SSTEngine] DB MCQ bank: ${allQuestions.length}, JSON sims: ${simCandidates.length}`);
+                console.log(`📊 [SSTEngine] DB MCQ bank: ${allQuestions.length}, JSON sims: ${simCandidates.length}, recaps: ${recapCandidates.length}`);
 
                 // ── 3. GUARD: Need at least SOMETHING to show ───────────────
                 if (allQuestions.length === 0 && simCandidates.length === 0) {
@@ -235,8 +276,6 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                 setHistory(userHistory);
 
                 // ── 5. BUILD ADAPTIVE QUEST ─────────────────────────────────
-                // If we have DB MCQs, run them through the adaptive engine.
-                // If we only have JSON sims, serve them directly.
                 let finalQuestions;
                 let questMetadata;
 
@@ -268,6 +307,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                 console.log(`\ud83c\udfaf [SST Adaptive v4.2] ${nodeType} quest generated:`, {
                     bankSize: allQuestions.length,
                     simCount: simCandidates.length,
+                    recapCount: recapCandidates.length,
                     finalLength: finalQuestions.length,
                     gameMode: questMetadata.metadata?.gameMode || 'UNKNOWN',
                 });
@@ -336,12 +376,50 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         window.ManyaAudio?.pop?.();
     };
 
+    // ── ROBUST ANSWER VERIFICATION ──
+    const verifyAnswer = (selected, correct, options) => {
+        if (selected === undefined || selected === null || correct === undefined || correct === null) return false;
+        
+        const clean = str => String(str || "").trim().toLowerCase().replace(/\u00A0/g, ' ');
+        const sel = clean(selected);
+        
+        // 🔍 OPTION_X STRIPPER: Handle "Option_B", "Option B", "option_b"
+        const ans = clean(correct).replace(/^option[ _]?/i, ''); 
+
+        // 1. Direct Text/Key Match (e.g. 'Southern Hemisphere' === 'Southern Hemisphere' or 'B' === 'B')
+        if (sel === ans) return true;
+
+        // 2. Index/Letter Mapping
+        const letters = ['a', 'b', 'c', 'd'];
+        
+        // If DB ans is '1', and user picked 'B'
+        if (!isNaN(ans) && letters[parseInt(ans)] === sel) return true;
+        
+        // 3. Cross-Reference (DB says 'Option_B', User picked 'Southern Hemisphere')
+        if (options) {
+            // Find what the "Correct" text should be
+            const correctKey = ans.toUpperCase(); 
+            const correctIdx = letters.indexOf(ans);
+            const correctValue = options[correctKey] || (Array.isArray(options) ? options[correctIdx] : options[ans]);
+            
+            if (correctValue && clean(correctValue) === sel) return true;
+            
+            // Check if User picked the Key but DB has the Text
+            const userValue = options[selected] || (Array.isArray(options) ? options[letters.indexOf(sel)] : null);
+            if (userValue && clean(userValue) === ans) return true;
+        }
+
+        return false;
+    };
+
     const handleSubmit = () => {
         if (isAnswered || selectedOption === null) return;
         setIsAnswered(true);
 
         const q = questions[currentIdx];
-        const isCorrect = selectedOption === q.answer;
+        const isCorrect = verifyAnswer(selectedOption, q.answer, q.options);
+
+        console.log(`🎯 [Validation] User: ${selectedOption}, Expected: ${q.answer} -> RESULT: ${isCorrect ? 'RIGHT' : 'WRONG'}`);
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
@@ -352,6 +430,9 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             if (q.isRephrased) {
                 resolveRephrased(subject, q.originalId);
             }
+
+            // Reset consecutive wrong counter on correct answer
+            consecutiveWrongRef.current = 0;
         } else {
             window.ManyaAudio?.error?.();
 
@@ -363,6 +444,23 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             if (rephrased) {
                 setQuestions(prev => [...prev, rephrased]);
                 console.log(`🔄 [Variant Retry] Queued rephrased Q after wrong: ${rephrased.id}`);
+            }
+
+            // ─── 🆘 RESCUE RECAP: 3 consecutive wrong → inject recap ───
+            consecutiveWrongRef.current += 1;
+            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0) {
+                const recapIdx = recapUsedIndexRef.current % recapSteps.length;
+                const recapToInject = { ...recapSteps[recapIdx] };
+                recapUsedIndexRef.current += 1;
+                consecutiveWrongRef.current = 0; // Reset after injection
+
+                // Insert recap as the NEXT question (right after current)
+                setQuestions(prev => {
+                    const copy = [...prev];
+                    copy.splice(currentIdx + 1, 0, recapToInject);
+                    return copy;
+                });
+                console.log(`🆘 [Rescue Recap] 3 consecutive wrong → Injecting recap: ${recapToInject.id}`);
             }
         }
 

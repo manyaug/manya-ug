@@ -1,0 +1,197 @@
+[
+  {
+    "qid": "PQ-SIM-ENG-04-001",
+    "engine_type": "MORPH_GAME",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Polly",
+      "title": "Reporting the Present",
+      "queries": [
+        { "before": "I am hungry.", "after": "He said that he was hungry.", "changeType": "Reported Speech" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-002",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "Polly said that" },
+        { "id": "s2", "expected": "she wanted" },
+        { "id": "s3", "expected": "to travel." }
+      ],
+      "distractors": ["wants", "says"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-003",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        { "text": "He said he is coming now", "error": "is", "correct": "was" },
+        { "text": "She said she visit tomorrow", "error": "visit", "correct": "would visit" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-004",
+    "engine_type": "MORPH_GAME",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Polly",
+      "title": "Time Item Swap",
+      "queries": [
+        { "before": "I'll do it today.", "after": "She said she would do it that day.", "changeType": "Reported Speech" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-005",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "title": "Reporting Verbs",
+      "character": "Polly",
+      "size": 8,
+      "words": ["SAID", "TOLD", "ASKED", "REPLIED", "STATED", "ORDERED"],
+      "hint": "Find the verbs we use to tell what others said!"
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-006",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "The teacher told" },
+        { "id": "s2", "expected": "us that" },
+        { "id": "s3", "expected": "exams were over." }
+      ],
+      "distractors": ["said", "are"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-007",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "She said she ____ the book.", "targetTense": "Reported Past", "options": ["had lost", "has lost", "will lose"], "correct": "had lost" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-008",
+    "engine_type": "HARVEST_GAME",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Kiki",
+      "leftCategory": "Direct Word",
+      "rightCategory": "Reported Word",
+      "words": [
+        { "text": "here", "category": "left" },
+        { "text": "there", "category": "right" },
+        { "text": "now", "category": "left" },
+        { "text": "then", "category": "right" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-009",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Kiki",
+      "winScore": 400,
+      "queries": [
+        { "text": "Manya said he'll go tomorrow", "error": "he'll", "correct": "he would" },
+        { "text": "They told that they are busy", "error": "told", "correct": "said" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-010",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "Manya asked if" },
+        { "id": "s2", "expected": "we were" },
+        { "id": "s3", "expected": "ready to go." }
+      ],
+      "distractors": ["that", "are"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-011",
+    "engine_type": "PUNCTUATION_PORTAL",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { 
+          "parts": ["\"Stay back\"", " Kiki warned the dog", "."], 
+          "slots": [{ "index": 1, "expected": ",", "hint": "Separate direct speech with a comma!" }]
+        }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-012",
+    "engine_type": "TENSE_TREEHOUSE",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Polly",
+      "queries": [
+        { "base": "They said they ____ for hours.", "targetTense": "Past Continuous", "options": ["had been working", "are working", "were work"], "correct": "had been working" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-013",
+    "engine_type": "SENTENCE_BLOCKS",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Manya",
+      "slots": [
+        { "id": "s1", "expected": "The parrot" },
+        { "id": "s2", "expected": "asked where" },
+        { "id": "s3", "expected": "the mango was." }
+      ],
+      "distractors": ["is", "were"]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-014",
+    "engine_type": "GARDEN_GUARD",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "character": "Kiki",
+      "winScore": 300,
+      "queries": [
+        { "text": "I said I see it yesterday", "error": "see", "correct": "had seen" },
+        { "text": "She said she come here", "error": "come", "correct": "had come" }
+      ]
+    }
+  },
+  {
+    "qid": "PQ-SIM-ENG-04-015",
+    "engine_type": "WORDGRID_ENGINE",
+    "subtopic": "quest_04_reported_speech_mastery",
+    "data": {
+      "title": "Pronoun Swap",
+      "character": "Polly",
+      "size": 8,
+      "words": ["THAT", "HE", "SHE", "THEY", "THEIR", "US"],
+      "hint": "Find pronoun changes in reported speech!"
+    }
+  }
+]

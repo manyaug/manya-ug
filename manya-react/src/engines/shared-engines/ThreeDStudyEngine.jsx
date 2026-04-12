@@ -175,7 +175,7 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
 
                     <model-viewer
                         ref={viewerRef}
-                        src={resolveRemoteUrl(data.modelUrl)}
+                        src={resolveRemoteUrl(data.modelUrl, data._originUrl)}
                         camera-controls
                         shadow-intensity="1"
                         auto-rotate={!selectedPinId}

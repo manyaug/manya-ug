@@ -201,61 +201,74 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         const hatchPat = activeShades.size > 0 ? createHatchPattern() : null;
 
         const drawRegion = (type, col) => {
-            // First pass: solid fill
             ctx.save(); ctx.fillStyle = col; 
+            
             if (type === 'center' && !isDisjoint && isTwoSet) {
+                // CLIP to A, then Draw B (Produces the intersection)
                 ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
                 ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
             } else if (type === 'left') {
+                // Target A, exclude B
+                ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
+                if (isTwoSet && !isDisjoint) {
+                    ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c2.x, cy, r, 0, Math.PI*2, true); ctx.clip();
+                }
                 ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill();
-                if (!isDisjoint && isTwoSet) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill(); }
-            } else if (type === 'right') {
-                if (isTwoSet) {
-                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
-                    if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill(); }
-                } else {
-                    // Single-set: 'right' doesn't exist, skip
+            } else if (type === 'right' && isTwoSet) {
+                // Target B, exclude A
+                ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.clip();
+                if (!isDisjoint) {
+                    ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c1.x, cy, r, 0, Math.PI*2, true); ctx.clip();
                 }
+                ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
             } else if (type === 'outside') {
-                // v7.3: OUTSIDE region — fill the universal box, punch out circles
                 const bPad = isMobile ? 10 : 20;
-                ctx.beginPath(); 
-                ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24);
-                // v7.4: Always moveTo before punching a hole to avoid jagged bridge lines
-                ctx.moveTo(c1.x + r, cy);
-                ctx.arc(c1.x, cy, r, 0, Math.PI*2, true); // punch out A (counter-clockwise)
+                ctx.beginPath(); ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24); ctx.clip();
+                
+                // Exclude A
+                ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c1.x, cy, r, 0, Math.PI*2, true); ctx.clip();
+                
+                // Exclude B
                 if (isTwoSet) {
-                    ctx.moveTo(c2.x + r, cy);
-                    ctx.arc(c2.x, cy, r, 0, Math.PI*2, true); // punch out B
+                    ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c2.x, cy, r, 0, Math.PI*2, true); ctx.clip();
                 }
-                ctx.fill();
+                
+                ctx.beginPath(); ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24); ctx.fill();
             }
             ctx.restore();
 
-            // Second pass: hatch overlay for extra clarity
-            if (hatchPat) {
+            // Second pass: hatch overlay (if not outside, which is just solid fill)
+            if (hatchPat && type !== 'outside') {
                 ctx.save(); ctx.fillStyle = hatchPat;
                 if (type === 'center' && !isDisjoint && isTwoSet) {
                     ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
                     ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
                 } else if (type === 'left') {
-                    ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill();
-                    if (!isDisjoint && isTwoSet) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill(); }
-                } else if (type === 'right' && isTwoSet) {
-                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
-                    if (!isDisjoint) { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill(); }
-                } else if (type === 'outside') {
-                    const bPad = isMobile ? 10 : 20;
-                    ctx.beginPath(); 
-                    ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24);
-                    ctx.moveTo(c1.x + r, cy);
-                    ctx.arc(c1.x, cy, r, 0, Math.PI*2, true);
-                    if (isTwoSet) {
-                        ctx.moveTo(c2.x + r, cy);
-                        ctx.arc(c2.x, cy, r, 0, Math.PI*2, true);
+                    ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.clip();
+                    if (isTwoSet && !isDisjoint) {
+                        ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c2.x, cy, r, 0, Math.PI*2, true); ctx.clip();
                     }
-                    ctx.fill();
+                    ctx.beginPath(); ctx.arc(c1.x, cy, r, 0, Math.PI*2); ctx.fill();
+                } else if (type === 'right' && isTwoSet) {
+                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.clip();
+                    if (!isDisjoint) {
+                        ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c1.x, cy, r, 0, Math.PI*2, true); ctx.clip();
+                    }
+                    ctx.beginPath(); ctx.arc(c2.x, cy, r, 0, Math.PI*2); ctx.fill();
                 }
+                ctx.restore();
+            } else if (hatchPat && type === 'outside') {
+                // Hatch for outside too if requested
+                ctx.save(); ctx.fillStyle = hatchPat;
+                const bPad = isMobile ? 10 : 20;
+                
+                ctx.beginPath(); ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24); ctx.clip();
+                ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c1.x, cy, r, 0, Math.PI*2, true); ctx.clip();
+                if (isTwoSet) {
+                    ctx.beginPath(); ctx.rect(-1000, -1000, 3000, 3000); ctx.arc(c2.x, cy, r, 0, Math.PI*2, true); ctx.clip();
+                }
+                
+                ctx.beginPath(); ctx.roundRect(bPad, bPad, width - bPad*2, height - bPad*2, 24); ctx.fill();
                 ctx.restore();
             }
         };
@@ -310,7 +323,13 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
                              const startY = cy - ((arr.length - 1) * stackSpacing) / 2;
                              ly = startY + (i * stackSpacing);
                          } else {
-                             const spread = isMobile ? 18 : 28;
+                             // v7.9: Dynamic spread based on count and string length
+                             const maxStrLen = Math.max(...arr.map(x => String(x).length));
+                             const spreadBase = isMobile ? 16 : 20;
+                             const countFactor = arr.length <= 3 ? 1 : Math.min(1.5, 1 + ((arr.length-3) / 8));
+                             const lengthFactor = Math.max(1, Math.min(1.5, maxStrLen / 3));
+                             const spread = spreadBase * countFactor * lengthFactor;
+
                              if (arr.length === 2) {
                                  lx += (i === 0 ? -spread : spread);
                              } else if (arr.length === 3) {
@@ -328,7 +347,10 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
                     const valToEval = currentStep.x_val;
                     const displayVal = evaluateExpr(v, valToEval);
                     const isEquation = v !== String(displayVal) || /^[0-9+\-*/().\s]*[a-z][0-9+\-*/().\s]*$/i.test(String(v));
-                    if (v === '?' || (!isResolved && iZones.includes(reg))) return; // v7.0: Handled by HTML InputSlots
+                    
+                    // v7.9: Only hide explicit placeholders in DIAGRAM_FILL mode
+                    const isPlaceHolder = v === '?' || (currentStep.interaction === 'DIAGRAM_FILL' && Array.isArray(currentStep.inputs) && currentStep.inputs.some(inp => inp.region === reg && inp.expected === String(v)));
+                    if (!isResolved && iZones.includes(reg) && isPlaceHolder) return; 
 
                     let baseSize = isMobile ? 22 : 28;
                     const strLen = String(displayVal).length;
@@ -565,11 +587,17 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         const l = computeLayout();
         if (!l) return;
         const d1 = Math.hypot(px - l.c1.x, py - l.cy), d2 = Math.hypot(px - l.c2.x, py - l.cy);
-        let tappedZone = 'outside';
+        let tappedZone = null; 
+        
+        // v7.9: Precise hit detection for regions. 
+        // Hierarchy: Priority to Center (Intersection) > Circles > Background.
         if (!l.isDisjoint && isTwoSet && d1 < l.r && d2 < l.r) tappedZone = 'center';
         else if (d1 < l.r) tappedZone = 'left';
         else if (d2 < l.r && isTwoSet) tappedZone = 'right';
-        
+        else tappedZone = 'outside'; // Click anywhere else in box hits background
+
+        if (!tappedZone) return;
+
         setSelectedRegions(prev => {
              const next = new Set(prev);
              if (next.has(tappedZone)) next.delete(tappedZone); else next.add(tappedZone);
@@ -719,7 +747,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
             </motion.div>
         )}
 
-        {!isResolved && currentStep.interaction === 'BINARY' && (<div className="grid grid-cols-2 gap-3" style={{ marginTop: 'clamp(4px, 1vh, 8px)' }}>{['Yes', 'No'].map(v => <button key={v} className={`h-14 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===v?'bg-violet-600 text-white border-violet-600' : (isDark ? 'bg-slate-800 border-white/5 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500')}`} onClick={()=>setUserAnswers({ center: v })}>{v}</button>)}</div>)}
+        {!isResolved && (currentStep.interaction === 'BINARY' || currentStep.type === 'BINARY') && (<div className="grid grid-cols-2 gap-3" style={{ marginTop: 'clamp(4px, 1vh, 8px)' }}>{['Yes', 'No'].map(v => <button key={v} className={`h-14 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===v?'bg-violet-600 text-white border-violet-600' : (isDark ? 'bg-slate-800 border-white/5 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500')}`} onClick={()=>setUserAnswers({ center: v })}>{v}</button>)}</div>)}
         {!isResolved && currentStep.interaction === 'CHOICE' && currentStep.options && (<div className="grid grid-cols-2 gap-3" style={{ marginTop: 'clamp(4px, 1vh, 8px)' }}>{currentStep.options.map(opt => <button key={opt} className={`h-14 rounded-2xl font-black text-xl border-2 transition-all ${getFirstUserAnswer()===opt?'border-violet-500 bg-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] scale-[1.02]' : (isDark ? 'bg-slate-800 border-white/10 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700') + ' active:scale-95'}`} onClick={()=>setUserAnswers({ center: opt })}>{opt}</button>)}</div>)}
         
         <button disabled={!isResolved && !Object.values(userAnswers).some(v => v !== '') && !['DRAG_SETS','DRAG_SORT','SHADE_REGION', 'CLICK_SUM'].includes(currentStep.interaction)} 

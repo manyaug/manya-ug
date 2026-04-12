@@ -105,31 +105,31 @@ const HangmanEngine = ({ data, onComplete }) => {
         <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
             
             {/* 1. Header & Gallows Area */}
-            <div className="flex-[1.2] relative flex flex-col items-center justify-center p-6">
-                <div className="absolute top-6 inset-x-6 flex justify-between items-center z-10">
-                    <div className={`px-4 py-2 rounded-2xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 ${isDark ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/10 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'bg-white text-indigo-600 border border-slate-100 shadow-sm'}`}>
-                        <div className="w-2 h-2 rounded-full bg-current animate-pulse" />
+            <div className="flex-none sm:flex-[1.2] relative flex flex-col items-center justify-center p-4 sm:p-6 min-h-[220px] sm:min-h-[300px]">
+                <div className="absolute top-4 sm:top-6 inset-x-4 sm:inset-x-6 flex justify-between items-center z-10">
+                    <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-[15px] sm:rounded-2xl text-[9px] sm:text-[10px] font-black tracking-widest uppercase flex items-center gap-2 ${isDark ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/10 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'bg-white text-indigo-600 border border-slate-100 shadow-sm'}`}>
+                        <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                         Hangman Challenge
                     </div>
-                    <div className={`px-3 py-1.5 rounded-xl text-[10px] font-bold ${isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-200/50 text-slate-400'}`}>
+                    <div className={`px-2.5 py-1 rounded-xl text-[9px] sm:text-[10px] font-bold ${isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-200/50 text-slate-400'}`}>
                         {wordIdx + 1} / {words.length}
                     </div>
                 </div>
 
                 {/* Gallows SVG */}
-                <svg viewBox="0 0 100 120" className="w-full max-w-[200px] h-auto drop-shadow-2xl">
+                <svg viewBox="0 0 100 120" className="w-full max-w-[160px] sm:max-w-[200px] h-auto drop-shadow-2xl mt-8 sm:mt-0">
                     <path d="M20 110 L80 110 M30 110 L30 20 L70 20 L70 35" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="opacity-20" />
                     {renderFigure()}
                 </svg>
 
                 {/* Word Slots */}
-                <div className="mt-8 flex flex-wrap justify-center gap-2">
+                <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-1.5 sm:gap-2">
                     {currentWord.split('').map((char, i) => {
                         const isVisible = guessedLetters.has(char) || char === ' ' || char === '-';
                         return (
                             <div 
                                 key={i} 
-                                className={`w-8 h-10 border-b-4 flex items-center justify-center text-2xl font-black transition-all duration-300 ${char === ' ' ? 'border-transparent w-4' : (isVisible ? 'border-indigo-500 text-indigo-500 scale-110' : 'border-slate-300 text-transparent')}`}
+                                className={`w-6 h-8 sm:w-8 sm:h-10 border-b-2 sm:border-b-4 flex items-center justify-center text-xl sm:text-2xl font-black transition-all duration-300 ${char === ' ' ? 'border-transparent w-3' : (isVisible ? 'border-indigo-500 text-indigo-500 scale-110' : 'border-slate-300 text-transparent')}`}
                             >
                                 {isVisible ? char : ''}
                             </div>
