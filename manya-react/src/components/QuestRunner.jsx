@@ -18,7 +18,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, X, AlertTriangle, RefreshCw, SkipForward } from 'lucide-react';
+import { ChevronLeft, X, AlertTriangle, RefreshCw, SkipForward, Compass, Zap, Trophy, Sparkles, Search } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
 import { updateProfile, awardGems } from '../store/userSlice';
 
@@ -471,24 +471,69 @@ export default function QuestRunner() {
             {/* ── CONTENT AREA (Quest Engine Mount) ── */}
             <main className="qr-content-area scroll-smooth min-h-0">
                 <QuestErrorBoundary key={stepIdx + phase} onSkip={() => advanceStep()}>
-                    {phase === 'loading' && (
-                        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
-                            <div className="w-16 h-16 border-4 border-slate-200 border-t-[var(--biome-color)] rounded-full animate-spin mb-6" />
-                            <p className="text-[var(--text-main)] font-black tracking-widest uppercase text-xs opacity-40 animate-pulse font-jakarta">
-                                Initializing Quest...
-                            </p>
-                        </div>
-                    )}
+                    {phase === 'loading' && (() => {
+                        const sub = meta.subject?.toLowerCase();
+                        const theme = {
+                            sst: { color: 'amber', icon: Compass, title: "Ready for an Adventure? 🚀", fact: '"The Great Wall of China is so long that it could wrap around the world twice!"', sub: "Preparing SST World..." },
+                            science: { color: 'sky', icon: Zap, title: "Quantum Leap! ⚡", fact: '"A single bolt of lightning has enough energy to toast 100,000 slices of bread!"', sub: "Preparing Science Lab..." },
+                            math: { color: 'emerald', icon: Trophy, title: "Solving the Puzzle! 🏆", fact: '"The symbol for division (÷) is called an \'obelus\'."', sub: "Preparing Number Land..." },
+                            english: { color: 'indigo', icon: Sparkles, title: "Once Upon a Time... ✨", fact: '"The shortest complete sentence in the English language is \'I am.\'"', sub: "Preparing Story World..." },
+                            default: { color: 'purple', icon: Search, title: "Magic is Happening... ✨", fact: '"Learning something new every day keeps your brain super strong!"', sub: "Preparing Quest World..." }
+                        }[sub] || { color: 'purple', icon: Search, title: "Magic is Happening... ✨", fact: '"Learning something new every day keeps your brain super strong!"', sub: "Preparing Quest World..." };
+
+                        const Icon = theme.icon;
+                        const colorClass = theme.color;
+
+                        return (
+                            <div className={`flex-1 flex flex-col items-center justify-center p-8 overflow-hidden bg-${colorClass}-50/30 relative`}>
+                                {/* Background Decorations */}
+                                <div className={`absolute top-20 -left-10 w-40 h-40 bg-${colorClass}-200/20 rounded-full blur-3xl animate-pulse`} />
+                                <div className={`absolute bottom-20 -right-10 w-60 h-60 bg-${colorClass}-200/20 rounded-full blur-3xl animate-pulse delay-700`} />
+                                
+                                <div className="relative z-10 flex flex-col items-center">
+                                    <div className="relative mb-12">
+                                        <div className={`absolute inset-[-15px] border-4 border-dashed border-${colorClass}-200 rounded-full animate-[spin_8s_linear_infinite]`} />
+                                        <div className={`w-20 h-20 bg-${colorClass}-500 rounded-full shadow-2xl flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white`}>
+                                            <Icon size={32} strokeWidth={2.5} />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-6 text-center max-w-xs">
+                                        <div className="space-y-2">
+                                            <h3 className={`text-xl font-black text-${colorClass}-900 tracking-tight`}>{theme.title}</h3>
+                                            <div className="flex justify-center gap-1">
+                                                <div className={`w-2.5 h-2.5 bg-${colorClass}-400 rounded-full animate-bounce`} style={{ animationDelay: '0ms' }} />
+                                                <div className={`w-2.5 h-2.5 bg-${colorClass}-400 rounded-full animate-bounce`} style={{ animationDelay: '200ms' }} />
+                                                <div className={`w-2.5 h-2.5 bg-${colorClass}-400 rounded-full animate-bounce`} style={{ animationDelay: '400ms' }} />
+                                            </div>
+                                        </div>
+
+                                        <div className={`bg-white/80 backdrop-blur-md rounded-3xl p-5 border-2 border-${colorClass}-100 shadow-sm mx-4`}>
+                                            <p className={`text-[9px] font-black text-${colorClass}-600 uppercase tracking-widest mb-1 opacity-60`}>Did you know?</p>
+                                            <p className={`text-xs font-bold text-${colorClass}-950 leading-relaxed italic m-0`}>{theme.fact}</p>
+                                        </div>
+
+                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">{theme.sub}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     {phase === 'running' && (
                         <div className="w-full flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden">
                             {activeEngine?.type === 'react' ? (
                                 <div className="flex-1 min-h-0 w-full bg-[var(--bg-main)] flex flex-col">
-                                    <Suspense fallback={
-                                        <div className="flex-1 flex items-center justify-center p-20">
-                                            <div className="w-8 h-8 border-2 border-[var(--biome-color)] border-t-transparent rounded-full animate-spin" />
-                                        </div>
-                                    }>
+                                    <Suspense fallback={(() => {
+                                        const sub = meta.subject?.toLowerCase();
+                                        const color = { sst: 'amber', science: 'sky', math: 'emerald', english: 'indigo' }[sub] || 'purple';
+                                        return (
+                                            <div className="flex-1 flex flex-col items-center justify-center p-20 gap-4">
+                                                <div className={`w-12 h-12 border-4 border-${color}-100 border-t-${color}-500 rounded-full animate-spin`} />
+                                                <p className={`text-[10px] font-black uppercase tracking-widest text-${color}-600 animate-pulse`}>Loading Module...</p>
+                                            </div>
+                                        );
+                                    })()}>
                                         <activeEngine.component 
                                             key={`${stepIdx}-${activeEngine.type}`}
                                             data={activeEngine.data} 

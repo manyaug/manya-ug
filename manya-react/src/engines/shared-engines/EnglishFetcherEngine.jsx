@@ -389,14 +389,49 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
+    // ── PLAYFUL ADVENTURE LOADING (v3.0) ──
     if (isLoading) return (
-        <div className="flex-1 flex flex-col items-center justify-center bg-indigo-50/30 backdrop-blur-xl">
-            <div className="relative w-20 h-20">
-                <div className="absolute inset-0 border-4 border-indigo-200 rounded-full" />
-                <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                <Sparkles size={24} className="absolute inset-0 m-auto text-indigo-500 animate-pulse" />
+        <div className={`flex-1 flex flex-col items-center justify-center p-8 overflow-hidden relative ${isNight ? 'bg-[#0B0E14]' : 'bg-indigo-50/30'}`}>
+            {/* Background Decorations */}
+            <div className={`absolute top-20 -left-10 w-40 h-40 ${isNight ? 'bg-indigo-950/20' : 'bg-indigo-200/20'} rounded-full blur-3xl animate-pulse`} />
+            <div className={`absolute bottom-20 -right-10 w-60 h-60 ${isNight ? 'bg-purple-950/20' : 'bg-purple-200/20'} rounded-full blur-3xl animate-pulse delay-700`} />
+            
+            <div className="relative z-10 flex flex-col items-center">
+                {/* Bouncing Subject Coin */}
+                <div className="relative mb-12">
+                    {/* Orbiting Ring */}
+                    <div className={`absolute inset-[-15px] border-4 border-dashed ${isNight ? 'border-indigo-900/50' : 'border-indigo-200'} rounded-full animate-[spin_8s_linear_infinite]`} />
+                    
+                    <div className="w-24 h-24 bg-indigo-600 rounded-full shadow-2xl flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white">
+                        <Sparkles size={40} strokeWidth={2.5} />
+                    </div>
+                </div>
+
+                <div className="space-y-6 text-center max-w-xs">
+                    <div className="space-y-2">
+                        <h3 className={`text-xl font-black tracking-tight ${isNight ? 'text-white' : 'text-indigo-900'}`}>
+                            Once Upon a Time... ✨
+                        </h3>
+                        <div className="flex justify-center gap-1">
+                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
+                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
+                        </div>
+                    </div>
+
+                    {/* Fun Loading Fact */}
+                    <div className={`${isNight ? 'bg-white/5 border-white/10' : 'bg-white/60 border-indigo-100'} backdrop-blur-md rounded-3xl p-5 border-2 shadow-sm`}>
+                        <p className={`text-[10px] font-black uppercase tracking-widest mb-2 opacity-60 ${isNight ? 'text-indigo-400' : 'text-indigo-600'}`}>Did you know?</p>
+                        <p className={`text-xs font-bold leading-relaxed italic m-0 ${isNight ? 'text-slate-300' : 'text-indigo-950'}`}>
+                            "The shortest complete sentence in the English language is 'I am.'"
+                        </p>
+                    </div>
+
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                        Preparing Story World...
+                    </p>
+                </div>
             </div>
-            <p className="mt-8 text-indigo-950 font-black text-sm uppercase tracking-[0.3em] animate-pulse">Entering English World...</p>
         </div>
     );
 

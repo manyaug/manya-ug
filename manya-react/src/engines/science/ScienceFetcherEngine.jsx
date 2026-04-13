@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw, Search, Puzzle, AlertCircle } from 'lucide-react';
+import { Check, X, ArrowRight, Lightbulb, Globe, Compass, Zap, Timer, Trophy, RotateCcw, Search, Puzzle, AlertCircle, Sparkles } from 'lucide-react';
 import { fetchScienceQuestions } from '../../services/scienceMockDB';
 import { syncService } from '../../services/syncService';
 import { useDispatch, useSelector } from 'react-redux';
@@ -618,10 +618,49 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
-    // ── LOADING ──
+    // ── PLAYFUL ADVENTURE LOADING (v3.0) ──
     if (isLoading) return (
-        <div className="flex-1 flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+        <div className="flex-1 flex flex-col items-center justify-center p-8 bg-sky-50/30 overflow-hidden relative">
+            {/* Background Decorations */}
+            <div className="absolute top-20 -left-10 w-40 h-40 bg-sky-200/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-20 -right-10 w-60 h-60 bg-indigo-200/20 rounded-full blur-3xl animate-pulse delay-700" />
+            
+            <div className="relative z-10 flex flex-col items-center">
+                {/* Bouncing Subject Coin */}
+                <div className="relative mb-12">
+                    {/* Orbiting Ring */}
+                    <div className="absolute inset-[-15px] border-4 border-dashed border-sky-200 rounded-full animate-[spin_8s_linear_infinite]" />
+                    
+                    <div className="w-24 h-24 bg-sky-500 rounded-full shadow-2xl flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white">
+                        <Zap size={40} strokeWidth={2.5} />
+                    </div>
+                </div>
+
+                <div className="space-y-6 text-center max-w-xs">
+                    <div className="space-y-2">
+                        <h3 className="text-xl font-black text-sky-900 tracking-tight">
+                            Quantum Leap! ⚡
+                        </h3>
+                        <div className="flex justify-center gap-1">
+                            <div className="w-3 h-3 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <div className="w-3 h-3 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
+                            <div className="w-3 h-3 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
+                        </div>
+                    </div>
+
+                    {/* Fun Loading Fact */}
+                    <div className="bg-white/60 backdrop-blur-md rounded-3xl p-5 border-2 border-sky-100 shadow-sm">
+                        <p className="text-[10px] font-black text-sky-600 uppercase tracking-widest mb-2 opacity-60">Science Fact!</p>
+                        <p className="text-xs font-bold text-sky-950 leading-relaxed italic m-0">
+                            "A single bolt of lightning has enough energy to toast 100,000 slices of bread!"
+                        </p>
+                    </div>
+
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                        Preparing Science Lab...
+                    </p>
+                </div>
+            </div>
         </div>
     );
 

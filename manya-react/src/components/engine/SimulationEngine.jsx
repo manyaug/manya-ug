@@ -60,11 +60,23 @@ export default function SimulationEngine({
         <SimulationErrorBoundary>
             <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl border-4 border-slate-100 overflow-hidden relative flex flex-col">
                 <Suspense fallback={
-                    <div className="flex-1 flex flex-col items-center justify-center space-y-4 bg-slate-50 h-full">
-                        <div className="w-12 h-12 border-4 border-t-[#7c3aed] border-slate-200 rounded-full animate-spin"></div>
-                        <p className="text-sm font-bold text-[#7c3aed] tracking-widest uppercase">
-                            Booting Simulation Engine...
-                        </p>
+                    <div className="flex-1 flex flex-col items-center justify-center p-12 bg-purple-50/30 relative min-h-[400px]">
+                        <div className="absolute top-10 -left-5 w-32 h-32 bg-purple-200/20 rounded-full blur-2xl animate-pulse" />
+                        <div className="relative z-10 flex flex-col items-center">
+                            <div className="relative mb-8">
+                                <div className="absolute inset-[-10px] border-4 border-dashed border-purple-200 rounded-full animate-[spin_8s_linear_infinite]" />
+                                <div className="w-16 h-16 bg-purple-500 rounded-full shadow-lg flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white">
+                                    <div className="text-2xl font-black">M</div>
+                                </div>
+                            </div>
+                            <h3 className="text-sm font-black text-purple-900 tracking-tight mb-4">Magic is Happening... ✨</h3>
+                            <div className="flex justify-center gap-1">
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
+                            </div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mt-6">Booting Simulation Engine...</p>
+                        </div>
                     </div>
                 }>
                     {TargetSim ? (
