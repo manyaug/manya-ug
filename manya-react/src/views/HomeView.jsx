@@ -101,8 +101,8 @@ function HomeView() {
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+    hidden: { y: 30, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 450, damping: 16 } }
   };
 
   return (
@@ -112,10 +112,11 @@ function HomeView() {
       animate="visible"
       className="manya-hub"
     >
-      {/* DYNAMIC AURORA BLOBS */}
+      {/* DYNAMIC AURORA BLOBS + MAGIC DUST */}
       <div className="aurora-engine" style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none' }}>
         <div className="blob aurora-1" />
         <div className="blob aurora-2" />
+        <div className="magic-dust" />
       </div>
 
       {/* PREMIUM STATUS HEADER */}
@@ -138,11 +139,12 @@ function HomeView() {
       {/* HERO RESUME CARD */}
       <motion.div
         variants={itemVariants}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className={`resume-mission-card bounty-card-${activeBounty?.sub || 'math'}`}
+        whileHover={{ scale: 1.025 }}
+        whileTap={{ scale: 0.97 }}
+        className={`resume-mission-card btn-toy bounty-card-${activeBounty?.sub || 'math'}`}
         onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
       >
+        <div className="btn-toy-gloss"></div>
         <img src={getGem(activeBounty?.sub || 'math')} className="hero-bg-gem-watermark" alt="watermark" />
         <div className="mission-visual">
           <div className="hero-avatar-mini-glow">
@@ -205,8 +207,9 @@ function HomeView() {
 
             {/* Nameplate consolidated into a button style footer */}
             <div className="card-footer-info">
-              <div className="subject-name-row">
-                <h4>{sub.name}</h4>
+              <div className={`subject-name-row btn-toy btn-toy-${sub.id === 'math' ? 'purple' : sub.id === 'science' ? 'green' : sub.id === 'sst' ? 'gold' : 'pink'}`}>
+                <div className="btn-toy-gloss" />
+                <span>{sub.name}</span>
               </div>
             </div>
           </motion.div>
@@ -219,15 +222,17 @@ function HomeView() {
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         onClick={() => navigate('/sim-test')}
-        className="home-sim-lab-cta group"
+        className="home-sim-lab-cta group btn-toy btn-toy-purple"
+        style={{ padding: '8px 16px', textTransform: 'none' }}
       >
+        <div className="btn-toy-gloss" />
         <div className="sim-lab-left">
           <div className="sim-lab-icon-box">
             <FlaskConical size={18} />
           </div>
           <div className="sim-lab-text">
             <h4>Simulation Lab</h4>
-            <p>Experimental Access</p>
+            <p style={{ color: 'rgba(255,255,255,0.7)' }}>Experimental Access</p>
           </div>
         </div>
         <div className="sim-lab-arrow">

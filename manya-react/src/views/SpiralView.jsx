@@ -143,6 +143,7 @@ function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap
 
                 {/* Main circle */}
                 <div className="node-cap">
+                    <div className="btn-toy-gloss" />
                     {isCompleted ? (
                         <CheckCheck size={26} strokeWidth={3} />
                     ) : isUnlocked ? (
@@ -342,6 +343,7 @@ function SpiralView() {
             {/* FLOATING SUBJECT HUD — replaces global HUD on this page */}
             <div className="spiral-hud">
                 <div className="spiral-hud-shell">
+                    <div className="btn-toy-gloss" />
                     <button className="spiral-back-btn" onClick={() => navigate('/home')}>
                         <ChevronLeft size={20} strokeWidth={3} />
                     </button>
@@ -353,6 +355,7 @@ function SpiralView() {
                         onClick={() => navigate('/achievements')}
                         style={{ cursor: 'pointer' }}
                     >
+                        <div className="btn-toy-gloss" />
                         <img
                             src={getGem(biome.gemFile)}
                             alt="gem"

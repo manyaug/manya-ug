@@ -1,5 +1,5 @@
 /* ============================================================
-   MANYA GLOBAL HUD - SOLID MASTER BAR v8.0
+   MANYA GLOBAL HUD - WARM ADVENTURE BAR v9.0
    ============================================================ */
 
 .app-header-master {
@@ -16,16 +16,17 @@
 .hud-master-shell {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto 12px auto;
+  margin: 0 auto;
   background: var(--bg-primary);
-  border-bottom: 5px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-  border-radius: 0 0 34px 34px;
+  border-bottom: 2px solid var(--border-subtle);
+  box-shadow: 
+    0 2px 0 var(--border-subtle),
+    0 8px 30px rgba(139, 90, 43, 0.08);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* INCREASED TOP AIR (added 18px fallback for non-notch environments) */
-  padding: calc(env(safe-area-inset-top, 0px) + 18px) 18px 16px 16px;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) 20px 18px 20px;
   pointer-events: all;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -52,16 +53,16 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    background: #f1f5f9;
+    border: 2.5px solid var(--bg-card);
+    box-shadow: var(--shadow-warm);
+    background: var(--border-subtle);
 }
 
 .hud-level-badge {
     position: absolute;
     bottom: -4px;
     right: -4px;
-    background: #818cf8;
+    background: var(--manya-purple);
     color: white;
     font-size: 9px;
     font-weight: 950;
@@ -71,8 +72,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .hud-user-text {
@@ -83,8 +84,9 @@
 }
 
 .hud-nickname-text {
-    font-weight: 950;
-    font-size: 13px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
     color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -95,18 +97,22 @@
 }
 
 .hud-xp-line {
-    width: 80px;
-    height: 6px;
-    background: rgba(0,0,0,0.06);
-    border-radius: 20px;
+    width: 100px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 100px;
     overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--border-subtle);
 }
 
 .hud-xp-fill {
     height: 100%;
-    background: linear-gradient(90deg, #818cf8, #a78bfa);
-    border-radius: 20px;
+    background: var(--manya-purple);
+    border-radius: 100px;
     position: relative;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
 .hud-xp-fill::after {
@@ -138,13 +144,15 @@
 }
 
 .hud-treasury-pill {
-    background: rgba(0,0,0,0.04);
+    background: var(--bg-card);
     display: flex;
     align-items: center;
-    padding: 6px 12px;
-    border-radius: 20px;
-    gap: 10px;
-    border: 1px solid rgba(0,0,0,0.02);
+    padding: 8px 16px;
+    border-radius: var(--radius-lg);
+    gap: 12px;
+    border: 4px solid var(--border-subtle);
+    box-shadow: 0 4px 0 var(--border-subtle), var(--shadow-warm);
+    position: relative;
 }
 
 .hud-stat-item {
@@ -156,7 +164,7 @@
 .hud-stat-divider {
     width: 1px;
     height: 14px;
-    background: rgba(0,0,0,0.1);
+    background: var(--border-subtle);
 }
 
 .hud-stat-item .hud-value {
@@ -172,21 +180,23 @@
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-.hud-stat-item.streak .hud-value { color: #f97316; }
-.hud-stat-item.gems .hud-value { color: #f59e0b; }
+.hud-stat-item.streak .hud-value { color: #E8652B; }
+.hud-stat-item.gems .hud-value { color: var(--manya-gold); }
 
 /* Themes & Safe Areas */
 [data-theme='dark'] .hud-master-shell {
-    background: #0F172A;
-    border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+    background: #1A1225;
+    border-bottom: 3px solid #3D2E55;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme='dark'] .hud-treasury-pill {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(42, 31, 61, 0.6);
+    border-color: #3D2E55;
 }
 
 [data-theme='dark'] .hud-stat-divider {
-    background: rgba(255, 255, 255, 0.1);
+    background: #3D2E55;
 }
 
-[data-theme='dark'] .hud-xp-line { background: rgba(255,255,255,0.1); }
+[data-theme='dark'] .hud-xp-line { background: rgba(157, 143, 184, 0.15); }

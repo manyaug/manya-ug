@@ -24,14 +24,15 @@ function BottomNav() {
         className="bottom-nav-shell"
         style={{ '--active-color': activeColor }}
       >
-        {/* LIQUID SLIDING INDICATOR */}
+        {/* TACTILE TOY INDICATOR SQUIRCLE */}
         {activeIndex !== -1 && (
           <motion.div 
-            className="nav-liquid-indicator"
+            className="nav-toy-indicator"
+            layoutId="toy-nav-marker"
             animate={{ left: `${(activeIndex * 25) + 12.5}%` }}
-            transition={{ type: 'spring', damping: 25, stiffness: 150 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 200 }}
           >
-            <div className="liquid-drop" />
+            <div className="btn-toy-gloss" />
           </motion.div>
         )}
 
@@ -42,15 +43,16 @@ function BottomNav() {
               key={item.to}
               to={item.to}
               className={({ isActive }) => `nav-item ${item.id}-tab ${isActive ? 'active' : ''}`}
+              onClick={() => window.ManyaAudio?.click?.()}
             >
               {({ isActive }) => (
                 <>
                   <motion.div
-                    animate={isActive ? { scale: [1, 1.25, 1], y: -2 } : { scale: 1, y: 0 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                    animate={isActive ? { scale: [1, 1.3, 1.15], y: -4 } : { scale: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 450, damping: 15 }}
                     className="icon-wrapper"
                   >
-                    <Icon size={22} strokeWidth={isActive ? 3 : 2} />
+                    <Icon size={24} strokeWidth={isActive ? 3 : 2} />
                   </motion.div>
                   <span className="nav-label">{item.label}</span>
                 </>

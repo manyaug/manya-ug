@@ -213,8 +213,9 @@ function SettingsView() {
                 <div className="vault-info">
                     <div className="vault-header-row">
                         <span className="v-title">{user?.nickname || 'Hero Candidate'}</span>
-                        <button className="premium-shuffle-btn" onClick={shuffleDNA}>
-                            <RefreshCw size={14} />
+                        <button className="premium-shuffle-btn btn-toy btn-toy-slate" onClick={shuffleDNA}>
+                            <div className="btn-toy-gloss" />
+                            <RefreshCw size={14} style={{ zIndex: 2 }} />
                             <span>Shuffle DNA</span>
                         </button>
                     </div>
@@ -242,7 +243,7 @@ function SettingsView() {
                         <span className="r-name">Hero Nickname</span>
                         <input
                             type="text"
-                            className="premium-glass-input"
+                            className="input-toy premium-glass-input"
                             value={formState.nickname}
                             onChange={e => setFormState(p => ({ ...p, nickname: e.target.value }))}
                             placeholder="Enter Nickname"
@@ -257,7 +258,7 @@ function SettingsView() {
                     <div className="r-info">
                         <span className="r-name">Academic Grade</span>
                         <select
-                            className="premium-glass-select"
+                            className="input-toy premium-glass-select"
                             value={formState.grade_level}
                             onChange={e => setFormState(p => ({ ...p, grade_level: e.target.value }))}
                         >
@@ -276,7 +277,7 @@ function SettingsView() {
                         <span className="r-name">Guardian Contact</span>
                         <input
                             type="email"
-                            className="premium-glass-input"
+                            className="input-toy premium-glass-input"
                             value={formState.parent_email}
                             onChange={e => setFormState(p => ({ ...p, parent_email: e.target.value }))}
                             placeholder="Parent Email"
@@ -285,13 +286,14 @@ function SettingsView() {
                 </div>
 
                 <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="save-hero-btn"
+                    className="save-hero-btn btn-toy btn-toy-purple"
                     onClick={saveHeroChanges}
                     disabled={loading}
                 >
-                    {loading ? "STABILIZING DNA..." : "COMMIT IDENTITY DNA"}
+                    <div className="btn-toy-gloss" />
+                    <span>{loading ? "STABILIZING DNA..." : "COMMIT IDENTITY DNA"}</span>
                 </motion.button>
             </motion.div>
 
@@ -300,12 +302,14 @@ function SettingsView() {
                 <div className="danger-header">SECURITY CLEARANCE & PURGE</div>
 
                 <div className="danger-actions-row">
-                    <button className="danger-action-btn logout" onClick={handleLogout}>
-                        <LogOut size={18} />
+                    <button className="danger-action-btn btn-toy btn-toy-slate logout" onClick={handleLogout}>
+                        <div className="btn-toy-gloss" />
+                        <LogOut size={18} style={{ zIndex: 2 }} />
                         <span>Sign Out</span>
                     </button>
-                    <button className="danger-action-btn delete" onClick={handleDeleteAccount}>
-                        <Trash2 size={18} />
+                    <button className="danger-action-btn btn-toy btn-toy-crimson delete" onClick={handleDeleteAccount}>
+                        <div className="btn-toy-gloss" />
+                        <Trash2 size={18} style={{ zIndex: 2 }} />
                         <span>Purge Identity</span>
                     </button>
                 </div>

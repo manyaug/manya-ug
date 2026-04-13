@@ -255,7 +255,9 @@ function QuestPathView() {
                     <div className="header-subtitle">{subject.toUpperCase()} QUEST</div>
                     <div className="header-title">{title}</div>
                     <div className="header-progress-bar">
-                        <div className="header-progress-fill" style={{ width: `${progressPct}%` }} />
+                        <div className="header-progress-fill" style={{ width: `${progressPct}%` }}>
+                            <div className="btn-toy-gloss" />
+                        </div>
                     </div>
                 </div>
                 <div
@@ -409,8 +411,9 @@ function QuestPathView() {
                                 </div>
                             )}
 
-                            {/* Main button */}
+                             {/* Main button */}
                             <button className="tactile-node">
+                                <div className="btn-toy-gloss" />
                                 {isActive && !animatingUnlock && <div className="active-pulse-ring" />}
                                 <div className="node-icon-inner">
                                     {isLocked && !step.isChest ? '🔒' :
@@ -420,6 +423,7 @@ function QuestPathView() {
                                 {isActive && !animatingUnlock && (
                                     <div className={`hero-path-pointer ${heroClass}`}>
                                         <div className="hero-bubble">
+                                            <div className="btn-toy-gloss" />
                                             <img
                                                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed}`}
                                                 alt="Hero"

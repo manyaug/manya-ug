@@ -201,37 +201,40 @@ function ProfileView() {
             {/* 5. HERO MANAGEMENT SERVICES */}
             <motion.h4 variants={itemVariants} className="section-label">Hero Management</motion.h4>
             <motion.div variants={itemVariants} className="service-list-national">
-                <div className="service-row-elite" onClick={() => navigate('/settings')}>
-                    <div className="s-icon-box" style={{ background: '#EEF2FF', color: '#6366F1' }}>
+                <div className="service-row-elite btn-toy btn-toy-slate" onClick={() => navigate('/settings')}>
+                    <div className="btn-toy-gloss"></div>
+                    <div className="s-icon-box" style={{ background: '#f8fafc', color: '#475569' }}>
                         <UserCog size={20} />
                     </div>
-                    <div className="s-content">
+                    <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">Profile Settings</span>
-                        <span className="s-desc">Nickname, DNA & Academic Grade</span>
+                        <span className="s-desc" style={{ color: 'rgba(255,255,255,0.7)' }}>Nickname, DNA & Academic Grade</span>
                     </div>
-                    <ChevronRight size={18} className="s-chevron" />
+                    <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
 
-                <div className="service-row-elite" onClick={() => navigate('/preferences')}>
-                    <div className="s-icon-box" style={{ background: '#ECFDF5', color: '#10B981' }}>
+                <div className="service-row-elite btn-toy btn-toy-green" onClick={() => navigate('/preferences')}>
+                    <div className="btn-toy-gloss"></div>
+                    <div className="s-icon-box" style={{ background: '#f0fdf4', color: '#166534' }}>
                         <Sliders size={20} />
                     </div>
-                    <div className="s-content">
+                    <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">App Preferences</span>
-                        <span className="s-desc">Audio, Theme & Matrix Sync</span>
+                        <span className="s-desc" style={{ color: 'rgba(255,255,255,0.7)' }}>Audio, Theme & Matrix Sync</span>
                     </div>
-                    <ChevronRight size={18} className="s-chevron" />
+                    <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
 
-                <div className="service-row-elite deluxe" onClick={() => navigate('/membership')}>
-                    <div className="s-icon-box" style={{ background: '#FFF7ED', color: '#F59E0B' }}>
+                <div className="service-row-elite btn-toy btn-toy-gold" onClick={() => navigate('/membership')}>
+                    <div className="btn-toy-gloss"></div>
+                    <div className="s-icon-box" style={{ background: '#fffbeb', color: '#92400e' }}>
                         <Crown size={20} />
                     </div>
-                    <div className="s-content">
+                    <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">Elite Hero Status</span>
-                        <span className="s-desc">{user?.status || 'Free Scholar'}</span>
+                        <span className="s-desc" style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 900 }}>{user?.status || 'Free Scholar'}</span>
                     </div>
-                    <ChevronRight size={18} className="s-chevron" />
+                    <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
             </motion.div>
 

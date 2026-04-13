@@ -90,15 +90,14 @@ function LibraryView() {
           </p>
       </div>
 
-      {/* 1. SUBJECT PICKER */}
       <div className="subject-vault-picker">
         {Object.keys(subMeta).map(key => (
             <div 
                 key={key}
-                className={`sub-vault-btn ${activeSubject === key ? 'active' : ''}`}
-                style={{ '--theme-color': subMeta[key].color }}
+                className={`sub-vault-btn btn-toy btn-toy-${key === 'math' ? 'purple' : key === 'science' ? 'green' : key === 'sst' ? 'gold' : 'pink'} ${activeSubject === key ? 'active' : ''}`}
                 onClick={() => handleSubjectSwitch(key)}
             >
+                <div className="btn-toy-gloss"></div>
                 <span className="icon">{subMeta[key].icon}</span>
                 <span className="name">{subMeta[key].name}</span>
             </div>
@@ -139,10 +138,11 @@ function LibraryView() {
                                             {quest.resources.map(res => (
                                                 <button 
                                                     key={res.file}
-                                                    className="btn-res-study" 
+                                                    className="btn-res-study btn-toy btn-toy-slate" 
                                                     onClick={() => handleLaunchStep(activeSubject, unit.id, quest.folder, res.file)}
                                                 >
-                                                    {res.label}
+                                                    <div className="btn-toy-gloss"></div>
+                                                    <span>{res.label}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -156,10 +156,11 @@ function LibraryView() {
                                                 return (
                                                     <button 
                                                         key={qID}
-                                                        className="btn-res-practice" 
+                                                        className="btn-res-practice btn-toy btn-toy-purple" 
                                                         onClick={() => handleLaunchStep(activeSubject, unit.id, quest.folder, qID)}
                                                     >
-                                                        {q + 1}
+                                                        <div className="btn-toy-gloss"></div>
+                                                        <span>{q + 1}</span>
                                                     </button>
                                                 );
                                             })}

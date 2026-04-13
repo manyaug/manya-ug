@@ -1,6 +1,8 @@
 /* 
-  MANYA DESIGN SYSTEM - TOKENS
-  Centralized variables for a world-class educational experience.
+  MANYA DESIGN SYSTEM - TOKENS v2.0 ("Manya World" Rebrand)
+  ============================================================
+  Warm, playful, kid-adventure palette.
+  Light = "Sunny Day" | Dark = "Starry Night"
 */
 
 :root {
@@ -28,27 +30,33 @@
   --manya-green-l: 39%;
   --manya-green: hsl(var(--manya-green-h), var(--manya-green-s), var(--manya-green-l));
 
-  /* --- 2. THEME-DEPENDENT COLORS --- */
-  --bg-primary: #FDFBF7;
-  --bg-secondary: #FFFFFF;
-  --text-primary: #1E293B;
-  --text-secondary: #64748B;
-  --border-subtle: #F1F5F9;
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  /* --- NEW: Warm Accent Colors --- */
+  --manya-orange: #E8652B;
+  --manya-cream: #FFF8F0;
+  --manya-peach: #FFE8D4;
+  --manya-warm-grey: #8B7FA3;
 
-  /* --- 2b. ALIAS MAP (used throughout engines.css and components) --- */
-  /* These MUST match the above values. They fix white-on-white rendering. */
-  --bg-main:    #FDFBF7;   /* same as --bg-primary  */
-  --bg-card:    #FFFFFF;   /* same as --bg-secondary */
-  --text-main:  #1E293B;   /* same as --text-primary */
-  --text-sub:   #64748B;   /* same as --text-secondary */
-  --text-muted: #94A3B8;
-  --border-color: #E2E8F0;
-  --border-glass: rgba(0, 0, 0, 0.06);
+  /* --- 2. THEME-DEPENDENT COLORS ("Sunny Day") --- */
+  --bg-primary: #FFF8F0;
+  --bg-secondary: #FFF5EB;
+  --text-primary: #2D1B4E;
+  --text-secondary: #8B7FA3;
+  --border-subtle: #F0E6D6;
+  --glass-bg: rgba(255, 248, 240, 0.75);
+  --glass-border: rgba(224, 196, 160, 0.3);
+
+  /* --- 2b. ALIAS MAP --- */
+  --bg-main:    #FFF8F0;
+  --bg-card:    #FFFFFF;
+  --text-main:  #2D1B4E;
+  --text-sub:   #8B7FA3;
+  --text-muted: #B8A9C8;
+  --border-color: #E8DDD0;
+  --border-glass: rgba(139, 127, 163, 0.08);
 
   /* --- 3. TYPOGRAPHY --- */
-  --font-main: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-main: 'Nunito', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -59,32 +67,52 @@
   --weight-black: 900;
 
   /* --- 4. SHADOWS & RADII --- */
-  --radius-sm: 8px;
-  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
   --radius-lg: 24px;
-  --radius-xl: 32px;
-  --shadow-premium: 0 10px 30px -10px rgba(124, 58, 237, 0.15);
+  --radius-xl: 28px;
+  --radius-pill: 100px;
+  --shadow-warm: 0 4px 20px rgba(139, 90, 43, 0.08);
+  --shadow-card: 0 8px 30px rgba(139, 90, 43, 0.06), 0 2px 8px rgba(139, 90, 43, 0.04);
+  --shadow-premium: 0 10px 30px -10px rgba(232, 101, 43, 0.15);
+  --shadow-float: 0 12px 40px rgba(139, 90, 43, 0.1);
   
   /* --- 5. MOTION --- */
   --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- 6. GLOSS & GLOW (Tactile Tokens) --- */
+  --glosswhite: rgba(255, 255, 255, 0.4);
+  --glossy-shine: linear-gradient(to bottom, var(--glosswhite), transparent 55%);
+  --toy-inner-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.3), inset 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* ════════════════════════════════════════════════════
+   DARK THEME — "Starry Night"
+   Warm plum/purple tones, not cold navy
+   ════════════════════════════════════════════════════ */
 [data-theme='dark'] {
-  --bg-primary: #0F172A;
-  --bg-secondary: #1E293B;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --border-subtle: #334155;
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --bg-primary: #1A1225;
+  --bg-secondary: #2A1F3D;
+  --text-primary: #F5F0FF;
+  --text-secondary: #9B8FB8;
+  --border-subtle: #3D2E55;
+  --glass-bg: rgba(26, 18, 37, 0.8);
+  --glass-border: rgba(157, 143, 184, 0.1);
 
   /* Aliases for dark mode */
-  --bg-main:    #0F172A;
-  --bg-card:    #1E293B;
-  --text-main:  #F8FAFC;
-  --text-sub:   #94A3B8;
-  --text-muted: #64748B;
-  --border-color: #334155;
-  --border-glass: rgba(255, 255, 255, 0.08);
+  --bg-main:    #1A1225;
+  --bg-card:    #2A1F3D;
+  --text-main:  #F5F0FF;
+  --text-sub:   #9B8FB8;
+  --text-muted: #6B5A85;
+  --border-color: #3D2E55;
+  --border-glass: rgba(157, 143, 184, 0.1);
+
+  /* Warm shadows for dark mode */
+  --shadow-warm: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-premium: 0 10px 30px -10px rgba(157, 78, 221, 0.2);
+  --shadow-float: 0 12px 40px rgba(0, 0, 0, 0.3);
 }

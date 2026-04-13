@@ -1,5 +1,5 @@
 /* ============================================================
-   MANYA BOTTOM NAV - LIQUID GOAT DOCK v6.0
+   MANYA BOTTOM NAV - WARM ADVENTURE DOCK v7.0
    ============================================================ */
 
 .bottom-nav {
@@ -8,77 +8,51 @@
   left: 0;
   right: 0;
   z-index: 10000;
-  background: transparent !important; /* FIX: Ensure no background on parent wrapper */
+  background: transparent !important;
   pointer-events: none;
 }
 
-/* The actual nav shell — SOLID CHUNKY BLOCK */
+/* The actual nav shell — WARM SOLID BLOCK */
 .bottom-nav-shell {
-  max-width: 500px;
-  margin: 0 auto;
-  min-height: 64px;
-  background: var(--bg-primary); /* SOLID BACKGROUND MOVING TO SHELL */
-  padding-bottom: env(safe-area-inset-bottom, 15px); /* INCREASED PADDING TO COVER BLACK BAR */
+  max-width: 480px;
+  margin: 0 16px clamp(10px, 1.5vh, 20px) 16px;
+  min-height: 76px;
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: space-around;
   pointer-events: all;
-  padding-top: 0;
   position: relative;
-  /* Top Color Strip + Rounding */
-  border-top: 5px solid var(--active-color);
-  border-radius: 28px 28px 0 0; /* LARGER RADIUS */
+  /* Floating Toy Tray */
+  border: 4px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 
+    0 10px 0 var(--border-subtle),
+    var(--shadow-float);
   transition: all 0.4s ease;
+  z-index: 50;
+  padding: 0 8px;
 }
 
-/* Ensure a "solid floor" below the shell for any extra overscroll/safe area issues */
-.bottom-nav-shell::before {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  height: 100px; /* Bridge to the absolute bottom of the device */
-  background: var(--bg-primary);
-}
+/* Remove solid floor since it's floating now */
+.bottom-nav-shell::before { display: none; }
 
-/* LIQUID INDICATOR - The sliding drop */
-.nav-liquid-indicator {
+/* TOY BUTTON INDICATOR - Expanded for Label */
+.nav-toy-indicator {
   position: absolute;
-  top: -5px; /* Anchored to the 5px border-top */
-  width: 60px;
-  height: 42px;
+  top: 5px;
+  width: 22%;
+  height: 66px;
   background: var(--active-color);
-  border-radius: 0 0 30px 30px;
+  border-radius: 20px;
   z-index: 1;
   transform: translateX(-50%);
-  transition: background 0.4s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* The curved "shoulders" of the goat nav */
-.nav-liquid-indicator::before,
-.nav-liquid-indicator::after {
-  content: '';
-  position: absolute;
-  top: -2px; /* PHYSICAL OVERLAP TO HIDE SHELL BORDER */
-  width: 20px;
-  height: 22px; /* SLIGHTLY TALLER TO OVERLAP BORDER */
-  background: transparent;
-  z-index: 2; /* ABOVE SHELL BORDER */
-}
-
-.nav-liquid-indicator::before {
-  left: -20px;
-  border-radius: 0 20px 0 0;
-  /* Massive spread to ensure NO light leaks */
-  box-shadow: 15px 0 0 0 var(--active-color);
-}
-
-.nav-liquid-indicator::after {
-  right: -20px;
-  border-radius: 20px 0 0 0;
-  box-shadow: -15px 0 0 0 var(--active-color);
+  transition: all 0.4s var(--transition-bounce);
+  box-shadow: 
+    0 5px 0 rgba(0, 0, 0, 0.15), 
+    var(--shadow-premium),
+    var(--toy-inner-shadow);
+  border: 2px solid rgba(255, 255, 255, 0.25);
 }
 
 /* NAV ITEM */
@@ -92,9 +66,10 @@
   height: 100%;
   cursor: pointer;
   position: relative;
-  color: #64748b;
+  color: var(--text-sub);
   z-index: 2;
   transition: all 0.3s ease;
+  font-family: var(--font-main);
 }
 
 .icon-wrapper {
@@ -102,44 +77,55 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    transition: all 0.3s ease;
+    width: 44px;
+    height: 38px;
+    transition: all 0.3s var(--transition-bounce);
+    z-index: 5;
 }
 
 .nav-label {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 950;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-top: 2px;
-  color: #64748b;
+  letter-spacing: 0.5px;
+  margin-top: 0px;
+  color: var(--text-sub);
   transition: all 0.3s ease;
+  z-index: 5;
 }
 
-/* ACTIVE STATE - Icon turns white and drops down into the bubble */
+/* ACTIVE STATE */
+/* ACTIVE STATE - Glowing Puffy Tab */
 .nav-item.active {
   color: white;
 }
 
 .nav-item.active .icon-wrapper {
-  transform: translateY(2px);
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  transform: translateY(-8px);
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
 }
 
 .nav-item.active .nav-label {
-  color: var(--active-color);
+  color: white;
   font-weight: 950;
-  transform: translateY(2px);
+  transform: translateY(-2px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Dark mode solid block */
+.nav-item.active {
+    color: white !important;
+}
+
+/* Dark mode — warm plum */
 [data-theme='dark'] .bottom-nav {
   background: transparent !important;
 }
 [data-theme='dark'] .bottom-nav-shell,
 [data-theme='dark'] .bottom-nav-shell::before {
-  background: #0F172A;
+  background: #1A1225;
 }
-[data-theme='dark'] .nav-label { color: #94A3B8; }
-[data-theme='dark'] .nav-item.active .nav-label { color: var(--active-color); }
+[data-theme='dark'] .bottom-nav-shell {
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
+}
+[data-theme='dark'] .nav-label { color: #9B8FB8; }
+[data-theme='dark'] .nav-item.active .nav-label { color: white; }

@@ -38,11 +38,6 @@ function RankingsView() {
             animate="visible"
             className="rank-view"
         >
-            {/* DYNAMIC AURORA BLOBS */}
-            <div className="aurora-engine">
-                <div className="blob aurora-1"></div>
-                <div className="blob aurora-2"></div>
-            </div>
 
             {/* 1. HEADER AREA */}
             <div className="rank-arena-header">
@@ -53,10 +48,11 @@ function RankingsView() {
 
             {/* 2. LEAGUE STATUS BANNER */}
             <motion.div variants={itemVariants} className="league-banner-elite">
+                <div className="btn-toy-gloss" />
                 <div className="league-medal-orb" style={{ borderColor: activeSub.color }}>
                     <span>🥈</span>
                 </div>
-                <div className="league-content">
+                <div className="league-content" style={{ zIndex: 2 }}>
                     <div className="league-name-row">
                         <span className="l-title">{user?.league || 'Silver'} League</span>
                         <span className="l-timer" style={{ color: activeSub.color, background: `${activeSub.color}22` }}>
@@ -64,24 +60,28 @@ function RankingsView() {
                         </span>
                     </div>
                     <div className="league-promo-track">
-                        <div className="promo-fill" style={{ width: '65%', background: activeSub.color }}></div>
+                        <div className="promo-fill" style={{ width: '65%', '--theme-color': activeSub.color }}></div>
                     </div>
                     <div className="league-status-msg">Top 10 promote to <b>Gold</b></div>
                 </div>
-                <div className="league-rank-badge" style={{ background: activeSub.color }}>#24</div>
+                <div className="league-rank-badge" style={{ background: activeSub.color, zIndex: 2 }}>#24</div>
             </motion.div>
 
-            {/* 3. GEM SUBJECT TABS */}
+            {/* 3. CANDY SUBJECT ORBS */}
             <div className="rank-tabs-row">
                 {subjects.map(s => (
                     <div
                         key={s.id}
                         className={`rank-tab-pill ${activeTabId === s.id ? 'active' : ''}`}
                         onClick={() => setActiveTabId(s.id)}
-                        style={activeTabId === s.id ? { '--tab-color': s.color } : {}}
+                        style={{ 
+                            '--tab-color': s.color,
+                            '--shadow-color': `${s.color}66`
+                        }}
                     >
+                        <div className="btn-toy-gloss" />
                         <img src={s.gem} className="tab-gem-icon" alt={s.label} />
-                        <span>{s.label}</span>
+                        <span>{s.id === 'Overall' ? 'Top' : s.id}</span>
                     </div>
                 ))}
             </div>
@@ -92,11 +92,12 @@ function RankingsView() {
 
                 {/* RANK 2 (Silver) */}
                 <motion.div variants={itemVariants} className="pod-card pod-rank-2">
+                    <div className="btn-toy-gloss" />
                     <div className="pod-avatar-wrap">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" alt="Sarah" />
                     </div>
-                    <p className="pod-name">Sarah .A</p>
-                    <div className="pod-score-pill">
+                    <p className="pod-name" style={{ zIndex: 2 }}>Sarah .A</p>
+                    <div className="pod-score-pill" style={{ zIndex: 2 }}>
                         <img src={activeSub.gem} className="pod-gem" alt="gem" />
                         <span>14.2k</span>
                     </div>
@@ -104,12 +105,13 @@ function RankingsView() {
 
                 {/* RANK 1 (Gold) */}
                 <motion.div variants={itemVariants} className="pod-card pod-rank-1">
+                    <div className="btn-toy-gloss" />
                     <div className="crown-badge">👑</div>
                     <div className="pod-avatar-wrap">
                         <img src={userAvatar} alt="You" />
                     </div>
-                    <p className="pod-name">YOU</p>
-                    <div className="pod-score-pill">
+                    <p className="pod-name" style={{ zIndex: 2 }}>YOU</p>
+                    <div className="pod-score-pill" style={{ zIndex: 2 }}>
                         <img src={activeSub.gem} className="pod-gem" alt="gem" />
                         <span>{((user?.xp || 15000) / 1000).toFixed(1)}k</span>
                     </div>
@@ -117,11 +119,12 @@ function RankingsView() {
 
                 {/* RANK 3 (Bronze) */}
                 <motion.div variants={itemVariants} className="pod-card pod-rank-3">
+                    <div className="btn-toy-gloss" />
                     <div className="pod-avatar-wrap">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Musa" alt="Musa" />
                     </div>
-                    <p className="pod-name">Musa .O</p>
-                    <div className="pod-score-pill">
+                    <p className="pod-name" style={{ zIndex: 2 }}>Musa .O</p>
+                    <div className="pod-score-pill" style={{ zIndex: 2 }}>
                         <img src={activeSub.gem} className="pod-gem" alt="gem" />
                         <span>12.8k</span>
                     </div>
@@ -162,20 +165,23 @@ function RankingsView() {
                     className="rank-row-elite is-user"
                     style={{ '--tab-color': activeSub.color }}
                 >
-                    <span className="r-pos">#24</span>
-                    <div className="r-avatar">
+                    <div className="btn-toy-gloss" />
+                    <span className="r-pos" style={{ zIndex: 2 }}>#24</span>
+                    <div className="r-count-glow" style={{ background: activeSub.color }}></div>
+                    <div className="r-avatar" style={{ zIndex: 2 }}>
                         <img src={userAvatar} alt="You" />
                     </div>
-                    <div className="r-info">
+                    <div className="r-info" style={{ zIndex: 2 }}>
                         <span className="r-name">{user?.nickname || 'You'} (YOU)</span>
                         <span className="r-xp">{(user?.xp || 0).toLocaleString()} XP</span>
                     </div>
-                    <div className="r-stat">
+                    <div className="r-stat" style={{ zIndex: 2 }}>
                         <img src={activeSub.gem} className="r-gem" alt="gem" />
                         <span className="r-gem-count">{user?.diamonds || 12}</span>
                     </div>
                 </motion.div>
             </motion.div>
+
 
 
         </motion.div>

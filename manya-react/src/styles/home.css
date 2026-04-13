@@ -1,35 +1,30 @@
-/* home.css - MASTER HUB v53.0 (CRYSTAL BALL ORBS) */
+/* home.css - MANYA WORLD HOME v2.0 (Warm Playful Rebrand) */
 
 .manya-hub {
     display: flex;
     flex-direction: column;
-    /* Forces the hub to fill available space between HUD and Nav */
     height: 100%;
-    /* Distributes elements perfectly within the fixed screen */
-    justify-content: flex-start; /* Change from space-between to allow natural flow */
-    /* Dynamic gaps that shrink on short screens - Increased for orb clearance */
+    justify-content: flex-start;
     gap: clamp(16px, 2.5vh, 24px);
     padding: 0 0 10px 0;
-    font-family: 'Nunito', 'Fredoka', 'Varela Round', sans-serif;
-    overflow-y: auto; /* allow scroll if squashed */
+    font-family: var(--font-main);
+    overflow-y: auto;
     scrollbar-width: none;
 }
 .manya-hub::-webkit-scrollbar { display: none; }
 
-/* --- DYNAMIC AURORAS --- */
+/* --- WARM AMBIENT BLOBS (Replacing cold auroras) --- */
 .aurora-engine .blob {
     position: absolute;
-    width: 600px;
-    /* Larger to spread color more evenly */
-    height: 600px;
+    width: 500px;
+    height: 500px;
     filter: blur(120px);
-    opacity: 0.35;
-    /* Much more vibrant background color splashes */
-    animation: auroraBreathe 12s infinite alternate;
+    opacity: 0.15;
+    animation: warmBreathe 15s infinite alternate;
 }
 
 .aurora-1 {
-    background: var(--manya-purple);
+    background: var(--manya-gold);
     top: -150px;
     left: -150px;
 }
@@ -38,73 +33,109 @@
     background: var(--manya-pink);
     bottom: -100px;
     right: -100px;
-    animation-delay: -6s;
+    animation-delay: -7s;
 }
 
-@keyframes auroraBreathe {
+[data-theme='dark'] .aurora-1 {
+    background: var(--manya-purple);
+    opacity: 0.08;
+}
+
+[data-theme='dark'] .aurora-2 {
+    background: var(--manya-pink);
+    opacity: 0.06;
+}
+
+@keyframes warmBreathe {
     0% {
         transform: scale(1) translate(0, 0);
-        opacity: 0.1;
+        opacity: 0.08;
     }
-
     100% {
-        transform: scale(1.4) translate(20px, 20px);
-        opacity: 0.25;
+        transform: scale(1.3) translate(15px, 15px);
+        opacity: 0.18;
     }
 }
 
-/* --- 0. STATUS HEADER --- */
+/* --- MAGIC DUST PARTICLES --- */
+.magic-dust {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background-image: 
+        radial-gradient(1px 1px at 15% 25%, #fff, transparent),
+        radial-gradient(2px 2px at 45% 65%, #fff, transparent),
+        radial-gradient(1px 1px at 85% 15%, #fff, transparent),
+        radial-gradient(2px 2px at 25% 85%, rgba(255,255,255,0.5), transparent);
+    background-size: 250px 250px;
+    opacity: 0.4;
+    animation: driftParticles 30s linear infinite;
+}
+
+@keyframes driftParticles {
+    from { background-position: 0 0; }
+    to { background-position: 250px 250px; }
+}
+
+/* --- 0. STATUS HEADER (Warm Glass) --- */
 .home-status-header-glass {
-    background: var(--bg-primary);
+    background: var(--bg-card);
     border: 2px solid var(--border-subtle);
     border-radius: var(--radius-xl);
-    /* Slimmer padding for single-screen fit */
-    padding: clamp(6px, 1vh, 10px) 14px;
+    padding: clamp(8px, 1.2vh, 12px) 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-card);
     flex-shrink: 0;
 }
 
+
 .status-user-info .hi-text {
     display: block;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 900;
     color: var(--text-primary);
     letter-spacing: -0.02em;
+    font-family: var(--font-display);
 }
 
 .status-user-info .status-subtext {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: 1px;
+    margin-top: 2px;
 }
 
 .status-streak-pill {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-subtle);
-    padding: 4px 10px;
-    border-radius: 100px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-subtle);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
     display: flex;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    gap: 8px;
+    box-shadow: var(--shadow-warm);
 }
 
 .streak-flame-glow {
-    width: 24px;
-    height: 24px;
-    background: #FFF7ED;
+    width: 28px;
+    height: 28px;
+    background: #FFF3E0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #F97316;
-    box-shadow: 0 0 12px rgba(249, 115, 22, 0.3);
+    color: #E8652B;
+    box-shadow: 0 0 14px rgba(232, 101, 43, 0.25);
+}
+
+[data-theme='dark'] .streak-flame-glow {
+    background: rgba(232, 101, 43, 0.15);
+    box-shadow: 0 0 14px rgba(232, 101, 43, 0.2);
 }
 
 .streak-stats {
@@ -114,55 +145,67 @@
 }
 
 .streak-stats .val {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 900;
-    color: #F97316;
+    color: #E8652B;
 }
 
 .streak-stats .lab {
     font-size: 7px;
     font-weight: 900;
-    color: #94A3B8;
-    margin-top: 1px;
+    color: var(--text-sub);
+    margin-top: 2px;
 }
 
-/* --- 1. RESUME MISSION CARD OVERHAUL --- */
+/* --- 1. RESUME MISSION CARD (Magical Adventure Slate) --- */
 .resume-mission-card {
     border-radius: var(--radius-xl);
-    /* Slimmer padding to fit vertically */
-    padding: clamp(10px, 1.4vh, 16px);
+    padding: clamp(12px, 1.6vh, 18px);
     display: flex;
     align-items: center;
-    box-shadow: inset 0 -4px 12px rgba(0, 0, 0, 0.1), 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2), var(--toy-inner-shadow);
     cursor: pointer;
     width: 100%;
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
     color: white;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     flex-shrink: 0;
+    border: 3px solid rgba(255, 255, 255, 0.4);
 }
 
-/* DYNAMIC MISSION CARD COLORS - ELECTRIC BOOST */
+.resume-mission-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* WARM MISSION CARD COLORS */
 .resume-mission-card.bounty-card-math {
-    background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-    border: 2.5px solid #818cf8;
+    background: linear-gradient(135deg, #7C6BF0 0%, #5B4CC4 100%);
+    border: 2.5px solid #9B8DF8;
 }
 
 .resume-mission-card.bounty-card-science {
-    background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
-    border: 2.5px solid #34d399;
+    background: linear-gradient(135deg, #2CC99E 0%, #1A8F6E 100%);
+    border: 2.5px solid #5EDDB5;
 }
 
 .resume-mission-card.bounty-card-sst {
-    background: linear-gradient(135deg, #f59e0b 0%, #92400e 100%);
-    border: 2.5px solid #fbbf24;
+    background: linear-gradient(135deg, #F0A030 0%, #C47B10 100%);
+    border: 2.5px solid #F5C060;
 }
 
 .resume-mission-card.bounty-card-english {
-    background: linear-gradient(135deg, #ec4899 0%, #9d174d 100%);
-    border: 2.5px solid #f472b6;
+    background: linear-gradient(135deg, #E8608A 0%, #B83F65 100%);
+    border: 2.5px solid #F090AE;
 }
 
 .hero-bg-gem-watermark {
@@ -178,14 +221,13 @@
 }
 
 .hero-avatar-mini-glow {
-    /* Adaptive avatar size */
-    width: clamp(34px, 5vh, 48px);
-    height: clamp(34px, 5vh, 48px);
+    width: clamp(36px, 5.5vh, 50px);
+    height: clamp(36px, 5.5vh, 50px);
     border-radius: 50%;
-    border: 2.5px solid white;
-    background: rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.15);
     overflow: hidden;
-    box-shadow: 0 0 25px hsla(var(--manya-purple-h), 80%, 60%, 0.5);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
 }
 
 .hero-avatar-mini-glow img {
@@ -194,7 +236,7 @@
 
 .mission-details {
     flex: 1;
-    margin-left: 12px;
+    margin-left: 14px;
     z-index: 2;
 }
 
@@ -203,94 +245,65 @@
     font-weight: 900;
     color: rgba(255, 255, 255, 0.9);
     letter-spacing: 1px;
+    font-family: var(--font-main);
 }
 
 .mission-title {
-    margin: 2px 0 0;
+    margin: 3px 0 0;
     color: white;
-    font-size: clamp(14px, 2vh, 18px); /* Responsive font size */
-    font-weight: 900;
-    line-height: 1.2;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: clamp(14px, 2vh, 18px);
+    font-weight: 800;
+    line-height: 1.25;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     line-clamp: 2;
     overflow: hidden;
+    font-family: var(--font-display);
 }
 
 .play-pill-neon {
-    /* Adaptive CTA size */
-    width: clamp(36px, 5vh, 48px);
-    height: clamp(36px, 5vh, 48px);
+    width: clamp(38px, 5.5vh, 50px);
+    height: clamp(38px, 5.5vh, 50px);
     background: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 25px white, inset 0 -3px 8px rgba(0, 0, 0, 0.15);
-    /* Squishy inset */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 -2px 6px rgba(0, 0, 0, 0.1);
     z-index: 2;
     transition: 0.3s;
     flex-shrink: 0;
-    animation: ctaHeartbeat 2s infinite ease-in-out;
+    animation: ctaHeartbeat 2.5s infinite ease-in-out;
 }
 
-.resume-mission-card.bounty-card-math .play-pill-neon svg {
-    fill: #4f46e5;
-}
-
-.resume-mission-card.bounty-card-science .play-pill-neon svg {
-    fill: #059669;
-}
-
-.resume-mission-card.bounty-card-sst .play-pill-neon svg {
-    fill: #d97706;
-}
-
-.resume-mission-card.bounty-card-english .play-pill-neon svg {
-    fill: #db2777;
-}
+.resume-mission-card.bounty-card-math .play-pill-neon svg { fill: #5B4CC4; }
+.resume-mission-card.bounty-card-science .play-pill-neon svg { fill: #1A8F6E; }
+.resume-mission-card.bounty-card-sst .play-pill-neon svg { fill: #C47B10; }
+.resume-mission-card.bounty-card-english .play-pill-neon svg { fill: #B83F65; }
 
 @keyframes ctaHeartbeat {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    10% {
-        transform: scale(1.1);
-        box-shadow: 0 0 35px white, inset 0 -3px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    20% {
-        transform: scale(1.05);
-    }
-
-    30% {
-        transform: scale(1.1);
-    }
-
-    40% {
-        transform: scale(1);
-    }
+    0%, 100% { transform: scale(1); }
+    10% { transform: scale(1.08); box-shadow: 0 6px 25px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, 0.08); }
+    20% { transform: scale(1.04); }
+    30% { transform: scale(1.08); }
+    40% { transform: scale(1); }
 }
 
-/* /* ═══════════════════════════════════════════════════════
-   2. GALAXY-INFUSED CRYSTAL BALL WORLD GRID
+/* ═══════════════════════════════════════════════════════
+   2. CRYSTAL BALL WORLD GRID (Warmed Up)
    ═══════════════════════════════════════════════════════ */
 
 .subject-grid-elite {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* Adaptive gaps that compress to save height */
     gap: clamp(8px, 1vh, 14px) clamp(10px, 2vh, 18px);
-    flex: 1; /* Takes most of the available "squish" space */
+    flex: 1;
     min-height: 0;
     width: 100%;
     max-width: 420px;
-    margin: 8px auto 0 auto; /* Added top margin to stay clear of mission card */
+    margin: 8px auto 0 auto;
     align-content: center;
 }
 
@@ -307,15 +320,14 @@
 /* ── ORB WRAPPER ── */
 .orb-wrap {
     position: relative;
-    /* ADAPTIVE ORB SIZES - Slightly smaller on tight heights */
-    width: clamp(55px, 10vh, 85px);
-    height: clamp(55px, 10vh, 85px);
+    width: clamp(58px, 10.5vh, 88px);
+    height: clamp(58px, 10.5vh, 88px);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* ── THE VIBRANT CRYSTAL BUBBLE ── */
+/* ── THE CRYSTAL BUBBLE (Warmer) ── */
 .crystal-ball {
     width: 95%;
     height: 95%;
@@ -324,61 +336,57 @@
     overflow: hidden;
     background: rgba(255, 255, 255, 0.1);
     box-shadow:
-        inset 0 -6px 20px rgba(0, 0, 0, 0.25),
-        /* Deeper bottom shadow for contrast */
+        inset 0 -6px 20px rgba(0, 0, 0, 0.2),
         inset 0 8px 15px rgba(255, 255, 255, 0.5),
-        0 8px 20px rgba(0, 0, 0, 0.25);
-    /* Stronger drop shadow */
-    border: 1px solid rgba(255, 255, 255, 0.3);
+        0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.35);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
     backdrop-filter: blur(12px);
-    /* Higher clarity */
 }
 
 .world-card-elite:hover .crystal-ball {
     transform: scale(1.06);
     box-shadow:
-        inset 0 -6px 20px rgba(0, 0, 0, 0.2),
+        inset 0 -6px 20px rgba(0, 0, 0, 0.15),
         inset 0 10px 20px rgba(255, 255, 255, 0.8),
-        0 12px 25px rgba(0, 0, 0, 0.25);
+        0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
-/* Subject Specific Vibrant Gradients (Candy & Jewel Tones) */
-/* Deep, highly saturated colors for massive contrast against light backgrounds */
+/* Subject Specific — Slightly Warmer / Softer Gradients */
 .world-card-elite.math .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #818cf8 0%, #312e81 100%);
+    background: radial-gradient(circle at 60% 70%, #918CF8 0%, #3D39A0 100%);
 }
 
 .world-card-elite.science .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #10b981 0%, #064e3b 100%);
+    background: radial-gradient(circle at 60% 70%, #34DBA8 0%, #0A6B4E 100%);
 }
 
 .world-card-elite.sst .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #f59e0b 0%, #78350f 100%);
+    background: radial-gradient(circle at 60% 70%, #F5B040 0%, #8A5510 100%);
 }
 
 .world-card-elite.english .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #ec4899 0%, #831843 100%);
+    background: radial-gradient(circle at 60% 70%, #F07098 0%, #8A2048 100%);
 }
 
-/* Dark Mode - Deep but Colorful (No pitch black) */
+/* Dark Mode — Warm Deep */
 [data-theme='dark'] .world-card-elite.math .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #6366f1 0%, #312e81 100%);
+    background: radial-gradient(circle at 50% 50%, #7068E8 0%, #2D2880 100%);
 }
 
 [data-theme='dark'] .world-card-elite.science .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #10b981 0%, #064e3b 100%);
+    background: radial-gradient(circle at 50% 50%, #20C090 0%, #08503A 100%);
 }
 
 [data-theme='dark'] .world-card-elite.sst .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #f59e0b 0%, #78350f 100%);
+    background: radial-gradient(circle at 50% 50%, #E8A030 0%, #704510 100%);
 }
 
 [data-theme='dark'] .world-card-elite.english .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #ec4899 0%, #831843 100%);
+    background: radial-gradient(circle at 50% 50%, #E86090 0%, #701838 100%);
 }
 
-/* Animated Magical Swirl (Colorful Overlays) */
+/* Animated Magical Swirl */
 .crystal-swirl {
     position: absolute;
     inset: -25px;
@@ -390,7 +398,6 @@
     will-change: transform;
     transform: translateZ(0);
     z-index: 1;
-    /* Explicitly stay behind the island */
 }
 
 .world-card-elite.math .crystal-swirl {
@@ -408,26 +415,21 @@
 .world-card-elite.sst .crystal-swirl {
     background:
         radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(251, 191, 36, 0.8) 0%, transparent 70%);
+        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(245, 190, 60, 0.8) 0%, transparent 70%);
 }
 
 .world-card-elite.english .crystal-swirl {
     background:
         radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(244, 114, 182, 0.8) 0%, transparent 70%);
+        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(240, 112, 152, 0.8) 0%, transparent 70%);
 }
 
 @keyframes galaxySpin {
-    0% {
-        transform: rotate(0deg) translateZ(0);
-    }
-
-    100% {
-        transform: rotate(360deg) translateZ(0);
-    }
+    0% { transform: rotate(0deg) translateZ(0); }
+    100% { transform: rotate(360deg) translateZ(0); }
 }
 
-/* THE MAGIC SPARKLES - Vibrant Light Dots */
+/* Sparkles */
 .crystal-depth::before {
     content: '';
     position: absolute;
@@ -450,25 +452,18 @@
 }
 
 @keyframes starsTwinkle {
-    from {
-        opacity: 0.5;
-        transform: scale(0.9);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1.15);
-    }
+    from { opacity: 0.5; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1.15); }
 }
 
-/* Hollow inner shadow - Deeper for high contrast popping */
+/* Inner depth shadow */
 .crystal-depth {
     position: absolute;
     inset: 0;
     border-radius: 50%;
     box-shadow:
-        inset 0 0 30px rgba(0, 0, 0, 0.4),
-        inset 0 10px 40px rgba(0, 0, 0, 0.25);
+        inset 0 0 30px rgba(0, 0, 0, 0.35),
+        inset 0 10px 40px rgba(0, 0, 0, 0.2);
     z-index: 2;
     pointer-events: none;
 }
@@ -479,13 +474,12 @@
         inset 0 15px 45px rgba(0, 0, 0, 0.4);
 }
 
-/* Floating island - Asynchronous float paces per subject (ALIVE & MAGIC) */
+/* Floating island */
 .crystal-island {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* Base static fallback */
     width: 65%;
     height: auto;
     z-index: 3;
@@ -495,34 +489,18 @@
     will-change: transform;
 }
 
-/* DIFFERENT PACES FOR DIFFERENT WORLDS */
-.world-card-elite.math .crystal-island {
-    animation: islandFloat 4.2s ease-in-out infinite alternate;
-}
-
-.world-card-elite.science .crystal-island {
-    animation: islandFloat 7.1s ease-in-out infinite alternate;
-}
-
-.world-card-elite.sst .crystal-island {
-    animation: islandFloat 5.4s ease-in-out infinite alternate;
-}
-
-.world-card-elite.english .crystal-island {
-    animation: islandFloat 9.2s ease-in-out infinite alternate;
-}
+/* DIFFERENT FLOAT PACES */
+.world-card-elite.math .crystal-island { animation: islandFloat 4.2s ease-in-out infinite alternate; }
+.world-card-elite.science .crystal-island { animation: islandFloat 7.1s ease-in-out infinite alternate; }
+.world-card-elite.sst .crystal-island { animation: islandFloat 5.4s ease-in-out infinite alternate; }
+.world-card-elite.english .crystal-island { animation: islandFloat 9.2s ease-in-out infinite alternate; }
 
 @keyframes islandFloat {
-    0% {
-        transform: translate(-50%, -43%) translateZ(0);
-    }
-
-    100% {
-        transform: translate(-50%, -57%) translateZ(0);
-    }
+    0% { transform: translate(-50%, -43%) translateZ(0); }
+    100% { transform: translate(-50%, -57%) translateZ(0); }
 }
 
-/* SECONDARY MAGICAL SPARKS - Faster & Pulsing Layer */
+/* Secondary Sparkle Layer */
 .crystal-depth::after {
     content: '';
     position: absolute;
@@ -536,11 +514,10 @@
         radial-gradient(1px 1px at 70px 60px, #fff, rgba(255, 255, 255, 0));
     background-size: 100px 100px;
     animation: starsTwinkle 1.5s infinite alternate-reverse;
-    /* Much faster magic sparks */
     z-index: 2;
 }
 
-/* PREMIUM GLASS OVERLAY - Highlights */
+/* Glass Overlay */
 .crystal-glass {
     position: absolute;
     inset: 0;
@@ -548,16 +525,14 @@
     z-index: 5;
     pointer-events: none;
     background:
-        /* Top glare, slightly less intense so true colors pop through */
         radial-gradient(circle at 35% 15%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 35%),
-        /* Bottom subtle reflection */
         radial-gradient(circle at 70% 85%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%);
     box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.2),
         inset 0 2px 6px rgba(255, 255, 255, 0.3);
 }
 
-/* Glow pool beneath orb - Swapped to a crisp drop shadow pool */
+/* Glow pool beneath orb */
 .orb-glow {
     position: absolute;
     bottom: -10px;
@@ -566,10 +541,8 @@
     width: 60px;
     height: 10px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.25);
-    /* Darker solid grounding shadow */
+    background: rgba(0, 0, 0, 0.18);
     filter: blur(3px);
-    /* Sharper */
     z-index: -1;
     transition: all 0.4s ease;
 }
@@ -583,7 +556,7 @@
     transform: translateX(-50%) scale(1.1);
 }
 
-/* Consolidate subject footer into a pure nameplate button */
+/* Subject Name Button Footer */
 .card-footer-info {
     text-align: center;
     width: 100%;
@@ -595,64 +568,50 @@
 }
 
 .subject-name-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 24px;
-    border-radius: 100px;
-    width: fit-content;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(8px);
+    width: fit-content;
 }
 
 .subject-name-row h4 {
     margin: 0;
-    font-size: clamp(11px, 1.3vh, 13px);
-    font-weight: 950;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
 }
 
-/* SUBJECT BUTTON COLORS & 3D DEPTH */
+/* SUBJECT BUTTON COLORS — Warmer 3D Depth */
 .world-card-elite.math .subject-name-row {
-    background: linear-gradient(to bottom, #818cf8, #6366f1);
-    border-bottom: 4px solid #3730a3;
+    background: linear-gradient(to bottom, #918CF8, #6B66E0);
+    border-bottom: 4px solid #3D39A0;
 }
 
 .world-card-elite.science .subject-name-row {
-    background: linear-gradient(to bottom, #34d399, #10b981);
-    border-bottom: 4px solid #065f46;
+    background: linear-gradient(to bottom, #40DDB0, #20B888);
+    border-bottom: 4px solid #0A6B4E;
 }
 
 .world-card-elite.sst .subject-name-row {
-    background: linear-gradient(to bottom, #fbbf24, #f59e0b);
-    border-bottom: 4px solid #b45309;
+    background: linear-gradient(to bottom, #F5C060, #E8A030);
+    border-bottom: 4px solid #A06810;
 }
 
 .world-card-elite.english .subject-name-row {
-    background: linear-gradient(to bottom, #f472b6, #ec4899);
-    border-bottom: 4px solid #be185d;
+    background: linear-gradient(to bottom, #F090AE, #E86090);
+    border-bottom: 4px solid #A03060;
 }
 
-/* INTERACTION EFFECTS (Propagated from Card Hover) */
+/* INTERACTION EFFECTS */
 .world-card-elite:hover .subject-name-row {
     transform: translateY(2px);
     border-bottom-width: 2px;
-    filter: brightness(1.1);
+    filter: brightness(1.08);
 }
 
 .world-card-elite:active .subject-name-row {
     transform: translateY(4px);
     border-bottom-width: 0px;
-    filter: brightness(0.9);
+    filter: brightness(0.95);
 }
 
-/* FLOATING LUXURY GEM BADGE */
+/* FLOATING GEM BADGE */
 .card-gem-bounty {
     position: absolute;
     top: -5px;
@@ -661,17 +620,17 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-card);
     padding: 4px 10px;
-    border-radius: 100px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    border: 2px solid white;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-card);
+    border: 2px solid var(--border-subtle);
     animation: luxuryFloat 4s ease-in-out infinite alternate;
 }
 
 [data-theme='dark'] .card-gem-bounty {
-    background: #1e293b;
-    border-color: #334155;
+    background: #2A1F3D;
+    border-color: #3D2E55;
 }
 
 @keyframes luxuryFloat {
@@ -679,11 +638,11 @@
     100% { transform: translateY(-8px) scale(1.05); }
 }
 
-/* Subject-specific border highlight for gems */
-.world-card-elite.math .card-gem-bounty    { border-color: #818cf8; }
-.world-card-elite.science .card-gem-bounty { border-color: #34d399; }
-.world-card-elite.sst .card-gem-bounty     { border-color: #fbbf24; }
-.world-card-elite.english .card-gem-bounty { border-color: #f472b6; }
+/* Subject Gem Border Colors */
+.world-card-elite.math .card-gem-bounty    { border-color: #918CF8; }
+.world-card-elite.science .card-gem-bounty { border-color: #40DDB0; }
+.world-card-elite.sst .card-gem-bounty     { border-color: #F5C060; }
+.world-card-elite.english .card-gem-bounty { border-color: #F090AE; }
 
 .bounty-gem-icon {
     width: 14px;
@@ -694,21 +653,19 @@
 .bounty-gem-count {
     font-size: 11px;
     font-weight: 950;
-    color: #1e293b !important;
+    color: var(--text-primary) !important;
 }
 
 [data-theme='dark'] .bounty-gem-count {
-    color: white !important;
+    color: var(--text-primary) !important;
 }
 
-/* Dark slate for high contrast */
-
-/* --- DARK THEME BOTTON OVERRIDES --- */
+/* Dark mode button overrides */
 [data-theme='dark'] .subject-name-row {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 255, 255, 0.03);
 }
 
-/* THE COMPACT SIM LAB FOOTER */
+/* THE SIM LAB FOOTER */
 .home-sim-lab-cta {
     width: 100%;
     max-width: 420px;
@@ -716,18 +673,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: clamp(6px, 1vh, 10px) 14px;
-    background: var(--bg-primary);
-    border-radius: 18px;
+    padding: clamp(8px, 1.2vh, 12px) 16px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
     border: 2px solid var(--border-subtle);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-warm);
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
 }
 
 [data-theme='dark'] .home-sim-lab-cta {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(42, 31, 61, 0.6);
 }
 
 .sim-lab-left {
@@ -737,15 +694,16 @@
 }
 
 .sim-lab-icon-box {
-    width: clamp(30px, 4.5vh, 42px);
-    height: clamp(30px, 4.5vh, 42px);
-    background: #7c3aed;
+    width: clamp(32px, 4.5vh, 42px);
+    height: clamp(32px, 4.5vh, 42px);
+    background: var(--manya-purple);
     color: white;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+    border: 2px solid rgba(255,255,255,0.2);
 }
 
 .sim-lab-text {
@@ -754,14 +712,15 @@
 
 .sim-lab-text h4 {
     margin: 0;
-    font-size: clamp(12px, 1.2vh, 14px);
-    font-weight: 900;
+    font-size: clamp(12px, 1.3vh, 14px);
+    font-weight: 800;
     color: var(--text-primary);
+    font-family: var(--font-display);
 }
 
 .sim-lab-text p {
     margin: 0;
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 800;
     color: var(--text-secondary);
     text-transform: uppercase;
@@ -769,10 +728,10 @@
 }
 
 .sim-lab-arrow {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -782,6 +741,54 @@
 }
 
 .home-sim-lab-cta:hover .sim-lab-arrow {
-    background: #7c3aed;
+    background: var(--manya-purple);
     color: white;
+}
+
+/* --- MOBILE COMPACT REFINEMENT --- */
+@media (max-width: 480px) {
+    .manya-hub {
+        gap: 16px;
+    }
+    
+    .home-status-header-glass {
+        padding: 10px 14px;
+        border-radius: var(--radius-xl);
+    }
+    .status-user-info .hi-text { font-size: 16px; }
+    .status-streak-pill { padding: 6px 12px; }
+
+    .resume-mission-card {
+        padding: clamp(10px, 1.4vh, 14px);
+        border-width: 2.5px;
+    }
+    .hero-avatar-mini-glow { 
+        width: 44px; 
+        height: 44px; 
+        border-width: 3px;
+    }
+    .mission-details { margin-left: 12px; }
+    .mission-title { font-size: 14px !important; }
+
+    .subject-grid-elite {
+        gap: 10px 12px;
+        margin-top: 6px;
+    }
+    .orb-wrap {
+        width: 76px;
+        height: 76px;
+    }
+    .card-footer-info {
+        margin-top: 8px;
+    }
+    
+    .home-sim-lab-cta {
+        padding: 8px 16px !important;
+    }
+    .sim-lab-icon-box {
+        width: 36px;
+        height: 36px;
+    }
+    .sim-lab-text h4 { font-size: 14px; }
+    .sim-lab-text p { font-size: 10px; }
 }

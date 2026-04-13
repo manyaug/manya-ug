@@ -13,27 +13,20 @@
 }
 
 .sub-vault-btn {
-    background: var(--bg-card);
-    border: 2.5px solid var(--border-color);
-    border-radius: 20px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 0 var(--border-color);
+    padding: 12px 10px;
+    height: 70px;
+    flex-direction: column;
+    gap: 5px;
 }
+
+.sub-vault-btn .icon { font-size: 22px; z-index: 2; position: relative; }
+.sub-vault-btn .name { font-weight: 950; font-size: 11px; z-index: 2; position: relative; }
 
 .sub-vault-btn.active {
-    border-color: var(--theme-color);
-    background: var(--bg-main); /* fallback */
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    filter: brightness(1.15);
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: var(--shadow-premium), var(--toy-inner-shadow);
 }
-
-.sub-vault-btn .icon { font-size: 20px; }
-.sub-vault-btn .name { font-weight: 900; font-size: 13px; color: var(--text-main); }
 
 /* 2. UNIT HEADERS */
 .unit-label-elite {
@@ -110,31 +103,16 @@
 
 .study-grid-elite { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn-res-study {
-    background: var(--bg-main); border: 2px solid var(--border-color);
-    padding: 12px 18px; border-radius: 16px;
-    font-size: 13px; font-weight: 800; color: var(--text-main);
-    cursor: pointer; transition: 0.2s;
-}
-.btn-res-study:active { transform: scale(0.95); }
-
-/* PRACTICE GRID (Numbered Squares) */
-.practice-grid-elite { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); 
-    gap: 8px; 
+    text-transform: none;
+    font-size: 11px;
+    padding: 10px 16px;
+    min-width: 80px;
 }
 
 .btn-res-practice {
-    height: 48px; background: var(--bg-card); border: 2.5px solid var(--border-color);
-    border-radius: 14px; font-weight: 900; font-size: 14px; color: var(--text-main);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 0 var(--border-color); cursor: pointer; transition: 0.1s;
-}
-
-.btn-res-practice:active {
-    transform: translateY(3px);
-    box-shadow: none;
-    border-color: var(--theme-color);
+    font-size: 14px;
+    text-transform: none;
+    padding: 0;
 }
 
 @keyframes slideInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
