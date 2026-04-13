@@ -91,8 +91,7 @@ export const fetchScienceQuestions = async (topicId) => {
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],
-                engine_type: q.engine_type,
-                interaction_config: q.interaction_config
+                engine_type: q.engine_type
             };
         });
 

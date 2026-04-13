@@ -59,14 +59,14 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
     return (
         <div 
             ref={containerRef}
-            className="reader-study-root relative w-full flex-1 min-h-0 flex flex-col bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-y-auto transition-colors duration-700 scroll-smooth"
+            className="reader-study-root relative w-full flex-1 min-h-0 flex flex-col bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-y-auto overflow-x-hidden transition-colors duration-700 scroll-smooth"
             style={{ 
                 '--accent-color': accent,
                 scrollbarGutter: 'stable'
             }}
             onScroll={handleScroll}
         >
-            <div className="max-w-[800px] mx-auto p-4 sm:p-8 md:p-12">
+            <div className="w-full max-w-[800px] mx-auto p-4 sm:p-8 md:p-12">
                 
                 {/* HEADER - Responsive Typography */}
                 <header className={`mb-8 transition-all duration-1000 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
@@ -163,12 +163,14 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
                 .bento-section {
                     position: relative; padding-bottom: 24px;
                     border-bottom: 1px solid var(--border-subtle); margin-bottom: 24px;
+                    width: 100%;
                 }
                 .bento-section:last-child { border-bottom: none; }
 
                 .p-point-v2 {
                     display: flex; gap: 16px; align-items: flex-start;
                     transition: all 0.3s ease; margin-bottom: 24px;
+                    width: 100%;
                 }
                 
                 .p-marker-v2 {
@@ -224,7 +226,7 @@ function SectionRenderer({ section, accent, index }) {
                         <div key={i} className="p-point-v2 group/point">
                             <div className="p-marker-v2 transition-transform duration-500">{i + 1}</div>
                             <div 
-                                className="text-[var(--text-sub)] font-bold text-base md:text-xl leading-relaxed mt-0.5"
+                                className="text-[var(--text-sub)] font-bold text-base md:text-xl leading-relaxed mt-0.5 flex-1 min-w-0 break-words"
                                 dangerouslySetInnerHTML={{ __html: p }}
                             />
                         </div>

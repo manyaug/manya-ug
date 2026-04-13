@@ -44,8 +44,8 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                 const storyAnchor = allQuestions.find(q => q.type === 'QUEST_STORY' || q.item_type === 'QUEST_STORY');
                 
                 if (storyAnchor) {
-                    const stepsToFlatten = storyAnchor.steps || storyAnchor.data?.steps || storyAnchor.interaction_config?.steps;
-                    const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url || storyAnchor.interaction_config?.cdn_url;
+                    const stepsToFlatten = storyAnchor.steps || storyAnchor.data?.steps;
+                    const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url;
 
                     if (stepsToFlatten && stepsToFlatten.length > 0) {
                         return stepsToFlatten.map(s => ({ ...s, item_type: 'QUEST_STORY' }));

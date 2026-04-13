@@ -35,6 +35,29 @@ import ThreeDStudyEngine from '../shared-engines/ThreeDStudyEngine';
 import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
 
 /**
+ * SUPPORTED ENGINES (v3.3)
+ * Only these engine types are allowed to use the SimulatorBridge.
+ * Everything else (including MCQ, null, etc.) will use the standard Fetcher UI.
+ */
+const SUPPORTED_SIM_ENGINES = [
+    'SST_STUDY', 'NOTE_EXPLORER', 'GLOBE_TIME_ENGINE', 'GLOBE_ENGINE', 
+    'UNIVERSAL_GLOBE', 'IMAGE_HOTSPOTS', 'GALLERY_STUDY', 'READER_STUDY',
+    'THREE_D_STUDY', '3D_SKELETON'
+];
+
+/**
+ * UNIFIED ENGINE DETECTION (v3.2)
+ * Ensures both Parent and Bridge agree on what the engine actually is.
+ * Prioritizes: data.engine_type > data.type > top.engine_type > top.type
+ */
+const getEngineType = (q) => {
+    const data = q?.data || q;
+    // Prefer the inner data definitions as they are the source of truth for specialized engines
+    const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
+    return String(raw).toUpperCase().trim();
+};
+
+/**
  * SIMULATOR BRIDGE
  * Connects the MCQ-based Fetcher to specialized Simulation Engines.
  */
@@ -52,7 +75,8 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
     );
 
     // Determine which engine to use
-    let engineType = simData.engineType || simData.type || 'IMAGE_HOTSPOTS';
+    let engineType = getEngineType(step);
+    if (engineType === 'IMAGE_HOTSPOTS' && !simData.engineType && !simData.type) engineType = 'IMAGE_HOTSPOTS'; // Default fallback
     // AUTO-DETECT: If the JSON has study_notes or note_explorer mode, use NoteExplorerEngine
     if (simData.study_notes || simData.mode === 'note_explorer') engineType = 'NOTE_EXPLORER';
 
@@ -217,7 +241,10 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                         try {
                             const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
                             const { steps: simSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            simSteps.forEach(s => { s.isSimulation = true; });
+                            simSteps.forEach(s => { 
+                                const eType = (s.engine_type || s.type || "").toUpperCase();
+                                s.isSimulation = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
+                            });
                             simCandidates.push(...simSteps);
                         } catch (e) {
                             console.warn("Failed to load sim:", simRes.file);
@@ -234,7 +261,10 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                             const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
                             const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
                             rSteps.forEach((s, idx) => {
-                                s.isSimulation = true;
+                                // Exhaustive engine detection (v3.2)
+                                const eType = getEngineType(s);
+
+                                s.isSimulation = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
                                 s.isRecap = true;
                                 s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
                             });
@@ -315,6 +345,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
     const handleSelect = (option) => {
         if (isAnswered) return;
+        setHintUsed(false); // Auto-close on select (User Request Phase 2)
 
         if (selectedOption !== null && selectedOption !== option) {
             setAnswerChanged(true);
@@ -812,11 +843,15 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         // Use session from Redux state (already imported above)
         const frustration = calculateFrustration(session);
 
-        // ── SIMULATION / PUZZLE / RECAP VIEW ──
-        if (q.isSimulation || q.type === 'STUDY_RECAP' || q.type === 'INTERACTIVE_PUZZLE') {
+        // ─── SIMULATION / PUZZLE / RECAP VIEW (Whitelist-based Routing v3.3) ───
+        const eType = getEngineType(q);
+        const isActuallySimulation = SUPPORTED_SIM_ENGINES.includes(eType);
+
+        if (isActuallySimulation) {
             return (
                 <div className="flex-1 min-h-0 flex flex-col p-0 animate-in fade-in duration-500 overflow-hidden relative">
                     <SimulatorBridge 
+                        key={q.id || currentIdx}
                         step={q} 
                         onComplete={(results) => {
                             // If engine provides USP, use its logic
@@ -965,11 +1000,30 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                                 </div>
                             )}
                             
-                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE */}
+                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE (Floating v2.0) */}
                             {!isAnswered && q.hint && (
-                                <button key="hint-btn" onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                                    <Lightbulb size={18} />
-                                </button>
+                                <div className="relative">
+                                    <button 
+                                        key="hint-btn" 
+                                        onClick={() => setHintUsed(!hintUsed)} 
+                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
+                                    >
+                                        <Lightbulb size={18} />
+                                    </button>
+
+                                    {hintUsed && (
+                                        <div className="absolute top-12 right-0 w-64 z-[60] bg-amber-50 dark:bg-slate-900 border-2 border-amber-200 dark:border-amber-900/50 rounded-2xl p-4 shadow-2xl animate-in fade-in zoom-in slide-in-from-top-2 duration-200 backdrop-blur-md">
+                                            {/* Tail */}
+                                            <div className="absolute -top-1.5 right-4 w-3 h-3 bg-amber-50 dark:bg-slate-900 border-t-2 border-l-2 border-amber-200 dark:border-amber-900/50 rotate-45" />
+                                            
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Sparkles size={14} className="text-amber-500" />
+                                                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Tutor Hint</span>
+                                            </div>
+                                            <p className="text-[var(--text-main)] font-bold text-[13px] leading-relaxed m-0">{q.hint}</p>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
                         <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">
@@ -1008,16 +1062,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                         })}
                     </div>
 
-                    {/* ── HINT (only before answer) ── */}
-                    {hintUsed && !isAnswered && (
-                        <div className="mt-3 bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Lightbulb size={13} className="text-amber-500" />
-                                <span className="font-black text-amber-600 text-[9px] tracking-widest uppercase">Hint</span>
-                            </div>
-                            <p className="text-[var(--text-main)] font-bold text-[12px] leading-relaxed m-0">{q.hint}</p>
-                        </div>
-                    )}
+
 
                     {/* ── SUBMIT BUTTON (only when not yet answered) ── */}
                     {!isAnswered && (

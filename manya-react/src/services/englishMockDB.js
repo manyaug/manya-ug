@@ -79,7 +79,6 @@ export const fetchEnglishQuestions = async (topicId) => {
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],
                 engine_type: q.engine_type,
-                interaction_config: typeof q.interaction_config === 'string' ? JSON.parse(q.interaction_config) : q.interaction_config,
                 // Backward compatibility mapping for older English Fetcher versions
                 mapping: q.item_type === 'QUEST' || q.engine_type ? {
                     qid: q.qid,

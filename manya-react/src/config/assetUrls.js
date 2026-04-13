@@ -4,7 +4,9 @@
  * Central registry for all remotely-hosted heavy assets.
  */
 
-const BASE_CDN_URL = 'https://raw.githubusercontent.com/manyaug/manya-react-assets/main/';
+import { CDN_BASE } from './constants';
+
+const BASE_CDN_URL = CDN_BASE;
 
 /**
  * Maps subject keys to GitHub folder names (matching repo casing)
@@ -22,10 +24,10 @@ const SUBJECT_MAP = {
  */
 export function assetUrl(path) {
   if (!path) return '';
-  
+
   // 1. Clean the path
   let clean = path.trim().replace(/^\/+/, '');
-  
+
   // 2. Flip extensions for webp consistency
   if (clean.match(/\.(png|jpg|jpeg)$/i)) {
     clean = clean.replace(/\.(png|jpg|jpeg)$/i, '.webp');
@@ -36,11 +38,11 @@ export function assetUrl(path) {
   // - english/, math/, science/, and sst/ folder binaries are under /assets/.
   const subjects = ['english', 'math', 'science', 'sst'];
   const rootFolders = ['images', 'data', 'shared', 'content', 'assets'];
-  
+
   const firstSeg = clean.split('/')[0].toLowerCase();
-  
+
   if (subjects.includes(firstSeg) && !clean.startsWith('assets/')) {
-      clean = `assets/${clean}`;
+    clean = `assets/${clean}`;
   }
 
   return `${BASE_CDN_URL}${clean}`;
@@ -52,28 +54,47 @@ export function assetUrl(path) {
  */
 export function resolveRemoteUrl(url, contextUrl = null) {
   if (!url) return '';
-  
-  // Early return for full external URLs
-  if (url.startsWith('http') && !url.includes('supabase.co')) return url; 
 
-  // 1. Pre-clean
+  // 1. Pre-clean & SANITIZE (Emergency Failsafe for Database-Hardcoded URLs)
   let clean = url.trim().replace(/^\/+/, '');
 
+  // Normalize any absolute jsDelivr or GitHub Raw links into a relative path
+  // so they can be re-resolved against our current frozen version.
+  if (clean.includes('cdn.jsdelivr.net/') || clean.includes('raw.githubusercontent.com/')) {
+    clean = clean.replace(/^https?:\/\//, '');
+    clean = clean.replace(/^cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets(@[^/]+)?\//, '');
+    clean = clean.replace(/^raw\.githubusercontent\.com\/manyaug\/manya-react-assets\/[^/]+\//, '');
+  }
+
+  // Early return for full external URLs (only if they aren't legacy links we just cleaned)
+  if (clean.startsWith('http') && !clean.includes('supabase.co')) return clean;
+
   // 2. Handle Subject Context Relative Paths (../../)
-  if (contextUrl && (clean.startsWith('.') || !clean.includes('/'))) {
-      const resolved = joinUrls(contextUrl, clean);
-      return resolved;
+  // CRITICAL: Binaries (glb, mp3) should almost always resolve to /assets/ root, not relative to content/
+  const isBinary = clean.match(/\.(glb|mp3|wav|ogg)$/i);
+
+  if (!isBinary && contextUrl && (clean.startsWith('.') || !clean.includes('/'))) {
+    const resolved = joinUrls(contextUrl, clean);
+    return resolved;
   }
 
   // 3. Handle Legacy Supabase URLs by extracting the filename
   if (clean.includes('supabase.co')) {
-      const match = clean.match(/public\/assets\/(.+)$/);
-      const fallbackMatch = clean.match(/manya-assets\/(.+)$/);
-      let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
-      if (relativePath) return assetUrl(relativePath);
+    const match = clean.match(/public\/assets\/(.+)$/);
+    const fallbackMatch = clean.match(/manya-assets\/(.+)$/);
+    let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
+    if (relativePath) return assetUrl(relativePath);
   }
 
-  // 4. Default Resolution
+  // 4. Case-Specific science/ fix: If it matches a known GLB and is just a filename
+  // this catches cases where the JSON just says "spine.glb"
+  if (isBinary && !clean.includes('/')) {
+    // Find which quest it might belong to? 
+    // Actually, assetUrl will handle prefixing science/ -> assets/science/
+    // but we need the subfolder. For now, we prefer full paths in JSON.
+  }
+
+  // 5. Default Resolution
   return assetUrl(clean);
 }
 
@@ -81,23 +102,23 @@ export function resolveRemoteUrl(url, contextUrl = null) {
  * Robustly joins a base URL and a relative path, handling "../" correctly.
  */
 function joinUrls(base, relative) {
-    try {
-        // If base is a full URL, use the browser's URL constructor for smart joining
-        if (base.startsWith('http')) {
-            return new URL(relative, base).href;
-        }
-        // Fallback for local-ish paths
-        const baseParts = base.split('/').filter(p => p && !p.endsWith('.json'));
-        const relParts = relative.split('/');
-        
-        for (const part of relParts) {
-            if (part === '..') baseParts.pop();
-            else if (part !== '.') baseParts.push(part);
-        }
-        return (base.startsWith('/') ? '/' : '') + baseParts.join('/');
-    } catch (e) {
-        return relative;
+  try {
+    // If base is a full URL, use the browser's URL constructor for smart joining
+    if (base.startsWith('http')) {
+      return new URL(relative, base).href;
     }
+    // Fallback for local-ish paths
+    const baseParts = base.split('/').filter(p => p && !p.endsWith('.json'));
+    const relParts = relative.split('/');
+
+    for (const part of relParts) {
+      if (part === '..') baseParts.pop();
+      else if (part !== '.') baseParts.push(part);
+    }
+    return (base.startsWith('/') ? '/' : '') + baseParts.join('/');
+  } catch (e) {
+    return relative;
+  }
 }
 
 /**
@@ -105,21 +126,21 @@ function joinUrls(base, relative) {
  * e.g., 'math_island' -> 'math_island_compressed.webp'
  */
 function uiImage(name, ext = 'webp') {
-    if (!name) return '';
-    let clean = name.replace(new RegExp(`\\.${ext}$`), '');
-    if (!clean.endsWith('_compressed')) {
-        clean = `${clean}_compressed`;
-    }
-    return assetUrl(`images/${clean}.${ext}`);
+  if (!name) return '';
+  let clean = name.replace(new RegExp(`\\.${ext}$`), '');
+  if (!clean.endsWith('_compressed')) {
+    clean = `${clean}_compressed`;
+  }
+  return assetUrl(`images/${clean}.${ext}`);
 }
 
 // ---------------------------------------------------------------------------
 // 🎵 AMBIENT AUDIO
 // ---------------------------------------------------------------------------
 export const AUDIO = {
-  day:   assetUrl('shared/audios/day.mp3'),
+  day: assetUrl('shared/audios/day.mp3'),
   night: assetUrl('shared/audios/night.mp3'),
-  rain:  assetUrl('shared/audios/rain.mp3'),
+  rain: assetUrl('shared/audios/rain.mp3'),
   shine: assetUrl('shared/audios/shine.mp3'),
 }
 
@@ -127,11 +148,11 @@ export const AUDIO = {
 const normalizeAudio = (path) => path.replace('/audios/', '/audio/');
 
 export const SFX = {
-  correct:         assetUrl('shared/audios/collect-points.mp3'),
-  wrong:           assetUrl('shared/audios/error-mistake.mp3'),
-  applause:        assetUrl('shared/audios/applause.mp3'),
-  click:           assetUrl('shared/audios/ui-click.mp3'),
-  whoosh:          assetUrl('shared/audios/whoosh.mp3'),
+  correct: assetUrl('shared/audios/collect-points.mp3'),
+  wrong: assetUrl('shared/audios/error-mistake.mp3'),
+  applause: assetUrl('shared/audios/applause.mp3'),
+  click: assetUrl('shared/audios/ui-click.mp3'),
+  whoosh: assetUrl('shared/audios/whoosh.mp3'),
 }
 
 // ---------------------------------------------------------------------------
@@ -140,45 +161,45 @@ export const SFX = {
 const GLB_BASE = 'science/musklo-skeletal-system'
 
 export const GLB = {
-  male_skeleton:    assetUrl(`${GLB_BASE}/quest_2_human_skeleton/male_skeleton_compressed.glb`),
-  female_skeleton:  assetUrl(`${GLB_BASE}/quest_2_human_skeleton/female_skeleton_compressed.glb`),
-  skull:            assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull_compressed.glb`),
-  spine:            assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/spine_compressed.glb`),
-  spinal_column:    assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column_compressed.glb`),
-  rib_cage:         assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart_compressed.glb`),
-  thoracic:         assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic_compressed.glb`),
-  lower_limb:       assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb_compressed.glb`),
-  skeleton_arm:     assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm.glb`),
-  bone_structure:   assetUrl(`${GLB_BASE}/quest_6_bone_structure/bone_structure_compressed.glb`),
-  joint_structure:  assetUrl(`${GLB_BASE}/quest_7_joints_structure/joint_structure_compressed.glb`),
-  elbow_joint:      assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/elbow_joint_compressed.glb`),
-  hip_joint:        assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/hip_joint_compressed.glb`),
-  ankle:            assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/ankle_compressed.glb`),
-  pivot_neck:       assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/pivot_joint_neck_compressed.glb`),
-  wrist:            assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/wrist.glb`),
+  male_skeleton: assetUrl(`${GLB_BASE}/quest_2_human_skeleton/male_skeleton_compressed.glb`),
+  female_skeleton: assetUrl(`${GLB_BASE}/quest_2_human_skeleton/female_skeleton_compressed.glb`),
+  skull: assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull_compressed.glb`),
+  spine: assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/spine_compressed.glb`),
+  spinal_column: assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column_compressed.glb`),
+  rib_cage: assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart_compressed.glb`),
+  thoracic: assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic_compressed.glb`),
+  lower_limb: assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb_compressed.glb`),
+  skeleton_arm: assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm.glb`),
+  bone_structure: assetUrl(`${GLB_BASE}/quest_6_bone_structure/bone_structure_compressed.glb`),
+  joint_structure: assetUrl(`${GLB_BASE}/quest_7_joints_structure/joint_structure_compressed.glb`),
+  elbow_joint: assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/elbow_joint_compressed.glb`),
+  hip_joint: assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/hip_joint_compressed.glb`),
+  ankle: assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/ankle_compressed.glb`),
+  pivot_neck: assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/pivot_joint_neck_compressed.glb`),
+  wrist: assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/wrist.glb`),
   upper_limb_muscles: assetUrl(`${GLB_BASE}/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles_compressed.glb`),
-  human_teeth:      assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/human_teeth_compressed.glb`),
-  inside_tooth:     assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/inside_my_tooth_compressed.glb`),
+  human_teeth: assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/human_teeth_compressed.glb`),
+  inside_tooth: assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/inside_my_tooth_compressed.glb`),
 }
 
 // ---------------------------------------------------------------------------
 // 🖼️ UI IMAGES
 // ---------------------------------------------------------------------------
 export const IMAGES = {
-  math_gem:    assetUrl('images/gems/math_gem.svg'),
+  math_gem: assetUrl('images/gems/math_gem.svg'),
   science_gem: assetUrl('images/gems/science_svg.svg'),
-  sst_gem:     assetUrl('images/gems/sst_gem.svg'),
+  sst_gem: assetUrl('images/gems/sst_gem.svg'),
   english_gem: assetUrl('images/gems/english_gem.svg'),
-  master_gem:  assetUrl('images/gems/master_gem.svg'),
-  manya_icon:  uiImage('manya_icon'),
-  polly_icon:  uiImage('polly_icon'),
-  kiki_icon:   uiImage('kiki_icon'),
-  splash:      uiImage('splash'),
-  kiki_full:   uiImage('kiki'),
-  polly_full:  uiImage('polly'),
-  math_island:    uiImage('math_island'),
+  master_gem: assetUrl('images/gems/master_gem.svg'),
+  manya_icon: uiImage('manya_icon'),
+  polly_icon: uiImage('polly_icon'),
+  kiki_icon: uiImage('kiki_icon'),
+  splash: uiImage('splash'),
+  kiki_full: uiImage('kiki'),
+  polly_full: uiImage('polly'),
+  math_island: uiImage('math_island'),
   science_island: uiImage('science_island'),
-  sst_island:     uiImage('sst_island'),
+  sst_island: uiImage('sst_island'),
   english_island: uiImage('english_island'),
 }
 
@@ -189,14 +210,14 @@ export const IMAGES = {
 export function getPathImage(subject, fileName) {
   const sub = subject?.toLowerCase().replace('_path', ''); // handle safe subject key
   const folder = `${sub}_path`;
-  
+
   let finalFile = fileName.replace(/\.[^/.]+$/, ""); // strip ext
-  
+
   // Apply _compressed suffix only if NOT english (per repo structure)
   if (sub !== 'english' && !finalFile.endsWith('_compressed')) {
-      finalFile = `${finalFile}_compressed`;
+    finalFile = `${finalFile}_compressed`;
   }
-  
+
   return assetUrl(`images/${folder}/${finalFile}.webp`);
 }
 

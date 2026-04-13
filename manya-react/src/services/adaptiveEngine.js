@@ -113,30 +113,19 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             const itemType = (q.item_type || q.question_type || q.type || "").toUpperCase();
             let engineType = (q.engine_type || q.engineType || q.type || "").toUpperCase();
             
-            // Robust check for interaction config (handles both parsed JSON {} and raw strings "{}")
-            let hasConfig = false;
-            if (q.interaction_config && q.interaction_config !== 'null') {
-                if (typeof q.interaction_config === 'string') {
-                    hasConfig = q.interaction_config.trim() !== '{}' && q.interaction_config.trim() !== '';
-                } else if (typeof q.interaction_config === 'object') {
-                    hasConfig = Object.keys(q.interaction_config).length > 0;
-                }
-            }
+            // Unified Simulation Detection: Logic that determines if it MUST use a SimulatorBridge
+            // CRITICAL: If engine_type is MCQ, it must NEVER be true, even if item_type is SIMULATION.
+            const isSimulation = (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP')) && (engineType !== 'MCQ');
             
-            const isSelfContainedSim = hasConfig || (q.engine_type && q.engine_type !== 'null');
-            
-            // Legacy Fix: If it's a simulation but explicitly lacks an engine type, it defaults to the legacy story chat
-            if ((itemType === 'SIMULATION' || itemType === 'QUEST' || isSelfContainedSim) && !engineType) {
-                engineType = 'CHAT';
-            }
-            
-            const isStory = itemType === 'QUEST_STORY' || itemType === 'QUEST';
+            const isStory = itemType === 'QUEST_STORY' || itemType === 'QUEST' || engineType === 'CHAT';
+            const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
+
             if (isStory) {
-                pools.QUEST_STORY.push({ ...q, isSimulation: true, data: q.interaction_config || q });
-            } else if (itemType === 'GRAMMAR' || itemType === 'NOTE') {
-                pools.GRAMMAR.push({ ...q, isSimulation: true, data: q.interaction_config || q });
-            } else if (itemType === 'SIMULATION' || isSelfContainedSim) {
-                pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation: true, data: q.interaction_config || q });
+                pools.QUEST_STORY.push({ ...q, isSimulation, data: q });
+            } else if (isNote) {
+                pools.GRAMMAR.push({ ...q, isSimulation, data: q });
+            } else if (itemType === 'SIMULATION' || isSimulation) {
+                pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation: isSimulation, data: q });
             } else {
                 // MCQ RECOVERY: Robust check for question text to ensure MCQ pools are filled
                 const hasText = (q.question && q.question.trim() !== '' && q.question !== 'None') || 
@@ -153,15 +142,20 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             console.log(`🔌 [Adaptive] Injected ${simResources.length} explicitly provided simulations into pool.`);
         }
 
-        // ─── STRICT EXPLORE RULE: QUEST_STORY DATA ONLY ───
+        // ─── STRICT EXPLORE RULE: STORY or NOTE ONLY ───
         if (nodeType === 'EXPLORE') {
-            const subtopicStory = pools.QUEST_STORY.find(q => q.subtopic === allQuestions[0]?.subtopic) || pools.QUEST_STORY[0];
+            const storyCandidates = [...pools.QUEST_STORY, ...pools.GRAMMAR];
+            const subtopicStory = storyCandidates.find(q => q.subtopic === allQuestions[0]?.subtopic) || storyCandidates[0];
+            
             if (subtopicStory) {
-                console.log(`🎬 [Adaptive] EXPLORE Node: Enforcing Narrative Quest_Story (${subtopicStory.qid}).`);
+                console.log(`🎬 [Adaptive] EXPLORE Node: Enforcing Narrative Content (${subtopicStory.qid || subtopicStory.id}).`);
                 
-                // Force engine type to CHAT inside the fetcher to avoid recursion loops
+                // Ensure it's treated as a simulation/story ONLY if it's not a standard MCQ
+                const eType = (subtopicStory.engine_type || subtopicStory.engineType || subtopicStory.type || "").toUpperCase();
+                const shouldBeSim = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
+                
                 return {
-                    questions: [{ ...subtopicStory, engine_type: 'CHAT' }],
+                    questions: [{ ...subtopicStory, isSimulation: shouldBeSim }],
                     metadata: { questLength: 1, gameMode: 'STORY' }
                 };
             }

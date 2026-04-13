@@ -223,8 +223,8 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
                 if (nodeType === 'EXPLORE' && finalQuestions.length > 0) {
                     const storyAnchor = finalQuestions[0];
-                    const stepsToFlatten = storyAnchor.steps || storyAnchor.data?.steps || storyAnchor.interaction_config?.steps;
-                    const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url || storyAnchor.interaction_config?.cdn_url;
+                    const stepsToFlatten = storyAnchor.steps || storyAnchor.data?.steps;
+                    const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url;
 
                     console.log("🕵️ [Tracer] Flatten Check:", { hasSteps: !!stepsToFlatten, hasCdn: !!cdnUrl });
 
@@ -582,11 +582,30 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                                 </div>
                             )}
                             
-                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE */}
+                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE (Floating v2.0) */}
                             {!isAnswered && q.hint && (
-                                <button key="hint-btn" onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-indigo-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                                    <Lightbulb size={18} />
-                                </button>
+                                <div className="relative">
+                                    <button 
+                                        key="hint-btn" 
+                                        onClick={() => setHintUsed(!hintUsed)} 
+                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
+                                    >
+                                        <Lightbulb size={18} />
+                                    </button>
+
+                                    {hintUsed && (
+                                        <div className="absolute top-12 right-0 w-64 z-[60] bg-white dark:bg-slate-900 border border-indigo-100 dark:border-white/5 rounded-2xl p-4 shadow-2xl animate-in fade-in zoom-in slide-in-from-top-2 duration-200 backdrop-blur-md">
+                                            {/* Tail */}
+                                            <div className="absolute -top-1.5 right-4 w-3 h-3 bg-white dark:bg-slate-900 border-t border-l border-indigo-100 dark:border-white/5 rotate-45" />
+                                            
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Sparkles size={14} className="text-indigo-600" />
+                                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Tutor Hint</span>
+                                            </div>
+                                            <p className="text-slate-800 dark:text-slate-200 font-bold text-[13px] leading-relaxed m-0">{q.hint}</p>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
                         <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">
@@ -613,7 +632,10 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                                 <button
                                     key={i}
                                     className={cls}
-                                    onClick={() => setSelectedOption(opt)}
+                                    onClick={() => {
+                                        setSelectedOption(opt);
+                                        setHintUsed(false); // Auto-close on select (User Request Phase 2)
+                                    }}
                                     disabled={isAnswered}
                                 >
                                     <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
@@ -625,16 +647,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                         })}
                     </div>
 
-                    {/* ── HINT CARD ── */}
-                    {hintUsed && !isAnswered && (
-                        <div className="mt-4 bg-amber-50 border-2 border-amber-200 rounded-[2rem] p-5 animate-in slide-in-from-bottom-4 duration-500 flex-shrink-0">
-                            <div className="flex items-center gap-2 mb-2">
-                                <Sparkles size={14} className="text-amber-500" />
-                                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Tutor Hint</span>
-                            </div>
-                            <p className="text-sm font-bold text-amber-900 leading-relaxed m-0">{q.hint}</p>
-                        </div>
-                    )}
+
 
                     {/* ── CHECK ANSWER / CONTINUE ── */}
                     <div className="mt-auto pt-6 pb-6 w-full flex-shrink-0">

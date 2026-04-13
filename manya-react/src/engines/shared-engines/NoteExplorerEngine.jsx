@@ -327,7 +327,7 @@ const NoteExplorerEngine = ({ data, onComplete }) => {
     }
 
     return (
-        <div className="ne-root" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <div className="ne-root immersive-root animate-in fade-in duration-500" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
             {/* ── HEADER ── */}
             <div className="ne-header" style={{ background: theme.gradient }}>
                 <div className="ne-orb ne-orb-1" />
@@ -416,4 +416,5 @@ const NoteExplorerEngine = ({ data, onComplete }) => {
     );
 };
 
+NoteExplorerEngine.hideGlobalFooter = true;
 export default NoteExplorerEngine;

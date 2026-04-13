@@ -48,6 +48,8 @@ COLUMN_MAP = {
     'tags': 'tags',
 }
 
+ASSET_VERSION = "v2.0.1"
+
 def generate_cdn_url(local_json_path, subject):
     if pd.isna(local_json_path) or not str(local_json_path).strip():
         return None
@@ -58,7 +60,7 @@ def generate_cdn_url(local_json_path, subject):
         else:
             clean_path = f"content/{subject.lower()}/{clean_path}"
     clean_path = clean_path.lstrip("/")
-    return f"https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/{clean_path}"
+    return f"https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@{ASSET_VERSION}/{clean_path}"
 
 def get_subject_from_filename(filename):
     f = filename.lower()

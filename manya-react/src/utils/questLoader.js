@@ -9,8 +9,9 @@ import { supabase } from '../services/supabaseClient';
 
 const JSON_CACHE = {};
 
-// PRODUCTION CDN (Using raw.githubusercontent to bypass jsDelivr's 24-hour cache during rapid iteration)
-const CDN_URL = 'https://raw.githubusercontent.com/manyaug/manya-react-assets/main/content/';
+import { CDN_BASE, ASSET_VERSION } from '../config/constants';
+
+const CDN_URL = `${CDN_BASE}content/`;
 const BASE_CONTENT_URL = CDN_URL;
 
 /**
@@ -31,8 +32,8 @@ function resolveQid(subject, unitId, questFolder, file) {
     }
     
     // Pattern: TOPIC_SUBTOPIC_FILENAME (Standard Simulation/Note ID)
-    const topic = (unitId || 'GENERAL').toUpperCase();
-    const subtopic = (questFolder || 'QUEST').toUpperCase();
+    const topic = (unitId || 'GENERAL').toUpperCase().replace(/-/g, '_');
+    const subtopic = (questFolder || 'QUEST').toUpperCase().replace(/-/g, '_');
     const cleanFile = filename.toUpperCase().replace(/-/g, '_');
     
     // 🧠 ADVANCED DEDUPLICATION:
@@ -110,7 +111,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         // Note: Using case-insensitive ilike for subject to catch "English" / "english" / "ENGLISH"
         let query = supabase
             .from('manya_vault')
-            .select('interaction_config, topic, qid, item_type')
+            .select('cdn_url, topic, subtopic, item_type, qid')
             .eq('qid', qid)
             .ilike('subject', subject);
 
@@ -121,7 +122,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         const { data: vaultRows, error } = await query;
 
         if (error || !vaultRows || vaultRows.length === 0) {
-            console.warn(`[QuestLoader] Vault miss for ${qid} (Type: ${targetType}). Checking Legacy...`);
+            console.log(`📡 [QuestLoader] ${qid} not found in Vault. Falling back to CDN...`);
             // 🛡️ Safety Guard: Only fallback if we have valid folder paths
             if (!unitId || !questFolder) {
                 throw new Error(`Quest ${qid} missing from Vault and no local path provided.`);
@@ -134,26 +135,40 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         let masterMeta = { qid, topic: vaultRows[0].topic };
 
         for (const row of vaultRows) {
-            let json = row.interaction_config;
-            if (typeof json === 'string') {
-                try { json = JSON.parse(json); } catch (e) { continue; }
+            let json = null;
+            let cleanCdnUrl = null;
+
+            if (row.cdn_url) {
+                // Remove repeated "content/" parts and inject ASSET_VERSION
+                cleanCdnUrl = row.cdn_url.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
+            } else {
+                // Reconstruct from topics if missing 
+                const topicDir = row.topic ? row.topic.toLowerCase().replace(/\s+/g, '_') : unitId;
+                const subtopicDir = row.subtopic ? row.subtopic.toLowerCase().replace(/\s+/g, '_') : questFolder;
+                cleanCdnUrl = `${BASE_CONTENT_URL}${subject.toLowerCase()}/${topicDir}/${subtopicDir}/${qid}.json`;
             }
 
-            // 🚀 REMOTE CDN REDIRECT: If the entry points to a CDN URL, fetch it now
-            if (json && json.cdn_url) {
-                const cleanCdnUrl = json.cdn_url.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+            if (cleanCdnUrl) {
                 try {
                     const remoteRes = await fetch(cleanCdnUrl);
                     if (remoteRes.ok) {
                         json = await remoteRes.json();
                         json._originUrl = cleanCdnUrl; 
+                    } else {
+                        throw new Error(`Status ${remoteRes.status}`);
                     }
-                } catch (e) { console.warn(`[QuestLoader] CDN redirect failed for row in ${qid}`); }
+                } catch (e) { 
+                    console.warn(`[QuestLoader] CDN redirect failed for row in ${qid}: ${cleanCdnUrl}`); 
+                    continue; // Skip if we can't load the JSON
+                }
             }
-
-            const result = await transformJsonToSteps(json, subject, unitId, questFolder, file);
-            allSteps.push(...result.steps);
-            if (result.meta) masterMeta = { ...masterMeta, ...result.meta };
+            
+            if (json) {
+                const result = await transformJsonToSteps(json, subject, unitId, questFolder, file);
+                allSteps.push(...result.steps);
+                if (result.meta) masterMeta = { ...masterMeta, ...result.meta };
+            }
         }
 
         const finalResult = { steps: allSteps, meta: masterMeta };
@@ -194,8 +209,9 @@ async function loadQuestStepsLegacy(subject, unitId, questFolder, file) {
         }
 
         const contentType = res.headers.get('content-type') || '';
-        if (!contentType.includes('application/json')) {
-            return { steps: [], meta: { status: 'not_json', url } };
+        // Relax content-type check for raw githubusercontent which often serves JSON as text/plain
+        if (!contentType.includes('application/json') && !contentType.includes('text/plain')) {
+            return { steps: [], meta: { status: 'not_json', url, contentType } };
         }
 
         const json = await res.json();

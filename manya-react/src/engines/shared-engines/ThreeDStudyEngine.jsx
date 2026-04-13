@@ -115,21 +115,27 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
         if (isFinished) {
             const score = isQuiz ? correctPinIds.size : 1;
             const total = isQuiz ? hotspots.length : 1;
+            const results = {
+                isCorrect: score === total,
+                score,
+                total,
+                mistakes: totalMistakes,
+                accuracy: total > 0 ? (score / total) : 1,
+                duration: Date.now() - globalStartTimeRef.current,
+                type: isQuiz ? 'labeling' : 'study'
+            };
             
             // DB Bridge
             if (window.QuestRunner?.handleEngineResult) {
-                window.QuestRunner.handleEngineResult({
-                    isCorrect: score === total,
-                    score,
-                    total,
-                    mistakes: totalMistakes,
-                    accuracy: total > 0 ? (score / total) : 1,
-                    duration: Date.now() - globalStartTimeRef.current,
-                    type: isQuiz ? 'labeling' : 'study'
-                });
+                window.QuestRunner.handleEngineResult(results);
+            }
+
+            // Auto-advance
+            if (onComplete) {
+                onComplete(results);
             }
         }
-    }, [isFinished, isQuiz, correctPinIds.size, hotspots.length]);
+    }, [isFinished, isQuiz, correctPinIds.size, hotspots.length, onComplete]);
 
     useEffect(() => {
         if (isQuiz && correctPinIds.size === hotspots.length && hotspots.length > 0) {
@@ -342,31 +348,7 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
                     </div>
                 )}
 
-                {/* COMPLETION OVERLAY */}
-                {isFinished && (
-                    <div className="absolute inset-0 bg-[var(--bg-card)]/95 backdrop-blur-xl z-[2000] flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-                        <div className="w-24 h-24 bg-yellow-400 text-white rounded-[2.5rem] flex items-center justify-center shadow-2xl mb-8 animate-bounce">
-                            <Trophy size={48} />
-                        </div>
-                        <h2 className="text-4xl font-black text-[var(--text-main)] mb-12 uppercase tracking-tighter">Model Completed!</h2>
-                        <button 
-                            onClick={() => {
-                            if (onComplete) onComplete({
-                                isCorrect: correctPinIds.size === hotspots.length,
-                                score: correctPinIds.size,
-                                total: hotspots.length,
-                                mistakes: totalMistakes,
-                                accuracy: hotspots.length > 0 ? (correctPinIds.size / hotspots.length) : 1,
-                                duration: Date.now() - globalStartTimeRef.current,
-                                type: isQuiz ? 'labeling' : 'study'
-                            });
-                        }}
-                            className="h-20 w-full max-w-[320px] rounded-[2.5rem] bg-[var(--accent-color)] text-white font-black text-xl shadow-2xl flex items-center justify-center gap-6 active:scale-95 transition-all"
-                        >
-                            CONTINUE <ChevronRight size={32} />
-                        </button>
-                    </div>
-                )}
+
 
             </main>
 

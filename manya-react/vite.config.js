@@ -44,7 +44,7 @@ export default defineConfig({
 
           // CDN - Quest JSON content
           {
-            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets@main\/content\/.*\.json$/i,
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets@[^/]+\/content\/.*\.json$/i,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'cdn-content-json-cache',
@@ -55,7 +55,7 @@ export default defineConfig({
 
           // CDN - Remote Images & Models
           {
-            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets@main\/(?:images|shared|science\/musklo-skeletal-system)\/.*\.(?:png|jpg|jpeg|svg|webp|gif|glb)$/i,
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets@[^/]+\/(?:assets|images|shared)\/.*\.(?:png|jpg|jpeg|svg|webp|gif|glb)$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'cdn-static-assets-cache',

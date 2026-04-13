@@ -41,7 +41,29 @@ import BinaryGameEngine from './BinaryGameEngine';
 import VennSpotlightEngine from './VennSpotlightEngine';
 import SetClassifierEngine from './SetClassifierEngine';
 import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
-import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
+/**
+ * SUPPORTED ENGINES (v3.3)
+ * Only these engine types are allowed to use the SimulatorBridge.
+ * Everything else (including MCQ, null, etc.) will use the standard Fetcher UI.
+ */
+const SUPPORTED_SIM_ENGINES = [
+    'SST_STUDY', 'NOTE_EXPLORER', 'GLOBE_TIME_ENGINE', 'GLOBE_ENGINE', 
+    'UNIVERSAL_GLOBE', 'IMAGE_HOTSPOTS', 'GALLERY_STUDY', 'READER_STUDY',
+    'THREE_D_STUDY', '3D_SKELETON', 'SET_THEORY', 'SET_STUDY', 'VENN_PROB',
+    'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER'
+];
+
+/**
+ * UNIFIED ENGINE DETECTION (v3.2)
+ * Ensures both Parent and Bridge agree on what the engine actually is.
+ * Prioritizes: data.engine_type > data.type > top.engine_type > top.type
+ */
+const getEngineType = (q) => {
+    const data = q?.data || q;
+    // Prefer the inner data definitions as they are the source of truth for specialized engines
+    const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
+    return String(raw).toUpperCase().trim();
+};
 
 /**
  * SIMULATOR BRIDGE
@@ -61,7 +83,9 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
         </div>
     );
 
-    const engineType = (simData.engineType || simData.type || 'IMAGE_HOTSPOTS').toUpperCase();
+    // Determine which engine to use
+    let engineType = getEngineType(step);
+    if (engineType === 'IMAGE_HOTSPOTS' && !simData.engineType && !simData.type) engineType = 'IMAGE_HOTSPOTS'; // Default fallback
 
     const handleSimComplete = (results) => {
         // results may come from common engines; resultRef.current may come from specialized engines
@@ -332,7 +356,10 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                             const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
                             const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
                             rSteps.forEach((s, idx) => {
-                                s.isSimulation = true;
+                                // Exhaustive engine detection (v3.2)
+                                const eType = getEngineType(s);
+
+                                s.isSimulation = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
                                 s.isRecap = true;
                                 s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
                             });
@@ -413,6 +440,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
 
     const handleSelect = (option) => {
         if (isAnswered) return;
+        setHintUsed(false); // Auto-close on select (User Request Phase 2)
 
         if (selectedOption !== null && selectedOption !== option) {
             setAnswerChanged(true);
@@ -424,12 +452,35 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         window.ManyaAudio?.pop?.();
     };
 
+    const normalize = (str) => String(str || '').trim().toLowerCase();
+    const resolveCorrectText = (target, options) => {
+        if (!target || !options) return 'N/A';
+        const t = normalize(target);
+        const directIdx = options.findIndex(opt => normalize(opt) === t);
+        if (directIdx !== -1) return options[directIdx];
+        const optMatch = t.match(/option_([a-d])/i);
+        if (optMatch) { const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65; return options[idx] || target; }
+        if (t.length === 1 && /^[a-d]$/i.test(t)) { return options[t.toUpperCase().charCodeAt(0) - 65] || target; }
+        return target;
+    };
+    const isOptionCorrect = (opt, answer, options) => {
+        if (!answer || !options) return false;
+        const t = normalize(answer);
+        const o = normalize(opt);
+        if (o === t) return true;
+        const optMatch = t.match(/option_([a-d])/i);
+        if (optMatch) { const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65; return normalize(options[idx] || "") === o; }
+        if (t.length === 1 && /^[a-d]$/i.test(t)) { const idx = t.toUpperCase().charCodeAt(0) - 65; return normalize(options[idx] || "") === o; }
+        return false;
+    };
+
     const handleSubmit = () => {
         if (isAnswered || selectedOption === null) return;
         setIsAnswered(true);
 
         const q = questions[currentIdx];
-        const isCorrect = selectedOption === q.answer;
+        const isCorrect = isOptionCorrect(selectedOption, q.answer, q.options);
+        const correctText = resolveCorrectText(q.answer, q.options);
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
@@ -844,14 +895,13 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         
         // Use session from Redux state (already imported above)
         const frustration = calculateFrustration(session);
+        const correctText = resolveCorrectText(q.answer, q.options);
 
-        // ── SIMULATION / PUZZLE / RECAP VIEW (v4.3 detects bank-sims) ──
-        const isSimulation = q.isSimulation || 
-                            q.type === 'STUDY_RECAP' || 
-                            q.type === 'INTERACTIVE_PUZZLE' ||
-                            (q.question || "").toLowerCase().includes('interactive study');
+        // ─── SIMULATION / PUZZLE / RECAP VIEW (Whitelist-based Routing v3.3) ───
+        const eType = getEngineType(q);
+        const isActuallySimulation = SUPPORTED_SIM_ENGINES.includes(eType);
 
-        if (isSimulation) {
+        if (isActuallySimulation) {
             return (
                 <div className="flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden relative">
                      <SimulatorBridge 
@@ -974,11 +1024,30 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                                 </span>
                             </div>
                             
-                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE */}
+                            {/* 💡 TOP-RIGHT LIGHTBULB HINT TOGGLE (Floating v2.0) */}
                             {!isAnswered && q.hint && (
-                                <button key="hint-btn" onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all ${hintUsed ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                                    <Lightbulb size={18} />
-                                </button>
+                                <div className="relative">
+                                    <button 
+                                        key="hint-btn" 
+                                        onClick={() => setHintUsed(!hintUsed)} 
+                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
+                                    >
+                                        <Lightbulb size={18} />
+                                    </button>
+
+                                    {hintUsed && (
+                                        <div className="absolute top-12 right-0 w-64 z-[60] bg-amber-50 dark:bg-slate-900 border-2 border-amber-200 dark:border-amber-900/50 rounded-2xl p-4 shadow-2xl animate-in fade-in zoom-in slide-in-from-top-2 duration-200 backdrop-blur-md">
+                                            {/* Tail */}
+                                            <div className="absolute -top-1.5 right-4 w-3 h-3 bg-amber-50 dark:bg-slate-900 border-t-2 border-l-2 border-amber-200 dark:border-amber-900/50 rotate-45" />
+                                            
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Sparkles size={14} className="text-amber-500" />
+                                                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Tutor Hint</span>
+                                            </div>
+                                            <p className="text-[var(--text-main)] font-bold text-[13px] leading-relaxed m-0">{q.hint}</p>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
                         <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">
@@ -989,12 +1058,12 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                     {/* ── OPTIONS ── */}
                     <div className="flex flex-col gap-2.5 flex-shrink-0">
                         {q.options?.map((opt, i) => {
-                            const isCorrect = opt === q.answer;
+                            const isThisCorrect = isOptionCorrect(opt, q.answer, q.options);
                             const isSelected = opt === selectedOption;
 
                             let cls = 'mcq-fe-btn';
                             if (isAnswered) {
-                                if (isCorrect)          cls += ' mcq-fe-correct';
+                                if (isThisCorrect)      cls += ' mcq-fe-correct';
                                 else if (isSelected)    cls += ' mcq-fe-wrong';
                                 else                    cls += ' mcq-fe-faded';
                             } else if (isSelected) {
@@ -1010,23 +1079,14 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                                 >
                                     <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
                                     <span className="mcq-fe-text">{opt}</span>
-                                    {isAnswered && isCorrect    && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
-                                    {isAnswered && isSelected && !isCorrect && <X size={16} className="mcq-fe-icon wrong-icon" strokeWidth={3} />}
+                                    {isAnswered && isThisCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
+                                    {isAnswered && isSelected && !isThisCorrect && <X size={16} className="mcq-fe-icon wrong-icon" strokeWidth={3} />}
                                 </button>
                             );
                         })}
                     </div>
 
-                    {/* ── HINT (only before answer) ── */}
-                    {hintUsed && !isAnswered && (
-                        <div className="mt-3 bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Lightbulb size={13} className="text-amber-500" />
-                                <span className="font-black text-amber-600 text-[9px] tracking-widest uppercase">Hint</span>
-                            </div>
-                            <p className="text-[var(--text-main)] font-bold text-[12px] leading-relaxed m-0">{q.hint}</p>
-                        </div>
-                    )}
+
 
                     {/* ── SUBMIT BUTTON (only when not yet answered) ── */}
                     {!isAnswered && (
@@ -1081,7 +1141,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(16, 185, 129, 0.1)', border: '1.5px solid rgba(16, 185, 129, 0.2)', borderRadius: 12, padding: '9px 14px', fontSize: 12, fontWeight: 700, color: '#10b981', marginBottom: 16 }}>
                                 <Check size={14} strokeWidth={3} style={{ flexShrink: 0 }} />
                                 <span style={{ flexShrink: 0 }}>Correct Answer:</span> 
-                                <strong style={{ marginLeft: 4 }}>{q.answer}</strong>
+                                <strong style={{ marginLeft: 4 }}>{correctText}</strong>
                             </div>
 
                             {/* Steps Area with Scrollbar removal */}
