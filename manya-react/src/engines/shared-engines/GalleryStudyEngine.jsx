@@ -11,9 +11,8 @@ import { assetUrl } from '../../config/assetUrls';
 const resolveImageUrl = (src) => {
     if (!src) return '';
     if (src.startsWith('http://') || src.startsWith('https://')) return src;
-    if (src.startsWith('/')) return src;
-    // Relative path like "assets/science/..." → resolve to Supabase CDN
-    return assetUrl(src.replace(/^assets\//, ''));
+    // Map any relative or local-style paths to the CDN
+    return assetUrl(src.replace(/^\//, '').replace(/^assets\//, ''));
 };
 
 /**

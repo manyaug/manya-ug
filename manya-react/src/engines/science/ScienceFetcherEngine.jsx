@@ -32,6 +32,7 @@ import { calculateUSP } from '../../utils/scoringUtility';
 
 import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
 import ThreeDStudyEngine from '../shared-engines/ThreeDStudyEngine';
+import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
 
 /**
  * SIMULATOR BRIDGE
@@ -108,6 +109,10 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
 
         case 'NOTE_EXPLORER':
             return <NoteExplorerEngine {...sharedProps} />;
+
+        case 'READER_STUDY':
+            return <ReaderStudyEngine {...sharedProps} />;
+
         default:
             return (
                 <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-500">
@@ -810,7 +815,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         // ── SIMULATION / PUZZLE / RECAP VIEW ──
         if (q.isSimulation || q.type === 'STUDY_RECAP' || q.type === 'INTERACTIVE_PUZZLE') {
             return (
-                <div className="flex-1 flex flex-col items-center justify-center p-0 animate-in fade-in duration-500 overflow-hidden relative">
+                <div className="flex-1 min-h-0 flex flex-col p-0 animate-in fade-in duration-500 overflow-hidden relative">
                     <SimulatorBridge 
                         step={q} 
                         onComplete={(results) => {

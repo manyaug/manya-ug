@@ -841,7 +841,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         // ── SIMULATION / PUZZLE / RECAP VIEW ──
         if (q.isSimulation || q.type === 'STUDY_RECAP' || q.type === 'INTERACTIVE_PUZZLE') {
             return (
-                <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative">
+                <div className="flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden relative">
                     <SimulatorBridge 
                         step={q} 
                         onComplete={(results) => {

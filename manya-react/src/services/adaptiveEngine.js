@@ -145,6 +145,14 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             }
         });
 
+        // ─── INJECT EXPLICIT SIMULATIONS (v5.4 FIX) ───
+        if (Array.isArray(simResources) && simResources.length > 0) {
+            simResources.forEach(sim => {
+                pools.SIMULATION.push({ ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file });
+            });
+            console.log(`🔌 [Adaptive] Injected ${simResources.length} explicitly provided simulations into pool.`);
+        }
+
         // ─── STRICT EXPLORE RULE: QUEST_STORY DATA ONLY ───
         if (nodeType === 'EXPLORE') {
             const subtopicStory = pools.QUEST_STORY.find(q => q.subtopic === allQuestions[0]?.subtopic) || pools.QUEST_STORY[0];
@@ -214,12 +222,22 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         // ─── MOTIVATION / INTERLEAVE FILL ─────
         while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
-            if (needsMotivation && simStack.length > 0 && nodeType !== 'WARMUP' && Math.random() > 0.3) {
+            const hasSim = simStack.length > 0 && nodeType !== 'WARMUP';
+            const hasMcq = mcqStack.length > 0;
+
+            if (hasSim && !hasMcq) {
                 finalQuestions.push(simStack.pop());
-            } else if (mcqStack.length > 0) {
+            } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
-            } else if (simStack.length > 0 && nodeType !== 'WARMUP') {
-                finalQuestions.push(simStack.pop());
+            } else if (hasSim && hasMcq) {
+                // If they need motivation, High chance (60%) of a fun sim
+                // If healthy (Practice mode), Normal chance (30%) of a fun sim to keep it interactive
+                const simChance = needsMotivation ? 0.6 : 0.30; 
+                if (Math.random() < simChance) {
+                    finalQuestions.push(simStack.pop());
+                } else {
+                    finalQuestions.push(mcqStack.shift());
+                }
             } else {
                 break;
             }

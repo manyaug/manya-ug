@@ -127,7 +127,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
 
         // WARMUP gets 1 intro study sim, EXPLORE gets all available matching json activities
         if ((nodeType === 'WARMUP' || nodeType === 'EXPLORE') && resources && resources.length > 0) {
-            const matchingResources = resources.filter(r => {
+            let matchingResources = resources.filter(r => {
                 // EXPLORE is strictly for note_ files only
                 if (nodeType === 'EXPLORE') {
                     return r.file.startsWith('note_') || r.file.includes('_note');
@@ -142,6 +142,17 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     r.file.includes('project_genesis') || r.file.includes('extremes_of_africa')
                 );
             });
+
+            // [SMART FALLBACK] If we are in EXPLORE and couldn't find a dedicated note, 
+            // but we have resources (perhaps dynamically generated), try to grab the first study/note file available
+            if (nodeType === 'EXPLORE' && matchingResources.length === 0) {
+                matchingResources = resources.filter(r => r.file.startsWith('study_') || r.file.includes('_study'));
+                // If STILL empty, just use the first available resource as a last resort
+                if (matchingResources.length === 0 && resources.length > 0) {
+                     matchingResources = [resources[0]];
+                     console.warn(`[QuestFactory] EXPLORE node fallback: No note_ or study_ files found, using generic resource:`, resources[0]);
+                }
+            }
 
             // WARMUP takes the first one, EXPLORE takes the whole battery
             const targetResources = nodeType === 'EXPLORE' ? matchingResources : matchingResources.slice(0, 1);
@@ -184,15 +195,24 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         let recapSims = [];
         if ((nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
             // A. Check for explicit JSON resources — partition into recap vs quiz
+            let studySims = [];
             if (resources && resources.length > 0) {
                 for (const r of resources) {
                     const lower = (r.file || '').toLowerCase();
                     if (lower.startsWith('recap_') || lower.includes('_recap')) {
                         recapSims.push(r);
+                    } else if (lower.startsWith('study_') || lower.startsWith('note_')) {
+                        studySims.push(r);
+                        selectedSims.push(r); // Also allow as a standard sim
                     } else {
                         selectedSims.push(r);
                     }
                 }
+            }
+
+            // [SMART FALLBACK]: If no dedicated "recap_" files exist, use "study_" or "note_" files as the rescue recap.
+            if (recapSims.length === 0) {
+                recapSims = studySims;
             }
 
             // B. Check for Numbered Practice convention

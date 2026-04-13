@@ -138,6 +138,9 @@ function QuestPathView() {
         (async () => {
             const { fetchDynamicCurriculum, preloadCurriculum } = await import('../services/curriculumService');
             
+            // 0. Ensure master curriculum is loaded FIRST to prevent race conditions
+            const currCache = await preloadCurriculum();
+
             // 1. Try to discover quest in established cached curriculum
             let data = findQuestData(subject, unitId, title);
             
@@ -148,9 +151,7 @@ function QuestPathView() {
                 setCurriculum(prev => ({ ...prev, [subject]: curr }));
                 data = findQuestData(subject, unitId, title);
             } else {
-                // Background update for curriculum object
-                const curr = await preloadCurriculum();
-                setCurriculum(prev => ({ ...prev, [subject]: curr[subject] }));
+                setCurriculum(prev => ({ ...prev, [subject]: currCache[subject] }));
             }
 
             console.log(`🔍 [QuestPath] Discovery result for ${title}:`, data);

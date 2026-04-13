@@ -160,8 +160,8 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
         >
             
             <main className="flex-1 overflow-hidden flex flex-col bg-[var(--bg-main)]">
-                {/* 3D VIEWPORT - 80% DEDICATED SPACE */}
-                <div className={`flex-[0.8] relative overflow-hidden transition-all duration-700 bg-black/5 dark:bg-black/20 rounded-[32px] m-2 border border-black/5 dark:border-white/5`}>
+                {/* 3D VIEWPORT - DEDICATED SPACE */}
+                <div className={`flex-1 min-h-[50vh] relative overflow-hidden transition-all duration-700 bg-black/5 dark:bg-black/20 rounded-[32px] m-2 border border-black/5 dark:border-white/5`}>
                     
                     {/* GHOST PROGRESS BADGE */}
                     <div className="absolute top-4 left-4 z-50 pointer-events-none">
@@ -236,9 +236,9 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
                     )}
                 </div>
 
-                {/* WORD BANK - 20% DEDICATED SPACE */}
+                {/* WORD BANK tray */}
                 {isQuiz && !isFinished && (
-                    <div className="flex-[0.2] min-h-[180px] bg-[#0f1115]/95 backdrop-blur-3xl border-t border-white/10 p-4 pb-8 overflow-y-auto custom-scrollbar">
+                    <div className="h-[25vh] min-h-[220px] bg-[#0f1115]/95 backdrop-blur-3xl border-t border-white/10 p-4 pb-8 overflow-y-auto custom-scrollbar">
                         <div className="max-w-3xl mx-auto flex flex-col gap-3">
                             <div className="flex items-center justify-center -mt-1 mb-1">
                                 <div className="w-12 h-1 bg-white/10 rounded-full" />

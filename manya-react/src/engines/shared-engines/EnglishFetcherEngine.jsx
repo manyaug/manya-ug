@@ -152,6 +152,11 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const fetchIterationRef = useRef(null);
     const allBankRef = useRef([]);
 
+    // ─── RESCUE RECAP STATE (v5.0) ───
+    const [recapSteps, setRecapSteps] = useState([]);    // Loaded recap sim steps (held, not in queue)
+    const consecutiveWrongRef = useRef(0);                // Local tracker for real-time recap trigger
+    const recapUsedIndexRef = useRef(0);                  // Tracks which recap we've used
+
     const topicId = data?.topic || 'default';
     const nodeType = data?.nodeType || 'PRACTICE';
     const subject = 'english';
@@ -187,6 +192,29 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 allBankRef.current = allQuestions;
                 
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
+
+                // ── 3b. Pre-load Recap Resources (held separately for 3-consecutive-wrong rescue) ──
+                const recapCandidates = [];
+                if (data?.recapResources && data.recapResources.length > 0) {
+                    console.log(`📖 [EnglishEngine] Pre-loading ${data.recapResources.length} recap resources for rescue...`);
+                    for (const recapRes of data.recapResources) {
+                        try {
+                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
+                            const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                            rSteps.forEach((s, idx) => {
+                                s.isSimulation = true;
+                                s.isRecap = true;
+                                s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
+                            });
+                            recapCandidates.push(...rSteps);
+                        } catch (e) {
+                            console.warn("[EnglishEngine] Failed to load recap:", recapRes.file);
+                        }
+                    }
+                    setRecapSteps(recapCandidates);
+                    console.log(`✅ [EnglishEngine] ${recapCandidates.length} recap steps ready for rescue.`);
+                }
+
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
                 
                 // 🚀 PRE-FLATTEN STORIES: If the quest is a STORY unit, expand its steps immediately
@@ -284,9 +312,29 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         if (isCorrect) {
             setScore(s => s + 1);
             window.ManyaAudio?.success?.();
+            
+            // Reset consecutive wrong counter on correct answer
+            consecutiveWrongRef.current = 0;
         } else {
             window.ManyaAudio?.error?.();
             trackWrongAnswer(subject, q.qid || q.id);
+
+            // ─── 🆘 RESCUE RECAP: 3 consecutive wrong → inject recap ───
+            consecutiveWrongRef.current += 1;
+            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0) {
+                const recapIdx = recapUsedIndexRef.current % recapSteps.length;
+                const recapToInject = { ...recapSteps[recapIdx] };
+                recapUsedIndexRef.current += 1;
+                consecutiveWrongRef.current = 0; // Reset after injection
+
+                // Insert recap as the NEXT question (right after current)
+                setQuestions(prev => {
+                    const copy = [...prev];
+                    copy.splice(currentIdx + 1, 0, recapToInject);
+                    return copy;
+                });
+                console.log(`🆘 [Rescue Recap] 3 consecutive wrong → Injecting recap: ${recapToInject.id}`);
+            }
         }
 
         dispatch(updateSessionAfterAnswer({ isCorrect, timeSpentMs, hintUsed, answerChanged }));
@@ -446,7 +494,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
         if (q.isSimulation || q.item_type === 'QUEST_STORY') {
             return (
-                <div className={`flex-1 flex flex-col relative h-full min-h-[85vh] ${isNarrative ? 'bg-[#0B0E14]' : 'bg-slate-50'}`}>
+                <div className={`flex-1 min-h-0 flex flex-col relative h-full ${isNarrative ? 'bg-[#0B0E14]' : 'bg-slate-50'}`}>
                     {q.message && (
                         <div className="absolute top-20 left-4 right-4 z-50 animate-in fade-in slide-in-from-top-4 duration-1000">
                             <div className="bg-indigo-600 text-white px-6 py-4 rounded-3xl shadow-2xl font-black text-sm text-center border-2 border-indigo-400">

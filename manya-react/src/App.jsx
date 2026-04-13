@@ -65,7 +65,7 @@ function RouterLayout() {
 
             {/* MAIN SCROLLABLE VIEW — Lock scrolling on Home Screen */}
             <div 
-                className={`app-content-area ${location.pathname === '/home' ? 'no-scroll-view' : ''}`} 
+                className={`app-content-area ${location.pathname === '/home' ? 'no-scroll-view' : ''} ${hideHud && hideNav ? 'quest-viewport' : ''}`} 
                 id="view-mount"
             >
                 <Routes>

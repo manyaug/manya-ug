@@ -59,8 +59,11 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
     return (
         <div 
             ref={containerRef}
-            className="relative w-full h-full bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-y-auto transition-colors duration-700 scroll-smooth pb-40"
-            style={{ '--accent-color': accent }}
+            className="reader-study-root relative w-full flex-1 min-h-0 flex flex-col bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-y-auto transition-colors duration-700 scroll-smooth"
+            style={{ 
+                '--accent-color': accent,
+                scrollbarGutter: 'stable'
+            }}
             onScroll={handleScroll}
         >
             <div className="max-w-[800px] mx-auto p-4 sm:p-8 md:p-12">
@@ -136,21 +139,25 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
             </div>
 
             <style>{`
-                :root {
-                    --bg-main: #ffffff;
                 .reader-study-root {
-                    background: var(--bg-main);
+                    --bg-main: #ffffff;
+                    --bg-card: #f9fafb;
+                    --text-main: #0f172a;
+                    --text-sub: #475569;
+                    --text-muted: #94a3b8;
+                    --border-subtle: #e2e8f0;
+                    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
                     color: var(--text-main);
                 }
                 
                 [data-theme='dark'] .reader-study-root {
                     --bg-main: #0B0E14;
-                    --bg-card: #1f2937;
+                    --bg-card: #161a23;
                     --text-main: #f8fafc;
-                    --text-sub: #d1d5db;
-                    --text-muted: #9ca3af;
-                    --border-subtle: #374151;
-                    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
+                    --text-sub: #94a3b8;
+                    --text-muted: #64748b;
+                    --border-subtle: #1e293b;
+                    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
                 }
 
                 .bento-section {

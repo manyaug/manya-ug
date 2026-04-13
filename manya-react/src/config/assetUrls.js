@@ -4,7 +4,7 @@
  * Central registry for all remotely-hosted heavy assets.
  */
 
-const BASE_CDN_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/'
+const BASE_CDN_URL = 'https://raw.githubusercontent.com/manyaug/manya-react-assets/main/';
 
 /**
  * Maps subject keys to GitHub folder names (matching repo casing)
@@ -18,73 +18,63 @@ const SUBJECT_MAP = {
 
 /**
  * Builds a full jsDelivr CDN URL for a given path.
- * Automatically flips .png/.jpg to .webp for consistency with migrated assets.
+ * Smartly prefixes paths with 'assets/' based on the subject and file type.
  */
 export function assetUrl(path) {
   if (!path) return '';
-  let cleanPath = path.startsWith('/') ? path.slice(1) : path;
   
-  // Flip extension to webp for common image types (except SVGs/models)
-  if (cleanPath.match(/\.(png|jpg|jpeg)$/i)) {
-    cleanPath = cleanPath.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+  // 1. Clean the path
+  let clean = path.trim().replace(/^\/+/, '');
+  
+  // 2. Flip extensions for webp consistency
+  if (clean.match(/\.(png|jpg|jpeg)$/i)) {
+    clean = clean.replace(/\.(png|jpg|jpeg)$/i, '.webp');
   }
+
+  // 3. Smart Prefixing Logic
+  // - images/, data/, shared/, and content/ are at the ROOT of the repo.
+  // - english/, math/, science/, and sst/ folder binaries are under /assets/.
+  const subjects = ['english', 'math', 'science', 'sst'];
+  const rootFolders = ['images', 'data', 'shared', 'content', 'assets'];
   
-  return `${BASE_CDN_URL}${cleanPath}`;
+  const firstSeg = clean.split('/')[0].toLowerCase();
+  
+  if (subjects.includes(firstSeg) && !clean.startsWith('assets/')) {
+      clean = `assets/${clean}`;
+  }
+
+  return `${BASE_CDN_URL}${clean}`;
 }
 
 /**
- * INTERCEPTOR: Detects and rewrites URLs to the correct CDN path.
- * Supports context-aware resolution for relative links (../).
+ * INTERCEPTOR: Differentiates between Curriculum Logic (content/) 
+ * and Binary Assets (assets/).
  */
 export function resolveRemoteUrl(url, contextUrl = null) {
   if (!url) return '';
-  if (url.startsWith('http')) return url; 
+  
+  // Early return for full external URLs
+  if (url.startsWith('http') && !url.includes('supabase.co')) return url; 
 
-  const rootFolders = ['english', 'math', 'science', 'sst', 'shared', 'images', 'data'];
-  
-  // 🛡️ Pre-clean: Remove leading/trailing whitespace and leading slashes
-  const cleanUrl = url.trim().replace(/^\/+/, '');
-  const segments = cleanUrl.split('/');
-  const firstSeg = segments[0].toLowerCase();
-  
-  // 1. PROJECT ROOT PATHS: (e.g., english/chap-1/... or images/...)
-  // If explicitly starting with a known repo root folder, resolve from root.
-  if (rootFolders.includes(firstSeg)) {
-      const resolved = assetUrl(cleanUrl);
-      if (cleanUrl.includes('english')) {
-          console.debug(`📡 [Resolver] Global Route: ${cleanUrl} -> ${resolved}`);
-      }
+  // 1. Pre-clean
+  let clean = url.trim().replace(/^\/+/, '');
+
+  // 2. Handle Subject Context Relative Paths (../../)
+  if (contextUrl && (clean.startsWith('.') || !clean.includes('/'))) {
+      const resolved = joinUrls(contextUrl, clean);
       return resolved;
   }
 
-  // 2. ASSETS ALIAS: (Common legacy pattern)
-  if (cleanUrl.startsWith('assets/')) {
-    return assetUrl(cleanUrl.replace(/^assets\//, ''));
+  // 3. Handle Legacy Supabase URLs by extracting the filename
+  if (clean.includes('supabase.co')) {
+      const match = clean.match(/public\/assets\/(.+)$/);
+      const fallbackMatch = clean.match(/manya-assets\/(.+)$/);
+      let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
+      if (relativePath) return assetUrl(relativePath);
   }
 
-  // 3. CONTEXT-BASED RELATIVE PATHS: (e.g., ../shared/ or filename.json)
-  if (contextUrl && (cleanUrl.startsWith('.') || !cleanUrl.includes('/'))) {
-    const resolved = joinUrls(contextUrl, cleanUrl);
-    console.debug(`📡 [Resolver] Relative Route: ${cleanUrl} (base: ${contextUrl}) -> ${resolved}`);
-    return resolved;
-  }
-
-  // 4. LEGACY SUPABASE REDIRECTOR
-  if (cleanUrl.includes('supabase.co')) {
-    const match = cleanUrl.match(/public\/assets\/(.+)$/);
-    const fallbackMatch = cleanUrl.match(/manya-assets\/(.+)$/);
-    let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
-    
-    if (relativePath) {
-        if (relativePath.endsWith('.glb') && !relativePath.includes('_compressed')) {
-            relativePath = relativePath.replace(/\.glb$/, '_compressed.glb');
-        }
-        return assetUrl(relativePath);
-    }
-  }
-
-  // 5. FALLBACK: Default to repo-root
-  return assetUrl(cleanUrl);
+  // 4. Default Resolution
+  return assetUrl(clean);
 }
 
 /**
@@ -149,35 +139,26 @@ export const SFX = {
 // ---------------------------------------------------------------------------
 const GLB_BASE = 'science/musklo-skeletal-system'
 
-function resolveCompressedGlb(path) {
-  if (!path) return '';
-  let clean = path.replace(/\.glb$/, '');
-  if (!clean.endsWith('_compressed')) {
-    clean = `${clean}_compressed`;
-  }
-  return assetUrl(`${clean}.glb`);
-}
-
 export const GLB = {
-  male_skeleton:    resolveCompressedGlb(`${GLB_BASE}/quest_2_human_skeleton/male_skeleton`),
-  female_skeleton:  resolveCompressedGlb(`${GLB_BASE}/quest_2_human_skeleton/female_skeleton`),
-  skull:            resolveCompressedGlb(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull`),
-  spine:            resolveCompressedGlb(`${GLB_BASE}/quest_3_axial_skull_spine/spine`),
-  spinal_column:    resolveCompressedGlb(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column`),
-  rib_cage:         resolveCompressedGlb(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart`),
-  thoracic:         resolveCompressedGlb(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic__abdominal_skeleton_based_on_ct_data`),
-  lower_limb:       resolveCompressedGlb(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb`),
-  skeleton_arm:     resolveCompressedGlb(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm`),
-  bone_structure:   resolveCompressedGlb(`${GLB_BASE}/quest_6_bone_structure/bone_structure`),
-  joint_structure:  resolveCompressedGlb(`${GLB_BASE}/quest_7_joints_structure/joint_structure`),
-  elbow_joint:      resolveCompressedGlb(`${GLB_BASE}/quest_8_hinge_ball-and-socket/elbow_joint`),
-  hip_joint:        resolveCompressedGlb(`${GLB_BASE}/quest_8_hinge_ball-and-socket/hip_joint`),
-  ankle:            resolveCompressedGlb(`${GLB_BASE}/quest_9_pivot_and_gliding/ankle`),
-  pivot_neck:       resolveCompressedGlb(`${GLB_BASE}/quest_9_pivot_and_gliding/pivot_joint_neck`),
-  wrist:            resolveCompressedGlb(`${GLB_BASE}/quest_9_pivot_and_gliding/wrist`),
-  upper_limb_muscles: resolveCompressedGlb(`${GLB_BASE}/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles`),
-  human_teeth:      resolveCompressedGlb(`${GLB_BASE}/quest_12_posture_and_teeth/human_teeth`),
-  inside_tooth:     resolveCompressedGlb(`${GLB_BASE}/quest_12_posture_and_teeth/inside_my_tooth`),
+  male_skeleton:    assetUrl(`${GLB_BASE}/quest_2_human_skeleton/male_skeleton_compressed.glb`),
+  female_skeleton:  assetUrl(`${GLB_BASE}/quest_2_human_skeleton/female_skeleton_compressed.glb`),
+  skull:            assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull_compressed.glb`),
+  spine:            assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/spine_compressed.glb`),
+  spinal_column:    assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column_compressed.glb`),
+  rib_cage:         assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart_compressed.glb`),
+  thoracic:         assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic_compressed.glb`),
+  lower_limb:       assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb_compressed.glb`),
+  skeleton_arm:     assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm.glb`),
+  bone_structure:   assetUrl(`${GLB_BASE}/quest_6_bone_structure/bone_structure_compressed.glb`),
+  joint_structure:  assetUrl(`${GLB_BASE}/quest_7_joints_structure/joint_structure_compressed.glb`),
+  elbow_joint:      assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/elbow_joint_compressed.glb`),
+  hip_joint:        assetUrl(`${GLB_BASE}/quest_8_hinge_ball-and-socket/hip_joint_compressed.glb`),
+  ankle:            assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/ankle_compressed.glb`),
+  pivot_neck:       assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/pivot_joint_neck_compressed.glb`),
+  wrist:            assetUrl(`${GLB_BASE}/quest_9_pivot_and_gliding/wrist.glb`),
+  upper_limb_muscles: assetUrl(`${GLB_BASE}/quest_11_muscle_action_antagonistic_pairs/upper-limb-arm-muscles_compressed.glb`),
+  human_teeth:      assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/human_teeth_compressed.glb`),
+  inside_tooth:     assetUrl(`${GLB_BASE}/quest_12_posture_and_teeth/inside_my_tooth_compressed.glb`),
 }
 
 // ---------------------------------------------------------------------------

@@ -9,12 +9,9 @@ import { supabase } from '../services/supabaseClient';
 
 const JSON_CACHE = {};
 
-const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-// PRODUCTION CDN (Fall-back)
-const CDN_URL = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@main/content/';
-const LOCAL_URL = '/content/';
-const BASE_CONTENT_URL = IS_LOCAL ? LOCAL_URL : CDN_URL;
+// PRODUCTION CDN (Using raw.githubusercontent to bypass jsDelivr's 24-hour cache during rapid iteration)
+const CDN_URL = 'https://raw.githubusercontent.com/manyaug/manya-react-assets/main/content/';
+const BASE_CONTENT_URL = CDN_URL;
 
 /**
  * Resolves the parameters into a standardized QID for Database lookup

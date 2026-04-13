@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { resolveRemoteUrl } from '../../config/assetUrls';
 import { 
     ChevronRight, 
     Sparkles, 
@@ -182,7 +183,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt }) {
                     >
                         <div className="relative w-full h-full flex items-center justify-center">
                             <img 
-                                src={data.imageUrl} 
+                                src={resolveRemoteUrl(data.imageUrl, data._originUrl)} 
                                 alt="Diagram"
                                 onLoad={() => setImageLoaded(true)}
                                 className={`max-w-full max-h-full object-contain rounded-2xl transition-all duration-1000 ${

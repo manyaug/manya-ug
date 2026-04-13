@@ -59,6 +59,13 @@ body {
 }
 #view-mount::-webkit-scrollbar { display: none; }
 
+.quest-viewport {
+  padding: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+
 /* Viewport Lock Utility for No-Scroll Home */
 .no-scroll-view {
   overflow: hidden !important;
