@@ -86,11 +86,12 @@ function AchievementsView() {
 
         {/* GEM TREASURY (CUSTOM SVGS) */}
         <div className="gem-treasury-card">
+            <div className="btn-toy-gloss" />
             <span className="vault-label">THE GEM VAULT</span>
             <div className="gem-grid">
                 {subjectGems.map(gem => (
                     <div key={gem.name} className="gem-item">
-                        <div className="gem-stone" style={{ filter: `drop-shadow(0 8px 15px ${gem.glow})` }}>
+                        <div className="gem-stone">
                             <img src={getGem(gem.file)} alt={gem.name} />
                         </div>
                         <div className="gem-count" style={{ color: gem.color }}>{gem.val}</div>
@@ -102,12 +103,15 @@ function AchievementsView() {
 
         {/* COLLECTION PROGRESS */}
         <div className="collection-card-elite">
+            <div className="btn-toy-gloss" />
             <div className="prog-label-row">
                 <span className="prog-title">BADGE MASTERY</span>
                 <span className="prog-count">{unlockedCount} / {totalBadges}</span>
             </div>
             <div className="vault-bar-track">
-                <div className="vault-bar-fill" style={{ width: `${pct}%` }}></div>
+                <div className="vault-bar-fill" style={{ width: `${pct}%` }}>
+                    <div className="btn-toy-gloss" />
+                </div>
             </div>
             <p className="prog-subtext">Unlock all badges to earn the Diamond Crown!</p>
         </div>

@@ -28,7 +28,10 @@ import UniversalGlobeEngine from '../shared-engines/UniversalGlobeEngine';
 import ImageHotspotsEngine from '../shared-engines/ImageHotspotsEngine';
 import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import { loadQuestSteps } from '../../utils/questLoader';
+import CelebrationView from '../shared-engines/CelebrationView';
 import { calculateUSP } from '../../utils/scoringUtility';
+import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
+import '../../styles/mcq-engine.css';
 
 import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
 import ThreeDStudyEngine from '../shared-engines/ThreeDStudyEngine';
@@ -453,7 +456,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
             // ─── 🆘 RESCUE RECAP: 3 consecutive wrong → inject recap ───
             consecutiveWrongRef.current += 1;
-            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0) {
+            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0 && nodeType !== 'WARMUP') {
                 const recapIdx = recapUsedIndexRef.current % recapSteps.length;
                 const recapToInject = { ...recapSteps[recapIdx] };
                 recapUsedIndexRef.current += 1;
@@ -618,51 +621,42 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
-    // ── PLAYFUL ADVENTURE LOADING (v3.0) ──
-    if (isLoading) return (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 bg-sky-50/30 overflow-hidden relative">
-            {/* Background Decorations */}
-            <div className="absolute top-20 -left-10 w-40 h-40 bg-sky-200/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 -right-10 w-60 h-60 bg-indigo-200/20 rounded-full blur-3xl animate-pulse delay-700" />
-            
-            <div className="relative z-10 flex flex-col items-center">
-                {/* Bouncing Subject Coin */}
-                <div className="relative mb-12">
-                    {/* Orbiting Ring */}
-                    <div className="absolute inset-[-15px] border-4 border-dashed border-sky-200 rounded-full animate-[spin_8s_linear_infinite]" />
-                    
-                    <div className="w-24 h-24 bg-sky-500 rounded-full shadow-2xl flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white">
-                        <Zap size={40} strokeWidth={2.5} />
-                    </div>
-                </div>
+    if (isLoading) {
+        const cfg = getLoadingConfig('science');
+        const randomFact = getRandomFact('science');
 
-                <div className="space-y-6 text-center max-w-xs">
-                    <div className="space-y-2">
-                        <h3 className="text-xl font-black text-sky-900 tracking-tight">
-                            Quantum Leap! ⚡
-                        </h3>
-                        <div className="flex justify-center gap-1">
-                            <div className="w-3 h-3 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <div className="w-3 h-3 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
-                            <div className="w-3 h-3 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
-                        </div>
+        return (
+            <div className="quest-loading-overlay" style={{ '--loader-color': cfg.color, '--loader-dark': cfg.colorDark, '--loader-bg': cfg.bgLight }}>
+                {/* Ambient Glow Blobs */}
+                <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
+                <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
+
+                <div className="loader-content-card">
+                    {/* Mascot Hero */}
+                    <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
+                        <img src={cfg.mascot} alt="Kiki" className="loader-mascot-img" />
                     </div>
 
-                    {/* Fun Loading Fact */}
-                    <div className="bg-white/60 backdrop-blur-md rounded-3xl p-5 border-2 border-sky-100 shadow-sm">
-                        <p className="text-[10px] font-black text-sky-600 uppercase tracking-widest mb-2 opacity-60">Science Fact!</p>
-                        <p className="text-xs font-bold text-sky-950 leading-relaxed italic m-0">
-                            "A single bolt of lightning has enough energy to toast 100,000 slices of bread!"
-                        </p>
+                    {/* Title & Bounce Dots */}
+                    <h3 className="loader-title">{cfg.title}</h3>
+                    <div className="loader-bounce-dots">
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '200ms' }} />
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '400ms' }} />
                     </div>
 
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                        Preparing Science Lab...
-                    </p>
+                    {/* Fun Fact Card */}
+                    <div className="loader-fact-card" style={{ borderColor: `${cfg.color}30` }}>
+                        <span className="loader-fact-label" style={{ color: cfg.color }}>Did you know?</span>
+                        <p className="loader-fact-text">{randomFact}</p>
+                    </div>
+
+                    {/* Status */}
+                    <p className="loader-status-text">{cfg.sub}</p>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
 
     const RenderError = ({ error, onRetry }) => (
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50">
@@ -731,146 +725,16 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
     // ── COMPLETION SCREEN ──
     if (showCompletion && completionResult) {
-        const { mastery, unlocked, nextNode, needsRetry, threshold, attempts } = completionResult;
-        const isPassing = mastery >= 60;
-        const isPerfect = mastery === 100;
-
         return (
-            <div className="flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 bg-[var(--bg-main)] bg-opacity-50">
-                {/* Achievement Celebration Overlay */}
-                {earnedAchievements.length > 0 && (
-                    <AchievementUnlocked 
-                        achievements={earnedAchievements} 
-                        onDismiss={() => setEarnedAchievements([])} 
-                    />
-                )}
-                <div className="w-full max-w-sm bg-[var(--bg-card)] rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-[var(--border-color)] p-8 text-center relative overflow-hidden">
-                    
-                    {/* Decorative Background Elements */}
-                    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-amber-50 to-transparent opacity-50" />
-                    {isPerfect && (
-                        <div className="absolute inset-0 pointer-events-none opacity-20">
-                            {[...Array(6)].map((_, i) => (
-                                <div key={i} className="absolute animate-bounce" style={{
-                                    top: `${Math.random() * 80}%`,
-                                    left: `${Math.random() * 100}%`,
-                                    animationDelay: `${i * 0.2}s`,
-                                    fontSize: '24px'
-                                }}>
-                                    {['🎈', '🎉', '✨', '🎊'][i % 4]}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Trophy/Status Icon */}
-                    <div className="relative mb-6 pt-4">
-                        <div className="w-24 h-24 bg-amber-50 rounded-[2rem] flex items-center justify-center mx-auto mb-4 rotate-3 shadow-inner group-hover:rotate-0 transition-transform duration-500">
-                             <div className="text-6xl animate-pulse">
-                                {mastery >= 90 ? '🏆' : mastery >= 75 ? '🥈' : mastery >= 60 ? '🥉' : '💪'}
-                             </div>
-                        </div>
-                        <h2 className="text-3xl font-black text-[var(--text-main)] tracking-tight leading-none mb-2">
-                             {mastery >= 90 ? 'Outstanding!' : mastery >= 75 ? 'Great Job!' : mastery >= 60 ? 'Well Done!' : 'Keep Going!'}
-                        </h2>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--bg-main)] rounded-full text-[10px] font-black text-[var(--text-sub)] uppercase tracking-widest">
-                             <Compass size={10} /> {nodeType} COMPLETE
-                        </div>
-                    </div>
-
-                    {/* Mastery Ring Card */}
-                    <div className="bg-[var(--bg-main)] rounded-[2.5rem] p-6 mb-6 border border-[var(--border-color)]">
-                        <div className="relative w-32 h-32 mx-auto mb-4">
-                            <svg className="w-full h-full -rotate-90">
-                                <circle 
-                                    cx="64" cy="64" r="58"
-                                    fill="none" stroke="#e2e8f0" strokeWidth="12"
-                                />
-                                <circle 
-                                    cx="64" cy="64" r="58"
-                                    fill="none" 
-                                    stroke={isPassing ? '#10b981' : '#f43f5e'} 
-                                    strokeWidth="12"
-                                    strokeDasharray="364.4"
-                                    strokeDashoffset={364.4 - (364.4 * mastery) / 100}
-                                    strokeLinecap="round"
-                                    className="transition-all duration-1000 ease-out"
-                                />
-                            </svg>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-3xl font-black text-[var(--text-main)] leading-none">{mastery}%</span>
-                                <span className="text-[9px] font-black text-[var(--text-sub)] tracking-widest uppercase mt-1">Mastery</span>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-around border-t border-[var(--border-color)] pt-4 mt-2">
-                            <div className="text-center">
-                                <div className="text-lg font-black text-[var(--text-main)]">{completionResult.score}/{completionResult.total}</div>
-                                <div className="text-[10px] font-bold text-[var(--text-sub)] uppercase tracking-wider">Correct</div>
-                            </div>
-                            <div className="w-[1px] h-8 bg-slate-200" />
-                            <div className="text-center">
-                                <div className="text-lg font-black text-amber-500 flex items-center gap-1">
-                                    <Trophy size={16} fill="currentColor" /> +{gemsEarned}
-                                </div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gems</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Unlock Feedback */}
-                    {unlocked && nextNode ? (
-                        <div className="bg-emerald-50/80 border border-emerald-200 rounded-3xl p-4 mb-8 animate-in slide-in-from-bottom-2 duration-500 delay-300">
-                             <div className="flex items-center justify-center gap-3">
-                                 <div className="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                                     <Zap size={16} fill="currentColor" />
-                                 </div>
-                                 <div className="text-left">
-                                     <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">New Milestone</div>
-                                     <div className="text-sm font-bold text-emerald-900 leading-none">{nextNode} Unlocked!</div>
-                                 </div>
-                             </div>
-                        </div>
-                    ) : needsRetry && (
-                        <div className="bg-rose-50 border border-rose-100 rounded-3xl p-4 mb-8">
-                             <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">Progress Guard</div>
-                             <div className="text-sm font-bold text-rose-900">Need {threshold}% to unlock next node</div>
-                        </div>
-                    )}
-
-                    {/* Bottom Actions */}
-                    <div className="flex flex-col gap-3">
-                         <button
-                            onClick={handleFinish}
-                            className="w-full h-14 bg-[var(--text-main)] text-[var(--bg-main)] rounded-3xl font-black text-[13px] tracking-widest uppercase flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-slate-900/10"
-                        >
-                            {needsRetry ? 'EXIT QUEST' : 'COLLECT REWARDS'} <ArrowRight size={18} />
-                        </button>
-                        
-                        {needsRetry && (
-                             <button
-                                onClick={() => {
-                                    setShowCompletion(false); setCompletionResult(null); setCurrentIdx(0); setScore(0); setGemsEarned(0); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setIsLoading(true); resetSession();
-                                    (async () => {
-                                        const rawQ = await fetchScienceQuestions(topicId);
-                                        const allQ = rawQ.map(q => ({ ...q, id: String(q.id || q.qid) }));
-                                        allBankRef.current = allQ;
-                                        const userHistory = await ManyaDB.getAnswerHistory(subject);
-                                        const quest = await generateAdaptiveQuest(allQ, nodeType, subject, questKey, session, userHistory);
-                                        setQuestions(quest.questions);
-                                        setQuestMeta(quest);
-                                        setIsLoading(false);
-                                    })();
-
-                                }}
-                                className="w-full h-14 bg-[var(--bg-card)] text-[var(--text-sub)] border-2 border-[var(--border-color)] rounded-3xl font-black text-[11px] tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-[var(--bg-main)] transition-all"
-                            >
-                                <RotateCcw size={16} /> REPLAY NODE
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </div>
+            <CelebrationView
+                subject="Science"
+                nodeType={nodeType}
+                mastery={completionResult.mastery}
+                score={completionResult.score}
+                total={completionResult.total}
+                gemsEarned={gemsEarned}
+                onCollect={handleFinish}
+            />
         );
     }
 
@@ -1020,9 +884,12 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                         </div>
                     )}
 
-                    {/* ── QUESTION TEXT ── */}
-                    <div className="bg-[var(--bg-card)] rounded-[2rem] border-2 border-[var(--border-color)] px-6 py-6 mb-4 shadow-xl flex-shrink-0"
-                         style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                    {/* ── QUESTION TEXT (Themed) ── */}
+                    <div 
+                        className="bg-[var(--bg-card)] rounded-[2rem] border-[4.5px] border-[var(--sub-theme-bg)] px-6 py-6 mb-4 shadow-xl flex-shrink-0 relative"
+                        style={{ '--sub-theme-bg': '#2dd4bf', '--sub-theme-border': '#0d9488' }}
+                    >
+                        <div className="toy-card-gloss" />
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-5 h-5 bg-amber-500/10 rounded-lg flex items-center justify-center">
@@ -1045,21 +912,19 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                                     <button 
                                         key="hint-btn" 
                                         onClick={() => setHintUsed(!hintUsed)} 
-                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
+                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-[var(--sub-theme-bg)] text-white shadow-lg shadow-teal-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
                                     >
                                         <Lightbulb size={18} />
                                     </button>
 
                                     {hintUsed && (
-                                        <div className="absolute top-12 right-0 w-64 z-[60] bg-amber-50 dark:bg-slate-900 border-2 border-amber-200 dark:border-amber-900/50 rounded-2xl p-4 shadow-2xl animate-in fade-in zoom-in slide-in-from-top-2 duration-200 backdrop-blur-md">
-                                            {/* Tail */}
-                                            <div className="absolute -top-1.5 right-4 w-3 h-3 bg-amber-50 dark:bg-slate-900 border-t-2 border-l-2 border-amber-200 dark:border-amber-900/50 rotate-45" />
-                                            
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Sparkles size={14} className="text-amber-500" />
-                                                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Tutor Hint</span>
+                                        <div className="mcq-hint-bubble">
+                                            <div className="toy-card-gloss" />
+                                            <div className="mcq-hint-header">
+                                                <Sparkles size={14} className="text-white" />
+                                                <span className="mcq-hint-badge">Tutor Hint</span>
                                             </div>
-                                            <p className="text-[var(--text-main)] font-bold text-[13px] leading-relaxed m-0">{q.hint}</p>
+                                            <p className="mcq-hint-text">{q.hint}</p>
                                         </div>
                                     )}
                                 </div>
@@ -1092,6 +957,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                                     onClick={() => handleSelect(opt)}
                                     disabled={isAnswered}
                                 >
+                                    <div className="toy-card-gloss" />
                                     <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
                                     <span className="mcq-fe-text">{opt}</span>
                                     {isAnswered && isThisCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
@@ -1104,20 +970,18 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
 
                     {/* ── SUBMIT BUTTON (only when not yet answered) ── */}
-                    {!isAnswered && (
                         <button
                             onClick={handleSubmit}
                             disabled={selectedOption === null}
-                            className={`mt-4 w-full h-13 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+                            className={`mt-4 w-full h-14 btn-toy rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 relative overflow-hidden ${
                                 selectedOption !== null
-                                    ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/25 active:scale-95'
-                                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                    ? 'btn-toy-green shadow-lg active:scale-95'
+                                    : 'bg-slate-200 text-slate-400 cursor-not-allowed border-none shadow-none'
                             }`}
-                            style={{ height: 52 }}
                         >
-                            SUBMIT ANSWER <Zap size={14} />
+                            <div className="btn-toy-gloss" />
+                            <span>SUBMIT ANSWER <Zap size={14} /></span>
                         </button>
-                    )}
                 </div>
 
 

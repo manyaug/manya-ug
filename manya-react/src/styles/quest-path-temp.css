@@ -21,7 +21,7 @@
     overflow: hidden;
 }
 
-.quest-path-root {
+ .quest-path-root {
     background-image: radial-gradient(130% 90% at 50% 0%, rgba(var(--biome-color-rgb), 0.25) 0%, transparent 100%);
 }
 
@@ -61,7 +61,7 @@
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
 }
 
-.bg-asset {
+ .bg-asset {
     opacity: 0.06;
 }
 
@@ -254,7 +254,36 @@
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
-/* HEADER DARK MODE REMOVED - CONSOLIDATED AT BOTTOM */
+/* HEADER DARK MODE */
+ .quest-top-header {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+ .header-subtitle {
+    color: #94A3B8;
+}
+
+ .header-title {
+    color: white;
+}
+
+ .back-to-map-btn,
+ .header-stats {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+ .header-stats {
+    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.05);
+}
+
+ .header-progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 /* ── GEM RATING ── */
 .node-gem-rating {
     display: flex;
@@ -351,6 +380,7 @@
         0 0 0 6px rgba(255, 255, 255, 0.6),
         0 0 0 12px rgba(var(--biome-color-rgb), 0.25),
         0 15px 35px rgba(var(--biome-color-rgb), 0.40);
+    /* Animation removed from here, moved to .quest-node-abs.active */
 }
 
 /* BOSS CHEST */
@@ -460,122 +490,112 @@
 }
 
 /* ── DARK MODE OVERRIDES (Midnight Space v5.0) ── */
-@media (prefers-color-scheme: dark) {
-    .quest-path-root {
-        background: radial-gradient(circle at 50% 0%, rgba(var(--biome-color-rgb), 0.25) 0%, #050714 80%);
-    }
+ .quest-path-root {
+    background: radial-gradient(circle at 50% 0%, rgba(var(--biome-color-rgb), 0.25) 0%, #050714 80%);
+}
 
-    .quest-bg-assets {
-        opacity: 0.2;
-        filter: brightness(0.8) drop-shadow(0 0 10px rgba(var(--biome-color-rgb), 0.3));
-    }
+ .quest-bg-assets {
+    opacity: 0.2;
+    filter: brightness(0.8) drop-shadow(0 0 10px rgba(var(--biome-color-rgb), 0.3));
+}
 
-    .quest-top-header {
-        background: rgba(15, 22, 45, 0.5);
-        /* More transparent */
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
-        border: 3px solid rgba(255, 255, 255, 0.15);
-        box-shadow:
-            0 20px 60px rgba(0, 0, 0, 0.6),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2),
-            /* Glass Rim Highlight */
-            0 0 20px rgba(var(--biome-color-rgb), 0.15);
-        /* Subject Glow */
-        position: relative;
-        overflow: hidden;
-    }
+ .quest-top-header {
+    background: rgba(15, 22, 45, 0.5); /* More transparent */
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 20px 60px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.2), /* Glass Rim Highlight */
+        0 0 20px rgba(var(--biome-color-rgb), 0.15); /* Subject Glow */
+    position: relative;
+    overflow: hidden;
+}
 
-    /* Glass Shine Overlay */
-    .quest-top-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 50%;
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
-        pointer-events: none;
-    }
+/* Glass Shine Overlay */
+ .quest-top-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.08) 0%, transparent 100%);
+    pointer-events: none;
+}
 
-    .header-stats,
-    .back-to-map-btn {
-        background: rgba(255, 255, 255, 0.08);
-        /* Frosted background */
-        border-color: rgba(255, 255, 255, 0.1);
-        color: #f8fafc !important;
-        /* Force pure white for visibility */
-    }
+ .header-stats,
+ .back-to-map-btn {
+    background: rgba(255, 255, 255, 0.08); /* Frosted background */
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc !important; /* Force pure white for visibility */
+}
 
-    /* Ensure SVG icons and sub-text inherit the color */
-    .header-stats span,
-    .header-stats label,
-    .back-to-map-btn svg {
-        color: #f8fafc !important;
-        stroke: #f8fafc !important;
-    }
+/* Ensure SVG icons and sub-text inherit the color */
+ .header-stats span,
+ .header-stats label,
+ .back-to-map-btn svg {
+    color: #f8fafc !important; 
+    stroke: #f8fafc !important;
+}
 
-    .header-title {
-        color: #f8fafc;
-    }
+ .header-title {
+    color: #f8fafc;
+}
 
-    .header-subtitle {
-        color: rgba(var(--biome-color-rgb), 0.85);
-        font-weight: 950;
-    }
+ .header-subtitle {
+    color: rgba(var(--biome-color-rgb), 0.85);
+    font-weight: 950;
+}
 
-    .tactile-node {
-        background: rgba(30, 41, 59, 0.8);
-        border-color: rgba(255, 255, 255, 0.1);
-        box-shadow:
-            0 8px 0 rgba(0, 0, 0, 0.4),
-            0 10px 20px rgba(0, 0, 0, 0.3);
-    }
+ .tactile-node {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 0 rgba(0, 0, 0, 0.4),
+        0 10px 20px rgba(0, 0, 0, 0.3);
+}
 
-    .quest-node-abs.completed .tactile-node {
-        background: var(--biome-color);
-        box-shadow:
-            0 10px 0 var(--biome-color-dark),
-            0 0 30px rgba(var(--biome-color-rgb), 0.4);
-        /* Neon Glow */
-    }
+ .quest-node-abs.completed .tactile-node {
+    background: var(--biome-color);
+    box-shadow:
+        0 10px 0 var(--biome-color-dark),
+        0 0 30px rgba(var(--biome-color-rgb), 0.4);
+    /* Neon Glow */
+}
 
-    .quest-node-abs.active .tactile-node {
-        background: rgba(15, 23, 42, 0.95);
-        border-color: var(--biome-color);
-        box-shadow:
-            0 0 0 4px rgba(15, 23, 42, 0.8),
-            0 0 0 10px rgba(var(--biome-color-rgb), 0.4),
-            0 15px 35px rgba(var(--biome-color-rgb), 0.7);
-    }
+ .quest-node-abs.active .tactile-node {
+    background: rgba(15, 23, 42, 0.95);
+    border-color: var(--biome-color);
+    box-shadow:
+        0 0 0 4px rgba(15, 23, 42, 0.8),
+        0 0 0 10px rgba(var(--biome-color-rgb), 0.4),
+        0 15px 35px rgba(var(--biome-color-rgb), 0.7);
+}
 
-    .path-step-label {
-        background: rgba(15, 22, 45, 0.8);
-        backdrop-filter: blur(8px);
-        border-color: rgba(255, 255, 255, 0.12);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        color: #94a3b8;
-    }
+ .path-step-label {
+    background: rgba(15, 22, 45, 0.8);
+    backdrop-filter: blur(8px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #94a3b8;
+}
 
-    .quest-node-abs.active .path-step-label {
-        background: var(--biome-color) !important;
-        color: #ffffff !important;
-        border-color: rgba(255, 255, 255, 0.3) !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        box-shadow: 0 0 20px rgba(var(--biome-color-rgb), 0.5) !important;
-    }
+ .quest-node-abs.active .path-step-label {
+    background: var(--biome-color) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 0 20px rgba(var(--biome-color-rgb), 0.5) !important;
+}
 
-    .hero-bubble {
-        background: rgba(15, 22, 45, 0.9);
-        border-color: var(--biome-color);
-        box-shadow:
-            0 11px 0 var(--biome-color-dark),
-            0 0 30px rgba(var(--biome-color-rgb), 0.3);
-    }
+ .hero-bubble {
+    background: rgba(15, 22, 45, 0.9);
+    border-color: var(--biome-color);
+    box-shadow:
+        0 11px 0 var(--biome-color-dark),
+        0 0 30px rgba(var(--biome-color-rgb), 0.3);
+}
 
-    .header-progress-bar {
-        background: rgba(255, 255, 255, 0.08);
-    }
+ .header-progress-bar {
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* ── KEYFRAMES ── */

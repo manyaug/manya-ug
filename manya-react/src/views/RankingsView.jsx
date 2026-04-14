@@ -46,9 +46,9 @@ function RankingsView() {
                 <p className="arena-subtitle">Uganda P.7 Hero Rankings</p>
             </div>
 
-            {/* 2. LEAGUE STATUS BANNER */}
+            {/* 2. LEAGUE BANNER - SOLID TOY BLOCK with CUSTOM GLOSS */}
             <motion.div variants={itemVariants} className="league-banner-elite">
-                <div className="btn-toy-gloss" />
+                <div className="banner-specular-gloss" />
                 <div className="league-medal-orb" style={{ borderColor: activeSub.color }}>
                     <span>🥈</span>
                 </div>
@@ -79,7 +79,7 @@ function RankingsView() {
                             '--shadow-color': `${s.color}66`
                         }}
                     >
-                        <div className="btn-toy-gloss" />
+                        <div className="btn-toy-gloss" style={{ height: '30%' }} />
                         <img src={s.gem} className="tab-gem-icon" alt={s.label} />
                         <span>{s.id === 'Overall' ? 'Top' : s.id}</span>
                     </div>
@@ -88,11 +88,10 @@ function RankingsView() {
 
             {/* 4. THE SUBJECT PODIUM */}
             <div className="podium-section">
-                <div className="pod-thor-glow" style={{ background: activeSub.color }}></div>
+                {/* Thor Glow removed to eliminate all background gradients */}
 
-                {/* RANK 2 (Silver) */}
                 <motion.div variants={itemVariants} className="pod-card pod-rank-2">
-                    <div className="btn-toy-gloss" />
+                    <div className="btn-toy-gloss" style={{ height: '30%' }} />
                     <div className="pod-avatar-wrap">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" alt="Sarah" />
                     </div>
@@ -103,9 +102,8 @@ function RankingsView() {
                     </div>
                 </motion.div>
 
-                {/* RANK 1 (Gold) */}
                 <motion.div variants={itemVariants} className="pod-card pod-rank-1">
-                    <div className="btn-toy-gloss" />
+                    <div className="btn-toy-gloss" style={{ height: '30%' }} />
                     <div className="crown-badge">👑</div>
                     <div className="pod-avatar-wrap">
                         <img src={userAvatar} alt="You" />
@@ -117,9 +115,8 @@ function RankingsView() {
                     </div>
                 </motion.div>
 
-                {/* RANK 3 (Bronze) */}
                 <motion.div variants={itemVariants} className="pod-card pod-rank-3">
-                    <div className="btn-toy-gloss" />
+                    <div className="btn-toy-gloss" style={{ height: '30%' }} />
                     <div className="pod-avatar-wrap">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Musa" alt="Musa" />
                     </div>
@@ -159,13 +156,12 @@ function RankingsView() {
                     </motion.div>
                 ))}
 
-                {/* STICKY USER POSITION */}
                 <motion.div
                     variants={itemVariants}
                     className="rank-row-elite is-user"
                     style={{ '--tab-color': activeSub.color }}
                 >
-                    <div className="btn-toy-gloss" />
+                    <div className="btn-toy-gloss" style={{ height: '30%' }} />
                     <span className="r-pos" style={{ zIndex: 2 }}>#24</span>
                     <div className="r-count-glow" style={{ background: activeSub.color }}></div>
                     <div className="r-avatar" style={{ zIndex: 2 }}>

@@ -88,8 +88,9 @@ function SolutionPopup({ solution, correctText, onContinue }) {
                 </div>
 
                 {/* Continue button */}
-                <button className="mcq-popup-continue" onClick={onContinue}>
-                    Continue <ChevronRight size={18} strokeWidth={3} />
+                <button className="mcq-popup-continue btn-toy-green" onClick={onContinue}>
+                    <div className="btn-toy-gloss" />
+                    <span>Continue <ChevronRight size={18} strokeWidth={3} /></span>
                 </button>
             </div>
         </>
@@ -105,15 +106,16 @@ function SuccessFlash({ pointsLabel, onContinue }) {
                 <div className="mcq-success-label">CORRECT!</div>
                 {pointsLabel && <div className="mcq-success-pts">{pointsLabel}</div>}
             </div>
-            <button className="mcq-popup-continue success" onClick={onContinue}>
-                Continue <ChevronRight size={18} strokeWidth={3} />
+            <button className="mcq-popup-continue btn-toy-green" onClick={onContinue}>
+                <div className="btn-toy-gloss" />
+                <span>Continue <ChevronRight size={18} strokeWidth={3} /></span>
             </button>
         </div>
     );
 }
 
 // ── Main Engine ───────────────────────────────────────────────────
-const MCQStandaloneEngine = ({ data, onComplete, onResult }) => {
+const MCQStandaloneEngine = ({ data, onComplete, onResult, subject }) => {
     const [selected, setSelected]         = useState(null);
     const [phase, setPhase]               = useState('idle'); // idle | checking | correct | wrong | show-solution
 
@@ -138,9 +140,20 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult }) => {
 
     // Identify correct option text for display
     const correctId   = data.correct || data.answer;
-    const correctOpt  = options.find(o => o.id === correctId || o.text === correctId);
     const correctText = correctOpt?.text || correctId || '';
     const solution    = parseSolution(data.explanation);
+
+    // Dynamic Theme Tokens
+    const getTheme = (subj) => {
+        switch (subj?.toLowerCase()) {
+            case 'math':    return { bg: '#8b5cf6', border: '#7c3aed' };
+            case 'science': return { bg: '#2dd4bf', border: '#0d9488' };
+            case 'sst':     return { bg: '#f59e0b', border: '#b45309' };
+            case 'english': return { bg: '#f472b6', border: '#db2777' };
+            default:        return { bg: '#f59e0b', border: '#b45309' }; // Amber
+        }
+    };
+    const theme = getTheme(subject || data.subject);
 
     const handlePick = useCallback((opt) => {
         if (phase !== 'idle') return;
@@ -165,9 +178,10 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult }) => {
     const isLocked = phase !== 'idle';
 
     return (
-        <div className="mcq-world-root">
+        <div className="mcq-world-root" style={{ '--sub-theme-bg': theme.bg, '--sub-theme-border': theme.border }}>
             {/* ── Question bubble ── */}
             <div className="mcq-q-card">
+                <div className="toy-card-gloss" />
                 {data.image_url && (
                     <div className="mcq-q-image">
                         <img src={data.image_url} alt="Question visual" />
@@ -195,6 +209,7 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult }) => {
                             onClick={() => handlePick(opt)}
                             disabled={isLocked}
                         >
+                            <div className="toy-card-gloss" />
                             <span className="mcq-opt-letter">{opt.letter}</span>
                             <span className="mcq-opt-text">{opt.text}</span>
                             {state === 'correct'        && <CheckCircle2 size={20} className="mcq-opt-icon" />}

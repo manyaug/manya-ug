@@ -29,34 +29,36 @@ export const fetchSstQuestions = async (topicId) => {
             return cached;
         }
 
-        // --- RESILIENT VAULT QUERY ---
+        // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
         let { data, error } = await supabase
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'sst')
-            .in('subtopic', [subtopic, topicId])
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`)
             .ilike('item_type', '%MCQ%');
 
-        // Fallback for sanitized names
-        if (!error && (!data || data.length === 0) && subtopic.includes('quest_')) {
-            const sanitized = subtopic.replace(/^quest_\d+_/, '');
-            const retry = await supabase
-                .from('manya_vault')
-                .select('*')
-                .eq('subject', 'SST')
-                .eq('subtopic', sanitized)
-                .eq('item_type', 'MCQ');
+        // FALLBACK: Aggressive Keyword Splitting (v4.5)
+        if (!error && (!data || data.length === 0)) {
+            const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
+            const keywords = cleanSub.split(' ').filter(k => k.length > 2); // Exclude small words like "of", "and"
             
-            if (retry.data?.length > 0) data = retry.data;
-            else {
-                const withSpaces = sanitized.replace(/_/g, ' ');
-                const retry2 = await supabase
+            if (keywords.length > 0) {
+                console.log(`🔍 [SST Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
+                
+                // Construct a broad OR query for each keyword
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
+                
+                const { data: keywordData } = await supabase
                     .from('manya_vault')
                     .select('*')
-                    .eq('subject', 'SST')
-                    .eq('subtopic', withSpaces)
-                    .eq('item_type', 'MCQ');
-                if (retry2.data?.length > 0) data = retry2.data;
+                    .ilike('subject', 'sst')
+                    .or(keywordFilter)
+                    .ilike('item_type', '%MCQ%');
+                
+                if (keywordData?.length > 0) {
+                    console.log(`✨ [SST Vault] Discovered ${keywordData.length} related questions via keywords.`);
+                    data = keywordData;
+                }
             }
         }
 

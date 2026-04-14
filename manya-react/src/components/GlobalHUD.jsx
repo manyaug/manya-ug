@@ -34,7 +34,6 @@ function GlobalHUD() {
                 animate={{ width: `${xpProgress}%` }}
                 className="hud-xp-fill"
               >
-                <div className="btn-toy-gloss" />
               </motion.div>
             </div>
           </div>
@@ -43,8 +42,7 @@ function GlobalHUD() {
         {/* RIGHT: TREASURY (STREAK & GEMS) */}
         <div className="hud-right-content">
           <div className="hud-treasury-pill">
-            <div className="btn-toy-gloss" />
-            <div className="hud-stat-item streak">
+            <div className="hud-stat-item streak" title="Day Streak">
               <span className="hud-icon">🔥</span>
               <span className="hud-value">{user.currentStreak || 0}</span>
             </div>

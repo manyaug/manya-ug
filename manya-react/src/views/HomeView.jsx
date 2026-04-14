@@ -112,20 +112,16 @@ function HomeView() {
       animate="visible"
       className="manya-hub"
     >
-      {/* DYNAMIC AURORA BLOBS + MAGIC DUST */}
-      <div className="aurora-engine" style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none' }}>
-        <div className="blob aurora-1" />
-        <div className="blob aurora-2" />
-        <div className="magic-dust" />
-      </div>
+      {/* Aurora Engine removed for Solid Opaque style */}
 
       {/* PREMIUM STATUS HEADER */}
       <motion.div variants={itemVariants} className="home-status-header-glass">
-        <div className="status-user-info">
+        <div className="toy-card-gloss" />
+        <div className="status-user-info" style={{ zIndex: 2 }}>
           <span className="hi-text">Hi, {user.nickname || 'Hero'} 👋</span>
           <p className="status-subtext">Ready for today's mission?</p>
         </div>
-        <div className="status-streak-pill">
+        <div className="status-streak-pill" style={{ zIndex: 2 }}>
           <div className="streak-flame-glow">
             <Zap size={16} fill="currentColor" />
           </div>
@@ -144,14 +140,14 @@ function HomeView() {
         className={`resume-mission-card btn-toy bounty-card-${activeBounty?.sub || 'math'}`}
         onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
       >
-        <div className="btn-toy-gloss"></div>
+        <div className="toy-card-gloss" />
         <img src={getGem(activeBounty?.sub || 'math')} className="hero-bg-gem-watermark" alt="watermark" />
         <div className="mission-visual">
           <div className="hero-avatar-mini-glow">
             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
           </div>
         </div>
-        <div className="mission-details">
+        <div className="mission-details" style={{ zIndex: 2 }}>
           <span className="mission-kicker flex items-center gap-1">
             <Target size={12} className="text-white/70" />
             DAILY MISSION!
@@ -189,16 +185,10 @@ function HomeView() {
                 <span className="bounty-gem-count">{sub.gems}</span>
               </div>
 
-              {/* Crystal ball */}
+              {/* Crystal ball - Simplified to Solid Orb with Gloss */}
               <div className="crystal-ball">
-                {/* Animated swirling nebula */}
-                <div className="crystal-swirl" />
-                {/* Depth / hollow shadow */}
-                <div className="crystal-depth" />
-                {/* Island floats inside */}
+                <div className="toy-card-gloss" />
                 <img src={sub.icon} alt={sub.name} className="crystal-island" />
-                {/* Glass specular overlay — topmost */}
-                <div className="crystal-glass" />
               </div>
 
               {/* Glow pool beneath orb */}
@@ -223,19 +213,18 @@ function HomeView() {
         whileTap={{ scale: 0.99 }}
         onClick={() => navigate('/sim-test')}
         className="home-sim-lab-cta group btn-toy btn-toy-purple"
-        style={{ padding: '8px 16px', textTransform: 'none' }}
       >
-        <div className="btn-toy-gloss" />
-        <div className="sim-lab-left">
+        <div className="toy-card-gloss" />
+        <div className="sim-lab-left" style={{ zIndex: 2 }}>
           <div className="sim-lab-icon-box">
             <FlaskConical size={18} />
           </div>
           <div className="sim-lab-text">
             <h4>Simulation Lab</h4>
-            <p style={{ color: 'rgba(255,255,255,0.7)' }}>Experimental Access</p>
+            <p style={{ color: 'white', opacity: 0.8 }}>Experimental Access</p>
           </div>
         </div>
-        <div className="sim-lab-arrow">
+        <div className="sim-lab-arrow" style={{ zIndex: 2 }}>
           →
         </div>
       </motion.button>

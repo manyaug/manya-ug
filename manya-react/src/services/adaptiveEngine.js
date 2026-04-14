@@ -175,6 +175,18 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             return { ...q, _adaptive: metadata };
         }));
 
+        // --- NEW: Concept De-duplication (v5.5) ---
+        // Avoid picking different variants (V1, V2, V3) of the same question in a single session.
+        const conceptMap = {};
+        mcqCandidates.forEach(cand => {
+            const { baseId } = parseQuestionId(cand.id || cand.qid);
+            // Keep the variant with the highest score for this baseId
+            if (!conceptMap[baseId] || cand._adaptive.score > conceptMap[baseId]._adaptive.score) {
+                conceptMap[baseId] = cand;
+            }
+        });
+        mcqCandidates = Object.values(conceptMap);
+
         // ─── ENGLISH STRUCTURED PARTITIONING (Level 1.0) ───
         if (subject === 'english') {
             const diffMap = {
@@ -191,24 +203,31 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             // Fallback: If no questions match difficulty, allow neighbors
             if (filteredCandidates.length < 3) {
                 console.warn(`⚠️ [Adaptive] Low candidate count for ${nodeType} (${subject}). Falling back to adjacent difficulties.`);
-                filteredCandidates = mcqCandidates; // Just use everything if bucket is too small
+                filteredCandidates = mcqCandidates; 
             }
             mcqCandidates = filteredCandidates;
         }
 
+        // Sort by adaptive score
         mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
 
+        // Slice to target length
         const selectedMCQs = mcqCandidates.slice(0, questLength);
 
         // 4. INTERLEAVE & RESCUE LOGIC
-        const finalQuestions = [];
+        let finalQuestions = [];
         const mcqStack = [...selectedMCQs];
-        const excludeSims = nodeType === 'WARMUP' || nodeType === 'EXPLORE';
+        
+        // STRICT RULE: No simulations or notes in WARMUP
+        const isWarmup = nodeType === 'WARMUP';
+        const excludeSims = isWarmup || nodeType === 'EXPLORE';
+        
         const simStack = excludeSims ? [] : [...pools.SIMULATION].sort(() => 0.5 - Math.random());
         const grammarStack = excludeSims ? [] : [...pools.GRAMMAR].sort(() => 0.5 - Math.random());
 
         // ─── THE RESCUE PATTERN: GRAMMAR + PRACTICE ─────
-        if (isBadCondition && grammarStack.length > 0 && nodeType !== 'WARMUP') {
+        // Only trigger if NOT a warmup
+        if (isBadCondition && grammarStack.length > 0 && !isWarmup) {
             const rule = grammarStack.pop();
             finalQuestions.push({ ...rule, isRescue: true, message: "Let's pause and review the rule!" });
             if (simStack.length > 0) finalQuestions.push({ ...simStack.pop(), isRescuePractice: true });
@@ -216,7 +235,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         // ─── MOTIVATION / INTERLEAVE FILL ─────
         while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
-            const hasSim = simStack.length > 0 && nodeType !== 'WARMUP';
+            const hasSim = simStack.length > 0 && !isWarmup;
             const hasMcq = mcqStack.length > 0;
 
             if (hasSim && !hasMcq) {
@@ -224,8 +243,6 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
             } else if (hasSim && hasMcq) {
-                // If they need motivation, High chance (60%) of a fun sim
-                // If healthy (Practice mode), Normal chance (30%) of a fun sim to keep it interactive
                 const simChance = needsMotivation ? 0.6 : 0.30; 
                 if (Math.random() < simChance) {
                     finalQuestions.push(simStack.pop());
@@ -237,8 +254,12 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             }
         }
 
+        // --- NEW: Final Randomization (Shuffle the sequencing) ---
+        // This ensures the order of questions is random every time, even if the pool is the same.
+        finalQuestions = (finalQuestions.length > 0 ? finalQuestions : selectedMCQs).sort(() => 0.5 - Math.random());
+
         return {
-            questions: finalQuestions.length > 0 ? finalQuestions : selectedMCQs,
+            questions: finalQuestions,
             metadata: { 
                 questLength: finalQuestions.length, 
                 frustration: frustration.score, 

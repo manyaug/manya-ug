@@ -25,7 +25,11 @@ import {
 } from '../../services/questProgressService';
 import { preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
+import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
+import CelebrationView from './CelebrationView';
 import { ENGINE_REGISTRY } from '../../utils/engineRouter';
+import { calculateUSP } from '../../utils/scoringUtility';
+import '../../styles/mcq-engine.css';
 
 /**
  * SIMULATOR BRIDGE (English)
@@ -321,7 +325,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
             // ─── 🆘 RESCUE RECAP: 3 consecutive wrong → inject recap ───
             consecutiveWrongRef.current += 1;
-            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0) {
+            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0 && nodeType !== 'WARMUP') {
                 const recapIdx = recapUsedIndexRef.current % recapSteps.length;
                 const recapToInject = { ...recapSteps[recapIdx] };
                 recapUsedIndexRef.current += 1;
@@ -389,135 +393,68 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
-    // ── PLAYFUL ADVENTURE LOADING (v3.0) ──
-    if (isLoading) return (
-        <div className={`flex-1 flex flex-col items-center justify-center p-8 overflow-hidden relative ${isNight ? 'bg-[#0B0E14]' : 'bg-indigo-50/30'}`}>
-            {/* Background Decorations */}
-            <div className={`absolute top-20 -left-10 w-40 h-40 ${isNight ? 'bg-indigo-950/20' : 'bg-indigo-200/20'} rounded-full blur-3xl animate-pulse`} />
-            <div className={`absolute bottom-20 -right-10 w-60 h-60 ${isNight ? 'bg-purple-950/20' : 'bg-purple-200/20'} rounded-full blur-3xl animate-pulse delay-700`} />
-            
-            <div className="relative z-10 flex flex-col items-center">
-                {/* Bouncing Subject Coin */}
-                <div className="relative mb-12">
-                    {/* Orbiting Ring */}
-                    <div className={`absolute inset-[-15px] border-4 border-dashed ${isNight ? 'border-indigo-900/50' : 'border-indigo-200'} rounded-full animate-[spin_8s_linear_infinite]`} />
-                    
-                    <div className="w-24 h-24 bg-indigo-600 rounded-full shadow-2xl flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white">
-                        <Sparkles size={40} strokeWidth={2.5} />
-                    </div>
-                </div>
+    const handleFinish = () => {
+        const mastery = completionResult?.mastery || 0;
+        onResult?.({
+            isCorrect: mastery >= 60,
+            score: completionResult?.score || score,
+            total: completionResult?.total || questions.length,
+            mastery,
+            gemsEarned,
+            type: 'adaptive_english',
+        });
+        onComplete?.();
+    };
 
-                <div className="space-y-6 text-center max-w-xs">
-                    <div className="space-y-2">
-                        <h3 className={`text-xl font-black tracking-tight ${isNight ? 'text-white' : 'text-indigo-900'}`}>
-                            Once Upon a Time... ✨
-                        </h3>
-                        <div className="flex justify-center gap-1">
-                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
-                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
-                        </div>
-                    </div>
-
-                    {/* Fun Loading Fact */}
-                    <div className={`${isNight ? 'bg-white/5 border-white/10' : 'bg-white/60 border-indigo-100'} backdrop-blur-md rounded-3xl p-5 border-2 shadow-sm`}>
-                        <p className={`text-[10px] font-black uppercase tracking-widest mb-2 opacity-60 ${isNight ? 'text-indigo-400' : 'text-indigo-600'}`}>Did you know?</p>
-                        <p className={`text-xs font-bold leading-relaxed italic m-0 ${isNight ? 'text-slate-300' : 'text-indigo-950'}`}>
-                            "The shortest complete sentence in the English language is 'I am.'"
-                        </p>
-                    </div>
-
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                        Preparing Story World...
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
-
-    if (showCompletion && completionResult) {
-        const { mastery, unlocked, nextNode, needsRetry, threshold, attempts } = completionResult;
-        const isPassing = mastery >= 60;
-        const isPerfect = mastery === 100;
-
+    if (isLoading) {
+        const cfg = getLoadingConfig('english');
+        const randomFact = getRandomFact('english');
+        
         return (
-            <div className={`flex-1 flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-700 ${isNight ? 'bg-[#0B0E14]' : 'bg-indigo-600'}`}>
-                <div className={`w-full max-w-sm ${isNight ? 'bg-[#151921] border border-white/5' : 'bg-white'} rounded-[3rem] shadow-2xl p-8 text-center relative overflow-hidden`}>
-                    
-                    {/* Decorative Background */}
-                    <div className={`absolute top-0 left-0 w-full h-32 ${isNight ? 'bg-gradient-to-b from-indigo-500/10 to-transparent' : 'bg-gradient-to-b from-indigo-50 to-transparent'} opacity-50`} />
-                    
-                    {/* Trophy/Status Icon */}
-                    <div className="relative mb-6 pt-4">
-                        <div className={`w-24 h-24 ${isNight ? 'bg-white/5' : 'bg-indigo-50'} rounded-[2rem] flex items-center justify-center mx-auto mb-4 rotate-3 shadow-inner`}>
-                             <div className="text-6xl animate-pulse">
-                                {mastery >= 90 ? '🏆' : mastery >= 75 ? '🥈' : mastery >= 60 ? '🥉' : '💪'}
-                             </div>
-                        </div>
-                        <h2 className={`text-3xl font-black ${isNight ? 'text-white' : 'text-slate-900'} tracking-tight leading-none mb-2`}>
-                             {mastery >= 90 ? 'Brilliant!' : mastery >= 75 ? 'Great Job!' : mastery >= 60 ? 'Well Done!' : 'Keep Going!'}
-                        </h2>
-                        <div className={`inline-flex items-center gap-2 px-3 py-1 ${isNight ? 'bg-white/5 text-indigo-400' : 'bg-slate-100 text-slate-500'} rounded-full text-[10px] font-black uppercase tracking-widest`}>
-                             <Sparkles size={10} className="text-indigo-500" /> {nodeMeta.label} Complete
-                        </div>
+            <div className="quest-loading-overlay" style={{ '--loader-color': cfg.color, '--loader-dark': cfg.colorDark, '--loader-bg': cfg.bgLight }}>
+                {/* Ambient Glow Blobs */}
+                <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
+                <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
+
+                <div className="loader-content-card">
+                    {/* Mascot Hero */}
+                    <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
+                        <img src={cfg.mascot} alt="Polly" className="loader-mascot-img" />
                     </div>
 
-                    {/* Mastery Ring Card */}
-                    <div className={`${isNight ? 'bg-white/5 border-white/5' : 'bg-slate-50 border-slate-100'} rounded-[2.5rem] p-6 mb-6 border`}>
-                        <div className="relative w-32 h-32 mx-auto mb-4">
-                            <svg className="w-full h-full -rotate-90">
-                                <circle 
-                                    cx="64" cy="64" r="58"
-                                    fill="none" stroke={isNight ? 'rgba(255,255,255,0.05)' : '#e2e8f0'} strokeWidth="12"
-                                />
-                                <circle 
-                                    cx="64" cy="64" r="58"
-                                    fill="none" 
-                                    stroke={isPassing ? '#6366f1' : '#f43f5e'} 
-                                    strokeWidth="12"
-                                    strokeDasharray="364.4"
-                                    strokeDashoffset={364.4 - (364.4 * mastery) / 100}
-                                    strokeLinecap="round"
-                                    className="transition-all duration-1000 ease-out"
-                                />
-                            </svg>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className={`text-3xl font-black ${isNight ? 'text-white' : 'text-slate-900'} leading-none`}>{mastery}%</span>
-                                <span className="text-[9px] font-black text-slate-400 tracking-widest uppercase mt-1">Mastery</span>
-                            </div>
-                        </div>
-
-                        <div className={`flex items-center justify-around border-t ${isNight ? 'border-white/5' : 'border-slate-200'} pt-4 mt-2`}>
-                            <div className="text-center">
-                                <div className={`text-lg font-black ${isNight ? 'text-white' : 'text-slate-900'}`}>{completionResult.score}/{completionResult.total}</div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
-                            </div>
-                            <div className={`w-[1px] h-8 ${isNight ? 'bg-white/5' : 'bg-slate-200'}`} />
-                            <div className="text-center">
-                                <div className="text-lg font-black text-amber-500 flex items-center gap-1">
-                                    <Trophy size={16} fill="currentColor" /> +{gemsEarned}
-                                </div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gems</div>
-                            </div>
-                        </div>
+                    {/* Title & Bounce Dots */}
+                    <h3 className="loader-title">{cfg.title}</h3>
+                    <div className="loader-bounce-dots">
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '200ms' }} />
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '400ms' }} />
                     </div>
 
-                    {/* Unlock Feedback */}
-                    {unlocked && (
-                         <div className="bg-indigo-600 text-white rounded-3xl p-4 mb-4 animate-bounce">
-                             <div className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">New Milestone</div>
-                             <div className="text-sm font-bold">Next Node Unlocked!</div>
-                         </div>
-                    )}
+                    {/* Fun Fact Card */}
+                    <div className="loader-fact-card" style={{ borderColor: `${cfg.color}30` }}>
+                        <span className="loader-fact-label" style={{ color: cfg.color }}>Did you know?</span>
+                        <p className="loader-fact-text">{randomFact}</p>
+                    </div>
 
-                    <button
-                        onClick={onComplete}
-                        className="w-full h-16 bg-slate-900 text-white rounded-3xl font-black text-[13px] tracking-widest uppercase flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-indigo-900/10"
-                    >
-                        COLLECT REWARDS <ArrowRight size={18} />
-                    </button>
+                    {/* Status */}
+                    <p className="loader-status-text">{cfg.sub}</p>
                 </div>
             </div>
+        );
+    }
+
+    // ── COMPLETION SCREEN ──
+    if (showCompletion && completionResult) {
+        return (
+            <CelebrationView
+                subject="English"
+                nodeType={nodeType}
+                mastery={completionResult.mastery}
+                score={completionResult.score}
+                total={completionResult.total}
+                gemsEarned={gemsEarned}
+                onCollect={handleFinish}
+            />
         );
     }
 
@@ -598,9 +535,12 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                         </div>
                     )}
 
-                    {/* ── QUESTION TEXT ── */}
-                    <div className="bg-[var(--bg-card)] rounded-[2rem] border-2 border-[var(--border-color)] px-6 py-6 mb-4 shadow-xl flex-shrink-0"
-                         style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                    {/* ── QUESTION TEXT (Themed) ── */}
+                    <div 
+                        className="bg-[var(--bg-card)] rounded-[2rem] border-[4.5px] border-[var(--sub-theme-bg)] px-6 py-6 mb-4 shadow-xl flex-shrink-0 relative"
+                        style={{ '--sub-theme-bg': '#f472b6', '--sub-theme-border': '#db2777' }}
+                    >
+                        <div className="toy-card-gloss" />
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-5 h-5 bg-indigo-500/10 rounded-lg flex items-center justify-center">
@@ -623,21 +563,18 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                                     <button 
                                         key="hint-btn" 
                                         onClick={() => setHintUsed(!hintUsed)} 
-                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
+                                        className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-[var(--sub-theme-bg)] text-white shadow-lg shadow-pink-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
                                     >
                                         <Lightbulb size={18} />
                                     </button>
 
                                     {hintUsed && (
-                                        <div className="absolute top-12 right-0 w-64 z-[60] bg-white dark:bg-slate-900 border border-indigo-100 dark:border-white/5 rounded-2xl p-4 shadow-2xl animate-in fade-in zoom-in slide-in-from-top-2 duration-200 backdrop-blur-md">
-                                            {/* Tail */}
-                                            <div className="absolute -top-1.5 right-4 w-3 h-3 bg-white dark:bg-slate-900 border-t border-l border-indigo-100 dark:border-white/5 rotate-45" />
-                                            
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Sparkles size={14} className="text-indigo-600" />
-                                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Tutor Hint</span>
+                                        <div className="mcq-hint-bubble">
+                                            <div className="mcq-hint-header">
+                                                <Sparkles size={14} className="text-white" />
+                                                <span className="mcq-hint-badge">Tutor Hint</span>
                                             </div>
-                                            <p className="text-slate-800 dark:text-slate-200 font-bold text-[13px] leading-relaxed m-0">{q.hint}</p>
+                                            <p className="mcq-hint-text">{q.hint}</p>
                                         </div>
                                     )}
                                 </div>
@@ -673,6 +610,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                                     }}
                                     disabled={isAnswered}
                                 >
+                                    <div className="toy-card-gloss" />
                                     <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
                                     <span className="mcq-fe-text">{opt}</span>
                                     {isAnswered && isThisCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
@@ -690,9 +628,10 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                             <button
                                 onClick={handleSubmit}
                                 disabled={!selectedOption}
-                                className={`w-full h-14 rounded-full font-black text-[13px] tracking-[0.1em] uppercase transition-all flex items-center justify-center gap-2 ${selectedOption ? 'bg-[var(--text-main)] text-[var(--bg-main)] shadow-xl shadow-slate-900/10 hover:opacity-90 active:scale-95' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'}`}
+                                className={`w-full h-14 btn-toy rounded-full font-black text-[13px] tracking-[0.1em] uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${selectedOption ? 'btn-toy-green shadow-xl active:scale-95' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border-none shadow-none'}`}
                             >
-                                Submit Answer <Zap size={16} />
+                                <div className="btn-toy-gloss" />
+                                <span>Submit Answer <Zap size={16} /></span>
                             </button>
                         ) : (
                             <div className={`w-full h-14 rounded-full border-2 flex items-center justify-center gap-2 font-black text-[11px] tracking-widest uppercase transition-all ${userWasCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>

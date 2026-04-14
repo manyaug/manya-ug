@@ -84,11 +84,7 @@ function ProfileView() {
             animate="visible"
             className="profile-page"
         >
-            {/* 0. DYNAMIC AURORA ENGINE */}
-            <div className="aurora-engine">
-                <div className="blob aurora-1"></div>
-                <div className="blob aurora-2"></div>
-            </div>
+            {/* Aurora Engine removed for Opaque style */}
 
             {/* 1. HERO IDENTITY (XP RING) */}
             <motion.div variants={itemVariants} className="hero-passport-header">
@@ -118,7 +114,7 @@ function ProfileView() {
             {/* 2. ANALYTICS BENTO GRID (UPGRADED) */}
             <motion.div variants={itemVariants} className="bento-grid">
                 <div className="bento-card-elite streak">
-                    <div className="card-glass-glow"></div>
+                    <div className="toy-card-gloss" />
                     <div className="bento-icon-box">
                         <Flame size={20} color="#f97316" />
                     </div>
@@ -127,8 +123,8 @@ function ProfileView() {
                 </div>
 
                 <div className="bento-card-elite league">
-                    <div className="card-glass-glow" style={{ background: stats.leagueColor, opacity: 0.1 }}></div>
-                    <div className="bento-icon-box" style={{ background: `${stats.leagueColor}20` }}>
+                    <div className="toy-card-gloss" />
+                    <div className="bento-icon-box" style={{ background: `${stats.leagueColor}15` }}>
                         <Trophy size={20} color={stats.leagueColor} />
                     </div>
                     <span className="bento-label">LEAGUE STATUS</span>
@@ -138,6 +134,7 @@ function ProfileView() {
 
             {/* 3. LEARNING ACTIVITY (GLASS) */}
             <motion.div variants={itemVariants} className="activity-card-national">
+                <div className="toy-card-gloss" />
                 <div className="activity-header">
                     <div className="activity-icon-halo">
                         <BrainCircuit size={20} color="#7c3aed" />
@@ -155,10 +152,9 @@ function ProfileView() {
                                 animate={{ height: `${heights[i]}px` }}
                                 transition={{ delay: 0.5 + (i * 0.05), duration: 1, ease: "easeOut" }}
                                 className={`bar-pillar ${i === maxIdx && heights[i] > 0 ? 'active' : ''}`}
-                                style={{ background: i === maxIdx && heights[i] > 0 ? undefined : colors[i] }}
+                                style={{ background: colors[i] }}
                             >
                                 {i === maxIdx && heights[i] > 0 && <div className="bar-callout">{rawEngagementsHours[i].toFixed(1)}h</div>}
-                                <div className="pillar-glow" style={{ background: colors[i], opacity: 0.3 }}></div>
                             </motion.div>
                             <span className="pillar-label">{day}</span>
                         </div>
@@ -190,7 +186,6 @@ function ProfileView() {
                                 className="matrix-fill"
                                 style={{ backgroundColor: sub.color }}
                             >
-                                <div className="fill-shine"></div>
                             </motion.div>
                         </div>
                     </motion.div>
@@ -202,37 +197,37 @@ function ProfileView() {
             <motion.h4 variants={itemVariants} className="section-label">Hero Management</motion.h4>
             <motion.div variants={itemVariants} className="service-list-national">
                 <div className="service-row-elite btn-toy btn-toy-slate" onClick={() => navigate('/settings')}>
-                    <div className="btn-toy-gloss"></div>
+                    <div className="toy-card-gloss" />
                     <div className="s-icon-box" style={{ background: '#f8fafc', color: '#475569' }}>
                         <UserCog size={20} />
                     </div>
                     <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">Profile Settings</span>
-                        <span className="s-desc" style={{ color: 'rgba(255,255,255,0.7)' }}>Nickname, DNA & Academic Grade</span>
+                        <span className="s-desc" style={{ color: 'white', opacity: 0.9 }}>Nickname, DNA & Academic Grade</span>
                     </div>
                     <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
 
                 <div className="service-row-elite btn-toy btn-toy-green" onClick={() => navigate('/preferences')}>
-                    <div className="btn-toy-gloss"></div>
+                    <div className="toy-card-gloss" />
                     <div className="s-icon-box" style={{ background: '#f0fdf4', color: '#166534' }}>
                         <Sliders size={20} />
                     </div>
                     <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">App Preferences</span>
-                        <span className="s-desc" style={{ color: 'rgba(255,255,255,0.7)' }}>Audio, Theme & Matrix Sync</span>
+                        <span className="s-desc" style={{ color: 'white', opacity: 0.9 }}>Audio, Theme & Matrix Sync</span>
                     </div>
                     <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
 
                 <div className="service-row-elite btn-toy btn-toy-gold" onClick={() => navigate('/membership')}>
-                    <div className="btn-toy-gloss"></div>
+                    <div className="toy-card-gloss" />
                     <div className="s-icon-box" style={{ background: '#fffbeb', color: '#92400e' }}>
                         <Crown size={20} />
                     </div>
                     <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">Elite Hero Status</span>
-                        <span className="s-desc" style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 900 }}>{user?.status || 'Free Scholar'}</span>
+                        <span className="s-desc" style={{ color: 'white', fontWeight: 900 }}>{user?.status || 'Free Scholar'}</span>
                     </div>
                     <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>

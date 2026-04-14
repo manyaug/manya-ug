@@ -16,6 +16,7 @@ import {
 } from '../services/questProgressService';
 import { findQuestData, preloadCurriculum } from '../services/curriculumService';
 import { getGem, IMAGES } from '../config/assetUrls';
+import { getLoadingConfig, getRandomFact } from '../config/loadingData';
 import '../styles/quest-path.css';
 
 const STEPS = [
@@ -270,60 +271,39 @@ function QuestPathView() {
                 </div>
             </div>
 
-            {/* ── PLAYFUL ADVENTURE LOADING OVERLAY (v3.0) ── */}
+            {/* ── PLAYFUL ADVENTURE LOADING OVERLAY (v5.0 — Manya World) ── */}
             {(loading || !curriculum) && (() => {
-                const theme = {
-                    sst: { color: 'amber', icon: Compass, title: "Ready for an Adventure? 🚀", fact: '"The Great Wall of China is so long that it could wrap around the world twice!"', sub: "Preparing SST World..." },
-                    science: { color: 'sky', icon: Zap, title: "Quantum Leap! ⚡", fact: '"A single bolt of lightning has enough energy to toast 100,000 slices of bread!"', sub: "Preparing Science Lab..." },
-                    math: { color: 'emerald', icon: Trophy, title: "Solving the Puzzle! 🏆", fact: '"The symbol for division (÷) is called an \'obelus\'."', sub: "Preparing Number Land..." },
-                    english: { color: 'indigo', icon: Sparkles, title: "Once Upon a Time... ✨", fact: '"The shortest complete sentence in the English language is \'I am.\'"', sub: "Preparing Story World..." },
-                    default: { color: 'purple', icon: Search, title: "Magic is Happening... ✨", fact: '"Learning something new every day keeps your brain super strong!"', sub: "Preparing Quest World..." }
-                }[subject] || { color: 'purple', icon: Search, title: "Magic is Happening... ✨", fact: '"Learning something new every day keeps your brain super strong!"', sub: "Preparing Quest World..." };
+                const cfg = getLoadingConfig(subject);
+                const randomFact = getRandomFact(subject);
 
-                const Icon = theme.icon;
-                const colorClass = theme.color;
-                
                 return (
-                    <div className={`absolute inset-0 z-[100] flex flex-col items-center justify-center p-8 overflow-hidden bg-${colorClass}-50/50 backdrop-blur-md`}>
-                        {/* Background Decorations */}
-                        <div className={`absolute top-20 -left-10 w-40 h-40 bg-${colorClass}-200/20 rounded-full blur-3xl animate-pulse`} />
-                        <div className={`absolute bottom-20 -right-10 w-60 h-60 bg-${colorClass}-200/20 rounded-full blur-3xl animate-pulse delay-700`} />
-                        
-                        <div className="relative z-10 flex flex-col items-center">
-                            {/* Bouncing Subject Coin */}
-                            <div className="relative mb-12">
-                                {/* Orbiting Ring */}
-                                <div className={`absolute inset-[-15px] border-4 border-dashed border-${colorClass}-200 rounded-full animate-[spin_8s_linear_infinite]`} />
-                                
-                                <div className={`w-24 h-24 bg-${colorClass}-500 rounded-full shadow-2xl flex items-center justify-center text-white animate-[bounce_2s_infinite] border-4 border-white`}>
-                                    <Icon size={40} strokeWidth={2.5} />
-                                </div>
+                    <div className="quest-loading-overlay" style={{ '--loader-color': cfg.color, '--loader-dark': cfg.colorDark, '--loader-bg': cfg.bgLight }}>
+                        {/* Ambient Glow Blobs */}
+                        <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
+                        <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
+
+                        <div className="loader-content-card">
+                            {/* Mascot Hero */}
+                            <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
+                                <img src={cfg.mascot} alt={cfg.name} className="loader-mascot-img" />
                             </div>
 
-                            <div className="space-y-6 text-center max-w-xs">
-                                <div className="space-y-2">
-                                    <h3 className={`text-xl font-black text-${colorClass}-900 tracking-tight`}>
-                                        {theme.title}
-                                    </h3>
-                                    <div className="flex justify-center gap-1">
-                                        <div className={`w-3 h-3 bg-${colorClass}-400 rounded-full animate-bounce`} style={{ animationDelay: '0ms' }} />
-                                        <div className={`w-3 h-3 bg-${colorClass}-400 rounded-full animate-bounce`} style={{ animationDelay: '200ms' }} />
-                                        <div className={`w-3 h-3 bg-${colorClass}-400 rounded-full animate-bounce`} style={{ animationDelay: '400ms' }} />
-                                    </div>
-                                </div>
-
-                                {/* Fun Loading Fact */}
-                                <div className={`bg-white/80 backdrop-blur-md rounded-3xl p-5 border-2 border-${colorClass}-100 shadow-sm`}>
-                                    <p className={`text-[10px] font-black text-${colorClass}-600 uppercase tracking-widest mb-2 opacity-60`}>Did you know?</p>
-                                    <p className={`text-xs font-bold text-${colorClass}-950 leading-relaxed italic m-0`}>
-                                        {theme.fact}
-                                    </p>
-                                </div>
-
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                                    {theme.sub}
-                                </p>
+                            {/* Title & Bounce Dots */}
+                            <h3 className="loader-title">{cfg.title}</h3>
+                            <div className="loader-bounce-dots">
+                                <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
+                                <span className="loader-dot" style={{ background: cfg.color, animationDelay: '200ms' }} />
+                                <span className="loader-dot" style={{ background: cfg.color, animationDelay: '400ms' }} />
                             </div>
+
+                            {/* Fun Fact Card */}
+                            <div className="loader-fact-card" style={{ borderColor: `${cfg.color}30` }}>
+                                <span className="loader-fact-label" style={{ color: cfg.color }}>Did you know?</span>
+                                <p className="loader-fact-text">{randomFact}</p>
+                            </div>
+
+                            {/* Status */}
+                            <p className="loader-status-text">{cfg.sub}</p>
                         </div>
                     </div>
                 );

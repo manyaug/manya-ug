@@ -1,9 +1,8 @@
 /* ============================================================
-   MANYA SPLASH — PREMIUM KID-FRIENDLY v3.0
-   High-end but warm, inviting, and full of joy.
+   MANYA SPLASH — SIMPLISTIC & WARM v5.0
+   Clean, inviting, and premium hand-drawn vibe.
    ============================================================ */
 
-/* ── THE CANVAS ── */
 .splash-screen {
     position: fixed;
     inset: 0;
@@ -12,261 +11,116 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    cursor: pointer;
-
-    /* WARM deep gradient — purple to indigo with a hint of rose */
-    background: linear-gradient(
-        160deg,
-        #1a0a3e 0%,
-        #2d1b69 35%,
-        #3b1f8e 55%,
-        #5b21b6 75%,
-        #7c3aed 100%
-    );
+    background-color: #faf7f0; /* Warm Cream */
+    padding: 20px;
 }
 
-/* ── WARM BACKGROUND BLOBS ── */
-/* Large, colorful, slow-drifting — creates a living, breathing canvas */
-.splash-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    will-change: transform;
-}
-
-.splash-blob-1 {
-    width: 300px;
-    height: 300px;
-    background: rgba(244, 114, 182, 0.35);
-    top: -60px;
-    right: -40px;
-    animation: blobDrift1 8s ease-in-out infinite alternate;
-}
-
-.splash-blob-2 {
-    width: 350px;
-    height: 350px;
-    background: rgba(129, 140, 248, 0.3);
-    bottom: -80px;
-    left: -60px;
-    animation: blobDrift2 10s ease-in-out infinite alternate;
-}
-
-.splash-blob-3 {
-    width: 200px;
-    height: 200px;
-    background: rgba(251, 191, 36, 0.2);
-    top: 45%;
-    left: 55%;
-    animation: blobDrift3 7s ease-in-out infinite alternate;
-}
-
-@keyframes blobDrift1 {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(-30px, 40px) scale(1.15); }
-}
-@keyframes blobDrift2 {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(40px, -30px) scale(1.1); }
-}
-@keyframes blobDrift3 {
-    from { transform: translate(0, 0) scale(0.9); }
-    to   { transform: translate(-40px, 25px) scale(1.05); }
-}
-
-/* ── FLOATING BUBBLES ── */
-/* Small translucent circles that drift gently — playful & magical */
-.splash-bubble {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 1;
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(2px);
-}
-
-.splash-bubble-1 {
-    width: 24px; height: 24px;
-    top: 18%; left: 12%;
-}
-.splash-bubble-2 {
-    width: 14px; height: 14px;
-    top: 30%; right: 15%;
-}
-.splash-bubble-3 {
-    width: 32px; height: 32px;
-    bottom: 25%; left: 22%;
-}
-.splash-bubble-4 {
-    width: 10px; height: 10px;
-    top: 55%; right: 25%;
-}
-.splash-bubble-5 {
-    width: 18px; height: 18px;
-    bottom: 35%; right: 10%;
-}
-.splash-bubble-6 {
-    width: 12px; height: 12px;
-    top: 12%; left: 55%;
-}
-
-/* ── CENTER STAGE ── */
-.splash-stage {
-    position: relative;
-    z-index: 10;
+/* ── HERO CONTAINER ── */
+.splash-hero-container {
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 32px;
+}
+
+.splash-hero-img {
+    width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+    /* Subtle float animation */
+    animation: heroFloat 6s ease-in-out infinite alternate;
+}
+
+@keyframes heroFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-15px); }
+}
+
+/* ── TEXT STACK ── */
+.splash-text-block {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
 }
 
-/* ── MASCOT ZONE ── */
-.splash-mascot-zone {
+.splash-title-simplistic {
+    font-family: 'Fredoka', 'Nunito', sans-serif;
+    font-size: 34px;
+    font-weight: 950;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.splash-tagline-simplistic {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #64748b;
+    max-width: 280px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* ── PREMIUM GLOSSY BUTTON ── */
+.splash-action-zone {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-lets-go {
     position: relative;
-    width: 160px;
-    height: 160px;
+    width: 280px;
+    height: 72px;
+    border: none;
+    border-radius: 36px;
+    background: linear-gradient(to bottom, #918CF8, #6B66E0);
+    color: white;
+    font-size: 20px;
+    font-weight: 900;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
-}
-
-/* Warm pulsing glow behind mascot */
-.splash-mascot-glow {
-    position: absolute;
-    inset: -25px;
-    border-radius: 50%;
-    background: radial-gradient(
-        circle,
-        rgba(167, 139, 250, 0.4) 0%,
-        rgba(244, 114, 182, 0.2) 45%,
-        transparent 70%
-    );
-    pointer-events: none;
-}
-
-/* Dashed spinning ring — playful orbit */
-.splash-mascot-ring {
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 2px dashed rgba(255, 255, 255, 0.15);
-    pointer-events: none;
-}
-
-/* The bird mascot */
-.splash-mascot-img {
-    width: 110px;
-    height: 110px;
-    object-fit: contain;
-    position: relative;
-    z-index: 3;
-    filter:
-        drop-shadow(0 6px 25px rgba(124, 58, 237, 0.5))
-        drop-shadow(0 0 50px rgba(244, 114, 182, 0.2));
-}
-
-/* ── EMOJI RING ── */
-/* Star/emoji bursts that pop around the mascot */
-.splash-emoji-ring {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: -8px;
-}
-
-.splash-emoji {
-    font-size: 18px;
-    display: inline-block;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-
-/* ── BRAND TITLE ── */
-.splash-title {
-    font-family: 'Fredoka', 'Nunito', 'Varela Round', system-ui, sans-serif;
-    font-size: 48px;
-    font-weight: 700;
-    color: white;
-    margin: 0;
-    line-height: 1;
-    letter-spacing: 0.04em;
-    text-shadow:
-        0 4px 20px rgba(124, 58, 237, 0.4),
-        0 0 60px rgba(167, 139, 250, 0.15);
-}
-
-/* ── TAGLINE ── */
-.splash-tagline {
-    font-family: 'Nunito', 'Fredoka', sans-serif;
-    font-size: 15px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.7);
-    letter-spacing: 0.15em;
-    margin: 0 0 8px 0;
-}
-
-/* ── CHUNKY PROGRESS BAR ── */
-.splash-bar-track {
-    height: 8px;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 100px;
+    gap: 10px;
+    box-shadow: 
+        0 10px 0 #3D39A0, /* 3D Base - Purple */
+        0 15px 30px rgba(0,0,0,0.15);
+    transition: all 0.1s;
     overflow: hidden;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.splash-bar-fill {
+.btn-lets-go::before {
+    content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 4px; left: 18px; right: 18px; height: 45%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, transparent 100%);
     border-radius: 100px;
-    transform-origin: left center;
-
-    /* Rainbow candy gradient across all subject colors */
-    background: linear-gradient(
-        90deg,
-        #818cf8,   /* Indigo - Math */
-        #a78bfa,   /* Purple */
-        #f472b6,   /* Pink - English */
-        #fbbf24,   /* Gold - SST */
-        #34d399    /* Green - Science */
-    );
-    background-size: 250% 100%;
-    animation: candyFlow 2s linear infinite;
-
-    box-shadow:
-        0 0 14px rgba(167, 139, 250, 0.6),
-        0 0 30px rgba(244, 114, 182, 0.2);
+    pointer-events: none;
 }
 
-@keyframes candyFlow {
-    from { background-position: 0% 50%; }
-    to   { background-position: 250% 50%; }
+.btn-lets-go:active {
+    transform: translateY(8px);
+    box-shadow: 0 2px 0 #3D39A0, 0 5px 10px rgba(0,0,0,0.1);
 }
 
-/* ── LOADING STATUS TEXT ── */
-.splash-status {
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.55);
-    letter-spacing: 0.03em;
-}
-
-/* ── TAP HINT ── */
-.splash-tap-hint {
+.btn-lets-go-glow {
     position: absolute;
-    bottom: clamp(20px, 5vh, 44px);
-    z-index: 20;
-    font-family: 'Nunito', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.3);
-    letter-spacing: 0.2em;
-    text-transform: lowercase;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent 60%);
+    pointer-events: none;
+}
+
+.btn-icon-star {
+    font-size: 24px;
+    transition: transform 0.3s;
+}
+
+.btn-lets-go:hover .btn-icon-star {
+    transform: scale(1.2) rotate(15deg);
 }

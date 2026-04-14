@@ -3,91 +3,44 @@
 .manya-hub {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh; /* Lock to screen height */
+    width: 100%;
     justify-content: flex-start;
-    gap: clamp(16px, 2.5vh, 24px);
-    padding: 0 0 10px 0;
+    gap: 8px; /* Tightened gap */
+    padding: 0 0 80px 0; /* Reduced bottom padding */
     font-family: var(--font-main);
-    overflow-y: auto;
-    scrollbar-width: none;
+    overflow: hidden; /* No scroll as requested */
+    background-color: var(--bg-primary); 
 }
 .manya-hub::-webkit-scrollbar { display: none; }
 
 /* --- WARM AMBIENT BLOBS (Replacing cold auroras) --- */
-.aurora-engine .blob {
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    filter: blur(120px);
-    opacity: 0.15;
-    animation: warmBreathe 15s infinite alternate;
-}
-
-.aurora-1 {
-    background: var(--manya-gold);
-    top: -150px;
-    left: -150px;
-}
-
-.aurora-2 {
-    background: var(--manya-pink);
-    bottom: -100px;
-    right: -100px;
-    animation-delay: -7s;
-}
-
-[data-theme='dark'] .aurora-1 {
-    background: var(--manya-purple);
-    opacity: 0.08;
-}
-
-[data-theme='dark'] .aurora-2 {
-    background: var(--manya-pink);
-    opacity: 0.06;
-}
-
-@keyframes warmBreathe {
-    0% {
-        transform: scale(1) translate(0, 0);
-        opacity: 0.08;
-    }
-    100% {
-        transform: scale(1.3) translate(15px, 15px);
-        opacity: 0.18;
-    }
+.aurora-engine .manya-hub {
+    position: relative;
+    padding: 10px 0 80px;
+    min-height: 100vh;
+    background-color: var(--bg-primary); /* Solid Opaque Foundation */
 }
 
 /* --- MAGIC DUST PARTICLES --- */
 .magic-dust {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-    background-image: 
-        radial-gradient(1px 1px at 15% 25%, #fff, transparent),
-        radial-gradient(2px 2px at 45% 65%, #fff, transparent),
-        radial-gradient(1px 1px at 85% 15%, #fff, transparent),
-        radial-gradient(2px 2px at 25% 85%, rgba(255,255,255,0.5), transparent);
-    background-size: 250px 250px;
-    opacity: 0.4;
-    animation: driftParticles 30s linear infinite;
-}
-
-@keyframes driftParticles {
-    from { background-position: 0 0; }
-    to { background-position: 250px 250px; }
+    display: none;
 }
 
 /* --- 0. STATUS HEADER (Warm Glass) --- */
+/* 1. STATUS HEADER (SOLID TOY) */
 .home-status-header-glass {
-    background: var(--bg-card);
-    border: 2px solid var(--border-subtle);
-    border-radius: var(--radius-xl);
-    padding: clamp(8px, 1.2vh, 12px) 16px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    box-shadow: var(--shadow-card);
+    align-items: center;
+    padding: 12px 18px; /* Tighter padding */
+    margin: 8px 16px 4px; /* Reduced margins */
+    background: var(--bg-card);
+    border: 4px solid var(--border-subtle);
+    border-radius: 28px;
+    box-shadow: var(--shadow-warm);
+    position: relative;
+    overflow: hidden;
     flex-shrink: 0;
 }
 
@@ -111,14 +64,14 @@
 }
 
 .status-streak-pill {
-    background: var(--bg-card);
-    border: 2px solid var(--border-subtle);
-    padding: 6px 12px;
-    border-radius: var(--radius-pill);
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: var(--shadow-warm);
+    gap: 10px;
+    padding: 6px 14px;
+    background: var(--bg-primary);
+    border: 2.5px solid var(--border-subtle);
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
 .streak-flame-glow {
@@ -158,66 +111,30 @@
 }
 
 /* --- 1. RESUME MISSION CARD (Magical Adventure Slate) --- */
+/* 2. BOUNTY/MISSION CARD (SOLID CAPSULE) */
 .resume-mission-card {
-    border-radius: var(--radius-xl);
-    padding: clamp(12px, 1.6vh, 18px);
     display: flex;
     align-items: center;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2), var(--toy-inner-shadow);
-    cursor: pointer;
-    width: 100%;
-    box-sizing: border-box;
+    gap: 15px;
+    margin: 4px 16px 8px; /* Reduced margins */
+    padding: 14px 18px; /* Reduced padding */
+    border-radius: 30px; 
+    border: 4.5px solid var(--border-subtle);
+    background: #7c3aed; 
     position: relative;
     overflow: hidden;
-    color: white;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--shadow-warm);
     flex-shrink: 0;
-    border: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.resume-mission-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
-    pointer-events: none;
-    z-index: 5;
 }
 
 /* WARM MISSION CARD COLORS */
-.resume-mission-card.bounty-card-math {
-    background: linear-gradient(135deg, #7C6BF0 0%, #5B4CC4 100%);
-    border: 2.5px solid #9B8DF8;
-}
-
-.resume-mission-card.bounty-card-science {
-    background: linear-gradient(135deg, #2CC99E 0%, #1A8F6E 100%);
-    border: 2.5px solid #5EDDB5;
-}
-
-.resume-mission-card.bounty-card-sst {
-    background: linear-gradient(135deg, #F0A030 0%, #C47B10 100%);
-    border: 2.5px solid #F5C060;
-}
-
-.resume-mission-card.bounty-card-english {
-    background: linear-gradient(135deg, #E8608A 0%, #B83F65 100%);
-    border: 2.5px solid #F090AE;
-}
+.bounty-card-math { background: #7c3aed !important; }
+.bounty-card-science { background: #10b981 !important; }
+.bounty-card-sst { background: #f59e0b !important; }
+.bounty-card-english { background: #db2777 !important; }
 
 .hero-bg-gem-watermark {
-    position: absolute;
-    right: -15px;
-    bottom: -25px;
-    width: 70px;
-    height: 70px;
-    opacity: 0.1;
-    transform: rotate(15deg);
-    filter: drop-shadow(0 0 30px white);
-    pointer-events: none;
+    display: none;
 }
 
 .hero-avatar-mini-glow {
@@ -275,21 +192,12 @@
     z-index: 2;
     transition: 0.3s;
     flex-shrink: 0;
-    animation: ctaHeartbeat 2.5s infinite ease-in-out;
 }
 
 .resume-mission-card.bounty-card-math .play-pill-neon svg { fill: #5B4CC4; }
 .resume-mission-card.bounty-card-science .play-pill-neon svg { fill: #1A8F6E; }
 .resume-mission-card.bounty-card-sst .play-pill-neon svg { fill: #C47B10; }
 .resume-mission-card.bounty-card-english .play-pill-neon svg { fill: #B83F65; }
-
-@keyframes ctaHeartbeat {
-    0%, 100% { transform: scale(1); }
-    10% { transform: scale(1.08); box-shadow: 0 6px 25px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, 0.08); }
-    20% { transform: scale(1.04); }
-    30% { transform: scale(1.08); }
-    40% { transform: scale(1); }
-}
 
 /* ═══════════════════════════════════════════════════════
    2. CRYSTAL BALL WORLD GRID (Warmed Up)
@@ -298,13 +206,12 @@
 .subject-grid-elite {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(8px, 1vh, 14px) clamp(10px, 2vh, 18px);
-    flex: 1;
-    min-height: 0;
+    gap: 10px 12px; /* Tighter grid gaps */
+    padding: 0 16px;
     width: 100%;
-    max-width: 420px;
-    margin: 8px auto 0 auto;
-    align-content: center;
+    max-width: 440px;
+    margin: 4px auto; /* Reduced margin */
+    flex-shrink: 0;
 }
 
 .world-card-elite {
@@ -320,8 +227,8 @@
 /* ── ORB WRAPPER ── */
 .orb-wrap {
     position: relative;
-    width: clamp(58px, 10.5vh, 88px);
-    height: clamp(58px, 10.5vh, 88px);
+    width: 82px; /* Scaled down orbs */
+    height: 82px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -334,144 +241,34 @@
     border-radius: 50%;
     position: relative;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow:
-        inset 0 -6px 20px rgba(0, 0, 0, 0.2),
-        inset 0 8px 15px rgba(255, 255, 255, 0.5),
-        0 8px 25px rgba(0, 0, 0, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
-    backdrop-filter: blur(12px);
+    background: var(--bg-card);
+    border: 4px solid var(--border-subtle);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .world-card-elite:hover .crystal-ball {
     transform: scale(1.06);
-    box-shadow:
-        inset 0 -6px 20px rgba(0, 0, 0, 0.15),
-        inset 0 10px 20px rgba(255, 255, 255, 0.8),
-        0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
 /* Subject Specific — Slightly Warmer / Softer Gradients */
-.world-card-elite.math .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #918CF8 0%, #3D39A0 100%);
-}
-
-.world-card-elite.science .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #34DBA8 0%, #0A6B4E 100%);
-}
-
-.world-card-elite.sst .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #F5B040 0%, #8A5510 100%);
-}
-
-.world-card-elite.english .crystal-ball {
-    background: radial-gradient(circle at 60% 70%, #F07098 0%, #8A2048 100%);
-}
-
-/* Dark Mode — Warm Deep */
-[data-theme='dark'] .world-card-elite.math .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #7068E8 0%, #2D2880 100%);
-}
-
-[data-theme='dark'] .world-card-elite.science .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #20C090 0%, #08503A 100%);
-}
-
-[data-theme='dark'] .world-card-elite.sst .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #E8A030 0%, #704510 100%);
-}
-
-[data-theme='dark'] .world-card-elite.english .crystal-ball {
-    background: radial-gradient(circle at 50% 50%, #E86090 0%, #701838 100%);
-}
+.world-card-elite.math .crystal-ball { background: #7c3aed; }
+.world-card-elite.science .crystal-ball { background: #10b981; }
+.world-card-elite.sst .crystal-ball { background: #f59e0b; }
+.world-card-elite.english .crystal-ball { background: #db2777; }
 
 /* Animated Magical Swirl */
 .crystal-swirl {
-    position: absolute;
-    inset: -25px;
-    border-radius: 50%;
-    animation: galaxySpin 20s linear infinite;
-    mix-blend-mode: overlay;
-    opacity: 0.9;
-    filter: blur(4px);
-    will-change: transform;
-    transform: translateZ(0);
-    z-index: 1;
-}
-
-.world-card-elite.math .crystal-swirl {
-    background:
-        radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(167, 139, 250, 0.8) 0%, transparent 70%);
-}
-
-.world-card-elite.science .crystal-swirl {
-    background:
-        radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(52, 211, 153, 0.8) 0%, transparent 70%);
-}
-
-.world-card-elite.sst .crystal-swirl {
-    background:
-        radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(245, 190, 60, 0.8) 0%, transparent 70%);
-}
-
-.world-card-elite.english .crystal-swirl {
-    background:
-        radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 30%, rgba(240, 112, 152, 0.8) 0%, transparent 70%);
-}
-
-@keyframes galaxySpin {
-    0% { transform: rotate(0deg) translateZ(0); }
-    100% { transform: rotate(360deg) translateZ(0); }
+    display: none;
 }
 
 /* Sparkles */
 .crystal-depth::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.9;
-    background-image:
-        radial-gradient(2px 2px at 20px 30px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2.5px 2.5px at 45px 75px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1.5px 1.5px at 70px 25px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(3px 3px at 85px 85px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1.5px 1.5px at 80px 45px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2px 2px at 30px 15px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(3px 3px at 95px 55px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1.5px 1.5px at 15px 85px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2.5px 2.5px at 55px 15px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2px 2px at 105px 25px, #fff, rgba(255, 255, 255, 0));
-    background-size: 110px 110px;
-    animation: starsTwinkle 3s infinite alternate;
-    z-index: 2;
-}
-
-@keyframes starsTwinkle {
-    from { opacity: 0.5; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1.15); }
+    display: none;
 }
 
 /* Inner depth shadow */
 .crystal-depth {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    box-shadow:
-        inset 0 0 30px rgba(0, 0, 0, 0.35),
-        inset 0 10px 40px rgba(0, 0, 0, 0.2);
-    z-index: 2;
-    pointer-events: none;
-}
-
-[data-theme='dark'] .crystal-depth {
-    box-shadow:
-        inset 0 0 35px rgba(0, 0, 0, 0.5),
-        inset 0 15px 45px rgba(0, 0, 0, 0.4);
+    display: none;
 }
 
 /* Floating island */
@@ -483,77 +280,22 @@
     width: 65%;
     height: auto;
     z-index: 3;
-    filter:
-        brightness(1.1) contrast(1.1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.3)) drop-shadow(0 8px 15px rgba(0, 0, 0, 0.7));
     object-fit: contain;
-    will-change: transform;
-}
-
-/* DIFFERENT FLOAT PACES */
-.world-card-elite.math .crystal-island { animation: islandFloat 4.2s ease-in-out infinite alternate; }
-.world-card-elite.science .crystal-island { animation: islandFloat 7.1s ease-in-out infinite alternate; }
-.world-card-elite.sst .crystal-island { animation: islandFloat 5.4s ease-in-out infinite alternate; }
-.world-card-elite.english .crystal-island { animation: islandFloat 9.2s ease-in-out infinite alternate; }
-
-@keyframes islandFloat {
-    0% { transform: translate(-50%, -43%) translateZ(0); }
-    100% { transform: translate(-50%, -57%) translateZ(0); }
 }
 
 /* Secondary Sparkle Layer */
 .crystal-depth::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.7;
-    background-image:
-        radial-gradient(1.5px 1.5px at 15px 45px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2px 2px at 55px 15px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1.2px 1.2px at 80px 35px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1.8px 1.8px at 30px 80px, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1px 1px at 70px 60px, #fff, rgba(255, 255, 255, 0));
-    background-size: 100px 100px;
-    animation: starsTwinkle 1.5s infinite alternate-reverse;
-    z-index: 2;
+    display: none;
 }
 
 /* Glass Overlay */
 .crystal-glass {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    z-index: 5;
-    pointer-events: none;
-    background:
-        radial-gradient(circle at 35% 15%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 35%),
-        radial-gradient(circle at 70% 85%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%);
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 2px 6px rgba(255, 255, 255, 0.3);
+    display: none;
 }
 
 /* Glow pool beneath orb */
 .orb-glow {
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.18);
-    filter: blur(3px);
-    z-index: -1;
-    transition: all 0.4s ease;
-}
-
-[data-theme='dark'] .orb-glow {
-    background: rgba(0, 0, 0, 0.4);
-}
-
-.world-card-elite:hover .orb-glow {
-    opacity: 0.5;
-    transform: translateX(-50%) scale(1.1);
+    display: none;
 }
 
 /* Subject Name Button Footer */
@@ -625,17 +367,11 @@
     border-radius: var(--radius-pill);
     box-shadow: var(--shadow-card);
     border: 2px solid var(--border-subtle);
-    animation: luxuryFloat 4s ease-in-out infinite alternate;
 }
 
 [data-theme='dark'] .card-gem-bounty {
     background: #2A1F3D;
     border-color: #3D2E55;
-}
-
-@keyframes luxuryFloat {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-8px) scale(1.05); }
 }
 
 /* Subject Gem Border Colors */
@@ -666,21 +402,24 @@
 }
 
 /* THE SIM LAB FOOTER */
+/* 4. SIMULATION LAB (SOLID CAPSULE) */
 .home-sim-lab-cta {
-    width: 100%;
-    max-width: 420px;
-    margin: 5px auto 0 auto;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: clamp(8px, 1.2vh, 12px) 16px;
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--border-subtle);
-    box-shadow: var(--shadow-warm);
+    width: calc(100% - 32px);
+    margin: 4px 16px 12px; /* Reduced margins */
+    padding: 12px 18px; /* Tighter padding */
+    background: #7c3aed; 
+    border: 4.5px solid var(--border-subtle);
+    border-radius: 24px;
+    color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-warm);
+    transition: all 0.3s var(--transition-bounce);
+    flex-shrink: 0; 
 }
 
 [data-theme='dark'] .home-sim-lab-cta {

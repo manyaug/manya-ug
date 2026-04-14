@@ -12,7 +12,7 @@
   pointer-events: none;
 }
 
-/* The actual nav shell — WARM SOLID BLOCK */
+/* The actual nav shell — SYNCED WITH THEME */
 .bottom-nav-shell {
   max-width: 500px;
   margin: 0 auto;
@@ -34,13 +34,12 @@
   z-index: 50;
 }
 
-/* Remove solid floor since it's floating now */
 .bottom-nav-shell::before { display: none; }
 
-/* CLASSIC TOY INDICATOR - Top Accent Pill */
+/* CLASSIC TOY INDICATOR */
 .nav-toy-indicator {
   position: absolute;
-  top: -6px; /* Sits perfectly on the border */
+  top: -6px;
   width: 32px;
   height: 6px;
   background: var(--active-color);
@@ -69,14 +68,14 @@
 }
 
 .icon-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    transition: all 0.3s var(--transition-bounce);
-    z-index: 5;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: all 0.3s var(--transition-bounce);
+  z-index: 5;
 }
 
 .nav-label {
@@ -85,39 +84,27 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 1px;
-  color: #a1a1aa;
+  color: var(--text-secondary);
   transition: all 0.3s ease;
   z-index: 5;
 }
 
-/* ACTIVE STATE */
-/* ACTIVE STATE - Glowing Puffy Tab */
-/* ACTIVE STATE - Classic Colors */
 .nav-item.active {
   color: var(--active-color);
-}
-
-.nav-item.active .icon-wrapper {
-  transform: translateY(0);
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
 }
 
 .nav-item.active .nav-label {
   color: var(--active-color);
   font-weight: 950;
-  transform: translateY(0);
 }
 
-/* Dark mode — warm plum */
-[data-theme='dark'] .bottom-nav {
-  background: transparent !important;
+/* Themes & Safe Areas - NOW SYNCED */
+@media (prefers-color-scheme: dark) {
+  .bottom-nav-shell {
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
+  }
 }
-[data-theme='dark'] .bottom-nav-shell,
-[data-theme='dark'] .bottom-nav-shell::before {
-  background: #1A1225;
-}
+
 [data-theme='dark'] .bottom-nav-shell {
   box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
 }
-[data-theme='dark'] .nav-label { color: #9B8FB8; }
-[data-theme='dark'] .nav-item.active .nav-label { color: var(--active-color); }

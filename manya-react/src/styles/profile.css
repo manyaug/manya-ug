@@ -5,6 +5,7 @@
     padding: 10px 0 14px;
     min-height: 100vh;
     overflow-x: hidden;
+    background-color: var(--bg-primary); /* Ensure solid background */
 }
 
 /* 1. HERO PASSPORT */
@@ -37,7 +38,7 @@
 .ring-fill {
     fill: none;
     stroke: var(--manya-purple);
-    stroke-width: 8;
+    stroke-width: 10; /* Thicker Kiddish line */
     stroke-linecap: round;
 }
 
@@ -74,25 +75,27 @@
 }
 
 .hero-display-name {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 950;
     color: var(--text-main);
-    letter-spacing: -0.6px;
+    letter-spacing: -0.8px;
     margin: 0;
 }
 
 .hero-rank-pill {
     display: inline-block;
     margin-top: 10px;
-    padding: 6px 18px;
-    background: rgba(124, 58, 237, 0.1);
+    padding: 6px 22px;
+    background: var(--bg-card);
     color: var(--manya-purple);
-    border: 1px solid rgba(124, 58, 237, 0.2);
+    border: 3px solid var(--border-subtle);
     font-size: 11px;
     font-weight: 950;
     border-radius: 100px;
     letter-spacing: 2px;
-    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.1);
+    box-shadow: var(--shadow-warm);
+    position: relative;
+    overflow: hidden;
 }
 
 .hero-title-tag {
@@ -103,7 +106,6 @@
     letter-spacing: 4px;
     text-transform: uppercase;
     margin-top: 15px;
-    opacity: 0.6;
 }
 
 /* 2. BENTO CARDS (GLASS) */
@@ -116,28 +118,50 @@
 
 .bento-card-elite {
     background: var(--bg-card);
-    border: 3px solid var(--border-color);
-    border-radius: 24px;
-    padding: 14px 10px;
+    border: 4.5px solid var(--border-subtle); /* Thicker kiddish border */
+    border-radius: 28px;
+    padding: 20px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     overflow: hidden;
     text-align: center;
-    box-shadow: var(--shadow-warm), var(--toy-inner-shadow);
+    box-shadow: var(--shadow-warm);
+}
+
+/* CUSTOM VARYING GLOSS OVERLAY */
+.toy-card-gloss {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(
+        165deg, 
+        rgba(255, 255, 255, 0.18) 0%, 
+        rgba(255, 255, 255, 0.22) 2%, 
+        rgba(255, 255, 255, 0.05) 8%, 
+        transparent 35%
+    );
+    -webkit-mask-image: linear-gradient(to right, black 15%, rgba(0,0,0,0.5) 45%, black 85%);
+    mask-image: linear-gradient(to right, black 15%, rgba(0,0,0,0.5) 45%, black 85%);
 }
 
 .bento-icon-box {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
-    background: white;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+    z-index: 2;
 }
 
 .bento-label {
@@ -157,14 +181,16 @@
     line-height: 1.2;
 }
 
-/* 3. ACTIVITY CHART (FIXED CLASSES) */
+/* 3. ACTIVITY CHART (SOLID TOY) */
 .activity-card-national {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(25px);
-    border: 1px solid var(--glass-border);
-    border-radius: 28px;
-    margin: 12px 16px;
-    padding: 16px;
+    background: var(--bg-card);
+    border: 4.5px solid var(--border-subtle);
+    border-radius: 32px;
+    margin: 15px 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-warm);
 }
 
 .activity-header {
@@ -221,17 +247,12 @@
 }
 
 .bar-pillar.active {
-    background: linear-gradient(180deg, var(--manya-purple), var(--manya-pink)) !important;
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+    background: var(--manya-purple) !important; /* Solid color */
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
 }
 
 .pillar-glow {
-    position: absolute;
-    inset: -5px;
-    border-radius: 16px;
-    filter: blur(10px);
-    z-index: -1;
-    pointer-events: none;
+    display: none; /* Removed messy glows */
 }
 
 .bar-callout {
@@ -253,21 +274,15 @@
     color: var(--text-secondary);
 }
 
-/* 4. CURRICULUM MATRIX (FIXED CLASSES) */
-.subject-stack-national {
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
+/* 4. CURRICULUM MATRIX (SOLID TOY) */
 .sub-progress-elite {
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(15px);
-    padding: 14px;
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 24px;
+    border: 3.5px solid var(--border-subtle);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-warm);
 }
 
 .sub-row {
@@ -317,9 +332,7 @@
 }
 
 .fill-shine {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    display: none; /* Gradient shine removed */
 }
 
 /* 5. SERVICES */
@@ -333,8 +346,10 @@
 .service-row-elite {
     text-transform: none;
     justify-content: flex-start;
-    padding: 10px 16px;
-    height: 72px;
+    padding: 12px 18px;
+    height: 76px;
+    position: relative;
+    overflow: hidden;
 }
 
 .service-row-elite:hover {
@@ -380,13 +395,21 @@
     text-transform: uppercase;
 }
 
-/* DARK MODE */
+/* DARK MODE - Opaque & Tactile */
 [data-theme='dark'] .activity-card-national,
 [data-theme='dark'] .sub-progress-elite,
-[data-theme='dark'] .service-row-elite,
-[data-theme='dark'] .bento-card-elite {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+[data-theme='dark'] .bento-card-elite,
+[data-theme='dark'] .service-row-elite {
+    background: var(--bg-card) !important;
+    border-color: var(--border-subtle) !important;
+}
+
+[data-theme='dark'] .ring-bg {
+    stroke: var(--border-subtle);
+}
+
+[data-theme='dark'] .aurora-engine {
+    display: none;
 }
 
 [data-theme='dark'] .bento-icon-box,
@@ -396,9 +419,9 @@
 }
 
 [data-theme='dark'] .hero-rank-pill {
-    background: rgba(167, 139, 250, 0.15) !important;
+    background: var(--bg-card) !important;
     color: #a78bfa !important;
-    border-color: rgba(167, 139, 250, 0.3) !important;
+    border-color: var(--border-subtle) !important;
 }
 
 [data-theme='dark'] .avatar-circle {

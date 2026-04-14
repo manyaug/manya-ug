@@ -10,7 +10,7 @@
   --manya-purple-h: 262;
   --manya-purple-s: 83%;
   --manya-purple-l: 58%;
-  
+
   --manya-purple: hsl(var(--manya-purple-h), var(--manya-purple-s), var(--manya-purple-l));
   --manya-purple-dark: hsl(var(--manya-purple-h), var(--manya-purple-s), calc(var(--manya-purple-l) - 15%));
   --manya-purple-light: hsl(var(--manya-purple-h), var(--manya-purple-s), calc(var(--manya-purple-l) + 30%));
@@ -36,24 +36,6 @@
   --manya-peach: #FFE8D4;
   --manya-warm-grey: #8B7FA3;
 
-  /* --- 2. THEME-DEPENDENT COLORS ("Sunny Day") --- */
-  --bg-primary: #FFF8F0;
-  --bg-secondary: #FFF5EB;
-  --text-primary: #2D1B4E;
-  --text-secondary: #8B7FA3;
-  --border-subtle: #F0E6D6;
-  --glass-bg: rgba(255, 248, 240, 0.75);
-  --glass-border: rgba(224, 196, 160, 0.3);
-
-  /* --- 2b. ALIAS MAP --- */
-  --bg-main:    #FFF8F0;
-  --bg-card:    #FFFFFF;
-  --text-main:  #2D1B4E;
-  --text-sub:   #8B7FA3;
-  --text-muted: #B8A9C8;
-  --border-color: #E8DDD0;
-  --border-glass: rgba(139, 127, 163, 0.08);
-
   /* --- 3. TYPOGRAPHY --- */
   --font-main: 'Nunito', 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
@@ -72,11 +54,7 @@
   --radius-lg: 24px;
   --radius-xl: 28px;
   --radius-pill: 100px;
-  --shadow-warm: 0 4px 20px rgba(139, 90, 43, 0.08);
-  --shadow-card: 0 8px 30px rgba(139, 90, 43, 0.06), 0 2px 8px rgba(139, 90, 43, 0.04);
-  --shadow-premium: 0 10px 30px -10px rgba(232, 101, 43, 0.15);
-  --shadow-float: 0 12px 40px rgba(139, 90, 43, 0.1);
-  
+
   /* --- 5. MOTION --- */
   --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -88,29 +66,79 @@
   --toy-inner-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.3), inset 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* ════════════════════════════════════════════════════
-   DARK THEME — "Starry Night"
-   Warm plum/purple tones, not cold navy
-   ════════════════════════════════════════════════════ */
+/* Standard Theme Variables - Sunny Day (Light) */
+:root {
+  --bg-primary: #FFF8F0;
+  --bg-secondary: #FFF5EB;
+  --bg-page: #FFF8F0;
+  --bg-card: #FFFFFF;
+  
+  --text-primary: #2D1B4E;
+  --text-secondary: #8B7FA3;
+  --text-main: #2D1B4E;
+  --text-sub: #8B7FA3;
+  --text-muted: #B8A9C8;
+  
+  --border-subtle: #F0E6D6;
+  --border-color: #E8DDD0;
+  --border-glass: rgba(139, 127, 163, 0.08);
+
+  --glass-bg: rgba(255, 248, 240, 0.75);
+  --glass-border: rgba(224, 196, 160, 0.3);
+
+  --shadow-warm: 0 4px 20px rgba(139, 90, 43, 0.08);
+  --shadow-card: 0 8px 30px rgba(139, 90, 43, 0.06), 0 2px 8px rgba(139, 90, 43, 0.04);
+  --shadow-premium: 0 10px 30px -10px rgba(232, 101, 43, 0.15);
+  --shadow-float: 0 12px 40px rgba(139, 90, 43, 0.1);
+}
+
+/* Starry Night (Dark) - Apply on System Dark or Manual data-theme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg-primary: #050714;
+    --bg-secondary: #0A0C1A;
+    --bg-page: #050714;
+    --bg-card: rgba(15, 23, 42, 0.6);
+    
+    --text-primary: #F5F0FF;
+    --text-secondary: #9B8FB8;
+    --text-main: #F5F0FF;
+    --text-sub: #9B8FB8;
+    --text-muted: #6B5A85;
+    
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-glass: rgba(139, 127, 163, 0.08);
+
+    --glass-bg: rgba(26, 18, 37, 0.8);
+    --glass-border: rgba(157, 143, 184, 0.1);
+
+    --shadow-warm: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-premium: 0 10px 30px -10px rgba(157, 78, 221, 0.2);
+    --shadow-float: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
 [data-theme='dark'] {
-  --bg-primary: #1A1225;
-  --bg-secondary: #2A1F3D;
+  --bg-primary: #050714;
+  --bg-secondary: #0A0C1A;
+  --bg-page: #050714;
+  --bg-card: rgba(15, 23, 42, 0.6);
+  
   --text-primary: #F5F0FF;
   --text-secondary: #9B8FB8;
-  --border-subtle: #3D2E55;
+  --text-main: #F5F0FF;
+  --text-sub: #9B8FB8;
+  --text-muted: #6B5A85;
+  
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glass: rgba(139, 127, 163, 0.08);
+
   --glass-bg: rgba(26, 18, 37, 0.8);
   --glass-border: rgba(157, 143, 184, 0.1);
 
-  /* Aliases for dark mode */
-  --bg-main:    #1A1225;
-  --bg-card:    #2A1F3D;
-  --text-main:  #F5F0FF;
-  --text-sub:   #9B8FB8;
-  --text-muted: #6B5A85;
-  --border-color: #3D2E55;
-  --border-glass: rgba(157, 143, 184, 0.1);
-
-  /* Warm shadows for dark mode */
   --shadow-warm: 0 4px 20px rgba(0, 0, 0, 0.25);
   --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
   --shadow-premium: 0 10px 30px -10px rgba(157, 78, 221, 0.2);
