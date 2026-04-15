@@ -2,11 +2,30 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     tailwindcss(),
+    legacy({
+      // We set renderModernChunks to false to bypass modern CORS module restrictions
+      // This is essential for opening the build directly via the file:// protocol.
+      renderModernChunks: false,
+      targets: ['defaults', 'not IE 11']
+    }),
+    {
+      name: 'remove-crossorigin',
+      enforce: 'post',
+      transformIndexHtml(html) {
+        // 1. Remove modulepreload links which are invalid for legacy builds and file://
+        let processed = html.replace(/<link rel="modulepreload" [^>]*>/g, '')
+        // 2. Remove all crossorigin attributes everywhere
+        processed = processed.replace(/crossorigin/g, '')
+        return processed
+      }
+    },
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
@@ -18,7 +37,10 @@ export default defineConfig({
         background_color: '#FDFBF7',
         display: 'standalone',
         orientation: 'portrait',
+        start_url: './',
+        scope: './',
         icons: [
+          { src: 'assets/icons/pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'assets/icons/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'assets/icons/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
           { src: 'assets/icons/maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
@@ -70,6 +92,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    // Terser is required for legacy plugin
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks(id) {

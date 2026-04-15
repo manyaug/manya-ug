@@ -417,20 +417,25 @@
 }
 
 
-/* ── TUTOR HINT BUBBLE ── */
+/* ── TUTOR HINT BUBBLE (Standard High Contrast) ── */
 .mcq-hint-bubble {
     position: absolute;
     top: 45px;
     right: -10px;
     width: 230px;
     z-index: 100;
-    background: var(--sub-theme-bg, #f59e0b); /* THEMED SOLID BG */
-    border: 3.5px solid var(--sub-theme-border, #b45309);
+    background: #1e293b; /* Dark bg in light mode */
+    border: 3.5px solid #0f172a;
     border-radius: 20px;
     padding: 14px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
     animation: mcqPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: hidden;
+}
+
+[data-theme='dark'] .mcq-hint-bubble {
+    background: #f8fafc; /* Light bg in dark mode */
+    border-color: #cbd5e1;
 }
 
 .mcq-hint-bubble::after {
@@ -440,11 +445,17 @@
     right: 18px; /* Aligned with bulb */
     width: 16px;
     height: 16px;
-    background: var(--sub-theme-bg, #f59e0b);
-    border-top: 3.5px solid var(--sub-theme-border, #b45309);
-    border-left: 3.5px solid var(--sub-theme-border, #b45309);
+    background: #1e293b; /* Dark in light mode */
+    border-top: 3.5px solid #0f172a;
+    border-left: 3.5px solid #0f172a;
     transform: rotate(45deg);
-    z-index: -1; /* Behind gloss but attached to card */
+    z-index: -1; 
+}
+
+[data-theme='dark'] .mcq-hint-bubble::after {
+    background: #f8fafc; /* Light in dark mode */
+    border-top-color: #cbd5e1;
+    border-left-color: #cbd5e1;
 }
 
 .mcq-hint-header {
@@ -457,19 +468,27 @@
 .mcq-hint-badge {
     font-size: 9px;
     font-weight: 950;
-    color: #fff;
+    color: #94a3b8; /* Muted slate for badge */
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    opacity: 0.9;
+}
+
+[data-theme='dark'] .mcq-hint-badge {
+    color: #64748b;
 }
 
 .mcq-hint-text {
     font-size: 13px !important;
     font-weight: 800 !important;
-    color: #fff !important; /* PERFECT LEGIBILITY */
+    color: #ffffff !important; /* White text in light mode */
     line-height: 1.4;
     margin: 0;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+[data-theme='dark'] .mcq-hint-text {
+    color: #0f172a !important; /* Dark text in dark mode */
+    text-shadow: none;
 }
 
 @keyframes mcqPopIn {

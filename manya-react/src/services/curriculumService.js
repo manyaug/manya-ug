@@ -20,17 +20,12 @@ export async function preloadCurriculum() {
     if (fetchPromise) return fetchPromise;
 
     fetchPromise = (async () => {
-        const CDN_MASTER = 'https://raw.githubusercontent.com/manyaug/manya-react-assets/main/curriculum-master.json';
-        const CDN_CONTENT_MASTER = 'https://raw.githubusercontent.com/manyaug/manya-react-assets/main/content/curriculum-master.json';
+        // Master curriculum is consistently stored in /content/ in the current version
+        const CDN_URL = assetUrl('content/curriculum-master.json');
 
         try {
             console.log("☁️ [Curriculum] Fetching remote master curriculum...");
-            let res = await fetch(CDN_MASTER);
-            
-            if (!res.ok) {
-                console.warn(`[Curriculum] Primary CDN fetch failed, trying content/ fallback...`);
-                res = await fetch(CDN_CONTENT_MASTER);
-            }
+            let res = await fetch(CDN_URL);
             
             if (!res.ok) {
                 console.warn(`[Curriculum] Remote CDN fetch failed. Falling back to LOCAL bundled curriculum...`);

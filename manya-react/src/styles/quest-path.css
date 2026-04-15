@@ -143,20 +143,19 @@
     }
 }
 
-/* ── TACTILE HEADER (Solid Opaque Toy Card) ── */
+/* ── TACTILE HEADER (Clean Manya World Style) ── */
 .quest-top-header {
     background: var(--bg-card);
-    border: 6px solid var(--border-subtle);
-    margin: 16px 20px 0;
-    padding: 18px 24px;
-    border-radius: var(--radius-xl);
+    border: 3px solid var(--border-subtle);
+    margin: 12px 16px 0;
+    padding: 14px 20px;
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
-    gap: 15px;
-    box-shadow:
-        0 12px 0 var(--border-subtle),
-        /* 3D Base */
-        var(--shadow-float);
+    gap: 12px;
+    box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.05),
+        var(--shadow-warm);
     flex-shrink: 0;
     z-index: 100;
 }
@@ -227,78 +226,76 @@
 
 .header-stats {
     background: var(--bg-primary);
-    padding: 10px 18px;
-    border-radius: var(--radius-lg);
-    border: 4px solid var(--border-subtle);
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    border: 2.5px solid var(--border-subtle);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: var(--text-primary);
     font-weight: 950;
-    font-size: 15px;
+    font-size: 14px;
     flex-shrink: 0;
-    box-shadow: 0 4px 0 var(--border-subtle), var(--toy-inner-shadow);
+    box-shadow: var(--shadow-warm);
 }
 
-.quest-gem-pill {
+.quest-star-pill {
     transition: transform 0.2s;
 }
 
-.quest-gem-pill:active {
+.quest-star-pill:active {
     transform: scale(0.93);
 }
 
-.header-gem-icon {
-    width: 20px;
-    height: 20px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
-}
-
 /* HEADER DARK MODE REMOVED - CONSOLIDATED AT BOTTOM */
-/* ── GEM RATING ── */
-.node-gem-rating {
+/* ── STAR RATING ── */
+.node-star-rating {
     display: flex;
     gap: 3px;
-    margin-bottom: -12px;
+    margin-bottom: -10px;
     z-index: 5;
 }
 
-.mini-gem {
-    width: 20px;
-    height: 20px;
+.mini-star {
+    width: 18px;
+    height: 18px;
     transition: 0.3s;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.mini-gem.top-gem {
-    transform: translateY(-7px);
-    width: 24px;
-    height: 24px;
+.mini-star.top-star {
+    transform: translateY(-5px);
+    width: 22px;
+    height: 22px;
 }
 
-.mini-gem.empty {
-    filter: grayscale(100%) brightness(0.6) opacity(0.4);
+.mini-star.empty {
+    color: var(--border-subtle) !important;
+    fill: none !important;
+    opacity: 0.5;
 }
 
-.mini-gem.earned {
-    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.mini-star.earned {
+    color: #FFD700 !important;
+    fill: #FFD700 !important;
+    animation: popIn 0.5s var(--transition-bounce);
 }
 
-/* ── OPAQUE PLASTIC NODE ── */
+/* ── CLEAN ROUNDED NODE ── */
 .tactile-node {
     position: relative;
     width: var(--node-size);
     height: var(--node-size);
     border-radius: 50%;
-    border: 6px solid var(--border-subtle);
+    border: 3.5px solid var(--border-subtle);
     cursor: pointer;
     outline: none;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg-card);
-    box-shadow:
-        0 8px 0 var(--border-subtle),
+    box-shadow: 
+        0 6px 0 var(--border-subtle),
         var(--shadow-card);
     transition: all 0.3s var(--transition-bounce);
     user-select: none;
@@ -306,7 +303,7 @@
 }
 
 .tactile-node:active {
-    transform: translateY(8px);
+    transform: translateY(4px);
     box-shadow: 0 2px 0 var(--border-subtle);
 }
 
@@ -346,11 +343,11 @@
 /* ACTIVE NODE */
 .quest-node-abs.active .tactile-node {
     background: #ffffff;
-    border: 4px solid var(--biome-color);
+    border: 3px solid var(--biome-color);
     box-shadow:
-        0 0 0 6px rgba(255, 255, 255, 0.6),
-        0 0 0 12px rgba(var(--biome-color-rgb), 0.25),
-        0 15px 35px rgba(var(--biome-color-rgb), 0.40);
+        0 0 0 6px rgba(255, 255, 255, 1),
+        0 0 0 10px rgba(var(--biome-color-rgb), 0.2),
+        0 12px 30px rgba(var(--biome-color-rgb), 0.3);
 }
 
 /* BOSS CHEST */
@@ -374,20 +371,20 @@
     animation: spinRing 3s linear infinite;
 }
 
-/* PUFFY STICKER LABEL */
+/* CLEAN STICKER LABEL */
 .path-step-label {
     font-weight: 900;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-primary);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     background: var(--bg-card);
-    border: 4px solid var(--border-subtle);
-    box-shadow: 0 6px 0 var(--border-subtle), var(--shadow-float);
-    padding: 6px 12px;
-    border-radius: var(--radius-lg);
+    border: 2.5px solid var(--border-subtle);
+    box-shadow: 0 4px 0 var(--border-subtle), var(--shadow-warm);
+    padding: 5px 12px;
+    border-radius: 14px;
     white-space: nowrap;
-    margin-top: 5px;
+    margin-top: 4px;
     transition: 0.3s;
 }
 
@@ -421,10 +418,10 @@
     width: var(--hero-size);
     height: var(--hero-size);
     background: white;
-    border: 6px solid var(--biome-color);
-    border-radius: 24px;
-    /* Thick Toy Squircle */
-    box-shadow: 0 10px 0 var(--biome-color), var(--shadow-premium);
+    border: 4px solid var(--biome-color);
+    border-radius: 20px;
+    /* Soft Squircle */
+    box-shadow: 0 6px 0 var(--biome-color), var(--shadow-premium);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -703,19 +700,17 @@
     z-index: 5000 !important;
 }
 
-.hero-path-pointer.animating .hero-bubble {
-    animation: bounceWhileMoving 0.4s infinite ease-in-out;
+/* Walking character effect - Bobbing + Subtle Side-to-Side Sway */
+.hero-path-pointer.walking .hero-bubble {
+    animation: characterWalkCycle 0.4s infinite ease-in-out;
 }
 
-@keyframes bounceWhileMoving {
-
-    0%,
-    100% {
-        transform: translateY(-50%) scale(1);
+@keyframes characterWalkCycle {
+    0%, 100% { 
+        transform: translateY(-50%) rotate(-3deg); 
     }
-
-    50% {
-        transform: translateY(-60%) scale(1.1);
+    50% { 
+        transform: translateY(-62%) rotate(3deg) scale(1.05); 
     }
 }
 

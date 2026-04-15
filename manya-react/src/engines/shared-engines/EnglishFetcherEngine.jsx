@@ -628,10 +628,9 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                             <button
                                 onClick={handleSubmit}
                                 disabled={!selectedOption}
-                                className={`w-full h-14 btn-toy rounded-full font-black text-[13px] tracking-[0.1em] uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${selectedOption ? 'btn-toy-green shadow-xl active:scale-95' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border-none shadow-none'}`}
+                                className={`w-full h-14 rounded-full font-black text-[13px] tracking-[0.1em] uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${selectedOption ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:border-b-0 active:translate-y-1 shadow-[inset_0_2px_0_rgba(255,255,255,0.3)]' : 'bg-[#e5e5e5] text-[#a0a0a0] border-b-[4px] border-[#d4d4d4] cursor-not-allowed dark:bg-slate-700 dark:border-slate-800 dark:text-slate-500'}`}
                             >
-                                <div className="btn-toy-gloss" />
-                                <span>Submit Answer <Zap size={16} /></span>
+                                <span className="relative z-10 flex items-center gap-2 drop-shadow-sm">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                             </button>
                         ) : (
                             <div className={`w-full h-14 rounded-full border-2 flex items-center justify-center gap-2 font-black text-[11px] tracking-widest uppercase transition-all ${userWasCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>

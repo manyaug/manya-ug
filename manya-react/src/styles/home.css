@@ -3,23 +3,31 @@
 .manya-hub {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Lock to screen height */
+    height: 100vh;
+    /* Lock to screen height */
     width: 100%;
     justify-content: flex-start;
-    gap: 8px; /* Tightened gap */
-    padding: 0 0 80px 0; /* Reduced bottom padding */
+    gap: 8px;
+    /* Tightened gap */
+    padding: 0 0 80px 0;
+    /* Reduced bottom padding */
     font-family: var(--font-main);
-    overflow: hidden; /* No scroll as requested */
-    background-color: var(--bg-primary); 
+    overflow: hidden;
+    /* No scroll as requested */
+    background-color: var(--bg-primary);
 }
-.manya-hub::-webkit-scrollbar { display: none; }
+
+.manya-hub::-webkit-scrollbar {
+    display: none;
+}
 
 /* --- WARM AMBIENT BLOBS (Replacing cold auroras) --- */
 .aurora-engine .manya-hub {
     position: relative;
     padding: 10px 0 80px;
     min-height: 100vh;
-    background-color: var(--bg-primary); /* Solid Opaque Foundation */
+    background-color: var(--bg-primary);
+    /* Solid Opaque Foundation */
 }
 
 /* --- MAGIC DUST PARTICLES --- */
@@ -33,8 +41,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 18px; /* Tighter padding */
-    margin: 8px 16px 4px; /* Reduced margins */
+    padding: 12px 18px;
+    /* Tighter padding */
+    margin: 8px 16px 4px;
+    /* Reduced margins */
     background: var(--bg-card);
     border: 4px solid var(--border-subtle);
     border-radius: 28px;
@@ -116,11 +126,13 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    margin: 4px 16px 8px; /* Reduced margins */
-    padding: 14px 18px; /* Reduced padding */
-    border-radius: 30px; 
+    margin: 4px 16px 8px;
+    /* Reduced margins */
+    padding: 14px 18px;
+    /* Reduced padding */
+    border-radius: 30px;
     border: 4.5px solid var(--border-subtle);
-    background: #7c3aed; 
+    background: #7c3aed;
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-warm);
@@ -128,10 +140,21 @@
 }
 
 /* WARM MISSION CARD COLORS */
-.bounty-card-math { background: #7c3aed !important; }
-.bounty-card-science { background: #10b981 !important; }
-.bounty-card-sst { background: #f59e0b !important; }
-.bounty-card-english { background: #db2777 !important; }
+.bounty-card-math {
+    background: #7c3aed !important;
+}
+
+.bounty-card-science {
+    background: #10b981 !important;
+}
+
+.bounty-card-sst {
+    background: #f59e0b !important;
+}
+
+.bounty-card-english {
+    background: #db2777 !important;
+}
 
 .hero-bg-gem-watermark {
     display: none;
@@ -194,10 +217,21 @@
     flex-shrink: 0;
 }
 
-.resume-mission-card.bounty-card-math .play-pill-neon svg { fill: #5B4CC4; }
-.resume-mission-card.bounty-card-science .play-pill-neon svg { fill: #1A8F6E; }
-.resume-mission-card.bounty-card-sst .play-pill-neon svg { fill: #C47B10; }
-.resume-mission-card.bounty-card-english .play-pill-neon svg { fill: #B83F65; }
+.resume-mission-card.bounty-card-math .play-pill-neon svg {
+    fill: #5B4CC4;
+}
+
+.resume-mission-card.bounty-card-science .play-pill-neon svg {
+    fill: #1A8F6E;
+}
+
+.resume-mission-card.bounty-card-sst .play-pill-neon svg {
+    fill: #C47B10;
+}
+
+.resume-mission-card.bounty-card-english .play-pill-neon svg {
+    fill: #B83F65;
+}
 
 /* ═══════════════════════════════════════════════════════
    2. CRYSTAL BALL WORLD GRID (Warmed Up)
@@ -206,11 +240,13 @@
 .subject-grid-elite {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 12px; /* Tighter grid gaps */
+    gap: 10px 12px;
+    /* Tighter grid gaps */
     padding: 0 16px;
     width: 100%;
     max-width: 440px;
-    margin: 4px auto; /* Reduced margin */
+    margin: 4px auto;
+    /* Reduced margin */
     flex-shrink: 0;
 }
 
@@ -227,22 +263,24 @@
 /* ── ORB WRAPPER ── */
 .orb-wrap {
     position: relative;
-    width: 82px; /* Scaled down orbs */
+    width: 82px;
+    /* Scaled down orbs */
     height: 82px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* ── THE CRYSTAL BUBBLE (Warmer) ── */
+/* ── THE CRYSTAL BUBBLE (Transparent with Ring) ── */
 .crystal-ball {
     width: 95%;
     height: 95%;
     border-radius: 50%;
     position: relative;
     overflow: hidden;
-    background: var(--bg-card);
-    border: 4px solid var(--border-subtle);
+    background: transparent;
+    /* Removed solid card background */
+    border: 3.5px solid var(--border-subtle);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -250,11 +288,26 @@
     transform: scale(1.06);
 }
 
-/* Subject Specific — Slightly Warmer / Softer Gradients */
-.world-card-elite.math .crystal-ball { background: #7c3aed; }
-.world-card-elite.science .crystal-ball { background: #10b981; }
-.world-card-elite.sst .crystal-ball { background: #f59e0b; }
-.world-card-elite.english .crystal-ball { background: #db2777; }
+/* Subject Specific — Applied to border instead of background */
+.world-card-elite.math .crystal-ball {
+    border-color: #7c3aed;
+    background: transparent;
+}
+
+.world-card-elite.science .crystal-ball {
+    border-color: #10b981;
+    background: transparent;
+}
+
+.world-card-elite.sst .crystal-ball {
+    border-color: #f59e0b;
+    background: transparent;
+}
+
+.world-card-elite.english .crystal-ball {
+    border-color: #db2777;
+    background: transparent;
+}
 
 /* Animated Magical Swirl */
 .crystal-swirl {
@@ -281,6 +334,40 @@
     height: auto;
     z-index: 3;
     object-fit: contain;
+    animation: float-island-anim 4s ease-in-out infinite;
+}
+
+@keyframes float-island-anim {
+
+    0%,
+    100% {
+        transform: translate(-50%, -46%);
+    }
+
+    50% {
+        transform: translate(-50%, -54%);
+    }
+}
+
+/* Stagger floating paces for organic feel */
+.world-card-elite.math .crystal-island {
+    animation-duration: 3.8s;
+    animation-delay: 0s;
+}
+
+.world-card-elite.science .crystal-island {
+    animation-duration: 4.5s;
+    animation-delay: -1.2s;
+}
+
+.world-card-elite.sst .crystal-island {
+    animation-duration: 4.1s;
+    animation-delay: -2.4s;
+}
+
+.world-card-elite.english .crystal-island {
+    animation-duration: 3.6s;
+    animation-delay: -0.7s;
 }
 
 /* Secondary Sparkle Layer */
@@ -356,8 +443,8 @@
 /* FLOATING GEM BADGE */
 .card-gem-bounty {
     position: absolute;
-    top: -5px;
-    right: -10px;
+    top: -20px;
+    right: -15px;
     z-index: 10;
     display: flex;
     align-items: center;
@@ -375,10 +462,21 @@
 }
 
 /* Subject Gem Border Colors */
-.world-card-elite.math .card-gem-bounty    { border-color: #918CF8; }
-.world-card-elite.science .card-gem-bounty { border-color: #40DDB0; }
-.world-card-elite.sst .card-gem-bounty     { border-color: #F5C060; }
-.world-card-elite.english .card-gem-bounty { border-color: #F090AE; }
+.world-card-elite.math .card-gem-bounty {
+    border-color: #918CF8;
+}
+
+.world-card-elite.science .card-gem-bounty {
+    border-color: #40DDB0;
+}
+
+.world-card-elite.sst .card-gem-bounty {
+    border-color: #F5C060;
+}
+
+.world-card-elite.english .card-gem-bounty {
+    border-color: #F090AE;
+}
 
 .bounty-gem-icon {
     width: 14px;
@@ -409,9 +507,11 @@
     align-items: center;
     justify-content: space-between;
     width: calc(100% - 32px);
-    margin: 4px 16px 12px; /* Reduced margins */
-    padding: 12px 18px; /* Tighter padding */
-    background: #7c3aed; 
+    margin: 4px 16px 12px;
+    /* Reduced margins */
+    padding: 12px 18px;
+    /* Tighter padding */
+    background: #7c3aed;
     border: 4.5px solid var(--border-subtle);
     border-radius: 24px;
     color: white;
@@ -419,7 +519,7 @@
     overflow: hidden;
     box-shadow: var(--shadow-warm);
     transition: all 0.3s var(--transition-bounce);
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 [data-theme='dark'] .home-sim-lab-cta {
@@ -441,8 +541,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
-    border: 2px solid rgba(255,255,255,0.2);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .sim-lab-text {
@@ -489,45 +589,67 @@
     .manya-hub {
         gap: 16px;
     }
-    
+
     .home-status-header-glass {
         padding: 10px 14px;
         border-radius: var(--radius-xl);
     }
-    .status-user-info .hi-text { font-size: 16px; }
-    .status-streak-pill { padding: 6px 12px; }
+
+    .status-user-info .hi-text {
+        font-size: 16px;
+    }
+
+    .status-streak-pill {
+        padding: 6px 12px;
+    }
 
     .resume-mission-card {
         padding: clamp(10px, 1.4vh, 14px);
         border-width: 2.5px;
     }
-    .hero-avatar-mini-glow { 
-        width: 44px; 
-        height: 44px; 
+
+    .hero-avatar-mini-glow {
+        width: 44px;
+        height: 44px;
         border-width: 3px;
     }
-    .mission-details { margin-left: 12px; }
-    .mission-title { font-size: 14px !important; }
+
+    .mission-details {
+        margin-left: 12px;
+    }
+
+    .mission-title {
+        font-size: 14px !important;
+    }
 
     .subject-grid-elite {
         gap: 10px 12px;
         margin-top: 6px;
     }
+
     .orb-wrap {
         width: 76px;
         height: 76px;
     }
+
     .card-footer-info {
         margin-top: 8px;
     }
-    
+
     .home-sim-lab-cta {
         padding: 8px 16px !important;
     }
+
     .sim-lab-icon-box {
         width: 36px;
         height: 36px;
     }
-    .sim-lab-text h4 { font-size: 14px; }
-    .sim-lab-text p { font-size: 10px; }
+
+    .sim-lab-text h4 {
+        font-size: 14px;
+    }
+
+    .sim-lab-text p {
+        font-size: 10px;
+    }
 }

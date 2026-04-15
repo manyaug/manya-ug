@@ -994,14 +994,13 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
                         <button
                             onClick={handleSubmit}
                             disabled={selectedOption === null}
-                            className={`mt-4 w-full h-14 btn-toy rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 relative overflow-hidden ${
+                            className={`mt-4 w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 relative overflow-hidden ${
                                 selectedOption !== null
-                                    ? 'btn-toy-green shadow-lg active:scale-95'
-                                    : 'bg-slate-200 text-slate-400 cursor-not-allowed border-none shadow-none'
+                                    ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:border-b-0 active:translate-y-1 shadow-[inset_0_2px_0_rgba(255,255,255,0.3)]'
+                                    : 'bg-[#e5e5e5] text-[#a0a0a0] border-b-[4px] border-[#d4d4d4] cursor-not-allowed dark:bg-slate-700 dark:border-slate-800 dark:text-slate-500'
                             }`}
                         >
-                            <div className="btn-toy-gloss" />
-                            <span>SUBMIT ANSWER <Zap size={14} /></span>
+                            <span className="relative z-10 flex items-center gap-2 drop-shadow-sm">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                         </button>
                 </div>
 

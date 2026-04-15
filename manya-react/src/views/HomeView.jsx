@@ -185,9 +185,8 @@ function HomeView() {
                 <span className="bounty-gem-count">{sub.gems}</span>
               </div>
 
-              {/* Crystal ball - Simplified to Solid Orb with Gloss */}
+              {/* Crystal ring with floating island */}
               <div className="crystal-ball">
-                <div className="toy-card-gloss" />
                 <img src={sub.icon} alt={sub.name} className="crystal-island" />
               </div>
 

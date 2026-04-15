@@ -7,15 +7,15 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ChevronLeft, Compass, Zap, Trophy, Sparkles, Search } from 'lucide-react';
-import { setAmbientMode } from '../store/audioSlice';
-import { buildSteps } from '../utils/questFactory';
 import {
-    getQuestProgress, getCurrentNodeIndex, getEarnedGems,
+    getQuestProgress, getCurrentNodeIndex, getEarnedGems as getEarnedStars,
     getJustFinished, clearJustFinished, getQuestKey, UNLOCK_THRESHOLDS, NODE_ORDER
 } from '../services/questProgressService';
 import { findQuestData, preloadCurriculum } from '../services/curriculumService';
-import { getGem, IMAGES } from '../config/assetUrls';
+import { IMAGES } from '../config/assetUrls';
+import { Star, ChevronLeft, Zap, Sparkles, Search } from 'lucide-react';
+import { setAmbientMode } from '../store/audioSlice';
+import { buildSteps } from '../utils/questFactory';
 import { getLoadingConfig, getRandomFact } from '../config/loadingData';
 import '../styles/quest-path.css';
 
@@ -54,9 +54,9 @@ function QuestPathView() {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(null);
     
-    // Animation states
-    const [animatingUnlock, setAnimatingUnlock] = useState(null); // { from, to }
-    const [showBurst, setShowBurst] = useState(null); // nodeId
+    const [animatingUnlock, setAnimatingUnlock] = useState(null); 
+    const [isWalking, setIsWalking] = useState(false);
+    const [showBurst, setShowBurst] = useState(null); 
     const [iconPos, setIconPos] = useState(null); // { x, y }
 
     const {
@@ -100,6 +100,7 @@ function QuestPathView() {
 
                 // Start movement after brief pause
                 setTimeout(() => {
+                    setIsWalking(true);
                     setIconPos({ x: layoutX[toIdx], y: 85 - (toIdx * 18) });
                     window.ManyaAudio?.whoosh?.();
                     
@@ -117,6 +118,7 @@ function QuestPathView() {
                         setTimeout(() => {
                             setShowBurst(null);
                             setAnimatingUnlock(null);
+                            setIsWalking(false);
                         }, 1000);
                     }, 2000); // Wait 2s for movement to finish
                 }, 1000);
@@ -163,9 +165,9 @@ function QuestPathView() {
 
     // Dynamic derived values from progress
     const currentStep = progress ? getCurrentNodeIndex(subject, questKey) : 0;
-    const totalGems = STEPS.length * 3;
-    const earnedGems = progress ? getEarnedGems(subject, questKey) : 0;
-    const progressPct = (earnedGems / totalGems) * 100;
+    const totalStars = STEPS.length * 3;
+    const earnedStars = progress ? getEarnedStars(subject, questKey) : 0;
+    const progressPct = (earnedStars / totalStars) * 100;
 
     const handleStepTap = async (idx, stepDef, isLocked) => {
         if (isLocked || loading) return;
@@ -262,12 +264,12 @@ function QuestPathView() {
                     </div>
                 </div>
                 <div
-                    className="header-stats quest-gem-pill"
+                    className="header-stats quest-star-pill"
                     onClick={() => navigate('/achievements')}
                     style={{ cursor: 'pointer' }}
                 >
-                    <img src={getGem(gemFile)} className="header-gem-icon" alt="gem" />
-                    <span>{earnedGems}/{totalGems}</span>
+                    <Star size={20} fill="#FFD700" color="#B8860B" strokeWidth={2.5} />
+                    <span>{earnedStars}/{totalStars}</span>
                 </div>
             </div>
 
@@ -321,16 +323,32 @@ function QuestPathView() {
                 </div>
 
                 <svg className="quest-svg-path" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    {/* Shadow/Base Path */}
                     <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
-                        fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                        fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+                    
+                    {/* The "Glow" under-layer - Radiant Trail */}
                     <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
-                        fill="none" stroke={biomeColor} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+                        fill="none" stroke={biomeColor} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
+                        pathLength="100"
+                        strokeDasharray="100"
+                        strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
+                        style={{ 
+                            opacity: 0.3,
+                            filter: 'blur(8px)',
+                            transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                        }} />
+
+                    {/* The Active Glowing Path */}
+                    <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
+                        fill="none" stroke={biomeColor} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round"
                         pathLength="100"
                         strokeDasharray="100"
                         strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
                         style={{ 
                             transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                            filter: `drop-shadow(0 0 8px ${biomeRGB ? `rgba(${biomeRGB}, 0.8)` : biomeColor}) drop-shadow(0 0 3px ${biomeColor})`
+                            filter: `drop-shadow(0 0 12px ${biomeRGB ? `rgba(${biomeRGB}, 0.9)` : biomeColor}) 
+                                     drop-shadow(0 0 4px white)`
                         }} />
                 </svg>
 
@@ -347,8 +365,8 @@ function QuestPathView() {
 
                     const stateClass = isCompleted ? 'completed' : isActive ? 'active' : 'locked';
 
-                    // Gems: 3 if completed with high mastery, 2 if decent, 1 if barely passed
-                    const gemsForNode = isCompleted
+                    // Stars: 3 if completed with high mastery, 2 if decent, 1 if barely passed
+                    const starsForNode = isCompleted
                         ? (nodeMastery >= 85 ? 3 : nodeMastery >= 70 ? 2 : 1)
                         : 0;
 
@@ -372,12 +390,12 @@ function QuestPathView() {
                             style={{ left: `${xPct}%`, top: `${yPct}%` }}
                             onClick={() => handleStepTap(i, step, isLocked)}
                         >
-                            {/* Gem row */}
+                            {/* Star rating */}
                             {!step.isChest && (
-                                <div className="node-gem-rating">
-                                    <img src={getGem(gemFile)} className={`mini-gem ${gemsForNode >= 1 ? 'earned' : 'empty'}`} alt="" />
-                                    <img src={getGem(gemFile)} className={`mini-gem top-gem ${gemsForNode >= 2 ? 'earned' : 'empty'}`} alt="" />
-                                    <img src={getGem(gemFile)} className={`mini-gem ${gemsForNode >= 3 ? 'earned' : 'empty'}`} alt="" />
+                                <div className="node-star-rating">
+                                    <Star size={20} className={`mini-star ${starsForNode >= 1 ? 'earned' : 'empty'}`} fill={starsForNode >= 1 ? '#FFD700' : 'none'} />
+                                    <Star size={24} className={`mini-star top-star ${starsForNode >= 2 ? 'earned' : 'empty'}`} fill={starsForNode >= 2 ? '#FFD700' : 'none'} />
+                                    <Star size={20} className={`mini-star ${starsForNode >= 3 ? 'earned' : 'empty'}`} fill={starsForNode >= 3 ? '#FFD700' : 'none'} />
                                 </div>
                             )}
 
@@ -432,7 +450,7 @@ function QuestPathView() {
                 {/* ANIMATING HERO ICON */}
                 {animatingUnlock && iconPos && (
                     <div 
-                        className={`hero-path-pointer animating ${iconPos.x < 50 ? 'hero-right-side' : 'hero-left-side'}`}
+                        className={`hero-path-pointer animating ${iconPos.x < 50 ? 'hero-right-side' : 'hero-left-side'} ${isWalking ? 'walking' : ''}`}
                         style={{ 
                             position: 'absolute',
                             left: `${iconPos.x}%`,
