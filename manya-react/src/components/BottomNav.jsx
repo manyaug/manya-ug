@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { audioService } from '../infrastructure/audio/audioService.js';
 import { motion } from 'framer-motion';
 import { Home, Library, Trophy, User } from 'lucide-react';
 import '../styles/bottomNav.css';
@@ -43,7 +44,7 @@ function BottomNav() {
               key={item.to}
               to={item.to}
               className={({ isActive }) => `nav-item ${item.id}-tab ${isActive ? 'active' : ''}`}
-              onClick={() => window.ManyaAudio?.click?.()}
+              onClick={() => audioService.click?.()}
             >
               {({ isActive }) => (
                 <>

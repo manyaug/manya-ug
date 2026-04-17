@@ -8,8 +8,8 @@
  * Ported & expanded from: Manya-app-master/question-fetcher.js (checkAchievements)
  */
 
-import { supabase } from './supabaseClient';
-import { syncService } from './syncService';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { syncService } from '../infrastructure/sync/syncService';
 
 // ── 20 ACHIEVEMENTS PER SUBJECT ──────────────────────────────────────────────
 

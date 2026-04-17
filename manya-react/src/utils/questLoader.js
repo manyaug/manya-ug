@@ -5,11 +5,14 @@
  * Fetches curriculum by QID and normalises it into a uniform steps[] array.
  * Fallback to local /content/ folders if the database record is missing.
  */
-import { supabase } from '../services/supabaseClient';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
 
-const JSON_CACHE = {};
+import QuickLRU from 'quick-lru';
+const JSON_CACHE = new QuickLRU({ maxSize: 50 });
 
 import { CDN_BASE, ASSET_VERSION } from '../config/constants';
+import { validateAndNormalizeStep } from '../domain/schemas/validation';
+import { resolveRef } from './questHelpers.js';
 
 const CDN_URL = `${CDN_BASE}content/`;
 const BASE_CONTENT_URL = CDN_URL;
@@ -60,37 +63,6 @@ export function contentUrl(subject, unitId, questFolder, file) {
 }
 
 /**
- * Resolve a referencePath (which may be relative or Windows-style) to a fetch-able URL.
- */
-function resolveRef(referencePath, baseDir) {
-    if (!referencePath) return null;
-    
-    if (referencePath.startsWith('http')) return referencePath;
-
-    if (referencePath.startsWith('/content/')) {
-        return `${BASE_CONTENT_URL}${referencePath.replace(/^\/content\//, '')}`;
-    }
-
-    const lc = referencePath.toLowerCase().replace(/\\/g, '/');
-    const idx = lc.indexOf('content/');
-    if (idx !== -1) {
-        return `${BASE_CONTENT_URL}${referencePath.substring(idx + 8).replace(/\\/g, '/')}`;
-    }
-
-    if (baseDir) {
-        // If we have an originUrl (CDN), join against it for the most robust result
-        if (baseDir.startsWith('http')) {
-            try { return new URL(referencePath, baseDir).href; } catch (e) { }
-        }
-
-        const fullRel = `${baseDir}/${referencePath}`.replace(/\/+/g, '/').replace(/^content\//, '');
-        return `${BASE_CONTENT_URL}${fullRel}`;
-    }
-    
-    return null;
-}
-
-/**
  * Fetch a single content JSON and return a normalised steps[].
  * Now powered by Manya Vault (Supabase).
  */
@@ -99,9 +71,9 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
     const cacheKey = targetType ? `${qid}_${targetType}` : qid;
     
     // 1. Cache Check
-    if (JSON_CACHE[cacheKey]) {
+    if (JSON_CACHE.has(cacheKey)) {
         console.log(`⚡ [QuestLoader] Serving from cache: ${cacheKey}`);
-        return JSON_CACHE[cacheKey];
+        return JSON_CACHE.get(cacheKey);
     }
 
     try {
@@ -174,7 +146,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         const finalResult = { steps: allSteps, meta: masterMeta };
 
         // Save to cache
-        JSON_CACHE[cacheKey] = finalResult;
+        JSON_CACHE.set(cacheKey, finalResult);
         return finalResult;
 
     } catch (err) {
@@ -247,7 +219,7 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
                         } catch (_) { }
                     }
                 }
-                return normaliseStep(step, json._originUrl);
+                return validateAndNormalizeStep(step, json._originUrl);
             })
         );
         result = {
@@ -255,7 +227,7 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
             meta: { topic: json.topic || file, variantTitle: json.variantTitle }
         };
     } else {
-        const step = normaliseStep(json, json._originUrl);
+        const step = validateAndNormalizeStep(json, json._originUrl);
         result = {
             steps: [step],
             meta: { topic: json.topic || file, variantTitle: json.variantTitle }
@@ -264,30 +236,4 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
     return result;
 }
 
-/**
- * Normalise a raw step object
- */
-function normaliseStep(raw, originUrl = null) {
-    let engineType = raw.engineType || raw.engine;
 
-    if (!engineType) {
-        if (raw.mode === 'note_explorer' || raw.study_notes) {
-            engineType = 'NOTE_EXPLORER';
-        } else if (raw.mode === 'recap' || raw.recap_facts || raw.sections) {
-            engineType = 'READER_STUDY';
-        } else if (raw.cases) {
-            engineType = 'GLOBE_TIME_ENGINE';
-        } else {
-            engineType = 'UNKNOWN';
-        }
-    }
-
-    return {
-        ...raw,
-        engineType: engineType.toUpperCase(),
-        data: {
-            ...(raw.data || raw),
-            _originUrl: originUrl // Propagate origin for relative asset resolution
-        }
-    };
-}

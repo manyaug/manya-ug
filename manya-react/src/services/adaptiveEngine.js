@@ -1,8 +1,8 @@
-import { calculateFrustration } from './psychTracker';
+import { calculateFrustration } from '../domain/psych/psychTracker';
 import { parseQuestionId, areSameConcept } from '../utils/questionParser';
-import { masteryService } from './masteryService';
-import { conceptMasteryService } from './conceptMasteryService';
-import { spacedRepetitionService } from './spacedRepetitionService';
+import { masteryService } from '../domain/mastery/masteryService';
+import { conceptMasteryService } from '../domain/mastery/conceptMasteryService';
+import { spacedRepetitionService } from '../domain/mastery/spacedRepetitionService';
 
 /**
  * MANYA ADAPTIVE ENGINE (V5.2 - ENGINE LOCKDOWN)
@@ -38,7 +38,7 @@ const MASTERY_WEIGHTS = {
 
 // ── CORE ADAPTIVE LOGIC ─────────────────────────────────────────────────────
 
-export async function scoreQuestion(question, history, subject, subjectMasteryMap) {
+export function scoreQuestion(question, history, subject, subjectMasteryMap, conceptRecordMap = {}) {
     let score = 0;
     const factors = [];
     const { baseId: conceptId, variant } = parseQuestionId(question.id || question.qid);
@@ -48,7 +48,7 @@ export async function scoreQuestion(question, history, subject, subjectMasteryMa
     score += baseWeight;
     factors.push(`mastery_${mastery}`);
 
-    const conceptRecord = await conceptMasteryService.getConceptRecord(subject, conceptId).catch(() => null);
+    const conceptRecord = conceptRecordMap[conceptId] || null;
     const conceptAnswers = history.filter(ans => (ans.concept_id || parseQuestionId(ans.questionId).baseId) === conceptId);
     
     if (conceptRecord && conceptRecord.nextReviewAt) {
@@ -169,11 +169,15 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         console.log(`📡 [Adaptive] Condition: ${isBadCondition ? '🚨 CRITICAL' : needsMotivation ? '⚠️ STRUGGLING' : '✅ HEALTHY'} (Acc: ${recentAccuracy.toFixed(2)})`);
 
         // 3. ADAPTIVE MCQ SELECTION
-        let mcqCandidates = await Promise.all(pools.MCQ.map(async q => {
-            const metadata = await scoreQuestion(q, history, subject, subjectMasteryMap);
+        const baseIds = pools.MCQ.map(q => parseQuestionId(q.id || q.qid).baseId);
+        const allRecords = await conceptMasteryService.getBatch(subject, baseIds);
+        const recordMap = Object.fromEntries(allRecords.map(r => [r.baseId, r]));
+
+        let mcqCandidates = pools.MCQ.map(q => {
+            const metadata = scoreQuestion(q, history, subject, subjectMasteryMap, recordMap);
             if (frustration.score > 70 && (q.variant === 'V3' || q.difficulty === 'H')) metadata.score = -1000;
             return { ...q, _adaptive: metadata };
-        }));
+        });
 
         // --- NEW: Concept De-duplication (v5.5) ---
         // Avoid picking different variants (V1, V2, V3) of the same question in a single session.
@@ -218,9 +222,14 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         let finalQuestions = [];
         const mcqStack = [...selectedMCQs];
         
-        // STRICT RULE: No simulations or notes in WARMUP
+        // --- ADAPTIVE EXCLUSION (v5.6 - Smart Fallback) ---
         const isWarmup = nodeType === 'WARMUP';
-        const excludeSims = isWarmup || nodeType === 'EXPLORE';
+        const isExplore = nodeType === 'EXPLORE';
+
+        // 🛡️ RESILIENCE: If there are ZERO MCQs but we have Simulations, 
+        // we MUST allow simulations even in WARMUP/EXPLORE to prevent empty quests.
+        const mustAllowSims = pools.MCQ.length === 0 && pools.SIMULATION.length > 0;
+        const excludeSims = (isWarmup || isExplore) && !mustAllowSims;
         
         const simStack = excludeSims ? [] : [...pools.SIMULATION].sort(() => 0.5 - Math.random());
         const grammarStack = excludeSims ? [] : [...pools.GRAMMAR].sort(() => 0.5 - Math.random());
@@ -235,7 +244,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         // ─── MOTIVATION / INTERLEAVE FILL ─────
         while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
-            const hasSim = simStack.length > 0 && !isWarmup;
+            const hasSim = simStack.length > 0 && (!isWarmup || mustAllowSims);
             const hasMcq = mcqStack.length > 0;
 
             if (hasSim && !hasMcq) {
@@ -252,6 +261,17 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             } else {
                 break;
             }
+        }
+
+        // ─── EMERGENCY RECOVERY (v5.6) ───
+        // If finalQuestions is STILL empty but the bank has data, 
+        // force a slice of whatever we have as a last resort.
+        if (finalQuestions.length === 0 && allQuestions.length > 0) {
+            console.warn(`🚨 [Adaptive] Emergency Recovery Triggered. Forcing ${Math.min(3, allQuestions.length)} items from bank.`);
+            finalQuestions = allQuestions.slice(0, 3).map(q => ({
+                ...q, 
+                isSimulation: (q.engine_type && q.engine_type !== 'MCQ')
+            }));
         }
 
         // --- NEW: Final Randomization (Shuffle the sequencing) ---

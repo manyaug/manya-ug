@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Play, Info, Beaker, Heart, Book } from 'lucide-react';
 import SimulationEngine from '../components/engine/SimulationEngine';
-import { AVAILABLE_SIMULATIONS } from '../components/engine/SimulationRegistry';
+import { ENGINE_REGISTRY, getEngine } from '../config/engineRegistry';
+
+const AVAILABLE_SIMULATIONS = Object.entries(ENGINE_REGISTRY)
+    .filter(([_, meta]) => meta.id)
+    .map(([key, meta]) => ({ ...meta, id: key }));
 
 /**
  * SimulationTestingView - Dedicated playground for simulations.

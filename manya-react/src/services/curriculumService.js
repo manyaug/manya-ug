@@ -6,7 +6,8 @@
  */
 
 import { assetUrl } from '../config/assetUrls';
-import { supabase } from './supabaseClient';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { deriveStoryFile, formatQuestTitle } from '../utils/questHelpers.js';
 
 let curriculumCache = null;
 let fetchPromise = null;
@@ -168,7 +169,7 @@ export async function fetchDynamicCurriculum(subject = 'english') {
                 // Determine folder name (subtopic is already the folder name per user)
                 return {
                     folder: subName,
-                    title: formatTitle(subName),
+                    title: formatQuestTitle(subName),
                     resources: [
                         { label: 'Story', file: deriveStoryFile(subName) }
                     ],
@@ -193,25 +194,7 @@ export async function fetchDynamicCurriculum(subject = 'english') {
     }
 }
 
-// Helper: quest_01_holiday_kickoff -> "Holiday Kickoff"
-function formatTitle(subName) {
-    if (!subName) return "New Quest";
-    
-    // quest_1_world_stage -> "1 World Stage"
-    let clean = subName.replace(/^quest_/, '');
-    
-    // Replace underscores with spaces and capitalize
-    return clean
-        .split('_')
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ');
-}
 
-// Helper: quest_01_holiday_kickoff -> "01_holiday_kickoff"
-function deriveStoryFile(subName) {
-    if (!subName) return null;
-    return subName.replace(/^quest_/, '');
-}
 
 function topicToId(topic) {
     return topic.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');

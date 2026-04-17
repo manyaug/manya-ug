@@ -5,12 +5,13 @@
  * Shows mastery %, retry indicators, and earned gems dynamically.
  */
 import { useEffect, useState } from 'react';
+import { audioService } from '../infrastructure/audio/audioService.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     getQuestProgress, getCurrentNodeIndex, getEarnedGems as getEarnedStars,
     getJustFinished, clearJustFinished, getQuestKey, UNLOCK_THRESHOLDS, NODE_ORDER
-} from '../services/questProgressService';
+} from '../domain/progress/questProgressService.js';
 import { findQuestData, preloadCurriculum } from '../services/curriculumService';
 import { IMAGES } from '../config/assetUrls';
 import { Star, ChevronLeft, Zap, Sparkles, Search } from 'lucide-react';
@@ -102,13 +103,13 @@ function QuestPathView() {
                 setTimeout(() => {
                     setIsWalking(true);
                     setIconPos({ x: layoutX[toIdx], y: 85 - (toIdx * 18) });
-                    window.ManyaAudio?.whoosh?.();
+                    audioService.whoosh?.();
                     
                     // Trigger burst after move duration (matches CSS transition)
                     // The character now moves "elegantly and slowly" over 2 seconds
                     setTimeout(() => {
                         setShowBurst(justFinished.nextNode);
-                        window.ManyaAudio?.success?.();
+                        audioService.success?.();
                         
                         // IMPORTANT: Refresh local state to show the node as UNLOCKED after animation
                         // This ensures the "locked" icon disappears at the exact moment of the burst
@@ -133,7 +134,7 @@ function QuestPathView() {
 
     // Entry whoosh
     useEffect(() => {
-        const t = setTimeout(() => window.ManyaAudio?.whoosh(), 300);
+        const t = setTimeout(() => audioService.whoosh(), 300);
         return () => clearTimeout(t);
     }, []);
 
@@ -171,7 +172,7 @@ function QuestPathView() {
 
     const handleStepTap = async (idx, stepDef, isLocked) => {
         if (isLocked || loading) return;
-        window.ManyaAudio?.click();
+        audioService.click();
         setLoading(true);
 
         const nodeType = stepDef.nodeType;

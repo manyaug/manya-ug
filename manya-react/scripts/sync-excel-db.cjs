@@ -36,37 +36,47 @@ async function processFile(filePath, subject) {
     console.log(`  - Read ${sheetData.length} records from sheet: ${sheetName}`);
   });
   
-  const formattedData = allRawData.map(row => {
+  const qidRegistry = new Set();
+  const errors = [];
+
+  const formattedData = allRawData.map((row, index) => {
     let cleanRow = {};
     for (let key in row) {
       if (row.hasOwnProperty(key)) {
         let newKey = key.trim().toLowerCase().replace(/[-_]/g, '');
-        // handle known aliases
-        if (newKey === 'subtopic') newKey = 'subtopic';
-        
         let val = row[key];
         if (typeof val === 'string') {
           val = val.trim();
           if (val === 'NaN' || val === 'null' || val === '') val = null;
-          // some files have literal string '"..."' we can clean it up but let's keep it safe
         }
         cleanRow[newKey] = val;
       }
     }
 
-    // tags parsing
-    let parsedTags = null;
-    if (cleanRow.tags) {
-      if (cleanRow.tags.startsWith('[')) {
-        try { parsedTags = JSON.parse(cleanRow.tags); }
-        catch (e) { parsedTags = [cleanRow.tags]; }
-      } else {
-        parsedTags = cleanRow.tags.split(',').map(s => s.trim());
-      }
+    const qid = cleanRow.qid || cleanRow.id || null;
+    
+    // VALIDATION BLOCK (Shield Phase)
+    if (!qid) {
+        errors.push(`Row ${index + 2}: Missing QID`);
+        return null;
+    }
+    if (qidRegistry.has(qid)) {
+        errors.push(`Row ${index + 2}: Duplicate QID "${qid}" detected in same file`);
+        return null;
+    }
+    qidRegistry.add(qid);
+
+    // Required Field check
+    if (!cleanRow.topic || !cleanRow.subtopic) {
+        console.warn(`⚠️ Row ${index + 2} [${qid}]: Missing topic/subtopic metadata.`);
+    }
+
+    if (!cleanRow.correctanswer && !cleanRow.filepathsim) {
+        console.warn(`⚠️ Row ${index + 2} [${qid}]: No correct answer or JSON path provided.`);
     }
 
     return {
-      qid: cleanRow.qid || cleanRow.id || null,
+      qid,
       term: cleanRow.term || null,
       topic: cleanRow.topic || null,
       subtopic: cleanRow.subtopic || null,
@@ -81,15 +91,23 @@ async function processFile(filePath, subject) {
       hint: cleanRow.hint || null,
       detailedsolution: cleanRow.detailedsolution || null,
       imagelocation: cleanRow.imagelocation || null,
-      tags: parsedTags,
+      tags: cleanRow.tags ? (cleanRow.tags.startsWith('[') ? JSON.parse(cleanRow.tags) : cleanRow.tags.split(',').map(s => s.trim())) : null,
       engine_type: cleanRow.enginetypesim || cleanRow.enginetype || null,
       mode: cleanRow.modesim || cleanRow.mode || null,
       json_reference_path: cleanRow.filepathsim || cleanRow.jsonreferencepath || null,
       filename: cleanRow.filenamesim || cleanRow.filename || null
     };
-  }).filter(row => row.qid); // only rows with valid qid
+  }).filter(row => row !== null);
 
-  console.log(`Found ${formattedData.length} valid records. Uploading to DB...`);
+  if (errors.length > 0) {
+    console.error(`\n❌ Validation Failed for ${subject}:`);
+    errors.slice(0, 10).forEach(e => console.error(`  - ${e}`));
+    if (errors.length > 10) console.error(`  - ...and ${errors.length - 10} more errors.`);
+    console.error(`\nAborting sync for ${subject} to prevent database corruption.\n`);
+    return;
+  }
+
+  console.log(`✅ Validation Passed. Found ${formattedData.length} valid records. Uploading to DB...`);
 
   // Upload in chunks
   const chunkSize = 100;
@@ -100,18 +118,18 @@ async function processFile(filePath, subject) {
     const chunk = formattedData.slice(i, i + chunkSize);
     const { error } = await supabase.from(tableName).upsert(chunk, { onConflict: 'qid' });
     if (error) {
-      console.error(`❌ Error uploading chunk ${i} - ${i + chunkSize}:`, error.message);
+      console.error(`❌ Error uploading chunk ${i}:`, error.message);
       hasErrors = true;
     } else {
       totalUploaded += chunk.length;
-      console.log(`✅ Uploaded chunk ${i} - ${i + chunk.length - 1}`);
+      console.log(`✅ Uploaded [${totalUploaded}/${formattedData.length}]`);
     }
   }
 
   if (!hasErrors) {
-    console.log(`✅ Completed ${subject} sync. Successfully upserted ${totalUploaded} rows.\n`);
+    console.log(`⭐️ Successfully synchronized ${totalUploaded} ${subject} rows.\n`);
   } else {
-    console.warn(`⚠️ Completed ${subject} sync with some errors.\n`);
+    console.warn(`⚠️ Sync finished with errors for ${subject}.\n`);
   }
 }
 

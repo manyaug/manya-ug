@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ManyaDB } from '../utils/manyaDB';
-import { syncService } from '../services/syncService';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
+import { syncService } from '../infrastructure/sync/syncService.js';
 
 // Async thunk to boot user from IndexedDB
 export const initializeUser = createAsyncThunk(
@@ -169,21 +169,5 @@ export const {
     resetSession,
     updateSessionAfterAnswer
 } = userSlice.actions;
-
-// Create a middleware to sync changes to ManyaDB automatically
-export const persistenceMiddleware = store => next => action => {
-
-  const result = next(action);
-  
-  // if the action is modifying the user...
-  if (action.type?.startsWith('user/') && action.type !== 'user/initialize/pending') {
-      const state = store.getState();
-      if (!state.user.isLoading && state.user.data) {
-          // Fire and forget save to IndexedDB
-          ManyaDB.saveUser(state.user.data).catch(console.error);
-      }
-  }
-  return result;
-};
 
 export default userSlice.reducer;

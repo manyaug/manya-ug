@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { audioService } from '../infrastructure/audio/audioService.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -91,7 +92,7 @@ function HomeView() {
   ];
 
   const handleOpenSpiral = (subjectId) => {
-    window.ManyaAudio?.click?.();
+    audioService.click?.();
     navigate(`/spiral/${subjectId}`);
   };
 

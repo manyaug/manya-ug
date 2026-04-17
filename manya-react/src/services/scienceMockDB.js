@@ -1,5 +1,5 @@
-import { supabase } from './supabaseClient';
-import { ManyaDB } from '../utils/manyaDB';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 
 const BANK_CACHE = {};
 
@@ -36,34 +36,34 @@ export const fetchScienceQuestions = async (topicId) => {
             return cached;
         }
 
-        // --- RESILIENT VAULT QUERY ---
+        // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
         let { data, error } = await supabase
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'science')
-            .in('subtopic', [subtopic, topicId])
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`)
             .ilike('item_type', '%MCQ%');
 
-        // Fallback for sanitized names
-        if (!error && (!data || data.length === 0) && subtopic.includes('quest_')) {
-            const sanitized = subtopic.replace(/^quest_\d+_/, '');
-            const retry = await supabase
-                .from('manya_vault')
-                .select('*')
-                .eq('subject', 'SCIENCE')
-                .eq('subtopic', sanitized)
-                .eq('item_type', 'MCQ');
+        // FALLBACK: Aggressive Keyword Splitting (v4.5)
+        if (!error && (!data || data.length === 0)) {
+            const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
+            const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
             
-            if (retry.data?.length > 0) data = retry.data;
-            else {
-                const withSpaces = sanitized.replace(/_/g, ' ');
-                const retry2 = await supabase
+            if (keywords.length > 0) {
+                console.log(`🔍 [Science Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
+                
+                const { data: keywordData } = await supabase
                     .from('manya_vault')
                     .select('*')
-                    .eq('subject', 'SCIENCE')
-                    .eq('subtopic', withSpaces)
-                    .eq('item_type', 'MCQ');
-                if (retry2.data?.length > 0) data = retry2.data;
+                    .ilike('subject', 'science')
+                    .or(keywordFilter)
+                    .ilike('item_type', '%MCQ%');
+                
+                if (keywordData?.length > 0) {
+                    console.log(`✨ [Science Vault] Discovered ${keywordData.length} related questions via keywords.`);
+                    data = keywordData;
+                }
             }
         }
 

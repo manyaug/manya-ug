@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { audioService } from '../../infrastructure/audio/audioService.js';
 import { BookOpen, Trophy, ArrowRight, BarChart3, Table as TableIcon, FileText, Quote, ChevronRight, CheckCircle2, XCircle } from 'lucide-react';
 
 /**
@@ -39,9 +40,9 @@ const DeepReaderEngine = ({ data, onComplete }) => {
         if (isCorrect) {
             setIsResolved(true);
             setScore(s => s + 1);
-            window.ManyaAudio?.success?.();
+            audioService.success?.();
         } else {
-            window.ManyaAudio?.error?.();
+            audioService.error?.();
         }
     };
 

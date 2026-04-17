@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer, { persistenceMiddleware } from './userSlice';
+import userReducer from './userSlice';
+import { persistenceMiddleware } from './middleware/persistenceMiddleware';
 import toastReducer from './toastSlice';
 import audioReducer, { audioPersistenceMiddleware, getPersistedAudioState } from './audioSlice';
 

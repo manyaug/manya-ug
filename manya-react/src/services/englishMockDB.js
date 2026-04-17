@@ -1,5 +1,5 @@
-import { supabase } from './supabaseClient';
-import { ManyaDB } from '../utils/manyaDB';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 
 const BANK_CACHE = {};
 
@@ -39,20 +39,35 @@ export const fetchEnglishQuestions = async (topicId) => {
             return cached;
         }
 
-        // --- RESILIENT VAULT QUERY ---
+        // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
         let { data, error } = await supabase
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'english')
-            .or(`subtopic.in.("${subtopic}","${topicId}"),qid.eq."${subtopic}",qid.eq."${topicId}"`);
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`)
+            .ilike('item_type', '%MCQ%');
 
+        // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!error && (!data || data.length === 0)) {
-            const retry = await supabase
-                .from('manya_vault')
-                .select('*')
-                .eq('subject', 'ENGLISH')
-                .ilike('subtopic', `%${subtopic}%`);
-            if (retry.data?.length > 0) data = retry.data;
+            const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
+            const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
+            
+            if (keywords.length > 0) {
+                console.log(`🔍 [English Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
+                
+                const { data: keywordData } = await supabase
+                    .from('manya_vault')
+                    .select('*')
+                    .ilike('subject', 'english')
+                    .or(keywordFilter)
+                    .ilike('item_type', '%MCQ%');
+                
+                if (keywordData?.length > 0) {
+                    console.log(`✨ [English Vault] Discovered ${keywordData.length} related questions via keywords.`);
+                    data = keywordData;
+                }
+            }
         }
 
         if (error) throw error;

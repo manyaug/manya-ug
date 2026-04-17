@@ -1,5 +1,5 @@
-import { supabase } from './supabaseClient';
-import { ManyaDB } from '../utils/manyaDB';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 
 const BANK_CACHE = {};
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { updateProfile, resetUser } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
-import { syncService } from '../services/syncService';
+import { syncService } from '../infrastructure/sync/syncService.js';
 import { IMAGES } from '../config/assetUrls';
 import {
     ChevronLeft,

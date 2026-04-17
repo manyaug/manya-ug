@@ -4,13 +4,14 @@
  * subject-specific gem pill, and direct quest-path routing on active node tap.
  */
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { audioService } from '../infrastructure/audio/audioService.js';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
 import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
 import { getPathImage, getGem } from '../config/assetUrls';
-import { getQuestKey, loadAllProgress } from '../services/questProgressService';
+import { getQuestKey, loadAllProgress } from '../domain/progress/questProgressService.js';
 import { fetchDynamicCurriculum } from '../services/curriculumService';
 import '../styles/spiral.css';
 
@@ -212,7 +213,7 @@ function SpiralView() {
     // ---- 3. SEPARATE ENTRY EFFECT ----
     useEffect(() => {
         const whooshTimer = setTimeout(() => {
-            window.ManyaAudio?.whoosh();
+            audioService.whoosh();
         }, 600);
         return () => clearTimeout(whooshTimer);
     }, []);

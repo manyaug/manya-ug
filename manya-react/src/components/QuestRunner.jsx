@@ -1,61 +1,27 @@
-/**
- * MANYA QUEST RUNNER - v2.0
- * ==========================
- * React wrapper around the vanilla JS engine pipeline.
- * 
- * Receives via location.state:
- *   Option A (from Library direct launch):
- *     { subject, unitId, questFolder, file, label }
- *
- *   Option B (from QuestFactory / QuestPath node tap):
- *     { steps: [...], title, subject, gemFile, biomeColor }
- *
- * State machine: idle → loading → running(N) → finished → exit
- *
- * The vanilla engines run inside mountRef.current (a plain <div>).
- * React only handles the shell: header, progress, footer button, finish screen.
- */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
+import { audioService } from '../infrastructure/audio/audioService.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, X, AlertTriangle, RefreshCw, SkipForward, Compass, Zap, Trophy, Sparkles, Search } from 'lucide-react';
+import { X, AlertTriangle, RefreshCw } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
 import { updateProfile, awardGems } from '../store/userSlice';
 
 import { loadQuestSteps } from '../utils/questLoader';
 import { getGem } from '../config/assetUrls';
 import { getLoadingConfig, getRandomFact } from '../config/loadingData';
-import { ENGINE_REGISTRY } from '../utils/engineRouter';
-import { syncService } from '../services/syncService';
-import { masteryService } from '../services/masteryService';
-import { calculateFrustration } from '../services/psychTracker';
-import { saveNodeCompletion, setJustFinished } from '../services/questProgressService';
-import { calculateUSP } from '../utils/scoringUtility';
-import React, { Suspense } from 'react';
+import { ENGINE_REGISTRY, getEngine } from '../config/engineRegistry';
+import { saveNodeCompletion, setJustFinished } from '../domain/progress/questProgressService.js';
+import { QuestSession } from '../application/QuestSession';
+import { QuestBusProvider } from '../ui/context/QuestBus';
+import React from 'react';
 import '../styles/engines.css';
 
-
-// Engines that handle their own "done" — hide the footer CONTINUE button
-const IMMERSIVE_ENGINES = new Set([
-    'PROCEDURAL_CANVAS', 'SET_THEORY', 'JUNGLE_MAZE', 'HARVEST_GAME',
-    'HANGMAN_GAME', 'SET_CLASSIFIER', 'SUBSET_GAME', 'PIZZA_GAME',
-    'BINARY_GAME', 'VENN_SPOTLIGHT', 'MEMORY_MATCH', 'GRAMMAR_MAZE',
-    'SENTENCE_TRAIN', 'WORDGRID_ENGINE', 'MORPH_GAME', 'GALLERY_STUDY',
-    '2D_HOTSPOT', 'READER_STUDY', '3D_SKELETON', 'MCQ_STANDALONE',
-    'NOTE_EXPLORER',
-    // Grammar Simulation Engines
-    'SENTENCE_BLOCKS', 'GARDEN_GUARD', 'PUNCTUATION_STICKERS', 'TENSE_TREEHOUSE'
-]);
-
-// ── QuestErrorBoundary — Catch-all for engine crashes ───────────────────
 class QuestErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
         this.state = { hasError: false, error: null };
     }
-    static getDerivedStateFromError(error) {
-        return { hasError: true, error };
-    }
+    static getDerivedStateFromError(error) { return { hasError: true, error }; }
     render() {
         if (this.state.hasError) {
             return (
@@ -64,21 +30,15 @@ class QuestErrorBoundary extends React.Component {
                         <AlertTriangle size={48} />
                     </div>
                     <h2 className="text-3xl font-black text-[var(--text-main)] mb-3 tracking-tight">Engine Glitch</h2>
-                    <p className="max-w-sm text-[var(--text-sub)] text-lg font-bold mb-10 opacity-60 leading-relaxed">
-                        Something went wrong with this quest step. Don't worry, you can try again or skip to the next one!
+                    <p className="max-w-sm text-[var(--text-sub)] text-lg font-bold mb-10 opacity-60">
+                        Something went wrong. You can try again or skip to the next one!
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-                        <button 
-                            onClick={() => window.location.reload()}
-                            className="flex-1 h-16 bg-[var(--text-main)] text-[var(--bg-main)] rounded-3xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-all"
-                        >
+                    <div className="flex gap-4 w-full max-w-sm">
+                        <button onClick={() => window.location.reload()} className="flex-1 h-16 bg-[var(--text-main)] text-[var(--bg-main)] rounded-3xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3">
                             <RefreshCw size={20} />
                             RETRY
                         </button>
-                        <button 
-                            onClick={() => this.props.onSkip()}
-                            className="flex-1 h-16 bg-rose-500 text-white rounded-3xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl shadow-rose-500/20 active:scale-95 transition-all"
-                        >
+                        <button onClick={this.props.onSkip} className="flex-1 h-16 bg-rose-500 text-white rounded-3xl font-black text-sm tracking-widest uppercase shadow-xl shadow-rose-500/20 flex items-center justify-center">
                             SKIP STEP →
                         </button>
                     </div>
@@ -89,13 +49,7 @@ class QuestErrorBoundary extends React.Component {
     }
 }
 
-// Engines where the CONTINUE button is disabled until user interacts (chat/typing)
-const WAIT_ENGINES = new Set(['CHAT', 'ENGLISH_RULE_MASTER', 'SYNTAX_ARCHITECT']);
-
-// ── Subject → biome color map (fallback) ────────────────────────────────────
-const SUBJECT_COLOR = {
-    math: '#7c3aed', science: '#16a34a', sst: '#0ea5e9', english: '#db2777'
-};
+const SUBJECT_COLOR = { math: '#7c3aed', science: '#16a34a', sst: '#0ea5e9', english: '#db2777' };
 
 export default function QuestRunner() {
     const location = useLocation();
@@ -103,81 +57,20 @@ export default function QuestRunner() {
     const dispatch = useDispatch();
     const user     = useSelector(s => s.user.data);
 
-    const mountRef     = useRef(null);
-    const engineRef    = useRef(null);   // holds { router, cleanup }
-
-    const [phase,    setPhase]    = useState('loading'); // loading | running | finished
+    const [phase,    setPhase]    = useState('loading');
     const [steps,    setSteps]    = useState([]);
     const [stepIdx,  setStepIdx]  = useState(0);
     const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE' });
     const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
-    const [activeEngine, setActiveEngine] = useState(null); // { type: 'react', component: LazyEx }
+    const [activeEngine, setActiveEngine] = useState(null);
     
-    // Adaptive Tracking Refs
-    const wrongStreakRef = useRef(0);
-    const sessionStartTimeRef = useRef(Date.now());
+    // Application Service Orchestrator
+    const sessionRef = useRef(null);
 
-    // ── Derive biome color ────────────────────────────────────────────────────
     const biomeColor = location.state?.biomeColor || SUBJECT_COLOR[meta.subject] || '#7c3aed';
     const gemFile    = location.state?.gemFile    || `${meta.subject}_gem.svg`;
 
-    // ── Cleanup helper — kills all engine side-effects ────────────────────────
-    const cleanupEngine = useCallback(() => {
-        if (window.ManyaIntervals) {
-            window.ManyaIntervals.forEach(clearInterval);
-            window.ManyaIntervals = [];
-        }
-        document.onmousemove  = null;
-        document.ontouchmove  = null;
-        document.onmouseup    = null;
-        document.ontouchend   = null;
-        window.__manyaIsTyping = false;
-    }, []);
-
-    // ── Expose next() so vanilla engines can call window.QuestRunner.next() ──
-    useEffect(() => {
-        window.QuestRunner = { 
-            next: () => advanceStep(),
-            enableButton: (label) => setBtnState(s => ({ ...s, enabled: true, label: label || s.label })),
-            disableButton: () => setBtnState(s => ({ ...s, enabled: false })),
-            setIsTyping: (val) => {
-                window.__manyaIsTyping = val; 
-                setBtnState(s => ({ ...s, enabled: !val }));
-            },
-            // DB Bridging Callbacks
-            onSimulationSubmit: (result) => handleEngineResult(result),
-            captureSimulationResult: (isCorrect, score, total) => {
-                handleEngineResult({ isCorrect, score, total, type: 'legacy_capture' });
-            }
-        };
-        // Legacy support mapping
-        window.ManyaQuestRunner = window.QuestRunner;
-        
-        return () => { 
-            delete window.QuestRunner; 
-            delete window.ManyaQuestRunner;
-        };
-    }, []); // Added dependency array for safety
-
-    /**
-     * DYNAMIC METADATA EXTRACTOR
-     * Derives conceptId and variant from filename or step data
-     */
-    const deriveMetadata = useCallback((step) => {
-        const identifier = step.file || step.id || 'unknown';
-        const { conceptId, variant } = masteryService.parseId(identifier);
-        
-        let pool = 'no';
-        const isQuiz = step.mode === 'quiz' || (step.data?.mode === 'quiz') || step.engineType?.includes('FETCHER');
-        const isPuzzle = step.mode === 'puzzle' || (step.data?.mode === 'puzzle');
-        
-        if (isQuiz || isPuzzle) pool = 'yes';
-        if (identifier.includes('recap') || identifier.includes('study')) pool = 'recap';
-        
-        return { conceptId, variant, pool };
-    }, []);
-
-    // ── Initial load: resolve steps from location.state ───────────────────────
+    // ── INITIAL BOOT ──────────────────────────────────────────────────────────
     useEffect(() => {
         const state = location.state;
         if (!state) { navigate('/library'); return; }
@@ -185,16 +78,11 @@ export default function QuestRunner() {
         async function init() {
             try {
                 let resolvedSteps, resolvedMeta;
-
                 if (state.steps && Array.isArray(state.steps)) {
-                    // Option B: pre-built steps from QuestFactory
                     resolvedSteps = state.steps;
                     resolvedMeta  = { title: state.title || 'Quest', subject: state.subject || 'math' };
                 } else {
-                    // Option A: direct launch from Library
-                    const { steps: s, meta: m } = await loadQuestSteps(
-                        state.subject, state.unitId, state.questFolder, state.file
-                    );
+                    const { steps: s, meta: m } = await loadQuestSteps(state.subject, state.unitId, state.questFolder, state.file);
                     resolvedSteps = s;
                     resolvedMeta  = { title: state.label || m.topic || 'Quest', subject: state.subject || 'math' };
                 }
@@ -203,9 +91,12 @@ export default function QuestRunner() {
 
                 setSteps(resolvedSteps);
                 setMeta(resolvedMeta);
-                setStepIdx(0);
+                
+                // Initialize Application Service!
+                sessionRef.current = new QuestSession(resolvedSteps, resolvedMeta);
+                setStepIdx(sessionRef.current.stepIndex);
+                
                 setPhase('running');
-
             } catch (err) {
                 console.error('[QuestRunner] init failed:', err);
                 dispatch(addToast({ message: 'Could not load quest content.', type: 'error' }));
@@ -213,369 +104,203 @@ export default function QuestRunner() {
             }
         }
         init();
-        return cleanupEngine;
-    }, []); // run once on mount
+        
+        return () => {
+            window.__manyaIsTyping = false; // safety cleanup
+        };
+    }, [location.state, navigate, dispatch]);
 
-    // ── Render a step whenever stepIdx changes and phase === 'running' ────────
+    // ── ENGINE MOUNT HOOK ─────────────────────────────────────────────────────
     useEffect(() => {
         if (phase !== 'running' || steps.length === 0) return;
-        renderStep(steps[stepIdx]);
-    }, [phase, stepIdx, steps]);
+        const currentStep = steps[stepIdx];
+        if (!currentStep) return;
 
-    // ── RENDER STEP ───────────────────────────────────────────────────────────
-    async function renderStep(step) {
-        if (!step) return;
-        cleanupEngine();
+        audioService.whoosh();
 
-        // Trigger transition sound
-        window.ManyaAudio?.whoosh();
-
-        const { engineType, data, mode } = step;
-        const isImmersive = IMMERSIVE_ENGINES.has(engineType);
-        const isWait      = WAIT_ENGINES.has(engineType);
-
-        // Set footer button state
-        setBtnState({
-            enabled: !isWait,
-            label: stepIdx === steps.length - 1 ? 'FINISH' : 'CONTINUE',
-        });
-
-        // Hide footer for immersive engines
-        const footer = document.getElementById('qr-footer-mount');
-        if (footer) {
-            const isEnglish = meta.subject === 'english';
-            footer.style.display = (isImmersive && !isEnglish) ? 'none' : '';
-        }
-
-        // 1. Check if it's a React-native engine FIRST (independent of mountRef)
-        const engineMeta = ENGINE_REGISTRY[engineType] || { type: 'legacy' };
-        
-        if (engineMeta.type === 'react') {
-            setActiveEngine({
-                ...engineMeta,
-                data: data
-            });
+        const engineType = currentStep.engineType || 'UNKNOWN';
+        let engineMeta;
+        try {
+            engineMeta = getEngine(engineType);
+        } catch (e) {
+            console.error(e);
+            dispatch(addToast({ message: `Engine ${engineType} not registered!`, type: 'error' }));
+            advanceStep();
             return;
         }
 
-        // --- LEGACY ENGINE BRIDGE REMOVED ---
-        setActiveEngine(null); 
-        console.warn(`[QuestRunner] Attempted to load legacy engine "${engineType}" but the bridge was removed.`);
-    }
+        const isImmersive = engineMeta.isImmersive;
+        const isWait      = engineMeta.isWait;
 
-    // ── RESULT HANDLING (DB BRIDGING) ─────────────────────────────────────────
-    const handleEngineResult = useCallback((result) => {
-        console.log("[QuestRunner] Received Engine Result:", result);
+        setBtnState({ enabled: !isWait, label: stepIdx === steps.length - 1 ? 'FINISH' : 'CONTINUE' });
+
+        const footer = document.getElementById('qr-footer-mount');
+        if (footer) {
+            footer.style.display = (isImmersive && meta.subject !== 'english') ? 'none' : '';
+        }
+
+        setActiveEngine({ ...engineMeta, data: currentStep.data });
+    }, [phase, stepIdx, steps, meta.subject, dispatch]); // Removed advanceStep from deps intentionally
+
+    // ── CORE ORCHESTRATION BRIDGE ─────────────────────────────────────────────
+    const handleEngineResult = useCallback(async (result) => {
+        if (!sessionRef.current) return;
         
-        const currentStep = steps[stepIdx];
-        const engineType = currentStep?.engineType || result.type || 'unknown';
-        const isSimulation = result.type === 'simulation' || result.type === 'legacy_capture' || IMMERSIVE_ENGINES.has(engineType);
-
-        // 1. APPLY UNIFIED SCORING PROTOCOL (USP) IF SIMULATION
-        let usp = null;
-        if (isSimulation) {
-            usp = calculateUSP({
-                accuracy: result.accuracy ?? (result.score && result.total ? (result.score / result.total) : (result.isCorrect ? 1.0 : 0.0)),
-                mistakes: result.mistakes || 0,
-                timeSpentMs: result.timeSpentMs || (Date.now() - sessionStartTimeRef.current), // Fallback to session start
-                engineType: engineType
-            }, meta.subject);
-            console.log(`📊 [QuestRunner] USP Mastery Score: ${usp.masteryScore}%`, usp);
-        }
-
-        // 2. Update Score/XP in Redux
-        const isCorrect = usp ? usp.isPassing : result.isCorrect;
-        if (isCorrect) {
-            const xpAmount = usp ? Math.floor(usp.masteryScore * 0.5) : (result.score ? result.score * 10 : 10);
-            dispatch(awardGems({ subject: meta.subject, amount: 0, xp: xpAmount }));
-        }
-
-        // 2. Intelligent Adaptive Tracking
-        const { conceptId, variant, pool } = deriveMetadata(currentStep);
+        // Delegate domain rules entirely to the QuestSession Application service
+        const outcome = await sessionRef.current.processResult(result);
         
-        // Track Frustration
-        const frustration = calculateFrustration({
-            consecutiveWrong: wrongStreakRef.current + (result.isCorrect ? 0 : 1),
-            hintCount: 0, // TODO: Pull from engine state if available
-            questionsAnswered: stepIdx + 1
-        });
-
-        // Push to Supabase via SyncService
-        if (!result.type?.includes('adaptive_')) {
-            syncService.pushAnswer(meta.subject, {
-                questionId: currentStep.file || currentStep.id || currentStep.topic || 'unknown_step',
-                concept_id: conceptId,
-                variant: variant,
-                isCorrect: isCorrect,
-                selectedAnswer: result.selectedAnswer || 'SIM_COMPLETE',
-                correctAnswer: result.correctAnswer || 'SIM_COMPLETE',
-                timeSpentMs: result.timeSpentMs || (usp ? usp.timeSpentMs : 10000),
-                hintUsed: result.hintUsed || false,
-                frustrationLevel: frustration.score,
-                pool: pool,
-                engine_type: engineType,
-                usp_data: usp // Store full USP breakdown
-            });
+        if (outcome.xpEarned > 0) {
+            dispatch(awardGems({ subject: meta.subject, amount: 0, xp: outcome.xpEarned }));
         }
 
-        // 3. Streak-based / Mercy Recap Injection
-        if (!result.isCorrect) {
-            wrongStreakRef.current++;
-            const threshold = meta.nodeType === 'PRACTICE' ? 1 : 3;
-            // No automatic recaps in WARMUP
-            if (wrongStreakRef.current >= threshold && meta.nodeType !== 'WARMUP') {
-                console.log(`🚨 [QuestRunner] ${wrongStreakRef.current} Wrong! Injecting Recap...`);
-                injectRecapStep(conceptId);
-                wrongStreakRef.current = 0;
-            }
-        } else {
-            wrongStreakRef.current = 0;
+        if (outcome.shouldInjectRecap) {
+            const newSteps = sessionRef.current.injectRecap(outcome.conceptId);
+            setSteps(newSteps); // Trigger react re-render to update progress bar length
+            dispatch(addToast({ message: "Need a quick review? Let's take a look!", type: "info" }));
         }
-
-        // 4. Logic for specific engine types if needed
+        
         if (result.type === 'simulation') {
             dispatch(addToast({ message: "Simulation Complete!", type: "success" }));
         }
 
-        // 3. Auto-enable button or advance if appropriate
-        if (result.isCorrect) {
+        if (outcome.buttonEnabled || result.isCorrect) {
             setBtnState(s => ({ ...s, enabled: true }));
         }
-    }, [dispatch, meta.subject, steps, stepIdx, deriveMetadata]);
+    }, [dispatch, meta.subject]);
 
-    /**
-     * INJECT RECAP STEP
-     * Finds a study/recap resource for the current concept and inserts it into the queue
-     */
-    function injectRecapStep(conceptId) {
-        // Try to find a study card or recap json in the pre-loaded steps or common locations
-        // For now, we'll try to find any step that HAS 'study' or 'recap' in its name
-        // In a real scenario, we'd search the curriculumService
-        const recapStep = {
-            id: `injected-recap-${Date.now()}`,
-            engineType: 'GALLERY_STUDY', // Default recap engine
-            file: `study_${conceptId}.json`,
-            mode: 'study',
-            data: { isRecap: true, conceptId }
-        };
+    const finishQuest = useCallback(() => {
+        setPhase('finished');
+        const gemsEarned = 3;
+        dispatch(updateProfile({ diamonds: (user?.diamonds || 0) + gemsEarned }));
+        dispatch(addToast({ message: `🏆 Quest complete! +${gemsEarned} gems earned`, type: 'success' }));
+        
+        const { subject, questKey, nodeType } = location.state || {};
+        const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
+        
+        if (questKey && nodeType && !hasFetcher) {
+            const result = saveNodeCompletion(subject, questKey, nodeType, 100);
+            setJustFinished({ subject, questKey, nodeType, mastery: 100, unlocked: result.unlocked, nextNode: result.nextNode });
+        }
 
-        dispatch(addToast({ 
-            message: "Need a quick review? Let's take a look!", 
-            type: "info" 
-        }));
+        audioService.finish();
+        setTimeout(() => navigate(-1), 300);
+    }, [dispatch, location.state, navigate, steps, user]);
 
-        setSteps(prev => {
-            const newSteps = [...prev];
-            newSteps.splice(stepIdx + 1, 0, recapStep);
-            return newSteps;
-        });
-    }
-
-    // ── ADVANCE ───────────────────────────────────────────────────────────────
-    function advanceStep() {
-        // If user is in a typing animation, stop-typing FIRST to show the full text
+    const advanceStep = useCallback(() => {
         if (window.__manyaIsTyping) {
-            console.log("[QuestRunner] Skipping typing animation...");
             window.__manyaIsTyping = false;
             window.dispatchEvent(new CustomEvent('stop-typing'));
             setBtnState(s => ({ ...s, enabled: true }));
             return;
         }
 
-        const nextIdx = stepIdx + 1;
-        console.log(`[QuestRunner] Attempting to advance from ${stepIdx} to ${nextIdx} (Total: ${steps.length})`);
+        if (!sessionRef.current) return;
         
-        if (nextIdx < steps.length) {
-            setStepIdx(nextIdx);
-        } else if (phase !== 'finished') {
+        sessionRef.current.advance();
+        setStepIdx(sessionRef.current.stepIndex); // Trigger React render
+        
+        if (sessionRef.current.isFinished) {
             finishQuest();
         }
-    }
-
-    // ── FINISH ────────────────────────────────────────────────────────────────
-    function finishQuest() {
-        cleanupEngine();
-        setPhase('finished');
-
-        // Award gems — 3 gems per quest completion
-        const gemsEarned = 3;
-        dispatch(updateProfile({ diamonds: (user?.diamonds || 0) + gemsEarned }));
-        dispatch(addToast({ message: `🏆 Quest complete! +${gemsEarned} gems earned`, type: 'success' }));
-        
-        // NEW LOGIC TO UNLOCK NEXT NODE FOR PURE-SIMULATION PATHS (like EXPLORE)
-        const { subject, questKey, nodeType } = location.state || {};
-        const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
-        
-        // If there was no fetcher to record the mastery natively, we record a perfect score (100%) automatically
-        if (questKey && nodeType && !hasFetcher) {
-            const result = saveNodeCompletion(subject, questKey, nodeType, 100);
-            
-            setJustFinished({
-                subject,
-                questKey,
-                nodeType,
-                mastery: 100,
-                unlocked: result.unlocked,
-                nextNode: result.nextNode
-            });
-        }
-
-        // Trigger completion sound
-        window.ManyaAudio?.finish();
-
-        // Exit seamlessly
-        setTimeout(() => navigate(-1), 300);
-    }
-
-    // ── PROGRESS ──────────────────────────────────────────────────────────────
-    const progressPct = steps.length > 0
-        ? Math.round(((stepIdx + 1) / steps.length) * 100)
-        : 0;
+    }, [finishQuest]);
 
     // ── RENDER ────────────────────────────────────────────────────────────────
+    const progressPct = steps.length > 0 ? Math.round(((stepIdx + 1) / steps.length) * 100) : 0;
+
     return (
-        <div className="quest-runner-shell" style={{ '--biome-color': biomeColor }}>
+        <QuestBusProvider state={{
+            advanceStep,
+            enableButton: (label) => setBtnState(s => ({ ...s, enabled: true, label: label || s.label })),
+            disableButton: () => setBtnState(s => ({ ...s, enabled: false })),
+            setIsTyping: (val) => {
+                window.__manyaIsTyping = val; 
+                setBtnState(s => ({ ...s, enabled: !val }));
+            },
+            onEngineResult: handleEngineResult
+        }}>
+            <div className="quest-runner-shell" style={{ '--biome-color': biomeColor }}>
+                <header className="qr-classic-header">
+                    <button className="qr-back-btn" onClick={() => navigate(-1)}>
+                        <X size={18} strokeWidth={3} />
+                    </button>
+                    <div className="flex items-center justify-center flex-1">
+                        <span className="qr-subject-tag">{meta.subject}</span>
+                    </div>
+                    <div className="qr-progress-counter">
+                        <img src={getGem(gemFile)} className="w-5 h-5 object-contain" alt="gem" onError={e => e.target.style.display = 'none'} />
+                        <span>{stepIdx + 1}<span className="opacity-30 mx-0.5">/</span>{steps.length}</span>
+                    </div>
+                    <div className="qr-progress-bar"><div className="fill" style={{ width: `${progressPct}%` }} /></div>
+                </header>
 
-            {/* ── HEADER (Slick Glass HUD) ── */}
-            <header className="qr-classic-header">
-                <button
-                    className="qr-back-btn"
-                    onClick={() => { cleanupEngine(); navigate(-1); }}
-                    aria-label="Exit quest"
-                >
-                    <X size={18} strokeWidth={3} />
-                </button>
-
-                <div className="flex items-center justify-center" style={{ flex: 1 }}>
-                    <span className="qr-subject-tag">
-                        {meta.subject}
-                    </span>
-                </div>
-
-                <div className="qr-progress-counter">
-                    <img
-                        src={getGem(gemFile)}
-                        className="w-5 h-5 object-contain"
-                        alt="gem"
-                        onError={e => { e.target.style.display = 'none'; }}
-                    />
-                    <span>
-                        {stepIdx + 1}<span className="opacity-30 mx-0.5">/</span>{steps.length}
-                    </span>
-                </div>
-
-                {/* Integrated Progress Line */}
-                <div className="qr-progress-bar">
-                    <div className="fill" style={{ width: `${progressPct}%` }} />
-                </div>
-            </header>
-
-            {/* ── CONTENT AREA (Quest Engine Mount) ── */}
-            <main className="qr-content-area scroll-smooth min-h-0">
-                <QuestErrorBoundary key={stepIdx + phase} onSkip={() => advanceStep()}>
-                    {phase === 'loading' && (() => {
-                        const cfg = getLoadingConfig(meta.subject);
-                        const randomFact = getRandomFact(meta.subject);
-
-                        return (
-                            <div className="quest-loading-overlay" style={{ 
-                                '--loader-color': cfg.color, 
-                                '--loader-dark': cfg.colorDark, 
-                                '--loader-bg': cfg.bgLight,
-                                position: 'relative',
-                                flex: 1
-                            }}>
-                                {/* Ambient Glow Blobs */}
-                                <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
-                                <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
-
-                                <div className="loader-content-card">
-                                    {/* Mascot Hero */}
-                                    <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
-                                        <img src={cfg.mascot} alt={cfg.name} className="loader-mascot-img" />
+                <main className="qr-content-area scroll-smooth min-h-0">
+                    <QuestErrorBoundary key={stepIdx + phase} onSkip={advanceStep}>
+                        {phase === 'loading' && (() => {
+                            const cfg = getLoadingConfig(meta.subject);
+                            return (
+                                <div className="quest-loading-overlay flex-1 relative" style={{ '--loader-color': cfg.color, '--loader-bg': cfg.bgLight }}>
+                                    <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
+                                    <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
+                                    <div className="loader-content-card">
+                                        <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
+                                            <img src={cfg.mascot} alt="mascot" className="loader-mascot-img" />
+                                        </div>
+                                        <h3 className="loader-title">{cfg.title}</h3>
+                                        <div className="loader-bounce-dots">
+                                            <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
+                                            <span className="loader-dot" style={{ background: cfg.color, animationDelay: '200ms' }} />
+                                            <span className="loader-dot" style={{ background: cfg.color, animationDelay: '400ms' }} />
+                                        </div>
+                                        <div className="loader-fact-card" style={{ borderColor: `${cfg.color}30` }}>
+                                            <span className="loader-fact-label" style={{ color: cfg.color }}>Did you know?</span>
+                                            <p className="loader-fact-text">{getRandomFact(meta.subject)}</p>
+                                        </div>
                                     </div>
-
-                                    {/* Title & Bounce Dots */}
-                                    <h3 className="loader-title">{cfg.title}</h3>
-                                    <div className="loader-bounce-dots">
-                                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
-                                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '200ms' }} />
-                                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '400ms' }} />
-                                    </div>
-
-                                    {/* Fun Fact Card */}
-                                    <div className="loader-fact-card" style={{ borderColor: `${cfg.color}30` }}>
-                                        <span className="loader-fact-label" style={{ color: cfg.color }}>Did you know?</span>
-                                        <p className="loader-fact-text">{randomFact}</p>
-                                    </div>
-
-                                    {/* Status */}
-                                    <p className="loader-status-text">{cfg.sub}</p>
                                 </div>
+                            );
+                        })()}
+
+                        {phase === 'running' && activeEngine && (
+                            <div className="w-full flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden bg-[var(--bg-main)]">
+                                <Suspense fallback={
+                                    <div className="flex-1 flex flex-col items-center justify-center p-20 gap-4">
+                                        <div className={`w-12 h-12 border-4 border-indigo-100 border-t-indigo-500 rounded-full animate-spin`} />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600 animate-pulse">Loading Engine...</p>
+                                    </div>
+                                }>
+                                    <activeEngine.component 
+                                        key={`${stepIdx}-${activeEngine.type}`}
+                                        data={activeEngine.data} 
+                                        onComplete={advanceStep} 
+                                        onResult={handleEngineResult}
+                                    />
+                                </Suspense>
                             </div>
-                        );
-                    })()}
+                        )}
+                    </QuestErrorBoundary>
+                </main>
 
-                    {phase === 'running' && (
-                        <div className="w-full flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden">
-                            {activeEngine?.type === 'react' ? (
-                                <div className="flex-1 min-h-0 w-full bg-[var(--bg-main)] flex flex-col">
-                                    <Suspense fallback={(() => {
-                                        const sub = meta.subject?.toLowerCase();
-                                        const color = { sst: 'amber', science: 'sky', math: 'emerald', english: 'indigo' }[sub] || 'purple';
-                                        return (
-                                            <div className="flex-1 flex flex-col items-center justify-center p-20 gap-4">
-                                                <div className={`w-12 h-12 border-4 border-${color}-100 border-t-${color}-500 rounded-full animate-spin`} />
-                                                <p className={`text-[10px] font-black uppercase tracking-widest text-${color}-600 animate-pulse`}>Loading Module...</p>
-                                            </div>
-                                        );
-                                    })()}>
-                                        <activeEngine.component 
-                                            key={`${stepIdx}-${activeEngine.type}`}
-                                            data={activeEngine.data} 
-                                            onComplete={() => {
-                                                console.log(`[QuestRunner] Engine ${activeEngine.type} completed step ${stepIdx}`);
-                                                advanceStep();
-                                            }} 
-                                            onResult={handleEngineResult}
-                                        />
-                                    </Suspense>
-                                </div>
-                            ) : (
-                                <div
-                                    ref={mountRef}
-                                    className="flex-1 w-full bg-[var(--bg-main)] vanilla-engine-mount"
-                                    id="qr-content"
-                                />
+                {phase === 'running' && !activeEngine?.hideGlobalFooter && (!(steps[stepIdx]?.data?.mode === 'quiz' || steps[stepIdx]?.mode === 'quiz' || steps[stepIdx]?.data?.mode === 'puzzle' || steps[stepIdx]?.mode === 'puzzle') || meta.subject === 'english') && (
+                    <footer id="qr-footer-mount" className={`qr-classic-footer ${activeEngine?.floatingFooter || meta.subject === 'english' ? 'qr-footer-floating' : ''}`}>
+                        <div className="flex justify-center max-w-[500px] mx-auto w-full">
+                            {btnState.label && (
+                                <button
+                                    className="manya-btn-pro w-full"
+                                    style={{ 
+                                        backgroundColor: btnState.enabled ? biomeColor : 'var(--border-subtle)',
+                                        boxShadow: btnState.enabled ? `0 6px 0 ${biomeColor}88` : 'none',
+                                        opacity: btnState.enabled ? 1 : 0.5
+                                    }}
+                                    disabled={!btnState.enabled}
+                                    onClick={advanceStep}
+                                >
+                                    {btnState.label}
+                                </button>
                             )}
                         </div>
-                    )}
-                </QuestErrorBoundary>
-            </main>
-
-            {/* ── FOOTER (CONTINUE button) ── */}
-            {phase === 'running' && !activeEngine?.hideGlobalFooter && (!(steps[stepIdx]?.data?.mode === 'quiz' || steps[stepIdx]?.mode === 'quiz' || steps[stepIdx]?.data?.mode === 'puzzle' || steps[stepIdx]?.mode === 'puzzle') || meta.subject === 'english') && (
-                <footer id="qr-footer-mount" className={`qr-classic-footer ${activeEngine?.floatingFooter || meta.subject === 'english' ? 'qr-footer-floating' : ''}`}>
-                    <div className="flex justify-center max-w-[500px] mx-auto w-full">
-                        {btnState.label && (
-                            <button
-                                className="manya-btn-pro w-full"
-                                style={{ 
-                                    backgroundColor: btnState.enabled ? biomeColor : 'var(--border-subtle)',
-                                    boxShadow: btnState.enabled ? `0 6px 0 ${biomeColor}88` : 'none',
-                                    opacity: btnState.enabled ? 1 : 0.5
-                                }}
-                                disabled={!btnState.enabled}
-                                onClick={advanceStep}
-                            >
-                                {btnState.label}
-                            </button>
-                        )}
-                    </div>
-                </footer>
-            )}
-
-
-        </div>
+                    </footer>
+                )}
+            </div>
+        </QuestBusProvider>
     );
 }

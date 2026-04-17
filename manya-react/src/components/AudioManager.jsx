@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { audioService } from '../infrastructure/audio/audioService.js';
 import { useSelector } from 'react-redux';
 import { AUDIO, getSfx } from '../config/assetUrls';
 
@@ -31,24 +32,8 @@ export default function AudioManager() {
       };
     });
 
-    // Expose global SFX trigger for legacy engines and functional components
-    window.ManyaAudio = {
-      playSFX: (name) => {
-        const sound = new Audio(getSfx(name));
-        sound.volume = isMuted ? 0 : volume;
-        sound.play().catch(() => {});
-      },
-      // Convenience aliases
-      correct: () => window.ManyaAudio.playSFX('collect-points'),
-      wrong:   () => window.ManyaAudio.playSFX('error-mistake'),
-      finish:  () => window.ManyaAudio.playSFX('applause'),
-      click:   () => window.ManyaAudio.playSFX('ui-click'),
-      whoosh:  () => window.ManyaAudio.playSFX('whoosh'),
-    };
-
     return () => {
       tracks.forEach(t => t.pause());
-      delete window.ManyaAudio;
     };
   }, []); // Run once on mount
 

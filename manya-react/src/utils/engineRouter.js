@@ -6,210 +6,172 @@ import { lazy } from 'react';
  * Maps engine types to React components or Legacy JS paths.
  */
 export const ENGINE_REGISTRY = {
-    // React-Native Engines (Migrated)
+    // ── Shared Content Engines ──────────────────────────────────────────────
     'GALLERY_STUDY': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/shared-engines/GalleryStudyEngine.jsx'))
     },
     'IMAGE_HOTSPOTS': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/shared-engines/ImageHotspotsEngine.jsx'))
-    },
-    'GLOBE_TIME_ENGINE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        floatingFooter: true,
-        component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
-    },
-    'GLOBE_ENGINE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        floatingFooter: true,
-        component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
-    },
-    'UNIVERSAL_GLOBE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        floatingFooter: true,
-        component: lazy(() => import('../engines/shared-engines/UniversalGlobeEngine.jsx'))
     },
     'READER_STUDY': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/shared-engines/ReaderStudyEngine.jsx'))
-    },
-    'ENGLISH_FETCHER': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/shared-engines/EnglishFetcherEngine.jsx'))
-    },
-    'SST_FETCHER': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/sst/SSTFetcherEngine.jsx'))
-    },
-    'MATH_FETCHER': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/math/MathFetcherEngine.jsx'))
-    },
-    'SCIENCE_FETCHER': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/science/ScienceFetcherEngine.jsx'))
     },
     'NOTE_EXPLORER': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/shared-engines/NoteExplorerEngine.jsx'))
     },
+    'MCQ_STANDALONE': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/shared-engines/MCQStandaloneEngine.jsx'))
+    },
 
-    // Legacy Engines (Still in Public/Legacy)
-    // These will be handled by the legacy loading path in QuestRunner
+    // ── Global & Map Engines ────────────────────────────────────────────────
+    'UNIVERSAL_GLOBE': {
+        type: 'react',
+        isImmersive: true,
+        floatingFooter: true,
+        component: lazy(() => import('../engines/sst/UniversalGlobeEngine.jsx'))
+    },
+    'GLOBE_ENGINE': { // Alias
+        type: 'react',
+        isImmersive: true,
+        floatingFooter: true,
+        component: lazy(() => import('../engines/sst/UniversalGlobeEngine.jsx'))
+    },
+    'SST_FETCHER': {
+        type: 'react',
+        component: lazy(() => import('../engines/sst/SSTFetcherEngine.jsx'))
+    },
+    'SST_STUDY': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/sst/SSTStudyEngine.jsx'))
+    },
+
+    // ── Math Logic & Simulations ────────────────────────────────────────────
     'SET_THEORY': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/math/SetTheoryEngine.jsx'))
     },
-    'MATH_STUDY': {
+    'MATH_FETCHER': {
         type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/math/SetStudyEngine.jsx'))
-    },
-    'VENN_PROB_ENGINE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/math/VennProbEngine.jsx'))
+        component: lazy(() => import('../engines/math/MathFetcherEngine.jsx'))
     },
     'SUBSET_GAME': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/math/SubsetGameEngine.jsx'))
     },
     'PIZZA_GAME': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/math/PizzaGameEngine.jsx'))
     },
     'BINARY_GAME': {
         type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/math/BinaryGameEngine.jsx'))
-    },
-    'BINARY_GENERATOR': {
-        type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/math/BinaryGameEngine.jsx'))
     },
     'VENN_SPOTLIGHT': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/math/VennSpotlightEngine.jsx'))
+    },
+    'VENN_PROB': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/math/VennProbEngine.jsx'))
     },
     'SET_CLASSIFIER': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/math/SetClassifierEngine.jsx'))
     },
-    '3D_SKELETON': {
+    'SET_STUDY': {
         type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/shared-engines/ThreeDStudyEngine.jsx'))
-    },
-    'HANGMAN_GAME': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/HangmanEngine.jsx'))
-    },
-    'HANGMAN_ENGINE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/HangmanEngine.jsx'))
-    },
-    'MEMORY_MATCH': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/MemoryMatchEngine.jsx'))
-    },
-    'WORDGRID_ENGINE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/WordGridEngine.jsx'))
-    },
-    'SENTENCE_TRAIN': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/SentenceTrainEngine.jsx'))
-    },
-    'HARVEST_GAME': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/HarvestEngine.jsx'))
-    },
-    'GRAMMAR_MAZE': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/GrammarMazeEngine.jsx'))
-    },
-    'MORPH_GAME': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/MorphGameEngine.jsx'))
+        isImmersive: true,
+        component: lazy(() => import('../engines/math/SetStudyEngine.jsx'))
     },
 
-    // ── Grammar Simulation Engines (Primary Education) ──────────────────────
+    // ── English & Literacy Simulations ──────────────────────────────────────
+    'ENGLISH_FETCHER': {
+        type: 'react',
+        component: lazy(() => import('../engines/english/EnglishFetcherEngine.jsx'))
+    },
     'SENTENCE_BLOCKS': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/english/SentenceBlocksEngine.jsx'))
     },
     'GARDEN_GUARD': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/english/GardenGuardEngine.jsx'))
     },
     'PUNCTUATION_STICKERS': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/english/PunctuationPortalEngine.jsx'))
     },
     'TENSE_TREEHOUSE': {
         type: 'react',
-        hideGlobalFooter: true,
+        isImmersive: true,
         component: lazy(() => import('../engines/english/TenseTreehouseEngine.jsx'))
-    },
-    'DEEP_READER': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/DeepReaderEngine.jsx'))
-    },
-    'ENGLISH_RULE_MASTER': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/EnglishRuleMasterEngine.jsx'))
-    },
-    'SYNTAX_ARCHITECT': {
-        type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/SentenceBlocksEngine.jsx'))
     },
     'CHAT': {
         type: 'react',
-        hideGlobalFooter: true,
+        isWait: true,
         component: lazy(() => import('../engines/english/ChatEngine.jsx'))
     },
-    'FUNCTIONAL_COMPOSER': {
+    'ENGLISH_RULE_MASTER': {
         type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/english/FunctionalComposerEngine.jsx'))
+        isWait: true,
+        component: lazy(() => import('../engines/english/EnglishRuleMasterEngine.jsx'))
     },
-    'MCQ_STANDALONE': {
+
+    // ── Science & 3D Interactive ────────────────────────────────────────────
+    'SCIENCE_FETCHER': {
         type: 'react',
-        hideGlobalFooter: true,
-        component: lazy(() => import('../engines/shared-engines/MCQStandaloneEngine.jsx'))
+        component: lazy(() => import('../engines/science/ScienceFetcherEngine.jsx'))
     },
+    '3D_SKELETON': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/shared-engines/ThreeDStudyEngine.jsx'))
+    },
+
+    // ── Standalone Simulations (Legacy SimulationRegistry merge) ────────────
+    'WATER_CYCLE_SIM': {
+        id: 'WaterCycleSim',
+        name: 'The Water Cycle',
+        description: 'Atmospheric physics & hydration transfer loops.',
+        category: 'Science',
+        difficulty: 'Intermediate',
+        tags: ['Nature', 'Interactive', 'Hydrology'],
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../components/simulations/WaterCycleSim.jsx'))
+    },
+    'MUSCLE_SIM': {
+        id: 'MuscleSim',
+        name: 'Muscular System',
+        description: 'Biochemical contraction & skeletal alignment.',
+        category: 'Biology',
+        difficulty: 'Advanced',
+        tags: ['Anatomy', 'Kinetic', 'Biology'],
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../components/simulations/MuscleSim.jsx'))
+    }
 };
 
 export const getEngineMetadata = (engineType) => {

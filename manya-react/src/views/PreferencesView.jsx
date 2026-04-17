@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { updateProfile } from '../store/userSlice';
 import { setVolume, toggleMute as toggleAudioMute } from '../store/audioSlice';
-import { syncService } from '../services/syncService';
+import { syncService } from '../infrastructure/sync/syncService.js';
 import { addToast } from '../store/toastSlice';
 import { IMAGES } from '../config/assetUrls';
 import { 

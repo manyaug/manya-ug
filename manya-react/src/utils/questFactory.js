@@ -12,7 +12,8 @@
 
 import { loadQuestSteps, contentUrl } from './questLoader.js';
 import { fetchEnglishQuestions } from '../services/englishMockDB.js';
-import { getQuestKey, getNodeMastery, getQuestProgress } from '../services/questProgressService.js';
+import { deriveStoryFile } from './questHelpers.js';
+import { getQuestKey, getNodeMastery, getQuestProgress } from '../domain/progress/questProgressService.js';
 
 
 /**
@@ -114,11 +115,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         return steps;
     }
 
-    // Helper: quest_01_holiday_kickoff -> "01_holiday_kickoff"
-    function deriveStoryFile(subName) {
-        if (!subName) return null;
-        return subName.replace(/^quest_/, '');
-    }
+
 
     // ── SST, Math, Science: Adaptive Fetcher with content sequencing ────────
     if (['sst', 'math', 'science'].includes(subject) && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {

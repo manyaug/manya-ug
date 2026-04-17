@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { initializeUser } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
-import { syncService } from '../services/syncService';
+import { syncService } from '../infrastructure/sync/syncService.js';
 import { ChevronLeft, Mail, Lock, LogIn, ShieldAlert } from 'lucide-react';
 import '../styles/onboarding.css'; // Reusing styles for consistency
 
