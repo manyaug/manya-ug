@@ -5,7 +5,8 @@
     padding: 10px 0 14px;
     min-height: 100vh;
     overflow-x: hidden;
-    background-color: var(--bg-primary); /* Ensure solid background */
+    background-color: var(--bg-primary);
+    /* Ensure solid background */
 }
 
 /* 1. HERO PASSPORT */
@@ -38,7 +39,8 @@
 .ring-fill {
     fill: none;
     stroke: var(--manya-purple);
-    stroke-width: 10; /* Thicker Kiddish line */
+    stroke-width: 10;
+    /* Thicker Kiddish line */
     stroke-linecap: round;
 }
 
@@ -118,7 +120,8 @@
 
 .bento-card-elite {
     background: var(--bg-card);
-    border: 4.5px solid var(--border-subtle); /* Thicker kiddish border */
+    border: 4.5px solid var(--border-subtle);
+    /* Thicker kiddish border */
     border-radius: 28px;
     padding: 20px 14px;
     display: flex;
@@ -139,15 +142,9 @@
     height: 100%;
     pointer-events: none;
     z-index: 1;
-    background: linear-gradient(
-        165deg, 
-        rgba(255, 255, 255, 0.18) 0%, 
-        rgba(255, 255, 255, 0.22) 2%, 
-        rgba(255, 255, 255, 0.05) 8%, 
-        transparent 35%
-    );
-    -webkit-mask-image: linear-gradient(to right, black 15%, rgba(0,0,0,0.5) 45%, black 85%);
-    mask-image: linear-gradient(to right, black 15%, rgba(0,0,0,0.5) 45%, black 85%);
+
+    -webkit-mask-image: linear-gradient(to right, black 15%, rgba(0, 0, 0, 0.5) 45%, black 85%);
+    mask-image: linear-gradient(to right, black 15%, rgba(0, 0, 0, 0.5) 45%, black 85%);
 }
 
 .bento-icon-box {
@@ -247,12 +244,14 @@
 }
 
 .bar-pillar.active {
-    background: var(--manya-purple) !important; /* Solid color */
+    background: var(--manya-purple) !important;
+    /* Solid color */
     box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
 }
 
 .pillar-glow {
-    display: none; /* Removed messy glows */
+    display: none;
+    /* Removed messy glows */
 }
 
 .bar-callout {
@@ -332,7 +331,8 @@
 }
 
 .fill-shine {
-    display: none; /* Gradient shine removed */
+    display: none;
+    /* Gradient shine removed */
 }
 
 /* 5. SERVICES */

@@ -58,7 +58,7 @@ const PunctuationPortalEngine = ({ data, onComplete }) => {
                 setPhase('success');
                 setTimeout(() => { setCurrentIdx(prev => prev + 1); }, 1500);
             } else {
-                setPhase('finish');
+                setTimeout(handleFinish, 1200);
             }
         } else {
             setTotalMistakes(prev => prev + 1);

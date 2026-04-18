@@ -97,7 +97,10 @@ const WordGridEngine = ({ data, onComplete }) => {
         if (isMatch) {
             setFoundWords(prev => {
                 const next = new Set(prev).add(matchedWord);
-                if (next.size === rawWords.length) setTimeout(() => setShowFinish(true), 800);
+                if (next.size === rawWords.length) {
+                    // Logic delay for visual confirmation before finishing
+                    setTimeout(handleFinish, 1200);
+                }
                 return next;
             });
             setFoundCoords(prev => {
@@ -115,7 +118,7 @@ const WordGridEngine = ({ data, onComplete }) => {
 
     const handleFinish = () => {
         const result = calculateGridScoring(foundWords, rawWords.length, seconds, startTimeRef.current);
-        if (onComplete) onComplete(result);
+        if (onComplete) onComplete({ ...result, total: rawWords.length });
     };
 
     return (
@@ -123,7 +126,7 @@ const WordGridEngine = ({ data, onComplete }) => {
             isDark={isDark} gridSize={gridSize} grid={grid} 
             foundWords={foundWords} rawWords={rawWords} 
             selection={selection} foundCoords={foundCoords} 
-            seconds={seconds} score={score} showFinish={showFinish} 
+            seconds={seconds} score={score} showFinish={false} 
             handleStart={handleStart} handleMove={handleMove} handleEnd={handleEnd} 
             onComplete={handleFinish} handleRetry={initGrid} 
         />

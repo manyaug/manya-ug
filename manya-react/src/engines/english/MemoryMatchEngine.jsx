@@ -69,7 +69,8 @@ const MemoryMatchEngine = ({ data, onComplete }) => {
     // 2. Win Observer
     useEffect(() => {
         if (cards.length > 0 && matches.size === cards.length / 2) {
-            setTimeout(() => setShowFinish(true), 600);
+            audioService.success?.();
+            setTimeout(handleFinish, 1200);
         }
     }, [matches, cards]);
 
@@ -83,7 +84,7 @@ const MemoryMatchEngine = ({ data, onComplete }) => {
 
     const handleFinish = () => {
         const result = calculateMemoryScoring(score, matches.size, cards.length / 2, startTimeRef.current);
-        if (onComplete) onComplete(result);
+        if (onComplete) onComplete({ ...result, total: cards.length / 2, isCorrect: true });
     };
 
     return (

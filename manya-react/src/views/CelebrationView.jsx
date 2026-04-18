@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X, Zap, Star, Sparkles, BookOpen, Layers, Trophy } from 'lucide-react';
 
 const CharacterMap = {
-    math:    { name: 'Manya',  image: '/assets/images/manya.png' },
-    science: { name: 'Kiki',   image: '/assets/images/kiki.png' },
-    english: { name: 'Polly',  image: '/assets/images/polly-removebg-preview.png' },
-    sst:     { name: 'Zany',   image: '/assets/images/zany.png' },
-    default: { name: 'Manya',  image: '/assets/images/manya.png' }
+    math: { name: 'Manya', image: '/assets/images/manya.png' },
+    science: { name: 'Kiki', image: '/assets/images/kiki.png' },
+    english: { name: 'Polly', image: '/assets/images/polly.png' },
+    sst: { name: 'Zany', image: '/assets/images/zany.png' },
+    default: { name: 'Manya', image: '/assets/images/manya.png' }
 };
 
 const MilestoneMap = {
@@ -55,7 +55,7 @@ const WorldClassConfetti = () => {
         let isActive = true;
 
         const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#ec4899', '#f97316', '#06b6d4'];
-        
+
         const resize = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -70,7 +70,7 @@ const WorldClassConfetti = () => {
                 const speed = Math.random() * 20 + 10;
                 this.vx = Math.cos(angle * Math.PI / 180) * speed;
                 this.vy = Math.sin(angle * Math.PI / 180) * speed;
-                
+
                 this.gravity = 0.25; // Slower fall
                 this.friction = 0.99; // Less air drag
                 this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -90,7 +90,7 @@ const WorldClassConfetti = () => {
                 this.y += this.vy;
                 this.rotation += this.rSpeed;
                 this.wobbles += 0.05;
-                
+
                 // Extremely slow decay for the "50 second" stay
                 if (this.y > canvas.height * 0.8) {
                     this.opacity -= 0.005;
@@ -103,33 +103,33 @@ const WorldClassConfetti = () => {
                 ctx.rotate(this.rotation * Math.PI / 180);
                 ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
-                
+
                 const shimmer = Math.cos(this.rotation * 0.05) * this.size;
                 if (this.type === 'circle') {
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, this.size/2, Math.abs(shimmer/2), 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, 0, this.size / 2, Math.abs(shimmer / 2), 0, 0, Math.PI * 2);
                     ctx.fill();
                 } else {
-                    ctx.fillRect(-this.size/2, -shimmer/2, this.size, shimmer);
+                    ctx.fillRect(-this.size / 2, -shimmer / 2, this.size, shimmer);
                 }
                 ctx.restore();
             }
         }
 
         let particles = [];
-        
+
         const fire = (count = 40) => {
             if (!isActive) return;
             // 4 Corners
             const corners = [
-                { x: 0,            y: canvas.height, aRange: [-80, -20] }, // Bottom Left (Up/Right)
+                { x: 0, y: canvas.height, aRange: [-80, -20] }, // Bottom Left (Up/Right)
                 { x: canvas.width, y: canvas.height, aRange: [-160, -100] }, // Bottom Right (Up/Left)
-                { x: 0,            y: 0,             aRange: [20, 80] },    // Top Left (Down/Right)
-                { x: canvas.width, y: 0,             aRange: [100, 160] }   // Top Right (Down/Left)
+                { x: 0, y: 0, aRange: [20, 80] },    // Top Left (Down/Right)
+                { x: canvas.width, y: 0, aRange: [100, 160] }   // Top Right (Down/Left)
             ];
 
             corners.forEach(c => {
-                for(let i=0; i<count; i++) {
+                for (let i = 0; i < count; i++) {
                     const angle = Math.random() * (c.aRange[1] - c.aRange[0]) + c.aRange[0];
                     particles.push(new Particle(c.x, c.y, angle, i % 2 === 0 ? 'square' : 'circle'));
                 }
@@ -138,7 +138,7 @@ const WorldClassConfetti = () => {
 
         // Massive Intro Burst
         fire(80);
-        
+
         // Sustained bursts for 50 seconds
         const startTime = Date.now();
         const duration = 50000; // 50 seconds
@@ -158,7 +158,7 @@ const WorldClassConfetti = () => {
                 p.update();
                 p.draw();
             });
-            
+
             if (isActive || particles.length > 0) {
                 animationFrameId = requestAnimationFrame(render);
             }
@@ -175,33 +175,38 @@ const WorldClassConfetti = () => {
     }, []);
 
     return (
-        <canvas 
-            ref={canvasRef} 
+        <canvas
+            ref={canvasRef}
             className="fixed inset-0 pointer-events-none z-[5]"
             style={{ width: '100vw', height: '100vh' }}
         />
     );
 };
 
-const CelebrationView = ({ 
+const CelebrationView = ({
     subject = 'default',
     nodeType = 'PRACTICE',
     mastery = 0,
     score = 0,
     total = 0,
     gemsEarned = 0,
-    onCollect 
+    customTitle = null,
+    customSub = null,
+    onCollect
 }) => {
     const char = CharacterMap[subject.toLowerCase()] || CharacterMap.default;
     const isPassing = mastery >= 60;
     const milestone = MilestoneMap[nodeType.toUpperCase()] || MilestoneMap.DEFAULT;
-    const msg = isPassing ? milestone.pass : milestone.fail;
+    const msg = {
+        title: customTitle || (isPassing ? milestone.pass.title : milestone.fail.title),
+        sub: customSub || (isPassing ? milestone.pass.sub : milestone.fail.sub)
+    };
 
     return (
         <div className="celebration-arena-overlay">
             <WorldClassConfetti />
-            
-            <motion.div 
+
+            <motion.div
                 className="celebration-card-container"
                 initial={{ scale: 0.8, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -214,9 +219,9 @@ const CelebrationView = ({
 
                 {/* Hero Mascot */}
                 <div className="celebration-hero-blob">
-                    <motion.img 
-                        src={char.image} 
-                        alt={char.name} 
+                    <motion.img
+                        src={char.image}
+                        alt={char.name}
                         className="celebration-mascot-hero"
                         animate={{ y: [0, -10, 0] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -234,9 +239,9 @@ const CelebrationView = ({
                     <div className="premium-mastery-circle">
                         <svg className="w-full h-full" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="45" fill="none" stroke="#e2e8f0" strokeWidth="8" />
-                            <motion.circle 
-                                cx="50" cy="50" r="45" fill="none" 
-                                stroke={isPassing ? '#10b981' : '#f43f5e'} 
+                            <motion.circle
+                                cx="50" cy="50" r="45" fill="none"
+                                stroke={isPassing ? '#10b981' : '#f43f5e'}
                                 strokeWidth="10"
                                 strokeDasharray="283"
                                 initial={{ strokeDashoffset: 283 }}

@@ -49,7 +49,7 @@ const TenseTreehouseEngine = ({ data, onComplete }) => {
                     setPhase('active');
                 }, 1500);
             } else {
-                setPhase('finish');
+                setTimeout(handleFinishResult, 1200);
             }
         } else {
             audioService.error?.();
@@ -61,7 +61,7 @@ const TenseTreehouseEngine = ({ data, onComplete }) => {
 
     const handleFinishResult = () => {
         const result = calculateTenseScoring(totalMistakes, initialData.queries.length, startTimeRef.current);
-        if (onComplete) onComplete(result);
+        if (onComplete) onComplete({ ...result, total: initialData.queries.length });
     };
 
     return (

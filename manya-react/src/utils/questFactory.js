@@ -37,10 +37,29 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         const steps = [];
         const questKey = getQuestKey('english', unitId, questFolder);
 
+        // 🧠 HELPER: Inject Best-Fit Engine based on content structure
+        const tagStep = (s) => {
+            const hasRules = Array.isArray(s.rules) && s.rules.length > 0
+                          || Array.isArray(s.data?.rules) && s.data?.rules?.length > 0;
+            const hasText = !!(s.text || s.dialogue || s.content
+                          || s.data?.text || s.data?.dialogue || s.data?.content);
+
+            // Ignore 'UNKNOWN' — that's just the validation default, not a real engine
+            const existingType = s.engineType && s.engineType !== 'UNKNOWN' ? s.engineType : null;
+            const existingType2 = s.engine_type && s.engine_type !== 'UNKNOWN' ? s.engine_type : null;
+
+            let engineType = existingType || existingType2 || 'CHAT';
+
+            // Override based on actual content structure
+            if (hasRules) engineType = 'ENGLISH_RULE_MASTER';
+            else if (hasText) engineType = 'CHAT';
+
+            return { ...s, engineType, item_type: hasRules ? 'GRAMMAR' : 'QUEST_STORY' };
+        };
+
         // 1. EXPLORE: Load the narrative story JSON directly (CHAT + interactive games)
         if (nodeType === 'EXPLORE') {
             try {
-                // Try to find the QUEST_STORY item in the database bank first
                 const allQuestions = await fetchEnglishQuestions(questFolder);
                 const storyAnchor = allQuestions.find(q => q.type === 'QUEST_STORY' || q.item_type === 'QUEST_STORY');
                 
@@ -49,29 +68,23 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     const cdnUrl = storyAnchor.cdn_url || storyAnchor.data?.cdn_url;
 
                     if (stepsToFlatten && stepsToFlatten.length > 0) {
-                        return stepsToFlatten.map(s => ({ ...s, item_type: 'QUEST_STORY' }));
+                        return stepsToFlatten.map(tagStep);
                     } else if (cdnUrl || storyAnchor.qid) {
-                        // If it's a pointer, use the smart loader to follow the CDN link
                         const qid = storyAnchor.qid || storyAnchor.id;
                         const loaded = await loadQuestSteps('english', unitId, questFolder, qid);
-                        if (loaded.steps) {
-                            return loaded.steps.map(s => ({ ...s, item_type: 'QUEST_STORY' }));
-                        }
+                        if (loaded.steps) return loaded.steps.map(tagStep);
                     }
                 }
 
-                // Fallback to legacy file-based loader
                 const storyFile = deriveStoryFile(questFolder);
                 const fileName = storyFile.endsWith('.json') ? storyFile : `${storyFile}.json`;
                 const { steps: storySteps } = await loadQuestSteps('english', unitId, questFolder, fileName);
-                if (storySteps.length > 0) {
-                    return storySteps;
-                }
+                if (storySteps.length > 0) return storySteps.map(tagStep);
+                
             } catch (e) {
                 console.warn(`[QuestFactory] Could not load English story steps:`, e);
             }
             
-            // Fallback: Use FETCHER in story mode if all else fails
             steps.push({
                 engineType: 'ENGLISH_FETCHER',
                 topic: questFolder,
@@ -81,16 +94,15 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
             return steps;
         }
 
-        // 2. WARMUP: Rule Card Injection (e.g., rule_going_to)
+        // 2. WARMUP: Rule Card Injection (e.g., rule_going_to, dict_activities)
         if (nodeType === 'WARMUP' && resources && resources.length > 0) {
-            const ruleRes = resources.find(r => r.file.startsWith('rule_') || r.file.includes('_rule'));
+            const ruleHeuristics = ['rule_', '_rule', 'dict_', 'vocabulary_'];
+            const ruleRes = resources.find(r => ruleHeuristics.some(h => r.file.startsWith(h) || r.file.includes(h)));
             if (ruleRes) {
                 const fileName = ruleRes.file.endsWith('.json') ? ruleRes.file : `${ruleRes.file}.json`;
                 try {
                     const { steps: ruleSteps } = await loadQuestSteps('english', unitId, questFolder, fileName);
-                    if (ruleSteps.length > 0) {
-                        steps.push(...ruleSteps);
-                    }
+                    if (ruleSteps.length > 0) steps.push(...ruleSteps.map(tagStep));
                 } catch (e) {
                     console.warn(`[QuestFactory] Could not load rule card: ${fileName}`, e);
                 }

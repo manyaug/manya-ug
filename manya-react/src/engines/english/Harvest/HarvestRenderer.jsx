@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, ArrowRight } from 'lucide-react';
+import { Leaf, Sparkles, AlertCircle, Droplets, Zap } from 'lucide-react';
 
 /**
- * HARVEST RENDERER
- * Stateless UI component for the vocabulary collection game.
+ * HARVEST RENDERER v2.5 - "The Orchard Elite"
+ * -------------------------------------------------------------
+ * Premium visual system with splats, streaks, and organic signposts.
  */
-
 const HarvestRenderer = ({ 
     score, 
     winScore, 
@@ -14,137 +14,236 @@ const HarvestRenderer = ({
     side, 
     items, 
     particles, 
+    splats,
+    streak,
+    maxStreak,
     shakeKey, 
+    shakeDir,
     leftCat, 
     rightCat, 
     done, 
     won, 
-    handleTap, 
-    handleFinish, 
-    handleRetry 
+    handleTap 
 }) => {
-    const basketLeft = side === 'left' ? '10%' : '55%';
+    const basketLeft = side === 'left' ? '12%' : '53%';
+    const fruits = ['🍎', '🍇', '🍊', '🍐', '🫐', '🍓'];
+    const progress = Math.min(100, (score / winScore) * 100);
 
     return (
         <div 
-            className="flex flex-col h-full bg-[#0f1623] text-white overflow-hidden select-none font-sans relative"
+            className="flex flex-col h-full bg-[#052e16] text-white overflow-hidden select-none font-jakarta relative"
+            style={{ 
+                background: 'radial-gradient(circle at center, #065f46 0%, #052e16 100%)',
+                // Directional Recoil Shake
+                transform: shakeKey > 0 ? `translateX(${shakeDir * 12}px)` : 'none',
+                transition: shakeKey > 0 ? 'transform 0.1s cubic-bezier(0.36, 0, 0.66, -0.56)' : 'transform 0.4s ease-out'
+            }}
             onClick={handleTap}
             onTouchStart={handleTap}
         >
-            {/* HUD */}
-            <header className="flex-none flex items-center justify-between px-5 pt-8 pb-4 z-20">
-                <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-2xl px-4 py-2">
-                    <span className="text-amber-400 text-sm">⭐</span>
-                    <span className="text-lg font-black tabular-nums">{score}</span>
-                    <span className="text-[10px] text-amber-500/60 font-bold ml-1">/ {winScore}</span>
-                </div>
-                <div className="flex gap-2">
-                    {[0, 1, 2].map(i => (
-                        <span key={i} className={`text-2xl transition-all duration-300 ${i < lives ? 'opacity-100' : 'opacity-15'}`}>
-                            {i < lives ? '❤️' : '🖤'}
-                        </span>
-                    ))}
+            {/* Background Atmosphere */}
+            <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+                <Leaf className="absolute top-10 left-10 rotate-45 text-emerald-400" size={60} />
+                <Leaf className="absolute top-40 right-10 -rotate-12 text-emerald-500" size={80} />
+                <Leaf className="absolute top-[60%] left-[-20px] rotate-90 text-emerald-600" size={100} />
+                <div className="absolute bottom-[-100px] left-[-100px] w-80 h-80 bg-emerald-500/20 blur-[120px] rounded-full" />
+                <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-amber-500/10 blur-[100px] rounded-full" />
+            </div>
+
+            {/* TOP NAVIGATION: Mastery Progress */}
+            <header className="flex-none px-6 pt-12 pb-2 z-30 relative">
+                <div className="max-w-[400px] mx-auto">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                            <Sparkles size={14} className="text-amber-400" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Mastery Progress</span>
+                        </div>
+                        <div className="text-xs font-black tabular-nums text-amber-400">{score} / {winScore}</div>
+                    </div>
+                    <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden border border-white/5 backdrop-blur-md px-0.5 py-0.5">
+                        <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${progress}%` }}
+                            className="h-full bg-gradient-to-r from-amber-500 to-orange-400 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)]"
+                        />
+                    </div>
                 </div>
             </header>
 
-            {/* Lane Labels */}
-            <div className="flex-none flex px-4 gap-4 pb-2 z-20">
-                <div className={`flex-1 text-center py-5 rounded-3xl border-2 transition-all duration-200 font-black text-sm uppercase tracking-widest ${side === 'left' ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg shadow-indigo-500/30' : 'bg-white/3 border-white/8 text-slate-500'}`}>
-                    <div className="text-[9px] opacity-40 mb-1 leading-none">Lane 01</div>
-                    {leftCat}
+            {/* STREAK METER (Floating Sticky) */}
+            <AnimatePresence>
+                {streak > 1 && (
+                    <motion.div 
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="absolute left-6 top-1/2 -translate-y-1/2 z-40 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-3 flex flex-col items-center gap-4 shadow-2xl"
+                    >
+                        <div className="text-[10px] font-black uppercase writing-vertical-lr tracking-widest text-white/40 mb-2">Streak</div>
+                        <div className="relative flex flex-col items-center">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <div key={i} className={`w-1.5 h-6 rounded-full mb-1 transition-all duration-300 ${i < (streak % 5 || 5) ? 'bg-amber-400 shadow-[0_0_10px_orange]' : 'bg-white/10'}`} />
+                            ))}
+                            <div className="mt-2 text-2xl font-black italic text-amber-400">{streak}</div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* LIVES COUNTER (Floating Top Right) */}
+            <div className="absolute right-6 top-[100px] z-30 flex gap-2">
+                {[0, 1, 2].map(i => (
+                    <motion.div 
+                        key={i}
+                        animate={{ 
+                            scale: i < lives ? 1 : 0.8, 
+                            opacity: i < lives ? 1 : 0.2,
+                            y: i < lives ? 0 : 10
+                        }}
+                        className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-colors ${i < lives ? 'bg-rose-500 border-rose-400 shadow-lg shadow-rose-500/20' : 'bg-white/5 border-white/5'}`}
+                    >
+                        <span className="text-xs">❤️</span>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* ORCHARD SIGNPOSTS (Slick Glass) */}
+            <div className="flex-none flex px-6 gap-4 pt-4 pb-4 z-20">
+                <div className={`flex-1 group relative transition-all duration-500 ${side === 'left' ? 'scale-105' : 'opacity-40 grayscale-[50%]'}`}>
+                    <div className={`flex flex-col items-center justify-center py-4 rounded-[2.5rem] border-2 transition-all duration-500 relative overflow-hidden shadow-2xl ${side === 'left' ? 'bg-indigo-600/90 border-indigo-400/50 neon-glow-violet' : 'bg-white/5 border-white/10'}`}>
+                        <div className="toy-card-gloss" />
+                        <div className="text-[8px] font-black uppercase tracking-[0.2em] mb-1 opacity-50 z-10">Sign 01</div>
+                        <span className="text-xs font-black tracking-widest uppercase z-10">{leftCat}</span>
+                    </div>
                 </div>
-                <div className={`flex-1 text-center py-5 rounded-3xl border-2 transition-all duration-200 font-black text-sm uppercase tracking-widest ${side === 'right' ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-500/30' : 'bg-white/3 border-white/8 text-slate-500'}`}>
-                    <div className="text-[9px] opacity-40 mb-1 leading-none">Lane 02</div>
-                    {rightCat}
+                
+                <div className={`flex-1 group relative transition-all duration-500 ${side === 'right' ? 'scale-105' : 'opacity-40 grayscale-[50%]'}`}>
+                    <div className={`flex flex-col items-center justify-center py-4 rounded-[2.5rem] border-2 transition-all duration-500 relative overflow-hidden shadow-2xl ${side === 'right' ? 'bg-emerald-600/90 border-emerald-400/50 shadow-[0_0_30px_rgba(16,185,129,0.3)]' : 'bg-white/5 border-white/10'}`}>
+                        <div className="toy-card-gloss" />
+                        <div className="text-[8px] font-black uppercase tracking-[0.2em] mb-1 opacity-50 z-10">Sign 02</div>
+                        <span className="text-xs font-black tracking-widest uppercase z-10">{rightCat}</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Game Canvas Overlay */}
-            <div 
-                className="flex-1 relative overflow-hidden"
-                style={{ animation: shakeKey > 0 ? 'shake 0.4s ease' : 'none' }}
-            >
-                {/* Particles */}
+            {/* Game Playground */}
+            <div className="flex-1 relative overflow-hidden backdrop-blur-[2px]">
+                {/* Visual Lane Guides */}
+                <div className="absolute inset-0 flex pointer-events-none">
+                    <div className="flex-1 border-r border-white/5 bg-gradient-to-r from-white/[0.03] to-transparent" />
+                    <div className="flex-1 bg-gradient-to-l from-white/[0.03] to-transparent" />
+                </div>
+
+                {/* Catch Particles & Splats */}
                 {particles.map(p => (
-                    <div
+                    <motion.div
                         key={p.id}
-                        className="absolute w-3 h-3 rounded-full pointer-events-none"
-                        style={{ left: `${p.x}%`, top: `${p.y}%`, background: p.color, opacity: p.life, transform: `scale(${p.life})` }}
+                        initial={{ scale: 1.5, opacity: 1 }}
+                        animate={{ scale: 0, y: -40, opacity: 0 }}
+                        className="absolute w-4 h-4 rounded-full pointer-events-none z-30"
+                        style={{ left: `${p.x}%`, top: `${p.y}%`, background: p.color, boxShadow: `0 0 20px ${p.color}` }}
                     />
                 ))}
 
-                {/* Falling items */}
+                {/* JUICE SPLATS (Error Consequence) */}
+                <AnimatePresence>
+                    {splats.map(s => (
+                        <motion.div
+                            key={s.id}
+                            initial={{ scale: 0, rotate: Math.random() * 360 }}
+                            animate={{ scale: s.life, opacity: s.life > 1 ? 1 : s.life }}
+                            exit={{ opacity: 0 }}
+                            className="absolute pointer-events-none z-20 mix-blend-screen"
+                            style={{ left: `${s.x}%`, top: `${s.y}%`, transform: 'translate(-50%,-50%)' }}
+                        >
+                            <div className="w-24 h-24 bg-rose-500/40 rounded-full blur-2xl flex items-center justify-center">
+                                <Droplets className="text-rose-400" size={40} />
+                            </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+
+                {/* Spawning Fruits */}
                 <AnimatePresence>
                     {items.map(item => (
                         <div
                             key={item.id}
-                            className="absolute pointer-events-none flex flex-col items-center gap-1"
+                            className="absolute pointer-events-none flex flex-col items-center gap-2"
                             style={{ left: `${item.x}%`, top: `${item.y}%`, transform: 'translate(-50%,-50%)' }}
                         >
-                            <div className={`w-14 h-14 rounded-3xl border-2 shadow-2xl flex items-center justify-center ${item.cat === leftCat ? 'bg-indigo-600 border-indigo-400' : 'bg-emerald-600 border-emerald-400'}`}>
-                                <span className="text-2xl">🍎</span>
-                            </div>
-                            <div className="px-3 py-1 bg-slate-900/80 backdrop-blur rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg">
+                            <motion.div 
+                                initial={{ scale: 0, rotate: -30 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                className={`w-14 h-14 rounded-[1.8rem] border-2 shadow-2xl flex items-center justify-center relative ${item.cat === leftCat ? 'bg-indigo-500 border-indigo-300 shadow-indigo-500/20' : 'bg-emerald-500 border-emerald-300 shadow-emerald-500/20'}`}
+                            >
+                                <div className="toy-card-gloss" />
+                                <span className="text-2xl filter drop-shadow-md z-10">{fruits[item.id % fruits.length]}</span>
+                            </motion.div>
+                            <div className="px-3 py-1 bg-black/60 shadow-2xl backdrop-blur-md rounded-xl border border-white/10 text-[9px] font-black uppercase tracking-widest text-white/90">
                                 {item.text}
                             </div>
                         </div>
                     ))}
                 </AnimatePresence>
 
-                {/* Basket */}
+                {/* PREMIUM BASKET */}
                 <div
-                    className="absolute bottom-4 transition-all duration-150 ease-out pointer-events-none"
-                    style={{ left: basketLeft, width: '40%' }}
+                    className="absolute bottom-12 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none z-30"
+                    style={{ left: basketLeft, width: '35%' }}
                 >
                     <div className="relative mx-auto flex flex-col items-center w-[120px]">
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-4 bg-black/30 rounded-full blur-md" />
-                        <div className="w-full h-20 bg-gradient-to-b from-amber-500 to-amber-700 rounded-b-[40px] rounded-t-2xl border-t-8 border-amber-400 flex items-center justify-center shadow-2xl shadow-amber-500/30 overflow-hidden">
-                            <span className="text-3xl">🧺</span>
+                        {/* Shadow */}
+                        <div className="absolute bottom-[-5px] left-1/2 -translate-x-1/2 w-24 h-6 bg-black/50 rounded-full blur-xl animate-pulse" />
+                        
+                        <div className={`w-full h-20 bg-gradient-to-b from-[#b45309] to-[#78350f] rounded-b-[40px] rounded-t-2xl border-t-[8px] border-[#f59e0b] shadow-2xl relative overflow-hidden transition-all duration-300 ${shakeKey > 0 ? 'scale-95 brightness-150' : 'scale-100'}`}>
+                            <div className="toy-card-gloss" />
+                            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'repeating-linear-gradient(45deg, white, white 2px, transparent 2px, transparent 10px)' }} />
+                            <span className="text-3xl filter drop-shadow-lg scale-110 z-10 transition-transform active:scale-125">🧺</span>
+                            
+                            {/* Streak Aura */}
+                            <AnimatePresence>
+                                {streak > 5 && (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: [0, 0.5, 0] }}
+                                        transition={{ repeat: Infinity, duration: 2 }}
+                                        className="absolute inset-0 bg-amber-400 blur-2xl opacity-20 pointer-events-none"
+                                    />
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>
 
-                {/* Start Hint */}
-                {score === 0 && !done && (
-                    <div className="absolute bottom-32 inset-x-0 flex justify-center pointer-events-none">
-                        <div className="flex gap-4 animate-bounce">
-                            <div className="px-5 py-3 bg-white/5 border border-white/8 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400">← Tap Left</div>
-                            <div className="px-5 py-3 bg-white/5 border border-white/8 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400">Tap Right →</div>
-                        </div>
-                    </div>
-                )}
+                {/* Interactive Controls (Tap Zones) */}
+                <div className="absolute bottom-0 inset-x-0 h-40 flex z-40">
+                    <div className="flex-1 active:bg-white/[0.05] transition-colors rounded-tr-[40px]" />
+                    <div className="flex-1 active:bg-white/[0.05] transition-colors rounded-tl-[40px]" />
+                </div>
             </div>
 
-            {/* End Screen Overlay */}
+            {/* ERROR WARNING PORTAL (Inline but premium) */}
             <AnimatePresence>
-                {done && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/70 backdrop-blur-2xl flex items-center justify-center p-8">
-                        <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="w-full max-w-sm bg-[#151e2e] rounded-[48px] p-10 text-center shadow-2xl border border-white/8">
-                            <div className={`w-24 h-24 rounded-3xl mx-auto mb-8 flex items-center justify-center text-5xl shadow-2xl ${won ? 'bg-amber-500' : 'bg-rose-600'}`}>
-                                {won ? '🏆' : '😔'}
-                            </div>
-                            <h2 className="text-4xl font-black tracking-tighter mb-2 uppercase italic">{won ? 'Finished!' : 'Missed!'}</h2>
-                            <p className="text-slate-400 text-sm mb-10">{won ? `Amazing! ${score} stars collected.` : `Only ${score} stars — try again?`}</p>
-                            <div className="flex flex-col gap-3">
-                                <button onClick={handleFinish} className="w-full h-14 bg-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-transform">
-                                    Continue Quest <ArrowRight size={20} className="inline ml-2" />
-                                </button>
-                                <button onClick={handleRetry} className="w-full py-3 text-slate-400 text-xs font-black uppercase tracking-widest hover:text-white transition-colors outline-none">
-                                    ↺ Play Again
-                                </button>
-                            </div>
-                        </motion.div>
+                {shakeKey > 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 bg-rose-500 text-white rounded-2xl flex items-center gap-3 font-black text-[10px] tracking-widest uppercase shadow-[0_10px_30px_rgba(244,63,94,0.4)]"
+                    >
+                        <AlertCircle size={16} /> Wrong Category!
                     </motion.div>
                 )}
             </AnimatePresence>
 
+            {/* Standard Footer Space Guard */}
+            <div className="h-10 bg-slate-950/40 relative z-30" />
+            
             <style>{`
-                @keyframes shake {
-                    0%,100% { transform: translateX(0); }
-                    20%      { transform: translateX(-10px); }
-                    40%      { transform: translateX(10px); }
-                    60%      { transform: translateX(-8px); }
-                    80%      { transform: translateX(8px); }
+                .writing-vertical-lr { writing-mode: vertical-lr; }
+                .neon-glow-violet {
+                    box-shadow: 0 0 20px rgba(129, 140, 248, 0.2), inset 0 0 10px rgba(129, 140, 248, 0.1);
+                    border-color: rgba(129, 140, 248, 0.5) !important;
                 }
             `}</style>
         </div>

@@ -1,13 +1,17 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Puzzle, AlertCircle } from 'lucide-react';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
+import CelebrationView from '../../views/CelebrationView.jsx';
 
 /**
- * ENGLISH SIMULATOR BRIDGE
+ * ENGLISH SIMULATOR BRIDGE v2.0
+ * --------------------------------------------------
  * Standardized wrapper for English simulations with seamless transitions.
+ * Supports "Gamified" celebrations to provide variant gratification.
  */
 const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
+    const [celebData, setCelebData] = useState(null);
     const simData = step?.data || step;
     
     if (!simData) return (
@@ -21,8 +25,19 @@ const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
     let engineType = (step.engine_type || step.engineType || simData.engine_type || simData.engineType || simData.type || 'CHAT').toUpperCase();
     const itemType = (step.item_type || simData.item_type || "").toUpperCase();
     
-    // Pedagogical Routing
-    if (engineType.includes('RULE_MASTER') || itemType === 'GRAMMAR' || itemType === 'NOTE') engineType = 'ENGLISH_RULE_MASTER';
+    // --- 🔮 PEDAGOGICAL ROUTING (Smarter Logic) ---
+    const hasRules = Array.isArray(simData.rules) && simData.rules.length > 0;
+    
+    // 1. Force RULE_MASTER only if we actually HAVE rules
+    if ((engineType.includes('RULE_MASTER') || itemType === 'GRAMMAR' || itemType === 'NOTE') && hasRules) {
+        engineType = 'ENGLISH_RULE_MASTER';
+    } 
+    // 2. Default narrative assets to CHAT (even if they were tagged as NOTE)
+    else if (engineType === 'CHAT' || itemType === 'NOTE' || itemType === 'QUEST_STORY' || itemType === 'GRAMMAR') {
+        engineType = 'CHAT';
+    }
+    
+    // 3. Specialty Game Engines
     if (engineType.includes('WORDGRID')) engineType = 'WORDGRID_ENGINE';
     if (engineType.includes('HARVEST')) engineType = 'HARVEST_GAME';
     if (engineType === 'SENTENCE_BLOCKS' || engineType === 'SYNTAX_ARCHITECT') engineType = 'SENTENCE_BLOCKS';
@@ -45,8 +60,37 @@ const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
     const EngineComponent = engineMeta.component;
     const isNarrative = engineType === 'CHAT' || nodeType === 'EXPLORE' || itemType === 'QUEST' || itemType === 'QUEST_STORY';
 
+    const handleEngineComplete = (res) => {
+        if (engineMeta.isGamified) {
+            setCelebData({
+                mastery: res?.accuracy !== undefined ? res.accuracy * 100 : 100,
+                score: res?.score || 100,
+                total: res?.total || 100,
+                gems: res?.gemsEarned || 20,
+                label: engineMeta.label || 'Activity'
+            });
+        } else {
+            onComplete({ 
+                success: res?.isCorrect ?? true, 
+                score: res?.score ?? 100, 
+                accuracy: res?.accuracy ?? 1,
+                simResults: res 
+            });
+        }
+    };
+
+    const handleCollect = () => {
+        onComplete({ 
+            success: true, 
+            score: celebData.score, 
+            accuracy: celebData.mastery / 100,
+            simResults: celebData 
+        });
+        setCelebData(null);
+    };
+
     return (
-        <div className={`flex-1 flex flex-col h-full min-h-[80vh] ${isNarrative ? 'bg-slate-950' : 'bg-white'}`}>
+        <div className={`flex-1 flex flex-col h-full min-h-[80vh] ${isNarrative ? 'bg-slate-950' : 'bg-white'} relative`}>
             <AnimatePresence mode="wait">
                 <motion.div
                     key={step.id || step.qid}
@@ -64,19 +108,28 @@ const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
                     }>
                         <EngineComponent 
                             data={simData} 
-                            onComplete={(res) => {
-                                onComplete({ 
-                                    success: res?.isCorrect ?? true, 
-                                    score: res?.score ?? 100, 
-                                    accuracy: res?.accuracy ?? 1,
-                                    simResults: res 
-                                });
-                            }}
+                            onComplete={handleEngineComplete}
                             onResult={(res) => console.debug(`📊 [Bridge] ${engineType} update:`, res)}
                             onAttempt={onAttempt}
                         />
                     </Suspense>
                 </motion.div>
+            </AnimatePresence>
+
+            {/* Gamified Celebration Overlay */}
+            <AnimatePresence>
+                {celebData && (
+                    <CelebrationView 
+                        subject="english"
+                        nodeType={nodeType}
+                        mastery={celebData.mastery}
+                        score={celebData.score}
+                        total={celebData.total}
+                        gemsEarned={celebData.gems}
+                        customTitle={`${celebData.label} Mastered!`}
+                        onCollect={handleCollect}
+                    />
+                )}
             </AnimatePresence>
         </div>
     );

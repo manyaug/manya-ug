@@ -77,7 +77,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
     }
 
     try {
-        console.log(`[QuestLoader] Fetching Vault Row: ${qid} (Sub: ${subject})`);
+        console.debug(`[QuestLoader] Fetching Vault Row: ${qid} (Sub: ${subject})`);
         
         // 2. Query Supabase Vault
         // Note: Using case-insensitive ilike for subject to catch "English" / "english" / "ENGLISH"
@@ -94,7 +94,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         const { data: vaultRows, error } = await query;
 
         if (error || !vaultRows || vaultRows.length === 0) {
-            console.log(`📡 [QuestLoader] ${qid} not found in Vault. Falling back to CDN...`);
+            console.debug(`📡 [QuestLoader] ${qid} not in Vault. Using CDN.`);
             // 🛡️ Safety Guard: Only fallback if we have valid folder paths
             if (!unitId || !questFolder) {
                 throw new Error(`Quest ${qid} missing from Vault and no local path provided.`);
@@ -150,16 +150,17 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         return finalResult;
 
     } catch (err) {
-        // 🤫 SILENT RESILIENCE: 
-        // If it's just a missing legacy file, don't scream "Major Error"
-        const isMiss = err.message?.includes('found after fallback') || err.message?.includes('Expected JSON');
+        // 🤫 SILENT RESILIENCE (Best Practice): 
+        // If it's a missing asset during an optional lookup, don't scream "Major Error"
+        const isMiss = err.message?.includes('404') || err.message?.includes('missing from Vault') || err.message?.includes('fetch_failed');
+        
         if (isMiss) {
-            console.info(`[QuestLoader] Note: No optional story JSON at ${qid}. (Using Adaptive MCQs)`);
-            return { steps: [], meta: { status: 'adaptive_only' } };
+            console.debug(`[QuestLoader] Optional asset ${qid} not found. Resuming adaptive quest.`);
+        } else {
+            console.error(`❌ [QuestLoader] Data structure error in ${qid}:`, err);
         }
         
-        console.error(`❌ [QuestLoader] Major error loading ${qid}:`, err);
-        return { steps: [], meta: { status: 'error', error: err.message } };
+        return { steps: [], meta: { status: 'fallback', error: err.message } };
     }
 }
 
@@ -211,10 +212,10 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
                         try {
                             const refRes = await fetch(refUrl);
                             const contentType = refRes.headers.get('content-type') || '';
-                            if (refRes.ok && contentType.includes('application/json')) {
+                            if (refRes.ok && (contentType.includes('application/json') || contentType.includes('text/plain'))) {
                                 step.data = await refRes.json();
                             } else {
-                                console.warn(`[QuestLoader] Skipping minor resource ${step.referencePath}: ${refRes.status}`);
+                                console.debug(`[QuestLoader] Skipping minor resource ${step.referencePath}: ${refRes.status}`);
                             }
                         } catch (_) { }
                     }

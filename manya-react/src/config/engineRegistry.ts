@@ -122,31 +122,104 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
     'SENTENCE_BLOCKS': {
         type: 'react',
         isImmersive: true,
+        isGamified: true,
+        label: "Sentence Blocks",
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/SentenceBlocksEngine.jsx'))
     },
     'GARDEN_GUARD': {
         type: 'react',
         isImmersive: true,
+        isGamified: true,
+        label: "Garden Guard",
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/GardenGuardEngine.jsx'))
     },
     'PUNCTUATION_STICKERS': {
         type: 'react',
         isImmersive: true,
+        isGamified: true,
+        label: "Punctuation Portal",
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/PunctuationPortalEngine.jsx'))
     },
     'TENSE_TREEHOUSE': {
         type: 'react',
         isImmersive: true,
+        isGamified: true,
+        label: "Tense Treehouse",
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/TenseTreehouseEngine.jsx'))
+    },
+    'WORDGRID_ENGINE': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Word Grid",
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/english/WordGridEngine.jsx'))
+    },
+    'HARVEST_GAME': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Harvest Game",
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/english/HarvestEngine.jsx'))
+    },
+    'MEMORY_MATCH': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Memory Match",
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/english/MemoryMatchEngine.jsx'))
+    },
+    'SENTENCE_TRAIN': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Sentence Train",
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/english/SentenceTrainEngine.jsx'))
+    },
+    'HANGMAN_ENGINE': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Hangman",
+        component: lazy(() => import('../engines/english/HangmanEngine.jsx'))
+    },
+    'MORPH_GAME': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Morph Game",
+        component: lazy(() => import('../engines/english/MorphGameEngine.jsx'))
+    },
+    'DEEP_READER': {
+        type: 'react',
+        isImmersive: true,
+        label: "Deep Reader",
+        component: lazy(() => import('../engines/english/DeepReaderEngine.jsx'))
+    },
+    'GRAMMAR_MAZE': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Grammar Maze",
+        component: lazy(() => import('../engines/english/GrammarMazeEngine.jsx'))
     },
     'CHAT': {
         type: 'react',
         isWait: true,
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/ChatEngine.jsx'))
     },
     'ENGLISH_RULE_MASTER': {
         type: 'react',
         isWait: true,
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/EnglishRuleMasterEngine.jsx'))
     },
 

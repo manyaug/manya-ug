@@ -1,11 +1,16 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
-    Check, X, Zap, Trophy, Compass, Lightbulb, Sparkles, AlertCircle 
+    Check, X, Zap, Trophy, Compass, Lightbulb, Sparkles, AlertCircle, ArrowRight
 } from 'lucide-react';
 
 /**
- * ENGLISH RENDERER
- * Handles the visual presentation of English MCQ questions, hints, and explanations.
+ * ENGLISH RENDERER v3.1 (SST Elite Style + Fixed Hint)
+ * --------------------------------------------------
+ * - STICKY FOOTER: Submit button stays at bottom.
+ * - SCROLLABLE HEART: Question + Options scroll if too long.
+ * - INSIGHT BANNER: Fixed hint overlap and readability.
  */
 const EnglishRenderer = ({
     currentQ,
@@ -23,112 +28,196 @@ const EnglishRenderer = ({
     frustration,
     questMeta,
     gemsEarned,
-    showGemToast
+    showGemToast,
+    onContinue
 }) => {
     return (
-        <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+        <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative bg-[#0B0E14]" style={{ maxHeight: '100%' }}>
             {showGemToast && (
-                <div className="absolute top-4 right-4 bg-indigo-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1 shadow-xl">
+                <div className="absolute top-4 right-4 bg-indigo-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1 shadow-xl shadow-indigo-500/20">
                     <Trophy size={12} /> +{gemsEarned} gems
                 </div>
             )}
 
-            <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
-                <div className="flex gap-1.5 justify-center mb-5 overflow-x-auto no-scrollbar flex-shrink-0">
+            {/* --- SCROLLABLE CONTENT AREA --- */}
+            <div className="flex-1 overflow-y-auto px-4 pt-4 scrollbar-hide pb-4">
+                <div className="flex gap-1.5 justify-center mb-6 overflow-x-auto no-scrollbar flex-shrink-0">
                     {Array.from({ length: totalQuestions }).map((_, i) => (
-                        <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-indigo-600 w-5' : (i < currentIdx ? 'bg-indigo-600 opacity-35 w-1.5' : 'bg-slate-200 w-1.5')}`} />
+                        <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-indigo-400 w-5 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : (i < currentIdx ? 'bg-indigo-400 opacity-30 w-1.5' : 'bg-white/10 w-1.5')}`} />
                     ))}
                 </div>
 
                 {currentQ?.isRephrased && (
-                    <div className="text-xs text-blue-600 bg-blue-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">
-                        🔄 Let's try this rule again with different words
+                    <div className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-2 font-black mb-4 text-center">
+                        🔄 Concept Replay: Different Wording
                     </div>
                 )}
+                
                 {frustration?.level === 'high' && (
-                    <div className="text-xs text-indigo-600 bg-indigo-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">
-                        💡 Tip: Watch the sentence structure closely!
+                    <div className="text-[10px] uppercase tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-4 py-2 font-black mb-4 text-center">
+                        💡 Tutor Tip: Watch the structure!
                     </div>
                 )}
 
-                {/* QUESTION CARD */}
-                <div className="bg-white rounded-[2.5rem] border-[5px] border-slate-100 px-7 py-8 mb-6 shadow-xl flex-shrink-0 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-20" />
-                    <div className="flex items-center justify-between mb-5">
+                {/* QUESTION CARD (Glowing & Glossy) */}
+                <div className="bg-[#151921] rounded-[2.5rem] border-[4px] border-indigo-500/40 neon-glow-violet px-7 py-8 mb-6 shadow-2xl relative transition-all duration-500">
+                    <div className="toy-card-gloss" />
+                    <div className="flex items-center justify-between mb-5 relative z-10">
                         <div className="flex items-center gap-2">
-                             <Compass size={14} className="text-indigo-500" />
-                             <span className="text-indigo-600 font-black text-[10px] tracking-widest uppercase">
-                                {nodeType} Activity · {currentIdx + 1}/{totalQuestions}
+                             <Compass size={14} className="text-indigo-400" />
+                             <span className="text-indigo-400/80 font-black text-[10px] tracking-widest uppercase">
+                                {nodeType} · {currentIdx + 1}/{totalQuestions}
                              </span>
                         </div>
                         
                         {!isAnswered && currentQ?.hint && (
                             <div className="relative">
-                                <button onClick={() => setHintUsed(!hintUsed)} className={`p-2.5 rounded-2xl transition-all ${hintUsed ? 'bg-pink-500 text-white shadow-lg' : 'bg-slate-50 text-slate-400'}`}>
-                                    <Lightbulb size={20} />
+                                <button 
+                                    onClick={() => setHintUsed(!hintUsed)} 
+                                    className={`p-2.5 rounded-2xl transition-all relative z-20 ${hintUsed ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
+                                >
+                                    <Lightbulb size={20} className={hintUsed ? "animate-pulse" : ""} />
                                 </button>
-                                {hintUsed && (
-                                    <div className="absolute top-full right-0 mt-3 w-64 p-4 bg-white border-2 border-pink-100 rounded-[2rem] shadow-2xl z-50 text-slate-600 text-xs font-bold leading-relaxed animate-in fade-in slide-in-from-top-2">
-                                        <div className="flex items-center gap-2 text-pink-500 mb-2 uppercase text-[10px] font-black"><Sparkles size={12} /> Tutor Hint</div>
-                                        {currentQ.hint}
-                                    </div>
-                                )}
+                                
+                                <AnimatePresence>
+                                    {hintUsed && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                                            className="mcq-hint-bubble"
+                                            style={{ 
+                                                right: '-5px', 
+                                                top: '55px', 
+                                                width: '240px',
+                                                background: '#ffffff',
+                                                opacity: 1,
+                                                border: '3px solid #f59e0b'
+                                            }}
+                                        >
+                                            <div className="toy-card-gloss" />
+                                            <div className="mcq-hint-header">
+                                                <Sparkles size={14} className="text-amber-500" />
+                                                <span className="mcq-hint-badge" style={{ color: '#f59e0b' }}>Tutor Hint</span>
+                                            </div>
+                                            <p className="mcq-hint-text" style={{ color: '#1e293b', opacity: 1 }}>
+                                                "{currentQ.hint}"
+                                            </p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         )}
                     </div>
-                    <p className="text-slate-800 font-bold text-xl leading-snug">
+
+                    <p className="text-white font-bold text-xl leading-snug relative z-10">
                         {currentQ?.question || currentQ?.question_text}
                     </p>
                 </div>
 
-                {/* OPTIONS */}
-                <div className="flex flex-col gap-3 flex-shrink-0">
-                    {currentQ?.options?.map((opt, i) => (
-                        <button
-                            key={i}
-                            disabled={isAnswered}
-                            onClick={() => setSelectedOption(opt)}
-                            className={`p-5 rounded-[2rem] text-left font-bold text-sm transition-all border-2 flex items-center gap-4 relative overflow-hidden ${
-                                isAnswered 
-                                ? (opt === correctText ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : (opt === selectedOption ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-slate-50 border-transparent opacity-40'))
-                                : (opt === selectedOption ? 'bg-indigo-50 border-indigo-500 text-indigo-700 scale-[1.02] shadow-lg' : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200 shadow-sm')
-                            }`}
-                        >
-                            <span className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black ${
-                                isAnswered 
-                                ? (opt === correctText ? 'bg-emerald-500 text-white' : (opt === selectedOption ? 'bg-rose-500 text-white' : 'bg-slate-200 text-slate-400'))
-                                : (opt === selectedOption ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-400')
-                            }`}>
-                                {String.fromCharCode(65 + i)}
-                            </span>
-                            <span className="flex-1">{opt}</span>
-                            {isAnswered && opt === correctText && <Check size={18} className="text-emerald-500" strokeWidth={4} />}
-                            {isAnswered && opt === selectedOption && opt !== correctText && <X size={18} className="text-rose-500" strokeWidth={4} />}
-                        </button>
-                    ))}
-                </div>
+                {/* OPTIONS (SST-Style Premium Buttons) */}
+                <div className="flex flex-col gap-3">
+                    {currentQ?.options?.map((opt, i) => {
+                        const isSelected = opt === selectedOption;
+                        let cls = "mcq-fe-btn transition-all duration-300";
+                        if (isAnswered) {
+                            if (opt === correctText) cls += " mcq-fe-correct";
+                            else if (isSelected) cls += " mcq-fe-wrong";
+                            else cls += " mcq-fe-faded";
+                        } else if (isSelected) {
+                            cls += " mcq-fe-selected";
+                        }
 
-                <div className="mt-auto pb-8">
-                    {!isAnswered ? (
-                        <button
-                            onClick={handleSubmit}
-                            disabled={!selectedOption}
-                            className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
-                                selectedOption ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:translate-y-1' : 'bg-slate-200 text-slate-400 border-b-[4px] border-slate-300'
-                            }`}
-                        >
-                            <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
-                        </button>
-                    ) : (
-                        <div className={`w-full h-16 rounded-full flex items-center justify-center gap-3 font-black text-xs tracking-widest uppercase border-2 ${userWasCorrect ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-rose-50 border-rose-100 text-rose-600'}`}>
-                            {userWasCorrect ? <>Magnificent! Keep going! <Check size={18} /></> : <>Analyzing solution... <AlertCircle size={18} /></>}
-                        </div>
-                    )}
+                        return (
+                            <button
+                                key={i}
+                                disabled={isAnswered}
+                                onClick={() => setSelectedOption(opt)}
+                                className={cls}
+                                style={{
+                                    borderColor: isSelected && !isAnswered ? 'rgba(129, 140, 248, 0.8)' : undefined,
+                                    background: isSelected && !isAnswered ? 'rgba(129, 140, 248, 0.1)' : undefined
+                                }}
+                            >
+                                <div className="toy-card-gloss" />
+                                <span className={`mcq-fe-letter ${isSelected && !isAnswered ? 'bg-indigo-500 text-white' : ''}`}>
+                                    {String.fromCharCode(65 + i)}
+                                </span>
+                                <span className="mcq-fe-text">{opt}</span>
+                                {isAnswered && opt === correctText && <Check size={18} className="mcq-fe-icon correct-icon" strokeWidth={4} />}
+                                {isAnswered && isSelected && opt !== correctText && <X size={18} className="mcq-fe-icon wrong-icon" strokeWidth={4} />}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
-            
+
+            {/* --- STICKY FOOTER --- */}
+            <div className="flex-none p-6 pb-10 bg-gradient-to-t from-[#0B0E14] via-[#0B0E14]/90 to-transparent">
+                {!isAnswered ? (
+                    <button
+                        onClick={handleSubmit}
+                        disabled={!selectedOption}
+                        className={`w-full h-16 rounded-[2rem] font-black text-sm tracking-[0.15em] uppercase transition-all flex items-center justify-center gap-3 relative overflow-hidden shadow-2xl ${
+                            selectedOption 
+                            ? 'bg-[#58cc02] text-white shadow-[0_8px_0_#46a302] active:translate-y-1 active:shadow-none' 
+                            : 'bg-white/5 text-white/20 border border-white/5'
+                        }`}
+                    >
+                        {selectedOption && <div className="btn-toy-gloss" />}
+                        <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={16} fill="currentColor" /></span>
+                    </button>
+                ) : (
+                    <div className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
+                        {userWasCorrect ? <>Magnificent! Keep going! <Check size={18} /></> : <>Analyzing solution... <AlertCircle size={18} /></>}
+                    </div>
+                )}
+            </div>
+
+            {/* --- SOLUTION PORTAL (Portals to Body) --- */}
+            {isAnswered && !userWasCorrect && createPortal(
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
+                    <div className="relative w-full max-w-md bg-[#151921] rounded-[3rem] p-8 border border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.5)] animate-in zoom-in duration-300">
+                        <div className="toy-card-gloss" />
+                        
+                        <div className="flex items-center gap-5 mb-6">
+                            <div className="w-14 h-14 rounded-2xl bg-rose-500/20 flex items-center justify-center text-rose-500">
+                                <X size={28} strokeWidth={3} />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-black text-white tracking-tight">Not quite!</h3>
+                                <p className="text-xs font-bold text-slate-400">Let's see what happened...</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center gap-3 mb-6">
+                            <Check size={20} className="text-emerald-500" strokeWidth={3} />
+                            <div className="text-sm font-bold text-emerald-400">
+                                Correct Answer: <span className="text-white ml-1">{correctText}</span>
+                            </div>
+                        </div>
+
+                        <div className="max-h-[30vh] overflow-y-auto pr-2 mb-8 scrollbar-hide">
+                            <p className="text-slate-300 font-bold leading-relaxed text-base italic">
+                                "{currentQ.explanation || 'Look closely at the grammar rule applied here. Practice makes perfect!'}"
+                            </p>
+                        </div>
+
+                        <button 
+                            onClick={onContinue}
+                            className="w-full h-16 bg-rose-500 text-white rounded-[2rem] font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_8px_0_#9f1239] active:translate-y-1 active:shadow-none transition-all"
+                        >
+                            <div className="btn-toy-gloss" />
+                            Keep Exploring <ArrowRight size={20} />
+                        </button>
+                    </div>
+                </div>,
+                document.body
+            )}
+
             <style>{`
-                .no-scrollbar::-webkit-scrollbar { display: none; }
+                .scrollbar-hide::-webkit-scrollbar { display: none; }
+                .mcq-fe-letter.bg-indigo-500 { background-color: #6366f1 !important; border-color: #6366f1 !important; }
             `}</style>
         </div>
     );

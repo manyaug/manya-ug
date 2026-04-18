@@ -29,13 +29,18 @@ const EnglishRuleMasterEngine = ({ data, onComplete }) => {
         return () => obs.disconnect();
     }, []);
 
+    // 🛡️ AUTO-SKIP: If we have no valid rules, don't block the student.
+    // Auto-complete this step so the quest advances to the next content.
+    useEffect(() => {
+        if (!hasValidRules(rules, actualData.type)) {
+            console.warn(`[RuleMaster] No rules in data — auto-skipping step.`, { dataKeys: Object.keys(data || {}), nestedKeys: Object.keys(data?.data || data || {}) });
+            const timer = setTimeout(() => onComplete?.(), 50);
+            return () => clearTimeout(timer);
+        }
+    }, [rules, actualData.type, onComplete]);
+
     if (!hasValidRules(rules, actualData.type)) {
-        return (
-            <div className={`flex flex-col h-full items-center justify-center p-8 text-center ${isDark ? 'bg-[#0B0E14] text-slate-400' : 'bg-slate-50 text-slate-500'}`}>
-                <h3 className={`text-xl font-black mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Grammar Archive Missing</h3>
-                <button onClick={onComplete} className="mt-8 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Skip Step</button>
-            </div>
-        );
+        return null; // Render nothing while auto-skip fires
     }
 
     const nextStep = () => {

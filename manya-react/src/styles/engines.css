@@ -607,6 +607,15 @@
     --border-subtle: #1E2530;
     --glass-bg: rgba(11, 14, 20, 0.85);
     --glass-border: rgba(255, 255, 255, 0.05);
+
+    /* English Subject Themes */
+    --english-glow: #818cf8;
+    --english-bg-low: rgba(129, 140, 248, 0.1);
+}
+
+.neon-glow-violet {
+    box-shadow: 0 0 20px rgba(129, 140, 248, 0.2), inset 0 0 10px rgba(129, 140, 248, 0.1);
+    border-color: rgba(129, 140, 248, 0.5) !important;
 }
 
 .qr-content-area {

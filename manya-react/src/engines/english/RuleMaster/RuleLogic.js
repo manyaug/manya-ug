@@ -7,13 +7,36 @@
  * Normalizes input curriculum data.
  */
 export const initializeRuleData = (data) => {
-    const d = data?.data || data || {};
-    return {
-        type: d.type || "GRAMMAR_RULES",
-        topicTitle: d.topicTitle || "Essential Rules",
-        rules: d.rules || []
+    // Exhaustive search for rules across all nesting levels.
+    // The validation layer wraps data inconsistently, so rules might be at any depth.
+    const findRules = (obj) => {
+        if (!obj || typeof obj !== 'object') return [];
+        if (Array.isArray(obj.rules) && obj.rules.length > 0) return obj.rules;
+        if (obj.data && Array.isArray(obj.data.rules) && obj.data.rules.length > 0) return obj.data.rules;
+        return [];
     };
+
+    const rules = findRules(data);
+    const d = data?.data || data || {};
+
+    const result = {
+        type: d.type || data?.type || "GRAMMAR_RULES",
+        topicTitle: d.topicTitle || data?.topicTitle || "Essential Rules",
+        rules,
+        text: d.text || data?.text || '',
+        content: d.content || data?.content || '',
+    };
+
+    if (result.rules.length === 0) {
+        console.debug(`[RuleLogic] No rules found at any depth.`, {
+            topLevelKeys: Object.keys(data || {}),
+            nestedKeys: Object.keys(d),
+        });
+    }
+
+    return result;
 };
+
 
 /**
  * Validates if the rule set is valid for display.

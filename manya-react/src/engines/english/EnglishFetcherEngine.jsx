@@ -81,11 +81,23 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
                 let finalQuestions = quest.questions;
 
-                // Flatten Stories if Explore node
+                // Flatten Stories if Explore node (Modular Fallback Pattern)
                 if (nodeType === 'EXPLORE' && finalQuestions.length > 0) {
                     const storyAnchor = finalQuestions[0];
-                    const loaded = await loadQuestSteps('english', null, null, storyAnchor.qid || storyAnchor.id);
-                    if (loaded?.steps) finalQuestions = loaded.steps.map(s => ({ ...s, item_type: 'QUEST_STORY', isSimulation: true }));
+                    const unitId = data?.unitId || 'default';
+                    const targetQid = storyAnchor.qid || storyAnchor.id;
+                    
+                    const loaded = await loadQuestSteps(subject, unitId, topicId, targetQid);
+                    
+                    if (loaded?.steps?.length > 0) {
+                        finalQuestions = loaded.steps.map(s => ({ 
+                            ...s, 
+                            item_type: 'QUEST_STORY', 
+                            isSimulation: true 
+                        }));
+                    } else {
+                        console.debug(`[EnglishEngine] No optional story found for ${targetQid}. Defaulting to adaptive MCQs.`);
+                    }
                 }
 
                 setQuestions(finalQuestions);
@@ -188,6 +200,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             userWasCorrect={verifyEnglishAnswer(selectedOption, q.answer, q.options)}
             frustration={calculateFrustration(session)} questMeta={null}
             gemsEarned={gemsEarned} showGemToast={showGemToast}
+            onContinue={nextQuestion}
         />
     );
 }

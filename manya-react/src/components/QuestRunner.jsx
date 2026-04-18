@@ -280,7 +280,7 @@ export default function QuestRunner() {
                     </QuestErrorBoundary>
                 </main>
 
-                {phase === 'running' && !activeEngine?.hideGlobalFooter && (!(steps[stepIdx]?.data?.mode === 'quiz' || steps[stepIdx]?.mode === 'quiz' || steps[stepIdx]?.data?.mode === 'puzzle' || steps[stepIdx]?.mode === 'puzzle') || meta.subject === 'english') && (
+                {phase === 'running' && !activeEngine?.hideGlobalFooter && meta.subject?.toLowerCase() !== 'english' && (!(steps[stepIdx]?.data?.mode === 'quiz' || steps[stepIdx]?.mode === 'quiz' || steps[stepIdx]?.data?.mode === 'puzzle' || steps[stepIdx]?.mode === 'puzzle')) && (
                     <footer id="qr-footer-mount" className={`qr-classic-footer ${activeEngine?.floatingFooter || meta.subject === 'english' ? 'qr-footer-floating' : ''}`}>
                         <div className="flex justify-center max-w-[500px] mx-auto w-full">
                             {btnState.label && (

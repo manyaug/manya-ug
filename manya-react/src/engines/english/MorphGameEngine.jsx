@@ -51,7 +51,7 @@ const MorphGameEngine = ({ data, onComplete }) => {
 
     const handleFinish = () => {
         const result = calculateMorphScoring(hasMorphed, startTimeRef.current);
-        if (onComplete) onComplete(result);
+        if (onComplete) onComplete({ ...result, total: 150, accuracy: hasMorphed ? 1 : 0 });
     };
 
     return (

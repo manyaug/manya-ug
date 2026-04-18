@@ -60,12 +60,11 @@ const SentenceBlocksEngine = ({ data, onComplete, onResult }) => {
 
     const checkStability = () => {
         const isStable = validateStructure(slots);
-        const scoring = calculateSentenceScoring(isStable, totalMistakes, slots.length, startTime);
 
         if (isStable) {
             setPhase('success');
             audioService.success?.();
-            setTimeout(() => setPhase('finish'), 1500);
+            setTimeout(handleFinish, 1200);
         } else {
             setPhase('error');
             setTotalMistakes(prev => prev + 1);
@@ -102,22 +101,7 @@ const SentenceBlocksEngine = ({ data, onComplete, onResult }) => {
                 </button>
             </div>
 
-            {/* VICTORY OVERLAY */}
-            <AnimatePresence>
-                {phase === 'finish' && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-6">
-                        <motion.div initial={{ scale: 0.5 }} animate={{ scale: 1 }} className="bg-white dark:bg-[#151921] p-12 rounded-[56px] text-center max-w-sm w-full border-8 border-amber-400">
-                            <div className="w-24 h-24 bg-amber-400 rounded-[40px] flex items-center justify-center mx-auto mb-8 shadow-xl rotate-12">
-                                <Trophy size={56} className="text-white fill-white" />
-                            </div>
-                            <h2 className="text-4xl font-black text-slate-800 dark:text-white mb-3">Architect!</h2>
-                            <button onClick={handleFinish} className="w-full py-6 bg-indigo-600 text-white rounded-[32px] font-black text-xs tracking-[0.2em] uppercase flex items-center justify-center gap-4">
-                                Continue <ArrowRight size={20} />
-                            </button>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+
         </div>
     );
 };

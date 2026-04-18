@@ -86,7 +86,7 @@ export const LOADING_CONFIG = {
   },
   english: {
     name: 'Polly',
-    mascot: '/assets/images/polly-removebg-preview.png',
+    mascot: '/assets/images/polly.png',
     color: '#6366f1',
     colorDark: '#4f46e5',
     bgLight: 'rgba(99, 102, 241, 0.08)',
