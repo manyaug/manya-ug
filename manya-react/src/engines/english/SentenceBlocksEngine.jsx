@@ -84,22 +84,9 @@ const SentenceBlocksEngine = ({ data, onComplete, onResult }) => {
             <SentenceRenderer 
                 slots={slots} bank={bank} phase={phase} isDark={isDark} data={data} 
                 handleRemove={handleRemove} handleDrop={handleDrop} 
+                onValidate={checkStability}
+                canValidate={!slots.some(s => !s.current) && phase === 'build'}
             />
-
-            {/* Global Check Trigger */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%] max-w-md z-30">
-                <button 
-                    disabled={slots.some(s => !s.current) || phase !== 'build'}
-                    onClick={checkStability}
-                    className={`w-full py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs transition-all shadow-2xl ${
-                        slots.every(s => s.current) 
-                        ? 'bg-indigo-600 text-white shadow-indigo-500/20 hover:-translate-y-1' 
-                        : 'bg-slate-200 dark:bg-white/5 text-slate-400 dark:text-white/20'
-                    }`}
-                >
-                    Validate Structure
-                </button>
-            </div>
 
 
         </div>

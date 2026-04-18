@@ -14,7 +14,9 @@ const SentenceRenderer = ({
     isDark, 
     data, 
     handleRemove, 
-    handleDrop 
+    handleDrop,
+    onValidate,
+    canValidate
 }) => {
     return (
         <div className={`flex flex-col h-full font-jakarta overflow-hidden transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-[#FFFBEB] text-slate-800'}`}>
@@ -92,9 +94,9 @@ const SentenceRenderer = ({
                 </div>
             </div>
 
-            {/* BLOCK BANK */}
+            {/* BLOCK BANK & ACTION */}
             <div className={`p-4 sm:p-8 border-t-4 transition-all ${isDark ? 'bg-[#151921] border-white/5' : 'bg-white border-sky-100'}`}>
-                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
                     {bank.map(word => (
                         <motion.button
                             key={word.id}
@@ -105,6 +107,21 @@ const SentenceRenderer = ({
                             {word.text}
                         </motion.button>
                     ))}
+                </div>
+
+                {/* Integrated Validate Button */}
+                <div className="pt-2">
+                    <button 
+                        disabled={!canValidate}
+                        onClick={onValidate}
+                        className={`w-full py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs transition-all shadow-2xl ${
+                            canValidate 
+                            ? 'bg-indigo-600 text-white shadow-indigo-500/20 hover:-translate-y-1' 
+                            : 'bg-slate-200 dark:bg-white/5 text-slate-400 dark:text-white/20'
+                        }`}
+                    >
+                        Validate Structure
+                    </button>
                 </div>
             </div>
         </div>
