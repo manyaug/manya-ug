@@ -148,7 +148,7 @@ function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap
                     {isCompleted ? (
                         <CheckCheck size={26} strokeWidth={3} />
                     ) : isUnlocked ? (
-                        <span className="node-cap-icon">{biome.icon}</span>
+                        <span className="node-cap-icon">{unit.nodeIcon || biome.icon}</span>
                     ) : (
                         <Lock size={21} strokeWidth={2.5} />
                     )}
@@ -241,6 +241,19 @@ function SpiralView() {
         load();
     }, [sub]);
 
+    // ---- 4. UNIT DISCOVERY & STABILITY ----
+    const units = useMemo(() => {
+        if (!curriculum || !curriculum[sub]) return [];
+        
+        return curriculum[sub].units.flatMap(u =>
+            u.quests?.map((q, qIdx) => ({ 
+                ...q, 
+                unitId: u.id,
+                uniqueKey: `${sub}-${u.id}-${q.folder || q.title || qIdx}`
+            })) || []
+        );
+    }, [curriculum, sub]);
+
     // Scroll to active node after curriculum loaded
     useEffect(() => {
         if (!curriculum) return;
@@ -274,23 +287,6 @@ function SpiralView() {
     const BOTTOM_BUFFER = -10; // Let the texture sink perfectly behind the nav bar
     const TOP_BUFFER = 20;
 
-    // STABILITY LOCK: Calculate units once and hold them
-    const [stableUnits, setStableUnits] = useState([]);
-
-    useEffect(() => {
-        if (curriculum && curriculum[sub] && stableUnits.length === 0) {
-            const flat = curriculum[sub].units.flatMap(u =>
-                u.quests?.map(q => ({ 
-                    ...q, 
-                    unitId: u.id,
-                    uniqueKey: `${sub}-${u.id}-${q.folder || q.title}`
-                })) || []
-            );
-            setStableUnits(flat);
-        }
-    }, [curriculum, sub, stableUnits.length]);
-
-    const units = stableUnits;
 
     const totalTiles = Math.max(1, Math.ceil(units.length / nodesPerTile));
     const totalHeight = BOTTOM_BUFFER + TILE_HEIGHT + ((totalTiles > 1 ? totalTiles - 1 : 0) * EFFECTIVE_HEIGHT) + TOP_BUFFER;
@@ -317,6 +313,11 @@ function SpiralView() {
             const qProg = allQuestProgress[qKey] || {};
             const isFinished = qProg.MASTERY?.status === 'completed';
 
+            // Visual Variety: Alternate icons if nodes feel "repeating"
+            // Use different icons based on quest order or title (e.g. check for "Final")
+            const isFinal = (unit.title || unit.folder || "").toLowerCase().includes("final");
+            const nodeIcon = isFinal ? '🏆' : (i % 2 === 0 ? biome.icon : '✨');
+
             return {
                 unit, i,
                 coord,
@@ -324,10 +325,11 @@ function SpiralView() {
                 isUnlocked: true, // ALL QUESTS OPEN (as requested)
                 isActive: i === progress, // suggested/linear pointer
                 isCompleted: isFinished,
-                uniqueKey: unit.uniqueKey
+                uniqueKey: unit.uniqueKey,
+                nodeIcon
             };
         });
-    }, [units, allQuestProgress, progress]);
+    }, [units, allQuestProgress, progress, biome.icon]);
 
     return (
         <div className={`spiral-view animate-in ${isNightMode ? 'is-night' : ''}`}>

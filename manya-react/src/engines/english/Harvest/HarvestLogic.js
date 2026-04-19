@@ -22,8 +22,8 @@ export const initializeHarvestData = (data) => {
  */
 export const spawnHarvestItem = (wordPool, leftCat, nextId) => {
     const word = wordPool[Math.floor(Math.random() * wordPool.length)];
-    const isLeft = word.type.toUpperCase().trim() === leftCat;
-    const laneSide = isLeft ? 'left' : 'right';
+    // RANDOM LANE: Item can now fall in either lane, regardless of its correct category
+    const laneSide = Math.random() > 0.5 ? 'left' : 'right';
     
     return {
         id: nextId,
@@ -40,12 +40,11 @@ export const spawnHarvestItem = (wordPool, leftCat, nextId) => {
  * Validates a collision between the basket and an item.
  */
 export const checkHarvestCollision = (item, currentSide, leftCat, rightCat) => {
-    // catch zone: newY >= 75 && newY <= 90 && item.side === currentSide
-    const wasCaught = item.side === currentSide;
-    const isCorrect = (item.side === 'left' && item.cat === leftCat) ||
-                     (item.side === 'right' && item.cat === rightCat);
+    // Correctness is based on whether the item's category matches the Category of the Lane the basket is in
+    const isCorrect = (currentSide === 'left' && item.cat === leftCat) ||
+                     (currentSide === 'right' && item.cat === rightCat);
     
-    return { wasCaught, isCorrect };
+    return { isCorrect };
 };
 
 /**

@@ -717,35 +717,30 @@
 
 .celebration-card-container {
     width: 100%;
-    max-width: 380px;
-    background: #ffffff;
+    max-width: 400px;
+    background: #0f172a; /* PREMIUM DARK BASE */
     border-radius: 40px;
-    padding: 40px 24px 32px;
+    padding: 60px 24px 32px;
     position: relative;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
     text-align: center;
     animation: badgeAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden; /* Anchor the arc at the bottom */
 }
 
 .celebration-hero-blob {
     position: absolute;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 180px;
+    width: 140px;
     height: 140px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 70%);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 0 auto -20px;
+    position: relative;
+    z-index: 5;
 }
 
 .celebration-mascot-hero {
-    width: 140px;
-    height: 140px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
 }
 
 .celebration-close-x {
@@ -807,13 +802,13 @@
 }
 
 .ribbon-3d-fold-left {
-    left: 45px;
+    left: 15%;
     transform: skewY(15deg);
     border-radius: 4px 0 0 4px;
 }
 
 .ribbon-3d-fold-right {
-    right: 45px;
+    right: 15%;
     transform: skewY(-15deg);
     border-radius: 0 4px 4px 0;
 }
@@ -821,54 +816,52 @@
 .celebration-title-premium {
     font-size: 32px;
     font-weight: 950;
-    color: #1e293b;
+    color: #ffffff;
     margin: 0 0 8px;
     letter-spacing: -0.5px;
 }
 
 .celebration-subtext-premium {
     font-size: 15px;
-    color: #64748b;
+    color: #94a3b8;
     font-weight: 700;
     margin-bottom: 24px;
 }
 
-/* PREMIUM MASTERY GRID */
-.premium-mastery-card {
-    background: #f8fafc;
-    border-radius: 24px;
-    padding: 16px;
-    border: 2px dashed #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 30px;
-}
 
-.premium-mastery-circle {
+.premium-stats-list-celebration {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px 0 30px;
     position: relative;
-    width: 60px;
-    height: 60px;
-    flex-shrink: 0;
+    z-index: 10;
 }
 
-.premium-stats-list {
+.stat-chip-celebration {
     flex: 1;
-    text-align: left;
-}
-
-.stat-row-premium {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 4px;
+    border-radius: 20px;
     display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: 800;
-    color: #475569;
-    margin-bottom: 4px;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
 
-.stat-row-premium span.val {
-    color: #1e293b;
+.stat-chip-celebration .label {
+    font-size: 8px;
+    font-weight: 900;
+    color: #64748b;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.stat-chip-celebration .val {
+    font-size: 13px;
     font-weight: 950;
+    color: #f8fafc;
 }
 
 /* GLOSSY COLLECT BUTTON */

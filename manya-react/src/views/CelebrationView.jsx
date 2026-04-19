@@ -189,6 +189,8 @@ const CelebrationView = ({
     mastery = 0,
     score = 0,
     total = 0,
+    streak = 0,
+    maxStreak = 0,
     gemsEarned = 0,
     customTitle = null,
     customSub = null,
@@ -234,41 +236,19 @@ const CelebrationView = ({
                 <h1 className="celebration-title-premium">{msg.title}</h1>
                 <p className="celebration-subtext-premium">{msg.sub}</p>
 
-                {/* Stats Card */}
-                <div className="premium-mastery-card">
-                    <div className="premium-mastery-circle">
-                        <svg className="w-full h-full" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="#e2e8f0" strokeWidth="8" />
-                            <motion.circle
-                                cx="50" cy="50" r="45" fill="none"
-                                stroke={isPassing ? '#10b981' : '#f43f5e'}
-                                strokeWidth="10"
-                                strokeDasharray="283"
-                                initial={{ strokeDashoffset: 283 }}
-                                animate={{ strokeDashoffset: 283 - (283 * mastery) / 100 }}
-                                transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-sm font-black text-slate-800 leading-none">{mastery}%</span>
-                            <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">Mastery</span>
-                        </div>
+                {/* STATS AREA — Clean 3-chip layout */}
+                <div className="premium-stats-list-celebration">
+                    <div className="stat-chip-celebration">
+                        <span className="label">SCORE</span>
+                        <span className="val">{score}/{total}</span>
                     </div>
-
-                    <div className="premium-stats-list">
-                        <div className="stat-row-premium">
-                            <span>Questions Correct:</span>
-                            <span className="val">{score}/{total}</span>
-                        </div>
-                        <div className="stat-row-premium">
-                            <span>Gems Earned:</span>
-                            <span className="val text-amber-500">+{gemsEarned} ✨</span>
-                        </div>
-                        <div className="stat-row-premium">
-                            <span>XP Bonus:</span>
-                            <span className="val text-indigo-500">+100 XP</span>
-                        </div>
+                    <div className="stat-chip-celebration">
+                        <span className="label">MASTERY</span>
+                        <span className="val" style={{ color: mastery >= 60 ? '#10b981' : '#f43f5e' }}>{mastery}%</span>
+                    </div>
+                    <div className="stat-chip-celebration">
+                        <span className="label">GEMS</span>
+                        <span className="val" style={{ color: '#22d3ee' }}>+{gemsEarned} ✨</span>
                     </div>
                 </div>
 

@@ -12,6 +12,7 @@ import { deriveStoryFile, formatQuestTitle } from '../utils/questHelpers.js';
 let curriculumCache = null;
 let fetchPromise = null;
 let dynamicContentCache = {};
+let dynamicFetchPromise = {}; // SINGLE-FETCH LOCK for level 1.0 subjects
 
 /**
  * Pre-loads the curriculum. Should be called at app start.
@@ -130,68 +131,112 @@ function searchInSubjData(subjData, unitId, titleOrFolder) {
 }
 
 /**
- * DYNAMIC CURRICULUM DISCOVERY (Level 1.0)
- * Fetches unique topics and subtopics from the Manya Vault DB.
+ * FUZZY FOLDER MAPPING (Level 1.0 English Fix)
+ * Maps long DB topics to short GitHub folder names.
  */
-export async function fetchDynamicCurriculum(subject = 'english') {
-    if (dynamicContentCache[subject]) return dynamicContentCache[subject];
+function mapTopicToFolder(topic, subject) {
+    const t = topic.toLowerCase();
+    const s = subject.toLowerCase();
 
-    try {
-        console.log(`🌐 [Curriculum] Discovering dynamic nodes for ${subject}...`);
-
-        // 1. Fetch unique topics (Units) for this subject
-        const { data: topics, error: tErr } = await supabase
-            .from('manya_vault')
-            .select('topic')
-            .ilike('subject', subject);
-        
-        if (tErr) throw tErr;
-        
-        const uniqueTopics = [...new Set(topics.map(t => t.topic).filter(Boolean))];
-        console.log(`✅ [Curriculum] Found ${uniqueTopics.length} topics in DB.`);
-
-        const units = [];
-
-        for (const topicName of uniqueTopics) {
-            // 2. Fetch unique subtopics (Quests) for this topic
-            const { data: subtopics, error: sErr } = await supabase
-                .from('manya_vault')
-                .select('subtopic')
-                .eq('topic', topicName)
-                .ilike('subject', subject);
-
-            if (sErr) continue;
-
-            const uniqueSubtopics = [...new Set(subtopics.map(s => s.subtopic).filter(Boolean))];
-            
-            // Map subtopics to quest objects
-            const quests = uniqueSubtopics.map(subName => {
-                // Determine folder name (subtopic is already the folder name per user)
-                return {
-                    folder: subName,
-                    title: formatQuestTitle(subName),
-                    resources: [
-                        { label: 'Story', file: deriveStoryFile(subName) }
-                    ],
-                    practiceCount: 0 
-                };
-            });
-
-            units.push({
-                id: topicToId(topicName),
-                title: topicName,
-                quests: quests.sort((a,b) => a.folder.localeCompare(b.folder))
-            });
-        }
-
-        const result = { units: units.sort((a,b) => a.title.localeCompare(b.title)) };
-        dynamicContentCache[subject] = result;
-        return result;
-
-    } catch (err) {
-        console.error("❌ [Curriculum] Dynamic discovery failed:", err);
-        return { units: [] };
+    if (s === 'english') {
+        if (t.includes('holiday')) return 'holidays';
+        if (t.includes('revision')) return 'final_revision';
+        if (t.includes('primary_7') || t.includes('p7')) return 'holidays'; // P7 defaults to holidays per user repo
     }
+    
+    return topicToId(topic);
+}
+
+export async function fetchDynamicCurriculum(subject = 'english') {
+    const sKey = subject.toLowerCase();
+    if (dynamicContentCache[sKey]) return dynamicContentCache[sKey];
+    if (dynamicFetchPromise[sKey]) return dynamicFetchPromise[sKey];
+
+    dynamicFetchPromise[sKey] = (async () => {
+        try {
+            console.log(`🌐 [Curriculum] Discovering dynamic nodes for ${subject}...`);
+
+            // 1. Fetch unique topics (Units) for this subject
+            const { data: topics, error: tErr } = await supabase
+                .from('manya_vault')
+                .select('topic')
+                .ilike('subject', subject);
+            
+            if (tErr) throw tErr;
+            
+            // Normalize topic names to handle variations in case/spacing
+            const normalizedTopicMap = new Map();
+            topics.forEach(t => {
+                if (!t.topic) return;
+                const key = t.topic.trim().toLowerCase();
+                if (!normalizedTopicMap.has(key)) {
+                    normalizedTopicMap.set(key, t.topic.trim()); // Store original-ish name
+                }
+            });
+
+            const uniqueTopics = Array.from(normalizedTopicMap.values());
+            console.log(`✅ [Curriculum] Found ${uniqueTopics.length} normalized topics in DB.`);
+
+            // Step 2: Flatten all discoverable quests into a single unit for a clean linear path
+            const allDiscoverableQuests = [];
+            
+            for (const topicName of uniqueTopics) {
+                const { data: subtopics, error: sErr } = await supabase
+                    .from('manya_vault')
+                    .select('subtopic')
+                    .eq('topic', topicName)
+                    .ilike('subject', subject);
+
+                if (sErr) continue;
+
+                const rawSubtopics = [...new Set(subtopics.map(s => s.subtopic).filter(Boolean))];
+                for (const subName of rawSubtopics) {
+                    // Extract numerical index for sorting (e.g., "quest_01" -> 1)
+                    const indexMatch = subName.match(/\d+/);
+                    const sortIndex = indexMatch ? parseInt(indexMatch[0]) : 999;
+
+                    allDiscoverableQuests.push({
+                        folder: subName,
+                        sortIndex,
+                        title: formatQuestTitle(subName),
+                        resources: [ { label: 'Story', file: deriveStoryFile(subName) } ],
+                        practiceCount: 0 
+                    });
+                }
+            }
+
+            // Step 3: Natural Sort and Strict Deduplication
+            // Sort by numerical index, then deduplicate by folder name to ensure unique nodes
+            const sorted = allDiscoverableQuests.sort((a,b) => a.sortIndex - b.sortIndex);
+            
+            const uniqueQuests = [];
+            const seenFolders = new Set();
+            for (const q of sorted) {
+                if (seenFolders.has(q.folder)) continue;
+                seenFolders.add(q.folder);
+                uniqueQuests.push(q);
+            }
+
+            // Step 4: Final Unit Assembly
+            const finalUnit = {
+                id: 'english_master_path',
+                title: 'Primary 7 English',
+                quests: uniqueQuests
+            };
+
+            const result = { units: [finalUnit] };
+            dynamicContentCache[sKey] = result;
+            return result;
+
+        } catch (err) {
+            console.error("❌ [Curriculum] Dynamic discovery failed:", err);
+            return { units: [] };
+        } finally {
+            delete dynamicFetchPromise[sKey];
+        }
+    })();
+
+    return dynamicFetchPromise[sKey];
 }
 
 

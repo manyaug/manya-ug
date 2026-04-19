@@ -88,10 +88,9 @@ function QuestPathView() {
         if (justFinished && justFinished.questKey === questKey && justFinished.unlocked) {
             const fromIdx = NODE_ORDER.indexOf(justFinished.nodeType);
             const toIdx = NODE_ORDER.indexOf(justFinished.nextNode);
-            
-            console.log(`🎬 [QuestPath] Starting unlock animation: ${fromIdx} -> ${toIdx} for key ${questKey}`);
 
             if (fromIdx !== -1 && toIdx !== -1) {
+                console.log(`🎬 [QuestPath] Starting unlock animation: ${fromIdx} -> ${toIdx} for key ${questKey}`);
                 // Prepare animation
                 setAnimatingUnlock({ from: fromIdx, to: toIdx });
                 setIconPos({ x: layoutX[fromIdx], y: 85 - (fromIdx * 18) });
@@ -139,28 +138,35 @@ function QuestPathView() {
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
+
         (async () => {
-            const { fetchDynamicCurriculum, preloadCurriculum } = await import('../services/curriculumService');
-            
-            // 0. Ensure master curriculum is loaded FIRST to prevent race conditions
+            // 0. Ensure master curriculum is loaded FIRST
             const currCache = await preloadCurriculum();
+            if (!isMounted) return;
 
             // 1. Try to discover quest in established cached curriculum
             let data = findQuestData(subject, unitId, title);
             
             // 2. If not found, it's likely a dynamic subject (SST, English, etc.) - Fetch from Vault
             if (!data) {
-                console.log(`🌐 [QuestPath] Subject ${subject} not in static master. Fetching dynamic Vault...`);
+                // The new fetchDynamicCurriculum implementation handles the fetch-lock internally
                 const curr = await fetchDynamicCurriculum(subject);
+                if (!isMounted) return;
+                
                 setCurriculum(prev => ({ ...prev, [subject]: curr }));
                 data = findQuestData(subject, unitId, title);
             } else {
                 setCurriculum(prev => ({ ...prev, [subject]: currCache[subject] }));
             }
 
-            console.log(`🔍 [QuestPath] Discovery result for ${title}:`, data);
-            if (data) setQuestData(data);
+            if (data && isMounted) {
+                console.log(`🔍 [QuestPath] Discovery result for ${title}:`, data);
+                setQuestData(data);
+            }
         })();
+
+        return () => { isMounted = false; };
     }, [subject, unitId, title]);
 
 
