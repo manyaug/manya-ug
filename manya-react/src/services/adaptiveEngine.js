@@ -117,16 +117,18 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             // CRITICAL: If engine_type is MCQ, it must NEVER be true, even if item_type is SIMULATION.
             const isSimulation = (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP')) && (engineType !== 'MCQ');
             
-            const isStory = itemType === 'QUEST_STORY' || itemType === 'QUEST' || engineType === 'CHAT';
+            // v5.8 NARRATIVE LOCKDOWN: Explicitly include QUEST_RUNNER and QUEST in story detection
+            const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
             const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
 
             if (isStory) {
-                pools.QUEST_STORY.push({ ...q, isSimulation, data: q });
+                pools.QUEST_STORY.push({ ...q, isSimulation });
             } else if (isNote) {
-                pools.GRAMMAR.push({ ...q, isSimulation, data: q });
-            } else if (itemType === 'SIMULATION' || isSimulation) {
-                pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation: isSimulation, data: q });
-            } else {
+                pools.GRAMMAR.push({ ...q, isSimulation });
+            } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory) {
+                // Ensure story content NEVER leaks into the simulation practice pool
+                pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation });
+            } else if (itemType !== 'QUEST' && itemType !== 'SIMULATION') {
                 // MCQ RECOVERY: Robust check for question text to ensure MCQ pools are filled
                 const hasText = (q.question && q.question.trim() !== '' && q.question !== 'None') || 
                                 q.question_text || q.question_content || q.q_text;
@@ -137,9 +139,25 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         // ─── INJECT EXPLICIT SIMULATIONS (v5.4 FIX) ───
         if (Array.isArray(simResources) && simResources.length > 0) {
             simResources.forEach(sim => {
-                pools.SIMULATION.push({ ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file });
+                const itemType = (sim.item_type || sim.question_type || sim.type || "").toUpperCase();
+                const engineType = (sim.engine_type || sim.engineType || sim.type || "").toUpperCase();
+                
+                // Reuse lockdown detection
+                const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
+                const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
+
+                // Flattened Hydration (Fixes data-nesting bug)
+                const hydration = { ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file };
+
+                if (isStory) {
+                    pools.QUEST_STORY.push(hydration);
+                } else if (isNote) {
+                    pools.GRAMMAR.push(hydration);
+                } else {
+                    pools.SIMULATION.push(hydration);
+                }
             });
-            console.log(`🔌 [Adaptive] Injected ${simResources.length} explicitly provided simulations into pool.`);
+            console.log(`🔌 [Adaptive] Injected ${simResources.length} explicitly provided simulations into pools.`);
         }
 
         // ─── STRICT EXPLORE RULE: STORY or NOTE ONLY ───
@@ -243,6 +261,11 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         }
 
         // ─── MOTIVATION / INTERLEAVE FILL ─────
+        // v5.7 English Overdrive: Guarantee at least 2 sims if available for PRACTICE/MASTERY
+        const isGameNode = ['PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType);
+        const minSims = (subject === 'english' && isGameNode && simStack.length > 0) ? 2 : 0;
+        let forcedSims = 0;
+
         while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
             const hasSim = simStack.length > 0 && (!isWarmup || mustAllowSims);
             const hasMcq = mcqStack.length > 0;
@@ -252,9 +275,14 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
             } else if (hasSim && hasMcq) {
-                const simChance = needsMotivation ? 0.6 : 0.30; 
-                if (Math.random() < simChance) {
+                let simChance = needsMotivation ? 0.6 : 0.30;
+                if (subject === 'english' && isGameNode) simChance = 0.50; // ENHANCED CHANCE
+
+                const forceSim = forcedSims < minSims;
+                
+                if (forceSim || Math.random() < simChance) {
                     finalQuestions.push(simStack.pop());
+                    forcedSims++;
                 } else {
                     finalQuestions.push(mcqStack.shift());
                 }

@@ -122,10 +122,65 @@ export const ENGINE_REGISTRY = {
         isImmersive: true,
         component: lazy(() => import('../engines/english/PunctuationPortalEngine.jsx'))
     },
+    'PUNCTUATION_PORTAL': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/PunctuationPortalEngine.jsx'))
+    },
     'TENSE_TREEHOUSE': {
         type: 'react',
         isImmersive: true,
         component: lazy(() => import('../engines/english/TenseTreehouseEngine.jsx'))
+    },
+    'WORDGRID_ENGINE': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/WordGridEngine.jsx'))
+    },
+    'HARVEST_GAME': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/HarvestEngine.jsx'))
+    },
+    'MORPH_GAME': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/MorphGameEngine.jsx'))
+    },
+    'SENTENCE_TRAIN': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/SentenceTrainEngine.jsx'))
+    },
+    'GRAMMAR_MAZE': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/GrammarMazeEngine.jsx'))
+    },
+    'HANGMAN_GAME': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/HangmanEngine.jsx'))
+    },
+    'MEMORY_MATCH': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/MemoryMatchEngine.jsx'))
+    },
+    'SYNTAX_ARCHITECT': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/SyntaxArchitectEngine.jsx'))
+    },
+    'DEEP_READER': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/DeepReaderEngine.jsx'))
+    },
+    'FUNCTIONAL_COMPOSER': {
+        type: 'react',
+        isImmersive: true,
+        component: lazy(() => import('../engines/english/FunctionalComposerEngine.jsx'))
     },
     'CHAT': {
         type: 'react',

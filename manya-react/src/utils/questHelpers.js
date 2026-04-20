@@ -25,10 +25,18 @@ export function formatQuestTitle(subName) {
 export function resolveRef(referencePath, baseDir) {
     if (!referencePath) return null;
     if (referencePath.startsWith('http')) return referencePath;
-    
-    // Simplistic join - assuming baseDir ends with / or referencePath starts with it
-    const cleanBase = baseDir.endsWith('/') ? baseDir : `${baseDir}/`;
-    const cleanRef = referencePath.startsWith('/') ? referencePath.slice(1) : referencePath;
-    
-    return `${cleanBase}${cleanRef}`;
+
+    try {
+        // Ensure baseDir is treated as a directory by adding a trailing slash if missing
+        const base = baseDir.endsWith('/') ? baseDir : `${baseDir}/`;
+        
+        // Use standard URL constructor to correctly handle ../ and ./ segments
+        const resolved = new URL(referencePath, base);
+        return resolved.href;
+    } catch (e) {
+        // Fallback to simplistic join if base is not a valid absolute URL
+        const cleanBase = baseDir.endsWith('/') ? baseDir : `${baseDir}/`;
+        const cleanRef = referencePath.startsWith('/') ? referencePath.slice(1) : referencePath;
+        return `${cleanBase}${cleanRef}`;
+    }
 }

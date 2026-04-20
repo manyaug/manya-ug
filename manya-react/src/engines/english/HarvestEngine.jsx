@@ -6,16 +6,16 @@ import { initializeHarvestData, spawnHarvestItem, checkHarvestCollision, calcula
 import HarvestRenderer from './Harvest/HarvestRenderer';
 
 /**
- * MANYA ENGLISH: HARVEST ENGINE v4.5 (Juicy Edition)
+ * MANYA ENGLISH: HARVEST ENGINE v5.0 (App-Theme Rebuild)
  * -------------------------------------------------------------
- * - DECOUPLED: Separates physics logic from visuals.
- * - v2.0: Splats, Streaks, and Dynamic Speed.
+ * Silky smooth sorting gameplay with premium Manya feel.
+ * Implements "Perfect Catch" rewards and optimized 60fps physics.
  */
-
 const HarvestEngine = ({ data, onComplete }) => {
+    // 1. DATA INITIALIZATION
     const config = useMemo(() => initializeHarvestData(data), [data]);
     
-    /* ── state ── */
+    // 2. STATE (Visual feedback only)
     const [side, setSide] = useState('left');
     const [items, setItems] = useState([]);
     const [score, setScore] = useState(0);
@@ -25,11 +25,10 @@ const HarvestEngine = ({ data, onComplete }) => {
     const [done, setDone] = useState(false);
     const [won, setWon] = useState(false);
     const [particles, setParticles] = useState([]);
-    const [splats, setSplats] = useState([]);
     const [shakeKey, setShakeKey] = useState(0);
-    const [shakeDir, setShakeDir] = useState(0); // -1 left, 1 right
+    const [shakeDir, setShakeDir] = useState(0);
 
-    /* ── refs (live for high-perf physics loop) ── */
+    // 3. REFS (High-performance physics loop)
     const sideRef = useRef('left');
     const scoreRef = useRef(0);
     const streakRef = useRef(0);
@@ -41,109 +40,113 @@ const HarvestEngine = ({ data, onComplete }) => {
     const startTimeRef = useRef(Date.now());
     const raf = useRef(null);
 
-    // Sync state back to refs for the physics loop
+    // 4. SYNC (Keep refs in sync with input state)
     useEffect(() => { sideRef.current = side; }, [side]);
     useEffect(() => { scoreRef.current = score; }, [score]);
     useEffect(() => { streakRef.current = streak; }, [streak]);
     useEffect(() => { livesRef.current = lives; }, [lives]);
 
-    const createBurst = (x, y, color) =>
-        setParticles(p => [...p, ...Array(7).fill(0).map(() => ({
-            id: Math.random(), x, y, color,
-            vx: (Math.random() - 0.5) * 6,
-            vy: (Math.random()) * -5 - 2,
-            life: 1
+    // 5. FX HELPERS
+    const createBurst = (x, y) => {
+        setParticles(p => [...p, ...Array(5).fill(0).map(() => ({
+            id: Math.random(), 
+            x: x + (Math.random() - 0.5) * 4, 
+            y: y + (Math.random() - 0.5) * 4, 
+            life: 1 
         }))]);
-
-    const createSplat = (x, y, color) => {
-        setSplats(s => [...s, { id: Math.random(), x, y, color, life: 2.0 }]);
-        setShakeDir(x < 50 ? -1 : 1);
-        setShakeKey(k => k + 1);
     };
 
+    const triggerMistake = (x) => {
+        setShakeDir(x < 50 ? -1 : 1);
+        setShakeKey(k => k + 1);
+        setStreak(0);
+        setLives(l => {
+            const nl = Math.max(0, l - 1);
+            if (nl === 0) triggerFinish(false);
+            return nl;
+        });
+        mistakesRef.current++;
+        audioService.error?.();
+        // Clear error toast after 1s
+        setTimeout(() => setShakeKey(0), 1000);
+    };
+
+    // 6. INTERACTION
     const handleTap = useCallback((e) => {
         if (doneRef.current) return;
         const rect = e.currentTarget.getBoundingClientRect();
-        const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        setSide(cx < rect.width / 2 ? 'left' : 'right');
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const relativeX = clientX - rect.left;
+        
+        const newSide = relativeX < rect.width / 2 ? 'left' : 'right';
+        setSide(newSide);
+        
+        // Haptic feedback placeholder
+        if (window.navigator?.vibrate) window.navigator.vibrate(5);
     }, []);
 
+    // 7. GAME LOOP
     useEffect(() => {
         if (!config.wordPool.length) return;
 
         const tick = (t) => {
             if (doneRef.current) return;
 
-            // 1. Spawning (Difficulty scales: spawn faster as score grows)
-            const spawnInterval = Math.max(800, 1800 - (scoreRef.current * 3));
-            if (t - lastSpawn.current > spawnInterval) {
+            // Spawning Logic (Dynamic scaling)
+            const spawnRate = Math.max(900, 2000 - (scoreRef.current * 4));
+            if (t - lastSpawn.current > spawnRate) {
                 setItems(prev => [...prev, spawnHarvestItem(config.wordPool, config.leftCat, nextId.current++)]);
                 lastSpawn.current = t;
             }
 
-            // 2. Physics (Speed scales: 5% faster every 50 points)
-            const speedMult = 1 + (Math.floor(scoreRef.current / 50) * 0.05);
-            let scoreGain = 0;
-            let lifeLoss = 0;
-            let hits = [];
-            let misses = [];
+            // Physics Logic (5% speed increase every 100 points)
+            const speedMult = 1 + (Math.floor(scoreRef.current / 100) * 0.05);
 
             setItems(prev => {
-                const kept = [];
+                const updated = [];
                 for (const item of prev) {
-                    const newY = item.y + (item.vy * speedMult);
+                    const nextY = item.y + (item.vy * speedMult);
 
-                    // Catch Zone Check (y axis)
-                    if (newY >= 75 && newY <= 90 && item.side === sideRef.current) {
-                        const { isCorrect } = checkHarvestCollision(item, sideRef.current, config.leftCat, config.rightCat);
+                    // A. Collision Zone (Main catching area)
+                    if (nextY >= 78 && nextY <= 88 && item.side === sideRef.current) {
+                        const { isCorrect, isPerfect } = checkHarvestCollision(item, sideRef.current, config.leftCat, config.rightCat);
+                        
                         if (isCorrect) {
-                            // Streak bonus: +10 base, +2 per streak (max +20)
-                            const bonus = Math.min(20, streakRef.current * 2);
-                            scoreGain += (10 + bonus);
-                            hits.push({ x: item.x, y: newY, color: '#fb923c' }); // Orange/Gold
-                            setStreak(s => {
-                                const n = s + 1;
-                                setMaxStreak(ms => Math.max(ms, n));
-                                return n;
+                            const points = isPerfect ? 20 : 10;
+                            const bonus = Math.min(10, Math.floor(streakRef.current / 2));
+                            
+                            setScore(s => {
+                                const ns = s + points + bonus;
+                                if (ns >= config.winScore) triggerFinish(true);
+                                return ns;
                             });
+                            
+                            setStreak(s => {
+                                const ns = s + 1;
+                                setMaxStreak(ms => Math.max(ms, ns));
+                                return ns;
+                            });
+
+                            createBurst(item.x, nextY);
+                            audioService.success?.();
                         } else {
-                            lifeLoss += 1;
-                            setStreak(0);
-                            misses.push({ x: item.x, y: newY, color: '#f43f5e' }); // Rose Splat
+                            triggerMistake(item.x);
                         }
-                        continue;
+                        continue; // Item consumed
                     }
 
-                    // Bottom Fall Miss Check
-                    if (newY > 100) {
+                    // B. Trash/Miss Zone (Falls off bottom)
+                    if (nextY > 105) {
                         const { isCorrect } = checkHarvestCollision(item, item.side, config.leftCat, config.rightCat);
-                        if (isCorrect) {
-                            lifeLoss += 1;
-                            setStreak(0);
-                        }
-                        continue;
+                        // If it was a correct item but missed -> penalty
+                        if (isCorrect) triggerMistake(item.x);
+                        continue; // Item gone
                     }
 
-                    kept.push({ ...item, y: newY });
+                    updated.push({ ...item, y: nextY });
                 }
-                return kept;
+                return updated;
             });
-
-            if (scoreGain > 0) { 
-                setScore(s => s + scoreGain); 
-            }
-            if (lifeLoss > 0) { 
-                setLives(l => Math.max(0, l - lifeLoss)); 
-                mistakesRef.current += lifeLoss;
-                audioService.error?.();
-            }
-
-            hits.forEach(b => createBurst(b.x, b.y, b.color));
-            misses.forEach(m => createSplat(m.x, m.y, m.color));
-
-            // Fade Splats & Particles
-            setParticles(p => p.map(pt => ({ ...pt, x: pt.x + pt.vx, y: pt.y + pt.vy, vy: pt.vy + 0.2, life: pt.life - 0.05 })).filter(pt => pt.life > 0));
-            setSplats(s => s.map(sp => ({ ...sp, life: sp.life - 0.02 })).filter(sp => sp.life > 0));
 
             raf.current = requestAnimationFrame(tick);
         };
@@ -152,37 +155,27 @@ const HarvestEngine = ({ data, onComplete }) => {
         return () => cancelAnimationFrame(raf.current);
     }, [config]);
 
-    // Win/Lose Watcher
-    useEffect(() => {
+    // 8. COMPLETION
+    const triggerFinish = (reachedWinScore) => {
         if (doneRef.current) return;
-        
-        if (score >= config.winScore) { 
-            doneRef.current = true;
-            setDone(true);
-            setWon(true);
-            cancelAnimationFrame(raf.current);
-            audioService.victory?.();
-            setTimeout(() => handleFinish(true), 1200);
-        }
-        
-        if (lives <= 0) { 
-            doneRef.current = true;
-            setDone(true);
-            setWon(false);
-            cancelAnimationFrame(raf.current);
-            setTimeout(() => handleFinish(false), 1200);
-        }
-    }, [score, lives, config.winScore]);
+        doneRef.current = true;
+        setDone(true);
+        setWon(reachedWinScore);
+        cancelAnimationFrame(raf.current);
 
-    const handleFinish = (won) => {
-        const result = calculateHarvestScoring(won, score, config.winScore, mistakesRef.current, startTimeRef.current);
-        if (onComplete) onComplete({ ...result, total: config.winScore, maxStreak });
+        if (reachedWinScore) audioService.victory?.();
+
+        const result = calculateHarvestScoring(reachedWinScore, scoreRef.current, config.winScore, mistakesRef.current, startTimeRef.current);
+        
+        setTimeout(() => {
+            if (onComplete) onComplete({ ...result, maxStreak });
+        }, 1200);
     };
 
     return (
         <HarvestRenderer 
             score={score} winScore={config.winScore} lives={lives} side={side} 
-            items={items} particles={particles} splats={splats}
+            items={items} particles={particles} splats={[]}
             streak={streak} maxStreak={maxStreak}
             shakeKey={shakeKey} shakeDir={shakeDir}
             leftCat={config.leftCat} rightCat={config.rightCat} 

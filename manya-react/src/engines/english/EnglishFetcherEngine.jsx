@@ -14,11 +14,15 @@ import { preloadCurriculum } from '../../services/curriculumService';
 import { saveNodeCompletion, trackWrongAnswer, setJustFinished } from '../../domain/progress/questProgressService.js';
 import { calculateFrustration } from '../../domain/psych/psychTracker.js';
 import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
+import '../../styles/mcq-engine.css';
 
 import EnglishRenderer from './EnglishRenderer';
 import EnglishBridge from './EnglishBridge';
 import CelebrationView from '../../views/CelebrationView.jsx';
-import { verifyEnglishAnswer, resolveCorrectText, calculateEnglishMastery, checkRescueInjection } from './EnglishLogic';
+import { 
+    verifyEnglishAnswer, resolveCorrectText, calculateEnglishMastery, 
+    checkRescueInjection, SUPPORTED_SIM_ENGINES, getEngineType 
+} from './EnglishLogic';
 
 /**
  * ENGLISH FETCHER ENGINE v6.0 (Atomic Controller)
@@ -64,21 +68,47 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             preloadCurriculum();
             
             try {
-                const allQuestions = await fetchEnglishQuestions(topicId);
-                const userHistory = await ManyaDB.getAnswerHistory(subject);
+                // 1. Load Interactive Simulations
+                const simCandidates = [];
+                if (data?.simResources?.length > 0) {
+                    for (const simRes of data.simResources) {
+                        try {
+                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
+                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                            steps.forEach(s => {
+                                const eType = getEngineType(s);
+                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
+                                s.id = s.id || `sim_${simRes.file.replace('.json', '')}`;
+                            });
+                            simCandidates.push(...steps);
+                        } catch (e) { console.warn(`[EnglishEngine] Sim Load Error:`, e); }
+                    }
+                }
 
+                // 2. Load Recap Resources
                 if (data?.recapResources?.length > 0) {
                     const candidates = [];
                     for (const recapRes of data.recapResources) {
-                        const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                        const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                        rSteps.forEach((s, idx) => { s.isSimulation = true; s.isRecap = true; s.id = s.id || `recap_${idx}`; });
-                        candidates.push(...rSteps);
+                        try {
+                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
+                            const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                            rSteps.forEach((s, idx) => { 
+                                const eType = getEngineType(s);
+                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
+                                s.isRecap = true; 
+                                s.id = s.id || `recap_${idx}`; 
+                            });
+                            candidates.push(...rSteps);
+                        } catch (e) { console.warn(`[EnglishEngine] Recap Load Error:`, e); }
                     }
                     setRecapSteps(candidates);
                 }
 
-                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory);
+                const allQuestions = await fetchEnglishQuestions(topicId);
+                const userHistory = await ManyaDB.getAnswerHistory(subject);
+
+                // 3. Generate Adaptive Quest (passing simCandidates)
+                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
                 let finalQuestions = quest.questions;
 
                 // Flatten Stories if Explore node (Modular Fallback Pattern)

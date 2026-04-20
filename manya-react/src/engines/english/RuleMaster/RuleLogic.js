@@ -11,8 +11,24 @@ export const initializeRuleData = (data) => {
     // The validation layer wraps data inconsistently, so rules might be at any depth.
     const findRules = (obj) => {
         if (!obj || typeof obj !== 'object') return [];
-        if (Array.isArray(obj.rules) && obj.rules.length > 0) return obj.rules;
-        if (obj.data && Array.isArray(obj.data.rules) && obj.data.rules.length > 0) return obj.data.rules;
+        
+        // Priority search for common rule/list keys
+        const keys = ['rules', 'items', 'words', 'list', 'data'];
+        for (const k of keys) {
+            const val = obj[k];
+            if (Array.isArray(val) && val.length > 0) return val;
+            
+            // Check nested data object (common in Vault records)
+            if (k === 'data' && val && typeof val === 'object') {
+                for (const subK of ['rules', 'items', 'words', 'list']) {
+                    if (Array.isArray(val[subK]) && val[subK].length > 0) return val[subK];
+                }
+            }
+        }
+        
+        // Fallback: Check if the object ITSELF is an array (some JSONs are just [{},{}])
+        if (Array.isArray(obj) && obj.length > 0) return obj;
+
         return [];
     };
 

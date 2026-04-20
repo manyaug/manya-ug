@@ -3,7 +3,7 @@
  * Centralized configuration for the entire application.
  */
 
-export const ASSET_VERSION = 'v2.0.1';
+export const ASSET_VERSION = 'v2.0.2';
 export const REPO_OWNER = 'manyaug';
 export const REPO_NAME = 'manya-react-assets';
 

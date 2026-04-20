@@ -32,12 +32,19 @@ const EnglishRuleMasterEngine = ({ data, onComplete }) => {
     // 🛡️ AUTO-SKIP: If we have no valid rules, don't block the student.
     // Auto-complete this step so the quest advances to the next content.
     useEffect(() => {
-        if (!hasValidRules(rules, actualData.type)) {
-            console.warn(`[RuleMaster] No rules in data — auto-skipping step.`, { dataKeys: Object.keys(data || {}), nestedKeys: Object.keys(data?.data || data || {}) });
+        const isVocab = actualData.type === "VOCABULARY_LIST";
+        if (!hasValidRules(rules, actualData.type) && !isVocab) {
+            const hasRef = data?.referencePath || data?.data?.referencePath;
+            console.warn(`[RuleMaster] No rules in data — auto-skipping step.`, { 
+                id: data?.id,
+                hasReferencePath: !!hasRef,
+                ref: hasRef,
+                dataKeys: Object.keys(data || {}) 
+            });
             const timer = setTimeout(() => onComplete?.(), 50);
             return () => clearTimeout(timer);
         }
-    }, [rules, actualData.type, onComplete]);
+    }, [rules, actualData.type, onComplete, data]);
 
     if (!hasValidRules(rules, actualData.type)) {
         return null; // Render nothing while auto-skip fires

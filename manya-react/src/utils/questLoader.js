@@ -39,9 +39,14 @@ function resolveQid(subject, unitId, questFolder, file) {
     const subtopic = (questFolder || 'QUEST').toUpperCase().replace(/-/g, '_');
     const cleanFile = filename.toUpperCase().replace(/-/g, '_');
     
-    // 🧠 ADVANCED DEDUPLICATION:
-    // If Topic is "LOCATING_AFRICA" and Subtopic is "QUEST_1_WORLD_STAGE"
-    // and cleanFile is "QUEST_1_WORLD_STAGE" -> Merge them.
+    // 🧠 ENGLISH IDENTITY RULE:
+    // If filename is exactly what we expect for a story (starts with 01_ or matches questFolder)
+    // we use a simpler QID to avoid the double-subtopic issue.
+    if (subject === 'english' && (filename.startsWith('0') || filename === questFolder)) {
+        const cleanUnit = (unitId || '').toUpperCase().replace(/-/g, '_');
+        return `${cleanUnit}_${subtopic}_IDENTITY`;
+    }
+
     let parts = [topic, subtopic, cleanFile];
     let uniqueParts = [];
     parts.forEach(p => {
@@ -59,7 +64,15 @@ function resolveQid(subject, unitId, questFolder, file) {
 export function contentUrl(subject, unitId, questFolder, file) {
     if (!file) return '';
     const cleanFile = file.replace(/\.json$/, '');
-    return `${BASE_CONTENT_URL}${subject}/${unitId}/${questFolder}/${cleanFile}.json`;
+    
+    // 🌍 PATH NORMALIZATION (v2.1)
+    // Map internal English unit IDs to their physical CDN counterparts
+    let unitDir = unitId;
+    if (subject === 'english' && (unitId === 'english-master-path' || unitId === 'english_master_path')) {
+        unitDir = 'holidays';
+    }
+
+    return `${BASE_CONTENT_URL}${subject}/${unitDir}/${questFolder}/${cleanFile}.json`;
 }
 
 /**
@@ -188,6 +201,7 @@ async function loadQuestStepsLegacy(subject, unitId, questFolder, file) {
         }
 
         const json = await res.json();
+        json._originUrl = res.url || url; // Ensure absolute base is preserved
         return await transformJsonToSteps(json, subject, unitId, questFolder, file);
     } catch (e) {
         return { steps: [], meta: { status: 'fetch_failed', error: e.message } };
@@ -201,8 +215,10 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
     let result;
 
     if (Array.isArray(json.steps)) {
-        // If we have a CDN origin, that becomes our base context
-        const baseDir = json._originUrl || `content/${subject}/${unitId}/${questFolder}`;
+        // If we have a CDN origin, that becomes our base context. 
+        // Fallback to absolute CDN path if origin is missing.
+        const origin = json._originUrl || contentUrl(subject, unitId, questFolder, file);
+        const baseDir = origin.substring(0, origin.lastIndexOf('/') + 1);
         
         const resolvedSteps = await Promise.all(
             json.steps.map(async (step) => {

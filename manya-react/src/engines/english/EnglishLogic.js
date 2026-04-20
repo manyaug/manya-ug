@@ -3,6 +3,22 @@
  * Pure logic for answer validation, adaptive rescue, and achievement scoring.
  */
 
+export const SUPPORTED_SIM_ENGINES = [
+    'WORDGRID_ENGINE', 'HARVEST_GAME', 'MORPH_GAME', 'SENTENCE_TRAIN', 
+    'GRAMMAR_MAZE', 'SENTENCE_BLOCKS', 'GARDEN_GUARD', 'TENSE_TREEHOUSE',
+    'HANGMAN_GAME', 'MEMORY_MATCH', 'SYNTAX_ARCHITECT', 'DEEP_READER',
+    'FUNCTIONAL_COMPOSER', 'CHAT', 'PUNCTUATION_PORTAL', 'PUNCTUATION_STICKERS'
+];
+
+/**
+ * Robust Engine Detection (v1.1)
+ */
+export const getEngineType = (q) => {
+    const data = q?.data || q;
+    const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
+    return String(raw).toUpperCase().trim();
+};
+
 /**
  * Robust Answer Verification (v6.0)
  * Handles OPTION_X, raw values, and index mapping.

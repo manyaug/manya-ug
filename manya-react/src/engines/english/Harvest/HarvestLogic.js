@@ -1,9 +1,9 @@
 /**
- * HARVEST ENGINE DOMAIN LOGIC
+ * HARVEST ENGINE DOMAIN LOGIC v5.0
  * Internal rules for falling item physics, lane management, and collision detection.
  */
 
-export const LANE_X = { left: 30, right: 70 };
+export const LANE_X = { left: 25, right: 75 }; // Adjusted for wider basket
 
 /**
  * Initializes simulation config.
@@ -22,7 +22,6 @@ export const initializeHarvestData = (data) => {
  */
 export const spawnHarvestItem = (wordPool, leftCat, nextId) => {
     const word = wordPool[Math.floor(Math.random() * wordPool.length)];
-    // RANDOM LANE: Item can now fall in either lane, regardless of its correct category
     const laneSide = Math.random() > 0.5 ? 'left' : 'right';
     
     return {
@@ -32,7 +31,8 @@ export const spawnHarvestItem = (wordPool, leftCat, nextId) => {
         side: laneSide,
         x: LANE_X[laneSide],
         y: -10,
-        vy: 0.55 + Math.random() * 0.2
+        vy: 0.6 + Math.random() * 0.25, // Base velocity
+        hue: Math.random() * 360 // For "Juicy" variety
     };
 };
 
@@ -44,7 +44,10 @@ export const checkHarvestCollision = (item, currentSide, leftCat, rightCat) => {
     const isCorrect = (currentSide === 'left' && item.cat === leftCat) ||
                      (currentSide === 'right' && item.cat === rightCat);
     
-    return { isCorrect };
+    // Perfect Catch Zone (82-88% Y range inside the 75-90 center)
+    const isPerfect = isCorrect && (item.y > 82 && item.y < 88);
+
+    return { isCorrect, isPerfect };
 };
 
 /**
