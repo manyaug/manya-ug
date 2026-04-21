@@ -49,6 +49,8 @@ export function assetUrl(path) {
   // 4. Normalize Binary Paths (audio vs audios)
   if (clean.includes('/audios/')) {
     clean = clean.replace('/audios/', '/audio/');
+  } else if (clean.includes('/audio/') && !clean.includes('/audios/')) {
+    // Already normalized, but ensure no double slash or legacy issues
   }
 
   return `${BASE_CDN_URL}${clean}`;
@@ -75,7 +77,12 @@ export function resolveRemoteUrl(url, contextUrl = null) {
   // Early return for full external URLs (only if they aren't legacy links we just cleaned)
   if (clean.startsWith('http') && !clean.includes('supabase.co')) return clean;
 
-  // 2. Handle Subject Context Relative Paths (../../)
+  // 2. Registry Lookup (Try to resolve pre-defined keys first)
+  if (GLB[clean]) return GLB[clean];
+  if (AUDIO[clean]) return AUDIO[clean];
+  if (SFX[clean]) return SFX[clean];
+
+  // 3. Handle Subject Context Relative Paths (../../)
   // CRITICAL: Binaries (glb, mp3) should almost always resolve to /assets/ root, not relative to content/
   const isBinary = clean.match(/\.(glb|mp3|wav|ogg)$/i);
 
