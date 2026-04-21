@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
     RotateCcw, 
     Box, 
@@ -31,6 +31,15 @@ export default function ThreeDRenderer({
     onScrollDrawer,
     selectedHS
 }) {
+    useEffect(() => {
+        if (!document.querySelector('script[src*="model-viewer"]')) {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
+            document.head.appendChild(script);
+        }
+    }, []);
+
     return (
         <div className="relative w-full h-full bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-hidden flex flex-col transition-colors duration-700" style={{ '--accent-color': accent }}>
             <main className="flex-1 overflow-hidden flex flex-col bg-[var(--bg-main)]">
