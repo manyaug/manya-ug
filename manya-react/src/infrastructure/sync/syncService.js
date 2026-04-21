@@ -60,8 +60,10 @@ export const syncService = {
      */
     async updatePassword(password) {
         try {
-            // CRITICAL: We NO LONGER support local_only password updates.
-            // Security keys must hit the server immediately or fail.
+            const uid = await this.getUserId();
+            if (!uid) throw new Error("Security Session Expired. Please request a new link.");
+
+            console.log(`🛡️ [Security] Updating credentials for ${uid}...`);
             const { data, error } = await supabase.auth.updateUser({ password });
             return { data, error };
         } catch (e) {

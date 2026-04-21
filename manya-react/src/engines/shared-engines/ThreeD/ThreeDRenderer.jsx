@@ -47,6 +47,7 @@ export default function ThreeDRenderer({
                     <model-viewer
                         ref={refViewer}
                         src={resolveRemoteUrl(data.modelUrl, data._originUrl)}
+                        crossorigin="anonymous"
                         camera-controls
                         shadow-intensity="1"
                         auto-rotate={!selectedPinId}

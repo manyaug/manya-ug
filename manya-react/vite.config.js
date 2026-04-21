@@ -19,11 +19,11 @@ export default defineConfig({
       name: 'remove-crossorigin',
       enforce: 'post',
       transformIndexHtml(html) {
-        // 1. Remove modulepreload links which are invalid for legacy builds and file://
-        let processed = html.replace(/<link rel="modulepreload" [^>]*>/g, '')
-        // 2. Remove all crossorigin attributes everywhere
-        processed = processed.replace(/crossorigin/g, '')
-        return processed
+        // 1. Remove modulepreload links only if we are specifically targeting a non-module environment
+        let processed = html;
+        // 2. We NO LONGER remove all crossorigin attributes because it breaks <model-viewer> and external media.
+        // If file:// protocol support is needed, it should be handled via a conditional build flag.
+        return processed;
       }
     },
     VitePWA({

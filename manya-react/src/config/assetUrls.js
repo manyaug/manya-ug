@@ -36,13 +36,19 @@ export function assetUrl(path) {
   // 3. Smart Prefixing Logic
   // - images/, data/, shared/, and content/ are at the ROOT of the repo.
   // - english/, math/, science/, and sst/ folder binaries are under /assets/.
-  const subjects = ['english', 'math', 'science', 'sst'];
-  const rootFolders = ['images', 'data', 'shared', 'content', 'assets'];
+  const subjects = ['english', 'math', 'science', 'sst', 'shared'];
+  const rootFolders = ['images', 'data', 'content', 'assets'];
 
   const firstSeg = clean.split('/')[0].toLowerCase();
 
+  // If it's a subject or shared, and does not have assets/ prefix, add it.
   if (subjects.includes(firstSeg) && !clean.startsWith('assets/')) {
     clean = `assets/${clean}`;
+  }
+
+  // 4. Normalize Binary Paths (audio vs audios)
+  if (clean.includes('/audios/')) {
+    clean = clean.replace('/audios/', '/audio/');
   }
 
   return `${BASE_CDN_URL}${clean}`;
@@ -83,6 +89,13 @@ export function resolveRemoteUrl(url, contextUrl = null) {
     const match = clean.match(/public\/assets\/(.+)$/);
     const fallbackMatch = clean.match(/manya-assets\/(.+)$/);
     let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
+    
+    // Safety: if the extracted path already has 'assets/', strip it before calling assetUrl
+    // since assetUrl will re-add it or manage it.
+    if (relativePath.startsWith('assets/')) {
+        relativePath = relativePath.replace(/^assets\//, '');
+    }
+    
     if (relativePath) return assetUrl(relativePath);
   }
 

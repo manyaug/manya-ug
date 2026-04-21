@@ -33,6 +33,7 @@ import SplashScreen from './components/SplashScreen';
 import DebugAuditView from './views/DebugAuditView';
 
 import { initializeUser } from './store/userSlice';
+import { supabase } from './infrastructure/remote/supabaseClient';
 import './styles/global.css';
 
 // Routes that hide the global HUD (have their own header)
@@ -112,14 +113,24 @@ function AppContent() {
     const { data: user, isLoading } = useSelector(state => state.user);
     const [splashFinished, setSplashFinished] = useState(false);
 
-    // 🎯 RECOVERY HUNTER: Detect Supabase recovery hash before anything else
+    // 🎯 GLOBAL AUTH GUARDIAN: Listen for Supabase events (Recovery, Sign-in, etc.)
     useEffect(() => {
-        const hash = window.location.hash;
-        if (hash && hash.includes('type=recovery')) {
-            console.log("🗝️ [Security] Recovery Hash Detected. Hijacking to Reset Portal...");
-            navigate('/reset-password');
-        }
-    }, [navigate]);
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log(`🛡️ [Auth] Event: ${event}`);
+            
+            if (event === 'PASSWORD_RECOVERY') {
+                console.log("🗝️ [Security] Recovery Session Detected. Moving to Reset Portal...");
+                navigate('/reset-password');
+            }
+            
+            if (event === 'SIGNED_IN' && session) {
+                // If we just signed in, re-initialize to ensure profile is synced
+                dispatch(initializeUser());
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [dispatch, navigate]);
 
     // Boot user from ManyaDB
     useEffect(() => {
