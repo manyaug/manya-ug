@@ -62,6 +62,8 @@ export function assetUrl(path) {
  */
 export function resolveRemoteUrl(url, contextUrl = null) {
   if (!url) return '';
+  
+  const originalUrl = url;
 
   // 1. Pre-clean & SANITIZE (Emergency Failsafe for Database-Hardcoded URLs)
   let clean = url.trim().replace(/^\/+/, '');
@@ -115,7 +117,9 @@ export function resolveRemoteUrl(url, contextUrl = null) {
   }
 
   // 5. Default Resolution
-  return assetUrl(clean);
+  const resolved = assetUrl(clean);
+  console.debug(`[AssetResolver] ${originalUrl} -> ${resolved}`);
+  return resolved;
 }
 
 /**

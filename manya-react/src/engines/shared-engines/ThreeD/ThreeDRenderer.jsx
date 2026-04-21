@@ -54,6 +54,8 @@ export default function ThreeDRenderer({
                         environment-image="neutral"
                         camera-orbit="0deg 75deg 105%"
                         className="w-full h-full outline-none"
+                        onLoad={() => console.log(`[3DViewer] Model loaded: ${data.modelUrl}`)}
+                        onError={(e) => console.error(`[3DViewer] Error loading ${data.modelUrl}:`, e.detail)}
                     >
                         {hotspots.map((hs, idx) => (
                             <button
