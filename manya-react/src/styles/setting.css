@@ -1,12 +1,19 @@
-/* setting.css - NATIONAL ARENA DNA */
+/* setting.css - FLAT SOLID DNA (Redesign v3) */
 
 .sett-view {
     padding: 10px 4px;
     position: relative;
     overflow-x: hidden;
+    min-height: 100vh;
+    background: var(--bg-page); /* Solid Flat Background */
 }
 
-/* 1. IDENTITY VAULT BANNER */
+/* --- 🌈 AURORA ENGINE (DISABLED) --- */
+.aurora-engine {
+    display: none;
+}
+
+/* 1. IDENTITY VAULT BANNER (SOLID) */
 .identity-vault-banner {
     display: flex;
     flex-direction: column;
@@ -15,157 +22,145 @@
     gap: 25px !important;
     background: var(--bg-card) !important;
     border: 3px solid var(--border-color) !important;
-    border-radius: 32px !important;
-    box-shadow: var(--shadow-warm), var(--toy-inner-shadow) !important;
-}
-
-.vault-grid {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    width: 100%;
-}
-
-.vault-slot {
-    background: white;
-    border: 3.5px solid var(--border-color);
-    border-radius: 22px;
-    box-shadow: var(--shadow-warm);
-    overflow: hidden;
+    border-radius: 40px !important;
+    box-shadow: var(--shadow-warm) !important;
     position: relative;
-}
-
-.vault-slot img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.vault-slot.main {
-    width: 100px;
-    height: 100px;
-    border-color: var(--manya-purple);
-    z-index: 5;
-    box-shadow: 0 15px 40px rgba(124, 58, 237, 0.2);
-}
-
-.vault-slot.side {
-    width: 65px;
-    height: 65px;
-    opacity: 0.7;
-    cursor: pointer;
-    transition: 0.3s var(--transition-bounce);
-}
-
-.vault-slot.side:hover {
-    opacity: 1;
-    transform: translateY(-5px);
-    border-color: var(--manya-purple);
-}
-
-.active-dna-tag {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--manya-purple);
-    color: white;
-    font-size: 8px;
-    font-weight: 950;
-    text-align: center;
-    padding: 4px 0;
-    letter-spacing: 0.5px;
-}
-
-.vault-info {
-    width: 100%;
-    text-align: center;
-}
-
-.vault-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 10px;
-}
-
-.v-title {
-    font-size: 18px;
-    font-weight: 950;
-    color: var(--text-main);
-}
-
-.premium-shuffle-btn {
-    text-transform: none;
-    font-size: 11px;
-    padding: 8px 16px;
-    height: 40px;
+    z-index: 10;
 }
 
 .vault-sync-status {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
     font-size: 11px;
     font-weight: 900;
     color: var(--text-secondary);
-    opacity: 0.8;
+    background: var(--bg-secondary);
+    padding: 12px 20px;
+    border-radius: 20px;
+    border: 3px solid var(--border-color);
+    width: 100%;
+    margin-top: 10px;
 }
 
 .sync-pulse {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     background: #10b981;
     border-radius: 50%;
-    box-shadow: 0 0 10px #10b981;
 }
 
-/* 2. INPUT CARDS */
-.settings-main-card {
-    margin-top: 15px;
+.force-sync-link {
+    background: none;
+    border: none;
+    color: var(--manya-purple);
+    font-size: 10px;
+    font-weight: 950;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: underline;
 }
 
-.input-row {
-    padding: 24px 0;
+/* 2. SOLID BENTO CARDS */
+.bento-card {
+    background: var(--bg-card) !important;
+    border: 3px solid var(--border-color) !important;
+    border-radius: 32px !important;
+    padding: 24px !important;
+    margin-top: 20px;
+    box-shadow: var(--shadow-warm) !important;
+    position: relative;
 }
 
-.input-icon-box {
+.bento-card .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.bento-card .section-title {
+    font-size: 14px;
+    font-weight: 950;
+    letter-spacing: 1px;
+    color: var(--text-main);
+    text-transform: uppercase;
+}
+
+/* 3. SOLID INPUTS */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.input-label-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-label-row .icon-halo {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 14px;
-    border: 1px solid var(--glass-border);
-    width: 44px;
-    height: 44px;
+    color: var(--manya-purple);
+}
+
+.input-label-row span {
+    font-size: 12px;
+    font-weight: 950;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .premium-glass-input,
 .premium-glass-select {
     width: 100%;
-    margin-top: 10px;
-    background: rgba(255, 255, 255, 0.4);
-    border: 1.5px solid var(--glass-border);
-    border-radius: 16px;
-    padding: 14px 16px;
-    color: var(--text-main);
-    font-size: 15px;
-    font-weight: 900;
-    outline: none;
-    transition: 0.3s var(--transition-bounce);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
+    background: var(--bg-secondary) !important;
+    border: 3px solid var(--border-color) !important;
+    border-radius: 20px !important;
+    padding: 16px 20px !important;
+    color: var(--text-main) !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    outline: none !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important; /* Flat recessed look */
 }
 
-.save-hero-btn {
-    margin-top: 30px;
-    height: 64px;
+.premium-glass-input:focus {
+    border-color: var(--manya-purple) !important;
 }
 
-/* 3. DANGER ZONE v2 (RESTORED) */
+/* 4. SECURITY MATRIX (FLAT) */
+.security-card {
+    border-color: var(--manya-purple) !important;
+}
+
+.security-card .section-title {
+    color: var(--manya-purple);
+}
+
+/* 5. MATTE BUTTON OVERRIDES */
+.btn-toy .btn-toy-gloss {
+    display: none !important; /* Kill the gloss */
+}
+
+/* 6. DANGER ZONE (FLAT) */
 .danger-zone-elite-v2 {
-    margin: 40px 20px 0;
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
 }
 
 .danger-header {
@@ -175,68 +170,19 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     margin-bottom: 20px;
-    opacity: 0.9;
-    text-align: center;
 }
 
 .danger-actions-row {
     display: flex;
-    gap: 15px;
+    gap: 12px;
 }
 
-.danger-action-btn {
-    flex: 1;
-    height: 56px;
-}
-
-/* 4. FOOTER (RESTORED) */
+/* FOOTER */
 .rank-footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 2px;
-    padding-bottom: 5px;
-    opacity: 0.5;
-}
-
-.rank-footer img {
-    width: 40px;
-    margin-bottom: 12px;
-    filter: grayscale(1);
-}
-
-.rank-footer p {
-    font-size: 10px;
-    font-weight: 950;
-    letter-spacing: 1px;
-}
-
-/* DARK MODE */
-[data-theme='dark'] .identity-vault-banner {
-    background: rgba(0, 0, 0, 0.4) !important;
-}
-
-[data-theme='dark'] .vault-slot {
-    background: #1a1a1a;
-    border-color: #2e2e2e;
-}
-
-[data-theme='dark'] .premium-shuffle-btn,
-[data-theme='dark'] .save-hero-btn,
-[data-theme='dark'] .danger-action-btn {
-    background: #1a1a1a !important;
-    color: white !important;
-    border-color: #2e2e2e !important;
-    box-shadow: none;
-}
-
-[data-theme='dark'] .premium-shuffle-btn:hover,
-[data-theme='dark'] .save-hero-btn:hover,
-[data-theme='dark'] .danger-action-btn:hover {
-    border-color: var(--manya-purple) !important;
-    background: #252525 !important;
-}
-
-[data-theme='dark'] .danger-action-btn.delete {
-    color: #f87171 !important;
+    margin-top: 40px;
+    padding-bottom: 40px;
+    opacity: 0.3;
 }

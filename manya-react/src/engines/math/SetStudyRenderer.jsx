@@ -30,7 +30,7 @@ const SetStudyRenderer = ({
          
          <div className="absolute top-4 inset-x-4 flex justify-between items-center z-10">
             <div className={`px-3 py-1.5 rounded-2xl text-[10px] font-black tracking-[0.1em] uppercase flex items-center gap-2 ${isDark ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/10 shadow-glow-indigo' : 'bg-white/80 backdrop-blur-md text-indigo-600 border border-indigo-100 shadow-premium-sm'}`}>
-                <Orbit size={12} className="animate-spin-slow" /> {topic || 'Set Theory'}
+                <Orbit size={12} className="animate-spin-slow" /> {typeof topic === 'object' ? topic.label : (topic || 'Set Theory')}
             </div>
             <div className={`px-2.5 py-1.5 rounded-xl text-[10px] font-bold ${isDark ? 'bg-slate-800/80 text-slate-500' : 'bg-white/80 backdrop-blur-md text-slate-400 shadow-premium-sm'}`}>
                 {stepIdx + 1} / {slides.length}

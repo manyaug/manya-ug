@@ -7,12 +7,19 @@ import {
     Search, Puzzle
 } from 'lucide-react';
 
+import MathSolutionSteps from '../../components/MathSolutionSteps';
+
 /**
  * SOLUTION DISPLAYER
  * Specialized component to parse and render step-by-step Math solutions.
  */
 const SolutionDisplayer = ({ explanation }) => {
     if (!explanation) return <p className="text-[var(--text-sub)] text-[13px] italic text-center">Detailed concept explanation coming soon.</p>;
+
+    // Handle the new array-of-steps format
+    if (Array.isArray(explanation)) {
+        return <MathSolutionSteps steps={explanation} />;
+    }
 
     const sol = explanation;
 
@@ -58,7 +65,7 @@ const SolutionDisplayer = ({ explanation }) => {
         );
     }
 
-    return <p className="text-[var(--text-main)] font-bold text-[14px] leading-relaxed text-center">{explanation}</p>;
+    return <p className="text-[var(--text-main)] font-bold text-[14px] leading-relaxed text-center">{String(explanation)}</p>;
 };
 
 /**
@@ -81,6 +88,7 @@ const MathRenderer = ({
     setHintUsed,
     handleSelect,
     handleSubmit,
+    onSkip,
     nextQuestion,
     handleFinish,
     nodeType,
@@ -158,6 +166,21 @@ const MathRenderer = ({
         return (
             <div className="flex-1 h-full flex flex-col overflow-hidden relative">
                 {SimulatorBridgeNode}
+            </div>
+        );
+    }
+
+    // --- 🛡️ DEFENSIVE DATA CHECK ---
+    const isBroken = !q.question && (!q.options || q.options.length === 0);
+    if (isBroken) {
+        return (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-white/40 backdrop-blur-md rounded-[3rem] m-4 border-2 border-slate-200">
+                <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-4"><Puzzle size={32} /></div>
+                <h3 className="text-xl font-black text-slate-800 mb-2">Content Loading Error</h3>
+                <p className="text-sm text-slate-500 mb-6">Unable to load this particular challenge safely.</p>
+                <button onClick={onSkip} className="px-6 h-12 bg-slate-800 text-white rounded-xl font-bold flex items-center gap-2">
+                    SKIP CHALLENGE <ArrowRight size={18} />
+                </button>
             </div>
         );
     }

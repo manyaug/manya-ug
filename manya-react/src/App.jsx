@@ -28,6 +28,7 @@ import LoginView from './views/LoginView';
 import LandingView from './views/LandingView';
 import PreferencesView from './views/PreferencesView';
 import SimulationTestingView from './views/SimulationTestingView';
+import ResetPasswordView from './views/ResetPasswordView';
 import SplashScreen from './components/SplashScreen';
 import DebugAuditView from './views/DebugAuditView';
 
@@ -136,6 +137,7 @@ function AppContent() {
                     <Route path="/" element={<LandingView />} />
                     <Route path="/login" element={<LoginView />} />
                     <Route path="/onboarding" element={<OnboardingView />} />
+                    <Route path="/reset-password" element={<ResetPasswordView />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </>

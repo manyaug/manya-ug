@@ -117,6 +117,10 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             // CRITICAL: If engine_type is MCQ, it must NEVER be true, even if item_type is SIMULATION.
             const isSimulation = (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP')) && (engineType !== 'MCQ');
             
+            // Check against supported math engines if applicable
+            const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP'];
+            const isInvalidMathSim = subject === 'math' && isSimulation && engineType !== '' && !MATH_SIM_WHITELIST.includes(engineType);
+
             // v5.8 NARRATIVE LOCKDOWN: Explicitly include QUEST_RUNNER and QUEST in story detection
             const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
             const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
@@ -125,7 +129,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 pools.QUEST_STORY.push({ ...q, isSimulation });
             } else if (isNote) {
                 pools.GRAMMAR.push({ ...q, isSimulation });
-            } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory) {
+            } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory && !isInvalidMathSim) {
                 // Ensure story content NEVER leaks into the simulation practice pool
                 pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation });
             } else if (itemType !== 'QUEST' && itemType !== 'SIMULATION') {

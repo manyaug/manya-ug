@@ -47,6 +47,29 @@ export const syncService = {
     },
 
     /**
+     * Auth: Reset Password (Trigger Email)
+     */
+    async resetPassword(email) {
+        return await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`
+        });
+    },
+
+    /**
+     * Auth: Update Password (Live Session Required)
+     */
+    async updatePassword(password) {
+        try {
+            // CRITICAL: We NO LONGER support local_only password updates.
+            // Security keys must hit the server immediately or fail.
+            const { data, error } = await supabase.auth.updateUser({ password });
+            return { data, error };
+        } catch (e) {
+            return { data: null, error: e };
+        }
+    },
+
+    /**
      * Auth: Delete Account
      */
     async deleteAccount() {
@@ -79,6 +102,7 @@ export const syncService = {
             parent_phone: profileData.parent?.whatsapp || profileData.parent_phone,
             grade_level: profileData.grade_level || profileData.goal,
             engagement_stats: profileData.engagement_stats || {},
+            last_security_update: profileData.lastSecurityUpdate || null,
             last_active_at: new Date().toISOString()
         };
 
@@ -205,15 +229,27 @@ export const syncService = {
     },
 
     /**
+     * MANUAL FORCE SYNC
+     * Manually triggers the queue processor.
+     */
+    async forceSync() {
+        console.log("🔄 [Sync] Forced Sync Initiation...");
+        return await this.processSyncQueue();
+    },
+
+    /**
      * BACKGROUND SYNC PROCESSOR
      * Flushes the IndexedDB sync queue when back online.
      */
     async processSyncQueue() {
-        if (!navigator.onLine) return;
+        if (!navigator.onLine) return { success: false, error: 'Offline' };
+        
         const queue = await ManyaDB.getSyncQueue();
-        if (queue.length === 0) return;
+        if (queue.length === 0) return { success: true, count: 0 };
 
         console.log(`🔄 [Sync] Processing ${queue.length} queued items...`);
+        let successCount = 0;
+        let authError = false;
 
         for (const item of queue) {
             try {
@@ -223,19 +259,29 @@ export const syncService = {
                 } else if (item.type === 'answer') {
                     ({ error } = await supabase.from('user_answers').insert(item.data));
                 } else if (item.type === 'progress') {
-                    ({ error } = await supabase.from('quest_progress').upsert(item.data));
+                    ({ error } = await supabase.from('quest_progress').upsert(item.data, { onConflict: 'user_id, quest_key, node_type' }));
                 } else if (item.type === 'concept_mastery') {
                     ({ error } = await supabase.from('concept_mastery').upsert(item.data, { onConflict: 'user_id, subject, base_id' }));
                 }
 
                 if (!error) {
                     await ManyaDB.removeSyncItem(item.id);
-                    console.log(`✅ [Sync] Successfully pushed queued ${item.type} item.`);
+                    successCount++;
+                } else if (error.message.includes('permission') || error.message.includes('JWT')) {
+                    authError = true;
+                    break;
                 }
             } catch (err) {
                 console.error(`❌ [Sync] Retry failed for ${item.type}:`, err.message);
             }
         }
+        
+        return { 
+            success: successCount > 0, 
+            count: successCount, 
+            pending: queue.length - successCount,
+            authError 
+        };
     },
 
     /**

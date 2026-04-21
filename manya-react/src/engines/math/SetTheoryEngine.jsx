@@ -66,9 +66,15 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   // --- 🧠 INTERACTION HANDLER ---
   const handleInteraction = useCallback(() => {
     if (isResolved) {
-        if (stepIdx < data.questions.length - 1) { 
-            setStepIdx(p => p+1); setUserAnswers({}); setSelectedRegions(new Set());
-            setIsResolved(false); setFeedback({text:'', type:''}); return; 
+        if (stepIdx < data.questions?.length - 1) { 
+            setStepIdx(p => p+1); 
+            setUserAnswers({}); 
+            setSelectedRegions(new Set());
+            setKbOpen(false);
+            setActiveKbId(null);
+            setIsResolved(false); 
+            setFeedback({text:'', type:''}); 
+            return; 
         }
         else { onComplete(); return; }
     }
@@ -123,23 +129,41 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   };
 
   const onMouseMove = (e) => {
-    if (!draggingRef.current) return;
+    const activeDrag = draggingRef.current;
+    const dragOffset = dragOffsetRef.current;
+    if (!activeDrag) return;
+
     if (e.cancelable) e.preventDefault();
     const rect = containerRef.current.getBoundingClientRect();
     const cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
     const px = (cx - rect.left) * (canvasSize.width / rect.width), py = (cy - rect.top) * (canvasSize.height / rect.height);
     
-    if (currentStep.interaction === 'DRAG_SETS') {
-        setActiveSets(prev => ({ ...prev, [draggingRef.current.id]: { ...prev[draggingRef.current.id], x: px - dragOffsetRef.current.x, y: py - dragOffsetRef.current.y } }));
+    if (currentStep?.interaction === 'DRAG_SETS') {
+        setActiveSets(prev => {
+            if (!prev || !activeDrag.id || !prev[activeDrag.id]) return prev;
+            return { ...prev, [activeDrag.id]: { ...prev[activeDrag.id], x: px - dragOffset.x, y: py - dragOffset.y } };
+        });
     } else {
-        setChips(prev => prev.map(c => c.id === draggingRef.current.id ? { ...c, x: px - dragOffsetRef.current.x, y: py - dragOffsetRef.current.y } : c));
+        setChips(prev => {
+            if (!prev) return prev;
+            return prev.map(c => (c && c.id === activeDrag.id) ? { ...c, x: px - dragOffset.x, y: py - dragOffset.y } : c);
+        });
     }
   };
 
-  // --- 🔄 LIFECYCLE: SETUP STEPS ---
+  // --- 🔄 LIFECYCLE: CLEANUP ON QUESTION CHANGE ---
+  useEffect(() => {
+    draggingRef.current = null; // Clear physical drag state
+    setKbOpen(false); // Close keyboard when moving to a new question
+    setActiveKbId(null);
+    setIsResolved(false); 
+    setFeedback({text:'', type:''}); 
+    setIsHintVisible(false);
+  }, [stepIdx]);
+
+  // --- 🔄 LIFECYCLE: SETUP STEPS (Layout Dependent) ---
   useEffect(() => {
     if (!currentStep) return;
-    setIsResolved(false); setFeedback({text:'', type:''}); setIsHintVisible(false);
 
     if (currentStep.interaction === 'DRAG_SETS' && currentStep.items) {
         const items = currentStep.items;
@@ -194,7 +218,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
                             <Compass size={14} />
                         </div>
                         <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                            {data.topic || "Set Theory"} · {stepIdx + 1}/{data.questions.length}
+                            {typeof data.topic === 'object' ? data.topic.label : (data.topic || "Set Theory")} · {stepIdx + 1}/{data.questions.length}
                         </span>
                     </div>
                     {/* Progress & Hint */}
@@ -319,36 +343,64 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
         </div>
 
         {/* HUD Footbar */}
-        <div className={`p-4 flex items-center justify-between gap-4 bg-transparent z-20 transition-all ${kbOpen ? 'pb-8' : ''}`}>
-            {(currentStep.interaction !== 'DIAGRAM_FILL' && (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT', 'COUNT_SUM', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType))) && (
-                <div className="flex-1 flex gap-2">
-                    {/* If multiple inputs, show them. If single algebra/count, show one. */}
-                    {(currentStep.inputs || [{ region: 'main', label: 'Answer' }]).map(inp => (
-                        <button 
-                            key={inp.region}
-                            onClick={() => openKeyboard(inp.region)}
-                            className={`flex-1 h-16 rounded-2xl border-2 font-black text-xl flex items-center justify-center transition-all ${
-                                activeKbId === inp.region ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10 shadow-lg' :
-                                (isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm')
-                            }`}
-                        >
-                            {userAnswers[inp.region] || <span className="opacity-20 text-sm font-bold uppercase tracking-widest">{inp.label || 'Enter...'}</span>}
-                        </button>
-                    ))}
+        <div className={`p-4 flex flex-col gap-4 bg-transparent z-20 transition-all ${kbOpen ? 'pb-8' : ''}`}>
+            {/* 1. SELECTION ROW (for BINARY/CHOICE) */}
+            {(currentStep.interaction === 'BINARY' || currentStep.interaction === 'CHOICE') && (
+                <div className="flex flex-wrap gap-2 animate-in slide-in-from-bottom-4 duration-500">
+                    {(currentStep.interaction === 'BINARY' ? ['YES', 'NO'] : (currentStep.options || [])).map(opt => {
+                        const isSelected = Object.values(userAnswers).includes(opt);
+                        return (
+                            <button 
+                                key={opt}
+                                onClick={() => {
+                                    setUserAnswers({ main: opt });
+                                    audioService.tap();
+                                }}
+                                className={`flex-1 min-w-[120px] h-14 rounded-2xl border-2 font-black text-[11px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
+                                    isSelected 
+                                    ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/20 text-indigo-600 shadow-lg' 
+                                    : (isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-white border-slate-100 text-slate-400 shadow-sm')
+                                }`}
+                            >
+                                {isSelected && <div className="absolute inset-0 bg-indigo-500/5 animate-pulse" />}
+                                {opt}
+                            </button>
+                        );
+                    })}
                 </div>
             )}
 
-            <button 
-                onClick={handleInteraction}
-                className={`flex-1 h-16 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
-                    isResolved 
-                    ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[6px] border-[#46a302] active:translate-y-1 shadow-lg' 
-                    : (isDark ? 'bg-indigo-600 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200 shadow-sm') + ' text-slate-500 border-b-[6px] border-slate-200'
-                }`}
-            >
-                {isResolved ? (stepIdx < data.questions.length - 1 ? 'NEXT STEP' : 'COMPLETE') : 'CHECK ANSWER'}
-                <Zap size={14} fill="currentColor" />
-            </button>
+            <div className="flex items-center justify-between gap-4 w-full">
+                {/* 2. INPUT ROW (for Keyboards) */}
+                {(currentStep.interaction !== 'DIAGRAM_FILL' && (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT', 'COUNT_SUM', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType))) && (
+                    <div className="flex-1 flex gap-2">
+                        {(currentStep.inputs || [{ region: 'main', label: 'Answer' }]).map(inp => (
+                            <button 
+                                key={inp.region}
+                                onClick={() => openKeyboard(inp.region)}
+                                className={`flex-1 h-16 rounded-2xl border-2 font-black text-xl flex items-center justify-center transition-all ${
+                                    activeKbId === inp.region ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10 shadow-lg' :
+                                    (isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm')
+                                }`}
+                            >
+                                {userAnswers[inp.region] || <span className="opacity-20 text-sm font-bold uppercase tracking-widest">{inp.label || 'Enter...'}</span>}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                <button 
+                    onClick={handleInteraction}
+                    className={`flex-1 h-16 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
+                        isResolved 
+                        ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[6px] border-[#46a302] active:translate-y-1 shadow-lg' 
+                        : (isDark ? 'bg-indigo-600 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200 shadow-sm') + ' text-slate-500 border-b-[6px] border-slate-200'
+                    }`}
+                >
+                    {isResolved ? (stepIdx < data.questions.length - 1 ? 'NEXT STEP' : 'COMPLETE') : 'CHECK ANSWER'}
+                    <Zap size={14} fill="currentColor" />
+                </button>
+            </div>
         </div>
 
         {/* Custom Manya Keyboard */}

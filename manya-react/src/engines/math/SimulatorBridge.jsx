@@ -87,9 +87,12 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
                 return <GalleryStudyEngine {...sharedProps} />;
 
             case 'SET_THEORY':
+            case 'VENN_LOGIC':
                 return <SetTheoryEngine {...sharedProps} />;
             
             case 'MATH_STUDY':
+            case 'SET_STUDY':
+            case 'STUDY_RECAP':
                 return <SetStudyEngine {...sharedProps} />;
             
             case 'VENN_PROB_ENGINE':

@@ -39,6 +39,22 @@ function LoginView() {
         }
     };
 
+    const handleForgotPassword = async (e) => {
+        e.preventDefault();
+        if (!email) {
+            dispatch(addToast({ message: "Identify DNA: Please enter your email first.", type: "warning" }));
+            return;
+        }
+
+        try {
+            const { error } = await syncService.resetPassword(email);
+            if (error) throw error;
+            dispatch(addToast({ message: "Security Link Dispatched to your Email!", type: "success" }));
+        } catch (err) {
+            dispatch(addToast({ message: `Dispatch Error: ${err.message}`, type: "error" }));
+        }
+    };
+
     return (
         <div className="premium-ob-shell">
             <div className="ob-background-fx"></div>
@@ -92,7 +108,7 @@ function LoginView() {
                         
                         <div className="auth-footer-links">
                             <Link to="/onboarding">New? Sign Up</Link>
-                            <a href="#" onClick={(e) => { e.preventDefault(); dispatch(addToast({message: "Reset link sent", type: "info" }))}}>Forgot Password?</a>
+                            <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
                         </div>
                     </div>
                 </div>

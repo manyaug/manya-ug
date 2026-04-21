@@ -28,7 +28,13 @@ export const REGION_MAP = {
     'b_only': ['right'],
     'f_only': ['left'],
     'v_only': ['right'],
-    'both': ['center']
+    'both': ['center'],
+    'a_complement': ['right', 'outside'],
+    'b_complement': ['left', 'outside'],
+    'not_a': ['right', 'outside'],
+    'not_b': ['left', 'outside'],
+    'complement_a': ['right', 'outside'],
+    'complement_b': ['left', 'outside']
 };
 
 /**

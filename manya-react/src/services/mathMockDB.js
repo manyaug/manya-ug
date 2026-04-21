@@ -81,8 +81,8 @@ export const fetchMathQuestions = async (topicId) => {
             return {
                 id: q.qid,
                 qid: q.qid,
-                subject: 'math',
-                topic: q.topic,
+                subject: typeof q.subject === 'object' ? (q.subject.label || q.subject.id) : (q.subject || 'math'),
+                topic: typeof q.topic === 'object' ? (q.topic.label || q.topic.id) : (q.topic || q.subtopic),
                 subtopic: q.subtopic,
                 difficulty: q.difficulty || 'E',
                 question: q.question_text,

@@ -1,283 +1,126 @@
-/* preferences.css - NATIONAL ARENA DNA */
+/* preferences.css - MANYA ARENA v21.0 (PREMIUM BENTO) */
 
 .pref-view {
-    padding: 10px 0 14px;
+    padding: 10px 0 100px;
     position: relative;
     overflow-x: hidden;
+    background: var(--bg-page);
+    min-height: 100vh;
 }
 
-/* 1. HEADER OVERRIDES */
-.back-btn-elite {
-    position: absolute;
-    left: 20px;
-    top: 25px;
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--glass-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-main);
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+/* 1. HERO PASSPORT HEADER (Aligned with Profile) */
+.hero-vault-header {
+    text-align: center;
+    margin-bottom: 35px;
+    padding: 0 20px;
 }
 
-.back-btn-elite:hover {
-    transform: translateX(-4px);
-    background: white;
-}
-
-/* 2. PRESTIGE STATUS BANNER */
-.status-banner {
-    margin-top: 10px !important;
-    margin-bottom: 30px !important;
-    gap: 20px !important;
-}
-
-.status-orb {
-    flex-shrink: 0;
-    width: 60px;
-    height: 60px;
-    background: white;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(255, 255, 255, 1);
-    border: 1px solid var(--glass-border);
-    position: relative;
-}
-
-.orb-thor-glow {
-    position: absolute;
-    inset: -15px;
-    background: var(--manya-purple);
-    filter: blur(20px);
-    opacity: 0.2;
-    border-radius: 50%;
-    z-index: -1;
-}
-
-/* 3. SETTINGS GROUP */
-.prefs-main-card {
+.hero-status-pill {
+    display: inline-block;
     margin-top: 10px;
-}
-
-.pref-row {
-    cursor: pointer;
-    transition: 0.4s var(--transition-bounce);
-}
-
-.pref-row:hover {
-    background: rgba(124, 58, 237, 0.03);
-    padding-left: 10px;
-}
-
-.pref-row.no-interact {
-    cursor: default;
-}
-
-.pref-row.no-interact:hover {
-    padding-left: 0;
-    background: none;
-}
-
-.pref-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-}
-
-.p-icon {
+    padding: 6px 22px;
+    background: var(--bg-card);
     color: var(--manya-purple);
-    z-index: 2;
+    border: 3.5px solid var(--border-subtle);
+    font-size: 10px;
+    font-weight: 950;
+    border-radius: 100px;
+    letter-spacing: 2px;
+    box-shadow: var(--shadow-warm);
+    text-transform: uppercase;
 }
 
-.icon-thor-halo {
-    position: absolute;
-    inset: -5px;
-    background: var(--manya-purple);
-    filter: blur(12px);
-    opacity: 0.15;
-    border-radius: 50%;
-    z-index: 1;
+/* 2. BENTO GRID SYSTEM */
+.pref-bento-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px;
 }
 
-.r-desc-wrap {
-    max-width: 140px;
-}
-
-.r-xp {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.nowrap {
-    white-space: nowrap;
-}
-
-.r-info {
-    flex: 1;
-    min-width: 0;
+.bento-card-elite {
+    background: var(--bg-card);
+    border: 4.5px solid var(--border-subtle);
+    border-radius: 32px;
+    padding: 24px 16px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-warm);
+    transition: 0.3s var(--transition-bounce);
+}
+
+.bento-card-elite:active {
+    transform: scale(0.96);
+}
+
+.bento-card-wide {
+    grid-column: span 2;
+    align-items: stretch;
     text-align: left;
 }
 
-.r-name {
-    display: block;
-    font-weight: 950;
-    color: var(--text-main);
-    font-size: 15px;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* 3. TOY GLOSS (ADVANCED) */
+.toy-card-gloss {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    -webkit-mask-image: linear-gradient(to bottom, black 10%, rgba(0, 0, 0, 0.4) 40%, black 90%);
+    mask-image: linear-gradient(to bottom, black 10%, rgba(0, 0, 0, 0.4) 40%, black 90%);
+    opacity: 0.4;
 }
 
-.r-xp {
+.pref-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    margin-bottom: 14px;
+    z-index: 2;
+}
+
+.bento-label {
+    font-size: 14px;
+    font-weight: 950;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+    z-index: 2;
+}
+
+.bento-sub {
     font-size: 10px;
     font-weight: 800;
     color: var(--text-secondary);
-    opacity: 0.7;
-    line-height: 1.2;
-}
-
-/* Ensure controls don't shrink and overlap text on mobile */
-.pref-row .r-stat {
-    flex-shrink: 0;
-    margin-left: 10px;
-}
-
-.pref-row .r-info {
-    padding-right: 10px;
-}
-
-/* THEME TOGGLE */
-.theme-toggle-elite {
-    width: 52px;
-    height: 28px;
-    background: #cbd5e1;
-    /* Darker track */
-    border-radius: 100px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-    border: 2px solid transparent;
-    display: flex;
-    align-items: center;
-}
-
-.theme-toggle-elite.active {
-    background: var(--manya-purple);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 4px 15px rgba(124, 58, 237, 0.3);
-}
-
-.theme-toggle-elite .toggle-thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background: white;
-    /* Always white for visibility */
-    border-radius: 50%;
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-}
-
-.theme-toggle-elite.active .toggle-thumb {
-    transform: translateX(24px);
-    /* 52 - 4 - 20 = 28 - 4 padding = 24 */
-}
-
-/* 4. PREMIUM VOLUME SLIDER */
-.volume-stat {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-.slider-wrapper-elite {
-    width: 120px;
-    /* Slightly larger */
-    height: 6px;
-    background: #cbd5e1;
-    /* Darker for contrast */
-    border-radius: 100px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.manya-range-elite {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, var(--manya-purple) var(--progress), transparent var(--progress));
-    border-radius: 100px;
-    outline: none;
-    margin: 0;
-}
-
-.manya-range-elite::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
-    background: white;
-    /* Always white */
-    border: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(124, 58, 237, 0.2);
-    /* Glow ring */
-    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
     z-index: 2;
-    margin-top: -9px;
-    /* Centering the thumb on the track */
-    transition: all 0.2s;
 }
 
-.manya-range-elite::-webkit-slider-thumb::after {
-    display: none;
-}
-
-.manya-range-elite::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), 0 0 0 6px rgba(124, 58, 237, 0.3);
-}
-
-.vol-mute-trigger {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    transition: 0.3s;
-}
-
-.vol-mute-trigger.muted {
-    color: #ef4444;
-}
-
-/* 5. PREMIUM TOGGLE (NOTIFICATION PULSE) */
+/* 4. PREMIUM TOY TOGGLE (Bento Spec) */
 .premium-toggle-wrapper {
     position: relative;
-    display: inline-block;
+    width: 60px;
+    height: 32px;
+    z-index: 5;
+}
+
+/* 4. PREMIUM TOY TOGGLE */
+.premium-toggle-wrapper {
+    position: relative;
+    width: 64px;
+    height: 36px;
 }
 
 .premium-toggle-input {
@@ -286,132 +129,105 @@
 
 .premium-toggle-label {
     display: block;
-    width: 52px;
-    height: 28px;
-    background: #cbd5e1;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-secondary);
+    border: 4px solid var(--border-subtle);
     border-radius: 100px;
     position: relative;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-    border: 2px solid transparent;
+    transition: all 0.3s var(--transition-bounce);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
 }
 
-.premium-toggle-input:checked+.premium-toggle-label {
+.premium-toggle-input:checked + .premium-toggle-label {
     background: var(--manya-purple);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 4px 15px rgba(124, 58, 237, 0.3);
+    border-color: var(--manya-purple-dark);
 }
 
 .toggle-switch {
     position: absolute;
-    top: 2px;
-    left: 2px;
+    top: 4px;
+    left: 4px;
     width: 20px;
     height: 20px;
     background: white;
-    /* Always white */
     border-radius: 50%;
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s var(--transition-bounce);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    z-index: 2;
 }
 
-.premium-toggle-input:checked+.premium-toggle-label .toggle-switch {
-    transform: translateX(24px);
+.premium-toggle-input:checked + .premium-toggle-label .toggle-switch {
+    transform: translateX(28px);
+    background: white;
 }
 
-/* SYNC ICON */
-.sync-action-icon {
-    width: 40px;
-    height: 40px;
+.toggle-gloss {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    pointer-events: none;
+    border-radius: 100px 100px 0 0;
+    z-index: 1;
+}
+
+/* 5. PREMIUM TOY SLIDER (Full Width in stacked mode) */
+.manya-slider-container {
+    flex: 1;
+    height: 16px;
+    background: var(--bg-secondary);
+    border: 4px solid var(--border-subtle);
+    border-radius: 100px;
+    position: relative;
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
-/* DARK MODE OVERRIDES */
-[data-theme='dark'] .back-btn-elite {
-    background: hsla(222, 47%, 18%, 0.8);
-    color: white;
+.manya-range-elite {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 100%;
+    background: none;
+    position: relative;
+    z-index: 5;
+    cursor: pointer;
 }
 
-[data-theme='dark'] .slider-wrapper-elite {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid transparent;
-}
-
-[data-theme='dark'] .manya-range-elite {
-    background: linear-gradient(to right, var(--manya-purple) var(--progress), rgba(255, 255, 255, 0.1) var(--progress));
-}
-
-[data-theme='dark'] .theme-toggle-elite {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme='dark'] .theme-toggle-elite .toggle-thumb {
+.manya-range-elite::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
     background: white;
+    border: 4px solid var(--manya-purple);
+    border-radius: 50%;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    margin-top: 0;
 }
 
-[data-theme='dark'] .premium-toggle-label {
-    background: rgba(255, 255, 255, 0.1);
+.slider-fill-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--manya-purple);
+    border-radius: 100px;
+    z-index: 1;
+    pointer-events: none;
 }
 
-[data-theme='dark'] .toggle-switch {
-    background: white;
+/* 6. DARK MODE POLISH (Opaque Solid) */
+[data-theme='dark'] .pref-bento-card,
+[data-theme='dark'] .league-status-banner,
+[data-theme='dark'] .back-btn-manya {
+    background: var(--bg-card) !important;
+    border-color: rgba(255,255,255,0.1) !important;
 }
 
-[data-theme='dark'] .pref-row:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* MOBILE RESPONSIVE FIXES */
-@media (max-width: 768px) {
-    .pref-row {
-        flex-wrap: wrap;
-        /* Allow items to drop to the next line */
-        padding: 24px 0;
-        /* Add slightly more vertical padding when wrapping */
-    }
-
-    .pref-row .r-info {
-        flex: 1 1 calc(100% - 90px);
-        /* 100% width minus avatar and margins */
-    }
-
-    .pref-row .r-stat {
-        flex: 1 1 100%;
-        /* Force stat container to its own line */
-        margin-left: 0;
-        margin-top: 16px;
-        padding-left: 68px;
-        /* Align control perfectly under the text (Avatar 50px + 18px margin) */
-        justify-content: flex-start;
-        /* Align controls to the left instead of right */
-    }
-
-    .volume-stat {
-        justify-content: flex-start;
-        /* Ensure volume slider also aligns left when wrapped */
-    }
-
-    /* Center the sync action specifically for wide mode on mobile to make it look intentional */
-    .pref-row .sync-action-icon {
-        margin-right: 0;
-    }
-
-    /* Header Overlap Fix for Narrow Screens */
-    .pref-view .rank-arena-header {
-        padding-left: 60px;
-        padding-right: 60px;
-    }
-
-    .pref-view .arena-title {
-        font-size: 20px;
-    }
-
-    .back-btn-elite {
-        left: 15px;
-        top: 20px;
-        width: 40px;
-        height: 40px;
-    }
+[data-theme='dark'] .pref-icon-box {
+    background: #1e293b;
+    border-color: rgba(255,255,255,0.05);
 }

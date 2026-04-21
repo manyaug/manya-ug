@@ -45,11 +45,11 @@ const MathSolutionStep = ({ step, index, total }) => {
                     {/* Step Label */}
                     <div className="flex items-center gap-2 mb-2 opacity-60">
                          <div className="w-1.5 h-1.5 rounded-full" style={{ background: step.color }} />
-                         <p 
+                        <p 
                             className="text-[9px] font-black uppercase tracking-widest"
                             style={{ color: step.color }}
                         >
-                            {step.label}
+                            {typeof step.label === 'object' ? step.label.text : step.label}
                         </p>
                     </div>
                     

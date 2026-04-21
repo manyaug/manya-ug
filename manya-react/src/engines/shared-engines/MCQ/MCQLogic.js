@@ -32,7 +32,8 @@ export const normalizeOptions = (dataOptions) => {
 };
 
 export const getThemeForSubject = (subject) => {
-    switch (subject?.toLowerCase()) {
+    const s = typeof subject === 'object' ? (subject.id || '') : (subject || '');
+    switch (s.toLowerCase()) {
         case 'math':    return { bg: '#8b5cf6', border: '#7c3aed' };
         case 'science': return { bg: '#2dd4bf', border: '#0d9488' };
         case 'sst':     return { bg: '#f59e0b', border: '#b45309' };

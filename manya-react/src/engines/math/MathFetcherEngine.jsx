@@ -265,6 +265,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             frustration={calculateFrustration(session)}
             userWasCorrect={isAnswered && validateMathAnswer(selectedOption, q.answer, q.options)}
             isLast={currentIdx === questions.length - 1}
+            onSkip={nextQuestion}
             SimulatorBridgeNode={isSim ? (
                 <SimulatorBridge 
                     key={q.id || currentIdx} step={q}
