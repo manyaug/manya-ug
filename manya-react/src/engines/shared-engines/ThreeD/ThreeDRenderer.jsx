@@ -46,16 +46,19 @@ export default function ThreeDRenderer({
 
                     <model-viewer
                         ref={refViewer}
-                        src={resolveRemoteUrl(data.modelUrl, data._originUrl)}
+                        src={(() => {
+                            const resolved = resolveRemoteUrl(data.modelUrl, data._originUrl);
+                            console.log(`[ThreeDRenderer] data.modelUrl: ${data.modelUrl}, resolved: ${resolved}`);
+                            return resolved;
+                        })()}
                         crossorigin="anonymous"
                         camera-controls
                         shadow-intensity="1"
                         auto-rotate={!selectedPinId}
-                        environment-image="neutral"
                         camera-orbit="0deg 75deg 105%"
                         className="w-full h-full outline-none"
                         onLoad={() => console.log(`[3DViewer] Model loaded: ${data.modelUrl}`)}
-                        onError={(e) => console.error(`[3DViewer] Error loading ${data.modelUrl}:`, e.detail)}
+                        onError={(e) => console.error(`[3DViewer] Error loading ${data.modelUrl}:`, e.detail || e)}
                     >
                         {hotspots.map((hs, idx) => (
                             <button
