@@ -51,7 +51,6 @@ export default function ThreeDRenderer({
                             console.log(`[ThreeDRenderer] data.modelUrl: ${data.modelUrl}, resolved: ${resolved}`);
                             return resolved;
                         })()}
-                        crossorigin="anonymous"
                         camera-controls
                         shadow-intensity="1"
                         auto-rotate={!selectedPinId}
