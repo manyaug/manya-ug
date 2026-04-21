@@ -16,20 +16,32 @@ function ResetPasswordView() {
     const [isRecoveryMode, setIsRecoveryMode] = useState(false);
 
     useEffect(() => {
-        // Detect if we landed here from a recovery email
-        // Supabase Appends #access_token=... and type=recovery to the URL
-        const hash = window.location.hash;
-        if (hash && hash.includes('type=recovery')) {
-            setIsRecoveryMode(true);
-        } else {
-            // Check if we are already logged in (standard update)
-            syncService.getUserId().then(uid => {
+        const checkSession = async () => {
+            const hash = window.location.hash;
+            const isRecovery = hash && hash.includes('type=recovery');
+            
+            if (isRecovery) {
+                console.log("🗝️ [Security] Stabilizing Recovery Handshake...");
+                setIsRecoveryMode(true);
+                // Give Supabase a moment to process the hash into a session
+                setTimeout(async () => {
+                    const uid = await syncService.getUserId();
+                    if (!uid) {
+                        console.warn("⚠️ [Security] Handshake failed or expired.");
+                        dispatch(addToast({ message: "Security Link Expired or Invalid.", type: "error" }));
+                        navigate('/login');
+                    }
+                }, 1000);
+            } else {
+                const uid = await syncService.getUserId();
                 if (!uid) {
-                    dispatch(addToast({ message: "Security Link Expired or Invalid.", type: "error" }));
+                    dispatch(addToast({ message: "Restricted Area: Authentication Required.", type: "error" }));
                     navigate('/login');
                 }
-            });
-        }
+            }
+        };
+
+        checkSession();
     }, [navigate, dispatch]);
 
     const handleReset = async (e) => {

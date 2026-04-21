@@ -108,8 +108,18 @@ function RouterLayout() {
 
 function AppContent() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { data: user, isLoading } = useSelector(state => state.user);
     const [splashFinished, setSplashFinished] = useState(false);
+
+    // 🎯 RECOVERY HUNTER: Detect Supabase recovery hash before anything else
+    useEffect(() => {
+        const hash = window.location.hash;
+        if (hash && hash.includes('type=recovery')) {
+            console.log("🗝️ [Security] Recovery Hash Detected. Hijacking to Reset Portal...");
+            navigate('/reset-password');
+        }
+    }, [navigate]);
 
     // Boot user from ManyaDB
     useEffect(() => {
