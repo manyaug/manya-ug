@@ -108,11 +108,15 @@ self.addEventListener('fetch', (event) => {
             cache.put(request, response.clone())
           }
           return response
-        }).catch(() => cached) // If network fails, fall back to cached
+        }).catch(() => {
+            // SILENT FAIL: If background fetch fails, just return cached if we have it
+            return cached;
+        })
 
         // Return cached version immediately if available, otherwise wait for network
+        // EMERGENCY: If both fail, the browser will retry anyway
         return cached || networkFetch
-      })
+      }).catch(() => fetch(request)) // FINAL BYPASS: If anything in the Cache API panics, go to network
     )
     return
   }
