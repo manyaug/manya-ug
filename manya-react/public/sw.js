@@ -109,8 +109,9 @@ self.addEventListener('fetch', (event) => {
           }
           return response
         }).catch(() => {
-            // SILENT FAIL: If background fetch fails, just return cached if we have it
-            return cached;
+            // SILENT FAIL: If background fetch fails, return cached if we have it
+            // If we don't have it, return a generic 503 to prevent SW from crashing with undefined
+            return cached || new Response('Service Unavailable (Offline)', { status: 503, statusText: 'Service Unavailable' });
         })
 
         // Return cached version immediately if available, otherwise wait for network
