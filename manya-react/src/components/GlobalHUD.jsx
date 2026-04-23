@@ -1,62 +1,109 @@
+/**
+ * GlobalHUD — Manya World Header
+ * =================================
+ * Redesigned after the manya_logic app header visual.
+ * Features:
+ *   - Streak pill (🔥)
+ *   - Diamond/Gem pill with idle bounce animation
+ *   - Coin pill with animated count-up (ported from coinAnimation.js)
+ *   - Fly-to-HUD coin effect triggered by Redux `coins` change
+ */
+import { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getGem } from '../config/assetUrls';
+import { useCoinAnimation } from '../domain/gamification/useCoinAnimation.js';
 import '../styles/globalHud.css';
 
 function GlobalHUD() {
-  const user = useSelector((state) => state.user.data);
-  const navigate = useNavigate();
+    const user       = useSelector(s => s.user.data);
+    const navigate   = useNavigate();
+    const coinPillRef = useRef(null);
 
-  if (!user) return null;
+    // Current coin value from Redux
+    const realCoins = user?.coins || 0;
+    const { displayCoins, triggerFloatCoin } = useCoinAnimation(realCoins);
 
-  const xpProgress = (user.xp % 1000) / 10;
+    // When Redux coins go up, trigger the floating animation
+    const prevCoinsRef = useRef(realCoins);
+    useEffect(() => {
+        if (realCoins > prevCoinsRef.current) {
+            const gained = realCoins - prevCoinsRef.current;
+            triggerFloatCoin(coinPillRef, gained);
+        }
+        prevCoinsRef.current = realCoins;
+    }, [realCoins, triggerFloatCoin]);
 
-  return (
-    <header className="app-header-master">
-      <motion.div 
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', damping: 20, stiffness: 120 }}
-        className="hud-master-shell"
-      >
-        {/* LEFT: PROFILE & XP */}
-        <div className="hud-left-content" onClick={() => navigate('/profile')}>
-          <div className="hud-avatar-wrapper">
-            <img src="/assets/icons/pwa-192x192.png" alt="Manya" className="hud-avatar-img" />
-            <div className="hud-level-badge">7</div>
-          </div>
-          <div className="hud-user-text">
-            <span className="hud-nickname-text">{user.nickname.split(' ')[0]}</span>
-            <div className="hud-xp-line">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${xpProgress}%` }}
-                className="hud-xp-fill"
-              >
-              </motion.div>
-            </div>
-          </div>
-        </div>
+    if (!user) return null;
 
-        {/* RIGHT: TREASURY (STREAK & GEMS) */}
-        <div className="hud-right-content">
-          <div className="hud-treasury-pill">
-            <div className="hud-stat-item streak" title="Day Streak">
-              <span className="hud-icon">🔥</span>
-              <span className="hud-value">{user.currentStreak || 0}</span>
-            </div>
-            <div className="hud-stat-divider" />
-            <div className="hud-stat-item gems" onClick={() => navigate('/achievements')}>
-              <img src={getGem('master_gem.svg')} className="hud-gem-icon" alt="Gem" />
-              <span className="hud-value">{user.diamonds}</span>
-            </div>
-          </div>
-        </div>
+    const level      = Math.floor((user.xp || 0) / 1000) + 1;
+    const xpProgress = ((user.xp || 0) % 1000) / 10; // 0-100 %
+    const streak     = user.current_streak || user.currentStreak || 0;
+    const diamonds   = user.diamonds || 0;
 
-      </motion.div>
-    </header>
-  );
+    return (
+        <header className="app-header-master">
+            <motion.div
+                initial={{ y: -80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 120 }}
+                className="hud-master-shell"
+            >
+                {/* ── LEFT: Avatar + XP bar ─────────────────────────────── */}
+                <div className="hud-left-content" onClick={() => navigate('/profile')}>
+                    <div className="hud-avatar-wrapper">
+                        <img src="/assets/icons/pwa-192x192.png" alt="Manya" className="hud-avatar-img" />
+                        <div className="hud-level-badge">{level}</div>
+                    </div>
+                    <div className="hud-user-text">
+                        <span className="hud-nickname-text">{(user.nickname || 'Student').split(' ')[0]}</span>
+                        <div className="hud-xp-line">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${xpProgress}%` }}
+                                transition={{ duration: 0.8, ease: 'easeOut' }}
+                                className="hud-xp-fill"
+                            />
+                        </div>
+                        <span className="hud-xp-label">{user.xp || 0} XP</span>
+                    </div>
+                </div>
+
+                {/* ── RIGHT: Streak + Gems + Coins ──────────────────────── */}
+                <div className="hud-right-content">
+                    {/* Coins — animated count-up */}
+                    <div
+                        id="hud-coin-pill"
+                        ref={coinPillRef}
+                        className="hud-pill hud-coin-pill"
+                        title="Coins"
+                    >
+                        <img
+                            src={getGem('coin.svg')}
+                            className="hud-gem-icon hud-coin-idle"
+                            alt="Coin"
+                        />
+                        <span className="hud-pill-value">{displayCoins.toLocaleString()}</span>
+                    </div>
+
+                    {/* Diamonds / overall gems */}
+                    <div
+                        className="hud-pill hud-gem-pill"
+                        title="Total Diamonds"
+                        onClick={() => navigate('/achievements')}
+                    >
+                        <img
+                            src={getGem('master_gem.svg')}
+                            className="hud-gem-icon hud-gem-idle"
+                            alt="Diamond"
+                        />
+                        <span className="hud-pill-value">{diamonds}</span>
+                    </div>
+                </div>
+            </motion.div>
+        </header>
+    );
 }
 
 export default GlobalHUD;

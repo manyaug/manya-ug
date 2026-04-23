@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -6,6 +6,10 @@ import {
     Zap, Trophy, RotateCcw, AlertCircle, Sparkles,
     Search, Puzzle
 } from 'lucide-react';
+import QuestHUD from '../../components/QuestHUD';
+import { triggerRewardFlight } from '../../utils/fxUtils';
+import { mascotSpeak } from '../../components/MascotReaction';
+import { audioService } from '../../infrastructure/audio/audioService';
 
 import MathSolutionSteps from '../../components/MathSolutionSteps';
 
@@ -98,6 +102,41 @@ const MathRenderer = ({
     userWasCorrect,
     isLast
 }) => {
+    const correctBtnRef = useRef(null);
+
+    // Trigger flying coins and mascot reactions when user is answered
+    useEffect(() => {
+        if (isAnswered) {
+            if (userWasCorrect) {
+                // Global event for feedback layer
+                window.dispatchEvent(new CustomEvent('manya-correct'));
+                audioService.playSFX('correct');
+
+                // Mascot Reaction (Manya being wise/encouraging)
+                const phrases = [
+                    "Masterfully calculated! 🧮",
+                    "Your mathematical logic is flawless! ✨",
+                    "Excellent work! You found the pattern! 🧠",
+                    "Correct! Every step is a step towards mastery! 🏆"
+                ];
+                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+
+                // Flying Coins
+                if (correctBtnRef.current) {
+                    setTimeout(() => {
+                        triggerRewardFlight(correctBtnRef.current, 'coin', 5);
+                    }, 300);
+                }
+            } else {
+                // Global event for feedback layer
+                window.dispatchEvent(new CustomEvent('manya-wrong'));
+                audioService.playSFX('mistake');
+
+                // Mascot Encouragement
+                mascotSpeak("Mathematics takes practice! Let's review the steps. 📏", 4000);
+            }
+        }
+    }, [isAnswered, userWasCorrect]);
     
     // --- 📥 LOADING SCREEN ---
     if (isLoading) {
@@ -188,6 +227,7 @@ const MathRenderer = ({
     // --- 📝 MCQ UI ---
     return (
         <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+
             <AnimatePresence>
                 {showGemToast && (
                     <motion.div 
@@ -202,24 +242,9 @@ const MathRenderer = ({
             </AnimatePresence>
 
             <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
-                <div className="flex gap-1.5 justify-center mb-5 overflow-x-auto no-scrollbar flex-shrink-0">
-                    {questions.map((_, i) => (
-                        <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-amber-500 w-5' : (i < currentIdx ? 'bg-amber-500 opacity-35 w-1.5' : 'bg-slate-200 w-1.5')}`} />
-                    ))}
-                </div>
-
-                {q.isRephrased && <div className="text-xs text-blue-600 bg-blue-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">🔄 Concept re-run with different wording</div>}
-                {frustration?.level === 'high' && <div className="text-xs text-amber-600 bg-amber-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">💪 You're doing great. Take your time!</div>}
-
                 <div className="bg-[var(--bg-card)] rounded-[2rem] border-[4.5px] border-amber-400 px-6 py-6 mb-4 shadow-xl flex-shrink-0 relative">
                     <div className="toy-card-gloss" />
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-amber-500/10 rounded-lg flex items-center justify-center"><Compass size={12} className="text-amber-600" /></div>
-                            <span className="text-amber-600 font-black text-[9px] tracking-widest uppercase opacity-80">
-                                {nodeType} · {currentIdx + 1}/{questions.length}
-                            </span>
-                        </div>
+                    <div className="flex items-center justify-end mb-4">
                         {!isAnswered && q.hint && (
                             <div className="relative">
                                 <button onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
@@ -251,13 +276,23 @@ const MathRenderer = ({
                         } else if (isSelected) cls += ' mcq-fe-selected';
 
                         return (
-                            <button key={i} className={cls} onClick={() => handleSelect(opt)} disabled={isAnswered}>
+                            <motion.button 
+                                key={i} 
+                                className={cls} 
+                                onClick={() => {
+                                    handleSelect(opt);
+                                    audioService.playSFX('tap');
+                                }} 
+                                disabled={isAnswered}
+                                ref={isThisCorrect ? correctBtnRef : null}
+                                whileTap={!isAnswered ? { scale: 0.98, translateY: 2 } : {}}
+                            >
                                 <div className="toy-card-gloss" />
                                 <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
                                 <span className="mcq-fe-text">{opt}</span>
                                 {isAnswered && isSelected && userWasCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
                                 {isAnswered && isSelected && !userWasCorrect && <X size={16} className="mcq-fe-icon wrong-icon" strokeWidth={3} />}
-                            </button>
+                            </motion.button>
                         );
                     })}
                 </div>

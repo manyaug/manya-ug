@@ -1,6 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { syncService } from '../infrastructure/sync/syncService.js';
+import { BADGES } from '../config/badges';
 
 // Async thunk to boot user from IndexedDB
 export const initializeUser = createAsyncThunk(
@@ -26,7 +28,12 @@ export const initializeUser = createAsyncThunk(
             scienceGems: cloudProfile.gems_science,
             currentStreak: cloudProfile.streak_current,
             longestStreak: cloudProfile.streak_longest,
-            onboarded: true // If they have a profile, they are onboarded
+            unlockedBadges: cloudProfile.unlocked_badges || [],
+            math_correct: cloudProfile.math_correct || 0,
+            science_correct: cloudProfile.science_correct || 0,
+            english_correct: cloudProfile.english_correct || 0,
+            sst_correct: cloudProfile.sst_correct || 0,
+            onboarded: true 
         };
         // Update local cache
         await ManyaDB.saveUser(merged);
@@ -38,6 +45,18 @@ export const initializeUser = createAsyncThunk(
       await ManyaDB.saveUser(localUser);
     }
     return localUser;
+  }
+);
+
+// Async thunk to push state to persistence layers
+export const syncUserData = createAsyncThunk(
+  'user/sync',
+  async (profileData) => {
+    // Save to LocalDB (IndexedDB)
+    await ManyaDB.saveUser(profileData);
+    // Push to Cloud (Supabase)
+    await syncService.uploadProfile(profileData);
+    return profileData;
   }
 );
 
@@ -87,6 +106,52 @@ export const userSlice = createSlice({
       state.data.diamonds += Math.floor(amount / 2); // Bonus diamonds
       state.data.xp += xp;
     },
+    // Award coins (Manya soft currency)
+    awardCoins: (state, action) => {
+      state.data.coins = (state.data.coins || 0) + action.payload;
+    },
+    // Deduct coins (quest skip, store purchase)
+    deductCoins: (state, action) => {
+      state.data.coins = Math.max(0, (state.data.coins || 0) - action.payload);
+    },
+    // ── BADGE SYSTEM ──────────────────────────────────────────────────────
+    unlockBadge: (state, action) => {
+        const badgeId = action.payload;
+        if (!state.data.unlockedBadges) state.data.unlockedBadges = [];
+        if (!state.data.unlockedBadges.includes(badgeId)) {
+            state.data.unlockedBadges.push(badgeId);
+            if (!state.data.pendingBadgeCelebrations) state.data.pendingBadgeCelebrations = [];
+            state.data.pendingBadgeCelebrations.push(badgeId);
+        }
+    },
+    checkAchievements: (state) => {
+        if (!state.data.unlockedBadges) state.data.unlockedBadges = [];
+        if (!state.data.pendingBadgeCelebrations) state.data.pendingBadgeCelebrations = [];
+        
+        BADGES.forEach(badge => {
+            if (!state.data.unlockedBadges.includes(badge.id)) {
+                if (badge.check && badge.check(state.data)) {
+                    state.data.unlockedBadges.push(badge.id);
+                    state.data.pendingBadgeCelebrations.push(badge.id);
+                }
+            }
+        });
+    },
+    dismissBadgeCelebration: (state) => {
+        if (state.data.pendingBadgeCelebrations?.length > 0) {
+            state.data.pendingBadgeCelebrations.shift();
+        }
+    },
+    // ── CHEST SYSTEM ──────────────────────────────────────────────────────
+    dropChest: (state, action) => {
+        if (!state.data.pendingChests) state.data.pendingChests = [];
+        state.data.pendingChests.push(action.payload); // { chestType, rewards }
+    },
+    dismissChest: (state) => {
+        if (state.data.pendingChests?.length > 0) {
+            state.data.pendingChests.shift();
+        }
+    },
     // ── STREAK ──────────────────────────────────────────────────────────────
     updateStreak: (state) => {
         const today = new Date().toDateString();
@@ -114,21 +179,35 @@ export const userSlice = createSlice({
       };
     },
     updateSessionAfterAnswer: (state, action) => {
-      const { isCorrect, hintUsed, answerChanged, timeSpentMs } = action.payload;
+      const { subject, isCorrect, hintUsed, answerChanged, timeSpentMs } = action.payload;
       const s = state.session;
+      const d = state.data;
 
       s.questionsAnswered += 1;
-      if (hintUsed) s.hintCount += 1;
+      if (hintUsed) {
+          s.hintCount += 1;
+          d.stats_hints_used = (d.stats_hints_used || 0) + 1;
+      }
       if (answerChanged) s.answerChangeCount += 1;
 
       if (isCorrect) {
         s.consecutiveWrong = 0;
         s.consecutiveCorrect += 1;
         s.frustrationLevel = Math.max(0, s.frustrationLevel - 5);
+        
+        // --- 🎯 BADGE TRACKING ---
+        if (subject) {
+            const key = `${subject.toLowerCase()}_correct`;
+            d[key] = (d[key] || 0) + 1;
+        }
+        if (!hintUsed && !answerChanged) {
+            d.stats_perfect_answers = (d.stats_perfect_answers || 0) + 1;
+        }
       } else {
         s.consecutiveCorrect = 0;
         s.consecutiveWrong += 1;
         s.frustrationLevel = Math.min(100, s.frustrationLevel + 15);
+        d.stats_explanations_viewed = (d.stats_explanations_viewed || 0) + 1;
       }
 
       if (timeSpentMs > 30000) s.frustrationLevel = Math.min(100, s.frustrationLevel + 10);
@@ -136,8 +215,8 @@ export const userSlice = createSlice({
       // Track matrix daily engagement
       if (timeSpentMs) {
           const today = new Date().toISOString().split('T')[0];
-          if (!state.data.engagement_stats) state.data.engagement_stats = {};
-          state.data.engagement_stats[today] = (state.data.engagement_stats[today] || 0) + timeSpentMs;
+          if (!d.engagement_stats) d.engagement_stats = {};
+          d.engagement_stats[today] = (d.engagement_stats[today] || 0) + timeSpentMs;
       }
     }
   },
@@ -165,6 +244,13 @@ export const {
     completeOnboarding, 
     resetUser,
     awardGems,
+    awardCoins,
+    deductCoins,
+    unlockBadge,
+    checkAchievements,
+    dismissBadgeCelebration,
+    dropChest,
+    dismissChest,
     updateStreak,
     resetSession,
     updateSessionAfterAnswer

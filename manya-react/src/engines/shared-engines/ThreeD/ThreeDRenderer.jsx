@@ -63,7 +63,7 @@ export default function ThreeDRenderer({
                         camera-controls
                         shadow-intensity="1"
                         auto-rotate={!selectedPinId}
-                        camera-orbit="0deg 75deg 105%"
+                        interpolation-decay="200"
                         className="w-full h-full outline-none"
                         onLoad={() => console.log(`[3DViewer] Model loaded: ${data.modelUrl}`)}
                         onError={(e) => console.error(`[3DViewer] Error loading ${data.modelUrl}:`, e.detail || e)}

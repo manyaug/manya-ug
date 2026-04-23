@@ -1,0 +1,162 @@
+.badge-celebration-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.badge-celebration-overlay.is-active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.celebration-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95), #020617);
+    backdrop-filter: blur(12px);
+}
+
+.badge-hero-card {
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    background: #1e293b;
+    border-radius: 40px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transform: translateY(30px) scale(0.9);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.is-active .badge-hero-card {
+    transform: translateY(0) scale(1);
+}
+
+.badge-crest-vault {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    background: #0f172a;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    z-index: 2;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-icon-reveal {
+    animation: badgeFloat 3s ease-in-out infinite;
+}
+
+@keyframes badgeFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.badge-glow-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--tier-glow, #6366f1) 0%, transparent 70%);
+    opacity: 0.5;
+    z-index: 1;
+    filter: blur(20px);
+}
+
+.badge-celebration-text {
+    margin-bottom: 32px;
+    z-index: 2;
+}
+
+.celebration-subtitle {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--tier-accent, #818cf8);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.celebration-badge-name {
+    font-size: 32px;
+    font-weight: 950;
+    color: white;
+    margin-bottom: 12px;
+    font-family: var(--font-display);
+}
+
+.celebration-description {
+    font-size: 14px;
+    font-weight: 600;
+    color: #94a3b8;
+    line-height: 1.5;
+    max-width: 280px;
+}
+
+.celebration-tier-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--tier-dark, #312e81);
+    color: white;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-collect-btn {
+    width: 100%;
+    height: 64px;
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 2;
+}
+
+.badge-collect-btn:active {
+    transform: scale(0.96);
+}
+
+/* --- TIERED STYLING --- */
+.tier-bronze { --tier-glow: #cd7f32; --tier-accent: #cd7f32; --tier-dark: #7c4a1d; }
+.tier-silver { --tier-glow: #94a3b8; --tier-accent: #94a3b8; --tier-dark: #334155; }
+.tier-gold   { --tier-glow: #f59e0b; --tier-accent: #f59e0b; --tier-dark: #78350f; }
+.tier-platinum { --tier-glow: #a855f7; --tier-accent: #a855f7; --tier-dark: #581c87; }
+.tier-diamond { --tier-glow: #0ea5e9; --tier-accent: #0ea5e9; --tier-dark: #0c4a6e; }
+
+.badge-shine-effect {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+    border-radius: 40px;
+    pointer-events: none;
+}

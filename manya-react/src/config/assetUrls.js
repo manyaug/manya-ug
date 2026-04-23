@@ -37,7 +37,7 @@ export function assetUrl(path) {
   // - images/, data/, shared/, and content/ are at the ROOT of the repo.
   // - english/, math/, science/, and sst/ folder binaries are under /assets/.
   const subjects = ['english', 'math', 'science', 'sst', 'shared'];
-  const rootFolders = ['images', 'data', 'content', 'assets'];
+  const rootFolders = ['images', 'data', 'content', 'assets', 'audios'];
 
   const firstSeg = clean.split('/')[0].toLowerCase();
 
@@ -47,11 +47,8 @@ export function assetUrl(path) {
   }
 
   // 4. Normalize Binary Paths (audio vs audios)
-  if (clean.includes('/audios/')) {
-    clean = clean.replace('/audios/', '/audio/');
-  } else if (clean.includes('/audio/') && !clean.includes('/audios/')) {
-    // Already normalized, but ensure no double slash or legacy issues
-  }
+  // Ensure we consistently use /audio/ for the CDN structure
+  clean = clean.replace(/^audios\//, 'audio/').replace('/audios/', '/audio/');
 
   return `${BASE_CDN_URL}${clean}`;
 }
@@ -162,21 +159,24 @@ function uiImage(name, ext = 'webp') {
 // 🎵 AMBIENT AUDIO
 // ---------------------------------------------------------------------------
 export const AUDIO = {
-  day: assetUrl('shared/audios/day.mp3'),
-  night: assetUrl('shared/audios/night.mp3'),
-  rain: assetUrl('shared/audios/rain.mp3'),
-  shine: assetUrl('shared/audios/shine.mp3'),
+  day: assetUrl('audios/day.mp3'),
+  night: assetUrl('audios/night.mp3'),
+  rain: assetUrl('audios/rain.mp3'),
+  shine: assetUrl('audios/shine.mp3'),
 }
 
 // 🛡️ AUDIO PATH GUARD
 const normalizeAudio = (path) => path.replace('/audios/', '/audio/');
 
 export const SFX = {
-  correct: assetUrl('shared/audios/collect-points.mp3'),
-  wrong: assetUrl('shared/audios/error-mistake.mp3'),
-  applause: assetUrl('shared/audios/applause.mp3'),
-  click: assetUrl('shared/audios/ui-click.mp3'),
-  whoosh: assetUrl('shared/audios/whoosh.mp3'),
+  correct: assetUrl('audios/collect-points.mp3'),
+  wrong: assetUrl('audios/error-mistake.mp3'),
+  applause: assetUrl('audios/applause.mp3'),
+  click: assetUrl('audios/ui-click.mp3'),
+  whoosh: assetUrl('audios/whoosh.mp3'),
+  pop: assetUrl('audios/pop.mp3'),
+  tap: assetUrl('audios/tap.mp3'),
+  victory: assetUrl('audios/victory.mp3'),
 }
 
 // ---------------------------------------------------------------------------
@@ -215,6 +215,7 @@ export const IMAGES = {
   sst_gem: assetUrl('images/gems/sst_gem.svg'),
   english_gem: assetUrl('images/gems/english_gem.svg'),
   master_gem: assetUrl('images/gems/master_gem.svg'),
+  coin_gem: assetUrl('images/gems/coin.svg'),
   manya_icon: uiImage('manya_icon'),
   polly_icon: uiImage('polly_icon'),
   kiki_icon: uiImage('kiki_icon'),
@@ -270,5 +271,5 @@ export function getGlb(key) {
 
 export function getSfx(name) {
   const filePart = name.endsWith('.mp3') ? name : name + '.mp3';
-  return SFX[name] ?? assetUrl('shared/audios/' + filePart);
+  return SFX[name] ?? assetUrl('audios/' + filePart);
 }

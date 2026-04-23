@@ -1,0 +1,176 @@
+/* ============================================================
+   MANYA QUEST HUD - MINIMALIST v1.0
+   Clean, flat, and professional native app aesthetic
+   ============================================================ */
+
+.quest-hud-minimal {
+    position: relative;
+    width: 100%;
+    background: #0f1115; /* Solid Deep Slate */
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-bottom: 1px solid #1e293b;
+    z-index: 50;
+    min-height: 80px;
+}
+
+.hud-top-flex {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* LEFT: CLOSE & SUBJECT */
+.hud-left-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hud-x-btn {
+    width: 40px;
+    height: 40px;
+    background: #1e293b;
+    border: none;
+    border-radius: 12px;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.hud-x-btn:active { background: #334155; }
+
+.hud-subject-badge {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 950;
+    font-size: 14px;
+    color: white;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* RIGHT: RESOURCES */
+.hud-right-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hud-stat-box {
+    background: #1e293b;
+    padding: 2px 10px 2px 6px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-weight: 900;
+    font-size: 13px;
+    min-width: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hud-absorb-pulse {
+    animation: h-absorb 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes h-absorb {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+.hud-mini-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* 📊 MASTERY SECTION */
+.hud-mastery-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hud-bar-lane {
+    width: 100%;
+    position: relative;
+    height: 12px;
+}
+
+.hud-progress-bg {
+    width: 100%;
+    height: 100%;
+    background: #1e293b;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hud-progress-fill {
+    height: 100%;
+    background: #3b82f6; /* Default Blue */
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hud-pass-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #facc15; /* Golden Yellow for Target */
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+    z-index: 10;
+}
+
+.hud-mastery-dot {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid white;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hud-mastery-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hud-mastery-label {
+    font-size: 10px;
+    font-weight: 950;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.hud-target-label {
+    font-size: 10px;
+    font-weight: 950;
+    color: #94a3b8; /* Lighter slate for better contrast */
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* SUBJECT COLORS */
+.quest-hud-minimal[data-subject="science"] .hud-progress-fill { background: #22c55e; }
+.quest-hud-minimal[data-subject="math"]    .hud-progress-fill { background: #6366f1; }
+.quest-hud-minimal[data-subject="sst"]     .hud-progress-fill { background: #f59e0b; }
+.quest-hud-minimal[data-subject="english"] .hud-progress-fill { background: #d946ef; }

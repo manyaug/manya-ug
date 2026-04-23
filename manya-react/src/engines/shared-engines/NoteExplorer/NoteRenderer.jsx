@@ -17,15 +17,18 @@ const ProgressTrack = ({ current, total, theme }) => {
             <div className="ne-progress-track">
                 <motion.div
                     className="ne-progress-fill"
-                    style={{ background: theme.gradient }}
+                    style={{ background: theme.accent || '#6366f1' }}
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
-                    transition={{ type: 'spring', bounce: 0, duration: 0.8 }}
+                    transition={{ type: 'spring', bounce: 0, duration: 1.2 }}
                 >
                     <div className="ne-progress-shimmer" />
                 </motion.div>
             </div>
-            <span className="ne-progress-label">{current + 1}/{total}</span>
+            <div className="ne-progress-label">
+                <span className="opacity-40 uppercase tracking-widest mr-1">Node</span>
+                {current + 1}/{total}
+            </div>
         </div>
     );
 };
@@ -93,25 +96,45 @@ const ObjectListCard = ({ card, theme }) => (
     <div className="ne-obj-list">
         {card.items.map((item, i) => {
             const name = item.name || item.title || `Item ${i + 1}`;
-            const entries = Object.entries(item).filter(([k]) => !['name', 'title'].includes(k));
+            // Use description as the primary content if it exists
+            const definition = item.description || item.Definition || item.meaning || "";
+            const entries = Object.entries(item).filter(([k]) => !['name', 'title', 'description', 'Definition', 'meaning'].includes(k));
+            
             return (
                 <motion.div
-                    key={i} className="ne-obj-card"
-                    initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.08 }}
+                    key={i} className="ne-lexicon-card"
+                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
                 >
-                    <div className="ne-obj-header">
-                        <div className="ne-obj-icon" style={{ background: theme.gradient }}>
-                            <MapPin size={14} color="white" />
-                        </div>
-                        <h4 className="ne-obj-name">{name}</h4>
+                    <div className="ne-lexicon-glow" style={{ backgroundColor: theme.accent }} />
+                    <div className="toy-card-gloss" />
+                    
+                    <div className="ne-lexicon-header">
+                        <div className="ne-lexicon-indicator" style={{ backgroundColor: theme.accent }} />
+                        <h4 className="ne-lexicon-name">{name}</h4>
                     </div>
-                    {entries.map(([k, v]) => (
-                        <div key={k} className="ne-obj-row">
-                            <span className="ne-obj-label">{k.replace(/_/g, ' ')}</span>
-                            <span className="ne-obj-value">{String(v)}</span>
+
+                    {definition && (
+                        <div className="ne-lexicon-definition">
+                            <p dangerouslySetInnerHTML={{ __html: definition }} />
                         </div>
-                    ))}
+                    )}
+
+                    {entries.length > 0 && (
+                        <div className="ne-lexicon-meta">
+                            {entries.map(([k, v]) => (
+                                <div key={k} className="ne-meta-row">
+                                    <span className="ne-meta-label">{k.replace(/_/g, ' ')}</span>
+                                    <span className="ne-meta-value">{String(v)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Interactive Bolt Decor */}
+                    <div className="ne-lexicon-bolt">
+                        <Zap size={14} fill="currentColor" className="opacity-40" />
+                    </div>
                 </motion.div>
             );
         })}
@@ -164,17 +187,21 @@ const NoteRenderer = ({
 }) => {
     return (
         <div className="ne-root immersive-root animate-in fade-in duration-500" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className="ne-header" style={{ background: theme.gradient }}>
-                <div className="ne-orb ne-orb-1" /><div className="ne-orb ne-orb-2" /><div className="ne-orb ne-orb-3" />
-                <div className="ne-header-inner">
+            <div className="ne-header-elite">
+                <div className="ne-orb-elite ne-orb-primary" style={{ backgroundColor: theme.accent }} />
+                <div className="ne-orb-elite ne-orb-secondary" style={{ backgroundColor: theme.pill }} />
+                
+                <div className="ne-header-inner-elite">
                     <ProgressTrack current={idx} total={allCards.length} theme={theme} />
-                    <div className="ne-section-row">
-                        <motion.div key={idx} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} className="ne-section-icon">
-                            <theme.Icon size={14} color="white" />
-                        </motion.div>
-                        <span className="ne-section-text">{card.type === 'intro' ? 'Welcome' : card.section}</span>
+                    
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="ne-tag-pill" style={{ borderColor: `${theme.accent}40`, color: theme.accent }}>
+                            <theme.Icon size={12} />
+                            <span>{card.type === 'intro' ? 'Exploration' : card.section || 'Insight'}</span>
+                        </div>
                     </div>
-                    <h2 className="ne-title">{card.title}</h2>
+
+                    <h2 className="ne-title-elite">{card.title}</h2>
                 </div>
             </div>
 
@@ -194,20 +221,24 @@ const NoteRenderer = ({
                 </AnimatePresence>
             </div>
 
-            <div className="ne-footer">
+            <div className="ne-footer-elite">
                 <AnimatePresence>
                     {idx > 0 && (
-                        <motion.button
-                            className="ne-btn-back" initial={{ width: 0, opacity: 0 }} animate={{ width: 56, opacity: 1 }}
-                            exit={{ width: 0, opacity: 0 }} transition={{ type: 'spring', bounce: 0 }} onClick={goPrev}
-                        >
-                            <ChevronLeft size={22} />
-                        </motion.button>
+                        <button className="ne-btn-back-elite" onClick={goPrev}>
+                            <ChevronLeft size={24} />
+                        </button>
                     )}
                 </AnimatePresence>
-                <motion.button className="ne-btn-next" style={{ background: theme.gradient }} whileTap={{ scale: 0.96 }} onClick={goNext}>
-                    {isLast ? <><>FINISH </><GraduationCap size={20} /></> : <><>NEXT </><ChevronRight size={20} /></>}
-                </motion.button>
+                <div className="flex-1" />
+                <button 
+                    className="ne-btn-next-elite" 
+                    style={{ '--accent': theme.accent || '#6366f1' }}
+                    onClick={goNext}
+                >
+                    <div className="btn-toy-gloss" />
+                    <span>{isLast ? 'COMPLETE VAULT' : 'NEXT INSIGHT'}</span>
+                    {isLast ? <GraduationCap size={20} /> : <ChevronRight size={20} />}
+                </button>
             </div>
         </div>
     );

@@ -3,12 +3,20 @@ import { parseQuestionId, areSameConcept } from '../utils/questionParser';
 import { masteryService } from '../domain/mastery/masteryService';
 import { conceptMasteryService } from '../domain/mastery/conceptMasteryService';
 import { spacedRepetitionService } from '../domain/mastery/spacedRepetitionService';
+import { BehavioralEngine } from '../domain/psych/behavioralEngine.js';
+import { PriorityScorer } from '../domain/scoring/priorityScorer.js';
+import { QuestEngineCore } from '../domain/progress/questEngine.js';
 
 /**
- * MANYA ADAPTIVE ENGINE (V5.2 - ENGINE LOCKDOWN)
- * =================================================
- * Implements: Strict Engine Quarantine (No CHAT outside Explore),
- *             Robust MCQ Recovery, and Psychological Rescue.
+ * MANYA ADAPTIVE ENGINE (V6.0 - HEADLESS CORE INTEGRATION)
+ * ==========================================================
+ * Upgraded to use the ported Headless Domain Engines:
+ *   - BehavioralEngine  → Guessing rate, deep-thinking detection
+ *   - PriorityScorer    → PLE 2:1 pool selection, variant spacing enforcement
+ *   - QuestEngineCore   → Dynamic game mode, simulation ratio per quest level
+ *
+ * PUBLIC API IS UNCHANGED. All subject fetchers (Science, Math, SST, English)
+ * call generateAdaptiveQuest() with the same parameters and expect the same return shape.
  */
 
 // ── CONSTANTS & CONFIG ──────────────────────────────────────────────────────
@@ -35,6 +43,9 @@ const MASTERY_WEIGHTS = {
     ready_for_v3: 50,
     mastered: 20,
 };
+
+// Singleton scorer instance — avoids re-instantiating on every quest
+const priScorer = new PriorityScorer();
 
 // ── CORE ADAPTIVE LOGIC ─────────────────────────────────────────────────────
 
@@ -92,36 +103,60 @@ function calculateDynamicQuestLength(nodeType, frustrationScore, dominantMastery
 
 export async function generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, history, simResources = []) {
     try {
-        console.log(`🧠 [Adaptive] Generating ${nodeType} quest for ${subject}. Bank: ${allQuestions.length}`);
+        console.log(`🧠 [Adaptive V6] Generating ${nodeType} quest for ${subject}. Bank: ${allQuestions.length}`);
     
         const frustration = calculateFrustration(session);
         const subjectMasteryMap = await masteryService.getSubjectMasteryOverview(subject);
         const dominantMastery = Object.values(subjectMasteryMap)[0] || 'learning';
         const questLength = calculateDynamicQuestLength(nodeType, frustration.score, dominantMastery);
 
-        // 1. DISCOVERY & HYDRATION (v5.3 - Robust Routing)
-        const SUPPORTED_ENGINES = [
-            'WORDGRID_ENGINE', 'GARDEN_GUARD', 'SENTENCE_BLOCKS', 'HARVEST_GAME', 
-            'TENSE_TREEHOUSE', 'SENTENCE_TRAIN', 'GRAMMAR_MAZE', 'MORPH_GAME',
-            'ENGLISH_RULE_MASTER', 'CHAT', 'DEEP_READER', 'FUNCTIONAL_COMPOSER',
-            'SIMULATION', 'QUEST', 'STORY'
-        ];
+        // ── BEHAVIORAL ENGINE: Detect guessing vs deep thinking patterns ─────
+        const behaviorPattern = BehavioralEngine.analyzeAnswerPattern(history || []);
+        const isHardGuesser = behaviorPattern.guessingRate > 60;
+        console.log(`🔬 [Behavioral] Guessing: ${behaviorPattern.guessingRate}% | Deep: ${behaviorPattern.deepThinkingRate}% | HintDep: ${behaviorPattern.hintDependency}%`);
 
+        // ── PRIORITY SCORER: PLE 2:1 pool selection ──────────────────────────
+        const answersWithMark = (history || []).map(h => ({ mark: h.pool || 'yes' }));
+        const selectedPool = priScorer.selectPool({ totalAnswers: history.length, recentQuestions: answersWithMark });
+        console.log(`📊 [PriorityScorer] PLE Pool: ${selectedPool}`);
+
+        // ── QUEST ENGINE CORE: Game mode + simulation ratio per quest level ───
+        const nodeToQuestId = { WARMUP: 1, EXPLORE: 2, PRACTICE: 3, REINFORCE: 4, MASTERY: 5 };
+        const questId = nodeToQuestId[nodeType] || 3;
+        const recentAnswers = (history || []).slice(-10);
+        const recentAccuracyRaw = recentAnswers.length > 0
+            ? recentAnswers.filter(h => h.isCorrect).length / recentAnswers.length
+            : 0.65;
+        const hintCountRecent = recentAnswers.filter(h => h.hintUsed).length;
+
+        const userStateForEngine = {
+            overallAccuracy: Math.round(recentAccuracyRaw * 100),
+            overallTopicAccuracy: Math.round(recentAccuracyRaw * 100),
+            confidence: session?.confidence || 70,
+            frustration: frustration.score,
+            hintUsage: recentAnswers.length > 0 ? Math.round((hintCountRecent / recentAnswers.length) * 100) : 0,
+            consecutiveErrors: session?.consecutiveWrong || 0,
+            avgResponseTime: behaviorPattern.averageTime || 15,
+        };
+
+        const gameMode = QuestEngineCore.selectGameMode(userStateForEngine, questId);
+        const simRatio = QuestEngineCore.getSimulationRatio(questId, userStateForEngine);
+        console.log(`🎮 [QuestCore] Game Mode: ${gameMode} | Sim Ratio: ${Math.round(simRatio * 100)}%`);
+
+        // 1. DISCOVERY & HYDRATION (v5.3 - Robust Routing)
         const pools = { MCQ: [], SIMULATION: [], QUEST_STORY: [], GRAMMAR: [] };
         
         allQuestions.forEach(q => {
             const itemType = (q.item_type || q.question_type || q.type || "").toUpperCase();
             let engineType = (q.engine_type || q.engineType || q.type || "").toUpperCase();
             
-            // Unified Simulation Detection: Logic that determines if it MUST use a SimulatorBridge
-            // CRITICAL: If engine_type is MCQ, it must NEVER be true, even if item_type is SIMULATION.
+            // Unified Simulation Detection
             const isSimulation = (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP')) && (engineType !== 'MCQ');
             
-            // Check against supported math engines if applicable
             const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP'];
             const isInvalidMathSim = subject === 'math' && isSimulation && engineType !== '' && !MATH_SIM_WHITELIST.includes(engineType);
 
-            // v5.8 NARRATIVE LOCKDOWN: Explicitly include QUEST_RUNNER and QUEST in story detection
+            // v5.8 NARRATIVE LOCKDOWN
             const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
             const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
 
@@ -130,10 +165,8 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             } else if (isNote) {
                 pools.GRAMMAR.push({ ...q, isSimulation });
             } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory && !isInvalidMathSim) {
-                // Ensure story content NEVER leaks into the simulation practice pool
                 pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation });
             } else if (itemType !== 'QUEST' && itemType !== 'SIMULATION') {
-                // MCQ RECOVERY: Robust check for question text to ensure MCQ pools are filled
                 const hasText = (q.question && q.question.trim() !== '' && q.question !== 'None') || 
                                 q.question_text || q.question_content || q.q_text;
                 if (hasText) pools.MCQ.push(q);
@@ -146,11 +179,9 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 const itemType = (sim.item_type || sim.question_type || sim.type || "").toUpperCase();
                 const engineType = (sim.engine_type || sim.engineType || sim.type || "").toUpperCase();
                 
-                // Reuse lockdown detection
                 const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
                 const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
 
-                // Flattened Hydration (Fixes data-nesting bug)
                 const hydration = { ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file };
 
                 if (isStory) {
@@ -161,7 +192,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                     pools.SIMULATION.push(hydration);
                 }
             });
-            console.log(`🔌 [Adaptive] Injected ${simResources.length} explicitly provided simulations into pools.`);
+            console.log(`🔌 [Adaptive] Injected ${simResources.length} explicit simulations into pools.`);
         }
 
         // ─── STRICT EXPLORE RULE: STORY or NOTE ONLY ───
@@ -171,8 +202,6 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             
             if (subtopicStory) {
                 console.log(`🎬 [Adaptive] EXPLORE Node: Enforcing Narrative Content (${subtopicStory.qid || subtopicStory.id}).`);
-                
-                // Ensure it's treated as a simulation/story ONLY if it's not a standard MCQ
                 const eType = (subtopicStory.engine_type || subtopicStory.engineType || subtopicStory.type || "").toUpperCase();
                 const shouldBeSim = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
                 
@@ -183,12 +212,12 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             }
         }
 
-        // 2. CONDITION CHECK: Is the student struggling?
+        // 2. CONDITION CHECK — augmented with behavioral guessing signal
         const recentAccuracy = history.length > 0 ? (history.slice(-5).filter(h => h.isCorrect).length / Math.min(5, history.length)) : 1;
-        const isBadCondition = frustration.score > 70 || recentAccuracy <= 0.4 || dominantMastery.startsWith('struggling');
+        const isBadCondition = frustration.score > 70 || recentAccuracy <= 0.4 || dominantMastery.startsWith('struggling') || isHardGuesser;
         const needsMotivation = frustration.score > 54 || recentAccuracy <= 0.6;
 
-        console.log(`📡 [Adaptive] Condition: ${isBadCondition ? '🚨 CRITICAL' : needsMotivation ? '⚠️ STRUGGLING' : '✅ HEALTHY'} (Acc: ${recentAccuracy.toFixed(2)})`);
+        console.log(`📡 [Adaptive] ${isBadCondition ? '🚨 CRITICAL' : needsMotivation ? '⚠️ STRUGGLING' : '✅ HEALTHY'} | Acc: ${recentAccuracy.toFixed(2)} | Guessing: ${behaviorPattern.guessingRate}%`);
 
         // 3. ADAPTIVE MCQ SELECTION
         const baseIds = pools.MCQ.map(q => parseQuestionId(q.id || q.qid).baseId);
@@ -197,75 +226,71 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         let mcqCandidates = pools.MCQ.map(q => {
             const metadata = scoreQuestion(q, history, subject, subjectMasteryMap, recordMap);
+            // Frustration guardrail: no hard questions when frustrated
             if (frustration.score > 70 && (q.variant === 'V3' || q.difficulty === 'H')) metadata.score = -1000;
+            // PLE Pool selection: de-prioritize PLE questions if 'no' pool is needed
+            if (selectedPool === 'no' && q.isPLE) metadata.score -= 200;
             return { ...q, _adaptive: metadata };
         });
 
-        // --- NEW: Concept De-duplication (v5.5) ---
-        // Avoid picking different variants (V1, V2, V3) of the same question in a single session.
+        // --- Concept De-duplication (v5.5) ---
         const conceptMap = {};
         mcqCandidates.forEach(cand => {
             const { baseId } = parseQuestionId(cand.id || cand.qid);
-            // Keep the variant with the highest score for this baseId
             if (!conceptMap[baseId] || cand._adaptive.score > conceptMap[baseId]._adaptive.score) {
                 conceptMap[baseId] = cand;
             }
         });
         mcqCandidates = Object.values(conceptMap);
 
-        // ─── ENGLISH STRUCTURED PARTITIONING (Level 1.0) ───
+        // ── VARIANT SPACING (PriorityScorer): No same concept within last 3 questions ──
+        const recentQIds = (history || []).slice(-3).map(h => h.questionId).filter(Boolean);
+        if (recentQIds.length > 0) {
+            const spaced = mcqCandidates.filter(q => priScorer.validateVariantSpacing(q.id || q.qid, recentQIds, 3));
+            // Only apply spacing if it doesn't wipe out all candidates
+            if (spaced.length > 0) mcqCandidates = spaced;
+            else console.warn('⚠️ [PriorityScorer] Variant spacing skipped: all concepts seen recently.');
+        }
+
+        // ─── ENGLISH STRUCTURED PARTITIONING ───
         if (subject === 'english') {
             const diffMap = {
-                'WARMUP': ['E'],
-                'EXPLORE': ['E', 'M'],
-                'PRACTICE': ['M'],
-                'REINFORCE': ['M'],
-                'MASTERY': ['H']
+                'WARMUP': ['E'], 'EXPLORE': ['E', 'M'], 'PRACTICE': ['M'],
+                'REINFORCE': ['M'], 'MASTERY': ['H']
             };
             const targetDifficulty = diffMap[nodeType] || ['M'];
-            
             let filteredCandidates = mcqCandidates.filter(c => targetDifficulty.includes(c.difficulty));
-            
-            // Fallback: If no questions match difficulty, allow neighbors
             if (filteredCandidates.length < 3) {
-                console.warn(`⚠️ [Adaptive] Low candidate count for ${nodeType} (${subject}). Falling back to adjacent difficulties.`);
+                console.warn(`⚠️ [Adaptive] Low candidate count for ${nodeType} (${subject}). Opening to adjacent difficulties.`);
                 filteredCandidates = mcqCandidates; 
             }
             mcqCandidates = filteredCandidates;
         }
 
-        // Sort by adaptive score
         mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
-
-        // Slice to target length
         const selectedMCQs = mcqCandidates.slice(0, questLength);
 
         // 4. INTERLEAVE & RESCUE LOGIC
         let finalQuestions = [];
         const mcqStack = [...selectedMCQs];
         
-        // --- ADAPTIVE EXCLUSION (v5.6 - Smart Fallback) ---
         const isWarmup = nodeType === 'WARMUP';
         const isExplore = nodeType === 'EXPLORE';
 
-        // 🛡️ RESILIENCE: If there are ZERO MCQs but we have Simulations, 
-        // we MUST allow simulations even in WARMUP/EXPLORE to prevent empty quests.
         const mustAllowSims = pools.MCQ.length === 0 && pools.SIMULATION.length > 0;
         const excludeSims = (isWarmup || isExplore) && !mustAllowSims;
         
         const simStack = excludeSims ? [] : [...pools.SIMULATION].sort(() => 0.5 - Math.random());
         const grammarStack = excludeSims ? [] : [...pools.GRAMMAR].sort(() => 0.5 - Math.random());
 
-        // ─── THE RESCUE PATTERN: GRAMMAR + PRACTICE ─────
-        // Only trigger if NOT a warmup
+        // ─── THE RESCUE PATTERN ─────
         if (isBadCondition && grammarStack.length > 0 && !isWarmup) {
             const rule = grammarStack.pop();
             finalQuestions.push({ ...rule, isRescue: true, message: "Let's pause and review the rule!" });
             if (simStack.length > 0) finalQuestions.push({ ...simStack.pop(), isRescuePractice: true });
         }
 
-        // ─── MOTIVATION / INTERLEAVE FILL ─────
-        // v5.7 English Overdrive: Guarantee at least 2 sims if available for PRACTICE/MASTERY
+        // ─── MOTIVATION / INTERLEAVE FILL ───
         const isGameNode = ['PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType);
         const minSims = (subject === 'english' && isGameNode && simStack.length > 0) ? 2 : 0;
         let forcedSims = 0;
@@ -279,11 +304,11 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
             } else if (hasSim && hasMcq) {
-                let simChance = needsMotivation ? 0.6 : 0.30;
-                if (subject === 'english' && isGameNode) simChance = 0.50; // ENHANCED CHANCE
+                // ── Use QuestEngineCore's computed simRatio instead of hardcoded 0.30 ──
+                let simChance = needsMotivation ? Math.min(simRatio + 0.1, 0.70) : simRatio;
+                if (subject === 'english' && isGameNode) simChance = 0.50;
 
                 const forceSim = forcedSims < minSims;
-                
                 if (forceSim || Math.random() < simChance) {
                     finalQuestions.push(simStack.pop());
                     forcedSims++;
@@ -296,18 +321,13 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         }
 
         // ─── EMERGENCY RECOVERY (v5.6) ───
-        // If finalQuestions is STILL empty but the bank has data, 
-        // force a slice of whatever we have as a last resort.
         if (finalQuestions.length === 0 && allQuestions.length > 0) {
-            console.warn(`🚨 [Adaptive] Emergency Recovery Triggered. Forcing ${Math.min(3, allQuestions.length)} items from bank.`);
+            console.warn(`🚨 [Adaptive] Emergency Recovery. Forcing ${Math.min(3, allQuestions.length)} items from bank.`);
             finalQuestions = allQuestions.slice(0, 3).map(q => ({
-                ...q, 
-                isSimulation: (q.engine_type && q.engine_type !== 'MCQ')
+                ...q, isSimulation: (q.engine_type && q.engine_type !== 'MCQ')
             }));
         }
 
-        // --- NEW: Final Randomization (Shuffle the sequencing) ---
-        // This ensures the order of questions is random every time, even if the pool is the same.
         finalQuestions = (finalQuestions.length > 0 ? finalQuestions : selectedMCQs).sort(() => 0.5 - Math.random());
 
         return {
@@ -317,7 +337,10 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 frustration: frustration.score, 
                 isBadCondition, 
                 needsMotivation,
-                gameMode: isBadCondition ? 'RESCUE' : needsMotivation ? 'MOTIVATION' : 'NORMAL'
+                // gameMode now comes from QuestEngineCore with a fallback to rescue logic labels
+                gameMode: gameMode !== 'none' ? gameMode.toUpperCase() : (isBadCondition ? 'RESCUE' : needsMotivation ? 'MOTIVATION' : 'NORMAL'),
+                selectedPool,
+                behaviorPattern,
             }
         };
 

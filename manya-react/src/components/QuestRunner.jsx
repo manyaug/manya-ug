@@ -13,6 +13,7 @@ import { ENGINE_REGISTRY, getEngine } from '../config/engineRegistry';
 import { saveNodeCompletion, setJustFinished } from '../domain/progress/questProgressService.js';
 import { QuestSession } from '../application/QuestSession';
 import { QuestBusProvider } from '../ui/context/QuestBus';
+import QuestHUD from './QuestHUD';
 import React from 'react';
 import '../styles/engines.css';
 
@@ -63,6 +64,7 @@ export default function QuestRunner() {
     const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE' });
     const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
     const [activeEngine, setActiveEngine] = useState(null);
+    const [renderTrigger, setRenderTrigger] = useState(0);
     
     // Application Service Orchestrator
     const sessionRef = useRef(null);
@@ -166,6 +168,8 @@ export default function QuestRunner() {
         if (outcome.buttonEnabled || result.isCorrect) {
             setBtnState(s => ({ ...s, enabled: true }));
         }
+
+        setRenderTrigger(prev => prev + 1);
     }, [dispatch, meta.subject]);
 
     const finishQuest = useCallback(() => {
@@ -219,19 +223,18 @@ export default function QuestRunner() {
             onEngineResult: handleEngineResult
         }}>
             <div className="quest-runner-shell" style={{ '--biome-color': biomeColor }}>
-                <header className="qr-classic-header">
-                    <button className="qr-back-btn" onClick={() => navigate(-1)}>
-                        <X size={18} strokeWidth={3} />
-                    </button>
-                    <div className="flex items-center justify-center flex-1">
-                        <span className="qr-subject-tag">{meta.subject}</span>
-                    </div>
-                    <div className="qr-progress-counter">
-                        <img src={getGem(gemFile)} className="w-5 h-5 object-contain" alt="gem" onError={e => e.target.style.display = 'none'} />
-                        <span>{stepIdx + 1}<span className="opacity-30 mx-0.5">/</span>{steps.length}</span>
-                    </div>
-                    <div className="qr-progress-bar"><div className="fill" style={{ width: `${progressPct}%` }} /></div>
-                </header>
+                {/* ── UNIFIED PREMIUM QUEST HUD ── */}
+                {phase === 'running' && (
+                    <QuestHUD 
+                        subject={meta.subject} 
+                        current={stepIdx + 1} 
+                        total={steps.length} 
+                        correctCount={sessionRef.current?.correctCount || 0}
+                        streakCount={sessionRef.current?.currentStreak || 0}
+                        masteryScore={sessionRef.current?.lastMasteryScore || 0}
+                        onClose={() => navigate(-1)} 
+                    />
+                )}
 
                 <main className="qr-content-area scroll-smooth min-h-0">
                     <QuestErrorBoundary key={stepIdx + phase} onSkip={advanceStep}>

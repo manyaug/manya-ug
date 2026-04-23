@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
     updateProfile, awardGems, addXP, resetSession, 
-    updateSessionAfterAnswer 
+    updateSessionAfterAnswer, awardCoins, dropChest, checkAchievements, syncUserData
 } from '../../store/userSlice';
+// ── Gamification Domain (Headless) ───────────────────────────────────────────
+import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
+import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
+import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
 
 // Services & Utils
 import { fetchMathQuestions } from '../../services/mathMockDB';
@@ -35,6 +39,7 @@ import '../../styles/mcq-engine.css';
  */
 export default function MathFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
+    const store = useStore();
     const user = useSelector(state => state.user.data);
     const session = useSelector(state => state.user.session);
     
@@ -71,6 +76,8 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
     const nodeType = data?.nodeType || 'PRACTICE';
     const subject = data?.subject || 'math';
     const questKey = data?.questKey || `math/${topicId}`;
+    const [gameMode, setGameMode] = useState('none');
+    const [hintUsedCount, setHintUsedCount] = useState(0);
 
     // --- 🪄 INITIALIZATION ---
     useEffect(() => {
@@ -131,8 +138,11 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
 
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
-                
                 setQuestions(quest.questions);
+                if (quest.metadata?.gameMode) {
+                    const gm = quest.metadata.gameMode.toLowerCase();
+                    setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
+                }
                 setTimeout(() => setIsLoading(false), 300);
             } catch (err) { 
                 console.error("Math Load Failed:", err);
@@ -187,7 +197,9 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             }
         }
 
-        dispatch(updateSessionAfterAnswer({ isCorrect, hintUsed, answerChanged, timeSpentMs }));
+        dispatch(updateSessionAfterAnswer({ subject, isCorrect, hintUsed, answerChanged, timeSpentMs }));
+        dispatch(checkAchievements());
+        dispatch(syncUserData(store.getState().user.data));
         const frustration = calculateFrustration(session);
         const baseId = q.id?.replace(/-V\d+$/, '') || q.id;
 
@@ -199,14 +211,23 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
-        // Gem/XP calculation
+        // ── Emotion Tracking ─────────────────────────────────────────────────
+        trackAndPushEmotion({ isCorrect, hintUsed, answerChanged, changeCount, timeSpentMs, frustrationLevel: frustration?.score || 0 });
+
+        // ── Coin + Gem calculation ────────────────────────────────────────────
         const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
+        const modeMultiplier = getModeCoinMultiplier(gameMode);
         const totalGems = isCorrect ? Math.floor((hintUsed ? 1 : 4) * streakMultiplier) : 0;
+        const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
 
         if (isCorrect) {
             dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
+            if (coinReward > 0) dispatch(awardCoins(coinReward));
             setGemsEarned(g => g + totalGems); setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
+            // ── Bronze Chest random drop ──────────────────────────────────────
+            if (shouldDropBronzeChest()) dispatch(dropChest({ chestType: 'bronze', rewards: rollChestRewards('bronze') }));
+            setHintUsedCount(c => c + (hintUsed ? 1 : 0));
             setTimeout(() => nextQuestion(), 800);
         } else {
             setTimeout(() => setShowExplanation(true), 500);
@@ -220,6 +241,8 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             setIsFinished(true);
             const mastery = Math.round((score / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
+            dispatch(checkAchievements());
+            dispatch(syncUserData(store.getState().user.data));
             setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
             
             // Story progression
@@ -229,11 +252,20 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             }
             if (result.xpReward) dispatch(addXP(result.xpReward));
 
-            // Achievement Check
-            const achieveCtx = { mastery, questsCompleted: (user[`prog_${subject}`] || 0) + 1, streak: user.current_streak || 0, nodeType };
-            achievementService.checkAchievements(subject, achieveCtx);
+            // ── Star + Chest + Coin completion rewards ────────────────────────
+            const stars = masteryToStars(mastery);
+            const bonusCoins = getStarBonusCoins(stars);
+            if (bonusCoins > 0) dispatch(awardCoins(bonusCoins));
+            const chestType = getQuestCompletionChest(stars);
+            if (chestType) dispatch(dropChest({ chestType, rewards: rollChestRewards(chestType) }));
 
-            setCompletionResult({ mastery, score, total: questions.length });
+            // ── Achievement Check ─────────────────────────────────────────────
+            const noHintsUsed = hintUsedCount === 0;
+            const achieveCtx = { mastery, questsCompleted: (user[`prog_${subject}`] || 0) + 1, streak: user.current_streak || 0, nodeType, questCompletedNoHints: noHintsUsed };
+            const newBadges = achievementService.checkAchievements(subject, achieveCtx);
+            newBadges.forEach(b => syncService.pushBadge(b).catch(() => {}));
+
+            setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
             setShowCompletion(true);
         }
     };

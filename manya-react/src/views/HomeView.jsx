@@ -117,18 +117,17 @@ function HomeView() {
 
       {/* PREMIUM STATUS HEADER */}
       <motion.div variants={itemVariants} className="home-status-header-glass">
-        <div className="toy-card-gloss" />
         <div className="status-user-info" style={{ zIndex: 2 }}>
           <span className="hi-text">Hi, {user.nickname || 'Hero'} 👋</span>
           <p className="status-subtext">Ready for today's mission?</p>
         </div>
-        <div className="status-streak-pill" style={{ zIndex: 2 }}>
-          <div className="streak-flame-glow">
-            <Zap size={16} fill="currentColor" />
+        <div className="status-streak-pill" onClick={() => navigate('/achievements')}>
+          <div className="streak-icon-circle">
+            <Zap size={22} fill="currentColor" />
           </div>
           <div className="streak-stats">
-            <span className="val">{user.current_streak || 0}</span>
-            <span className="lab uppercase">Streak</span>
+            <span className="streak-val">{user.current_streak || 0}</span>
+            <span className="streak-lab">STREAK</span>
           </div>
         </div>
       </motion.div>
@@ -138,13 +137,11 @@ function HomeView() {
         variants={itemVariants}
         whileHover={{ scale: 1.025 }}
         whileTap={{ scale: 0.97 }}
-        className={`resume-mission-card btn-toy bounty-card-${activeBounty?.sub || 'math'}`}
+        className={`resume-mission-card mission-card-${activeBounty?.sub || 'math'}`}
         onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
       >
-        <div className="toy-card-gloss" />
-        <img src={getGem(activeBounty?.sub || 'math')} className="hero-bg-gem-watermark" alt="watermark" />
         <div className="mission-visual">
-          <div className="hero-avatar-mini-glow">
+          <div className="mission-avatar-frame">
             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
           </div>
         </div>
@@ -164,43 +161,32 @@ function HomeView() {
         </div>
       </motion.div>
 
-      {/* ── CRYSTAL BALL WORLD GRID ── */}
-      <div className="subject-grid-elite">
+      {/* ── ZEN GRID 2.0: SUBJECT SQUARES ── */}
+      <div className="subject-grid-modern">
         {subjects.map(sub => (
           <motion.div
             key={sub.id}
             variants={itemVariants}
-            whileHover={{ y: -4 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`world-card-elite ${sub.id}`}
+            className={`subject-square-card ${sub.id}`}
             onClick={() => handleOpenSpiral(sub.id)}
           >
-            {/* ORB */}
-            <div className="orb-wrap">
-              {/* Ambient halo (visible on hover via CSS) */}
-              <div className="orb-halo" />
-
-              {/* CRYSTAL LUXURY GEM BADGE (Floating) */}
-              <div className="card-gem-bounty">
-                <img src={sub.gemFile} className="bounty-gem-icon" alt={`${sub.name} Gem`} />
-                <span className="bounty-gem-count">{sub.gems}</span>
-              </div>
-
-              {/* Crystal ring with floating island */}
-              <div className="crystal-ball">
-                <img src={sub.icon} alt={sub.name} className="crystal-island" />
-              </div>
-
-              {/* Glow pool beneath orb */}
-              <div className="orb-glow" />
+            {/* Gem Badge Overlay */}
+            <div className="square-gem-badge">
+              <img src={sub.gemFile} alt="Gem" />
+              <span>{sub.gems}</span>
             </div>
 
-            {/* Nameplate consolidated into a button style footer */}
-            <div className="card-footer-info">
-              <div className={`subject-name-row btn-toy btn-toy-${sub.id === 'math' ? 'purple' : sub.id === 'science' ? 'green' : sub.id === 'sst' ? 'gold' : 'pink'}`}>
-                <div className="btn-toy-gloss" />
-                <span>{sub.name}</span>
-              </div>
+            {/* Glowing Floating Icon */}
+            <div className="square-icon-wrap">
+              <img src={sub.icon} alt={sub.name} className="square-subject-icon" />
+              <div className="square-glow-ring" />
+            </div>
+
+            {/* Subject Label */}
+            <div className="square-footer">
+              <span className="square-subject-name">{sub.name}</span>
             </div>
           </motion.div>
         ))}

@@ -40,11 +40,10 @@ function resolveQid(subject, unitId, questFolder, file) {
     const cleanFile = filename.toUpperCase().replace(/-/g, '_');
     
     // 🧠 ENGLISH IDENTITY RULE:
-    // If filename is exactly what we expect for a story (starts with 01_ or matches questFolder)
-    // we use a simpler QID to avoid the double-subtopic issue.
-    if (subject === 'english' && (filename.startsWith('0') || filename === questFolder)) {
-        const cleanUnit = (unitId || '').toUpperCase().replace(/-/g, '_');
-        return `${cleanUnit}_${subtopic}_IDENTITY`;
+    // Simply use the filename. If it's a legacy quest starting with 01_, 
+    // we keep the raw name to ensure CDN match.
+    if (subject === 'english' && filename.startsWith('0')) {
+        return filename;
     }
 
     let parts = [topic, subtopic, cleanFile];
@@ -128,8 +127,12 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
                 cleanCdnUrl = row.cdn_url.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
                 cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
             } else {
-                // Reconstruct from topics if missing 
-                const topicDir = row.topic ? row.topic.toLowerCase().replace(/\s+/g, '_') : unitId;
+                // Reconstruct from topics if missing. 
+                // Fix: map 'primary_7_english' concepts back to 'holidays'
+                let topicDir = row.topic ? row.topic.toLowerCase().replace(/\s+/g, '_') : unitId;
+                if (subject === 'english' && (topicDir.includes('primary_7') || topicDir.includes('master_path'))) {
+                    topicDir = 'holidays';
+                }
                 const subtopicDir = row.subtopic ? row.subtopic.toLowerCase().replace(/\s+/g, '_') : questFolder;
                 cleanCdnUrl = `${BASE_CONTENT_URL}${subject.toLowerCase()}/${topicDir}/${subtopicDir}/${qid}.json`;
             }

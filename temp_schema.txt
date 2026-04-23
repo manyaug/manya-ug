@@ -1,0 +1,360 @@
+CREATE TABLE achievements (
+	id NUMERIC NOT NULL,
+	name varchar(100),
+	description TEXT,
+	icon TEXT,
+	category varchar(50),
+	condition_type varchar(50),
+	condition_value int4 NOT NULL,
+	condition_subtopic_id int4,
+	reward_coins int4,
+	reward_gems int4,
+	reward_chest_type varchar(20),
+	reward_unlock_content VARCHAR(100),
+	is_active BOOLEAN,
+	sort_order int4
+)
+
+CREATE TABLE achievements_old (
+	id int4 NOT NULL,
+	userId TEXT,
+	achievementType TEXT,
+	achievementName TEXT,
+	earnedAt TIMESTAMP(29)
+)
+
+CREATE TABLE badges (
+	id NUMERIC NOT NULL,
+	user_id varchar(50),
+	badge_type varchar(50),
+	badge_name varchar(100),
+	badge_icon varchar(50),
+	rarity varchar(20),
+	earned_at TIMESTAMP(29)
+)
+
+CREATE TABLE chest_reward_pool (
+	id NUMERIC NOT NULL,
+	chest_type varchar(20),
+	reward_type varchar(30),
+	reward_value TEXT,
+	min_amount int4,
+	max_amount int4,
+	probability float8,
+	is_active BOOLEAN
+)
+
+CREATE TABLE chests (
+	id NUMERIC NOT NULL,
+	user_id varchar(50),
+	chest_type varchar(20),
+	opened BOOLEAN,
+	unlocked_at TIMESTAMP(29),
+	opened_at TIMESTAMP(29),
+	contents BLOB
+)
+
+CREATE TABLE concept_error_tracking (
+	id NUMERIC NOT NULL,
+	userId TEXT NOT NULL,
+	subtopic TEXT NOT NULL,
+	errorCount int4,
+	lastQuestionId TEXT,
+	updatedAt TIMESTAMP(29)
+)
+
+CREATE TABLE concept_mastery (
+	id NUMERIC NOT NULL,
+	userId TEXT NOT NULL,
+	baseId TEXT NOT NULL,
+	masteryLevel TEXT,
+	reviewCount int4,
+	lastReviewedAt TIMESTAMP(29),
+	nextReviewAt TIMESTAMP(29),
+	correctStreak int4,
+	totalAttempts int4,
+	totalCorrect int4,
+	createdAt TIMESTAMP(29),
+	updatedAt TIMESTAMP(29)
+)
+
+CREATE TABLE daily_challenges (
+	id NUMERIC NOT NULL,
+	challenge_date TIMESTAMP(13),
+	challenge_type varchar(50),
+	target_value int4,
+	reward_gems int4,
+	reward_power_up varchar(30),
+	completed_by BLOB
+)
+
+CREATE TABLE daily_coin_earnings (
+	user_id TEXT NOT NULL,
+	subtopic_id TEXT NOT NULL,
+	date TIMESTAMP(13) NOT NULL,
+	coins_earned int4
+)
+
+CREATE TABLE emotional_metrics (
+	id NUMERIC NOT NULL,
+	user_id varchar(50),
+	session_id varchar(100),
+	emotion varchar(30),
+	intensity int4,
+	context varchar(50),
+	recorded_at TIMESTAMP(29),
+	response_time_ms int4
+)
+
+CREATE TABLE power_ups (
+	id NUMERIC NOT NULL,
+	user_id varchar(50),
+	power_up_type varchar(30),
+	quantity int4,
+	acquired_at TIMESTAMP(29),
+	expires_at TIMESTAMP(29)
+)
+
+CREATE TABLE qbrss (
+	Q_ID TEXT,
+	Term TEXT,
+	Topic TEXT,
+	Sub_Topic TEXT,
+	Difficulty TEXT,
+	Question_Type TEXT,
+	Parent_ID TEXT,
+	Order_In_Parent TEXT,
+	Question_Text TEXT,
+	Option_A TEXT,
+	Option_B TEXT,
+	Option_C TEXT,
+	Option_D TEXT,
+	Correct_Answer TEXT,
+	Hint TEXT,
+	Detailed_Solution TEXT,
+	Image_Location TEXT,
+	Tags TEXT,
+	Engine_Type_Sim TEXT,
+	Mode_Sim TEXT,
+	File_Path_Sim TEXT,
+	Filename_Sim TEXT,
+	Mark TEXT,
+	simulation_type TEXT,
+	simulation_path TEXT,
+	simulation_thumbnail TEXT
+)
+
+CREATE TABLE quest_progress (
+	id NUMERIC NOT NULL,
+	userId TEXT,
+	questId int4,
+	mastery float8,
+	completedAt TIMESTAMP(29),
+	xpEarned int4
+)
+
+CREATE TABLE quest_rewards (
+	id NUMERIC NOT NULL,
+	userId TEXT NOT NULL,
+	questId int4 NOT NULL,
+	rewardType TEXT,
+	rewardValue int4,
+	badgeEarned TEXT,
+	claimedAt TIMESTAMP(29)
+)
+
+CREATE TABLE quests (
+	id NUMERIC NOT NULL,
+	questId int4 NOT NULL,
+	name TEXT NOT NULL,
+	description TEXT,
+	baseQuestions int4,
+	minQuestions int4,
+	maxQuestions int4,
+	difficulty TEXT,
+	focus TEXT,
+	unlockQuestId int4,
+	unlockMastery int4,
+	xpReward int4,
+	badgeIcon TEXT,
+	orderNum int4 NOT NULL,
+	createdAt TIMESTAMP(29)
+)
+
+CREATE TABLE reward_config (
+	"key" TEXT NOT NULL,
+	value NUMERIC,
+	description TEXT
+)
+
+CREATE TABLE subject_gems (
+	id NUMERIC NOT NULL,
+	user_id varchar(50),
+	subject varchar(20),
+	gem_count int4,
+	updated_at TIMESTAMP(29)
+)
+
+CREATE TABLE unlocked_content (
+	user_id TEXT NOT NULL,
+	content_id TEXT NOT NULL,
+	unlocked_at TIMESTAMP(29)
+)
+
+CREATE TABLE unlocked_simulations (
+	id NUMERIC NOT NULL,
+	user_id varchar(50),
+	simulation_id varchar(50),
+	simulation_type varchar(20),
+	unlocked_at TIMESTAMP(29),
+	viewed BOOLEAN,
+	viewed_count int4
+)
+
+CREATE TABLE user_answer (
+	id TEXT,
+	userId TEXT,
+	questionId TEXT,
+	isCorrect BOOLEAN,
+	selectedAnswer TEXT,
+	correctAnswer TEXT,
+	timeSpentMs int4,
+	hintUsed BOOLEAN,
+	hintLevel int4,
+	answerChanged BOOLEAN,
+	answerHistory TEXT,
+	optionHoverTimes TEXT,
+	confidenceRating int4,
+	tabSwitched BOOLEAN,
+	idleTimeMs int4,
+	timeToFirstClickMs int4,
+	hesitationCount int4,
+	reactionEmoji TEXT,
+	frustrationClicks int4,
+	selfReportedDifficulty int4,
+	sessionId TEXT,
+	sessionQuestionNumber int4,
+	deviceType TEXT,
+	networkType TEXT,
+	timeOfDay TEXT,
+	dayOfWeek TEXT,
+	questId TEXT,
+	questQuestionNumber int4,
+	pointsEarned int4,
+	streakAtTime int4,
+	answeredAt TIMESTAMP(29),
+	clientTimestamp TIMESTAMP(29),
+	synced BOOLEAN,
+	frustrationLevel int4
+)
+
+CREATE TABLE user_challenge_progress (
+	id NUMERIC NOT NULL,
+	userId TEXT NOT NULL,
+	challengeId int4 NOT NULL,
+	quest1Mastery int4,
+	quest2Mastery int4,
+	quest3Mastery int4,
+	quest4Mastery int4,
+	quest5Mastery int4,
+	currentQuest int4,
+	lastPlayed TIMESTAMP(29),
+	completedAt TIMESTAMP(29),
+	createdAt TIMESTAMP(29)
+)
+
+CREATE TABLE user_chests (
+	id NUMERIC NOT NULL,
+	user_id TEXT,
+	chest_type varchar(20),
+	opened BOOLEAN,
+	created_at TIMESTAMP(29),
+	opened_at TIMESTAMP(29)
+)
+
+CREATE TABLE user_coins (
+	user_id varchar(50),
+	coin_balance int4,
+	created_at TIMESTAMP(29),
+	updated_at TIMESTAMP(29)
+)
+
+CREATE TABLE user_gems (
+	user_id varchar(50),
+	overall_gems int4,
+	updated_at TIMESTAMP(29)
+)
+
+CREATE TABLE user_progress (
+	userId TEXT,
+	totalPoints int4,
+	currentStreak int4,
+	longestStreak int4,
+	totalQuestionsAnswered int4,
+	totalCorrect int4,
+	lastActiveDate TIMESTAMP(29),
+	currentQuestId TEXT,
+	createdAt TIMESTAMP(29),
+	updatedAt TIMESTAMP(29)
+)
+
+CREATE TABLE user_quests (
+	id NUMERIC NOT NULL,
+	userId TEXT NOT NULL,
+	questId int4 NOT NULL,
+	status TEXT,
+	progress int4,
+	totalQuestions int4,
+	mastery int4,
+	xpEarned int4,
+	startedAt TIMESTAMP(29),
+	completedAt TIMESTAMP(29),
+	lastQuestionAt TIMESTAMP(29),
+	coins_earned_this_attempt int4,
+	answered_questions VARCHAR(100)
+)
+
+CREATE TABLE user_sessions (
+	sessionId TEXT,
+	userId TEXT,
+	currentQuestId int4,
+	questQuestions TEXT,
+	questResults TEXT,
+	questionHistory TEXT,
+	frustrationLevel int4,
+	masteryLevel TEXT,
+	sessionStart TIMESTAMP(29),
+	lastActive TIMESTAMP(29),
+	endedAt TIMESTAMP(29),
+	confidenceRating int4,
+	engagementLevel int4,
+	cognitiveLoad int4
+)
+
+CREATE TABLE user_stats (
+	userId TEXT NOT NULL,
+	totalPoints int4,
+	currentStreak int4,
+	longestStreak int4,
+	lastActiveDate TIMESTAMP(13),
+	updatedAt TIMESTAMP(29),
+	coins int4,
+	gems int4,
+	totalStars int4
+)
+
+CREATE TABLE user_streaks (
+	user_id varchar(50),
+	current_streak int4,
+	longest_streak int4,
+	last_activity_date TIMESTAMP(13),
+	streak_protection BOOLEAN,
+	streak_freeze_count int4
+)
+
+CREATE TABLE user_achievements (
+	user_id TEXT NOT NULL,
+	achievement_id int4 NOT NULL,
+	earned_at TIMESTAMP(29)
+)
+

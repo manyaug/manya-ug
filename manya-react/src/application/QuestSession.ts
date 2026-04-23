@@ -25,6 +25,9 @@ export class QuestSession {
     private _meta: QuestMeta;
     private _currentIndex: number = 0;
     private _wrongStreak: number = 0;
+    private _correctCount: number = 0;
+    private _currentStreak: number = 0;
+    private _lastMasteryScore: number = 0;
     private _sessionStartTime: number = Date.now();
     // Removed dependency on direct React dispatch. We return outcomes.
 
@@ -53,6 +56,18 @@ export class QuestSession {
         return this._meta;
     }
 
+    get correctCount(): number {
+        return this._correctCount;
+    }
+
+    get currentStreak(): number {
+        return this._currentStreak;
+    }
+
+    get lastMasteryScore(): number {
+        return this._lastMasteryScore;
+    }
+
     async processResult(engineResult: EngineResult) {
         if (!this.currentStep) return { isCorrect: false, shouldInjectRecap: false, xpEarned: 0, buttonEnabled: false, conceptId: 'unknown' };
 
@@ -67,8 +82,15 @@ export class QuestSession {
                 timeSpentMs: engineResult.timeSpentMs || (Date.now() - this._sessionStartTime),
                 engineType: engineType
             }, this._meta.subject);
-            console.log(`📊 [QuestSession] USP Mastery Score: ${usp.masteryScore}%`);
+            this._lastMasteryScore = usp.masteryScore;
+        } else {
+            // Fallback for MCQs/Reading: Simple Accuracy Based Mastery
+            const rawScore = engineResult.isCorrect ? 100 : 0;
+            // Weighted moving average toward 100
+            this._lastMasteryScore = Math.round((this._lastMasteryScore * 0.7) + (rawScore * 0.3));
         }
+        
+        console.log(`📊 [QuestSession] USP Mastery Score: ${this._lastMasteryScore}%`);
 
         const isCorrect = usp ? usp.isPassing : engineResult.isCorrect;
         const xpAmount = isCorrect ? (usp ? Math.floor(usp.masteryScore * 0.5) : (engineResult.score ? engineResult.score * 10 : 10)) : 0;
@@ -103,6 +125,7 @@ export class QuestSession {
         let shouldInjectRecap = false;
         if (!isCorrect) {
             this._wrongStreak++;
+            this._currentStreak = 0;
             const threshold = this._meta.nodeType === 'PRACTICE' ? 1 : 3;
             if (this._wrongStreak >= threshold && this._meta.nodeType !== 'WARMUP') {
                 shouldInjectRecap = true;
@@ -110,6 +133,8 @@ export class QuestSession {
             }
         } else {
             this._wrongStreak = 0;
+            this._correctCount++;
+            this._currentStreak++;
         }
 
         return {

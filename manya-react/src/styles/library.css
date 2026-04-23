@@ -13,20 +13,38 @@
 }
 
 .sub-vault-btn {
-    padding: 12px 10px;
-    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    height: 64px;
+    border-radius: 16px;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    background: #1e293b; /* Base slate */
 }
 
-.sub-vault-btn .icon { font-size: 22px; z-index: 2; position: relative; }
-.sub-vault-btn .name { font-weight: 950; font-size: 11px; z-index: 2; position: relative; }
+.sub-vault-btn .icon { color: white; opacity: 0.8; }
+.sub-vault-btn .name { font-weight: 850; font-size: 11px; text-transform: uppercase; color: white; opacity: 0.8; }
 
+/* Active & Color Logic */
 .sub-vault-btn.active {
-    filter: brightness(1.15);
-    transform: scale(1.08) translateY(-2px);
-    box-shadow: var(--shadow-premium), var(--toy-inner-shadow);
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
+.sub-vault-btn.active .icon,
+.sub-vault-btn.active .name { 
+    opacity: 1; 
+}
+
+.vault-btn-math { background: #6366f1; }
+.vault-btn-science { background: #10b981; }
+.vault-btn-sst { background: #f59e0b; }
+.vault-btn-english { background: #db2777; }
 
 /* 2. UNIT HEADERS */
 .unit-label-elite {

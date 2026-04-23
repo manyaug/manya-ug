@@ -94,10 +94,9 @@ function LibraryView() {
         {Object.keys(subMeta).map(key => (
             <div 
                 key={key}
-                className={`sub-vault-btn btn-toy btn-toy-${key === 'math' ? 'purple' : key === 'science' ? 'green' : key === 'sst' ? 'gold' : 'pink'} ${activeSubject === key ? 'active' : ''}`}
+                className={`sub-vault-btn vault-btn-${key} ${activeSubject === key ? 'active' : ''}`}
                 onClick={() => handleSubjectSwitch(key)}
             >
-                <div className="btn-toy-gloss"></div>
                 <span className="icon">{subMeta[key].icon}</span>
                 <span className="name">{subMeta[key].name}</span>
             </div>

@@ -32,15 +32,19 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
 
     const handlePinClick = (hs) => {
         if (viewerRef.current) {
-            viewerRef.current.cameraTarget = hs.pos;
-            viewerRef.current.cameraOrbit = calculateOrbit(hs.norm);
+            // Explicitly set target and orbit for smooth transition
+            const targetPos = String(hs.pos);
+            const targetOrbit = calculateOrbit(hs.norm);
+            
+            viewerRef.current.cameraTarget = targetPos;
+            viewerRef.current.cameraOrbit = targetOrbit;
         }
         setSelectedPinId(hs.id);
         if (!isQuiz) setIsDrawerOpen(true);
-        audioService.click?.();
+        audioService.playSFX?.('tap');
         startTimeRef.current = Date.now();
     };
-
+    
     const handleResetCamera = () => {
         if (viewerRef.current) {
             viewerRef.current.cameraTarget = "auto auto auto";
@@ -48,7 +52,7 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
         }
         setIsDrawerOpen(false);
         setSelectedPinId(null);
-        audioService.click?.();
+        audioService.playSFX?.('tap');
     };
 
     const handleWordSelection = (word) => {

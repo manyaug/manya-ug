@@ -266,16 +266,25 @@ export const ManyaDB = {
             avatarSeed: "Manya",
             school: "",
             goal: "Agg 4-8",
-            diamonds: 150, // Global currency
+            diamonds: 150, // Global premium currency
+            coins: 500, // Regular currency
             mathGems: 25, 
             scienceGems: 12,
             sstGems: 40,
             englishGems: 18,
             league: 'Bronze', // Bronze, Silver, Gold, Amethyst, Diamond
             xp: 150,
+            current_streak: 1,
+            longest_streak: 1,
+            last_active_at: new Date().toISOString(),
+            unlockedBadges: ['gen_01'], // Everyone gets Apprentice
+            stats_perfect_answers: 0,
+            stats_hints_used: 0,
+            stats_explanations_viewed: 0,
             theme: 'light',
             preferences: { likes: [], hates: [] },
             parent: { name: "", whatsapp: "" },
+            pendingBadgeCelebrations: [],
             created_at: new Date().toISOString()
         };
     }

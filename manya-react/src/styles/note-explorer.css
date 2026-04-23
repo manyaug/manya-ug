@@ -1,331 +1,175 @@
 /* ============================================================
-   NOTE EXPLORER ENGINE CSS - v4.1 ✨ Kid-Friendly Storybook
-   Playful, warm, round, colorful — like a picture book!
+   NOTE EXPLORER ENGINE CSS - v5.0 ✨ Manya Elite Overhaul
+   High-fidelity, glassmorphic, and premium dark-mode.
    ============================================================ */
 
 .ne-root {
-    --ne-padding: 20px;
+    --ne-padding: 24px;
     width: 100%;
     height: 100%;
     flex: 1;
     display: flex; flex-direction: column;
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    font-family: 'Nunito', 'Quicksand', 'Comic Neue', var(--font-sans, system-ui), sans-serif;
+    background-color: #0B0E14; /* Deep Manya Dark */
+    color: #F8FAFC;
+    font-family: 'Outfit', var(--font-sans, system-ui), sans-serif;
     overflow: hidden;
 }
 
-/* ── HEADER — Bubbly cloud banner ── */
-.ne-header {
+/* ── HEADER — Elite Glassmorphic Banner ── */
+.ne-header-elite {
     position: relative;
-    padding: 28px var(--ne-padding) 22px;
-    color: white;
+    padding: 32px var(--ne-padding) 24px;
+    background: linear-gradient(180deg, rgba(23, 27, 36, 0.8) 0%, rgba(11, 14, 20, 0) 100%);
     overflow: hidden;
     flex-shrink: 0;
-    border-radius: 0 0 32px 32px;
 }
 
-/* Floating cloud bubbles */
-.ne-orb {
-    position: absolute; border-radius: 50%; opacity: 0.35;
-    filter: blur(30px);
+/* Liquid Glass Orbs */
+.ne-orb-elite {
+    position: absolute; border-radius: 50%; opacity: 0.15;
+    filter: blur(40px);
+    z-index: 0;
 }
-.ne-orb-1 { width: 120px; height: 120px; top: -30px; right: -10px; background: rgba(255,255,255,0.5); }
-.ne-orb-2 { width: 80px; height: 80px; bottom: -15px; left: 10px; background: rgba(255,255,255,0.35); }
-.ne-orb-3 { width: 60px; height: 60px; top: 10px; left: 40%; background: rgba(255,255,255,0.25); }
+.ne-orb-primary { width: 200px; height: 200px; top: -100px; right: -50px; }
+.ne-orb-secondary { width: 150px; height: 150px; top: 20px; left: -40px; }
 
-.ne-header-inner { position: relative; z-index: 2; }
+.ne-header-inner-elite { position: relative; z-index: 2; }
 
-/* Title — big, round, friendly */
-.ne-title {
-    font-size: 22px; font-weight: 900; line-height: 1.25;
-    margin: 10px 0 0;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    letter-spacing: -0.3px;
-}
-
-/* Section tag pill */
-.ne-section-row {
-    display: flex; align-items: center; gap: 8px; margin-top: 12px;
-}
-.ne-section-icon {
-    width: 26px; height: 26px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.25); backdrop-filter: blur(5px);
-}
-.ne-section-text {
-    font-size: 10px; font-weight: 900; text-transform: uppercase;
-    letter-spacing: 1.2px; opacity: 0.9;
+/* Title — High-fidelity tracking */
+.ne-title-elite {
+    font-size: 24px; font-weight: 900; line-height: 1.2;
+    margin: 4px 0 0;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+    font-family: 'Outfit', sans-serif;
 }
 
-/* ── PROGRESS — Candy bar ── */
+/* Tag Pill — Micro-UI */
+.ne-tag-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 100px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* ── PROGRESS — Minimal Elite Track ── */
 .ne-progress-wrap {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
 }
 .ne-progress-track {
-    flex: 1; height: 8px; background: rgba(255,255,255,0.2);
+    flex: 1; height: 4px; background: rgba(255, 255, 255, 0.05);
     border-radius: 100px; overflow: hidden;
 }
 .ne-progress-fill {
     height: 100%; border-radius: 100px; position: relative;
-}
-.ne-progress-shimmer {
-    position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
-    animation: neShimmer 2s infinite;
+    box-shadow: 0 0 15px currentColor;
 }
 .ne-progress-label {
-    font-size: 11px; font-weight: 900; opacity: 0.85;
-    background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 100px;
+    font-size: 12px; font-weight: 800;
+    font-family: 'Space Mono', monospace;
 }
 
-@keyframes neShimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* ── CONTENT — Scrollable story area ── */
+/* ── CONTENT ── */
 .ne-content {
     flex: 1; overflow-y: auto; overflow-x: hidden;
-    padding: 20px var(--ne-padding) 10px;
+    padding: 10px var(--ne-padding);
     display: flex; flex-direction: column;
-    -webkit-overflow-scrolling: touch;
-}
-.ne-content-inner { width: 100%; }
-
-/* ── INTRO CARD — Welcome! ── */
-.ne-intro { text-align: center; padding-top: 10px; }
-.ne-intro-mascot {
-    width: 110px; height: 110px; margin: 0 auto 16px; object-fit: contain;
-    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
-}
-.ne-intro-desc {
-    font-size: 17px; font-weight: 700; line-height: 1.6;
-    color: var(--text-main); margin-bottom: 20px;
-}
-.ne-intro-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 18px; border-radius: 100px;
-    font-size: 13px; font-weight: 900;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-/* ── FACT CARD — Lightbulb moment ── */
-.ne-fact {
-    display: flex; flex-direction: column; align-items: center;
-    text-align: center; padding-top: 8px;
-}
-.ne-fact-icon {
-    width: 56px; height: 56px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-.ne-fact-text {
-    font-size: 17px; font-weight: 700; line-height: 1.65;
-    color: var(--text-main);
-}
+/* ── LEXICON CARD (Successor to ObjectList) ── */
+.ne-obj-list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
 
-/* ── LIST CARD — Numbered bubbles ── */
-.ne-list { display: flex; flex-direction: column; gap: 10px; }
-.ne-list-item {
-    display: flex; align-items: flex-start; gap: 12px;
-    background: var(--bg-card, #f8fafc);
-    padding: 14px 16px; border-radius: 22px;
-    border: 1.5px solid var(--border-color, #e2e8f0);
-    transition: transform 0.15s;
-}
-.ne-list-item:active { transform: scale(0.98); }
-.ne-list-marker {
-    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 13px; font-weight: 950;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-}
-.ne-list-text {
-    font-size: 15px; font-weight: 650; line-height: 1.55;
-    color: var(--text-main);
-}
-
-/* ── OBJECT LIST — Mini info cards ── */
-.ne-obj-list { display: flex; flex-direction: column; gap: 12px; }
-.ne-obj-card {
-    background: var(--bg-card, #f8fafc);
-    border: 1.5px solid var(--border-color, #e2e8f0);
-    border-radius: 22px; padding: 14px 16px;
-    transition: transform 0.15s;
-}
-.ne-obj-card:active { transform: scale(0.98); }
-.ne-obj-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.ne-obj-icon {
-    width: 28px; height: 28px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-}
-.ne-obj-name { font-size: 15px; font-weight: 900; color: var(--text-main); }
-.ne-obj-row { display: flex; gap: 8px; padding: 4px 0; align-items: baseline; }
-.ne-obj-label { font-size: 11px; font-weight: 800; text-transform: capitalize; color: var(--text-sub, #64748b); white-space: nowrap; }
-.ne-obj-value { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.4; }
-
-/* ── KEY VALUE — Dictionary page ── */
-.ne-kv { display: flex; flex-direction: column; gap: 14px; }
-.ne-kv-item {
-    background: var(--bg-card, #f8fafc);
-    border-radius: 20px; padding: 14px 16px;
-    border: 1.5px solid var(--border-color, #e2e8f0);
-}
-.ne-kv-label {
-    font-size: 11px; font-weight: 900; text-transform: uppercase;
-    letter-spacing: 1px; display: block; margin-bottom: 6px;
-}
-.ne-kv-value {
-    font-size: 15px; font-weight: 650; line-height: 1.5;
-    color: var(--text-main);
-}
-
-/* ── RICH DETAIL CARD (v4.0) — Consolidated concept ── */
-.ne-rich { display: flex; flex-direction: column; gap: 14px; }
-.ne-rich-desc {
-    font-size: 16px; font-weight: 700; line-height: 1.6;
-    color: var(--text-main);
-    background: var(--bg-card, #f8fafc);
-    padding: 16px 18px; border-radius: 22px;
-    border-left: 5px solid currentColor;
-    border-left-color: inherit;
-}
-.ne-rich-pairs {
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 0 4px;
-}
-.ne-rich-pair {
-    font-size: 14px; display: flex; gap: 8px; align-items: baseline;
-    padding: 6px 0;
-}
-.ne-rich-label {
-    font-weight: 900; text-transform: uppercase; font-size: 10px;
-    letter-spacing: 0.8px; opacity: 0.85; white-space: nowrap;
-}
-.ne-rich-val { font-weight: 700; color: var(--text-main); line-height: 1.45; }
-
-.ne-rich-list {
-    background: var(--bg-card, #f8fafc);
-    padding: 14px 16px; border-radius: 22px;
-    display: flex; flex-direction: column; gap: 10px;
-    border: 1.5px dashed var(--border-color, #e2e8f0);
-}
-.ne-rich-list-title {
-    font-size: 11px; font-weight: 950; text-transform: uppercase;
-    letter-spacing: 1.2px; margin-bottom: 2px;
-}
-.ne-rich-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 14px; font-weight: 650; line-height: 1.5;
-    color: var(--text-main);
-}
-.ne-rich-bullet {
-    width: 8px; height: 8px; border-radius: 50%;
-    margin-top: 5px; flex-shrink: 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* ── MANYA SPEECH — Cheerful encouragement ── */
-.ne-manya-row {
-    display: flex; align-items: center; gap: 14px;
-    margin-top: 24px; padding: 14px 16px;
-    background: rgba(255, 215, 0, 0.08);
+.ne-lexicon-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
-    border: 2px dashed rgba(255, 190, 0, 0.25);
-}
-.ne-manya-img {
-    width: 46px; height: 46px; object-fit: contain;
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1));
-}
-.ne-speech-bubble { position: relative; flex: 1; }
-.ne-speech-text {
-    font-size: 15px; font-weight: 800;
-    color: var(--text-main); font-style: italic;
-}
-
-/* ── FOOTER — Big friendly buttons ── */
-.ne-footer {
-    padding: 12px var(--ne-padding) 28px;
-    display: flex; gap: 10px; align-items: center;
-    background: var(--bg-main);
-    border-top: none;
-}
-.ne-btn-back {
-    height: 52px; width: 52px; min-width: 52px;
-    border-radius: 50%; border: 2px solid var(--border-color, #e2e8f0);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-sub); background: var(--bg-card);
+    padding: 24px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    transition: transform 0.1s;
-}
-.ne-btn-back:active { transform: scale(0.9); }
-
-.ne-btn-next {
-    flex: 1; height: 52px;
-    border-radius: 100px; border: none;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    color: white; font-size: 15px; font-weight: 950;
-    letter-spacing: 1.5px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-    transition: transform 0.1s;
-}
-.ne-btn-next:active { transform: scale(0.96); }
-
-/* ── EMPTY STATE ── */
-.ne-empty {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700; color: var(--text-sub);
-    padding: 40px;
+    transition: transform 0.2s, background 0.2s;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   DARK MODE — Cozy night-time reading 🌙
-   ══════════════════════════════════════════════════════════════ */
-[data-theme='dark'] .ne-list-item {
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.1);
-}
-[data-theme='dark'] .ne-obj-card {
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.1);
-}
-[data-theme='dark'] .ne-kv-item {
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.1);
-}
-[data-theme='dark'] .ne-rich-desc {
-    background: rgba(255,255,255,0.06);
-}
-[data-theme='dark'] .ne-rich-list {
-    background: rgba(255,255,255,0.04);
-    border-color: rgba(255,255,255,0.12);
-}
-[data-theme='dark'] .ne-manya-row {
-    background: rgba(255, 215, 0, 0.04);
-    border-color: rgba(255, 190, 0, 0.12);
-}
-[data-theme='dark'] .ne-btn-back {
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.1);
+.ne-lexicon-card:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
+
+/* Subject color glow */
+.ne-lexicon-glow {
+    position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+    opacity: 0.8;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   MOBILE — Compact & touch-friendly
-   ══════════════════════════════════════════════════════════════ */
-@media (max-width: 480px) {
-    .ne-root { --ne-padding: 16px; }
-    .ne-header { padding: 24px var(--ne-padding) 18px; }
-    .ne-title { font-size: 19px; }
-    .ne-intro-mascot { width: 90px; height: 90px; }
-    .ne-intro-desc { font-size: 15px; }
-    .ne-fact-icon { width: 48px; height: 48px; }
-    .ne-fact-text { font-size: 15px; }
-    .ne-list-text { font-size: 14px; }
-    .ne-btn-next { height: 48px; font-size: 14px; }
-    .ne-btn-back { height: 48px; width: 48px; min-width: 48px; }
-    .ne-footer { padding-bottom: 24px; }
+.ne-lexicon-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+.ne-lexicon-indicator {
+    width: 6px; height: 24px; border-radius: 3px;
+    box-shadow: 0 0 10px currentColor;
 }
+
+.ne-lexicon-name {
+    font-size: 24px; font-weight: 800; color: #FFFFFF;
+    letter-spacing: -0.01em;
+}
+
+.ne-lexicon-definition {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ne-lexicon-definition p {
+    font-size: 15px; font-weight: 600; line-height: 1.6;
+    color: #CBD5E1;
+}
+
+.ne-lexicon-meta { display: flex; flex-direction: column; gap: 8px; }
+.ne-meta-row { display: flex; align-items: baseline; gap: 12px; }
+.ne-meta-label {
+    font-size: 10px; font-weight: 900; text-transform: uppercase;
+    color: #64748B; letter-spacing: 0.1em; white-space: nowrap;
+}
+.ne-meta-value { font-size: 14px; font-weight: 700; color: #94A3B8; }
+
+.ne-lexicon-bolt {
+    position: absolute; bottom: 16px; right: 20px;
+    color: inherit;
+}
+
+/* ── FOOTER — Elite Toy Buttons ── */
+.ne-footer-elite {
+    padding: 20px var(--ne-padding) 40px;
+    display: flex; align-items: center; gap: 16px;
+    background: linear-gradient(0deg, #0B0E14 0%, transparent 100%);
+}
+
+.ne-btn-back-elite {
+    height: 60px; width: 60px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+}
+.ne-btn-back-elite:active { transform: scale(0.9) translateY(2px); background: rgba(255,255,255,0.1); }
+
+.ne-btn-next-elite {
+    flex: 1; height: 64px;
+    border-radius: 24px;
+    background: var(--accent, #6366f1);
+    color: white;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.3);
+    position: relative; overflow: hidden;
+    transition: all 0.2s;
+}
+
+.ne-btn-next-elite:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+
+/* --- GLOBAL ANIMATIONS --- */
+.ne-lexicon-card:hover { border-color: rgba(255,255,255,0.15); }
+.scrollbar-hide::-webkit-scrollbar { display: none; }

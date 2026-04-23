@@ -12,6 +12,11 @@ import GlobalHUD from './components/GlobalHUD';
 import BottomNav from './components/BottomNav';
 import ManyaToaster from './components/ManyaToaster';
 import AudioManager from './components/AudioManager';
+import ChestRevealModal from './components/ChestRevealModal/ChestRevealModal.jsx';
+import FXLayer from './components/FXLayer';
+import MascotReaction from './components/MascotReaction';
+import InteractionFeedback from './components/InteractionFeedback';
+import BadgeCelebrationModal from './components/BadgeCelebrationModal.jsx';
 
 // Views
 import HomeView from './views/HomeView';
@@ -103,6 +108,9 @@ function RouterLayout() {
 
             {/* Bottom Nav — hidden on quest/quest-path, shown on spiral */}
             {!hideNav && <BottomNav />}
+
+            {/* Achievement Celebration Portal */}
+            <BadgeCelebrationModal />
         </div>
     );
 }
@@ -168,6 +176,11 @@ function AppContent() {
     return (
         <>
             <AudioManager />
+            <FXLayer />
+            <InteractionFeedback />
+            <MascotReaction />
+            {/* ChestRevealModal lives here so it overlays any screen in the app */}
+            <ChestRevealModal />
             <RouterLayout />
         </>
     );

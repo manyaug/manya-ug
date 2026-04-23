@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Check, X, Zap, Trophy, Compass, Lightbulb, Sparkles, AlertCircle, ArrowRight
 } from 'lucide-react';
+import QuestHUD from '../../components/QuestHUD';
+import { triggerRewardFlight } from '../../utils/fxUtils';
+import { mascotSpeak } from '../../components/MascotReaction';
+import { audioService } from '../../infrastructure/audio/audioService';
 
 /**
  * ENGLISH RENDERER v3.1 (SST Elite Style + Fixed Hint)
@@ -31,21 +35,47 @@ const EnglishRenderer = ({
     showGemToast,
     onContinue
 }) => {
+    const correctBtnRef = useRef(null);
+
+    // Trigger flying coins and mascot reactions when user is answered
+    useEffect(() => {
+        if (isAnswered) {
+            if (userWasCorrect) {
+                // Global event for feedback layer
+                window.dispatchEvent(new CustomEvent('manya-correct'));
+                audioService.playSFX('correct');
+
+                // Mascot Reaction (Zany/English character)
+                const phrases = [
+                    "Spot on! Your English is top-tier! ✨",
+                    "Word Wizard in the house! 🧙‍♂️",
+                    "Magnificent! Your grammar is perfect! 📝",
+                    "Excellent! You've got a way with words! 🎉"
+                ];
+                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+
+                // Flying Coins
+                if (correctBtnRef.current) {
+                    setTimeout(() => {
+                        triggerRewardFlight(correctBtnRef.current, 'coin', 5);
+                    }, 300);
+                }
+            } else {
+                // Global event for feedback layer
+                window.dispatchEvent(new CustomEvent('manya-wrong'));
+                audioService.playSFX('mistake');
+
+                // Mascot Encouragement
+                mascotSpeak("Language is a journey! Let's analyze this one. 📖", 4000);
+            }
+        }
+    }, [isAnswered, userWasCorrect]);
     return (
         <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative bg-[#0B0E14]" style={{ maxHeight: '100%' }}>
-            {showGemToast && (
-                <div className="absolute top-4 right-4 bg-indigo-500 text-white px-3 py-1.5 rounded-full text-xs font-black animate-bounce z-20 flex items-center gap-1 shadow-xl shadow-indigo-500/20">
-                    <Trophy size={12} /> +{gemsEarned} gems
-                </div>
-            )}
+            {/* Scrollable primary area */}
 
             {/* --- SCROLLABLE CONTENT AREA --- */}
             <div className="flex-1 overflow-y-auto px-4 pt-4 scrollbar-hide pb-4">
-                <div className="flex gap-1.5 justify-center mb-6 overflow-x-auto no-scrollbar flex-shrink-0">
-                    {Array.from({ length: totalQuestions }).map((_, i) => (
-                        <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-indigo-400 w-5 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : (i < currentIdx ? 'bg-indigo-400 opacity-30 w-1.5' : 'bg-white/10 w-1.5')}`} />
-                    ))}
-                </div>
 
                 {currentQ?.isRephrased && (
                     <div className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-2 font-black mb-4 text-center">
@@ -62,14 +92,7 @@ const EnglishRenderer = ({
                 {/* QUESTION CARD (Glowing & Glossy) */}
                 <div className="bg-[#151921] rounded-[2.5rem] border-[4px] border-indigo-500/40 neon-glow-violet px-7 py-8 mb-6 shadow-2xl relative transition-all duration-500">
                     <div className="toy-card-gloss" />
-                    <div className="flex items-center justify-between mb-5 relative z-10">
-                        <div className="flex items-center gap-2">
-                             <Compass size={14} className="text-indigo-400" />
-                             <span className="text-indigo-400/80 font-black text-[10px] tracking-widest uppercase">
-                                {nodeType} · {currentIdx + 1}/{totalQuestions}
-                             </span>
-                        </div>
-                        
+                    <div className="flex items-center justify-end mb-5 relative z-10">
                         {!isAnswered && currentQ?.hint && (
                             <div className="relative">
                                 <button 
@@ -129,11 +152,16 @@ const EnglishRenderer = ({
                         }
 
                         return (
-                            <button
+                            <motion.button
                                 key={i}
                                 disabled={isAnswered}
-                                onClick={() => setSelectedOption(opt)}
+                                onClick={() => {
+                                    setSelectedOption(opt);
+                                    audioService.playSFX('tap');
+                                }}
                                 className={cls}
+                                ref={opt === correctText ? correctBtnRef : null}
+                                whileTap={!isAnswered ? { scale: 0.98, translateY: 2 } : {}}
                                 style={{
                                     borderColor: isSelected && !isAnswered ? 'rgba(129, 140, 248, 0.8)' : undefined,
                                     background: isSelected && !isAnswered ? 'rgba(129, 140, 248, 0.1)' : undefined
@@ -146,7 +174,7 @@ const EnglishRenderer = ({
                                 <span className="mcq-fe-text">{opt}</span>
                                 {isAnswered && opt === correctText && <Check size={18} className="mcq-fe-icon correct-icon" strokeWidth={4} />}
                                 {isAnswered && isSelected && opt !== correctText && <X size={18} className="mcq-fe-icon wrong-icon" strokeWidth={4} />}
-                            </button>
+                            </motion.button>
                         );
                     })}
                 </div>

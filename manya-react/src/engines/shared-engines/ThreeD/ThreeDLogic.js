@@ -12,7 +12,12 @@ export const calculateOrbit = (normStr) => {
     const parts = normStr.split(' ').map(Number);
     let theta = Math.atan2(parts[0], parts[2]) * (180 / Math.PI);
     let phi = Math.acos(parts[1]) * (180 / Math.PI);
-    return `${theta}deg ${phi}deg 75%`;
+    
+    // CAP PHI: Prevent looking straight down from top (0) or up from bottom (180)
+    // 45deg to 135deg is a safe "portrait" range for models like skeletons.
+    phi = Math.max(45, Math.min(135, phi));
+    
+    return `${theta}deg ${phi}deg 55%`;
 };
 
 export const getThreeDAccent = (subject) => {

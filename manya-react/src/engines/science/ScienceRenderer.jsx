@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -6,6 +6,10 @@ import {
     Zap, Trophy, RotateCcw, AlertCircle, Sparkles,
     Search, Puzzle
 } from 'lucide-react';
+import QuestHUD from '../../components/QuestHUD';
+import { triggerRewardFlight } from '../../utils/fxUtils';
+import { mascotSpeak } from '../../components/MascotReaction';
+import { audioService } from '../../infrastructure/audio/audioService';
 
 /**
  * SCIENCE FETCHER RENDERER
@@ -36,6 +40,41 @@ const ScienceRenderer = ({
     questMeta,
     userWasCorrect
 }) => {
+    const correctBtnRef = useRef(null);
+
+    // Trigger flying coins and mascot reactions when user is answered
+    useEffect(() => {
+        if (isAnswered) {
+            if (userWasCorrect) {
+                // Global event for feedback layer
+                window.dispatchEvent(new CustomEvent('manya-correct'));
+                audioService.playSFX('correct');
+
+                // Mascot Reaction
+                const phrases = [
+                    "Whoa! You're a natural at this! 🎉",
+                    "Scientific discovery in action! 🧪",
+                    "Excellent! Science rules! ✨",
+                    "You've got a sharp eye for detail! 🔎"
+                ];
+                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+
+                // Flying Coins
+                if (correctBtnRef.current) {
+                    setTimeout(() => {
+                        triggerRewardFlight(correctBtnRef.current, 'coin', 5);
+                    }, 300);
+                }
+            } else {
+                // Global event for feedback layer
+                window.dispatchEvent(new CustomEvent('manya-wrong'));
+                audioService.playSFX('mistake');
+                
+                // Mascot Encouragement
+                mascotSpeak("Oops! That one was tricky. Let's observe again! 📚", 4000);
+            }
+        }
+    }, [isAnswered, userWasCorrect]);
     
     // --- 📥 LOADING SCREEN ---
     if (isLoading) {
@@ -111,6 +150,7 @@ const ScienceRenderer = ({
     // --- 📝 MCQ UI ---
     return (
         <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+            
             <AnimatePresence>
                 {showGemToast && (
                     <motion.div 
@@ -125,31 +165,25 @@ const ScienceRenderer = ({
             </AnimatePresence>
 
             <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
-                <div className="flex gap-1.5 justify-center mb-5 overflow-x-auto no-scrollbar flex-shrink-0">
-                    {questions.map((_, i) => (
-                        <div key={i} className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${i === currentIdx ? 'bg-indigo-600 w-5' : (i < currentIdx ? 'bg-indigo-600 opacity-35 w-1.5' : 'bg-slate-200 w-1.5')}`} />
-                    ))}
-                </div>
-
-                {q.isRephrased && <div className="text-xs text-blue-600 bg-blue-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">🔄 Let's try this rule again with different words</div>}
-                {frustration?.level === 'high' && <div className="text-xs text-indigo-600 bg-indigo-50 rounded-xl px-3 py-2 font-bold mb-3 text-center flex-shrink-0">💪 You're doing great. Keep going!</div>}
-
                 <div className="bg-[var(--bg-card)] rounded-[2rem] border-[4.5px] border-indigo-400 px-6 py-6 mb-4 shadow-xl flex-shrink-0 relative">
                     <div className="toy-card-gloss" />
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-indigo-500/10 rounded-lg flex items-center justify-center"><Compass size={12} className="text-indigo-600" /></div>
-                            <span className="text-indigo-600 font-black text-[9px] tracking-widest uppercase opacity-80">
-                                {nodeType} · {currentIdx + 1}/{questions.length}
-                            </span>
-                        </div>
+                    
+                    <div className="relative">
+                        <p className="text-[var(--text-main)] font-black text-[17px] leading-tight m-0 pr-12">
+                            {q.question}
+                        </p>
+
                         {!isAnswered && q.hint && (
-                            <div className="relative">
-                                <button onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                                    <Lightbulb size={18} />
+                            <div className="absolute top-0 -right-2">
+                                <button 
+                                    onClick={() => setHintUsed(!hintUsed)} 
+                                    className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center relative z-10 ${hintUsed ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
+                                    aria-label="Toggle Hint"
+                                >
+                                    <Lightbulb size={20} strokeWidth={2.5} />
                                 </button>
                                 {hintUsed && (
-                                    <div className="mcq-hint-bubble">
+                                    <div className="mcq-hint-bubble-v2 translate-y-2">
                                         <div className="toy-card-gloss" />
                                         <div className="mcq-hint-header"><Sparkles size={14} className="text-amber-500" /><span className="mcq-hint-badge">Research Hint</span></div>
                                         <p className="mcq-hint-text">{q.hint}</p>
@@ -158,7 +192,6 @@ const ScienceRenderer = ({
                             </div>
                         )}
                     </div>
-                    <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">{q.question}</p>
                 </div>
 
                 <div className="flex flex-col gap-2.5 flex-shrink-0">
@@ -174,13 +207,23 @@ const ScienceRenderer = ({
                         } else if (isSelected) cls += ' mcq-fe-selected';
 
                         return (
-                            <button key={i} className={cls} onClick={() => handleSelect(opt)} disabled={isAnswered}>
+                            <motion.button 
+                                key={i} 
+                                className={cls} 
+                                onClick={() => {
+                                    handleSelect(opt);
+                                    audioService.playSFX('tap');
+                                }} 
+                                disabled={isAnswered}
+                                ref={isThisCorrect ? correctBtnRef : null}
+                                whileTap={!isAnswered ? { scale: 0.98, translateY: 2 } : {}}
+                            >
                                 <div className="toy-card-gloss" />
                                 <span className="mcq-fe-letter">{String.fromCharCode(65 + i)}</span>
                                 <span className="mcq-fe-text">{opt}</span>
                                 {isAnswered && isSelected && userWasCorrect && <Check size={16} className="mcq-fe-icon correct-icon" strokeWidth={3} />}
                                 {isAnswered && isSelected && !userWasCorrect && <X size={16} className="mcq-fe-icon wrong-icon" strokeWidth={3} />}
-                            </button>
+                            </motion.button>
                         );
                     })}
                 </div>
@@ -206,20 +249,20 @@ const ScienceRenderer = ({
             {/* ── WRONG SOLUTION PORTAL ── */}
             {isAnswered && !userWasCorrect && showExplanation && createPortal(
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
-                    <div className="relative w-full max-w-md bg-[var(--bg-card)] rounded-[3rem] p-10 shadow-2xl border border-[var(--border-color)] animate-in zoom-in-95 duration-300">
-                        <div className="bg-rose-50 text-rose-600 w-16 h-16 rounded-3xl flex items-center justify-center mb-6 mx-auto">
-                            <Lightbulb size={32} />
+                    <div className="relative w-full max-w-sm bg-[var(--bg-card)] rounded-[24px] p-8 shadow-xl border border-[var(--border-color)] animate-in zoom-in-95 duration-300">
+                        <div className="bg-rose-50 text-rose-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 mx-auto">
+                            <Lightbulb size={28} />
                         </div>
-                        <h4 className="text-[var(--text-main)] font-black mb-2 text-center text-xl">Let's Research Why</h4>
-                        <div className="bg-emerald-50 text-emerald-700 p-5 rounded-[2rem] font-black mb-6 border-2 border-emerald-100 text-center text-lg italic animate-in fade-in slide-in-from-bottom-2 duration-700">
+                        <h4 className="text-[var(--text-main)] font-black mb-1.5 text-center text-lg">Let's Research Why</h4>
+                        <div className="bg-emerald-50 text-emerald-700 p-4 rounded-2xl font-black mb-6 border border-emerald-100 text-center text-base italic">
                             "{correctText}"
                         </div>
-                        <div className="max-h-[30vh] overflow-y-auto no-scrollbar mb-8">
-                            <p className="text-[var(--text-sub)] text-base font-bold text-center leading-relaxed">
+                        <div className="max-h-[25vh] overflow-y-auto no-scrollbar mb-6">
+                            <p className="text-[var(--text-sub)] text-sm font-bold text-center leading-relaxed">
                                 {q.explanation || "Scientific discovery often takes a few tries! Keep observing the patterns."}
                             </p>
                         </div>
-                        <button onClick={nextQuestion} className="w-full h-16 bg-indigo-600 text-white rounded-[2rem] font-black text-xs tracking-[0.2em] uppercase shadow-xl shadow-indigo-500/40 active:scale-95 transition-all">
+                        <button onClick={nextQuestion} className="w-full h-14 bg-indigo-600 text-white rounded-xl font-black text-[10px] tracking-[0.2em] uppercase active:scale-95 transition-all">
                             CONTINUE RESEARCH
                         </button>
                     </div>

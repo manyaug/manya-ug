@@ -104,6 +104,14 @@ export const syncService = {
             parent_phone: profileData.parent?.whatsapp || profileData.parent_phone,
             grade_level: profileData.grade_level || profileData.goal,
             engagement_stats: profileData.engagement_stats || {},
+            unlocked_badges: profileData.unlockedBadges || [],
+            math_correct: profileData.math_correct || 0,
+            science_correct: profileData.science_correct || 0,
+            english_correct: profileData.english_correct || 0,
+            sst_correct: profileData.sst_correct || 0,
+            stats_perfect_answers: profileData.stats_perfect_answers || 0,
+            stats_hints_used: profileData.stats_hints_used || 0,
+            stats_explanations_viewed: profileData.stats_explanations_viewed || 0,
             last_security_update: profileData.lastSecurityUpdate || null,
             last_active_at: new Date().toISOString()
         };
@@ -133,25 +141,23 @@ export const syncService = {
         const pointsEarned = answer.isCorrect ? (answer.hintUsed ? 2 : 3) : 0;
 
         const payload = {
+            id: answer.id || crypto.randomUUID(),  // RED FLAG FIX: Pin the ID locally
             user_id: uid,
             question_id: answer.questionId,
             is_correct: answer.isCorrect,
-            selected_option: String(answer.selectedAnswer || ''),
-            correct_option: String(answer.correctAnswer || ''),
+            selected_answer: String(answer.selectedAnswer || ''),
+            correct_answer: String(answer.correctAnswer || ''),
             time_spent_ms: answer.timeSpentMs,
             hint_used: answer.hintUsed,
             answer_changed: answer.answerChanged,
-            change_count: answer.changeCount || 0,
             frustration_level: answer.frustrationLevel || 0,
-            pool: answer.pool || 'exam',
-            engine_type: answer.engine_type || 'MCQ',
-            concept_id: answer.concept_id || null,
-            variant: answer.variant || null,
-            subject: subject,
+            frustration_clicks: answer.changeCount || 0, // Mapped locally
             session_id: answer.session_id || storageService.getItem('manya_session_id'),
             time_of_day: timeOfDay,
             day_of_week: dayOfWeek,
-            points_earned: pointsEarned
+            points_earned: pointsEarned,
+            answered_at: answer.answeredAt || answer.clientTimestamp || new Date().toISOString(), // RED FLAG FIX: Bind to true offline time
+            client_timestamp: answer.clientTimestamp || new Date().toISOString() // RED FLAG FIX: Pin the exact hardware clock
         };
 
         try {
@@ -231,6 +237,83 @@ export const syncService = {
     },
 
     /**
+     * Push emotional state to Supabase `emotional_metrics` table.
+     * Called from emotionTracker.js — fire-and-forget, never blocks the UI.
+     * @param {{ emotion: string, intensity: number, context: string }} payload
+     */
+    async pushEmotion(payload) {
+        const uid = await this.getUserId();
+        if (!uid) return;
+
+        const record = {
+            user_id: uid,
+            emotion: payload.emotion,
+            intensity: payload.intensity,
+            context: payload.context,
+            response_time_ms: payload.responseTimeMs || 0,
+            recorded_at: new Date().toISOString()
+        };
+
+        try {
+            const { error } = await supabase.from('emotional_metrics').insert(record);
+            if (error) throw error;
+        } catch (_) {
+            await ManyaDB.addToSyncQueue('emotion', record);
+        }
+    },
+
+    /**
+     * Push a chest drop event to Supabase `user_chests` table.
+     * @param {'bronze'|'silver'|'gold'} chestType
+     * @param {object[]} rewards - Array of reward objects from rollChestRewards()
+     */
+    async pushChestDrop(chestType, rewards) {
+        const uid = await this.getUserId();
+        if (!uid) return;
+
+        const record = {
+            user_id: uid,
+            chest_type: chestType,
+            rewards_json: JSON.stringify(rewards),
+            opened: true,
+            opened_at: new Date().toISOString()
+        };
+
+        try {
+            const { error } = await supabase.from('user_chests').insert(record);
+            if (error) throw error;
+        } catch (_) {
+            await ManyaDB.addToSyncQueue('chest', record);
+        }
+    },
+
+    /**
+     * Push a newly earned badge to Supabase `user_achievements`.
+     * @param {{ id, name, icon, subject, earnedAt }} badge
+     */
+    async pushBadge(badge) {
+        const uid = await this.getUserId();
+        if (!uid) return;
+
+        const record = {
+            user_id: uid,
+            achievement_type: badge.id,
+            achievement_name: badge.name,
+            icon: badge.icon,
+            earned_at: badge.earnedAt
+        };
+
+        try {
+            const { error } = await supabase.from('achievements').upsert(record, {
+                onConflict: 'user_id, achievement_type'
+            });
+            if (error) throw error;
+        } catch (_) {
+            await ManyaDB.addToSyncQueue('badge', record);
+        }
+    },
+
+    /**
      * MANUAL FORCE SYNC
      * Manually triggers the queue processor.
      */
@@ -264,6 +347,12 @@ export const syncService = {
                     ({ error } = await supabase.from('quest_progress').upsert(item.data, { onConflict: 'user_id, quest_key, node_type' }));
                 } else if (item.type === 'concept_mastery') {
                     ({ error } = await supabase.from('concept_mastery').upsert(item.data, { onConflict: 'user_id, subject, base_id' }));
+                } else if (item.type === 'emotion') {
+                    ({ error } = await supabase.from('emotional_metrics').insert(item.data));
+                } else if (item.type === 'chest') {
+                    ({ error } = await supabase.from('user_chests').insert(item.data));
+                } else if (item.type === 'badge') {
+                    ({ error } = await supabase.from('achievements').upsert(item.data, { onConflict: 'user_id, achievement_type' }));
                 }
 
                 if (!error) {

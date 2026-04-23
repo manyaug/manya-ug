@@ -1,145 +1,115 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Award, Moon, Target, Crown, Coins, Megaphone, CheckCircle2, Hash, X, Ruler, Sparkles, Bone, Leaf, Zap, Cloud, FlaskConical, Map, Tent, Scale, Globe2, Shapes, Footprints, PenTool, BookOpen, Library, LibraryBig } from 'lucide-react';
-import { getGem, IMAGES } from '../config/assetUrls';
+import * as LucideIcons from 'lucide-react';
+import { BADGES, BADGE_CATEGORIES } from '../config/badges';
+import { getGem } from '../config/assetUrls';
 import '../styles/achievement.css';
 
 function AchievementsView() {
   const user = useSelector((state) => state.user.data);
   const navigate = useNavigate();
 
-  // Custom SVGs mapped to subjects
+  const unlockedIds = user?.unlockedBadges || [];
+
+  // Subject Treasury Mapping
   const subjectGems = [
-      { name: 'Math', val: user?.mathGems || 0, file: 'math_gem.svg', color: 'var(--manya-purple)', glow: 'rgba(124, 58, 237, 0.6)' },
-      { name: 'Science', val: user?.scienceGems || 0, file: 'science_svg.svg', color: 'var(--manya-green, #10b981)', glow: 'rgba(16, 185, 129, 0.6)' },
-      { name: 'SST', val: user?.sstGems || 0, file: 'sst_gem.svg', color: 'var(--manya-gold)', glow: 'rgba(245, 158, 11, 0.6)' },
-      { name: 'English', val: user?.englishGems || 0, file: 'english_gem.svg', color: 'var(--manya-pink)', glow: 'rgba(219, 39, 119, 0.6)' }
+      { name: 'Math', val: user?.mathGems || 0, file: 'math_gem.svg', color: '#6366f1' },
+      { name: 'Science', val: user?.scienceGems || 0, file: 'science_svg.svg', color: '#10b981' },
+      { name: 'SST', val: user?.sstGems || 0, file: 'sst_gem.svg', color: '#f59e0b' },
+      { name: 'English', val: user?.englishGems || 0, file: 'english_gem.svg', color: '#db2777' }
   ];
 
-  const badgeGroups = [
-      {
-          title: "Heroic Discovery",
-          badges: [
-              { name: "Waddler", icon: <Award size={24} />, unlocked: true, tier: 'bronze' },
-              { name: "Night Owl", icon: <Moon size={24} />, unlocked: user?.theme === 'dark', tier: 'silver' },
-              { name: "Agg 4 Goal", icon: <Target size={24} />, unlocked: user?.goal?.includes('4'), tier: 'gold' },
-              { name: "Elite Hero", icon: <Crown size={24} />, unlocked: user?.status === 'Elite Hero', tier: 'diamond' },
-              { name: "Rich Kid", icon: <Coins size={24} />, unlocked: (user?.diamonds || 0) > 500, tier: 'gold' },
-              { name: "Socialite", icon: <Megaphone size={24} />, unlocked: false, tier: 'silver' }
-          ]
-      },
-      {
-          title: "Math Ninja",
-          badges: [
-              { name: "Set Pro", icon: <CheckCircle2 size={24} />, unlocked: true, tier: 'bronze', cat: 'cat-math' },
-              { name: "Number God", icon: <Hash size={24} />, unlocked: true, tier: 'silver', cat: 'cat-math' },
-              { name: "X-Finder", icon: <X size={24} />, unlocked: false, tier: 'gold', cat: 'cat-math' },
-              { name: "Geometry", icon: <Ruler size={24} />, unlocked: false, tier: 'silver', cat: 'cat-math' },
-              { name: "Math Legend", icon: <Sparkles size={24} />, unlocked: false, tier: 'diamond', cat: 'cat-math' }
-          ]
-      },
-      {
-          title: "Science Lab",
-          badges: [
-              { name: "Biology", icon: <Bone size={24} />, unlocked: true, tier: 'bronze', cat: 'cat-science' },
-              { name: "Leaf King", icon: <Leaf size={24} />, unlocked: true, tier: 'silver', cat: 'cat-science' },
-              { name: "Energy Whiz", icon: <Zap size={24} />, unlocked: false, tier: 'gold', cat: 'cat-science' },
-              { name: "Weather Pro", icon: <Cloud size={24} />, unlocked: false, tier: 'silver', cat: 'cat-science' },
-              { name: "Scientist", icon: <FlaskConical size={24} />, unlocked: false, tier: 'diamond', cat: 'cat-science' }
-          ]
-      },
-      {
-          title: "SST Explorer",
-          badges: [
-              { name: "Map Master", icon: <Map size={24} />, unlocked: true, tier: 'bronze', cat: 'cat-sst' },
-              { name: "Village Boy", icon: <Tent size={24} />, unlocked: true, tier: 'silver', cat: 'cat-sst' },
-              { name: "Civics", icon: <Scale size={24} />, unlocked: false, tier: 'gold', cat: 'cat-sst' },
-              { name: "Globe Kid", icon: <Globe2 size={24} />, unlocked: false, tier: 'silver', cat: 'cat-sst' },
-              { name: "Africa Giant", icon: <Shapes size={24} />, unlocked: false, tier: 'diamond', cat: 'cat-sst' }
-          ]
-      },
-      {
-          title: "English Master",
-          badges: [
-              { name: "Verb Star", icon: <Footprints size={24} />, unlocked: true, tier: 'bronze', cat: 'cat-english' },
-              { name: "Poet", icon: <PenTool size={24} />, unlocked: true, tier: 'silver', cat: 'cat-english' },
-              { name: "Speller", icon: <BookOpen size={24} />, unlocked: false, tier: 'gold', cat: 'cat-english' },
-              { name: "Story Teller", icon: <Library size={24} />, unlocked: false, tier: 'silver', cat: 'cat-english' },
-              { name: "Dictionary", icon: <LibraryBig size={24} />, unlocked: false, tier: 'diamond', cat: 'cat-english' }
-          ]
-      }
-  ];
+  // Group badges by Category
+  const groupedBadges = Object.entries(BADGE_CATEGORIES).map(([key, title]) => {
+      return {
+          title,
+          badges: BADGES.filter(b => b.cat === key)
+      };
+  });
 
-  const totalBadges = 31; 
-  const unlockedCount = badgeGroups.flatMap(g => g.badges).filter(b => b.unlocked).length;
+  const totalBadges = BADGES.length;
+  const unlockedCount = unlockedIds.length;
   const pct = (unlockedCount / totalBadges) * 100;
+
+  const renderIcon = (iconName, size = 24) => {
+    const Icon = LucideIcons[iconName] || LucideIcons.Award;
+    return <Icon size={size} />;
+  };
 
   return (
     <div className="achievements-page animate-in">
-       
         <div className="view-header-back">
             <button className="manya-back-btn" onClick={() => navigate('/profile')}>
-                <ChevronLeft size={24} strokeWidth={3} />
+                <LucideIcons.ChevronLeft size={24} strokeWidth={3} />
             </button>
             <h2 className="page-title-elite">Trophy Room</h2>
         </div>
 
-        {/* GEM TREASURY (CUSTOM SVGS) */}
-        <div className="gem-treasury-card">
-            <div className="btn-toy-gloss" />
-            <span className="vault-label">THE GEM VAULT</span>
-            <div className="gem-grid">
+        {/* GEM TREASURY (MATTE) */}
+        <div className="gem-treasury-card-minimal">
+            <span className="vault-label">CURRICULUM VAULT</span>
+            <div className="gem-grid-minimal">
                 {subjectGems.map(gem => (
-                    <div key={gem.name} className="gem-item">
-                        <div className="gem-stone">
+                    <div key={gem.name} className="gem-item-minimal">
+                        <div className="gem-stone-v2">
                             <img src={getGem(gem.file)} alt={gem.name} />
                         </div>
-                        <div className="gem-count" style={{ color: gem.color }}>{gem.val}</div>
-                        <div className="gem-label">{gem.name}</div>
+                        <div className="gem-count-v2" style={{ color: gem.color }}>{gem.val}</div>
+                        <div className="gem-label-v2">{gem.name}</div>
                     </div>
                 ))}
             </div>
         </div>
 
-        {/* COLLECTION PROGRESS */}
-        <div className="collection-card-elite">
-            <div className="btn-toy-gloss" />
+        {/* COLLECTION PROGRESS (MODERN) */}
+        <div className="collection-card-minimal">
             <div className="prog-label-row">
-                <span className="prog-title">BADGE MASTERY</span>
+                <span className="prog-title">GRAND MASTERY</span>
                 <span className="prog-count">{unlockedCount} / {totalBadges}</span>
             </div>
-            <div className="vault-bar-track">
-                <div className="vault-bar-fill" style={{ width: `${pct}%` }}>
-                    <div className="btn-toy-gloss" />
-                </div>
+            <div className="vault-bar-modern">
+                <div className="vault-bar-ink" style={{ width: `${pct}%` }}></div>
             </div>
-            <p className="prog-subtext">Unlock all badges to earn the Diamond Crown!</p>
+            <p className="prog-subtext-minimal">Collect all 100 badges to become a Manya Legend.</p>
         </div>
 
-        {/* RENDER GROUPS WITH MEDAL STYLING */}
-        {badgeGroups.map(group => (
-            <div key={group.title} className="badge-category-wrap">
-                <div className="badge-cat-header">
-                    <span>{group.title}</span>
-                    <div className="cat-line"></div>
-                </div>
+        {/* RENDER DYNAMIC BENTO GROUPS */}
+        {groupedBadges.map(group => (
+            <div key={group.title} className="badge-category-minimal">
+                <h3 className="badge-cat-title">{group.title}</h3>
                 
-                <div className="badge-grid-vault">
-                    {group.badges.map(badge => (
-                        <div key={badge.name} className={`badge-item-elite ${badge.unlocked ? `badge-is-unlocked tier-${badge.tier}` : 'badge-is-locked'} ${badge.cat || ''}`}>
-                            <div className="medal-ring">
-                                <span className="b-icon">{badge.unlocked ? badge.icon : '🔒'}</span>
+                <div className="badge-grid-minimal">
+                    {group.badges.map(badge => {
+                        const isUnlocked = unlockedIds.includes(badge.id);
+                        return (
+                            <div key={badge.id} 
+                                 className={`badge-box-minimal ${isUnlocked ? `is-unlocked tier-${badge.tier.toLowerCase()}` : 'is-locked'}`}
+                            >
+                                <div className="badge-visual-ring">
+                                    <span className="badge-icon">
+                                        {renderIcon(badge.icon, 22)}
+                                    </span>
+                                </div>
+                                <div className="badge-info">
+                                    <span className="badge-name-v2">{badge.name}</span>
+                                    {isUnlocked ? (
+                                        <span className="badge-tier-tag">{badge.tier}</span>
+                                    ) : (
+                                        <div className="badge-lock-status">
+                                            <LucideIcons.Lock size={10} />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <span className="b-name">{badge.name}</span>
-                            {badge.unlocked && <div className="tier-label">{badge.tier}</div>}
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         ))}
 
-        <div style={{ textAlign: 'center', marginTop: '60px', opacity: 0.1 }}>
-            <img src={IMAGES.manya_icon} style={{ width: '80px' }} alt="Manya Council" />
+        <div className="footer-mascot-seal">
+            <img src={getGem('manya_council.png') || IMAGES?.manya_icon} alt="Manya Council" />
         </div>
     </div>
   );

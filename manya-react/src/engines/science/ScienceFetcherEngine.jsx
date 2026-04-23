@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
     updateProfile, awardGems, addXP, resetSession, 
-    updateSessionAfterAnswer 
+    updateSessionAfterAnswer, checkAchievements, syncUserData,
+    awardCoins, dropChest 
 } from '../../store/userSlice';
 
 // Services & Utils
@@ -17,6 +18,11 @@ import { preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
 import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
 import { saveNodeCompletion, trackWrongAnswer, resolveRephrased, setJustFinished } from '../../domain/progress/questProgressService.js';
+// ── Gamification Domain (Headless) ───────────────────────────────────────────
+import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
+import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
+import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
+// import { awardCoins, dropChest } from '../../store/userSlice'; // cleaning up duplicates
 
 // Atomic Resources
 import { 
@@ -35,6 +41,7 @@ import '../../styles/mcq-engine.css';
  */
 export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
+    const store = useStore();
     const user = useSelector(state => state.user.data);
     const session = useSelector(state => state.user.session);
     
@@ -70,6 +77,9 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const nodeType = data?.nodeType || 'PRACTICE';
     const subject = data?.subject || 'science';
     const questKey = data?.questKey || `science/${topicId}`;
+    // Game mode set by adaptiveEngine metadata after load
+    const [gameMode, setGameMode] = useState('none');
+    const [hintUsedCount, setHintUsedCount] = useState(0);
 
     // --- 🪄 INITIALIZATION ---
     useEffect(() => {
@@ -128,6 +138,11 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
                 
                 setQuestions(quest.questions);
+                // Capture game mode from adaptive metadata
+                if (quest.metadata?.gameMode) {
+                    const gm = quest.metadata.gameMode.toLowerCase();
+                    setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
+                }
                 // Standard delay for visual smoothness
                 setTimeout(() => setIsLoading(false), 300);
             } catch (err) { 
@@ -183,7 +198,11 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             }
         }
 
-        dispatch(updateSessionAfterAnswer({ isCorrect, hintUsed, answerChanged, timeSpentMs }));
+        dispatch(updateSessionAfterAnswer({ 
+            subject, isCorrect, hintUsed, answerChanged, timeSpentMs 
+        }));
+        dispatch(checkAchievements()); 
+        dispatch(syncUserData(store.getState().user.data));
         const frustration = calculateFrustration(session);
         const baseId = q.id?.replace(/-V\d+$/, '') || q.id;
 
@@ -195,14 +214,32 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
-        // Gem/XP calculation
+        // ── Emotion Tracking (non-blocking) ─────────────────────────────────
+        trackAndPushEmotion({
+            isCorrect, hintUsed, answerChanged, changeCount,
+            timeSpentMs, frustrationLevel: frustration?.score || 0,
+        });
+
+        // ── Coin + Gem calculation ───────────────────────────────────────────
         const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
-        const totalGems = isCorrect ? Math.floor((hintUsed ? 1 : 4) * streakMultiplier) : 0;
+        const modeMultiplier = getModeCoinMultiplier(gameMode);
+        const baseGems = isCorrect ? (hintUsed ? 1 : 4) : 0;
+        const totalGems = Math.floor(baseGems * streakMultiplier);
+        const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
 
         if (isCorrect) {
             dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
+            if (coinReward > 0) dispatch(awardCoins(coinReward));
             setGemsEarned(g => g + totalGems); setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
+
+            // ── Bronze Chest random drop (20% chance per correct answer) ──
+            if (shouldDropBronzeChest()) {
+                const rewards = rollChestRewards('bronze');
+                dispatch(dropChest({ chestType: 'bronze', rewards }));
+            }
+
+            setHintUsedCount(c => c + (hintUsed ? 1 : 0));
             setTimeout(() => nextQuestion(), 800);
         } else {
             setTimeout(() => setShowExplanation(true), 500);
@@ -216,6 +253,8 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             setIsFinished(true);
             const mastery = Math.round((score / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
+            dispatch(checkAchievements());
+            dispatch(syncUserData(store.getState().user.data));
             setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
             
             // Story progression
@@ -225,11 +264,27 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             }
             if (result.xpReward) dispatch(addXP(result.xpReward));
 
-            // Achievement Check
-            const achieveCtx = { mastery, questsCompleted: (user[`prog_${subject}`] || 0) + 1, streak: user.current_streak || 0, nodeType };
-            achievementService.checkAchievements(subject, achieveCtx);
+            // ── Star rating + quest completion rewards ───────────────────────
+            const stars = masteryToStars(mastery);
+            const bonusCoins = getStarBonusCoins(stars);
+            if (bonusCoins > 0) dispatch(awardCoins(bonusCoins));
 
-            setCompletionResult({ mastery, score, total: questions.length });
+            const chestType = getQuestCompletionChest(stars);
+            if (chestType) {
+                const rewards = rollChestRewards(chestType);
+                dispatch(dropChest({ chestType, rewards }));
+            }
+
+            // ── No Hint Hero check ───────────────────────────────────────────
+            const noHintsUsed = hintUsedCount === 0;
+
+            // Achievement Check
+            const achieveCtx = { mastery, questsCompleted: (user[`prog_${subject}`] || 0) + 1, streak: user.current_streak || 0, nodeType, questCompletedNoHints: noHintsUsed };
+            const newBadges = achievementService.checkAchievements(subject, achieveCtx);
+            // Push new badges to Supabase
+            newBadges.forEach(b => syncService.pushBadge(b).catch(() => {}));
+
+            setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
             setShowCompletion(true);
         }
     };
