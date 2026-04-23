@@ -10,11 +10,8 @@ const CACHE_NAME = 'manya-v9'
 const STATIC_SHELL = [
   '/',
   '/manifest.json',
-  '/favicon.svg',
-  '/assets/icons/pwa-192x192.png',
-  '/assets/icons/pwa-512x512.png',
-  '/assets/icons/maskable-icon-512x512.png',
-  '/assets/icons/apple-touch-icon-180x180.png',
+  '/favicon.ico',
+  '/icons.png',
 ]
 
 // Media file extensions to ALWAYS bypass (they use Range requests the cache API can't handle)
