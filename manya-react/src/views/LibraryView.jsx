@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, FlaskConical, Globe, BookA } from 'lucide-react';
-import { IMAGES } from '../config/assetUrls';
+import { assetUrl } from '../config/assetUrls';
 import '../styles/library.css';
 
 function LibraryView() {
@@ -25,7 +25,16 @@ function LibraryView() {
   useEffect(() => {
     const fetchCurriculum = async () => {
       try {
-        const res = await fetch('/curriculum-master.json');
+        const CDN_URL = assetUrl('content/curriculum-master.json');
+        console.log("📚 [Library] Fetching curriculum from CDN:", CDN_URL);
+        
+        let res = await fetch(CDN_URL);
+        
+        if (!res.ok) {
+          console.warn("[Library] CDN Load failed, trying local fallback...");
+          res = await fetch('/curriculum-master.json');
+        }
+
         if (!res.ok) throw new Error("Manifest Error");
         const rawCurriculum = await res.json();
         
