@@ -195,18 +195,24 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             console.log(`🔌 [Adaptive] Injected ${simResources.length} explicit simulations into pools.`);
         }
 
-        // ─── STRICT EXPLORE RULE: STORY or NOTE ONLY ───
+        // ─── STRICT EXPLORE RULE: STORY, NOTE, or SST SIMULATIONS ───
         if (nodeType === 'EXPLORE') {
-            const storyCandidates = [...pools.QUEST_STORY, ...pools.GRAMMAR];
-            const subtopicStory = storyCandidates.find(q => q.subtopic === allQuestions[0]?.subtopic) || storyCandidates[0];
+            const exploreCandidates = [...pools.QUEST_STORY, ...pools.GRAMMAR];
             
-            if (subtopicStory) {
-                console.log(`🎬 [Adaptive] EXPLORE Node: Enforcing Narrative Content (${subtopicStory.qid || subtopicStory.id}).`);
-                const eType = (subtopicStory.engine_type || subtopicStory.engineType || subtopicStory.type || "").toUpperCase();
+            // v6.1: Allow SST Simulations in EXPLORE phase (Globe/Maps are teaching nodes)
+            if (subject === 'sst' || exploreCandidates.length === 0) {
+                exploreCandidates.push(...pools.SIMULATION);
+            }
+
+            const subtopicExplore = exploreCandidates.find(q => q.subtopic === (allQuestions[0]?.subtopic || q.subtopic)) || exploreCandidates[0];
+            
+            if (subtopicExplore) {
+                console.log(`🎬 [Adaptive] EXPLORE Node: Delivering Primary Teaching Content (${subtopicExplore.qid || subtopicExplore.id}).`);
+                const eType = (subtopicExplore.engine_type || subtopicExplore.engineType || subtopicExplore.type || "").toUpperCase();
                 const shouldBeSim = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
                 
                 return {
-                    questions: [{ ...subtopicStory, isSimulation: shouldBeSim }],
+                    questions: [{ ...subtopicExplore, isSimulation: shouldBeSim }],
                     metadata: { questLength: 1, gameMode: 'STORY' }
                 };
             }

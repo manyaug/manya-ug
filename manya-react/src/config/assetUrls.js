@@ -47,8 +47,7 @@ export function assetUrl(path) {
   }
 
   // 4. Normalize Binary Paths (audio vs audios)
-  // Ensure we consistently use /audio/ for the CDN structure
-  clean = clean.replace(/^audios\//, 'audio/').replace('/audios/', '/audio/');
+  // NOTE: The repo uses 'audios/' at root — do NOT rewrite to 'audio/'
 
   return `${BASE_CDN_URL}${clean}`;
 }
@@ -165,18 +164,21 @@ export const AUDIO = {
   shine: assetUrl('audios/shine.mp3'),
 }
 
-// 🛡️ AUDIO PATH GUARD
-const normalizeAudio = (path) => path.replace('/audios/', '/audio/');
+
 
 export const SFX = {
-  correct: assetUrl('audios/collect-points.mp3'),
-  wrong: assetUrl('audios/error-mistake.mp3'),
-  applause: assetUrl('audios/applause.mp3'),
-  click: assetUrl('audios/ui-click.mp3'),
-  whoosh: assetUrl('audios/whoosh.mp3'),
-  pop: assetUrl('audios/pop.mp3'),
-  tap: assetUrl('audios/tap.mp3'),
-  victory: assetUrl('audios/victory.mp3'),
+  correct:  assetUrl('audios/collect-points.mp3'),  // ✅ exists
+  mistake:  assetUrl('audios/error-mistake.mp3'),    // ✅ exists
+  wrong:    assetUrl('audios/error-mistake.mp3'),    // alias
+  applause: assetUrl('audios/applause.mp3'),          // ✅ exists
+  click:    assetUrl('audios/ui-click.mp3'),          // ✅ exists
+  tap:      assetUrl('audios/ui-click.mp3'),          // ✅ exists (tap→ui-click)
+  whoosh:   assetUrl('audios/whoosh.mp3'),            // ✅ exists
+  pop:      assetUrl('audios/twin-sparkle.mp3'),      // ✅ exists (pop→twin-sparkle)
+  victory:  assetUrl('audios/fanfare-trumpets.mp3'),  // ✅ exists
+  bonus:    assetUrl('audios/game-bonus.mp3'),        // ✅ exists
+  levelup:  assetUrl('audios/level-up.mp3'),          // ✅ exists
+  drumroll: assetUrl('audios/drum-roll.mp3'),         // ✅ exists
 }
 
 // ---------------------------------------------------------------------------
@@ -226,6 +228,11 @@ export const IMAGES = {
   science_island: uiImage('science_island'),
   sst_island: uiImage('sst_island'),
   english_island: uiImage('english_island'),
+  avatars: {
+    Manya: uiImage('manya_icon'),
+    Polly: uiImage('polly_icon'),
+    Kiki: uiImage('kiki_icon'),
+  }
 }
 
 /**
@@ -256,13 +263,14 @@ export function getIsland(subject) {
 }
 
 export function getGem(fileName) {
-  const file = fileName.toLowerCase();
+  if (!fileName) return "";
+  const file = fileName.toLowerCase().replace(/\s+/g, '_'); // Fix space bug (manya council -> manya_council)
   if (file.includes('math')) return IMAGES.math_gem;
   if (file.includes('science')) return IMAGES.science_gem;
   if (file.includes('sst')) return IMAGES.sst_gem;
   if (file.includes('english')) return IMAGES.english_gem;
   if (file.includes('master')) return IMAGES.master_gem;
-  return assetUrl(`images/gems/${fileName}`);
+  return assetUrl(`images/gems/${file}`);
 }
 
 export function getGlb(key) {

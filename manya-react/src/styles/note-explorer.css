@@ -1,175 +1,374 @@
 /* ============================================================
-   NOTE EXPLORER ENGINE CSS - v5.0 ✨ Manya Elite Overhaul
-   High-fidelity, glassmorphic, and premium dark-mode.
+   NOTE EXPLORER v6.0 – Clean Rewrite
+   Simple · Pink Accent · Space-Efficient · No Mascot
    ============================================================ */
 
 .ne-root {
-    --ne-padding: 24px;
-    width: 100%;
-    height: 100%;
-    flex: 1;
-    display: flex; flex-direction: column;
-    background-color: #0B0E14; /* Deep Manya Dark */
-    color: #F8FAFC;
-    font-family: 'Outfit', var(--font-sans, system-ui), sans-serif;
-    overflow: hidden;
+  --pink: hsl(330, 70%, 51%);
+  --pink-soft: hsl(330, 70%, 51%, 0.12);
+  --pink-glow: hsl(330, 70%, 51%, 0.25);
+  --bg: var(--bg-page, #0F131A);
+  --card: var(--bg-card, rgba(255, 255, 255, 0.04));
+  --border: var(--border-subtle, rgba(255, 255, 255, 0.1));
+  --txt: var(--text-primary, #F1F5F9);
+  --txt-sub: var(--text-secondary, #94A3B8);
+  --radius: 20px;
+
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: var(--font-main, 'Outfit', system-ui, sans-serif);
+  overflow: hidden;
 }
 
-/* ── HEADER — Elite Glassmorphic Banner ── */
-.ne-header-elite {
-    position: relative;
-    padding: 32px var(--ne-padding) 24px;
-    background: linear-gradient(180deg, rgba(23, 27, 36, 0.8) 0%, rgba(11, 14, 20, 0) 100%);
-    overflow: hidden;
-    flex-shrink: 0;
+/* ── HEADER ───────────────────────────────── */
+.ne-header {
+  padding: 12px 20px 8px;
+  flex-shrink: 0;
 }
 
-/* Liquid Glass Orbs */
-.ne-orb-elite {
-    position: absolute; border-radius: 50%; opacity: 0.15;
-    filter: blur(40px);
-    z-index: 0;
-}
-.ne-orb-primary { width: 200px; height: 200px; top: -100px; right: -50px; }
-.ne-orb-secondary { width: 150px; height: 150px; top: 20px; left: -40px; }
-
-.ne-header-inner-elite { position: relative; z-index: 2; }
-
-/* Title — High-fidelity tracking */
-.ne-title-elite {
-    font-size: 24px; font-weight: 900; line-height: 1.2;
-    margin: 4px 0 0;
-    color: #FFFFFF;
-    letter-spacing: -0.02em;
-    font-family: 'Outfit', sans-serif;
+.ne-progress-bar {
+  height: 4px;
+  background: var(--pink-soft);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 10px;
 }
 
-/* Tag Pill — Micro-UI */
-.ne-tag-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 10px; border-radius: 100px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    font-size: 10px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.1em;
-}
-
-/* ── PROGRESS — Minimal Elite Track ── */
-.ne-progress-wrap {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
-}
-.ne-progress-track {
-    flex: 1; height: 4px; background: rgba(255, 255, 255, 0.05);
-    border-radius: 100px; overflow: hidden;
-}
 .ne-progress-fill {
-    height: 100%; border-radius: 100px; position: relative;
-    box-shadow: 0 0 15px currentColor;
-}
-.ne-progress-label {
-    font-size: 12px; font-weight: 800;
-    font-family: 'Space Mono', monospace;
+  height: 100%;
+  background: var(--pink);
+  border-radius: 100px;
+  box-shadow: 0 0 12px var(--pink-glow);
 }
 
-/* ── CONTENT ── */
+.ne-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.ne-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pink);
+}
+
+.ne-step-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--txt-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+.ne-title {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+/* ── CONTENT ──────────────────────────────── */
 .ne-content {
-    flex: 1; overflow-y: auto; overflow-x: hidden;
-    padding: 10px var(--ne-padding);
-    display: flex; flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
-/* ── LEXICON CARD (Successor to ObjectList) ── */
-.ne-obj-list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
-
-.ne-lexicon-card {
-    position: relative;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 24px;
-    overflow: hidden;
-    transition: transform 0.2s, background 0.2s;
+.ne-slide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.ne-lexicon-card:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
-
-/* Subject color glow */
-.ne-lexicon-glow {
-    position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-    opacity: 0.8;
+/* ── SHARED CARD BODY ─────────────────────── */
+.ne-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.ne-lexicon-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-
-.ne-lexicon-indicator {
-    width: 6px; height: 24px; border-radius: 3px;
-    box-shadow: 0 0 10px currentColor;
+/* ── INTRO ────────────────────────────────── */
+.ne-intro-text {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--txt-sub);
 }
 
-.ne-lexicon-name {
-    font-size: 24px; font-weight: 800; color: #FFFFFF;
-    letter-spacing: -0.01em;
+/* ── FACT ─────────────────────────────────── */
+.ne-fact-accent {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--pink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px var(--pink-glow);
 }
 
-.ne-lexicon-definition {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+.ne-body-text {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--txt);
 }
 
-.ne-lexicon-definition p {
-    font-size: 15px; font-weight: 600; line-height: 1.6;
-    color: #CBD5E1;
+/* ── LIST ─────────────────────────────────── */
+.ne-card-list {
+  gap: 8px;
 }
 
-.ne-lexicon-meta { display: flex; flex-direction: column; gap: 8px; }
-.ne-meta-row { display: flex; align-items: baseline; gap: 12px; }
-.ne-meta-label {
-    font-size: 10px; font-weight: 900; text-transform: uppercase;
-    color: #64748B; letter-spacing: 0.1em; white-space: nowrap;
-}
-.ne-meta-value { font-size: 14px; font-weight: 700; color: #94A3B8; }
-
-.ne-lexicon-bolt {
-    position: absolute; bottom: 16px; right: 20px;
-    color: inherit;
+.ne-list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
-/* ── FOOTER — Elite Toy Buttons ── */
-.ne-footer-elite {
-    padding: 20px var(--ne-padding) 40px;
-    display: flex; align-items: center; gap: 16px;
-    background: linear-gradient(0deg, #0B0E14 0%, transparent 100%);
+.ne-list-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: var(--pink);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
 }
 
-.ne-btn-back-elite {
-    height: 60px; width: 60px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-}
-.ne-btn-back-elite:active { transform: scale(0.9) translateY(2px); background: rgba(255,255,255,0.1); }
-
-.ne-btn-next-elite {
-    flex: 1; height: 64px;
-    border-radius: 24px;
-    background: var(--accent, #6366f1);
-    color: white;
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em;
-    box-shadow: 0 8px 0 rgba(0,0,0,0.3);
-    position: relative; overflow: hidden;
-    transition: all 0.2s;
+.ne-list-txt {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--txt);
+  padding-top: 3px;
 }
 
-.ne-btn-next-elite:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+/* ── OBJECT LIST (Definitions) ────────────── */
+.ne-card-objlist {
+  gap: 12px;
+}
 
-/* --- GLOBAL ANIMATIONS --- */
-.ne-lexicon-card:hover { border-color: rgba(255,255,255,0.15); }
-.scrollbar-hide::-webkit-scrollbar { display: none; }
+.ne-obj-card {
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--pink);
+}
+
+.ne-obj-name {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: var(--txt);
+}
+
+.ne-obj-def {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--txt-sub);
+  margin: 0 0 10px;
+}
+
+.ne-obj-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ne-meta-pair {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ne-meta-k {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--pink);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.ne-meta-v {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--txt-sub);
+}
+
+/* ── RICH DETAIL ──────────────────────────── */
+.ne-card-rich {
+  gap: 14px;
+}
+
+.ne-rich-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ne-rich-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.ne-rich-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--pink);
+  letter-spacing: 0.06em;
+}
+
+.ne-rich-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--txt);
+  line-height: 1.5;
+}
+
+.ne-rich-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.ne-rich-bullet-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--txt-sub);
+  line-height: 1.5;
+}
+
+.ne-rich-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pink);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+/* ── CHEER TOAST ──────────────────────────── */
+.ne-cheer {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pink);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 8px 24px var(--pink-glow);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* ── FOOTER NAV ───────────────────────────── */
+.ne-footer {
+  padding: 8px 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.ne-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 52px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  outline: none;
+}
+
+.ne-btn-prev {
+  width: 100px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--txt-sub);
+}
+
+.ne-btn-prev:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.ne-btn-prev:active {
+  transform: scale(0.95);
+}
+
+.ne-btn-next {
+  flex: 1;
+  background: var(--pink);
+  color: white;
+  box-shadow: 0 4px 0 hsl(330, 70%, 38%);
+}
+
+.ne-btn-next:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 hsl(330, 70%, 38%);
+}
+
+/* ── EMPTY STATE ──────────────────────────── */
+.ne-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--txt-sub);
+}
+
+/* ── SCROLLBAR ────────────────────────────── */
+.ne-content::-webkit-scrollbar {
+  width: 4px;
+}
+.ne-content::-webkit-scrollbar-thumb {
+  background: var(--pink-soft);
+  border-radius: 10px;
+}

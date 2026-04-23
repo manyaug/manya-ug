@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { discoverArtifact } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import * as d3 from 'd3';
 import { assetUrl } from '../../config/assetUrls';
 
@@ -13,6 +16,7 @@ import GlobeCanvas from './UniversalGlobe/GlobeCanvas';
  * - DECOUPLED: Logic (GlobeLogic), Renderer (GlobeRenderer), Canvas (GlobeCanvas), Controller (Engine)
  */
 const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
+    const dispatch = useDispatch();
     const [activeTab, setActiveTab] = useState(0);
     const [worldData, setWorldData] = useState(null);
     const [placedPieces, setPlacedPieces] = useState([]);
@@ -168,7 +172,22 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
     }, [data.zoomFactor]);
 
     const handleFinishActivity = () => {
-        if (onComplete) onComplete({ isCorrect: true, score: data.cases.length, total: data.cases.length, type: 'study' });
+        // DISCOVER Artifact for Vault
+        dispatch(discoverArtifact({
+            id: data.id || `globe_${Date.now()}`,
+            type: 'map',
+            title: data.title || 'Globe Discovery',
+            subject: data.subject || 'SST',
+            data: data 
+        }));
+
+        // ARCHIVE Notification
+        dispatch(addToast({
+            message: "Global Discovery Archived to Vault! 🏺✨",
+            type: "success"
+        }));
+
+        if (onComplete) onComplete({ isCorrect: true, score: data.cases?.length || 1, total: data.cases?.length || 1, type: 'study' });
     };
 
     return (
@@ -190,6 +209,16 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
                 worldData={worldData} data={data} activeTab={activeTab} placedPieces={placedPieces}
                 isDark={isDark} rotationRef={rotationRef} scaleRef={scaleRef} isDraggingRef={isDraggingRef}
                 projectionRef={projectionRef} pathRef={pathRef} isD3Ready={isD3Ready}
+                onPinClick={(idx) => {
+                    const curCase = (data?.mode === 'study') ? data.cases[activeTab] : 
+                                   (data?.mode === 'quiz')  ? data.questions[activeTab] : {};
+                    const pins = curCase?.markers || curCase?.points || [];
+                    const p = pins[idx];
+                    if (p) {
+                        if (data.mode === 'study') setActiveTab(idx);
+                        focusOn([-p.lon || -p.lng || 0, -p.lat || 0], 1.5);
+                    }
+                }}
             />}
         />
     );

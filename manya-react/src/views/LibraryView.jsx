@@ -1,193 +1,182 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BookOpen, FlaskConical, Globe, BookA } from 'lucide-react';
-import { assetUrl } from '../config/assetUrls';
+import React, { useState, useMemo, Suspense, lazy } from 'react';
+import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+    Sparkles, X, Zap, ChevronRight,
+    Search, Filter, LayoutGrid, List
+} from 'lucide-react';
 import '../styles/library.css';
+import { IMAGES, getIsland } from '../config/assetUrls';
+
+// Lazy Load Engines for Preview
+const NoteExplorerEngine = lazy(() => import('../engines/shared-engines/NoteExplorerEngine.jsx'));
+const ThreeDStudyEngine = lazy(() => import('../engines/shared-engines/ThreeDStudyEngine.jsx'));
+
+const SUBJECTS = [
+    { id: 'math', label: 'Mathematics', color: '#7c3aed', icon: 'math' },
+    { id: 'science', label: 'Science', color: '#10b981', icon: 'science' },
+    { id: 'english', label: 'English', color: '#db2777', icon: 'english' },
+    { id: 'sst', label: 'SST', color: '#f59e0b', icon: 'sst' },
+];
 
 function LibraryView() {
-  const navigate = useNavigate();
+    const user = useSelector(s => s.user.data);
+    const discovered = useMemo(() => user.vaultArtifacts || [], [user.vaultArtifacts]);
+    
+    const [activeSub, setActiveSub] = useState('science');
+    const [previewItem, setPreviewItem] = useState(null);
 
-  // State
-  const [activeSubject, setActiveSubject] = useState(
-    localStorage.getItem('manya_lib_sub') || 'math'
-  );
-  const [curriculum, setCurriculum] = useState(null);
-  const [error, setError] = useState(false);
-  const [openTopics, setOpenTopics] = useState({});
+    // Filter by Subject
+    const filteredItems = useMemo(() => {
+        return discovered.filter(item => item.subject?.toLowerCase() === activeSub);
+    }, [discovered, activeSub]);
 
-  const subMeta = {
-    math: { name: 'Math', icon: <BookOpen size={20} />, color: '#6366F1' },
-    science: { name: 'Science', icon: <FlaskConical size={20} />, color: '#10B981' },
-    sst: { name: 'SST', icon: <Globe size={20} />, color: '#F59E0B' },
-    english: { name: 'English', icon: <BookA size={20} />, color: '#DB2777' }
-  };
+    const activeColor = SUBJECTS.find(s => s.id === activeSub)?.color || '#7c3aed';
 
-  useEffect(() => {
-    const fetchCurriculum = async () => {
-      try {
-        const CDN_URL = assetUrl('content/curriculum-master.json');
-        console.log("📚 [Library] Fetching curriculum from CDN:", CDN_URL);
-        
-        let res = await fetch(CDN_URL);
-        
-        if (!res.ok) {
-          console.warn("[Library] CDN Load failed, trying local fallback...");
-          res = await fetch('/curriculum-master.json');
-        }
-
-        if (!res.ok) throw new Error("Manifest Error");
-        const rawCurriculum = await res.json();
-        
-        // Normalize keys to lowercase
-        const normalized = {};
-        Object.keys(rawCurriculum).forEach(k => {
-            normalized[k.toLowerCase()] = rawCurriculum[k];
-        });
-        setCurriculum(normalized);
-      } catch (err) {
-        console.error("Library Manifest Load Failed:", err);
-        setError(true);
-      }
-    };
-    fetchCurriculum();
-  }, []);
-
-  const handleSubjectSwitch = (sub) => {
-    setActiveSubject(sub);
-    localStorage.setItem('manya_lib_sub', sub);
-    setOpenTopics({}); // close all accordions when switching
-    // TODO: AudioSFX
-  };
-
-  const toggleAccordion = (id) => {
-    setOpenTopics(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
-
-  const handleLaunchStep = (subject, unitId, questFolder, file, label) => {
-    navigate('/quest', {
-      state: { subject, unitId, questFolder, file, label }
-    });
-  };
-
-  const themeColor = subMeta[activeSubject]?.color || '#7c3aed';
-  
-  // Set theme color CSS variable for children elements
-  const pageStyle = {
-    '--theme-color': themeColor,
-  };
-
-  if (error) {
     return (
-      <div style={{ padding: '100px 20px', textAlign: 'center', color: 'var(--text-muted)', fontWeight: 800 }}>
-         Curriculum manifest could not be loaded. Please check internet connection.
-      </div>
-    );
-  }
-
-  const currentData = curriculum ? curriculum[activeSubject] : null;
-
-  return (
-    <div className="library-page animate-in" style={pageStyle}>
-      {/* HEADER */}
-      <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-          <h2 style={{ fontWeight: 900, margin: 0, fontSize: '22px', color: 'var(--text-main)' }}>Syllabus Vault</h2>
-          <p style={{ margin: '5px 0 0', fontSize: '11px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-              Uganda Primary Seven Curriculum
-          </p>
-      </div>
-
-      <div className="subject-vault-picker">
-        {Object.keys(subMeta).map(key => (
-            <div 
-                key={key}
-                className={`sub-vault-btn vault-btn-${key} ${activeSubject === key ? 'active' : ''}`}
-                onClick={() => handleSubjectSwitch(key)}
-            >
-                <span className="icon">{subMeta[key].icon}</span>
-                <span className="name">{subMeta[key].name}</span>
-            </div>
-        ))}
-      </div>
-
-      {/* 2. CONTENT LIST */}
-      <div className="library-content-elite">
-        {!currentData ? (
-            <p style={{ textAlign: 'center', padding: '50px', color: 'var(--text-muted)', fontWeight: 800 }}>
-                Data for this subject is being synced...
-            </p>
-        ) : (
-            currentData.units.map(unit => (
-                <div key={unit.id}>
-                    <span className="unit-label-elite">{unit.title}</span>
-                    
-                    {unit.quests.map((quest, i) => {
-                        const cardId = `q-${quest.folder}`;
-                        const isOpen = openTopics[cardId];
-
-                        return (
-                            <div key={cardId} className={`topic-bento-card ${isOpen ? 'open' : ''}`} id={cardId}>
-                                <div className="topic-header-elite" onClick={() => toggleAccordion(cardId)}>
-                                    <div className="topic-num-pill">{i + 1}</div>
-                                    <h4 className="topic-name-elite">{quest.title}</h4>
-                                    <div className="topic-chevron">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="m6 9 6 6 6-6"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                
-                                <div className="topic-body-elite">
-                                    <div className="res-sec">
-                                        <span className="res-sec-label">STUDY MATERIAL</span>
-                                        <div className="study-grid-elite">
-                                            {quest.resources.map(res => (
-                                                <button 
-                                                    key={res.file}
-                                                    className="btn-res-study btn-toy btn-toy-slate" 
-                                                    onClick={() => handleLaunchStep(activeSubject, unit.id, quest.folder, res.file)}
-                                                >
-                                                    <div className="btn-toy-gloss"></div>
-                                                    <span>{res.label}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="res-sec">
-                                        <span className="res-sec-label">PRACTICE CHALLENGES</span>
-                                        <div className="practice-grid-elite">
-                                            {Array.from({ length: quest.practiceCount }, (_, q) => {
-                                                const qID = `${quest.prefix}-${String(q+1).padStart(3, '0')}`;
-                                                return (
-                                                    <button 
-                                                        key={qID}
-                                                        className="btn-res-practice btn-toy btn-toy-purple" 
-                                                        onClick={() => handleLaunchStep(activeSubject, unit.id, quest.folder, qID)}
-                                                    >
-                                                        <div className="btn-toy-gloss"></div>
-                                                        <span>{q + 1}</span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+        <div className="elite-vault-root">
+            {/* 💎 MINIMALIST HEADER */}
+            <header className="vault-minimal-header">
+                <div className="flex flex-col">
+                    <span className="vault-breadcrumb">KNOWLEDGE ARCHIVE</span>
+                    <h1 className="vault-main-title">My Discoveries</h1>
                 </div>
-            ))
-        )}
-      </div>
+                <div className="vault-count-pill">
+                    <Sparkles size={14} className="text-yellow-400" />
+                    <span>{discovered.length} TOTAL</span>
+                </div>
+            </header>
 
-      <div style={{ textAlign: 'center', marginTop: '50px', opacity: 0.1 }}>
-          <img src={IMAGES.manya_icon} style={{ width: '60px' }} alt="Manya Logo" />
-      </div>
-    </div>
-  );
+            {/* 📑 SUBJECT SCROLLER */}
+            <div className="subject-scroller-container">
+                <div className="subject-scroller">
+                    {SUBJECTS.map(sub => (
+                        <button
+                            key={sub.id}
+                            className={`sub-tab ${activeSub === sub.id ? 'active' : ''}`}
+                            onClick={() => setActiveSub(sub.id)}
+                            style={{ '--sub-color': sub.color }}
+                        >
+                            <img src={getIsland(sub.id)} alt={sub.label} className="sub-tab-icon" />
+                            <span>{sub.label.toUpperCase()}</span>
+                            {activeSub === sub.id && (
+                                <motion.div layoutId="active-pill" className="sub-active-indicator" />
+                            )}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* 📦 ARTIFACT SHELF */}
+            <main className="artifact-shelf">
+                <AnimatePresence mode="wait">
+                    {filteredItems.length === 0 ? (
+                        <motion.div 
+                            key="empty"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="shelf-empty-state"
+                        >
+                            <div className="empty-mascot-orb">
+                                <img src={IMAGES.manya_icon} alt="Manya" />
+                                <div className="orb-glow" style={{ background: activeColor }} />
+                            </div>
+                            <h3 style={{ color: activeColor }}>NO {activeSub.toUpperCase()} DISCOVERIES</h3>
+                            <p>Complete quests in {activeSub} to populate this shelf with 3D relics and recaps.</p>
+                        </motion.div>
+                    ) : (
+                        <motion.div 
+                            key="grid"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="artifact-grid"
+                        >
+                            {filteredItems.map((item, idx) => (
+                                <motion.div 
+                                    key={item.id}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="elite-artifact-card"
+                                    onClick={() => setPreviewItem(item)}
+                                >
+                                    <div className="artifact-strip" style={{ background: activeColor }} />
+                                    <div className="artifact-visual-box">
+                                        {(item.type === '3d' || item.type === 'glb') ? <BoxWidget accent={activeColor} /> : <NoteWidget accent={activeColor} />}
+                                    </div>
+                                    <div className="artifact-details">
+                                        <span className="artifact-type-tag">
+                                            {item.type === '3d' ? '3D RELIC' : (item.type === 'dictionary' ? 'LEXICON' : 'STUDY RECAP')}
+                                        </span>
+                                        <h4 className="artifact-name">{item.title}</h4>
+                                        <div className="artifact-meta-line">
+                                            <Zap size={10} style={{ color: activeColor }} />
+                                            <span>Gathered {new Date(item.discoveredAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                    <ChevronRight size={18} className="artifact-arrow" />
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </main>
+
+            {/* 📂 PREVIEW OVERLAY */}
+            <AnimatePresence>
+                {previewItem && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }}
+                        className="preview-overlay"
+                    >
+                        <div className="preview-stage">
+                            <div className="preview-header">
+                                <div className="preview-title-box">
+                                    <span className="p-type" style={{ color: activeColor }}>{previewItem.type.replace('_', ' ').toUpperCase()} // ARCHIVE</span>
+                                    <h2 className="p-title">{previewItem.title}</h2>
+                                </div>
+                                <button className="p-close-btn" onClick={() => setPreviewItem(null)}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+
+                            <div className="preview-mount">
+                                <Suspense fallback={<div className="vault-loader"><div className="loader-orbit" style={{ borderTopColor: activeColor }} /></div>}>
+                                    {(previewItem.type === '3d' || previewItem.type === 'glb') && (
+                                        <ThreeDStudyEngine 
+                                            data={previewItem.data} 
+                                            onComplete={() => setPreviewItem(null)} 
+                                        />
+                                    )}
+                                    {(previewItem.type === 'note' || previewItem.type === 'dictionary') && (
+                                        <NoteExplorerEngine 
+                                            data={previewItem.data} 
+                                            onComplete={() => setPreviewItem(null)} 
+                                        />
+                                    )}
+                                </Suspense>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
 }
+
+const BoxWidget = ({ accent }) => (
+    <div className="widget-box" style={{ '--accent': accent }}>
+        <div className="w-inner" />
+        <Zap size={16} />
+    </div>
+);
+
+const NoteWidget = ({ accent }) => (
+    <div className="widget-note" style={{ '--accent': accent }}>
+        <div className="n-inner" />
+        <Sparkles size={16} />
+    </div>
+);
 
 export default LibraryView;

@@ -1,9 +1,19 @@
 import React, { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { discoverArtifact, syncUserData } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
 import { getEngineType } from './SSTLogic';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
+
+/* Study engine types that produce library artifacts — must match engineRegistry.ts keys exactly */
+const STUDY_ENGINE_TYPES = [
+    'NOTE_EXPLORER',
+    'READER_STUDY',
+    'GALLERY_STUDY',
+];
 
 /**
  * SST SIMULATOR BRIDGE v6.0 (Standardized)
@@ -12,6 +22,8 @@ import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
  * - REGISTRY-BASED: Uses global mapping instead of hardcoded switches.
  */
 const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
+    const dispatch = useDispatch();
+    const user = useSelector(s => s.user.data);
     const simData = step?.data || step;
     
     if (!simData) return (
@@ -23,9 +35,11 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
     );
 
     const rawEngine = getEngineType(step);
-    const engineMeta = ENGINE_REGISTRY[rawEngine];
-
-    if (!engineMeta || engineMeta.type !== 'react') {
+    
+    let engineMeta;
+    try {
+        engineMeta = getEngine(rawEngine);
+    } catch (e) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-500 bg-white">
                 <Puzzle size={40} className="mb-4 opacity-20" />
@@ -38,7 +52,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
     const EngineComponent = engineMeta.component;
 
     return (
-        <div className="flex-1 flex flex-col h-full min-h-[80vh] bg-white overflow-hidden relative">
+        <div className="flex-1 flex flex-col h-full bg-white overflow-hidden relative">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={step.id || step.qid}
@@ -46,7 +60,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="flex-1 flex flex-col"
+                    className="flex-1 flex flex-col h-full"
                 >
                     <Suspense fallback={
                         <div className="flex-1 flex flex-col items-center justify-center">
@@ -63,6 +77,47 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
                                     timeSpentMs: res?.duration || res?.timeSpentMs || 30000,
                                     engineType: rawEngine
                                 }, subject);
+
+                                /* ── 🏺 Archive study content to Knowledge Vault ── */
+                                if (STUDY_ENGINE_TYPES.includes(rawEngine)) {
+                                    const artifactTitle =
+                                        simData?.title ||
+                                        simData?.topic ||
+                                        simData?.subtopic ||
+                                        step?.title ||
+                                        'Social Studies Note';
+
+                                    dispatch(discoverArtifact({
+                                        id: step?.id || `sst_study_${Date.now()}`,
+                                        type: rawEngine === 'READER' || rawEngine === 'READER_ENGINE'
+                                            ? 'recap'
+                                            : 'note',
+                                        title: artifactTitle,
+                                        subject: simData?.subject || subject || 'sst',
+                                        data: simData,
+                                    }));
+
+                                    dispatch(addToast({
+                                        message: `"${artifactTitle}" saved to your Library! 🏺`,
+                                        type: 'success',
+                                    }));
+
+                                    // Immediately sync to cloud — build merged vault explicitly
+                                    // (user.vaultArtifacts is stale here; reducer hasn't settled yet)
+                                    const newArtifact = {
+                                        id: step?.id || `sst_study_${Date.now()}`,
+                                        type: rawEngine === 'READER_STUDY' ? 'recap' : 'note',
+                                        title: artifactTitle,
+                                        subject: simData?.subject || subject || 'sst',
+                                        data: simData,
+                                        discoveredAt: new Date().toISOString(),
+                                    };
+                                    const mergedVault = [
+                                        ...(user.vaultArtifacts || []).filter(a => a.id !== newArtifact.id),
+                                        newArtifact,
+                                    ];
+                                    dispatch(syncUserData({ ...user, vaultArtifacts: mergedVault }));
+                                }
 
                                 onComplete({ 
                                     success: true, 

@@ -88,39 +88,65 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
             try {
                 const simCandidates = [];
-                if (data?.simResources) {
-                    for (const simRes of data.simResources) {
-                        try {
-                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
-                            const targetType = nodeType === 'EXPLORE' ? 'NOTE' : 'SIMULATION';
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName, targetType);
-                            steps.forEach((s, idx) => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.id = s.id || `sim_${simRes.file.replace('.json', '')}_${idx}`;
-                            });
-                            simCandidates.push(...steps);
-                        } catch (e) { console.warn(`[SSTEngine] Sim Error: ${e.message}`); }
-                    }
+                // --- 📦 RESOURCE COMPATIBILITY LAYER (v4.6) ---
+                // If the Runner passed a generic 'resources' array, split it into sim and recap
+                let activeSims = data?.simResources || [];
+                let activeRecaps = data?.recapResources || [];
+
+                if (activeSims.length === 0 && activeRecaps.length === 0 && data?.resources) {
+                    data.resources.forEach(res => {
+                        const file = res.file || '';
+                        // Identify Sim vs Recap based on filename or title
+                        if (file.includes('globe') || file.includes('map') || file.includes('simulation') || file.includes('stage')) {
+                            activeSims.push(res);
+                        } else if (file.includes('recap') || file.includes('summary') || file.includes('reader')) {
+                            activeRecaps.push(res);
+                        } else {
+                            // Default to sim if unknown but from resources
+                            activeSims.push(res);
+                        }
+                    });
+                }
+
+                // --- 🌍 LOAD INTERACTIVE RESOURCES (v4.7 - No Type Filter) ---
+                console.log(`🌍 [SSTEngine] Loading ${activeSims.length} sims, ${activeRecaps.length} recaps. unitId=${data.unitId}, topic=${topicId}`);
+
+                for (const simRes of activeSims) {
+                    try {
+                        const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
+                        // v4.7: Removed targetType filter — SST JSONs aren't tagged as SIMULATION in the vault
+                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                        console.log(`✅ [SSTEngine] Loaded sim "${simRes.file}" → ${steps.length} steps`);
+                        steps.forEach((s, idx) => {
+                            const eType = getEngineType(s);
+                            s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
+                            s.id = s.id || `sim_${simRes.file.replace('.json', '')}_${idx}`;
+                            s.subject = 'sst'; // 🏺 Force SST categorization
+                            if (s.data) s.data.subject = 'sst';
+                        });
+                        simCandidates.push(...steps);
+                    } catch (e) { console.warn(`[SSTEngine] Sim Error for "${simRes.file}": ${e.message}`); }
                 }
 
                 const recapCandidates = [];
-                if (data?.recapResources) {
-                    for (const recapRes of data.recapResources) {
-                        try {
-                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            steps.forEach((s, idx) => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.isRecap = true;
-                                s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
-                            });
-                            recapCandidates.push(...steps);
-                        } catch (e) { console.warn(`[SSTEngine] Recap Error: ${e.message}`); }
-                    }
-                    setRecapSteps(recapCandidates);
+                for (const recapRes of activeRecaps) {
+                    try {
+                        const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
+                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                        console.log(`✅ [SSTEngine] Loaded recap "${recapRes.file}" → ${steps.length} steps`);
+                        steps.forEach((s, idx) => {
+                            const eType = getEngineType(s);
+                            s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
+                            s.isRecap = true;
+                            s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
+                            s.subject = 'sst'; // 🏺 Force SST categorization
+                            if (s.data) s.data.subject = 'sst';
+                        });
+                        recapCandidates.push(...steps);
+                    } catch (e) { console.warn(`[SSTEngine] Recap Error for "${recapRes.file}": ${e.message}`); }
                 }
+                setRecapSteps(recapCandidates);
+                console.log(`🌍 [SSTEngine] Total: ${simCandidates.length} sim steps, ${recapCandidates.length} recap steps`);
 
                 let allQuestions = [];
                 try {
@@ -135,15 +161,19 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
 
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
                 let finalQuestions;
+                let questResult = null;
+
                 if (allQuestions.length > 0) {
-                    const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
-                    finalQuestions = quest.questions;
+                    questResult = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
+                    finalQuestions = questResult.questions;
                 } else {
                     finalQuestions = [...simCandidates].sort(() => 0.5 - Math.random());
                 }
+                
                 setQuestions(finalQuestions);
-                if (finalQuestions === quest?.questions && quest?.metadata?.gameMode) {
-                    const gm = quest.metadata.gameMode.toLowerCase();
+                
+                if (questResult?.metadata?.gameMode) {
+                    const gm = questResult.metadata.gameMode.toLowerCase();
                     setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
                 }
                 setTimeout(() => setIsLoading(false), 300);

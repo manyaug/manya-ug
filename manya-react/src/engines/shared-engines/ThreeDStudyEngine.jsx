@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { discoverArtifact } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import ThreeDRenderer from './ThreeD/ThreeDRenderer';
 import { 
@@ -13,6 +16,7 @@ import {
  * - DECOUPLED: Logic (ThreeDLogic), Renderer (ThreeDRenderer), Controller (Engine)
  */
 export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
+    const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -95,13 +99,30 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
             const duration = Date.now() - globalStartTimeRef.current;
             const results = formatThreeDResult(score, total, totalMistakes, duration, isQuiz);
             
+            // DISCOVER Artifact for Vault (ONLY if not a quiz/exercise)
+            if (!isQuiz) {
+                dispatch(discoverArtifact({
+                    id: data.id || `3d_${Date.now()}`,
+                    type: '3d',
+                    title: data.title || '3D Specimen',
+                    subject: data.subject || 'Science',
+                    data: data 
+                }));
+
+                // ARCHIVE Notification
+                dispatch(addToast({
+                    message: "3D Relic Archived to Vault! 🏺✨",
+                    type: "success"
+                }));
+            }
+
             if (window.QuestRunner?.handleEngineResult) {
                 window.QuestRunner.handleEngineResult(results);
             }
 
             onComplete?.(results);
         }
-    }, [isFinished, isQuiz, correctPinIds.size, hotspots.length, onComplete, totalMistakes]);
+    }, [isFinished, isQuiz, correctPinIds.size, hotspots.length, onComplete, totalMistakes, dispatch, data]);
 
     useEffect(() => {
         if (isQuiz && correctPinIds.size === hotspots.length && hotspots.length > 0) {

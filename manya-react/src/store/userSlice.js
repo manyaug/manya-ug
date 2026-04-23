@@ -29,6 +29,7 @@ export const initializeUser = createAsyncThunk(
             currentStreak: cloudProfile.streak_current,
             longestStreak: cloudProfile.streak_longest,
             unlockedBadges: cloudProfile.unlocked_badges || [],
+            vaultArtifacts: cloudProfile.vault_artifacts || (localUser?.vaultArtifacts || []),
             math_correct: cloudProfile.math_correct || 0,
             science_correct: cloudProfile.science_correct || 0,
             english_correct: cloudProfile.english_correct || 0,
@@ -95,6 +96,19 @@ export const userSlice = createSlice({
     resetUser: (state) => {
         state.data = ManyaDB.createDefaultRecord();
         state.data.onboarded = false;
+    },
+    // ── KNOWLEDGE VAULT ───────────────────────────────────────────────────
+    discoverArtifact: (state, action) => {
+      const art = action.payload; // { id, type, title, subject, data }
+      if (!state.data.vaultArtifacts) state.data.vaultArtifacts = [];
+      
+      const exists = state.data.vaultArtifacts.some(a => a.id === art.id);
+      if (!exists) {
+        state.data.vaultArtifacts.push({
+          ...art,
+          discoveredAt: new Date().toISOString()
+        });
+      }
     },
     // ── ECONOMY ─────────────────────────────────────────────────────────────
     awardGems: (state, action) => {
@@ -253,7 +267,8 @@ export const {
     dismissChest,
     updateStreak,
     resetSession,
-    updateSessionAfterAnswer
+    updateSessionAfterAnswer,
+    discoverArtifact
 } = userSlice.actions;
 
 export default userSlice.reducer;

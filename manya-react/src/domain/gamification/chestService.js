@@ -64,7 +64,7 @@ export function rollChestRewards(chestType) {
  * @returns {boolean}
  */
 export function shouldDropBronzeChest() {
-    return Math.random() < 0.20;
+    return Math.random() < 0.05; // Reduced from 0.20 to make it a rare "Lucky Drop"
 }
 
 /**

@@ -105,6 +105,7 @@ export const syncService = {
             grade_level: profileData.grade_level || profileData.goal,
             engagement_stats: profileData.engagement_stats || {},
             unlocked_badges: profileData.unlockedBadges || [],
+            vault_artifacts: profileData.vaultArtifacts || [], // 🏺 Persist Knowledge Vault to cloud
             math_correct: profileData.math_correct || 0,
             science_correct: profileData.science_correct || 0,
             english_correct: profileData.english_correct || 0,

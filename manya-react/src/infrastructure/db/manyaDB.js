@@ -285,6 +285,7 @@ export const ManyaDB = {
             preferences: { likes: [], hates: [] },
             parent: { name: "", whatsapp: "" },
             pendingBadgeCelebrations: [],
+            vaultArtifacts: [], 
             created_at: new Date().toISOString()
         };
     }

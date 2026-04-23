@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { discoverArtifact } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import HotspotsRenderer from './ImageHotspots/HotspotsRenderer';
 import { 
@@ -12,6 +15,7 @@ import {
  * DECOUPLED: Logic (HotspotsLogic), Renderer (HotspotsRenderer), Controller (Engine)
  */
 export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt }) {
+    const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
@@ -100,6 +104,24 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt }) {
     const handleFinish = () => {
         const { score, total } = calculateHotspotsScore(correctPinIds, hotspots, isQuizMode);
         const duration = Date.now() - globalStartTimeRef.current;
+        
+        // DISCOVER Artifact for Vault (ONLY if not a quiz/exercise)
+        if (!isQuizMode) {
+            dispatch(discoverArtifact({
+                id: data.id || `map_${Date.now()}`,
+                type: 'map',
+                title: data.title || 'Discovery Map',
+                subject: data.subject || 'SST',
+                data: data 
+            }));
+
+            // ARCHIVE Notification
+            dispatch(addToast({
+                message: "Discovery Map Archived to Vault! 🏺✨",
+                type: "success"
+            }));
+        }
+
         onComplete?.(formatEngineResult(score, total, totalMistakes, duration, isQuizMode));
     };
 

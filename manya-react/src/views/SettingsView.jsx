@@ -260,7 +260,7 @@ function SettingsView() {
                     <div className="flex flex-col items-center gap-6 w-full">
                          <div className="relative">
                             <div className="w-24 h-24 rounded-full border-4 border-violet-500 overflow-hidden bg-white">
-                                <img src={user?.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}` : IMAGES.avatars.Manya} alt="Avatar" className="w-full h-full object-cover" />
+                                <img src={user?.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}` : (IMAGES?.avatars?.Manya || IMAGES?.manya_icon)} alt="Avatar" className="w-full h-full object-cover" />
                             </div>
                             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-violet-500 text-[8px] font-black text-white px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">
                                 Active DNA

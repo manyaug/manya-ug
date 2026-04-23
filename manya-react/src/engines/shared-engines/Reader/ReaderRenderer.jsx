@@ -164,10 +164,11 @@ export default function ReaderRenderer({
     return (
         <div 
             ref={refContainer}
-            className="reader-study-root relative w-full flex-1 min-h-0 flex flex-col bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-y-auto overflow-x-hidden transition-colors duration-700 scroll-smooth"
+            className="reader-study-root relative w-full h-full block bg-[var(--bg-main)] font-['Plus_Jakarta_Sans',_sans-serif] overflow-y-auto overflow-x-hidden transition-colors duration-700 scroll-smooth"
             style={{ 
                 '--accent-color': accent,
-                scrollbarGutter: 'stable'
+                scrollbarGutter: 'stable',
+                WebkitOverflowScrolling: 'touch'
             }}
             onScroll={onScroll}
         >

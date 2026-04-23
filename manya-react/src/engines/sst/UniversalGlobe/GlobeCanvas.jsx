@@ -18,7 +18,8 @@ const GlobeCanvas = ({
     isDraggingRef,
     projectionRef,
     pathRef,
-    isD3Ready
+    isD3Ready,
+    onPinClick
 }) => {
     const canvasRef = useRef(null);
 
@@ -207,6 +208,29 @@ const GlobeCanvas = ({
             projectionRef.current = projection;
             pathRef.current = d3.geoPath(projection, ctx);
             
+            // --- 👆 CLICK DETECTION ---
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const projection = projectionRef.current;
+                const curCase = (data?.mode === 'study') ? data.cases[activeTab] : 
+                               (data?.mode === 'quiz')  ? data.questions[activeTab] : {};
+                const pts = curCase?.markers || curCase?.points || [];
+
+                pts.forEach((p, idx) => {
+                    const coords = [p.lon ?? p.lng ?? 0, p.lat ?? 0];
+                    const pos = projection(coords);
+                    if (pos) {
+                        const dist = Math.sqrt((pos[0] - mouseX)**2 + (pos[1] - mouseY)**2);
+                        if (dist < 25) { // Hit-test radius
+                            if (onPinClick) onPinClick(idx);
+                        }
+                    }
+                });
+            };
+
             d3.select(canvas).call(d3.drag()
                 .on("drag", (event) => {
                     isDraggingRef.current = true;
