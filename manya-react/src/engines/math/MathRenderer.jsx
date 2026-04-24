@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import QuestHUD from '../../components/QuestHUD';
 import { triggerRewardFlight } from '../../utils/fxUtils';
-import { mascotSpeak } from '../../components/MascotReaction';
 import { audioService } from '../../infrastructure/audio/audioService';
 
 import MathSolutionSteps from '../../components/MathSolutionSteps';
@@ -109,17 +108,8 @@ const MathRenderer = ({
         if (isAnswered) {
             if (userWasCorrect) {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-correct'));
-                audioService.playSFX('correct');
-
-                // Mascot Reaction (Manya being wise/encouraging)
-                const phrases = [
-                    "Masterfully calculated! 🧮",
-                    "Your mathematical logic is flawless! ✨",
-                    "Excellent work! You found the pattern! 🧠",
-                    "Correct! Every step is a step towards mastery! 🏆"
-                ];
-                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+                window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'math' } }));
+                audioService.correct();
 
                 // Flying Coins
                 if (correctBtnRef.current) {
@@ -129,11 +119,9 @@ const MathRenderer = ({
                 }
             } else {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-wrong'));
-                audioService.playSFX('mistake');
+                window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'math' } }));
+                audioService.error();
 
-                // Mascot Encouragement
-                mascotSpeak("Mathematics takes practice! Let's review the steps. 📏", 4000);
             }
         }
     }, [isAnswered, userWasCorrect]);

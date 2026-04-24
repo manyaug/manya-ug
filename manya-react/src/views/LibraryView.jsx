@@ -26,10 +26,33 @@ function LibraryView() {
     const [activeSub, setActiveSub] = useState('science');
     const [previewItem, setPreviewItem] = useState(null);
 
-    // Filter by Subject
+    // Only allow pure study/archival materials, exclude interactive engines here
+    const STUDY_TYPES = ['3d', 'glb', 'note', 'dictionary', 'recap'];
+
+    // Filter by Subject & Type
     const filteredItems = useMemo(() => {
-        return discovered.filter(item => item.subject?.toLowerCase() === activeSub);
+        return discovered.filter(item => 
+            item.subject?.toLowerCase() === activeSub && 
+            STUDY_TYPES.includes(item.type?.toLowerCase())
+        );
     }, [discovered, activeSub]);
+
+    // Group by Grade -> Topic
+    const groupedItems = useMemo(() => {
+        const groups = {};
+        const sortedItems = [...filteredItems].sort((a, b) => new Date(b.discoveredAt || 0) - new Date(a.discoveredAt || 0));
+        
+        sortedItems.forEach(item => {
+            const grade = item.grade || 'General';
+            const topic = item.topic || 'Uncategorized';
+            
+            if (!groups[grade]) groups[grade] = {};
+            if (!groups[grade][topic]) groups[grade][topic] = [];
+            groups[grade][topic].push(item);
+        });
+        
+        return groups;
+    }, [filteredItems]);
 
     const activeColor = SUBJECTS.find(s => s.id === activeSub)?.color || '#7c3aed';
 
@@ -43,7 +66,7 @@ function LibraryView() {
                 </div>
                 <div className="vault-count-pill">
                     <Sparkles size={14} className="text-yellow-400" />
-                    <span>{discovered.length} TOTAL</span>
+                    <span>{filteredItems.length} TOTAL</span>
                 </div>
             </header>
 
@@ -90,31 +113,50 @@ function LibraryView() {
                             key="grid"
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="artifact-grid"
+                            className="w-full pb-8"
                         >
-                            {filteredItems.map((item, idx) => (
-                                <motion.div 
-                                    key={item.id}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="elite-artifact-card"
-                                    onClick={() => setPreviewItem(item)}
-                                >
-                                    <div className="artifact-strip" style={{ background: activeColor }} />
-                                    <div className="artifact-visual-box">
-                                        {(item.type === '3d' || item.type === 'glb') ? <BoxWidget accent={activeColor} /> : <NoteWidget accent={activeColor} />}
-                                    </div>
-                                    <div className="artifact-details">
-                                        <span className="artifact-type-tag">
-                                            {item.type === '3d' ? '3D RELIC' : (item.type === 'dictionary' ? 'LEXICON' : 'STUDY RECAP')}
-                                        </span>
-                                        <h4 className="artifact-name">{item.title}</h4>
-                                        <div className="artifact-meta-line">
-                                            <Zap size={10} style={{ color: activeColor }} />
-                                            <span>Gathered {new Date(item.discoveredAt).toLocaleDateString()}</span>
+                            {Object.entries(groupedItems)
+                                // Sort grades so younger grades come first
+                                .sort(([gradeA], [gradeB]) => {
+                                    const numA = parseInt(gradeA); const numB = parseInt(gradeB);
+                                    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                                    return gradeA.localeCompare(gradeB);
+                                })
+                                .map(([grade, topics]) => (
+                                <div key={grade} className="mb-8">
+                                    <h3 className="vault-group-header">Grade {grade} Archive</h3>
+                                    {Object.entries(topics).map(([topic, items]) => (
+                                        <div key={topic} className="mb-6">
+                                            <h4 className="vault-topic-header">{topic}</h4>
+                                            <div className="artifact-grid">
+                                                {items.map((item) => (
+                                                    <motion.div 
+                                                        key={item.id}
+                                                        whileTap={{ scale: 0.98 }}
+                                                        className="elite-artifact-card"
+                                                        onClick={() => setPreviewItem(item)}
+                                                    >
+                                                        <div className="artifact-strip" style={{ background: activeColor }} />
+                                                        <div className="artifact-visual-box">
+                                                            {(item.type === '3d' || item.type === 'glb') ? <BoxWidget accent={activeColor} /> : <NoteWidget accent={activeColor} />}
+                                                        </div>
+                                                        <div className="artifact-details">
+                                                            <span className="artifact-type-tag">
+                                                                {item.type === '3d' ? '3D RELIC' : (item.type === 'dictionary' ? 'LEXICON' : 'STUDY NOTE')}
+                                                            </span>
+                                                            <h4 className="artifact-name block truncate max-w-[200px]" title={item.title}>{item.title}</h4>
+                                                            <div className="artifact-meta-line">
+                                                                <Zap size={10} style={{ color: activeColor }} />
+                                                                <span>Gathered {new Date(item.discoveredAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                        </div>
+                                                        <ChevronRight size={18} className="artifact-arrow" />
+                                                    </motion.div>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <ChevronRight size={18} className="artifact-arrow" />
-                                </motion.div>
+                                    ))}
+                                </div>
                             ))}
                         </motion.div>
                     )}

@@ -251,19 +251,19 @@
 
 /* Custom Markdown Content Boxes */
 .ge-description .rule-box {
-    background: #f8f6ff;
+    background: #1a1526;
     border: 2px dashed #7c3aed;
     padding: 20px;
     border-radius: 24px;
     margin: 25px 0;
 }
-[data-theme='dark'] .ge-description .rule-box { background: #1a1526; }
+[data-theme='light'] .ge-description .rule-box { background: #f8f6ff; }
 
 .ge-description .danger-box {
-    background: #fff5f5;
+    background: #2d1111;
     border-left: 8px solid #ef4444;
     padding: 20px;
     border-radius: 20px;
     margin: 25px 0;
 }
-[data-theme='dark'] .ge-description .danger-box { background: #2d1111; }
+[data-theme='light'] .ge-description .danger-box { background: #fff5f5; }

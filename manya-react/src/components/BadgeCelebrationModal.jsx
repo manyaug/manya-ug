@@ -3,8 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { dismissBadgeCelebration } from '../store/userSlice';
 import * as LucideIcons from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import { BADGES } from '../config/badges';
 import { audioService } from '../infrastructure/audio/audioService';
+import { Ribbon, WorldClassConfetti } from './ui/CelebrationBling';
 import '../styles/badge-celebration.css';
 
 const EMPTY_ARRAY = [];
@@ -32,7 +34,9 @@ const BadgeCelebrationModal = () => {
             
             const timer = setTimeout(() => {
                 setIsVisible(true);
-                audioService.playSFX('victory');
+                audioService.playSFX('bass_drop'); // Heavy impact on the modal slide up
+                // Start fanfare automatically shortly after
+                setTimeout(() => audioService.playSFX('challenge_win'), 400);
             }, jitter);
             
             return () => clearTimeout(timer);
@@ -60,33 +64,39 @@ const BadgeCelebrationModal = () => {
     };
 
     return (
-        <div className={`badge-celebration-overlay ${isVisible ? 'is-active' : ''}`}>
-            <div className="celebration-backdrop" />
+        <div className={`celebration-arena-overlay ${isVisible ? 'is-active' : ''}`} style={{ visibility: isVisible ? 'visible' : 'hidden', opacity: isVisible ? 1 : 0 }}>
+            {isVisible && <WorldClassConfetti />}
             
-            <div className={`badge-hero-card tier-${badge.tier.toLowerCase()}`}>
-                <div className="badge-glow-ring" />
-                
-                <div className="badge-crest-vault">
-                    <div className="badge-icon-reveal">
-                        {renderIcon(badge.icon)}
+            <div className="celebration-card-container relative z-10" style={{ animation: isVisible ? 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none' }}>
+                <button className="celebration-close-x" onClick={handleCollect}>
+                    <X size={20} strokeWidth={4} />
+                </button>
+
+                <div className={`badge-hero-card tier-${badge.tier.toLowerCase()} !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-6`}>
+                    <div className="badge-glow-ring" />
+                    
+                    <div className="badge-crest-vault !mb-0 z-10 relative">
+                        <div className="badge-icon-reveal">
+                            {renderIcon(badge.icon)}
+                        </div>
+                        <div className="badge-shine-effect" />
                     </div>
-                    <div className="badge-shine-effect" />
                 </div>
 
-                <div className="badge-celebration-text">
-                    <span className="celebration-subtitle">NEW ACHIEVEMENT UNLOCKED</span>
-                    <h1 className="celebration-badge-name">{badge.name}</h1>
-                    <p className="celebration-description">{badge.desc}</p>
-                    <div className="celebration-tier-badge">{badge.tier}</div>
+                <Ribbon text="ACHIEVEMENT UNLOCKED" />
+
+                <h1 className="celebration-title-premium mt-4">{badge.name}</h1>
+                <p className="celebration-subtext-premium mb-6">{badge.desc}</p>
+                
+                <div className="text-center mb-6">
+                    <span className="celebration-tier-badge !mt-0 !mb-0">{badge.tier}</span>
                 </div>
 
-                <button className="badge-collect-btn" onClick={handleCollect}>
-                    COLLECT REWARD
-                    <LucideIcons.Sparkles size={20} />
+                <button className="btn-collect-3d mt-2 w-full max-w-[280px] mx-auto block" onClick={handleCollect}>
+                    <div className="btn-gloss-highlight" />
+                    <span className="flex items-center justify-center gap-2">CLAIM GLORY <ArrowRight size={20} className="inline" strokeWidth={3} /></span>
                 </button>
             </div>
-            
-            <div className="confetti-canvas-mock" />
         </div>
     );
 };

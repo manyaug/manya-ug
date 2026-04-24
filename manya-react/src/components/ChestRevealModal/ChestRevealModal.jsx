@@ -7,9 +7,12 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { ArrowRight, X } from 'lucide-react';
 import { dismissChest, awardCoins, addXP, awardGems } from '../../store/userSlice.js';
 import { syncService } from '../../infrastructure/sync/syncService.js';
 import { assetUrl } from '../../config/assetUrls.js';
+import { audioService } from '../../infrastructure/audio/audioService';
+import { Ribbon, WorldClassConfetti } from '../ui/CelebrationBling';
 import './ChestRevealModal.css';
 
 const CHEST_CONFIG = {
@@ -40,19 +43,26 @@ export default function ChestRevealModal() {
 
         setRevealedRewards([]);
         setPhase('shaking');
+        audioService.playSFX('riser'); // Anticipation riser!
 
-        const t1 = setTimeout(() => setPhase('open'), 800);
+        const t1 = setTimeout(() => {
+            setPhase('open');
+            audioService.playSFX('bass_drop'); // Lid bursts open
+        }, 1200);
+
         const t2 = setTimeout(() => {
             // Reveal rewards one by one
             if (chest.rewards?.length) {
                 chest.rewards.forEach((r, i) => {
                     setTimeout(() => {
                         setRevealedRewards(prev => [...prev, r]);
-                    }, i * 300);
+                        audioService.playSFX('challenge_click'); // Snappy click for each item popping out
+                    }, i * 400);
                 });
             }
             setPhase('rewards');
-        }, 1400);
+            setTimeout(() => audioService.playSFX('challenge_win'), 800); // Final fanfare
+        }, 1800);
 
         return () => { clearTimeout(t1); clearTimeout(t2); };
     }, [chest?.chestType, pendingChests.length]);
@@ -73,39 +83,49 @@ export default function ChestRevealModal() {
 
     const cfg = CHEST_CONFIG[chest.chestType] || CHEST_CONFIG.bronze;
 
-    return (
-        <div className="chest-modal-overlay" role="dialog" aria-modal="true" aria-label="Chest Reward">
-            <div className="chest-modal-card">
-                {/* Header */}
-                <p className="chest-modal-subtitle">You earned a</p>
-                <h2 className="chest-modal-title" style={{ color: cfg.color }}>{cfg.name}</h2>
+    const handleClose = () => {
+        setPhase('closed');
+        dispatch(dismissChest());
+    };
 
-                {/* Chest visual with animation */}
-                <div className={`chest-emoji-wrap ${phase === 'shaking' ? 'shaking' : ''} ${phase !== 'closed' && phase !== 'shaking' ? 'opened' : ''}`}
-                     style={{ '--glow': cfg.glow }}>
-                    <img src={assetUrl(`chests/${cfg.img}`)} alt={cfg.name} className="chest-render-img" />
-                    {phase !== 'shaking' && phase !== 'closed' && (
-                        <div className="chest-sparkles">
-                            {[...Array(8)].map((_, i) => (
-                                <span key={i} className="sparkle" style={{ '--i': i }} />
-                            ))}
+    return (
+        <div className="celebration-arena-overlay">
+            <WorldClassConfetti />
+
+            <div className="celebration-card-container relative z-10" style={{ animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
+                {phase === 'rewards' && revealedRewards.length === (chest.rewards?.length || 0) && (
+                    <button className="celebration-close-x" onClick={handleClose}>
+                        <X size={20} strokeWidth={4} />
+                    </button>
+                )}
+
+                {/* UNIQUE ELEMENT: Badge Crest Vault nested inside Celebration Layout */}
+                <div className={`badge-hero-card tier-${chest.chestType.toLowerCase()} !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-6`}>
+                    <div className="badge-glow-ring" />
+                    <div className="badge-crest-vault !mb-0 z-10 relative">
+                        <div className={`badge-icon-reveal ${phase === 'shaking' ? 'shaking' : ''}`}>
+                            <img src={assetUrl(`chests/${cfg.img}`)} alt={cfg.name} className="w-24 h-24 object-contain" />
                         </div>
-                    )}
+                        <div className="badge-shine-effect" />
+                    </div>
                 </div>
 
-                {/* Rewards list */}
+                <Ribbon text="CHEST UNLOCKED" />
+
+                <h1 className="celebration-title-premium mt-4" style={{ color: 'white' }}>{cfg.name}</h1>
+                <p className="celebration-subtext-premium">Rewards have been added to your vault.</p>
+                
                 {phase === 'rewards' && (
-                    <div className="chest-rewards-list">
+                    <div className="premium-stats-list-celebration mt-6 gap-2">
                         {revealedRewards.map((r, i) => {
                             const icon = REWARD_ICONS[r.type] || '✨';
                             const isImg = icon.startsWith('http');
                             return (
-                                <div key={i} className="chest-reward-item reward-pop-in">
-                                    <span className="reward-icon">
-                                        {isImg ? <img src={icon} alt={r.type} className="w-5 h-5 object-contain" /> : icon}
-                                    </span>
-                                    <span className="reward-text">
-                                        {r.amount ? `+${r.amount} ${r.type.toUpperCase()}` : r.value || r.type}
+                                <div key={i} className="stat-chip-celebration reward-pop-in" style={{ padding: '8px 16px' }}>
+                                    <span className="label text-[10px] uppercase tracking-wider">{r.type}</span>
+                                    <span className="val flex items-center gap-2" style={{ color: '#22d3ee' }}>
+                                        +{r.amount || 1}
+                                        {isImg ? <img src={icon} alt={r.type} className="w-5 h-5 object-contain" /> : <span className="text-sm">{icon}</span>}
                                     </span>
                                 </div>
                             );
@@ -113,15 +133,10 @@ export default function ChestRevealModal() {
                     </div>
                 )}
 
-                {/* Collect button */}
                 {phase === 'rewards' && revealedRewards.length === (chest.rewards?.length || 0) && (
-                    <button
-                        id="chest-collect-btn"
-                        className="chest-collect-btn"
-                        onClick={() => { setPhase('closed'); dispatch(dismissChest()); }}
-                        style={{ background: `linear-gradient(135deg, ${cfg.color}, ${cfg.glow})` }}
-                    >
-                        Collect!
+                    <button className="btn-collect-3d mt-8 w-full max-w-[280px] mx-auto block" onClick={handleClose}>
+                        <div className="btn-gloss-highlight" />
+                        <span className="flex items-center justify-center gap-2">COLLECT REWARDS <ArrowRight size={20} className="inline" strokeWidth={3} /></span>
                     </button>
                 )}
             </div>

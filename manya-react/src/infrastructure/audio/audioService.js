@@ -70,6 +70,7 @@ class AudioService {
     tap()     { this.playSFX('tap'); }
     victory() { this.finish(); }
     error()   { this.wrong(); }
+    success() { this.correct(); }
 }
 
 export const audioService = new AudioService();

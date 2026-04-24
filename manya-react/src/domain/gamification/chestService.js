@@ -59,12 +59,12 @@ export function rollChestRewards(chestType) {
 }
 
 /**
- * Determines if a correct answer should drop a bronze chest (20% chance).
- * Called per-question, after submitting a correct answer.
+ * Determines if a correct answer should drop a bronze chest.
+ * Disabled: Chests are now only awarded deterministically when fully deserved.
  * @returns {boolean}
  */
 export function shouldDropBronzeChest() {
-    return Math.random() < 0.05; // Reduced from 0.20 to make it a rare "Lucky Drop"
+    return false;
 }
 
 /**

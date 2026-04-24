@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import QuestHUD from '../../components/QuestHUD';
 import { triggerRewardFlight } from '../../utils/fxUtils';
-import { mascotSpeak } from '../../components/MascotReaction';
 import { audioService } from '../../infrastructure/audio/audioService';
 
 /**
@@ -47,17 +46,10 @@ const ScienceRenderer = ({
         if (isAnswered) {
             if (userWasCorrect) {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-correct'));
-                audioService.playSFX('correct');
+                window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'science' } }));
+                audioService.correct();
 
-                // Mascot Reaction
-                const phrases = [
-                    "Whoa! You're a natural at this! 🎉",
-                    "Scientific discovery in action! 🧪",
-                    "Excellent! Science rules! ✨",
-                    "You've got a sharp eye for detail! 🔎"
-                ];
-                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+
 
                 // Flying Coins
                 if (correctBtnRef.current) {
@@ -67,11 +59,9 @@ const ScienceRenderer = ({
                 }
             } else {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-wrong'));
-                audioService.playSFX('mistake');
-                
-                // Mascot Encouragement
-                mascotSpeak("Oops! That one was tricky. Let's observe again! 📚", 4000);
+                window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'science' } }));
+                audioService.error();
+
             }
         }
     }, [isAnswered, userWasCorrect]);

@@ -5,21 +5,6 @@
 */
 
 :root {
-    --ob-bg: #fcfaff;
-    --ob-card: rgba(255, 255, 255, 0.95);
-    --ob-border: rgba(124, 58, 237, 0.1);
-    --ob-accent: #7c3aed;
-    --ob-accent-glow: rgba(124, 58, 237, 0.2);
-    --ob-accent-soft: rgba(124, 58, 237, 0.08);
-    --ob-text: #0f172a;
-    --ob-text-muted: #64748b;
-    --ob-success: #10b981;
-    --ob-input-bg: #f8faff;
-    --ob-input-border: #eef2ff;
-    --ob-btn-sec-bg: white;
-}
-
-:root[data-theme="dark"] {
     --ob-bg: #0F172A;
     --ob-card: rgba(30, 41, 59, 0.7);
     --ob-border: rgba(255, 255, 255, 0.05);
@@ -32,6 +17,21 @@
     --ob-input-bg: rgba(15, 23, 42, 0.6);
     --ob-input-border: rgba(255, 255, 255, 0.05);
     --ob-btn-sec-bg: rgba(30, 41, 59, 0.8);
+}
+
+:root[data-theme="light"] {
+    --ob-bg: #fcfaff;
+    --ob-card: rgba(255, 255, 255, 0.95);
+    --ob-border: rgba(124, 58, 237, 0.1);
+    --ob-accent: #7c3aed;
+    --ob-accent-glow: rgba(124, 58, 237, 0.2);
+    --ob-accent-soft: rgba(124, 58, 237, 0.08);
+    --ob-text: #0f172a;
+    --ob-text-muted: #64748b;
+    --ob-success: #10b981;
+    --ob-input-bg: #f8faff;
+    --ob-input-border: #eef2ff;
+    --ob-btn-sec-bg: white;
 }
 
 .premium-ob-shell {

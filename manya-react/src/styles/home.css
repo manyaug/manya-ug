@@ -43,8 +43,8 @@
     align-items: center;
     padding: 14px 20px;
     margin: 8px 16px;
-    background: #1e293b; /* Unified dashboard slate */
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-subtle);
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     position: relative;
@@ -76,8 +76,8 @@
     align-items: center;
     gap: 12px;
     padding: 8px 16px;
-    background: #1a1b1e;
-    border: 2px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-subtle);
     border-radius: 18px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -227,8 +227,8 @@
 .subject-square-card {
     position: relative;
     aspect-ratio: 1 / 1;
-    background: #1e293b; /* Unified deep slate */
-    border: 1.5px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-subtle);
     border-radius: 24px;
     padding: 16px;
     display: flex;
@@ -243,7 +243,7 @@
 
 .subject-square-card:active {
     transform: scale(0.95);
-    background: #1a2233;
+    background: var(--bg-secondary);
 }
 
 /* 💎 GEM BADGE */
@@ -351,7 +351,7 @@
     /* Reduced margins */
     padding: 12px 18px;
     /* Tighter padding */
-    background: #7c3aed;
+    background: rgba(42, 31, 61, 0.6);
     border: 4.5px solid var(--border-subtle);
     border-radius: 24px;
     color: white;
@@ -362,8 +362,8 @@
     flex-shrink: 0;
 }
 
-[data-theme='dark'] .home-sim-lab-cta {
-    background: rgba(42, 31, 61, 0.6);
+[data-theme='light'] .home-sim-lab-cta {
+    background: #7c3aed;
 }
 
 .sim-lab-left {

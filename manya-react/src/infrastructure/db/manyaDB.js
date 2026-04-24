@@ -281,7 +281,7 @@ export const ManyaDB = {
             stats_perfect_answers: 0,
             stats_hints_used: 0,
             stats_explanations_viewed: 0,
-            theme: 'light',
+            theme: 'dark',
             preferences: { likes: [], hates: [] },
             parent: { name: "", whatsapp: "" },
             pendingBadgeCelebrations: [],

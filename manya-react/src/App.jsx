@@ -147,9 +147,8 @@ function AppContent() {
 
     // Sync global theme whenever it changes in Redux
     useEffect(() => {
-        if (user?.theme) {
-            document.documentElement.setAttribute('data-theme', user.theme);
-        }
+        const theme = user?.theme || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
     }, [user?.theme]);
 
     // Show splash while loading

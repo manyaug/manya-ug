@@ -179,6 +179,14 @@ export const SFX = {
   bonus:    assetUrl('audios/game-bonus.mp3'),        // ✅ exists
   levelup:  assetUrl('audios/level-up.mp3'),          // ✅ exists
   drumroll: assetUrl('audios/drum-roll.mp3'),         // ✅ exists
+  
+  // High-fidelity Celebration SFX
+  riser:         assetUrl('audios/challenge_complete/riser.mp3'),
+  riser2:        assetUrl('audios/challenge_complete/riser2.mp3'),
+  bass_drop:     assetUrl('audios/challenge_complete/bass_drop.mp3'),
+  challenge_win: assetUrl('audios/challenge_complete/complete.mp3'),
+  challenge_woosh: assetUrl('audios/challenge_complete/whoosh.mp3'),
+  challenge_click: assetUrl('audios/challenge_complete/click.mp3'),
 }
 
 // ---------------------------------------------------------------------------

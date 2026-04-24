@@ -9,22 +9,62 @@ const CHARACTER_DATA = {
     english: { name: 'Zany', icon: IMAGES.manya_icon, full: IMAGES.manya_icon, color: '#ff6b6b' }
 };
 
+let globalAttemptCounter = 0;
+let globalStreak = 0;
+
 const MascotReaction = ({ subject = 'science' }) => {
     const [message, setMessage] = useState(null);
-    const char = CHARACTER_DATA[subject.toLowerCase()] || CHARACTER_DATA.science;
+    const [activeSub, setActiveSub] = useState(subject);
+    const char = CHARACTER_DATA[activeSub.toLowerCase()] || CHARACTER_DATA.science;
 
     useEffect(() => {
-        const handler = (e) => {
-            const { text, duration = 3000 } = e.detail;
+        let timer = null;
+
+        const showMessage = (text, duration = 3000) => {
             setMessage(text);
-            
-            // Auto-hide after duration
-            const timer = setTimeout(() => setMessage(null), duration);
-            return () => clearTimeout(timer);
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => setMessage(null), duration);
         };
 
-        window.addEventListener('manya-mascot-speak', handler);
-        return () => window.removeEventListener('manya-mascot-speak', handler);
+        const handleSpeak = (e) => {
+            const { text, duration, subject } = e.detail;
+            if (subject) setActiveSub(subject);
+            // Standard explicit calls bypass streak logic
+            showMessage(text, duration);
+        };
+
+        const handleCorrect = (e) => {
+            if (e.detail?.subject) setActiveSub(e.detail.subject);
+            globalStreak++;
+            if (globalStreak === 3) showMessage("3 in a row! You're on fire! 🔥");
+            else if (globalStreak === 5) showMessage("5 correct! Unstoppable! 🚀");
+            else if (globalStreak === 10) showMessage("10 in a row?! Absolute genius! 🧠");
+            else if (globalStreak > 5 && globalStreak % 3 === 0) {
+                const generic = ["Flawless!", "Incredible momentum!", "You're doing amazing!"];
+                showMessage(generic[Math.floor(Math.random() * generic.length)]);
+            }
+        };
+
+        const handleWrong = (e) => {
+            if (e.detail?.subject) setActiveSub(e.detail.subject);
+            if (globalStreak >= 3) {
+                showMessage("Oh no! Streak broken! Keep going! 💔", 4000);
+            } else if (Math.random() > 0.8) {
+                showMessage("That was tricky. Let's learn from it! 📚", 4000);
+            }
+            globalStreak = 0;
+        };
+
+        window.addEventListener('manya-mascot-speak', handleSpeak);
+        window.addEventListener('manya-correct', handleCorrect);
+        window.addEventListener('manya-wrong', handleWrong);
+        
+        return () => {
+            window.removeEventListener('manya-mascot-speak', handleSpeak);
+            window.removeEventListener('manya-correct', handleCorrect);
+            window.removeEventListener('manya-wrong', handleWrong);
+            if (timer) clearTimeout(timer);
+        };
     }, []);
 
     return (
@@ -36,10 +76,10 @@ const MascotReaction = ({ subject = 'science' }) => {
                             initial={{ opacity: 0, scale: 0.5, x: 20, y: 20 }}
                             animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
                             exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                            className="bg-white text-slate-800 p-4 rounded-[1.5rem] rounded-br-none shadow-2xl border-2 border-slate-100 max-w-[240px] relative mb-2"
+                            className="bg-white text-slate-800 p-3 rounded-[1.25rem] rounded-br-none shadow-xl border-2 border-slate-100 max-w-[200px] relative mb-1"
                         >
-                            <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-slate-100 rotate-45" />
-                            <p className="text-sm font-bold leading-relaxed">{message}</p>
+                            <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-white border-r-2 border-b-2 border-slate-100 rotate-45" />
+                            <p className="text-xs font-bold leading-relaxed">{message}</p>
                         </motion.div>
 
                         <motion.div 
@@ -47,7 +87,7 @@ const MascotReaction = ({ subject = 'science' }) => {
                             animate={{ opacity: 1, y: 0, rotate: 0 }}
                             exit={{ opacity: 0, y: 50, rotate: -15 }}
                             whileHover={{ scale: 1.1 }}
-                            className="w-32 h-32 relative flex-shrink-0"
+                            className="w-20 h-20 relative flex-shrink-0"
                             style={{ 
                                 filter: `drop-shadow(0 10px 20px ${char.color}80)` 
                             }}

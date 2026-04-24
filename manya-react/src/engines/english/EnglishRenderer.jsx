@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import QuestHUD from '../../components/QuestHUD';
 import { triggerRewardFlight } from '../../utils/fxUtils';
-import { mascotSpeak } from '../../components/MascotReaction';
 import { audioService } from '../../infrastructure/audio/audioService';
 
 /**
@@ -42,17 +41,8 @@ const EnglishRenderer = ({
         if (isAnswered) {
             if (userWasCorrect) {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-correct'));
-                audioService.playSFX('correct');
-
-                // Mascot Reaction (Zany/English character)
-                const phrases = [
-                    "Spot on! Your English is top-tier! ✨",
-                    "Word Wizard in the house! 🧙‍♂️",
-                    "Magnificent! Your grammar is perfect! 📝",
-                    "Excellent! You've got a way with words! 🎉"
-                ];
-                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+                window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'english' } }));
+                audioService.correct();
 
                 // Flying Coins
                 if (correctBtnRef.current) {
@@ -62,16 +52,14 @@ const EnglishRenderer = ({
                 }
             } else {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-wrong'));
-                audioService.playSFX('mistake');
+                window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'english' } }));
+                audioService.error();
 
-                // Mascot Encouragement
-                mascotSpeak("Language is a journey! Let's analyze this one. 📖", 4000);
             }
         }
     }, [isAnswered, userWasCorrect]);
     return (
-        <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative bg-[#0B0E14]" style={{ maxHeight: '100%' }}>
+        <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
             {/* Scrollable primary area */}
 
             {/* --- SCROLLABLE CONTENT AREA --- */}
@@ -90,7 +78,7 @@ const EnglishRenderer = ({
                 )}
 
                 {/* QUESTION CARD (Glowing & Glossy) */}
-                <div className="bg-[#151921] rounded-[2.5rem] border-[4px] border-indigo-500/40 neon-glow-violet px-7 py-8 mb-6 shadow-2xl relative transition-all duration-500">
+                <div className="bg-[var(--bg-card)] rounded-[2.5rem] border-[4px] border-indigo-500/40 neon-glow-violet px-7 py-8 mb-6 shadow-2xl relative transition-all duration-500">
                     <div className="toy-card-gloss" />
                     <div className="flex items-center justify-end mb-5 relative z-10">
                         {!isAnswered && currentQ?.hint && (
@@ -133,7 +121,7 @@ const EnglishRenderer = ({
                         )}
                     </div>
 
-                    <p className="text-white font-bold text-xl leading-snug relative z-10">
+                    <p className="text-[var(--text-main)] font-bold text-xl leading-snug relative z-10">
                         {currentQ?.question || currentQ?.question_text}
                     </p>
                 </div>
@@ -181,19 +169,19 @@ const EnglishRenderer = ({
             </div>
 
             {/* --- STICKY FOOTER --- */}
-            <div className="flex-none p-6 pb-10 bg-gradient-to-t from-[#0B0E14] via-[#0B0E14]/90 to-transparent">
+            <div className="flex-none p-6 pb-10">
                 {!isAnswered ? (
                     <button
                         onClick={handleSubmit}
                         disabled={!selectedOption}
-                        className={`w-full h-16 rounded-[2rem] font-black text-sm tracking-[0.15em] uppercase transition-all flex items-center justify-center gap-3 relative overflow-hidden shadow-2xl ${
+                        className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
                             selectedOption 
-                            ? 'bg-[#58cc02] text-white shadow-[0_8px_0_#46a302] active:translate-y-1 active:shadow-none' 
-                            : 'bg-white/5 text-white/20 border border-white/5'
+                            ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:translate-y-1' 
+                            : 'bg-[#e5e5e5] text-[#a0a0a0] border-b-[4px] border-[#d4d4d4]'
                         }`}
                     >
                         {selectedOption && <div className="btn-toy-gloss" />}
-                        <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={16} fill="currentColor" /></span>
+                        <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                     </button>
                 ) : (
                     <div className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>

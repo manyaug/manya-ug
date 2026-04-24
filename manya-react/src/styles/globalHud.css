@@ -87,7 +87,7 @@
 .hud-xp-line {
     width: 60px;
     height: 4px;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 100px;
     overflow: hidden;
     position: relative;
@@ -148,6 +148,10 @@
 .hud-coin-pill .hud-pill-value { color: #D4AF37; }
 
 .hud-coin-pill {
+    background: linear-gradient(to bottom, #25262b, #2d2a1e);
+}
+
+[data-theme='light'] .hud-coin-pill {
     background: linear-gradient(to bottom, var(--bg-card), #fffcf0);
 }
 
@@ -214,13 +218,13 @@
     100% { opacity: 0; transform: translateY(-50px) scale(1); }
 }
 
-/* Dark Theme Adjustments */
-[data-theme='dark'] .hud-master-shell {
-    background: #1a1b1e;
+/* Light Theme Adjustments */
+[data-theme='light'] .hud-master-shell {
+    background: var(--bg-primary);
 }
-[data-theme='dark'] .hud-pill {
-    background: #25262b;
+[data-theme='light'] .hud-pill {
+    background: var(--bg-card);
 }
-[data-theme='dark'] .hud-coin-pill {
-    background: linear-gradient(to bottom, #25262b, #2d2a1e);
+[data-theme='light'] .hud-xp-line {
+    background: rgba(0, 0, 0, 0.05);
 }

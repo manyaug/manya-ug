@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import QuestHUD from '../../components/QuestHUD';
 import { triggerRewardFlight } from '../../utils/fxUtils';
-import { mascotSpeak } from '../../components/MascotReaction';
 import { audioService } from '../../infrastructure/audio/audioService';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -48,17 +47,8 @@ const SSTRenderer = ({
         if (isAnswered) {
             if (isCorrect) {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-correct'));
-                audioService.playSFX('correct');
-
-                // Mascot Reaction (Polly being cheerful)
-                const phrases = [
-                    "Cheep cheep! That's the right answer! 🐦",
-                    "Wow! You're an explorer of knowledge! 🗺️",
-                    "Cheep! A historical discovery! Amazing! ✨",
-                    "Correct! You're mastering the world! 🌍"
-                ];
-                mascotSpeak(phrases[Math.floor(Math.random() * phrases.length)]);
+                window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'sst' } }));
+                audioService.correct();
 
                 // Flying Coins
                 if (correctBtnRef.current) {
@@ -68,11 +58,9 @@ const SSTRenderer = ({
                 }
             } else {
                 // Global event for feedback layer
-                window.dispatchEvent(new CustomEvent('manya-wrong'));
-                audioService.playSFX('mistake');
+                window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'sst' } }));
+                audioService.error();
 
-                // Mascot Encouragement
-                mascotSpeak("Cheep... That one was hard. Let's learn together! 🤝", 4000);
             }
         }
     }, [isAnswered, isCorrect]);

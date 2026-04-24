@@ -32,7 +32,7 @@
 
 .ring-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.5);
+    stroke: var(--border-subtle);
     stroke-width: 6;
 }
 
@@ -48,9 +48,9 @@
     position: absolute;
     inset: 8px;
     border-radius: 50%;
-    background: white;
+    background: #0f172a;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    border: 3px solid white;
+    border: 3px solid #1e293b;
     overflow: hidden;
 }
 
@@ -71,7 +71,7 @@
     border-radius: 100px;
     font-size: 9px;
     font-weight: 950;
-    border: 2.5px solid white;
+    border: 2.5px solid #0f172a;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     white-space: nowrap;
 }
@@ -155,7 +155,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 12px;
-    background: var(--bg-primary);
+    background: #1e293b;
     border: 2px solid var(--border-color);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
     z-index: 2;
@@ -200,7 +200,7 @@
     width: 36px;
     height: 36px;
     border-radius: 12px;
-    background: #f5f3ff;
+    background: #1e293b;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,7 +237,7 @@
 
 .bar-pillar {
     width: 22px;
-    background: #f1f5f9;
+    background: #1e293b;
     border-radius: 10px;
     position: relative;
     transition: 0.8s var(--transition-bounce);
@@ -318,7 +318,7 @@
 
 .matrix-track {
     height: 10px;
-    background: #f1f5f9;
+    background: #1e293b;
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -395,45 +395,23 @@
     text-transform: uppercase;
 }
 
-/* DARK MODE - Opaque & Tactile */
-[data-theme='dark'] .activity-card-national,
-[data-theme='dark'] .sub-progress-elite,
-[data-theme='dark'] .bento-card-elite,
-[data-theme='dark'] .service-row-elite {
-    background: var(--bg-card) !important;
-    border-color: var(--border-subtle) !important;
+/* LIGHT MODE overrides (dark is now base) */
+[data-theme='light'] .bento-icon-box,
+[data-theme='light'] .activity-icon-halo,
+[data-theme='light'] .s-icon-box {
+    background: var(--bg-primary) !important;
 }
 
-[data-theme='dark'] .ring-bg {
-    stroke: var(--border-subtle);
+[data-theme='light'] .avatar-circle {
+    border-color: white;
+    background: white;
 }
 
-[data-theme='dark'] .aurora-engine {
-    display: none;
+[data-theme='light'] .level-badge {
+    border-color: white;
 }
 
-[data-theme='dark'] .bento-icon-box,
-[data-theme='dark'] .activity-icon-halo,
-[data-theme='dark'] .s-icon-box {
-    background: #1e293b !important;
-}
-
-[data-theme='dark'] .hero-rank-pill {
-    background: var(--bg-card) !important;
-    color: #a78bfa !important;
-    border-color: var(--border-subtle) !important;
-}
-
-[data-theme='dark'] .avatar-circle {
-    border-color: #1e293b;
-    background: #0f172a;
-}
-
-[data-theme='dark'] .level-badge {
-    border-color: #0f172a;
-}
-
-[data-theme='dark'] .bar-pillar,
-[data-theme='dark'] .matrix-track {
-    background: #1e293b;
+[data-theme='light'] .bar-pillar,
+[data-theme='light'] .matrix-track {
+    background: #f1f5f9;
 }
