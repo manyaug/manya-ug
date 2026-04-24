@@ -15,7 +15,7 @@ import {
  * ───────────────────────────────────────────────────
  * - DECOUPLED: Logic (ThreeDLogic), Renderer (ThreeDRenderer), Controller (Engine)
  */
-export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
+export function ThreeDStudyEngine({ data, onComplete, onAttempt, skipDiscovery = false }) {
     const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
@@ -100,7 +100,7 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
             const results = formatThreeDResult(score, total, totalMistakes, duration, isQuiz);
             
             // DISCOVER Artifact for Vault (ONLY if not a quiz/exercise)
-            if (!isQuiz) {
+            if (!isQuiz && !skipDiscovery) {
                 dispatch(discoverArtifact({
                     id: data.id || `3d_${Date.now()}`,
                     type: '3d',
@@ -122,7 +122,7 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt }) {
 
             onComplete?.(results);
         }
-    }, [isFinished, isQuiz, correctPinIds.size, hotspots.length, onComplete, totalMistakes, dispatch, data]);
+    }, [isFinished, isQuiz, skipDiscovery, correctPinIds.size, hotspots.length, onComplete, totalMistakes, dispatch, data]);
 
     useEffect(() => {
         if (isQuiz && correctPinIds.size === hotspots.length && hotspots.length > 0) {

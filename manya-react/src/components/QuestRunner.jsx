@@ -13,7 +13,10 @@ import { ENGINE_REGISTRY, getEngine } from '../config/engineRegistry';
 import { saveNodeCompletion, setJustFinished } from '../domain/progress/questProgressService.js';
 import { QuestSession } from '../application/QuestSession';
 import { QuestBusProvider } from '../ui/context/QuestBus';
-import QuestHUD from './QuestHUD';
+import QuestHUD from './QuestHUD'; 
+import { masteryToStars, getQuestCompletionChest, rollChestRewards } from '../domain/gamification/chestService.js';
+import { awardCoins, dropChest } from '../store/userSlice';
+import { getNodeMastery, NODE_ORDER } from '../domain/progress/questProgressService.js';
 import React from 'react';
 import '../styles/engines.css';
 
@@ -174,16 +177,53 @@ export default function QuestRunner() {
 
     const finishQuest = useCallback(() => {
         setPhase('finished');
-        const gemsEarned = 3;
-        dispatch(updateProfile({ diamonds: (user?.diamonds || 0) + gemsEarned }));
-        dispatch(addToast({ message: `🏆 Quest complete! +${gemsEarned} gems earned`, type: 'success' }));
         
         const { subject, questKey, nodeType } = location.state || {};
-        const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
+        const safeNodeType = (nodeType || 'WARMUP').toUpperCase();
         
-        if (questKey && nodeType && !hasFetcher) {
-            const result = saveNodeCompletion(subject, questKey, nodeType, 100);
-            setJustFinished({ subject, questKey, nodeType, mastery: 100, unlocked: result.unlocked, nextNode: result.nextNode });
+        // 1. Calculate Economy Payouts
+        let baseCoins = 0; let scale = 0;
+        if (safeNodeType === 'WARMUP') { baseCoins = 20; scale = 5; }
+        else if (safeNodeType === 'EXPLORE') { baseCoins = 30; scale = 10; }
+        else if (safeNodeType === 'PRACTICE') { baseCoins = 40; scale = 15; }
+        else if (safeNodeType === 'REINFORCE') { baseCoins = 50; scale = 20; }
+        else if (safeNodeType === 'MASTERY') { baseCoins = 100; scale = 25; }
+        
+        const earnedCoins = baseCoins + ((sessionRef.current?.correctCount || 0) * scale);
+        const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
+        let masteryScore = 100;
+
+        if (questKey && safeNodeType && !hasFetcher) {
+            masteryScore = sessionRef.current?.lastMasteryScore || ((sessionRef.current?.correctCount || 1) / (sessionRef.current?.totalSteps || 1)) * 100;
+            const result = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
+            setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: result.unlocked, nextNode: result.nextNode });
+        }
+        
+        // 2. Dispatch the standard soft currency
+        dispatch(awardCoins(earnedCoins));
+
+        // 3. Evaluate Chests using the Deterministic Model
+        const stars = masteryToStars(masteryScore);
+        let chestColor = null;
+
+        if (safeNodeType === 'MASTERY') {
+            // Boss chest calculates cumulative stars from previous 4 nodes
+            let cumulativeStars = stars;
+            for (let i = 0; i < 4; i++) {
+                const pastMastery = getNodeMastery(subject, questKey, NODE_ORDER[i]);
+                cumulativeStars += masteryToStars(pastMastery || 0);
+            }
+            chestColor = getQuestCompletionChest(cumulativeStars, safeNodeType);
+        } else {
+            chestColor = getQuestCompletionChest(stars, safeNodeType);
+        }
+
+        if (chestColor) {
+            const guaranteedRewards = rollChestRewards(chestColor);
+            dispatch(dropChest({ chestType: chestColor, rewards: guaranteedRewards }));
+            dispatch(addToast({ message: `🏆 Quest complete! Earned ${earnedCoins} Coins and a ${chestColor.toUpperCase()} Chest!`, type: 'success' }));
+        } else {
+            dispatch(addToast({ message: `🏁 Quest complete! +${earnedCoins} Coins earned`, type: 'success' }));
         }
 
         audioService.finish();

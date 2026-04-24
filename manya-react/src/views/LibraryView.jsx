@@ -11,6 +11,9 @@ import { IMAGES, getIsland } from '../config/assetUrls';
 // Lazy Load Engines for Preview
 const NoteExplorerEngine = lazy(() => import('../engines/shared-engines/NoteExplorerEngine.jsx'));
 const ThreeDStudyEngine = lazy(() => import('../engines/shared-engines/ThreeDStudyEngine.jsx'));
+const ReaderStudyEngine = lazy(() => import('../engines/shared-engines/ReaderStudyEngine.jsx'));
+const ImageHotspotsEngine = lazy(() => import('../engines/shared-engines/ImageHotspotsEngine.jsx'));
+const UniversalGlobeEngine = lazy(() => import('../engines/sst/UniversalGlobeEngine.jsx'));
 
 const SUBJECTS = [
     { id: 'math', label: 'Mathematics', color: '#7c3aed', icon: 'math' },
@@ -27,7 +30,7 @@ function LibraryView() {
     const [previewItem, setPreviewItem] = useState(null);
 
     // Only allow pure study/archival materials, exclude interactive engines here
-    const STUDY_TYPES = ['3d', 'glb', 'note', 'dictionary', 'recap'];
+    const STUDY_TYPES = ['3d', 'glb', 'note', 'dictionary', 'recap', 'map'];
 
     // Filter by Subject & Type
     const filteredItems = useMemo(() => {
@@ -189,12 +192,35 @@ function LibraryView() {
                                         <ThreeDStudyEngine 
                                             data={previewItem.data} 
                                             onComplete={() => setPreviewItem(null)} 
+                                            skipDiscovery={true}
                                         />
                                     )}
                                     {(previewItem.type === 'note' || previewItem.type === 'dictionary') && (
                                         <NoteExplorerEngine 
                                             data={previewItem.data} 
                                             onComplete={() => setPreviewItem(null)} 
+                                            skipDiscovery={true}
+                                        />
+                                    )}
+                                    {previewItem.type === 'recap' && (
+                                        <ReaderStudyEngine 
+                                            data={previewItem.data} 
+                                            onComplete={() => setPreviewItem(null)} 
+                                            skipDiscovery={true}
+                                        />
+                                    )}
+                                    {previewItem.type === 'map' && (
+                                        <UniversalGlobeEngine 
+                                            data={previewItem.data} 
+                                            onComplete={() => setPreviewItem(null)} 
+                                            skipDiscovery={true}
+                                        />
+                                    )}
+                                    {previewItem.type === 'image_hotspots' && (
+                                        <ImageHotspotsEngine 
+                                            data={previewItem.data} 
+                                            onComplete={() => setPreviewItem(null)} 
+                                            skipDiscovery={true}
                                         />
                                     )}
                                 </Suspense>

@@ -221,7 +221,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
 
         if (isCorrect) {
-            dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
+            dispatch(awardGems({ subject, amount: 0, xp: hintUsed ? 5 : 10 }));
             if (coinReward > 0) dispatch(awardCoins(coinReward));
             setGemsEarned(g => g + totalGems); setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);

@@ -13,7 +13,7 @@ import '../../styles/note-explorer.css';
  * ------------------------------------------
  * Simple, no-mascot, pink-accent note reader.
  */
-const NoteExplorerEngine = ({ data, onComplete }) => {
+const NoteExplorerEngine = ({ data, onComplete, skipDiscovery = false }) => {
   const dispatch = useDispatch();
   const [idx, setIdx] = useState(0);
   const [dir, setDir] = useState(1);
@@ -27,28 +27,30 @@ const NoteExplorerEngine = ({ data, onComplete }) => {
 
   const goNext = useCallback(() => {
     if (isLast) {
-      dispatch(
-        discoverArtifact({
-          id: data.id || `note_${Date.now()}`,
-          type: data.type === 'DICTIONARY' ? 'dictionary' : 'note',
-          title: data.title || 'Knowledge Note',
-          subject: data.subject || 'General',
-          data: data,
-        })
-      );
-      dispatch(
-        addToast({
-          message: 'Knowledge Artifact Archived to Vault! 🏺✨',
-          type: 'success',
-        })
-      );
+      if (!skipDiscovery) {
+        dispatch(
+          discoverArtifact({
+            id: data.id || `note_${Date.now()}`,
+            type: data.type === 'DICTIONARY' ? 'dictionary' : 'note',
+            title: data.title || 'Knowledge Note',
+            subject: data.subject || 'General',
+            data: data,
+          })
+        );
+        dispatch(
+          addToast({
+            message: 'Knowledge Artifact Archived to Vault! 🏺✨',
+            type: 'success',
+          })
+        );
+      }
       onComplete?.({ success: true, score: 100, isCorrect: true, type: 'study' });
       return;
     }
     setDir(1);
     setIdx((i) => i + 1);
     audioService.click?.();
-  }, [isLast, onComplete, data, dispatch]);
+  }, [isLast, onComplete, data, dispatch, skipDiscovery]);
 
   const goPrev = useCallback(() => {
     if (idx <= 0) return;

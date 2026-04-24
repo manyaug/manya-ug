@@ -11,20 +11,18 @@
 
 const CHEST_POOLS = {
     bronze: [
-        { type: 'coins',  min: 10,  max: 50,  probability: 0.90 },
-        { type: 'gems',   min: 1,   max: 3,   probability: 0.30 },
-        { type: 'xp',     min: 20,  max: 50,  probability: 0.70 },
+        { type: 'coins',  min: 50,  max: 100, probability: 1.00 },
+        { type: 'xp',     min: 50,  max: 100, probability: 1.00 },
     ],
     silver: [
-        { type: 'coins',  min: 30,  max: 100, probability: 0.95 },
-        { type: 'gems',   min: 3,   max: 8,   probability: 0.60 },
-        { type: 'xp',     min: 50,  max: 120, probability: 0.90 },
+        { type: 'coins',  min: 150, max: 250, probability: 1.00 },
+        { type: 'xp',     min: 150, max: 250, probability: 1.00 },
         { type: 'unlock', value: 'study_sim_extra', probability: 0.25 },
     ],
     gold: [
-        { type: 'coins',  min: 80,  max: 200, probability: 1.00 },
-        { type: 'gems',   min: 10,  max: 20,  probability: 0.85 },
-        { type: 'xp',     min: 100, max: 250, probability: 1.00 },
+        { type: 'coins',  min: 250, max: 500, probability: 1.00 },
+        { type: 'gems',   min: 3,   max: 5,   probability: 1.00 },
+        { type: 'xp',     min: 400, max: 800, probability: 1.00 },
         { type: 'unlock', value: 'premium_sim', probability: 0.50 },
         { type: 'badge',  value: 'chest_master', probability: 0.15 },
     ],
@@ -67,15 +65,20 @@ export function shouldDropBronzeChest() {
     return false;
 }
 
-/**
- * Maps quest star rating to the chest type awarded.
- * @param {number} stars 1|2|3
- * @returns {'bronze'|'silver'|'gold'|null}
- */
-export function getQuestCompletionChest(stars) {
-    if (stars === 3) return 'gold';
-    if (stars === 2) return 'silver';
-    return null; // 1 star = no chest, just coins
+export function getQuestCompletionChest(stars, nodeType) {
+    // Determine deterministic chests based on node type
+    if (nodeType === 'PRACTICE' && stars === 3) return 'bronze';
+    if (nodeType === 'REINFORCE' && stars === 3) return 'silver';
+    
+    // Boss Chest logic evaluates cumulatively, handled by QuestRunner.
+    // If sent here directly as MASTERY (Boss):
+    if (nodeType === 'MASTERY') {
+        if (stars >= 12) return 'gold';
+        if (stars >= 9) return 'silver';
+        return 'bronze'; // passed but low stars
+    }
+
+    return null;
 }
 
 /**

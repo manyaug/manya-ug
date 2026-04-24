@@ -4,12 +4,34 @@ import { motion } from 'framer-motion';
 import { Home, Library, Trophy, User } from 'lucide-react';
 import '../styles/bottomNav.css';
 
+const TreasuryChest = ({ size, strokeWidth }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth={strokeWidth} 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    {/* Body of the chest */}
+    <path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8" />
+    {/* Open Lid - Rounded and lifted */}
+    <path d="M2.5 11c0-4 4-7 9.5-7s9.5 3 9.5 7" />
+    {/* Rim of the opening */}
+    <path d="M2 11h20" />
+    {/* Decorative Lock bit */}
+    <rect x="10.5" y="9.5" width="3" height="3" rx="0.5" fill="currentColor" />
+  </svg>
+);
+
 function BottomNav() {
   const navItems = [
-    { id: 'home',     to: '/home',     icon: Home,    label: 'Home',     color: '#818cf8' },
-    { id: 'library',  to: '/library',  icon: Library, label: 'Library',  color: '#34d399' },
-    { id: 'rankings', to: '/rankings', icon: Trophy,  label: 'Rankings', color: '#fbbf24' },
-    { id: 'profile',  to: '/profile',  icon: User,    label: 'Profile',  color: '#f472b6' },
+    { id: 'home',     to: '/home',     icon: Home,          label: 'Home',     color: '#818cf8' },
+    { id: 'library',  to: '/library',  icon: TreasuryChest, label: 'Vault',    color: '#34d399' },
+    { id: 'rankings', to: '/rankings', icon: Trophy,        label: 'Rankings', color: '#fbbf24' },
+    { id: 'profile',  to: '/profile',  icon: User,          label: 'Profile',  color: '#f472b6' },
   ];
 
   const location = useLocation();

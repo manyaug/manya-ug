@@ -194,7 +194,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             const modeMultiplier = getModeCoinMultiplier(gameMode);
             const coinReward = Math.floor((q.isSimulation ? 12 : 8) * modeMultiplier);
 
-            dispatch(awardGems({ subject, amount, xp: q.isSimulation ? 20 : 10 }));
+            dispatch(awardGems({ subject, amount: 0, xp: q.isSimulation ? 20 : 10 }));
             if (coinReward > 0) dispatch(awardCoins(coinReward));
 
             // ── Emotion Tracking ───────────────────────────────────────

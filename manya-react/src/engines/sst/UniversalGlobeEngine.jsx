@@ -15,7 +15,7 @@ import GlobeCanvas from './UniversalGlobe/GlobeCanvas';
  * -------------------------------------------------------------
  * - DECOUPLED: Logic (GlobeLogic), Renderer (GlobeRenderer), Canvas (GlobeCanvas), Controller (Engine)
  */
-const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
+const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDiscovery = false }) => {
     const dispatch = useDispatch();
     const [activeTab, setActiveTab] = useState(0);
     const [worldData, setWorldData] = useState(null);
@@ -172,20 +172,22 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt }) => {
     }, [data.zoomFactor]);
 
     const handleFinishActivity = () => {
-        // DISCOVER Artifact for Vault
-        dispatch(discoverArtifact({
-            id: data.id || `globe_${Date.now()}`,
-            type: 'map',
-            title: data.title || 'Globe Discovery',
-            subject: data.subject || 'SST',
-            data: data 
-        }));
+        if (!skipDiscovery) {
+            // DISCOVER Artifact for Vault
+            dispatch(discoverArtifact({
+                id: data.id || `globe_${Date.now()}`,
+                type: 'map',
+                title: data.title || 'Globe Discovery',
+                subject: data.subject || 'SST',
+                data: data 
+            }));
 
-        // ARCHIVE Notification
-        dispatch(addToast({
-            message: "Global Discovery Archived to Vault! 🏺✨",
-            type: "success"
-        }));
+            // ARCHIVE Notification
+            dispatch(addToast({
+                message: "Global Discovery Archived to Vault! 🏺✨",
+                type: "success"
+            }));
+        }
 
         if (onComplete) onComplete({ isCorrect: true, score: data.cases?.length || 1, total: data.cases?.length || 1, type: 'study' });
     };

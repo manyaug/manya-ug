@@ -144,38 +144,35 @@ body::after {
 /* --- 1. THE TOY BUTTON --- */
 .btn-toy {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
-  border-radius: var(--radius-pill);
+  padding: 12px 28px;
+  border-radius: 18px;
   font-family: var(--font-main);
   font-weight: 950;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: white;
   cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-premium), var(--toy-inner-shadow);
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: none;
+  transition: all 0.1s ease;
   overflow: hidden;
   user-select: none;
 }
 
 .btn-toy:active {
-  transform: scale(0.96) translateY(2px);
-  filter: brightness(0.9);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateY(2px);
 }
 
-/* The Glossy Overlay */
+/* The Glossy Overlay (Highly subtle for tactile feel) */
 .btn-toy-gloss {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 55%;
-  background: var(--glossy-shine);
+  height: 45%;
+  background: rgba(255, 255, 255, 0.15);
   pointer-events: none;
   z-index: 1;
 }
@@ -183,16 +180,29 @@ body::after {
 .btn-toy span {
   position: relative;
   z-index: 2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Color Variants */
-.btn-toy-purple { background: linear-gradient(to bottom, #918CF8, #6B66E0); border-bottom: 4px solid #3D39A0; }
-.btn-toy-green  { background: linear-gradient(to bottom, #40DDB0, #20B888); border-bottom: 4px solid #0A6B4E; }
-.btn-toy-gold   { background: linear-gradient(to bottom, #F5C060, #E8A030); border-bottom: 4px solid #A06810; }
-.btn-toy-pink   { background: linear-gradient(to bottom, #F090AE, #E86090); border-bottom: 4px solid #A03060; }
-.btn-toy-slate  { background: linear-gradient(to bottom, #94a3b8, #475569); border-bottom: 4px solid #1e293b; }
-.btn-toy-crimson { background: linear-gradient(to bottom, #f87171, #ef4444); border-bottom: 4px solid #991b1b; }
+/* Color Variants (Tactile Bottom Borders) */
+.btn-toy-purple  { background: #7c3aed; border-bottom: 4px solid #5b21b6; }
+.btn-toy-purple:active { border-bottom-width: 2px; }
+
+.btn-toy-green   { background: #58cc02; border-bottom: 4px solid #46a302; }
+.btn-toy-green:active  { border-bottom-width: 2px; }
+
+.btn-toy-gold    { background: #f59e0b; border-bottom: 4px solid #d97706; }
+.btn-toy-gold:active   { border-bottom-width: 2px; }
+
+.btn-toy-pink    { background: #db2777; border-bottom: 4px solid #9d174d; }
+.btn-toy-pink:active    { border-bottom-width: 2px; }
+
+.btn-toy-slate   { background: #64748b; border-bottom: 4px solid #475569; }
+.btn-toy-slate:active   { border-bottom-width: 2px; }
+
+.btn-toy-crimson { background: #ef4444; border-bottom: 4px solid #b91c1c; }
+.btn-toy-crimson:active { border-bottom-width: 2px; }
+
+.btn-toy-white   { background: white; color: #64748b; border-bottom: 4px solid #e2e8f0; }
+.btn-toy-white:active { border-bottom-width: 2px; }
 
 /* --- 2. THE TOY INPUT --- */
 .input-toy {
@@ -238,7 +248,7 @@ body::after {
 
 
 /* ============================================================
-   QUEST LOADING OVERLAY — Manya World v5.0 (Playful & Tactile)
+   QUEST LOADING OVERLAY ï¿½ Manya World v5.0 (Playful & Tactile)
    ============================================================ */
 .quest-loading-overlay {
     position: absolute;

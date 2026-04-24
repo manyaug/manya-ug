@@ -13,7 +13,7 @@ import {
  * ───────────────────────────────────────────────────
  * - DECOUPLED: Logic (ReaderLogic), Renderer (ReaderRenderer), Controller (Engine)
  */
-export function ReaderStudyEngine({ data, onComplete, onResult }) {
+export function ReaderStudyEngine({ data, onComplete, onResult, skipDiscovery = false }) {
     const dispatch = useDispatch();
     const [isVisible, setIsVisible] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -36,21 +36,23 @@ export function ReaderStudyEngine({ data, onComplete, onResult }) {
     };
 
     const handleFinish = () => {
-        // DISCOVER Artifact for Vault
-        const artifactTitle = data.topic || data.title || 'Study Recap';
-        dispatch(discoverArtifact({
-            id: data.id || `recap_${Date.now()}`,
-            type: 'recap',
-            title: artifactTitle,
-            subject: data.subject || 'General',
-            data: data 
-        }));
+        if (!skipDiscovery) {
+            // DISCOVER Artifact for Vault
+            const artifactTitle = data.topic || data.title || 'Study Recap';
+            dispatch(discoverArtifact({
+                id: data.id || `recap_${Date.now()}`,
+                type: 'recap',
+                title: artifactTitle,
+                subject: data.subject || 'General',
+                data: data 
+            }));
 
-        // ARCHIVE Notification
-        dispatch(addToast({
-            message: `"${artifactTitle}" saved to your Library! 🏺`,
-            type: 'success'
-        }));
+            // ARCHIVE Notification
+            dispatch(addToast({
+                message: `"${artifactTitle}" saved to your Library! 🏺`,
+                type: 'success'
+            }));
+        }
 
         if (onResult) {
             onResult({ isCorrect: true, score: 1, total: 1, type: 'study' });

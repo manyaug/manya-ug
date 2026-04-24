@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { dismissBadgeCelebration } from '../store/userSlice';
+import { dismissBadgeCelebration, awardGems } from '../store/userSlice';
 import * as LucideIcons from 'lucide-react';
 import { ArrowRight, X } from 'lucide-react';
 import { BADGES } from '../config/badges';
@@ -51,6 +51,9 @@ const BadgeCelebrationModal = () => {
         setIsVisible(false);
         setIsOnCooldown(true);
         
+        // Economy: Badges strictly award 1 Gem
+        dispatch(awardGems({ subject: 'general', amount: 1, xp: 0 }));
+        
         setTimeout(() => {
             dispatch(dismissBadgeCelebration());
             // Reset cooldown after the breathing room period
@@ -86,10 +89,10 @@ const BadgeCelebrationModal = () => {
                 <Ribbon text="ACHIEVEMENT UNLOCKED" />
 
                 <h1 className="celebration-title-premium mt-4">{badge.name}</h1>
-                <p className="celebration-subtext-premium mb-6">{badge.desc}</p>
-                
-                <div className="text-center mb-6">
+                <p className="celebration-subtext-premium mb-2">{badge.desc}</p>
+                <div className="flex justify-center items-center gap-2 mb-6">
                     <span className="celebration-tier-badge !mt-0 !mb-0">{badge.tier}</span>
+                    <span className="font-black text-sm text-[var(--accent-glow)] tracking-wider px-3 py-1 bg-[var(--glass-bg)] border border-[var(--border-subtle)] rounded-full shadow-inner">+1 GEM 💎</span>
                 </div>
 
                 <button className="btn-collect-3d mt-2 w-full max-w-[280px] mx-auto block" onClick={handleCollect}>

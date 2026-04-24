@@ -14,7 +14,7 @@ import {
  * ImageHotspotsEngine - Atomic Edition
  * DECOUPLED: Logic (HotspotsLogic), Renderer (HotspotsRenderer), Controller (Engine)
  */
-export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt }) {
+export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, skipDiscovery = false }) {
     const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -106,7 +106,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt }) {
         const duration = Date.now() - globalStartTimeRef.current;
         
         // DISCOVER Artifact for Vault (ONLY if not a quiz/exercise)
-        if (!isQuizMode) {
+        if (!isQuizMode && !skipDiscovery) {
             dispatch(discoverArtifact({
                 id: data.id || `map_${Date.now()}`,
                 type: 'map',
