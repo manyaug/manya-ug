@@ -1,7 +1,7 @@
 [build]
   base = "manya-react"
   publish = "dist"
-  command = "npm run build"
+  command = "npm run build && rm -rf dist/assets/science/musklo-skeletal-system dist/assets/shared/audios dist/assets/shared/audios.zip dist/assets/science/**/NOT\\ USED"
 
 [build.environment]
   NODE_VERSION = "20"

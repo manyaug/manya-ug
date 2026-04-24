@@ -3,13 +3,13 @@
 # HOST THESE ON SUPABASE STORAGE OR A CDN in production.
 
 # --- 3D Models (GLB) --- ~200 MB total
-manya-react/public/assets/science/musklo-skeletal-system/**/*.glb
+public/assets/science/musklo-skeletal-system/**/*.glb
 
 # --- Audio Files (MP3) --- ~65 MB total
-manya-react/public/assets/shared/audios/*.mp3
+public/assets/shared/audios/*.mp3
 
 # --- Unused/archived ZIP ---
-manya-react/public/assets/shared/audios.zip
+public/assets/shared/audios.zip
 
 # --- Unused GLB archives in NOT USED folders ---
-manya-react/public/assets/science/**/NOT USED/
+public/assets/science/**/NOT USED/
