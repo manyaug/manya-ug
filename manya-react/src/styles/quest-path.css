@@ -128,7 +128,7 @@
 
 /* Move active bounce to the WRAPPER so it doesn't conflict with child :active scale */
 .quest-node-abs.active {
-    animation: nodeWrapperBounce 2.5s infinite ease-in-out;
+    /* Grounded static nodes */
 }
 
 @keyframes nodeWrapperBounce {
@@ -331,8 +331,7 @@
     background: var(--biome-color);
     border-color: rgba(255, 255, 255, 0.5);
     box-shadow:
-        0 10px 0 var(--biome-color-dark, #333),
-        var(--shadow-premium);
+        0 8px 0 var(--biome-color-dark, #333);
 }
 
 .quest-node-abs.completed .node-icon-inner {
@@ -532,9 +531,7 @@
     .quest-node-abs.completed .tactile-node {
         background: var(--biome-color);
         box-shadow:
-            0 10px 0 var(--biome-color-dark),
-            0 0 30px rgba(var(--biome-color-rgb), 0.4);
-        /* Neon Glow */
+            0 8px 0 var(--biome-color-dark);
     }
 
     .quest-node-abs.active .tactile-node {

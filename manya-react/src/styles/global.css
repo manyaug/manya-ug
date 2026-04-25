@@ -183,8 +183,13 @@ body::after {
 }
 
 /* Color Variants (Tactile Bottom Borders) */
-.btn-toy-purple  { background: #7c3aed; border-bottom: 4px solid #5b21b6; }
-.btn-toy-purple:active { border-bottom-width: 2px; }
+.btn-toy-purple  { 
+    background: var(--manya-purple); 
+    border: 3px solid var(--manya-purple-dark);
+    border-bottom-width: 6.5px;
+    color: white !important;
+}
+.btn-toy-purple:active { border-bottom-width: 3px; transform: translateY(3.5px); }
 
 .btn-toy-green   { background: #58cc02; border-bottom: 4px solid #46a302; }
 .btn-toy-green:active  { border-bottom-width: 2px; }

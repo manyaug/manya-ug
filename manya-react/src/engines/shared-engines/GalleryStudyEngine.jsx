@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { discoverArtifact } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import GalleryRenderer from './Gallery/GalleryRenderer';
 import { 
     resolveImageUrl, 
@@ -13,6 +16,7 @@ import '../../styles/gallery-study.css';
  * - DECOUPLED: Logic (GalleryLogic), Renderer (GalleryRenderer), Controller (Engine)
  */
 export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
+    const dispatch = useDispatch();
     const [currentIdx, setCurrentIdx] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
@@ -58,6 +62,23 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
             const { isComplete, count } = getGalleryProgress(visitedIndices, slides.length);
             if (isComplete) {
                 const result = { isCorrect: true, score: count, total: slides.length, type: 'study' };
+                
+                // 🏺 ARCHIVE to Knowledge Vault - ONLY if not a quiz/exercise
+                if (data.mode !== 'quiz') {
+                    dispatch(discoverArtifact({
+                        id: data.id || `gallery_${Date.now()}`,
+                        type: 'gallery',
+                        title: data.title || 'Discovery Gallery',
+                        subject: data.subject || 'SCIENCE',
+                        data: data 
+                    }));
+
+                    dispatch(addToast({
+                        message: "Gallery Archived to Vault! 🏺✨",
+                        type: "success"
+                    }));
+                }
+
                 onResult?.(result);
                 onComplete?.(result);
             }

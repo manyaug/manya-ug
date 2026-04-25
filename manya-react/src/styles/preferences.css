@@ -8,28 +8,6 @@
     min-height: 100vh;
 }
 
-/* 1. HERO PASSPORT HEADER (Aligned with Profile) */
-.hero-vault-header {
-    text-align: center;
-    margin-bottom: 35px;
-    padding: 0 20px;
-}
-
-.hero-status-pill {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 6px 22px;
-    background: var(--bg-card);
-    color: var(--manya-purple);
-    border: 3.5px solid var(--border-subtle);
-    font-size: 10px;
-    font-weight: 950;
-    border-radius: 100px;
-    letter-spacing: 2px;
-    box-shadow: var(--shadow-warm);
-    text-transform: uppercase;
-}
-
 /* 2. BENTO GRID SYSTEM */
 .pref-bento-grid {
     display: grid;

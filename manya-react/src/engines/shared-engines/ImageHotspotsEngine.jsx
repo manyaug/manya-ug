@@ -111,7 +111,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, ski
                 id: data.id || `map_${Date.now()}`,
                 type: 'map',
                 title: data.title || 'Discovery Map',
-                subject: data.subject || 'SST',
+                subject: data.subject || 'SCIENCE',
                 data: data 
             }));
 

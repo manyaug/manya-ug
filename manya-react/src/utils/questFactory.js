@@ -33,7 +33,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
     };
 
     // ── English: Data-Driven Two-Layer Architecture ──────────────────────────
-    if (subject === 'english' && ['WARMUP', 'EXPLORE', 'PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType)) {
+    if (subject === 'english' && ['WARMUP', 'EXPLORE', 'EXERCISE', 'PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType)) {
         const steps = [];
         const questKey = getQuestKey('english', unitId, questFolder);
 
@@ -130,7 +130,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
 
 
     // ── SST, Math, Science: Adaptive Fetcher with content sequencing ────────
-    if (['sst', 'math', 'science'].includes(subject) && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+    if (['sst', 'math', 'science'].includes(subject) && (nodeType === 'WARMUP' || nodeType === 'EXPLORE' || nodeType === 'EXERCISE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
         const steps = [];
         let postWarmupSteps = []; // Holds the warmup recap to be injected *after* the test
 
@@ -141,7 +141,13 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                 if (nodeType === 'EXPLORE') {
                     return r.file.startsWith('note_') || r.file.includes('_note');
                 }
+                // EXERCISE node should focus on interactivity/sims
+                if (nodeType === 'EXERCISE') {
+                    return r.file.startsWith('study_') || r.file.includes('_study') || 
+                           r.file.startsWith('puzzle_') || r.file.includes('_puzzle');
+                }
                 // WARMUP and others maintain the broader set
+                if (nodeType === 'WARMUP') return false; // WARMUP is quest-only now
                 return (
                     r.file.startsWith('study_') || r.file.includes('_study') ||
                     r.file.startsWith('recap_') || r.file.includes('_recap') ||
@@ -183,15 +189,20 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                 // Determine whether it needs .json suffix
                 const fileName = studyRes.file.endsWith('.json') ? studyRes.file : `${studyRes.file}.json`;
                 try {
-                    const { steps: studySteps } = await loadQuestSteps(subject, unitId, questFolder, fileName);
+                    const { steps: rawStudySteps } = await loadQuestSteps(subject, unitId, questFolder, fileName);
+                    const studySteps = rawStudySteps.map(s => ({
+                        ...s,
+                        data: {
+                            ...s.data,
+                            // If accessed via Tome, it's a study. If via path, it's a labeling exercise/quiz.
+                            mode: nodeType === 'EXPLORE' ? 'study' : 'quiz'
+                        }
+                    }));
+
                     if (studySteps.length > 0) {
                         // Mark as a study sim intro step
                         studySteps[0].isStudySim = true;
-                        if (nodeType === 'WARMUP') {
-                            postWarmupSteps.push(...studySteps);
-                        } else {
-                            steps.push(...studySteps);
-                        }
+                        steps.push(...studySteps);
                     }
                 } catch (e) {
                     console.warn(`[QuestFactory] Could not load study asset ${fileName}:`, e);
@@ -202,7 +213,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         // ── IDENTIFY SIMULATIONS (Partitioned: Recap vs Quiz/Sim) ──
         let selectedSims = [];
         let recapSims = [];
-        if ((nodeType === 'WARMUP' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
+        if ((nodeType === 'WARMUP' || nodeType === 'EXERCISE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE' || nodeType === 'MASTERY')) {
             // A. Check for explicit JSON resources — partition into recap vs quiz
             let studySims = [];
             if (resources && resources.length > 0) {
@@ -238,8 +249,8 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
         }
 
         // PRACTICE/REINFORCE: insert recap upfront if previous node mastery was low
-        if (nodeType === 'PRACTICE' || nodeType === 'REINFORCE') {
-            const prevNode = nodeType === 'PRACTICE' ? 'EXPLORE' : 'PRACTICE';
+        if (nodeType === 'EXERCISE' || nodeType === 'PRACTICE' || nodeType === 'REINFORCE') {
+            const prevNode = nodeType === 'EXERCISE' ? 'WARMUP' : (nodeType === 'PRACTICE' ? 'EXERCISE' : 'PRACTICE');
             const questKey = getQuestKey(subject, unitId, questFolder);
             const prevMastery = getNodeMastery(subject, questKey, prevNode);
 
@@ -272,10 +283,6 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     recapResources: recapSims  // NEW: Separate channel for 3-consecutive-wrong rescue
                 }
             });
-        }
-
-        if (postWarmupSteps.length > 0) {
-            steps.push(...postWarmupSteps);
         }
 
         return steps;

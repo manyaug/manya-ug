@@ -32,74 +32,84 @@ function AchievementsView() {
   const unlockedCount = unlockedIds.length;
   const pct = (unlockedCount / totalBadges) * 100;
 
+  // Dynamic Shape Mapping (Matches Celebration Modal)
+  const getShapeClass = (tier) => {
+    const t = tier.toUpperCase();
+    if (t === 'GOLD' || t === 'PLATINUM' || t === 'DIAMOND') return 'shape-royal';
+    if (t === 'SILVER') return 'shape-spade';
+    return 'shape-heater'; // Bronze
+  };
+
   const renderIcon = (iconName, size = 24) => {
     const Icon = LucideIcons[iconName] || LucideIcons.Award;
-    return <Icon size={size} />;
+    return <Icon size={size} strokeWidth={2.5} />;
   };
 
   return (
     <div className="achievements-page animate-in">
-        <div className="view-header-back">
+        <div className="view-header-back !mb-2">
             <button className="manya-back-btn" onClick={() => navigate('/profile')}>
                 <LucideIcons.ChevronLeft size={24} strokeWidth={3} />
             </button>
-            <h2 className="page-title-elite">Trophy Room</h2>
+            <h2 className="page-title-elite !text-xl">Trophy Room</h2>
         </div>
 
         {/* GEM TREASURY (MATTE) */}
-        <div className="gem-treasury-card-minimal">
+        <div className="gem-treasury-card-minimal !p-3 !mb-3">
             <span className="vault-label">CURRICULUM VAULT</span>
-            <div className="gem-grid-minimal">
+            <div className="gem-grid-minimal !gap-2">
                 {subjectGems.map(gem => (
                     <div key={gem.name} className="gem-item-minimal">
-                        <div className="gem-stone-v2">
+                        <div className="gem-stone-v2 !h-10 !w-10">
                             <img src={getGem(gem.file)} alt={gem.name} />
                         </div>
-                        <div className="gem-count-v2" style={{ color: gem.color }}>{gem.val}</div>
-                        <div className="gem-label-v2">{gem.name}</div>
+                        <div className="gem-count-v2 !text-sm" style={{ color: gem.color }}>{gem.val}</div>
+                        <div className="gem-label-v2 !text-[9px]">{gem.name}</div>
                     </div>
                 ))}
             </div>
         </div>
 
         {/* COLLECTION PROGRESS (MODERN) */}
-        <div className="collection-card-minimal">
+        <div className="collection-card-minimal !p-3 !mb-4">
             <div className="prog-label-row">
-                <span className="prog-title">GRAND MASTERY</span>
-                <span className="prog-count">{unlockedCount} / {totalBadges}</span>
+                <span className="prog-title !text-xs">GRAND MASTERY</span>
+                <span className="prog-count !text-xs">{unlockedCount} / {totalBadges}</span>
             </div>
-            <div className="vault-bar-modern">
+            <div className="vault-bar-modern !h-1.5">
                 <div className="vault-bar-ink" style={{ width: `${pct}%` }}></div>
             </div>
-            <p className="prog-subtext-minimal">Collect all 100 badges to become a Manya Legend.</p>
         </div>
 
         {/* RENDER DYNAMIC BENTO GROUPS */}
         {groupedBadges.map(group => (
-            <div key={group.title} className="badge-category-minimal">
-                <h3 className="badge-cat-title">{group.title}</h3>
+            <div key={group.title} className="badge-category-minimal !mb-4">
+                <h3 className="badge-cat-title !text-xs opacity-60 mb-2">{group.title}</h3>
                 
                 <div className="badge-grid-minimal">
                     {group.badges.map(badge => {
                         const isUnlocked = unlockedIds.includes(badge.id);
+                        const tierClass = `tier-${badge.tier.toLowerCase()}`;
+                        const shapeClass = getShapeClass(badge.tier);
+
                         return (
                             <div key={badge.id} 
-                                 className={`badge-box-minimal ${isUnlocked ? `is-unlocked tier-${badge.tier.toLowerCase()}` : 'is-locked'}`}
+                                 className={`badge-box-minimal ${isUnlocked ? 'is-unlocked' : 'is-locked'} ${tierClass}`}
                             >
-                                <div className="badge-visual-ring">
-                                    <span className="badge-icon">
-                                        {renderIcon(badge.icon, 22)}
-                                    </span>
-                                </div>
-                                <div className="badge-info">
-                                    <span className="badge-name-v2">{badge.name}</span>
-                                    {isUnlocked ? (
-                                        <span className="badge-tier-tag">{badge.tier}</span>
-                                    ) : (
-                                        <div className="badge-lock-status">
-                                            <LucideIcons.Lock size={10} />
+                                <div className={`badge-crest-vault ${shapeClass} !w-14 !h-16 !mb-1`}>
+                                    <div className="badge-icon-reveal !scale-50">
+                                        {renderIcon(badge.icon, 32)}
+                                    </div>
+                                    {isUnlocked && <div className="badge-shine-effect" />}
+                                    {!isUnlocked && (
+                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
+                                            <LucideIcons.Lock size={12} className="text-white/40" />
                                         </div>
                                     )}
+                                </div>
+                                <div className="badge-info !gap-0">
+                                    <span className="badge-name-v2 !text-[9px] leading-tight truncate px-1">{badge.name}</span>
+                                    {isUnlocked && <span className="badge-tier-tag !text-[7px] py-0 px-1">{badge.tier}</span>}
                                 </div>
                             </div>
                         );

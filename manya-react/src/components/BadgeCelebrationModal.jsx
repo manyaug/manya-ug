@@ -7,6 +7,7 @@ import { ArrowRight, X } from 'lucide-react';
 import { BADGES } from '../config/badges';
 import { audioService } from '../infrastructure/audio/audioService';
 import { Ribbon, WorldClassConfetti } from './ui/CelebrationBling';
+import { getGem, IMAGES } from '../config/assetUrls';
 import '../styles/badge-celebration.css';
 
 const EMPTY_ARRAY = [];
@@ -35,24 +36,46 @@ const BadgeCelebrationModal = () => {
             const timer = setTimeout(() => {
                 setIsVisible(true);
                 audioService.playSFX('bass_drop'); // Heavy impact on the modal slide up
-                // Start fanfare automatically shortly after
-                setTimeout(() => audioService.playSFX('challenge_win'), 400);
+                
+                // 🎶 Dynamic Celebration Audio
+                setTimeout(() => {
+                    if (badge.tier.toUpperCase() === 'DIAMOND') {
+                        audioService.playSFX('applause');
+                    } else {
+                        audioService.playSFX('challenge_win');
+                    }
+                }, 600);
             }, jitter);
             
             return () => clearTimeout(timer);
         } else {
             setIsVisible(false);
         }
-    }, [currentBadgeId, location.pathname, isOnCooldown]);
+    }, [currentBadgeId, location.pathname, isOnCooldown, badge]);
 
     if (!badge || !isVisible) return null;
+
+    const badgeSubject = badge.cat.toLowerCase();
+    const gemIcon = getGem(badgeSubject === 'general' ? 'master' : badgeSubject);
+    
+    // Dynamic Shape Mapping
+    const getShapeClass = (tier) => {
+        const t = tier.toUpperCase();
+        if (t === 'GOLD' || t === 'PLATINUM' || t === 'DIAMOND') return 'shape-royal';
+        if (t === 'SILVER') return 'shape-spade';
+        return 'shape-heater'; // Bronze
+    };
 
     const handleCollect = () => {
         setIsVisible(false);
         setIsOnCooldown(true);
         
-        // Economy: Badges strictly award 1 Gem
-        dispatch(awardGems({ subject: 'general', amount: 1, xp: 0 }));
+        // Economy: Award to specific subject or general
+        dispatch(awardGems({ 
+            subject: badgeSubject, 
+            amount: 1, 
+            xp: 0 
+        }));
         
         setTimeout(() => {
             dispatch(dismissBadgeCelebration());
@@ -75,10 +98,10 @@ const BadgeCelebrationModal = () => {
                     <X size={20} strokeWidth={4} />
                 </button>
 
-                <div className={`badge-hero-card tier-${badge.tier.toLowerCase()} !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-6`}>
+                <div className={`badge-hero-card tier-${badge.tier.toLowerCase()} !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-2`}>
                     <div className="badge-glow-ring" />
                     
-                    <div className="badge-crest-vault !mb-0 z-10 relative">
+                    <div className={`badge-crest-vault ${getShapeClass(badge.tier)} !mb-0 z-10 relative`}>
                         <div className="badge-icon-reveal">
                             {renderIcon(badge.icon)}
                         </div>
@@ -88,14 +111,20 @@ const BadgeCelebrationModal = () => {
 
                 <Ribbon text="ACHIEVEMENT UNLOCKED" />
 
-                <h1 className="celebration-title-premium mt-4">{badge.name}</h1>
-                <p className="celebration-subtext-premium mb-2">{badge.desc}</p>
-                <div className="flex justify-center items-center gap-2 mb-6">
-                    <span className="celebration-tier-badge !mt-0 !mb-0">{badge.tier}</span>
-                    <span className="font-black text-sm text-[var(--accent-glow)] tracking-wider px-3 py-1 bg-[var(--glass-bg)] border border-[var(--border-subtle)] rounded-full shadow-inner">+1 GEM 💎</span>
+                <div className="celebration-text-content px-6">
+                    <h1 className="celebration-title-premium mt-1">{badge.name}</h1>
+                    <p className="celebration-subtext-premium mb-2">{badge.desc}</p>
                 </div>
 
-                <button className="btn-collect-3d mt-2 w-full max-w-[280px] mx-auto block" onClick={handleCollect}>
+                <div className="flex justify-center items-center gap-2 mb-2">
+                    <span className="celebration-tier-badge !mt-0 !mb-0">{badge.tier}</span>
+                    <div className="gem-reward-pill flex items-center gap-2 px-4 py-1.5 bg-slate-900/40 border border-white/10 rounded-full">
+                        <img src={gemIcon} alt="Gem" className="w-5 h-5 object-contain" />
+                        <span className="font-black text-xs text-white tracking-widest">+1</span>
+                    </div>
+                </div>
+
+                <button className="btn-collect-3d mb-1 w-full max-w-[260px] mx-auto block" onClick={handleCollect}>
                     <div className="btn-gloss-highlight" />
                     <span className="flex items-center justify-center gap-2">CLAIM GLORY <ArrowRight size={20} className="inline" strokeWidth={3} /></span>
                 </button>

@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
+import { useDispatch, useStore } from 'react-redux';
+import { discoverArtifact, syncUserData } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import SetStudyRenderer from './SetStudyRenderer';
 import { initParticles, updateParticles } from './SetStudyLogic';
 
@@ -8,7 +11,8 @@ import { initParticles, updateParticles } from './SetStudyLogic';
  * - DECOUPLED: Separates canvas animation from React state management.
  * - Optimized 60FPS tick-loop.
  */
-const SetStudyEngine = ({ data, onComplete, onResult }) => {
+const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) => {
+  const dispatch = useDispatch();
   const [stepIdx, setStepIdx] = useState(0);
   const [isDark, setIsDark] = useState(false);
   const [visitedIndices, setVisitedIndices] = useState(new Set([0]));
@@ -198,6 +202,27 @@ const SetStudyEngine = ({ data, onComplete, onResult }) => {
   const hNext = () => { 
     if (stepIdx < slides.length - 1) setStepIdx(s => s + 1); 
     else if (allSeen) {
+      // 🏺 ARCHIVE to Knowledge Vault - ONLY if not a quiz/exercise and NOT already in vault
+      if (data.mode !== 'quiz' && !skipDiscovery) {
+        dispatch(discoverArtifact({
+            id: data.id || `math_set_${Date.now()}`,
+            type: 'set_study',
+            title: data.topic || 'Math Discovery',
+            subject: data.subject || 'MATH',
+            data: data 
+        }));
+
+        // 🚀 FORCE PERSISTENCE
+        setTimeout(() => {
+            dispatch(syncUserData(store.getState().user.data));
+        }, 100);
+
+        dispatch(addToast({
+            message: "Math Discovery Archived to Vault! 🏺✨",
+            type: "success"
+        }));
+      }
+
       onResult?.({ isCorrect: true, score: 1, total: 1, type: 'study_complete' });
       onComplete?.(); 
     }

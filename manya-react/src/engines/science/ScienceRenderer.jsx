@@ -37,9 +37,13 @@ const ScienceRenderer = ({
     frustration,
     SimulatorBridgeNode,
     questMeta,
-    userWasCorrect
+    userWasCorrect,
+    session
 }) => {
     const correctBtnRef = useRef(null);
+    const correctCount = session?.correctCount || 0;
+    const streakCount = session?.streak || 0;
+    const masteryScore = session?.mastery || 0;
 
     // Trigger flying coins and mascot reactions when user is answered
     useEffect(() => {

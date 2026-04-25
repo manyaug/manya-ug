@@ -259,7 +259,7 @@ export const ManyaDB = {
     createDefaultRecord() {
 
         return {
-            uid: `ID_${Math.floor(Math.random() * 1000000)}`,
+            uid: crypto.randomUUID(),
             onboarded: false,
             nickname: "",
             fullName: "",

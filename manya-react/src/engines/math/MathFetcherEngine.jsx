@@ -221,7 +221,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
 
         if (isCorrect) {
-            dispatch(awardGems({ subject, amount: 0, xp: hintUsed ? 5 : 10 }));
+            dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
             if (coinReward > 0) dispatch(awardCoins(coinReward));
             setGemsEarned(g => g + totalGems); setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
@@ -259,11 +259,9 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             const chestType = getQuestCompletionChest(stars);
             if (chestType) dispatch(dropChest({ chestType, rewards: rollChestRewards(chestType) }));
 
-            // ── Achievement Check ─────────────────────────────────────────────
-            const noHintsUsed = hintUsedCount === 0;
-            const achieveCtx = { mastery, questsCompleted: (user[`prog_${subject}`] || 0) + 1, streak: user.current_streak || 0, nodeType, questCompletedNoHints: noHintsUsed };
-            const newBadges = achievementService.checkAchievements(subject, achieveCtx);
-            newBadges.forEach(b => syncService.pushBadge(b).catch(() => {}));
+            // ── Achievement Check (Unified Redux System) ──────────────────────
+            dispatch(checkAchievements());
+            dispatch(syncUserData(store.getState().user.data));
 
             setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
             setShowCompletion(true);
@@ -298,6 +296,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             userWasCorrect={isAnswered && validateMathAnswer(selectedOption, q.answer, q.options)}
             isLast={currentIdx === questions.length - 1}
             onSkip={nextQuestion}
+            session={session}
             SimulatorBridgeNode={isSim ? (
                 <SimulatorBridge 
                     key={q.id || currentIdx} step={q}

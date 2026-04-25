@@ -244,16 +244,20 @@ function SettingsView() {
             className="sett-view font-main"
         >
             <div className="max-w-2xl mx-auto px-4 pb-20 relative z-10">
-                {/* 🔙 BACK NAV */}
-                <div className="flex items-center gap-4 mb-8">
-                    <button onClick={() => navigate('/profile')} className="p-2 bg-white rounded-2xl border-2 border-slate-200">
-                        <ChevronLeft className="text-slate-600" />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-black text-slate-800 tracking-tight">Identity Vault</h1>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Metadata Stabilization Console</p>
+                {/* 🔙 ELITE HEADER */}
+                <header className="pref-header-elite mb-8 !p-6">
+                    <div className="toy-card-gloss" />
+                    <div className="flex items-center gap-4 relative z-20">
+                        <button onClick={() => navigate('/profile')} className="pref-back-btn btn-toy">
+                            <div className="toy-card-gloss" />
+                            <ChevronLeft size={28} strokeWidth={3.5} />
+                        </button>
+                        <div>
+                            <span className="pref-breadcrumb">IDENTITY VAULT</span>
+                            <h1 className="pref-main-title">Metadata Console</h1>
+                        </div>
                     </div>
-                </div>
+                </header>
 
                 {/* 🛡️ VAULT BANNER */}
                 <div className="identity-vault-banner">

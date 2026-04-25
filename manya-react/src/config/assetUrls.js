@@ -49,7 +49,10 @@ export function assetUrl(path) {
   // 4. Normalize Binary Paths (audio vs audios)
   // NOTE: The repo uses 'audios/' at root — do NOT rewrite to 'audio/'
 
-  return `${BASE_CDN_URL}${clean}`;
+  // 5. Final Encoding (handles spaces in file names like "One More Try.mp3")
+  const encoded = clean.split('/').map(seg => encodeURIComponent(seg)).join('/');
+  
+  return `${BASE_CDN_URL}${encoded}`;
 }
 
 /**

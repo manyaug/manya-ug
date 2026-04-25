@@ -111,24 +111,34 @@ function ProfileView() {
                 <div className="hero-title-tag">System Administrator</div>
             </motion.div>
 
-            {/* 2. ANALYTICS BENTO GRID (UPGRADED) */}
-            <motion.div variants={itemVariants} className="bento-grid">
-                <div className="bento-card-elite streak">
+            {/* 2. FORCED HORIZONTAL HUD */}
+            <motion.div variants={itemVariants} className="px-4 mb-3">
+                <div className="bento-card-elite bento-card-wide !p-3 !flex !flex-row !items-center !justify-around">
                     <div className="toy-card-gloss" />
-                    <div className="bento-icon-box">
-                        <Flame size={20} color="#f97316" />
+                    
+                    {/* STREAK SEGMENT */}
+                    <div className="flex items-center gap-3 relative z-10 flex-1 justify-center">
+                        <div className="w-9 h-9 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20">
+                            <Flame size={18} />
+                        </div>
+                        <div className="text-left">
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Streak</p>
+                            <p className="text-[12px] font-black text-slate-700 dark:text-white leading-none whitespace-nowrap">{user?.current_streak || 0} Days</p>
+                        </div>
                     </div>
-                    <span className="bento-label">HERO STREAK</span>
-                    <div className="bento-val">{user?.current_streak || 0} DAYS</div>
-                </div>
 
-                <div className="bento-card-elite league">
-                    <div className="toy-card-gloss" />
-                    <div className="bento-icon-box" style={{ background: `${stats.leagueColor}15` }}>
-                        <Trophy size={20} color={stats.leagueColor} />
+                    <div className="w-[1px] h-8 bg-slate-200 dark:bg-white/10 relative z-10" />
+
+                    {/* LEAGUE SEGMENT */}
+                    <div className="flex items-center gap-3 relative z-10 flex-1 justify-center" onClick={() => navigate('/rankings')}>
+                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/20">
+                            <Trophy size={18} />
+                        </div>
+                        <div className="text-left">
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">League</p>
+                            <p className="text-[12px] font-black text-amber-600 leading-none whitespace-nowrap">{user?.league || 'Bronze'}</p>
+                        </div>
                     </div>
-                    <span className="bento-label">LEAGUE STATUS</span>
-                    <div className="bento-val" style={{ color: stats.leagueColor }}>{stats.league.toUpperCase()}</div>
                 </div>
             </motion.div>
 
@@ -162,43 +172,43 @@ function ProfileView() {
                 </div>
             </motion.div>
 
-            {/* 4. SUBJECT PROGRESS (GLASS STACK) */}
-            <motion.h4 variants={itemVariants} className="section-label">Curriculum Matrix</motion.h4>
-            <motion.div variants={itemVariants} className="subject-stack-national">
-                {subjectProgress.map((sub, idx) => (
-                    <motion.div
-                        key={sub.name}
-                        variants={itemVariants}
-                        className="sub-progress-elite"
-                    >
-                        <div className="sub-row">
-                            <div className="sub-meta">
-                                <img src={sub.icon} className="sub-avatar-tiny" alt={sub.name} />
-                                <span className="sub-name">{sub.name}</span>
+            {/* 4. ACADEMIC PULSE (CONSOLIDATED) */}
+            <motion.h4 variants={itemVariants} className="section-label">Academic Pulse</motion.h4>
+            <motion.div variants={itemVariants} className="px-4 mb-6">
+                <div className="sub-progress-elite academic-mini-matrix p-5">
+                    <div className="toy-card-gloss" />
+                    
+                    {[
+                        { name: 'Mathematics', val: 78, color: 'var(--manya-purple)', img: IMAGES.math_gem },
+                        { name: 'Science', val: 45, color: '#10b981', img: IMAGES.science_gem },
+                        { name: 'SST', val: 62, color: '#f59e0b', img: IMAGES.sst_gem },
+                        { name: 'English', val: 90, color: '#f43f5e', img: IMAGES.english_gem }
+                    ].map((subj, idx) => (
+                        <div key={idx} className="mb-4 last:mb-0">
+                            <div className="flex items-center justify-between mb-1.5">
+                                <div className="flex items-center gap-2">
+                                    <img src={subj.img} alt={subj.name} className="w-5 h-5 object-contain" />
+                                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">{subj.name}</span>
+                                </div>
+                                <span className="text-[11px] font-black text-slate-500">{subj.val}%</span>
                             </div>
-                            <span className="sub-value">{sub.val}%</span>
+                            <div className="h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${subj.val}%` }}
+                                    className="h-full"
+                                    style={{ background: subj.color }}
+                                />
+                            </div>
                         </div>
-                        <div className="matrix-track">
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${sub.val}%` }}
-                                transition={{ delay: 0.8 + (idx * 0.1), duration: 1.2 }}
-                                className="matrix-fill"
-                                style={{ backgroundColor: sub.color }}
-                            >
-                            </motion.div>
-                        </div>
-                    </motion.div>
-                ))}
+                    ))}
+                </div>
             </motion.div>
-
-            {/* 5. HERO MANAGEMENT SERVICES */}
-            {/* 5. HERO MANAGEMENT SERVICES */}
             <motion.h4 variants={itemVariants} className="section-label">Hero Management</motion.h4>
             <motion.div variants={itemVariants} className="service-list-national">
-                <div className="service-row-elite btn-toy btn-toy-slate" onClick={() => navigate('/settings')}>
+                <div className="service-row-elite btn-toy btn-toy-purple" onClick={() => navigate('/settings')}>
                     <div className="toy-card-gloss" />
-                    <div className="s-icon-box" style={{ background: '#f8fafc', color: '#475569' }}>
+                    <div className="s-icon-box" style={{ background: 'white', color: 'var(--manya-purple)' }}>
                         <UserCog size={20} />
                     </div>
                     <div className="s-content" style={{ zIndex: 2 }}>
@@ -208,9 +218,9 @@ function ProfileView() {
                     <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
 
-                <div className="service-row-elite btn-toy btn-toy-green" onClick={() => navigate('/preferences')}>
+                <div className="service-row-elite btn-toy btn-toy-purple" onClick={() => navigate('/preferences')}>
                     <div className="toy-card-gloss" />
-                    <div className="s-icon-box" style={{ background: '#f0fdf4', color: '#166534' }}>
+                    <div className="s-icon-box" style={{ background: 'white', color: 'var(--manya-purple)' }}>
                         <Sliders size={20} />
                     </div>
                     <div className="s-content" style={{ zIndex: 2 }}>
@@ -220,9 +230,9 @@ function ProfileView() {
                     <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>
 
-                <div className="service-row-elite btn-toy btn-toy-gold" onClick={() => navigate('/membership')}>
+                <div className="service-row-elite btn-toy btn-toy-purple" onClick={() => navigate('/membership')}>
                     <div className="toy-card-gloss" />
-                    <div className="s-icon-box" style={{ background: '#fffbeb', color: '#92400e' }}>
+                    <div className="s-icon-box" style={{ background: 'white', color: 'var(--manya-purple)' }}>
                         <Crown size={20} />
                     </div>
                     <div className="s-content" style={{ zIndex: 2 }}>

@@ -243,7 +243,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
         const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
 
         if (isCorrect) {
-            dispatch(awardGems({ subject, amount: 0, xp: hintUsed ? 5 : 10 }));
+            dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
             if (coinReward > 0) dispatch(awardCoins(coinReward));
             setGemsEarned(g => g + totalGems); setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
@@ -314,6 +314,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
             frustration={calculateFrustration(session)}
             isLast={currentIdx === questions.length - 1}
+            session={session}
             SimulatorBridgeNode={isSim ? (
                 <SimulatorBridge 
                     key={q.id || currentIdx} step={q} subject={subject}

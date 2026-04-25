@@ -5,9 +5,9 @@
  * Features a dark theme, recessed close button, and glowing subject labels.
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, Trophy, Check, Zap } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getGem } from '../config/assetUrls.js';
 import { audioService } from '../infrastructure/audio/audioService';
 import QuestExitModal from './QuestExitModal';
@@ -59,19 +59,18 @@ const QuestHUD = ({
         english: 'ENGLISH'
     };
 
-    // Use specific gems
+    // Subject gems mapping
+    const subjectGems = user?.subjectGems?.[subject.toLowerCase()] || user?.[`${subject.toLowerCase()}Gems`] || 0;
     const gemIcon = getGem(`${subject.toLowerCase()}_gem.svg`);
 
     const progressPct = total > 0 ? (current / total) * 100 : 0;
     
     // Predictive Pass Calculation
     const PASS_THRESHOLD = 75;
-    const isPassing = masteryScore >= PASS_THRESHOLD;
-    const masteryColor = masteryScore < 50 ? '#ef4444' : (masteryScore < 75 ? '#f59e0b' : '#10b981');
+    const masteryColor = masteryScore < 50 ? '#f43f5e' : (masteryScore < 75 ? '#f59e0b' : '#10b981');
 
     return (
-        <div className="quest-hud-minimal" data-subject={subject.toLowerCase()}>
-
+        <div className="quest-hud-premium" data-subject={subject.toLowerCase()}>
             <QuestExitModal 
                 isOpen={showExitModal}
                 subject={subject}
@@ -79,10 +78,11 @@ const QuestHUD = ({
                 onConfirm={onClose}
             />
 
+            {/* TOP BAR: SUBJECT & PERSISTENT WEALTH */}
             <div className="hud-top-flex">
                 <div className="hud-left-group">
                     <button className="hud-x-btn" onClick={handleClose}>
-                        <X size={20} />
+                        <X size={18} strokeWidth={4} />
                     </button>
                     <div className="hud-subject-badge">
                         {subjectNames[subject.toLowerCase()] || subject.toUpperCase()}
@@ -90,41 +90,42 @@ const QuestHUD = ({
                 </div>
 
                 <div className="hud-right-group">
-                    <div id="hud-coin-pill" className={`hud-stat-box ${isCoinAbsorbing ? 'hud-absorb-pulse' : ''}`}>
-                        <img src={getGem('coin.svg')} alt="Coin" className="hud-mini-icon" />
+                    <div id="hud-coin-pill" className={`hud-pill-premium ${isCoinAbsorbing ? 'hud-absorb-pulse' : ''}`}>
+                        <div className="hud-coin-icon-wrapper">
+                            <img src={getGem('coin.svg')} alt="Coin" className="w-4 h-4 object-contain" />
+                        </div>
                         <span>{coins.toLocaleString()}</span>
                     </div>
-                    <div id="hud-gem-pill" className={`hud-stat-box ${isAbsorbing ? 'hud-absorb-pulse' : ''}`}>
-                        <img src={gemIcon} alt="Gem" className="hud-mini-icon" />
-                        <span>{current}/{total}</span>
+                    <div id="hud-gem-pill" className={`hud-pill-premium ${isAbsorbing ? 'hud-absorb-pulse' : ''}`}>
+                        <div className="hud-gem-icon-wrapper">
+                            <img src={gemIcon} alt="Gem" className="w-4 h-4 object-contain" />
+                        </div>
+                        <span>{subjectGems}</span>
                     </div>
                 </div>
             </div>
 
-            <div className="hud-mastery-section">
-                <div className="hud-bar-lane">
-                    <div className="hud-progress-bg">
-                        <div 
-                            className="hud-progress-fill" 
-                            style={{ width: `${progressPct}%` }}
-                        />
-                        <div 
-                            className="hud-pass-tick" 
-                            style={{ left: `${PASS_THRESHOLD}%` }}
-                        />
-                        <div 
-                            className="hud-mastery-dot" 
-                            style={{ left: `${masteryScore}%`, backgroundColor: masteryColor }}
-                        />
+            {/* MASTERY SECTION: THE DETAILED BAR */}
+            <div className="hud-mastery-card-premium">
+                <div className="flex justify-between items-center mb-3">
+                    <div className="flex items-center gap-2">
+                         <Trophy size={16} className="text-amber-400" />
+                         <span className="font-black text-[11px] tracking-widest text-white/50 uppercase">Quest Mastery Progress</span>
                     </div>
+                    <span className="font-black text-sm" style={{ color: masteryColor }}>{Math.round(masteryScore)}%</span>
                 </div>
-                <div className="hud-mastery-info">
-                    <span className="hud-mastery-label" style={{ color: masteryColor }}>
-                        MASTERY: {Math.round(masteryScore)}%
-                    </span>
-                    <span className="hud-target-label">
-                        TARGET: {PASS_THRESHOLD}%
-                    </span>
+
+                <div className="hud-progress-container">
+                    <div className="hud-progress-track">
+                         {/* Scale Markers */}
+                         <div className="hud-scale-marker" style={{ left: '25%' }}><div className="marker-line" /><span>25%</span></div>
+                         <div className="hud-scale-marker" style={{ left: '50%' }}><div className="marker-line" /><span>50%</span></div>
+                         <div className="hud-scale-marker" style={{ left: '75%' }}><div className="marker-line" /><span>75%</span></div>
+                         <div className="hud-scale-marker !right-0 !left-auto"><span>100%</span></div>
+
+                         {/* The Fill */}
+                         <div className="hud-progress-fill-gradient" style={{ width: `${masteryScore}%`, backgroundColor: masteryColor }} />
+                    </div>
                 </div>
             </div>
         </div>

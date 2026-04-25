@@ -31,8 +31,10 @@ function PreferencesView() {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [syncStatus, setSyncStatus] = useState(navigator.onLine ? '100% SECURE' : 'OFFLINE (QUEUED)');
 
-    const toggleTheme = () => {
-        const next = user?.theme === 'dark' ? 'light' : 'dark';
+    const toggleTheme = (e) => {
+        if (e) e.stopPropagation();
+        const current = user?.theme || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
         dispatch(updateProfile({ ...user, theme: next }));
         document.documentElement.setAttribute('data-theme', next);
     };
@@ -59,31 +61,19 @@ function PreferencesView() {
 
     return (
         <div className="pref-view font-main">
-            {/* 1. HERO VAULT PASS (REMASTERED) */}
-            <div className="hero-vault-header">
-                <div className="flex justify-between items-center mb-6">
-                    <button onClick={() => navigate('/profile')} className="back-btn-manya">
-                        <ChevronLeft size={24} />
+            <header className="pref-header-elite !p-6 mb-8">
+                <div className="toy-card-gloss" />
+                <div className="flex items-center gap-4 relative z-20">
+                    <button onClick={() => navigate('/profile')} className="pref-back-btn btn-toy">
+                        <div className="toy-card-gloss" />
+                        <ChevronLeft size={28} strokeWidth={3.5} />
                     </button>
-                    <div className="text-right">
-                        <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Vault Node</h2>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Settings Alpha v21.0</span>
+                    <div>
+                        <span className="pref-breadcrumb">PREFERENCES</span>
+                        <h1 className="pref-main-title">Vault Settings</h1>
                     </div>
                 </div>
-
-                <div className="relative inline-block mt-4">
-                    <div className="w-24 h-24 rounded-full border-4 border-violet-500 p-1 bg-white mx-auto overflow-hidden shadow-xl">
-                        <img 
-                            src={user?.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}` : IMAGES.avatars.Manya} 
-                            alt="Hero" 
-                            className="w-full h-full object-cover rounded-full" 
-                        />
-                    </div>
-                    <div className="hero-status-pill">
-                        {isOnline ? 'Network: ACTIVE' : 'Local Archive'}
-                    </div>
-                </div>
-            </div>
+            </header>
 
             {/* 2. BENTO SETTINGS MATRIX */}
             <div className="pref-bento-grid">
@@ -101,14 +91,13 @@ function PreferencesView() {
                         <input 
                             type="checkbox" 
                             className="premium-toggle-input" 
-                            id="night-mode-bento" 
                             checked={user?.theme === 'dark'}
-                            onChange={toggleTheme}
+                            readOnly
                         />
-                        <label htmlFor="night-mode-bento" className="premium-toggle-label">
+                        <div className="premium-toggle-label">
                             <div className="toggle-switch"></div>
                             <div className="toggle-gloss"></div>
-                        </label>
+                        </div>
                     </div>
                 </div>
 

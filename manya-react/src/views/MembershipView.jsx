@@ -58,14 +58,20 @@ function MembershipView() {
             <div className="blob aurora-2" style={{ background: '#f59e0b' }}></div>
         </div>
 
-        {/* 1. ARENA-STYLE HEADER */}
-        <div className="rank-arena-header mem-header">
-            <button className="back-btn-elite" onClick={() => navigate('/profile')}>
-                <ChevronLeft size={24} />
-            </button>
-            <h2 className="arena-title">Elite Hub</h2>
-            <p className="arena-subtitle">Unlock Your P.7 Potential</p>
-        </div>
+        {/* 1. ARENA-STYLE HEADER (UNITED) */}
+        <header className="pref-header-elite mb-10 !p-6">
+            <div className="toy-card-gloss" />
+            <div className="flex items-center gap-4 relative z-20">
+                <button className="pref-back-btn btn-toy" onClick={() => navigate('/profile')}>
+                    <div className="toy-card-gloss" />
+                    <ChevronLeft size={28} strokeWidth={3.5} />
+                </button>
+                <div className="text-left">
+                    <span className="pref-breadcrumb">ELITE HUB</span>
+                    <h1 className="pref-main-title">Unlock Potential</h1>
+                </div>
+            </div>
+        </header>
 
         {/* 2. SOCIAL PROOF (GLASSMORPHIC) */}
         <motion.div variants={itemVariants} className="leaderboard-card-elite mem-testimonial-card">

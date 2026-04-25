@@ -66,19 +66,27 @@ const CelebrationView = ({
     useEffect(() => {
         if (isPassing) {
             audioService.playSFX('bass_drop');
-            setTimeout(() => audioService.finish(), 400); // Shorter success jingle and dynamic voice, saving the long fanfare for boss chests
+            const isBossChest = nodeType?.toUpperCase() === 'MASTERY';
+            
+            setTimeout(() => {
+                if (isBossChest) {
+                    audioService.playSFX('applause');
+                } else {
+                    audioService.finish(); // Standard success jingle
+                }
+            }, 600); // More breathing room for the impact sound
         } else {
-            audioService.playSFX('whoosh'); // Softer impact for failure
+            audioService.playSFX('challenge_woosh'); 
             setTimeout(() => audioService.error(), 400);
         }
-    }, [isPassing]);
+    }, [isPassing, nodeType]);
 
     return (
         <div className="celebration-arena-overlay">
             <WorldClassConfetti />
 
             <motion.div
-                className="celebration-card-container"
+                className="celebration-card-container !py-8"
                 initial={{ scale: 0.8, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 transition={{ type: "spring", damping: 15, stiffness: 100 }}
@@ -89,12 +97,12 @@ const CelebrationView = ({
                 </button>
 
                 {/* Hero Mascot */}
-                <div className="celebration-hero-blob">
+                <div className="celebration-hero-blob !h-[120px] !w-[120px] !mb-0">
                     <motion.img
                         src={char.image}
                         alt={char.name}
                         className="celebration-mascot-hero"
-                        animate={{ y: [0, -10, 0] }}
+                        animate={{ y: [0, -6, 0] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                     />
                 </div>
@@ -102,11 +110,11 @@ const CelebrationView = ({
                 {/* Badge Ribbon */}
                 <Ribbon text={`${nodeType} COMPLETE`} />
 
-                <h1 className="celebration-title-premium">{msg.title}</h1>
-                <p className="celebration-subtext-premium">{msg.sub}</p>
+                <h1 className="celebration-title-premium !text-2xl mt-2">{msg.title}</h1>
+                <p className="celebration-subtext-premium !mb-4">{msg.sub}</p>
 
-                {/* STATS AREA — Clean 3-chip layout */}
-                <div className="premium-stats-list-celebration">
+                {/* STATS AREA — Compacted */}
+                <div className="premium-stats-list-celebration !my-4">
                     <div className="stat-chip-celebration">
                         <span className="label">SCORE</span>
                         <span className="val">{score}/{total}</span>
@@ -122,10 +130,10 @@ const CelebrationView = ({
                 </div>
 
                 {/* Action Button */}
-                <button className="btn-collect-3d" onClick={onCollect}>
+                <button className="btn-collect-3d !h-14 !max-w-[240px]" onClick={onCollect}>
                     <div className="btn-gloss-highlight" />
-                    <span>COLLECT REWARDS</span>
-                    <ArrowRight size={20} strokeWidth={3} />
+                    <span className="!text-sm">COLLECT REWARDS</span>
+                    <ArrowRight size={18} strokeWidth={3} />
                 </button>
             </motion.div>
         </div>

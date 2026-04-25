@@ -14,11 +14,12 @@ const ThreeDStudyEngine = lazy(() => import('../engines/shared-engines/ThreeDStu
 const ReaderStudyEngine = lazy(() => import('../engines/shared-engines/ReaderStudyEngine.jsx'));
 const ImageHotspotsEngine = lazy(() => import('../engines/shared-engines/ImageHotspotsEngine.jsx'));
 const UniversalGlobeEngine = lazy(() => import('../engines/sst/UniversalGlobeEngine.jsx'));
+const SetStudyEngine = lazy(() => import('../engines/math/SetStudyEngine.jsx'));
 
 const SUBJECTS = [
-    { id: 'math', label: 'Mathematics', color: '#7c3aed', icon: 'math' },
-    { id: 'science', label: 'Science', color: '#10b981', icon: 'science' },
-    { id: 'english', label: 'English', color: '#db2777', icon: 'english' },
+    { id: 'math', label: 'Math', color: '#7c3aed', icon: 'math' },
+    { id: 'science', label: 'Sci', color: '#10b981', icon: 'science' },
+    { id: 'english', label: 'Eng', color: '#db2777', icon: 'english' },
     { id: 'sst', label: 'SST', color: '#f59e0b', icon: 'sst' },
 ];
 
@@ -30,7 +31,7 @@ function LibraryView() {
     const [previewItem, setPreviewItem] = useState(null);
 
     // Only allow pure study/archival materials, exclude interactive engines here
-    const STUDY_TYPES = ['3d', 'glb', 'note', 'dictionary', 'recap', 'map'];
+    const STUDY_TYPES = ['3d', 'glb', 'note', 'dictionary', 'recap', 'map', 'set_study'];
 
     // Filter by Subject & Type
     const filteredItems = useMemo(() => {
@@ -61,15 +62,14 @@ function LibraryView() {
 
     return (
         <div className="elite-vault-root">
-            {/* 💎 MINIMALIST HEADER */}
-            <header className="vault-minimal-header">
-                <div className="flex flex-col">
-                    <span className="vault-breadcrumb">KNOWLEDGE ARCHIVE</span>
-                    <h1 className="vault-main-title">My Discoveries</h1>
-                </div>
-                <div className="vault-count-pill">
-                    <Sparkles size={14} className="text-yellow-400" />
-                    <span>{filteredItems.length} TOTAL</span>
+            {/* 💎 ULTRA-COMPACT HUD */}
+            <header className="vault-minimal-header !mb-3">
+                <div className="flex items-center justify-between w-full">
+                    <span className="text-[11px] font-black text-slate-400 tracking-[4px] uppercase">Knowledge Archive</span>
+                    <div className="vault-count-pill !m-0 !py-1.5">
+                        <Sparkles size={12} className="text-yellow-400" />
+                        <span className="text-[10px]">{filteredItems.length} TOTAL</span>
+                    </div>
                 </div>
             </header>
 
@@ -145,7 +145,7 @@ function LibraryView() {
                                                         </div>
                                                         <div className="artifact-details">
                                                             <span className="artifact-type-tag">
-                                                                {item.type === '3d' ? '3D RELIC' : (item.type === 'dictionary' ? 'LEXICON' : 'STUDY NOTE')}
+                                                                {item.type === '3d' ? '3D RELIC' : (item.type === 'set_study' ? 'INTERACTIVE' : (item.type === 'dictionary' ? 'LEXICON' : 'STUDY NOTE'))}
                                                             </span>
                                                             <h4 className="artifact-name block truncate max-w-[200px]" title={item.title}>{item.title}</h4>
                                                             <div className="artifact-meta-line">
@@ -188,41 +188,32 @@ function LibraryView() {
 
                             <div className="preview-mount">
                                 <Suspense fallback={<div className="vault-loader"><div className="loader-orbit" style={{ borderTopColor: activeColor }} /></div>}>
-                                    {(previewItem.type === '3d' || previewItem.type === 'glb') && (
-                                        <ThreeDStudyEngine 
-                                            data={previewItem.data} 
-                                            onComplete={() => setPreviewItem(null)} 
-                                            skipDiscovery={true}
-                                        />
-                                    )}
-                                    {(previewItem.type === 'note' || previewItem.type === 'dictionary') && (
-                                        <NoteExplorerEngine 
-                                            data={previewItem.data} 
-                                            onComplete={() => setPreviewItem(null)} 
-                                            skipDiscovery={true}
-                                        />
-                                    )}
-                                    {previewItem.type === 'recap' && (
-                                        <ReaderStudyEngine 
-                                            data={previewItem.data} 
-                                            onComplete={() => setPreviewItem(null)} 
-                                            skipDiscovery={true}
-                                        />
-                                    )}
-                                    {previewItem.type === 'map' && (
-                                        <UniversalGlobeEngine 
-                                            data={previewItem.data} 
-                                            onComplete={() => setPreviewItem(null)} 
-                                            skipDiscovery={true}
-                                        />
-                                    )}
-                                    {previewItem.type === 'image_hotspots' && (
-                                        <ImageHotspotsEngine 
-                                            data={previewItem.data} 
-                                            onComplete={() => setPreviewItem(null)} 
-                                            skipDiscovery={true}
-                                        />
-                                    )}
+                                    {(() => {
+                                        const d = previewItem.data || {};
+                                        // 🔮 UNIVERSAL ENGINE RESOLVER
+                                        // 1. Set Theory / Visual Math Simulations
+                                        if (d.slides?.[0]?.visualType || d.engine === 'SET_STUDY') {
+                                            return <SetStudyEngine data={d} onComplete={() => setPreviewItem(null)} skipDiscovery={true} />;
+                                        }
+                                        // 2. 3D & Binary Relics
+                                        if (previewItem.type === '3d' || previewItem.type === 'glb' || d.modelUrl) {
+                                            return <ThreeDStudyEngine data={d} onComplete={() => setPreviewItem(null)} skipDiscovery={true} />;
+                                        }
+                                        // 3. Narrative Recaps
+                                        if (previewItem.type === 'recap' || d.storySteps || d.mode === 'reader') {
+                                            return <ReaderStudyEngine data={d} onComplete={() => setPreviewItem(null)} skipDiscovery={true} />;
+                                        }
+                                        // 4. SST / Geo Simulation Globes
+                                        if (previewItem.type === 'map' || d.globeConfig) {
+                                            return <UniversalGlobeEngine data={d} onComplete={() => setPreviewItem(null)} skipDiscovery={true} />;
+                                        }
+                                        // 5. Image Interactive Hotspots
+                                        if (previewItem.type === 'image_hotspots' || d.hotspots) {
+                                            return <ImageHotspotsEngine data={d} onComplete={() => setPreviewItem(null)} skipDiscovery={true} />;
+                                        }
+                                        // Default: Standard Note Explorer
+                                        return <NoteExplorerEngine data={d} onComplete={() => setPreviewItem(null)} skipDiscovery={true} />;
+                                    })()}
                                 </Suspense>
                             </div>
                         </div>

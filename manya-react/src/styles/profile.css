@@ -352,6 +352,24 @@
     overflow: hidden;
 }
 
+/* 🟣 EMERGENCY PURPLE THEME FIX */
+.service-list-national .service-row-elite.btn-toy-purple {
+    background: #9d4edd !important;
+    border: 3px solid #5b21b6 !important;
+    border-bottom: 7px solid #5b21b6 !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.service-list-national .service-row-elite.btn-toy-purple * {
+    color: #ffffff !important;
+}
+
+.service-list-national .service-row-elite.btn-toy-purple .s-icon-box * {
+    color: #9d4edd !important;
+}
+
 .service-row-elite:hover {
     transform: translateX(8px) scale(1.02);
     filter: brightness(1.05);
@@ -375,16 +393,22 @@
     color: var(--text-main);
 }
 
+.btn-toy-purple .s-name { color: white; }
+
 .s-desc {
     font-size: 11px;
     font-weight: 800;
     color: var(--text-secondary);
 }
 
+.btn-toy-purple .s-desc { color: rgba(255,255,255,0.8); }
+
 .s-chevron {
     color: #cbd5e1;
     margin-left: auto;
 }
+
+.btn-toy-purple .s-chevron { color: white; }
 
 .section-label {
     padding: 15px 24px 10px;

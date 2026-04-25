@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { discoverArtifact } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import { 
     BookOpen, 
     Globe, 
@@ -18,6 +21,7 @@ import {
  * Premium visual renderer for rich SST study notes.
  */
 const SSTStudyEngine = ({ data, onComplete }) => {
+    const dispatch = useDispatch();
     const notes = data?.study_notes || data;
     const [isVisible, setIsVisible] = useState(false);
 
@@ -182,6 +186,22 @@ const SSTStudyEngine = ({ data, onComplete }) => {
                 {/* COMPLETION BUTTON */}
                 <button 
                     onClick={() => {
+                         // 🏺 ARCHIVE to Knowledge Vault - ONLY if not a quiz/exercise
+                         if (data.mode !== 'quiz') {
+                             dispatch(discoverArtifact({
+                                 id: data.id || `sst_study_${Date.now()}`,
+                                 type: 'study',
+                                 title: notes.title || data.subtopic || 'Knowledge Recap',
+                                 subject: data.subject || 'SCIENCE',
+                                 data: data 
+                             }));
+
+                             dispatch(addToast({
+                                 message: "Knowledge Recap Archived! 🏺✨",
+                                 type: "success"
+                             }));
+                         }
+
                          window.scrollTo(0, 0);
                          onComplete?.({ success: true, score: 100 });
                     }}

@@ -8,14 +8,20 @@ class AudioService {
     playSFX(name) {
         if (typeof window === 'undefined') return;
         
-        // Prevent duplicate sound spam
+        const url = getSfx(name);
+        console.log(`[AudioService] Playing SFX: ${name} -> ${url}`);
+        
+        // Prevent duplicate sound spam (except for high-prestige legacy sounds)
+        const isLegacy = name === 'applause' || name === 'victory' || name === 'challenge_win';
         const now = Date.now();
-        if (now - this.lastPlayedTime < 300) return;
+        if (!isLegacy && now - this.lastPlayedTime < 300) return;
         this.lastPlayedTime = now;
 
-        const sound = new Audio(getSfx(name));
-        sound.volume = 0.5;
-        sound.play().catch(() => {});
+        const sound = new Audio(url);
+        sound.volume = 0.6;
+        sound.play().catch(err => {
+            console.error(`[AudioService] Playback failed for ${name}:`, err);
+        });
     }
 
     _playRandomFromFolder(folder, files) {

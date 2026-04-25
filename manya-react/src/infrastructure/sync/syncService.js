@@ -16,8 +16,16 @@ export const syncService = {
      */
     async getUserId() {
         try {
+            // Failsafe: Detect and Purge legacy non-UUID IDs that cause Supabase 400 crashes
+            const localId = localStorage.getItem('manya_session_id');
+            if (localId && localId.startsWith('ID_')) {
+                console.warn("🛡️ [Security] Purging legacy non-UUID session ID...");
+                localStorage.removeItem('manya_session_id');
+                // We'll let it fall through to get a fresh session or return null
+            }
+
             const { data: { session } } = await supabase.auth.getSession();
-            return session?.user?.id || null;
+            return session?.user?.id || localStorage.getItem('manya_session_id') || null;
         } catch(e) { return null; }
     },
 
@@ -85,7 +93,7 @@ export const syncService = {
      */
     async uploadProfile(profileData, manualUid = null) {
         const uid = manualUid || await this.getUserId();
-        if (!uid) return; 
+        if (!uid || uid.startsWith('ID_')) return; // Block legacy IDs 🛡️
         
         const payload = {
             id: uid,
@@ -132,7 +140,7 @@ export const syncService = {
      */
     async pushAnswer(subject, answer) {
         const uid = await this.getUserId();
-        if (!uid) return;
+        if (!uid || uid.startsWith('ID_')) return; // Block legacy IDs 🛡️
 
         // Analytics enrichment (ported from Manya-app-master)
         const now = new Date();
@@ -339,6 +347,14 @@ export const syncService = {
 
         for (const item of queue) {
             try {
+                // 🛡️ SECURITY JANITOR: Detect and Purge poisoned records that cause Supabase 400 floods
+                const payloadStr = JSON.stringify(item.data);
+                if (payloadStr.includes('"ID_') || payloadStr.includes('ID_')) {
+                    console.warn(`🛡️ [Sync] Purging poisoned ${item.type} record from queue...`);
+                    await ManyaDB.removeSyncItem(item.id);
+                    continue;
+                }
+
                 let error;
                 if (item.type === 'profile') {
                     ({ error } = await supabase.from('profiles').upsert(item.data));

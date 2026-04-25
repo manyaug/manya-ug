@@ -26,9 +26,9 @@
     position: relative;
     width: 90%;
     max-width: 400px;
-    background: #1e293b;
+    background: #0f172a;
     border-radius: 40px;
-    padding: 40px 20px;
+    padding: 20px 24px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,25 +45,73 @@
 
 .badge-crest-vault {
     position: relative;
-    width: 140px;
-    height: 140px;
-    background: #0f172a;
-    border-radius: 40px;
+    width: 150px;
+    height: 170px;
+    /* BASE TIER COLOR with Split Tone */
+    background: linear-gradient(to right, var(--tier-accent) 50%, var(--tier-dark) 50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     z-index: 2;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 🔩 THE CHROME METALLIC FRAME */
+.badge-crest-vault::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    background: linear-gradient(145deg, #f8fafc 0%, #cbd5e1 25%, #475569 50%, #94a3b8 75%, #f1f5f9 100%);
+    z-index: -1;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+
+/* 💎 THE CHISELED SPLIT-OVERLAY */
+.badge-crest-vault::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0.15) 50.1%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 📏 UNIQUE CLIP PATHS (Applied to all 3 layers) */
+/* Bronze - Rounded */
+.shape-heater, .shape-heater::before, .shape-heater::after { 
+    clip-path: polygon(10% 15%, 30% 5%, 50% 10%, 70% 5%, 90% 15%, 100% 40%, 85% 80%, 50% 100%, 15% 80%, 0% 40%); 
+}
+/* Silver - Classical */
+.shape-spade, .shape-spade::before, .shape-spade::after { 
+    clip-path: polygon(5% 15%, 50% 0%, 95% 15%, 100% 30%, 85% 65%, 50% 100%, 15% 65%, 0% 30%); 
+}
+/* Gold - Elite Spade */
+.shape-royal, .shape-royal::before, .shape-royal::after { 
+    clip-path: polygon(0% 15%, 15% 15%, 50% 0%, 85% 15%, 100% 15%, 90% 65%, 50% 100%, 10% 65%); 
 }
 
 .badge-icon-reveal {
+    filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6));
     animation: badgeFloat 3s ease-in-out infinite;
+    z-index: 10;
 }
 
+.badge-icon-reveal img, .badge-icon-reveal svg {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+
+/* --- TIERED STYLING REFINED (Deep & Metallic) --- */
+.tier-bronze { --tier-glow: #fb923c; --tier-accent: #f97316; --tier-dark: #7c2d12; }
+.tier-silver { --tier-glow: #cbd5e1; --tier-accent: #cbd5e1; --tier-dark: #475569; }
+.tier-gold   { --tier-glow: #fde047; --tier-accent: #facc15; --tier-dark: #713f12; }
+.tier-platinum { --tier-glow: #d8b4fe; --tier-accent: #c084fc; --tier-dark: #581c87; }
+.tier-diamond { --tier-glow: #67e8f9; --tier-accent: #22d3ee; --tier-dark: #083344; }
+
 @keyframes badgeFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.05); }
 }
 
 .badge-glow-ring {
@@ -71,16 +119,16 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 200px;
-    height: 200px;
+    width: 240px;
+    height: 240px;
     background: radial-gradient(circle, var(--tier-glow, #6366f1) 0%, transparent 70%);
-    opacity: 0.5;
+    opacity: 0.4;
     z-index: 1;
-    filter: blur(20px);
+    filter: blur(30px);
 }
 
 .badge-celebration-text {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     z-index: 2;
 }
 
@@ -91,46 +139,46 @@
     letter-spacing: 4px;
     text-transform: uppercase;
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .celebration-badge-name {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 950;
     color: white;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     font-family: var(--font-display);
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 .celebration-description {
     font-size: 14px;
     font-weight: 600;
     color: #94a3b8;
-    line-height: 1.5;
-    max-width: 280px;
+    line-height: 1.4;
+    max-width: 260px;
 }
 
 .celebration-tier-badge {
     display: inline-block;
-    padding: 6px 16px;
-    background: var(--tier-dark, #312e81);
+    padding: 5px 14px;
+    background: var(--tier-dark, #1e293b);
     color: white;
     border-radius: 100px;
     font-size: 10px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-top: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
 }
 
 .badge-collect-btn {
     width: 100%;
-    height: 64px;
+    height: 56px;
     background: white;
     color: black;
     border: none;
-    border-radius: 20px;
+    border-radius: 18px;
     font-size: 16px;
     font-weight: 900;
     display: flex;
@@ -146,17 +194,14 @@
     transform: scale(0.96);
 }
 
-/* --- TIERED STYLING --- */
-.tier-bronze { --tier-glow: #cd7f32; --tier-accent: #cd7f32; --tier-dark: #7c4a1d; }
-.tier-silver { --tier-glow: #94a3b8; --tier-accent: #94a3b8; --tier-dark: #334155; }
-.tier-gold   { --tier-glow: #f59e0b; --tier-accent: #f59e0b; --tier-dark: #78350f; }
-.tier-platinum { --tier-glow: #a855f7; --tier-accent: #a855f7; --tier-dark: #581c87; }
-.tier-diamond { --tier-glow: #0ea5e9; --tier-accent: #0ea5e9; --tier-dark: #0c4a6e; }
-
 .badge-shine-effect {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
-    border-radius: 40px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 40%, rgba(255,255,255,0.1) 100%);
     pointer-events: none;
+    z-index: 3;
 }
+
+.shape-heater .badge-shine-effect { clip-path: polygon(10% 15%, 30% 5%, 50% 10%, 70% 5%, 90% 15%, 100% 40%, 85% 80%, 50% 100%, 15% 80%, 0% 40%); }
+.shape-spade .badge-shine-effect { clip-path: polygon(5% 15%, 50% 0%, 95% 15%, 100% 30%, 85% 65%, 50% 100%, 15% 65%, 0% 30%); }
+.shape-royal .badge-shine-effect { clip-path: polygon(0% 15%, 15% 15%, 50% 0%, 85% 15%, 100% 15%, 90% 65%, 50% 100%, 10% 65%); }

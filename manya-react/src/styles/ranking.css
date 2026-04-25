@@ -157,28 +157,25 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* 2. CANDY CATEGORY TABS (SQUIRCLE FLOW) */
+/* 2. SUBJECT HUD (FIXED 5-COL GRID) */
 .rank-tabs-row {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    padding: 10px 20px 40px;
-    scrollbar-width: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 10px 16px 30px;
 }
 
 .rank-tab-pill {
     flex-shrink: 0;
-    width: 74px;
-    height: 74px;
-    border-radius: 24px;
-    /* Squircle look */
+    aspect-ratio: 1 / 1;
+    border-radius: 18px;
     background: var(--bg-card);
-    border: 4px solid var(--border-subtle);
+    border: 3px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     cursor: pointer;
     transition: all 0.4s var(--transition-bounce);
     position: relative;
@@ -187,17 +184,17 @@
 }
 
 .tab-gem-icon {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     transition: 0.4s;
 }
 
 .rank-tab-pill span {
-    font-size: 10px;
-    font-weight: 900;
+    font-size: 8.5px;
+    font-weight: 950;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 .rank-tab-pill.active {

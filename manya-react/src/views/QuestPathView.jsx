@@ -22,7 +22,7 @@ import '../styles/quest-path.css';
 
 const STEPS = [
     { id: 'warmup',        label: 'Warmup',      icon: '⚡', nodeType: 'WARMUP' },
-    { id: 'exploration',   label: 'Explore',     icon: '🔍', nodeType: 'EXPLORE' },
+    { id: 'exercise',      label: 'Exercise',    icon: '📝', nodeType: 'EXERCISE' },
     { id: 'practice',      label: 'Practice',    icon: '🧠', nodeType: 'PRACTICE' },
     { id: 'reinforcement', label: 'Reinforce',   icon: '💎', nodeType: 'REINFORCE' },
     { id: 'mastery',       label: 'Boss Chest',  icon: '🎁', isChest: true, nodeType: 'MASTERY' },
@@ -262,7 +262,7 @@ function QuestPathView() {
                     <ChevronLeft size={20} strokeWidth={3} />
                 </button>
                 <div className="header-info">
-                    <div className="header-subtitle">{subject.toUpperCase()} QUEST</div>
+                    <div className="header-subtitle">{subject.toUpperCase()} CHALLENGE</div>
                     <div className="header-title">{title}</div>
                     <div className="header-progress-bar">
                         <div className="header-progress-fill" style={{ width: `${progressPct}%` }}>
@@ -330,32 +330,42 @@ function QuestPathView() {
                 </div>
 
                 <svg className="quest-svg-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    {/* Shadow/Base Path */}
+                    {/* 🛣️ THE "WINDING ROAD" PIPE - EXTREMELY VISIBLE */}
                     <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
-                        fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+                        fill="none" 
+                        stroke={`rgba(${biomeRGB || '124, 58, 237'}, 0.25)`} 
+                        strokeWidth="12" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" />
                     
-                    {/* The "Glow" under-layer - Radiant Trail */}
+                    {/* The Active Radiant Trail */}
                     <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
-                        fill="none" stroke={biomeColor} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
+                        fill="none" 
+                        stroke={biomeColor} 
+                        strokeWidth="12" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
                         pathLength="100"
                         strokeDasharray="100"
                         strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
                         style={{ 
-                            opacity: 0.3,
-                            filter: 'blur(8px)',
+                            opacity: 0.6,
                             transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
                         }} />
 
-                    {/* The Active Glowing Path */}
+                    {/* The Solid Glowing Progress Path */}
                     <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
-                        fill="none" stroke={biomeColor} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round"
+                        fill="none" 
+                        stroke={biomeColor} 
+                        strokeWidth="5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
                         pathLength="100"
                         strokeDasharray="100"
                         strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
                         style={{ 
                             transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                            filter: `drop-shadow(0 0 12px ${biomeRGB ? `rgba(${biomeRGB}, 0.9)` : biomeColor}) 
-                                     drop-shadow(0 0 4px white)`
+                            filter: `drop-shadow(0 0 8px ${biomeColor}) drop-shadow(0 0 2px white)`
                         }} />
                 </svg>
 
@@ -475,6 +485,41 @@ function QuestPathView() {
                         </div>
                     </div>
                 )}
+
+                {/* 📚 PERSISTENT KNOWLEDGE TOME (EXPLORE) */}
+                <div 
+                    className="explore-tome-fixed-hub"
+                    style={{ 
+                        position: 'fixed', 
+                        right: '25px', 
+                        bottom: '25px', 
+                        zIndex: 1000,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '6px'
+                    }}
+                    onClick={() => handleStepTap(1, { label: 'Explore', nodeType: 'EXPLORE' }, false)}
+                >
+                    <span style={{ 
+                        fontSize: '9px', 
+                        fontWeight: 950, 
+                        color: 'var(--text-secondary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                    }}>
+                        Library
+                    </span>
+                    <button className="tactile-node !w-14 !h-14 !rounded-2xl">
+                        <div className="btn-toy-gloss" />
+                        <div className="node-icon-inner text-2xl">📖</div>
+                    </button>
+                    {progress?.EXPLORE?.status === 'completed' && (
+                         <div className="absolute top-[-4px] right-[-4px] bg-green-500 rounded-full p-0.5 border-2 border-white z-20">
+                             <Zap size={10} fill="white" color="white" />
+                         </div>
+                    )}
+                </div>
             </div>
         </div>
     );

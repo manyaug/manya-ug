@@ -151,11 +151,6 @@
     color: var(--manya-purple);
 }
 
-/* 5. MATTE BUTTON OVERRIDES */
-.btn-toy .btn-toy-gloss {
-    display: none !important; /* Kill the gloss */
-}
-
 /* 6. DANGER ZONE (FLAT) */
 .danger-zone-elite-v2 {
     margin-top: 40px;

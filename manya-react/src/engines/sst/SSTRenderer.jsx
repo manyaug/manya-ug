@@ -36,9 +36,13 @@ const SSTRenderer = ({
     correctText,
     frustration,
     SimulatorBridgeNode,
-    isLast
+    isLast,
+    session
 }) => {
     const correctBtnRef = useRef(null);
+    const correctCount = session?.correctCount || 0;
+    const streakCount = session?.streak || 0;
+    const masteryScore = session?.mastery || 0;
 
     const isCorrect = isAnswered && isOptionCorrect(selectedOption, questions[currentIdx]?.answer, questions[currentIdx]?.options);
 
@@ -139,6 +143,7 @@ const SSTRenderer = ({
     // --- 📝 MCQ UI ---
     return (
         <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+
             <AnimatePresence>
                 {showGemToast && (
                     <motion.div 

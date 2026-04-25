@@ -20,30 +20,30 @@ import { storageService } from '../../infrastructure/storage/storageService';
 
 // ─── Node definitions ────────────────────────────────────────────────────────
 
-const NODE_ORDER = ['WARMUP', 'EXPLORE', 'PRACTICE', 'REINFORCE', 'MASTERY'];
+const NODE_ORDER = ['WARMUP', 'EXERCISE', 'PRACTICE', 'REINFORCE', 'MASTERY'];
 
 // XP rewards per node type (ported from Manya-app-master/quest-manager.js)
 const QUEST_XP_REWARDS = {
     WARMUP:    50,
-    EXPLORE:   100,
+    EXERCISE:  100,
     PRACTICE:  150,
     REINFORCE: 200,
     MASTERY:   500,
 };
 
 const UNLOCK_THRESHOLDS = {
-    WARMUP:    0,   // Always open
-    EXPLORE:   60,  // Need 60% on Warmup
-    PRACTICE:  65,  // Need 65% on Explore
-    REINFORCE: 70,  // Need 70% on Practice
-    MASTERY:   75,  // Need 75% on Reinforce
+    WARMUP:    0,    // Always open
+    EXERCISE:  60,   // Need 60% on Warmup
+    PRACTICE:  65,   // Need 65% on Exercise
+    REINFORCE: 70,   // Need 70% on Practice
+    MASTERY:   75,   // Need 75% on Reinforce
 };
 
 // What the PREVIOUS node needs for THIS node to unlock
 const PREV_NODE = {
     WARMUP:    null,
-    EXPLORE:   'WARMUP',
-    PRACTICE:  'EXPLORE',
+    EXERCISE:  'WARMUP',
+    PRACTICE:  'EXERCISE',
     REINFORCE: 'PRACTICE',
     MASTERY:   'REINFORCE',
 };
@@ -98,13 +98,16 @@ export function getQuestProgress(subject, questKey) {
 
     // Ensure every node exists with defaults
     const result = {};
-    for (const node of NODE_ORDER) {
+    for (const node of [...NODE_ORDER, 'EXPLORE']) {
         result[node] = quest[node] || { mastery: 0, status: 'locked', attempts: 0, lastAttempt: null };
     }
 
-    // Warmup is always at least 'available'
+    // Warmup and Explore are always at least 'available'
     if (result.WARMUP.status === 'locked') {
         result.WARMUP.status = 'available';
+    }
+    if (result.EXPLORE.status === 'locked') {
+        result.EXPLORE.status = 'available';
     }
 
     // Recalculate unlock states from mastery data

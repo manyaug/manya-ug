@@ -63,7 +63,7 @@ export const BADGES = [
     { id: 'gen_20', cat: 'GENERAL', tier: 'SILVER', icon: 'BrainCircuit', name: 'Researcher', desc: 'View 50 explanations.', check: hasStat('stats_explanations_viewed', 50) },
 
     // --- 📐 MATH NINJA (20) ---
-    { id: 'math_01', cat: 'MATH', tier: 'BRONZE', icon: 'Hash', name: 'Counter', desc: 'Earn 100 Math gems.', check: hasGems('math', 100) },
+    { id: 'math_01', cat: 'MATH', tier: 'BRONZE', icon: 'Hash', name: 'Counter', desc: 'Earn 10 Math gems.', check: hasGems('math', 10) },
     { id: 'math_02', cat: 'MATH', tier: 'BRONZE', icon: 'Calculator', name: 'Sum Buddy', desc: 'Complete 5 Math units.', check: hasProg('math', 5) },
     { id: 'math_03', cat: 'MATH', tier: 'SILVER', icon: 'Divide', name: 'Fraction Fan', desc: 'Complete 15 Math units.', check: hasProg('math', 15) },
     { id: 'math_04', cat: 'MATH', tier: 'SILVER', icon: 'Percent', name: 'Percents', desc: 'Earn 500 Math gems.', check: hasGems('math', 500) },
@@ -85,7 +85,7 @@ export const BADGES = [
     { id: 'math_20', cat: 'MATH', tier: 'DIAMOND', icon: 'Crown', name: 'Abacus Lord', desc: '500 Correct Math answers.', check: hasStat('math_correct', 500) },
 
     // --- 🔬 SCIENCE LAB (20) ---
-    { id: 'sci_01', cat: 'SCIENCE', tier: 'BRONZE', icon: 'Microscope', name: 'Observer', desc: 'Earn 100 Science gems.', check: hasGems('science', 100) },
+    { id: 'sci_01', cat: 'SCIENCE', tier: 'BRONZE', icon: 'Microscope', name: 'Observer', desc: 'Earn 10 Science gems.', check: hasGems('science', 10) },
     { id: 'sci_02', cat: 'SCIENCE', tier: 'BRONZE', icon: 'GlassWater', name: 'H2O Expert', desc: 'Complete 5 Science units.', check: hasProg('science', 5) },
     { id: 'sci_03', cat: 'SCIENCE', tier: 'SILVER', icon: 'FlaskConical', name: 'Mixer', desc: 'Complete 15 Science units.', check: hasProg('science', 15) },
     { id: 'sci_04', cat: 'SCIENCE', tier: 'SILVER', icon: 'Leaf', name: 'Botanist', desc: 'Earn 500 Science gems.', check: hasGems('science', 500) },
@@ -107,7 +107,7 @@ export const BADGES = [
     { id: 'sci_20', cat: 'SCIENCE', tier: 'DIAMOND', icon: 'Cloud', name: 'Cosmos', desc: '500 Correct Science answers.', check: hasStat('science_correct', 500) },
 
     // --- 🗿 SST EXPLORER (20) ---
-    { id: 'sst_01', cat: 'SST', tier: 'BRONZE', icon: 'Map', name: 'Scout', desc: 'Earn 100 SST gems.', check: hasGems('sst', 100) },
+    { id: 'sst_01', cat: 'SST', tier: 'BRONZE', icon: 'Map', name: 'Scout', desc: 'Earn 10 SST gems.', check: hasGems('sst', 10) },
     { id: 'sst_02', cat: 'SST', tier: 'BRONZE', icon: 'Tent', name: 'Camper', desc: 'Complete 5 SST units.', check: hasProg('sst', 5) },
     { id: 'sst_03', cat: 'SST', tier: 'SILVER', icon: 'Compass', name: 'Navigator', desc: 'Complete 15 SST units.', check: hasProg('sst', 15) },
     { id: 'sst_04', cat: 'SST', tier: 'SILVER', icon: 'Globe', name: 'Traveler', desc: 'Earn 500 SST gems.', check: hasGems('sst', 500) },
@@ -129,7 +129,7 @@ export const BADGES = [
     { id: 'sst_20', cat: 'SST', tier: 'DIAMOND', icon: 'MapPin', name: 'Leader', desc: '500 Correct SST answers.', check: hasStat('sst_correct', 500) },
 
     // --- 📚 ENGLISH MASTER (20) ---
-    { id: 'eng_01', cat: 'ENGLISH', tier: 'BRONZE', icon: 'PenTool', name: 'Writer', desc: 'Earn 100 English gems.', check: hasGems('english', 100) },
+    { id: 'eng_01', cat: 'ENGLISH', tier: 'BRONZE', icon: 'PenTool', name: 'Writer', desc: 'Earn 10 English gems.', check: hasGems('english', 10) },
     { id: 'eng_02', cat: 'ENGLISH', tier: 'BRONZE', icon: 'BookOpen', name: 'Reader', desc: 'Complete 5 English units.', check: hasProg('english', 5) },
     { id: 'eng_03', cat: 'ENGLISH', tier: 'SILVER', icon: 'Quote', name: 'Grammar', desc: 'Complete 15 English units.', check: hasProg('english', 15) },
     { id: 'eng_04', cat: 'ENGLISH', tier: 'SILVER', icon: 'Languages', name: 'Polyglot', desc: 'Earn 500 English gems.', check: hasGems('english', 500) },

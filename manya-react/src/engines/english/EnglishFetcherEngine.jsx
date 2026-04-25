@@ -321,7 +321,8 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             setSelectedOption={handleSelect} handleSubmit={handleSubmit}
             correctText={resolveCorrectText(q.answer, q.options)} 
             userWasCorrect={verifyEnglishAnswer(selectedOption, q.answer, q.options)}
-            frustration={calculateFrustration(session)} questMeta={null}
+            frustration={calculateFrustration(session)}
+            session={session}
             gemsEarned={gemsEarned} showGemToast={showGemToast}
             onContinue={nextQuestion}
         />
