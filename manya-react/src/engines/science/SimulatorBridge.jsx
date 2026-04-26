@@ -1,4 +1,4 @@
-import React, { useRef, Suspense } from 'react';
+import React, { useState, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { getEngineType, SUPPORTED_SIM_ENGINES } from './ScienceLogic';
@@ -11,12 +11,16 @@ import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import ThreeDStudyEngine from '../shared-engines/ThreeDStudyEngine';
 import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
 import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
+import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
+import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 
 /**
  * SCIENCE SIMULATOR BRIDGE
  * Connects the Science Fetcher to specialized Simulation Engines with seamless transitions.
  */
-const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
+const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showWrong, setShowWrong] = useState(false);
     const simData = step?.data || step;
     const resultRef = useRef(null);
 
@@ -51,12 +55,19 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
 
     const handleSimResult = (res) => {
         resultRef.current = res;
+        onResult?.(res);
     };
 
     const sharedProps = {
         data: simData,
+        subject: simData.subject || 'science',
         onComplete: handleSimComplete,
         onResult: handleSimResult,
+        onSimSuccess: () => setShowSuccess(true),
+        onSimWrong: () => {
+            setShowWrong(true);
+            setShowSuccess(false);
+        },
         onAttempt
     };
 
@@ -104,6 +115,18 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
                 transition={{ duration: 0.4, ease: "circOut" }}
                 className="flex-1 flex flex-col h-full w-full"
             >
+                {/* Global Sim Success Overlay */}
+                <SimSuccessOverlay 
+                    show={showSuccess} 
+                    subject={simData.subject || 'science'} 
+                    onDismiss={() => setShowSuccess(false)} 
+                />
+
+                <SimWrongOverlay 
+                    show={showWrong} 
+                    onDismiss={() => setShowWrong(false)} 
+                />
+
                 <Suspense fallback={
                     <div className="flex-1 flex flex-col items-center justify-center bg-slate-50/50 backdrop-blur-xl">
                         <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />

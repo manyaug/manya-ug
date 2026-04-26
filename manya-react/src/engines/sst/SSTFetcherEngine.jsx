@@ -1,28 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
     updateProfile, awardGems, addXP, resetSession, 
     updateSessionAfterAnswer, awardCoins, dropChest, checkAchievements, syncUserData 
 } from '../../store/userSlice';
-// ── Gamification Domain (Headless) ───────────────────────────────────────────
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
-
-// Services & Utils
+import { rewardManager } from '../../domain/gamification/rewardManager.js';
 import { fetchSstQuestions } from '../../services/sstMockDB';
 import { syncService } from '../../infrastructure/sync/syncService.js';
 import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { ManyaDB } from '../../infrastructure/db/manyaDB.js';
 import { calculateFrustration } from '../../domain/psych/psychTracker.js';
-import { achievementService } from '../../services/achievementService';
 import { preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
 import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
 import { saveNodeCompletion, trackWrongAnswer, resolveRephrased, setJustFinished } from '../../domain/progress/questProgressService.js';
-
-// Atomic Resources
 import { 
     SUPPORTED_SIM_ENGINES, getEngineType, isOptionCorrect, 
     resolveCorrectText, findRephrased 
@@ -32,21 +27,14 @@ import SSTRenderer from './SSTRenderer';
 import CelebrationView from '../../views/CelebrationView.jsx';
 import '../../styles/mcq-engine.css';
 
-/**
- * MANYA SST FETCHER ENGINE v4.0 (Atomic)
- * -------------------------------------------------------------
- * - DECOUPLED: Separates adaptive quest logic, simulation routing, and MCQ visuals.
- */
 export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
     const store = useStore();
     const user = useSelector(state => state.user.data);
     const session = useSelector(state => state.user.session);
     
-    // State
     const [renderError, setRenderError] = useState(null);
     const [questions, setQuestions] = useState([]);
-    const [history, setHistory] = useState([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -61,135 +49,72 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const [showCompletion, setShowCompletion] = useState(false);
     const [completionResult, setCompletionResult] = useState(null);
     const [isFinished, setIsFinished] = useState(false);
-    
-    // Rescue Recap state
-    const [recapSteps, setRecapSteps] = useState([]);
+    const [coinsEarnedState, setCoinsEarnedState] = useState(0);
+    const [hintUsedCount, setHintUsedCount] = useState(0);
+
     const consecutiveWrongRef = useRef(0);
     const recapUsedIndexRef = useRef(0);
-
-    const lastSimAttemptRef = useRef({ time: 0, label: '' });
     const allBankRef = useRef([]);
     const questionStartTime = useRef(Date.now());
     const firstSelection = useRef(null);
+    const scoreRef = useRef(0);
+    const fetchIterationRef = useRef(0);
+    const [simPartialScore, setSimPartialScore] = useState(0);
+
+    const handleSimResult = useCallback((res) => {
+        if (!res) return;
+        if (res.total > 0 && res.score !== undefined) {
+            const fractional = res.score / res.total;
+            setSimPartialScore(fractional);
+            
+            // Notify parent HUD live
+            onResult?.({
+                isCorrect: res.isCorrect,
+                score: scoreRef.current + fractional,
+                total: questions.length,
+                type: 'partial_sim'
+            });
+        }
+    }, [questions.length, onResult]);
+
+    const currentMastery = useMemo(() => {
+        if (!questions.length) return 0;
+        return Math.min(100, Math.round(((scoreRef.current + simPartialScore) / questions.length) * 100));
+    }, [score, simPartialScore, questions.length]);
 
     const topicId = data?.topic || 'default';
     const nodeType = data?.nodeType || 'PRACTICE';
-    const subject = data?.subject || 'sst';
+    const subject = 'sst';
     const questKey = data?.questKey || `sst/${topicId}`;
     const [gameMode, setGameMode] = useState('none');
-    const [hintUsedCount, setHintUsedCount] = useState(0);
 
-    // --- 🪄 INITIALIZATION ---
     useEffect(() => {
         const loadQuestions = async () => {
+            if (fetchIterationRef.current === topicId) return;
+            fetchIterationRef.current = topicId;
             setIsLoading(true);
             dispatch(resetSession());
             preloadCurriculum();
-
             try {
                 const simCandidates = [];
-                // --- 📦 RESOURCE COMPATIBILITY LAYER (v4.6) ---
-                // If the Runner passed a generic 'resources' array, split it into sim and recap
                 let activeSims = data?.simResources || [];
                 let activeRecaps = data?.recapResources || [];
-
-                if (activeSims.length === 0 && activeRecaps.length === 0 && data?.resources) {
-                    data.resources.forEach(res => {
-                        const file = res.file || '';
-                        // Identify Sim vs Recap based on filename or title
-                        if (file.includes('globe') || file.includes('map') || file.includes('simulation') || file.includes('stage')) {
-                            activeSims.push(res);
-                        } else if (file.includes('recap') || file.includes('summary') || file.includes('reader')) {
-                            activeRecaps.push(res);
-                        } else {
-                            // Default to sim if unknown but from resources
-                            activeSims.push(res);
-                        }
-                    });
-                }
-
-                // --- 🌍 LOAD INTERACTIVE RESOURCES (v4.7 - No Type Filter) ---
-                console.log(`🌍 [SSTEngine] Loading ${activeSims.length} sims, ${activeRecaps.length} recaps. unitId=${data.unitId}, topic=${topicId}`);
-
-                for (const simRes of activeSims) {
-                    try {
-                        const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
-                        // v4.7: Removed targetType filter — SST JSONs aren't tagged as SIMULATION in the vault
-                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                        console.log(`✅ [SSTEngine] Loaded sim "${simRes.file}" → ${steps.length} steps`);
-                        steps.forEach((s, idx) => {
-                            const eType = getEngineType(s);
-                            s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                            s.id = s.id || `sim_${simRes.file.replace('.json', '')}_${idx}`;
-                            s.subject = 'sst'; // 🏺 Force SST categorization
-                            if (s.data) s.data.subject = 'sst';
-                        });
-                        simCandidates.push(...steps);
-                    } catch (e) { console.warn(`[SSTEngine] Sim Error for "${simRes.file}": ${e.message}`); }
-                }
-
-                const recapCandidates = [];
-                for (const recapRes of activeRecaps) {
-                    try {
-                        const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                        console.log(`✅ [SSTEngine] Loaded recap "${recapRes.file}" → ${steps.length} steps`);
-                        steps.forEach((s, idx) => {
-                            const eType = getEngineType(s);
-                            s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                            s.isRecap = true;
-                            s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
-                            s.subject = 'sst'; // 🏺 Force SST categorization
-                            if (s.data) s.data.subject = 'sst';
-                        });
-                        recapCandidates.push(...steps);
-                    } catch (e) { console.warn(`[SSTEngine] Recap Error for "${recapRes.file}": ${e.message}`); }
-                }
-                setRecapSteps(recapCandidates);
-                console.log(`🌍 [SSTEngine] Total: ${simCandidates.length} sim steps, ${recapCandidates.length} recap steps`);
-
-                let allQuestions = [];
-                try {
-                    const raw = await fetchSstQuestions(topicId);
-                    allQuestions = raw.map(q => ({ ...q, id: String(q.id || q.qid) }));
-                } catch (dbErr) { console.warn(`[SSTEngine] DB fetch failed: ${dbErr.message}`); }
-                allBankRef.current = allQuestions;
-
-                if (allQuestions.length === 0 && simCandidates.length === 0) {
-                    setIsLoading(false); return;
-                }
-
+                const allQuestions = await fetchSstQuestions(topicId);
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
-                let finalQuestions;
-                let questResult = null;
-
-                if (allQuestions.length > 0) {
-                    questResult = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
-                    finalQuestions = questResult.questions;
-                } else {
-                    finalQuestions = [...simCandidates].sort(() => 0.5 - Math.random());
-                }
-                
-                setQuestions(finalQuestions);
-                
-                if (questResult?.metadata?.gameMode) {
-                    const gm = questResult.metadata.gameMode.toLowerCase();
-                    setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
-                }
-                setTimeout(() => setIsLoading(false), 300);
+                const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
+                setQuestions(quest.questions);
+                setTimeout(() => setIsLoading(false), 800);
             } catch (err) { setRenderError(err); setIsLoading(false); }
         };
         loadQuestions();
-    }, [topicId, nodeType, questKey]);
+    }, [topicId]);
 
-    // --- 🧠 HANDLERS ---
     const handleSelect = (option) => {
         if (isAnswered) return;
-        setHintUsed(false);
+        if (!firstSelection.current) firstSelection.current = option;
         if (selectedOption !== null && selectedOption !== option) {
             setAnswerChanged(true); setChangeCount(c => c + 1);
         }
-        if (!firstSelection.current) firstSelection.current = option;
         setSelectedOption(option);
         audioService.pop?.();
     };
@@ -197,13 +122,13 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     const handleSubmit = () => {
         if (isAnswered || selectedOption === null) return;
         setIsAnswered(true);
-
         const q = questions[currentIdx];
         const isCorrect = isOptionCorrect(selectedOption, q.answer, q.options);
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
             setScore(s => s + 1);
+            scoreRef.current += 1;
             audioService.success?.();
             if (q.isRephrased) resolveRephrased(subject, q.originalId);
             consecutiveWrongRef.current = 0;
@@ -212,90 +137,84 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             trackWrongAnswer(subject, q.id);
             const rephrased = findRephrased(q, allBankRef.current, questions);
             if (rephrased) setQuestions(prev => [...prev, rephrased]);
-
             consecutiveWrongRef.current += 1;
-            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0 && nodeType !== 'WARMUP') {
-                const recapIdx = recapUsedIndexRef.current % recapSteps.length;
-                const recapToInject = { ...recapSteps[recapIdx] };
-                recapUsedIndexRef.current += 1; consecutiveWrongRef.current = 0;
-                setQuestions(prev => {
-                    const copy = [...prev]; copy.splice(currentIdx + 1, 0, recapToInject); return copy;
-                });
-            }
         }
 
-        dispatch(updateSessionAfterAnswer({ subject, isCorrect, hintUsed, answerChanged, timeSpentMs }));
-        dispatch(checkAchievements());
-        dispatch(syncUserData(store.getState().user.data));
         const frustration = calculateFrustration(session);
-        const baseId = q.id?.replace(/-V\d+$/, '') || q.id;
-
-        const log = { questionId: q.id, isCorrect, selectedAnswer: selectedOption, correctAnswer: q.answer, timeSpentMs, hintUsed, answerChanged, changeCount, pool: q.isPLE ? 'yes' : 'no', concept_id: baseId, variant: q.id?.includes('-V') ? 'V' + q.id.split('-V')[1] : 'V0', engine_type: 'MCQ', frustrationLevel: frustration?.score || 0 };
+        const log = { questionId: q.id, isCorrect, selectedAnswer: selectedOption, correctAnswer: q.answer, timeSpentMs, hintUsed, answerChanged, changeCount, frustrationLevel: frustration?.score || 0 };
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
-        // ── Emotion Tracking ─────────────────────────────────────────────────
+        onResult?.({ isCorrect, score: scoreRef.current, total: questions.length, type: 'answer' });
         trackAndPushEmotion({ isCorrect, hintUsed, answerChanged, changeCount, timeSpentMs, frustrationLevel: frustration?.score || 0 });
 
-        const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
-        const modeMultiplier = getModeCoinMultiplier(gameMode);
-        const totalGems = isCorrect ? Math.floor((hintUsed ? 1 : 4) * streakMultiplier) : 0;
-        const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
-
+        // ── Unified Reward Logic ────────────────────────────────────────────
         if (isCorrect) {
-            dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
-            if (coinReward > 0) dispatch(awardCoins(coinReward));
-            setGemsEarned(g => g + totalGems); setShowGemToast(true);
-            setTimeout(() => setShowGemToast(false), 1500);
-            if (shouldDropBronzeChest()) dispatch(dropChest({ chestType: 'bronze', rewards: rollChestRewards('bronze') }));
-            setHintUsedCount(c => c + (hintUsed ? 1 : 0));
-            setTimeout(() => nextQuestion(), 800);
+            setScore(s => s + 1);
+            scoreRef.current += 1;
+            audioService.success?.();
+            consecutiveWrongRef.current = 0;
+
+            const awards = rewardManager.awardStepRewards({
+                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: false
+            }, dispatch);
+
+            setCoinsEarnedState(prev => prev + awards.coins);
+            setGemsEarned(g => g + awards.gems);
+            
+            setShowGemToast(true);
+            setTimeout(() => { setShowGemToast(false); nextQuestion(); }, 1500);
         } else {
-            setTimeout(() => setShowExplanation(true), 500);
+            setHintUsedCount(c => c + (hintUsed ? 1 : 0));
+            setTimeout(() => { setShowExplanation(true); }, 600);
         }
     };
 
     const nextQuestion = () => {
+        setSimPartialScore(0);
         if (currentIdx < questions.length - 1) {
             setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
         } else if (!isFinished) {
             setIsFinished(true);
-            const mastery = Math.round((score / questions.length) * 100);
+            const finalScore = scoreRef.current;
+            const mastery = Math.round((finalScore / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
-            dispatch(checkAchievements());
+            // ── Quest Completion Rewards ─────────────────────────────────────
+            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
+            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
+
             dispatch(syncUserData(store.getState().user.data));
-            setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked, nextNode: result.nextNode });
-            
-            if (nodeType === 'MASTERY' && mastery >= 60) {
-                const mapIndex = data?.questIndex ?? 0;
-                if (mapIndex >= (user[`prog_${subject}`] || 0)) dispatch(updateProfile({ [`prog_${subject}`]: mapIndex + 1 }));
-            }
-            if (result.xpReward) dispatch(addXP(result.xpReward));
 
-            // ── Star + Chest + Coin completion rewards ────────────────────────
-            const stars = masteryToStars(mastery);
-            const bonusCoins = getStarBonusCoins(stars);
-            if (bonusCoins > 0) dispatch(awardCoins(bonusCoins));
-            const chestType = getQuestCompletionChest(stars);
-            if (chestType) dispatch(dropChest({ chestType, rewards: rollChestRewards(chestType) }));
-
-            // ── Achievement Check (New Unified Engine) ──────────────────────────
-            dispatch(checkAchievements());
-
-            setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
+            setCompletionResult({ 
+                mastery, 
+                score: finalScore, 
+                total: questions.length, 
+                stars: completion.stars, 
+                bonusCoins: finalTotalCoins, 
+                chestType: completion.chestType 
+            });
             setShowCompletion(true);
         }
     };
 
     const handleFinish = () => {
         const mastery = completionResult?.mastery || 0;
-        onResult?.({ isCorrect: mastery >= 60, score: completionResult?.score || score, total: completionResult?.total || questions.length, mastery, gemsEarned, type: 'adaptive_sst' });
+        onResult?.({ isCorrect: mastery >= 60, score: completionResult?.score || scoreRef.current, total: completionResult?.total || questions.length, mastery, gemsEarned, type: 'adaptive_sst' });
         onComplete?.();
     };
 
     if (showCompletion && completionResult) {
         return (
-            <CelebrationView subject="Social Studies" nodeType={nodeType} mastery={completionResult.mastery} score={completionResult.score} total={completionResult.total} gemsEarned={gemsEarned} onCollect={handleFinish} />
+            <CelebrationView 
+                subject="SST" 
+                nodeType={nodeType} 
+                mastery={completionResult.mastery} 
+                score={completionResult.score} 
+                total={completionResult.total} 
+                stars={completionResult.stars}
+                coinsEarned={completionResult.bonusCoins}
+                onCollect={handleFinish} 
+            />
         );
     }
 
@@ -306,31 +225,32 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     return (
         <SSTRenderer 
             isLoading={isLoading} loadingConfig={getLoadingConfig('sst')} randomFact={getRandomFact('sst')}
-            renderError={renderError} questions={questions} currentIdx={currentIdx}
-            selectedOption={selectedOption} isAnswered={isAnswered} showExplanation={showExplanation}
-            gemsEarned={gemsEarned} showGemToast={showGemToast} hintUsed={hintUsed} setHintUsed={setHintUsed}
-            handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion} handleFinish={handleFinish}
-            nodeType={nodeType} isOptionCorrect={isOptionCorrect} 
-            correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
-            frustration={calculateFrustration(session)}
-            isLast={currentIdx === questions.length - 1}
-            session={session}
+            questions={questions} currentIdx={currentIdx} selectedOption={selectedOption} isAnswered={isAnswered}
+            showExplanation={showExplanation} gemsEarned={gemsEarned} showGemToast={showGemToast}
+            handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion}
+            onFinish={handleFinish} nodeType={nodeType} 
+            session={{
+                ...session,
+                mastery: currentMastery,
+                correctCount: scoreRef.current + simPartialScore
+            }}
             SimulatorBridgeNode={isSim ? (
                 <SimulatorBridge 
-                    key={q.id || currentIdx} step={q} subject={subject}
+                    key={q.id || currentIdx} step={q}
+                    onResult={handleSimResult}
                     onComplete={(results) => {
+                        setSimPartialScore(0);
                         const usp = results?.usp;
                         const isSuccess = usp ? usp.isPassing : (results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
-                        const timeSpent = usp ? usp.timeSpentMs : (results?.duration || 30000);
+                        const timeSpent = usp ? (usp.duration || 30000) : (results?.duration || 30000);
                         dispatch(updateSessionAfterAnswer({ isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
-                        ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', correctAnswer: 'COMPLETED', timeSpentMs: timeSpent, pool: 'simulation', engine_type: q.type || 'SIMULATION' });
-                        if (isSuccess) { setScore(p => p + 1); setGemsEarned(p => p + 5); }
+                        ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
+                        if (isSuccess) { 
+                            setScore(p => p + 1); 
+                            scoreRef.current += 1;
+                            setGemsEarned(p => p + 5); 
+                        }
                         nextQuestion();
-                    }}
-                    onAttempt={(attempt) => {
-                        if (Date.now() - lastSimAttemptRef.current.time < 500) return;
-                        lastSimAttemptRef.current = { time: Date.now(), label: attempt.label };
-                        ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: attempt.isCorrect, selectedAnswer: attempt.label || 'SIM_ATTEMPT', correctAnswer: 'STEP_COMPLETE', timeSpentMs: attempt.duration || 0, pool: 'simulation_step', engine_type: q.type || 'SIMULATION' });
                     }}
                 />
             ) : null}

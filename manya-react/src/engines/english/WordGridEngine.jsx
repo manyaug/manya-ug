@@ -11,7 +11,7 @@ import GridRenderer from './WordGrid/GridRenderer';
  * - DECOUPLED: Separates grid generation and selection logic from the cell-based UI.
  */
 
-const WordGridEngine = ({ data, onComplete }) => {
+const WordGridEngine = ({ data, onComplete, onResult }) => {
     const gridSize = data?.size || 8;
     const rawWords = useMemo(() => {
         if (!data?.words) return ["MANYA", "LEARN", "APP"];
@@ -97,6 +97,12 @@ const WordGridEngine = ({ data, onComplete }) => {
         if (isMatch) {
             setFoundWords(prev => {
                 const next = new Set(prev).add(matchedWord);
+                if (onResult) onResult({
+                    isCorrect: true,
+                    score: next.size,
+                    total: rawWords.length,
+                    type: 'wordgrid_partial'
+                });
                 if (next.size === rawWords.length) {
                     // Logic delay for visual confirmation before finishing
                     setTimeout(handleFinish, 1200);

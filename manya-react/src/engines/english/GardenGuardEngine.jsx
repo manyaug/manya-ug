@@ -13,7 +13,7 @@ import GardenRenderer from './GardenGuard/GardenRenderer';
  * - DECOUPLED: Separates real-time game loop from logic and UI.
  */
 
-const GardenGuardEngine = ({ data, onComplete, onScoreUpdate }) => {
+const GardenGuardEngine = ({ data, onComplete, onResult }) => {
     const [health, setHealth] = useState(100);
     const [score, setScore] = useState(0);
     const [marching, setMarching] = useState([]);
@@ -80,7 +80,11 @@ const GardenGuardEngine = ({ data, onComplete, onScoreUpdate }) => {
             if (s.id === sentenceId) {
                 const { isCorrect, updatedSentence } = handleWordInteraction(s, word);
                 if (isCorrect) {
-                    setScore(sc => { const n = sc + 100; onScoreUpdate?.(n); return n; });
+                    setScore(sc => { 
+                        const n = sc + 100; 
+                        if (onResult) onResult({ isCorrect: true, score: n, total: config.winScore, type: 'gardenguard_partial' });
+                        return n; 
+                    });
                     setTotalHealed(th => th + 1);
                     audioService.success?.();
                 }

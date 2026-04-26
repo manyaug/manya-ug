@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
@@ -13,7 +13,6 @@ import { syncService } from '../../infrastructure/sync/syncService.js';
 import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { ManyaDB } from '../../infrastructure/db/manyaDB.js';
 import { calculateFrustration } from '../../domain/psych/psychTracker.js';
-import { achievementService } from '../../services/achievementService';
 import { preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
 import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
@@ -22,7 +21,7 @@ import { saveNodeCompletion, trackWrongAnswer, resolveRephrased, setJustFinished
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
-// import { awardCoins, dropChest } from '../../store/userSlice'; // cleaning up duplicates
+import { rewardManager } from '../../domain/gamification/rewardManager.js';
 
 // Atomic Resources
 import { 
@@ -62,6 +61,8 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const [showCompletion, setShowCompletion] = useState(false);
     const [completionResult, setCompletionResult] = useState(null);
     const [isFinished, setIsFinished] = useState(false);
+    const [coinsEarnedState, setCoinsEarnedState] = useState(0);
+
     
     // Rescue Recap state
     const [recapSteps, setRecapSteps] = useState([]);
@@ -72,6 +73,8 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const allBankRef = useRef([]);
     const questionStartTime = useRef(Date.now());
     const firstSelection = useRef(null);
+    const scoreRef = useRef(0); // Synchronous tracker for final mastery
+
 
     const topicId = data?.topic || 'default';
     const nodeType = data?.nodeType || 'PRACTICE';
@@ -176,10 +179,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         const timeSpentMs = Date.now() - questionStartTime.current;
 
         if (isCorrect) {
-            setScore(s => s + 1);
-            audioService.success?.();
             if (q.isRephrased) resolveRephrased(subject, q.originalId);
-            consecutiveWrongRef.current = 0;
         } else {
             audioService.error?.();
             trackWrongAnswer(subject, q.id);
@@ -201,8 +201,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         dispatch(updateSessionAfterAnswer({ 
             subject, isCorrect, hintUsed, answerChanged, timeSpentMs 
         }));
-        dispatch(checkAchievements()); 
-        dispatch(syncUserData(store.getState().user.data));
+        
         const frustration = calculateFrustration(session);
         const baseId = q.id?.replace(/-V\d+$/, '') || q.id;
 
@@ -214,31 +213,37 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
+        // [Manya v4 Patch] Immediately notify QuestRunner parent to update live HUD
+        onResult?.({
+            isCorrect: log.isCorrect,
+            score: isCorrect ? score + 1 : score, // predict next state
+            total: questions.length,
+            type: 'answer'
+        });
+
         // ── Emotion Tracking (non-blocking) ─────────────────────────────────
         trackAndPushEmotion({
             isCorrect, hintUsed, answerChanged, changeCount,
             timeSpentMs, frustrationLevel: frustration?.score || 0,
         });
 
-        // ── Coin + Gem calculation ───────────────────────────────────────────
-        const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
-        const modeMultiplier = getModeCoinMultiplier(gameMode);
-        const baseGems = isCorrect ? (hintUsed ? 1 : 4) : 0;
-        const totalGems = Math.floor(baseGems * streakMultiplier);
-        const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
-
+        // ── Unified Reward Logic ────────────────────────────────────────────
         if (isCorrect) {
-            dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
-            if (coinReward > 0) dispatch(awardCoins(coinReward));
-            setGemsEarned(g => g + totalGems); setShowGemToast(true);
+            setScore(s => s + 1);
+            scoreRef.current += 1;
+            audioService.success?.();
+            consecutiveWrongRef.current = 0;
+
+            const awards = rewardManager.awardStepRewards({
+                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: false
+            }, dispatch);
+
+            setCoinsEarnedState(prev => prev + awards.coins);
+            setGemsEarned(g => g + awards.gems);
+            
+            setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
-
-            // ── Bronze Chest random drop (20% chance per correct answer) ──
-            if (shouldDropBronzeChest()) {
-                const rewards = rollChestRewards('bronze');
-                dispatch(dropChest({ chestType: 'bronze', rewards }));
-            }
-
+            
             setHintUsedCount(c => c + (hintUsed ? 1 : 0));
             setTimeout(() => nextQuestion(), 800);
         } else {
@@ -246,12 +251,39 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
+    // ── Partial Progress Orchestrator (Simulation Logic) ─────────────────────
+    const [simPartialScore, setSimPartialScore] = useState(0);
+    const handleSimResult = useCallback((res) => {
+        if (!res) return;
+        
+        // If simulation reports steps (e.g. 3/10 pins), calculate fractional score
+        if (res.total > 0 && res.score !== undefined) {
+            const fractional = res.score / res.total;
+            setSimPartialScore(fractional);
+            
+            // Notify parent HUD live
+            onResult?.({
+                isCorrect: res.isCorrect,
+                score: score + fractional, // predict partial state
+                total: questions.length,
+                type: 'partial_sim'
+            });
+        }
+    }, [score, questions.length, onResult]);
+
+    const currentMastery = useMemo(() => {
+        if (!questions.length) return 0;
+        const m = Math.min(100, Math.round(((score + simPartialScore) / questions.length) * 100));
+        return m;
+    }, [score, simPartialScore, questions.length]);
+
     const nextQuestion = () => {
         if (currentIdx < questions.length - 1) {
             setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
         } else if (!isFinished) {
             setIsFinished(true);
-            const mastery = Math.round((score / questions.length) * 100);
+            const finalScore = scoreRef.current;
+            const mastery = Math.round((finalScore / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
             dispatch(checkAchievements());
             dispatch(syncUserData(store.getState().user.data));
@@ -264,25 +296,20 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             }
             if (result.xpReward) dispatch(addXP(result.xpReward));
 
-            // ── Star rating + quest completion rewards ───────────────────────
-            const stars = masteryToStars(mastery);
-            const bonusCoins = getStarBonusCoins(stars);
-            if (bonusCoins > 0) dispatch(awardCoins(bonusCoins));
+            // ── Quest Completion Rewards ─────────────────────────────────────
+            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
+            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
 
-            const chestType = getQuestCompletionChest(stars);
-            if (chestType) {
-                const rewards = rollChestRewards(chestType);
-                dispatch(dropChest({ chestType, rewards }));
-            }
-
-            // ── No Hint Hero check ───────────────────────────────────────────
-            const noHintsUsed = hintUsedCount === 0;
-
-            // Achievement Check (Unified Redux System)
-            dispatch(checkAchievements());
             dispatch(syncUserData(store.getState().user.data));
 
-            setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
+            setCompletionResult({ 
+                mastery, 
+                score: finalScore, 
+                total: questions.length, 
+                stars: completion.stars, 
+                bonusCoins: finalTotalCoins, 
+                chestType: completion.chestType 
+            });
             setShowCompletion(true);
         }
     };
@@ -295,7 +322,16 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
     if (showCompletion && completionResult) {
         return (
-            <CelebrationView subject="Science" nodeType={nodeType} mastery={completionResult.mastery} score={completionResult.score} total={completionResult.total} gemsEarned={gemsEarned} onCollect={handleFinish} />
+            <CelebrationView 
+                subject="Science" 
+                nodeType={nodeType} 
+                mastery={completionResult.mastery} 
+                score={completionResult.score} 
+                total={completionResult.total} 
+                stars={completionResult.stars}
+                coinsEarned={completionResult.bonusCoins}
+                onCollect={handleFinish} 
+            />
         );
     }
 
@@ -313,17 +349,27 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             nodeType={nodeType} correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
             frustration={calculateFrustration(session)}
             userWasCorrect={isAnswered && validateScienceAnswer(selectedOption, q.answer, q.options)}
-            session={session}
+            session={{
+                ...session,
+                mastery: currentMastery,
+                correctCount: score + simPartialScore
+            }}
             SimulatorBridgeNode={isSim ? (
                 <SimulatorBridge 
                     key={q.id || currentIdx} step={q}
+                    onResult={handleSimResult}
                     onComplete={(results) => {
+                        setSimPartialScore(0); // Reset partial on completion
                         const usp = results?.usp;
                         const isSuccess = usp ? usp.isPassing : (results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
                         const timeSpent = usp ? usp.timeSpentMs : (results?.duration || 30000);
                         dispatch(updateSessionAfterAnswer({ isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
                         ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
-                        if (isSuccess) { setScore(p => p + 1); setGemsEarned(p => p + 5); }
+                        if (isSuccess) { 
+                            setScore(p => p + 1); 
+                            scoreRef.current += 1;
+                            setGemsEarned(p => p + 5); 
+                        }
                         nextQuestion();
                     }}
                     onAttempt={(attempt) => {

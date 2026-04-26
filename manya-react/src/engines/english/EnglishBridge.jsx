@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Puzzle, AlertCircle } from 'lucide-react';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
 import CelebrationView from '../../views/CelebrationView.jsx';
+import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
+import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 
 /**
  * ENGLISH SIMULATOR BRIDGE v2.0
@@ -10,8 +12,10 @@ import CelebrationView from '../../views/CelebrationView.jsx';
  * Standardized wrapper for English simulations with seamless transitions.
  * Supports "Gamified" celebrations to provide variant gratification.
  */
-const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
+const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimSuccess, onSimWrong }) => {
     const [celebData, setCelebData] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showWrong, setShowWrong] = useState(false);
     const simData = step?.data || step;
     
     if (!simData) return (
@@ -100,6 +104,19 @@ const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 flex flex-col"
                 >
+                    {/* Global Sim Success Overlay */}
+                    <SimSuccessOverlay 
+                        show={showSuccess} 
+                        subject="english" 
+                        onDismiss={() => setShowSuccess(false)} 
+                    />
+
+                    {/* Global Sim Wrong Overlay */}
+                    <SimWrongOverlay 
+                        show={showWrong} 
+                        onDismiss={() => setShowWrong(false)} 
+                    />
+
                     <Suspense fallback={
                         <div className="flex-1 flex flex-col items-center justify-center">
                             <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
@@ -108,8 +125,16 @@ const EnglishBridge = ({ step, onComplete, onAttempt, nodeType }) => {
                     }>
                         <EngineComponent 
                             data={simData} 
+                            onSimSuccess={() => setShowSuccess(true)}
+                            onSimWrong={() => {
+                                setShowWrong(true);
+                                setShowSuccess(false);
+                            }}
                             onComplete={handleEngineComplete}
-                            onResult={(res) => console.debug(`📊 [Bridge] ${engineType} update:`, res)}
+                            onResult={(res) => {
+                                onResult?.(res);
+                                console.debug(`📊 [Bridge] ${engineType} update:`, res);
+                            }}
                             onAttempt={onAttempt}
                         />
                     </Suspense>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
@@ -9,6 +9,7 @@ import {
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
+import { rewardManager } from '../../domain/gamification/rewardManager.js';
 
 // Services & Utils
 import { fetchMathQuestions } from '../../services/mathMockDB';
@@ -16,7 +17,6 @@ import { syncService } from '../../infrastructure/sync/syncService.js';
 import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { ManyaDB } from '../../infrastructure/db/manyaDB.js';
 import { calculateFrustration } from '../../domain/psych/psychTracker.js';
-import { achievementService } from '../../services/achievementService';
 import { preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
 import { getLoadingConfig, getRandomFact } from '../../config/loadingData';
@@ -60,6 +60,8 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
     const [showCompletion, setShowCompletion] = useState(false);
     const [completionResult, setCompletionResult] = useState(null);
     const [isFinished, setIsFinished] = useState(false);
+    const [coinsEarnedState, setCoinsEarnedState] = useState(0);
+
     
     // Rescue Recap state
     const [recapSteps, setRecapSteps] = useState([]);
@@ -70,6 +72,8 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
     const allBankRef = useRef([]);
     const questionStartTime = useRef(Date.now());
     const firstSelection = useRef(null);
+    const scoreRef = useRef(0);
+
     const fetchIterationRef = useRef(0);
 
     const topicId = data?.topic || 'default';
@@ -176,6 +180,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
 
         if (isCorrect) {
             setScore(s => s + 1);
+            scoreRef.current += 1;
             audioService.success?.();
             if (q.isRephrased) resolveRephrased(subject, q.originalId);
             consecutiveWrongRef.current = 0;
@@ -211,22 +216,34 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
+        // [Manya v4 Patch] Immediately notify QuestRunner parent to update live HUD
+        onResult?.({
+            isCorrect: log.isCorrect,
+            score: isCorrect ? score + 1 : score,
+            total: questions.length,
+            type: 'answer'
+        });
+
         // ── Emotion Tracking ─────────────────────────────────────────────────
         trackAndPushEmotion({ isCorrect, hintUsed, answerChanged, changeCount, timeSpentMs, frustrationLevel: frustration?.score || 0 });
 
-        // ── Coin + Gem calculation ────────────────────────────────────────────
-        const streakMultiplier = (user.current_streak >= 7) ? 2.0 : (user.current_streak >= 5) ? 1.5 : (user.current_streak >= 3) ? 1.2 : 1.0;
-        const modeMultiplier = getModeCoinMultiplier(gameMode);
-        const totalGems = isCorrect ? Math.floor((hintUsed ? 1 : 4) * streakMultiplier) : 0;
-        const coinReward = isCorrect ? Math.floor((hintUsed ? 3 : 8) * streakMultiplier * modeMultiplier) : 0;
-
+        // ── Unified Reward Logic ────────────────────────────────────────────
         if (isCorrect) {
-            dispatch(awardGems({ subject, amount: totalGems, xp: hintUsed ? 5 : 10 }));
-            if (coinReward > 0) dispatch(awardCoins(coinReward));
-            setGemsEarned(g => g + totalGems); setShowGemToast(true);
+            setScore(s => s + 1);
+            scoreRef.current += 1;
+            audioService.success?.();
+            consecutiveWrongRef.current = 0;
+
+            const awards = rewardManager.awardStepRewards({
+                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: q.isSimulation || false
+            }, dispatch);
+
+            setCoinsEarnedState(prev => prev + awards.coins);
+            setGemsEarned(g => g + awards.gems);
+            
+            setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
-            // ── Bronze Chest random drop ──────────────────────────────────────
-            if (shouldDropBronzeChest()) dispatch(dropChest({ chestType: 'bronze', rewards: rollChestRewards('bronze') }));
+            
             setHintUsedCount(c => c + (hintUsed ? 1 : 0));
             setTimeout(() => nextQuestion(), 800);
         } else {
@@ -234,12 +251,37 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         }
     };
 
+    // ── Partial Progress Orchestrator (Simulation Logic) ─────────────────────
+    const [simPartialScore, setSimPartialScore] = useState(0);
+    const handleSimResult = useCallback((res) => {
+        if (!res) return;
+        
+        if (res.total > 0 && res.score !== undefined) {
+            const fractional = res.score / res.total;
+            setSimPartialScore(fractional);
+            
+            // Notify parent HUD live
+            onResult?.({
+                isCorrect: res.isCorrect,
+                score: score + fractional, // predict partial state
+                total: questions.length,
+                type: 'partial_sim'
+            });
+        }
+    }, [score, questions.length, onResult]);
+
+    const currentMastery = useMemo(() => {
+        if (!questions.length) return 0;
+        return Math.min(100, Math.round(((score + simPartialScore) / questions.length) * 100));
+    }, [score, simPartialScore, questions.length]);
+
     const nextQuestion = () => {
         if (currentIdx < questions.length - 1) {
             setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
         } else if (!isFinished) {
             setIsFinished(true);
-            const mastery = Math.round((score / questions.length) * 100);
+            const finalScore = scoreRef.current;
+            const mastery = Math.round((finalScore / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
             dispatch(checkAchievements());
             dispatch(syncUserData(store.getState().user.data));
@@ -252,18 +294,20 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             }
             if (result.xpReward) dispatch(addXP(result.xpReward));
 
-            // ── Star + Chest + Coin completion rewards ────────────────────────
-            const stars = masteryToStars(mastery);
-            const bonusCoins = getStarBonusCoins(stars);
-            if (bonusCoins > 0) dispatch(awardCoins(bonusCoins));
-            const chestType = getQuestCompletionChest(stars);
-            if (chestType) dispatch(dropChest({ chestType, rewards: rollChestRewards(chestType) }));
+            // ── Quest Completion Rewards ─────────────────────────────────────
+            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
+            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
 
-            // ── Achievement Check (Unified Redux System) ──────────────────────
-            dispatch(checkAchievements());
             dispatch(syncUserData(store.getState().user.data));
 
-            setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
+            setCompletionResult({ 
+                mastery, 
+                score: finalScore, 
+                total: questions.length, 
+                stars: completion.stars, 
+                bonusCoins: finalTotalCoins, 
+                chestType: completion.chestType 
+            });
             setShowCompletion(true);
         }
     };
@@ -276,12 +320,21 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
 
     if (showCompletion && completionResult) {
         return (
-            <CelebrationView subject="Math" nodeType={nodeType} mastery={completionResult.mastery} score={completionResult.score} total={completionResult.total} gemsEarned={gemsEarned} onCollect={handleFinish} />
+            <CelebrationView 
+                subject="Math" 
+                nodeType={nodeType} 
+                mastery={completionResult.mastery} 
+                score={completionResult.score} 
+                total={completionResult.total} 
+                stars={completionResult.stars}
+                coinsEarned={completionResult.bonusCoins}
+                onCollect={handleFinish} 
+            />
         );
     }
 
-    const q = questions[currentIdx];
-    const eType = q ? getEngineType(q) : 'MCQ';
+    const currentQ = questions[currentIdx];
+    const eType = currentQ ? getEngineType(currentQ) : 'MCQ';
     const isSim = SUPPORTED_SIM_ENGINES.includes(eType);
 
     return (
@@ -291,28 +344,40 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             selectedOption={selectedOption} isAnswered={isAnswered} showExplanation={showExplanation}
             gemsEarned={gemsEarned} showGemToast={showGemToast} hintUsed={hintUsed} setHintUsed={setHintUsed}
             handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion} handleFinish={handleFinish}
-            nodeType={nodeType} correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
+            nodeType={nodeType} correctText={currentQ ? resolveCorrectText(currentQ.answer, currentQ.options) : ''}
             frustration={calculateFrustration(session)}
-            userWasCorrect={isAnswered && validateMathAnswer(selectedOption, q.answer, q.options)}
+            userWasCorrect={isAnswered && validateMathAnswer(selectedOption, currentQ?.answer, currentQ?.options)}
             isLast={currentIdx === questions.length - 1}
             onSkip={nextQuestion}
-            session={session}
+            session={{
+                ...session,
+                mastery: currentMastery,
+                correctCount: score + simPartialScore
+            }}
+            onFinish={handleFinish}
             SimulatorBridgeNode={isSim ? (
                 <SimulatorBridge 
-                    key={q.id || currentIdx} step={q}
+                    key={currentQ.id || currentIdx} 
+                    step={currentQ}
+                    onResult={handleSimResult}
                     onComplete={(results) => {
+                        setSimPartialScore(0); // Reset partial on completion
                         const usp = results?.usp;
                         const isSuccess = usp ? usp.isPassing : (results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
-                        const timeSpent = usp ? usp.timeSpentMs : (results?.duration || 30000);
+                        const timeSpent = usp ? (usp.duration || 30000) : (results?.duration || 30000);
                         dispatch(updateSessionAfterAnswer({ isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
-                        ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
-                        if (isSuccess) { setScore(p => p + 1); setGemsEarned(p => p + 5); }
+                        ManyaDB.recordAnswer(subject, { questionId: currentQ.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
+                        if (isSuccess) { 
+                            setScore(p => p + 1); 
+                            scoreRef.current += 1;
+                            setGemsEarned(p => p + 5); 
+                        }
                         nextQuestion();
                     }}
                     onAttempt={(attempt) => {
                         if (Date.now() - lastSimAttemptRef.current.time < 500) return;
                         lastSimAttemptRef.current = { time: Date.now(), label: attempt.label };
-                        ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: attempt.isCorrect, selectedAnswer: attempt.label || 'SIM_ATTEMPT', engine_type: 'SIM_STEP' });
+                        ManyaDB.recordAnswer(subject, { questionId: currentQ.id, isCorrect: attempt.isCorrect, selectedAnswer: attempt.label || 'SIM_ATTEMPT', engine_type: 'SIM_STEP' });
                     }}
                 />
             ) : null}

@@ -5,6 +5,7 @@ import * as LucideIcons from 'lucide-react';
 import { BADGES, BADGE_CATEGORIES } from '../config/badges';
 import { getGem } from '../config/assetUrls';
 import '../styles/achievement.css';
+import '../styles/badge-celebration.css';
 
 function AchievementsView() {
   const user = useSelector((state) => state.user.data);
@@ -97,7 +98,7 @@ function AchievementsView() {
                                  className={`badge-box-minimal ${isUnlocked ? 'is-unlocked' : 'is-locked'} ${tierClass}`}
                             >
                                 <div className={`badge-crest-vault ${shapeClass} !w-14 !h-16 !mb-1`}>
-                                    <div className="badge-icon-reveal !scale-50">
+                                    <div className="badge-icon-reveal !scale-50 !flex !items-center !justify-center">
                                         {renderIcon(badge.icon, 32)}
                                     </div>
                                     {isUnlocked && <div className="badge-shine-effect" />}

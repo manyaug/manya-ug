@@ -161,15 +161,21 @@
 }
 
 .badge-visual-ring {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: var(--bg-main);
     border: 1.5px solid var(--border-color);
     color: var(--text-sub);
+    position: relative;
+    z-index: 2;
+}
+
+.is-unlocked .badge-crest-vault {
+    filter: drop-shadow(0 0 10px var(--tier-glow));
+    animation: badge-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.is-locked .badge-crest-vault {
+    background: #1e293b !important;
+    filter: grayscale(1) brightness(0.4) saturate(0);
 }
 
 .badge-info {
@@ -197,23 +203,17 @@
 }
 
 /* --- TIER COLORS --- */
-.is-unlocked.tier-bronze { border-color: #cd7f3240; background: #cd7f3208; }
-.is-unlocked.tier-silver { border-color: #c0c0c040; background: #c0c0c008; }
-.is-unlocked.tier-gold   { border-color: #ffd70040; background: #ffd70008; }
-.is-unlocked.tier-platinum { border-color: #e5e4e240; background: #e5e4e208; }
-.is-unlocked.tier-diamond { border-color: #b9f2ff40; background: #b9f2ff08; }
+.is-unlocked.tier-bronze .badge-crest-vault { --tier-glow: #fb923c; --tier-accent: #f97316; --tier-dark: #7c2d12; }
+.is-unlocked.tier-silver .badge-crest-vault { --tier-glow: #cbd5e1; --tier-accent: #cbd5e1; --tier-dark: #475569; }
+.is-unlocked.tier-gold   .badge-crest-vault { --tier-glow: #fde047; --tier-accent: #facc15; --tier-dark: #713f12; }
+.is-unlocked.tier-platinum .badge-crest-vault { --tier-glow: #d8b4fe; --tier-accent: #c084fc; --tier-dark: #581c87; }
+.is-unlocked.tier-diamond .badge-crest-vault { --tier-glow: #67e8f9; --tier-accent: #22d3ee; --tier-dark: #083344; }
 
-.is-unlocked.tier-bronze .badge-visual-ring { background: #cd7f3220; color: #cd7f32; border-color: #cd7f3260; }
-.is-unlocked.tier-silver .badge-visual-ring { background: #c0c0c020; color: #948e8a; border-color: #c0c0c060; }
-.is-unlocked.tier-gold   .badge-visual-ring { background: #ffd70020; color: #f59e0b; border-color: #ffd70060; }
-.is-unlocked.tier-platinum .badge-visual-ring { background: #e5e4e220; color: #a855f7; border-color: #e5e4e260; }
-.is-unlocked.tier-diamond .badge-visual-ring { background: #b9f2ff20; color: #0ea5e9; border-color: #b9f2ff60; }
-
-.is-unlocked.tier-bronze .badge-tier-tag { background: #cd7f32; color: white; }
+.is-unlocked.tier-bronze .badge-tier-tag { background: #f97316; color: white; }
 .is-unlocked.tier-silver .badge-tier-tag { background: #94a3b8; color: white; }
-.is-unlocked.tier-gold   .badge-tier-tag { background: #f59e0b; color: white; }
-.is-unlocked.tier-platinum .badge-tier-tag { background: #a855f7; color: white; }
-.is-unlocked.tier-diamond .badge-tier-tag { background: #0ea5e9; color: white; }
+.is-unlocked.tier-gold   .badge-tier-tag { background: #facc15; color: white; }
+.is-unlocked.tier-platinum .badge-tier-tag { background: #c084fc; color: white; }
+.is-unlocked.tier-diamond .badge-tier-tag { background: #22d3ee; color: white; }
 
 .badge-lock-status {
     width: 20px;

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,8 @@ import { addToast } from '../../store/toastSlice';
 import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
 import { getEngineType } from './SSTLogic';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
+import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
+import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 
 /* Study engine types that produce library artifacts — must match engineRegistry.ts keys exactly */
 const STUDY_ENGINE_TYPES = [
@@ -21,10 +23,18 @@ const STUDY_ENGINE_TYPES = [
  * - SEAMLESS: Uses AnimatePresence for visual continuity.
  * - REGISTRY-BASED: Uses global mapping instead of hardcoded switches.
  */
-const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
+const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst' }) => {
     const dispatch = useDispatch();
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showWrong, setShowWrong] = useState(false);
     const user = useSelector(s => s.user.data);
     const simData = step?.data || step;
+    const resultRef = useRef(null);
+
+    const handleSimResult = (res) => {
+        resultRef.current = res;
+        onResult?.(res);
+    };
     
     if (!simData) return (
         <div className="flex-1 flex flex-col items-center justify-center p-10 text-rose-500 font-bold bg-white">
@@ -62,6 +72,19 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 flex flex-col h-full"
                 >
+                    {/* Global Sim Success Overlay */}
+                    <SimSuccessOverlay 
+                        show={showSuccess} 
+                        subject={simData.subject || subject || 'sst'} 
+                        onDismiss={() => setShowSuccess(false)} 
+                    />
+
+                    {/* Global Sim Wrong Overlay */}
+                    <SimWrongOverlay 
+                        show={showWrong} 
+                        onDismiss={() => setShowWrong(false)} 
+                    />
+
                     <Suspense fallback={
                         <div className="flex-1 flex flex-col items-center justify-center">
                             <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-4" />
@@ -70,6 +93,11 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
                     }>
                         <EngineComponent 
                             data={simData} 
+                            onSimSuccess={() => setShowSuccess(true)}
+                            onSimWrong={() => {
+                                setShowWrong(true);
+                                setShowSuccess(false);
+                            }}
                             onComplete={(res) => {
                                 const usp = calculateUSP({
                                     accuracy: res?.accuracy ?? (res?.score && res?.total ? (res.score / res.total) : 1.0),
@@ -102,8 +130,6 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, subject = 'sst' }) => {
                                         type: 'success',
                                     }));
 
-                                    // Immediately sync to cloud — build merged vault explicitly
-                                    // (user.vaultArtifacts is stale here; reducer hasn't settled yet)
                                     const newArtifact = {
                                         id: step?.id || `sst_study_${Date.now()}`,
                                         type: rawEngine === 'READER_STUDY' ? 'recap' : 'note',

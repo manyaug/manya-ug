@@ -28,12 +28,18 @@ export const initializeUser = createAsyncThunk(
             scienceGems: cloudProfile.gems_science,
             currentStreak: cloudProfile.streak_current,
             longestStreak: cloudProfile.streak_longest,
-            unlockedBadges: cloudProfile.unlocked_badges || [],
-            vaultArtifacts: cloudProfile.vault_artifacts || (localUser?.vaultArtifacts || []),
-            math_correct: cloudProfile.math_correct || 0,
-            science_correct: cloudProfile.science_correct || 0,
-            english_correct: cloudProfile.english_correct || 0,
-            sst_correct: cloudProfile.sst_correct || 0,
+            unlockedBadges: Array.from(new Set([
+                ...(localUser?.unlockedBadges || []), 
+                ...(cloudProfile.unlocked_badges || [])
+            ])),
+            vaultArtifacts: Array.from(new Set([
+                ...(localUser?.vaultArtifacts || []),
+                ...(cloudProfile.vault_artifacts || [])
+            ])),
+            math_correct: Math.max(localUser?.math_correct || 0, cloudProfile.math_correct || 0),
+            science_correct: Math.max(localUser?.science_correct || 0, cloudProfile.science_correct || 0),
+            english_correct: Math.max(localUser?.english_correct || 0, cloudProfile.english_correct || 0),
+            sst_correct: Math.max(localUser?.sst_correct || 0, cloudProfile.sst_correct || 0),
             onboarded: true 
         };
         // Update local cache
@@ -143,10 +149,16 @@ export const userSlice = createSlice({
         if (!state.data.pendingBadgeCelebrations) state.data.pendingBadgeCelebrations = [];
         
         BADGES.forEach(badge => {
+            // Only check if not already unlocked
             if (!state.data.unlockedBadges.includes(badge.id)) {
-                if (badge.check && badge.check(state.data)) {
-                    state.data.unlockedBadges.push(badge.id);
-                    state.data.pendingBadgeCelebrations.push(badge.id);
+                try {
+                    if (badge.check && badge.check(state.data)) {
+                        state.data.unlockedBadges.push(badge.id);
+                        state.data.pendingBadgeCelebrations.push(badge.id);
+                        console.log(`🏅 [Badge] UNLOCKED: ${badge.name}`);
+                    }
+                } catch (e) {
+                    console.warn(`[Badge] Check failed for ${badge.id}:`, e);
                 }
             }
         });

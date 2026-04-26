@@ -11,7 +11,7 @@ import HarvestRenderer from './Harvest/HarvestRenderer';
  * Silky smooth sorting gameplay with premium Manya feel.
  * Implements "Perfect Catch" rewards and optimized 60fps physics.
  */
-const HarvestEngine = ({ data, onComplete }) => {
+const HarvestEngine = ({ data, onComplete, onResult }) => {
     // 1. DATA INITIALIZATION
     const config = useMemo(() => initializeHarvestData(data), [data]);
     
@@ -115,8 +115,14 @@ const HarvestEngine = ({ data, onComplete }) => {
                             const points = isPerfect ? 20 : 10;
                             const bonus = Math.min(10, Math.floor(streakRef.current / 2));
                             
-                            setScore(s => {
+                             setScore(s => {
                                 const ns = s + points + bonus;
+                                if (onResult) onResult({
+                                    isCorrect: true,
+                                    score: ns,
+                                    total: config.winScore,
+                                    type: 'harvest_partial'
+                                });
                                 if (ns >= config.winScore) triggerFinish(true);
                                 return ns;
                             });

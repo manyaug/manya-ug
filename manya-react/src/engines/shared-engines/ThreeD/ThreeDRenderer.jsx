@@ -187,7 +187,7 @@ export default function ThreeDRenderer({
             <style>{`
                 model-viewer { display: block; width: 100%; height: 100%; --poster-color: transparent; }
                 .Hotspot { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-color); border: 2.5px solid white; cursor: pointer; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); color: white; font-weight: 900; }
-                .Hotspot.selected { transform: scale(1.4); background: var(--accent-color); border-color: white; z-index: 1000; box-shadow: 0 0 30px var(--accent-color); }
+                .Hotspot.selected { transform: scale(1.6); background: #ef4444; border-color: white; z-index: 1000; box-shadow: 0 0 40px #ef4444, 0 0 20px rgba(239, 68, 68, 0.4); }
                 .Hotspot.correct-pin { background: #10B981; border-color: white; transform: scale(0.9); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
                 .Hotspot:not(.selected):not(.correct-pin) { animation: pinPulse 2s infinite; }
                 @keyframes pinPulse { 0% { box-shadow: 0 0 0 0 var(--accent-color); opacity: 1; } 70% { box-shadow: 0 0 0 15px transparent; opacity: 1; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }

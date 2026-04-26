@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
@@ -8,7 +8,7 @@ import {
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
-import { achievementService } from '../../services/achievementService';
+import { rewardManager } from '../../domain/gamification/rewardManager.js';
 import { syncService } from '../../infrastructure/sync/syncService.js';
 import { 
     fetchEnglishQuestions 
@@ -30,12 +30,6 @@ import {
     checkRescueInjection, SUPPORTED_SIM_ENGINES, getEngineType 
 } from './EnglishLogic';
 
-/**
- * ENGLISH FETCHER ENGINE v6.0 (Atomic Controller)
- * --------------------------------------------------
- * - DECOUPLED: Separates adaptive logic, UI, and bridge.
- * - Optimized for production readiness with seamless transitions.
- */
 export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const dispatch = useDispatch();
     const store    = useStore();
@@ -53,25 +47,47 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     const [showGemToast, setShowGemToast] = useState(false);
     const [showCompletion, setShowCompletion] = useState(false);
     const [completionResult, setCompletionResult] = useState(null);
+    const [coinsEarnedState, setCoinsEarnedState] = useState(0);
     const [hintUsed, setHintUsed] = useState(false);
-    // ── Per-question interaction tracking (parity with Science/Math/SST) ──────
     const [answerChanged, setAnswerChanged] = useState(false);
     const [changeCount, setChangeCount]     = useState(0);
-
     const [recapSteps, setRecapSteps] = useState([]);
+    const [gameMode, setGameMode] = useState('none');
+    const [hintUsedCount, setHintUsedCount] = useState(0);
+
     const consecutiveWrongRef = useRef(0);
     const recapUsedIndexRef   = useRef(0);
-
     const questionStartTime = useRef(Date.now());
-    const firstSelection    = useRef(null);   // tracks the very first click per question
+    const firstSelection    = useRef(null);
     const fetchIterationRef = useRef(null);
+    const scoreRef          = useRef(0);
+    const [simPartialScore, setSimPartialScore] = useState(0);
+
+    const handleSimResult = useCallback((res) => {
+        if (!res) return;
+        if (res.total > 0 && res.score !== undefined) {
+            const fractional = res.score / res.total;
+            setSimPartialScore(fractional);
+            
+            // Notify parent HUD live
+            onResult?.({
+                isCorrect: true,
+                score: scoreRef.current + fractional,
+                total: questions.length,
+                type: 'partial_sim'
+            });
+        }
+    }, [questions.length, onResult]);
+
+    const currentMastery = useMemo(() => {
+        if (!questions.length) return 0;
+        return Math.min(100, Math.round(((scoreRef.current + simPartialScore) / questions.length) * 100));
+    }, [score, simPartialScore, questions.length]);
 
     const topicId = data?.topic || 'default';
     const nodeType = data?.nodeType || 'PRACTICE';
     const subject = 'english';
     const questKey = data?.questKey || `english/${topicId}`;
-    const [gameMode, setGameMode] = useState('none');
-    const [hintUsedCount, setHintUsedCount] = useState(0);
 
     useEffect(() => {
         const loadQuestions = async () => {
@@ -82,7 +98,6 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             preloadCurriculum();
             
             try {
-                // 1. Load Interactive Simulations
                 const simCandidates = [];
                 if (data?.simResources?.length > 0) {
                     for (const simRes of data.simResources) {
@@ -99,7 +114,6 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                     }
                 }
 
-                // 2. Load Recap Resources
                 if (data?.recapResources?.length > 0) {
                     const candidates = [];
                     for (const recapRes of data.recapResources) {
@@ -120,52 +134,21 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
                 const allQuestions = await fetchEnglishQuestions(topicId);
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
-
-                // 3. Generate Adaptive Quest (passing simCandidates)
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
-                let finalQuestions = quest.questions;
+                setQuestions(quest.questions);
                 if (quest.metadata?.gameMode) {
                     const gm = quest.metadata.gameMode.toLowerCase();
                     setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
                 }
-
-                // Flatten Stories if Explore node (Modular Fallback Pattern)
-                if (nodeType === 'EXPLORE' && finalQuestions.length > 0) {
-                    const storyAnchor = finalQuestions[0];
-                    const unitId = data?.unitId || 'default';
-                    const targetQid = storyAnchor.qid || storyAnchor.id;
-                    
-                    const loaded = await loadQuestSteps(subject, unitId, topicId, targetQid);
-                    
-                    if (loaded?.steps?.length > 0) {
-                        finalQuestions = loaded.steps.map(s => ({ 
-                            ...s, 
-                            item_type: 'QUEST_STORY', 
-                            isSimulation: true 
-                        }));
-                    } else {
-                        console.debug(`[EnglishEngine] No optional story found for ${targetQid}. Defaulting to adaptive MCQs.`);
-                    }
-                }
-
-                setQuestions(finalQuestions);
                 setTimeout(() => setIsLoading(false), 800);
-            } catch (err) {
-                setIsLoading(false);
-            }
+            } catch (err) { console.error(err); setIsLoading(false); }
         };
         loadQuestions();
-    }, [topicId, nodeType]);
+    }, [topicId]);
 
-    /**
-     * handleSelect — mirrors Science/Math/SST pattern.
-     * Detects when the student changes their mind mid-question.
-     */
     const handleSelect = (option) => {
         if (isAnswered) return;
-        // First selection ever on this question
         if (!firstSelection.current) firstSelection.current = option;
-        // Student changed their answer
         if (selectedOption !== null && selectedOption !== option) {
             setAnswerChanged(true);
             setChangeCount(c => c + 1);
@@ -185,35 +168,28 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         const frustrationLevel = frustration?.score || 0;
         const baseId = (q.id || q.qid || '').replace(/-V\d+$/, '');
 
+        // ── Unified Reward Logic ────────────────────────────────────────────
+        dispatch(updateSessionAfterAnswer({ subject, isCorrect, hintUsed, answerChanged, timeSpentMs }));
+        
         if (isCorrect) {
             setScore(s => s + 1);
+            scoreRef.current += 1;
             audioService.success?.();
             consecutiveWrongRef.current = 0;
+
+            const awards = rewardManager.awardStepRewards({
+                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: q.isSimulation || false
+            }, dispatch);
+
+            setCoinsEarnedState(prev => prev + awards.coins);
+            setGemsEarned(g => g + awards.gems);
             
-            const amount = q.isSimulation ? 8 : 4;
-            const modeMultiplier = getModeCoinMultiplier(gameMode);
-            const coinReward = Math.floor((q.isSimulation ? 12 : 8) * modeMultiplier);
-
-            dispatch(awardGems({ subject, amount: 0, xp: q.isSimulation ? 20 : 10 }));
-            if (coinReward > 0) dispatch(awardCoins(coinReward));
-
-            // ── Emotion Tracking ───────────────────────────────────────
-            trackAndPushEmotion({ isCorrect: true, hintUsed, answerChanged: false, changeCount: 0, timeSpentMs, frustrationLevel: 0 });
-
-            // ── Bronze Chest random drop ────────────────────────────────
-            if (shouldDropBronzeChest()) dispatch(dropChest({ chestType: 'bronze', rewards: rollChestRewards('bronze') }));
-
-            setGemsEarned(g => g + amount);
             setShowGemToast(true);
-            setHintUsedCount(c => c + (hintUsed ? 1 : 0));
             setTimeout(() => { setShowGemToast(false); nextQuestion(); }, 1500);
         } else {
             audioService.error?.();
             trackWrongAnswer(subject, q.qid || q.id);
             consecutiveWrongRef.current += 1;
-            // Emotion on wrong
-            trackAndPushEmotion({ isCorrect: false, hintUsed, answerChanged: false, changeCount: 0, timeSpentMs, frustrationLevel: 0 });
-
             if (checkRescueInjection(consecutiveWrongRef.current, recapSteps, nodeType)) {
                 const recapIdx = recapUsedIndexRef.current % recapSteps.length;
                 setQuestions(prev => {
@@ -226,7 +202,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             }
             setTimeout(() => setShowExplanation(true), 600);
         }
-        // ── Persist answer (parity with Science/Math/SST) ────────────────────
+
         const log = {
             questionId: q.id || q.qid, isCorrect,
             selectedAnswer: selectedOption,
@@ -240,91 +216,93 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
-        // ── Session state update (full payload) ───────────────────────────────
-        dispatch(updateSessionAfterAnswer({ subject, isCorrect, hintUsed, answerChanged, timeSpentMs }));
-        dispatch(checkAchievements());
-        dispatch(syncUserData(store.getState().user.data));
+        // Notify parent live
+        onResult?.({
+            isCorrect,
+            score: scoreRef.current,
+            total: questions.length,
+            type: 'answer'
+        });
 
-        // ── Emotion Tracking (real values now) ────────────────────────────────
-        trackAndPushEmotion({ isCorrect, hintUsed, answerChanged, changeCount, timeSpentMs, frustrationLevel });
     };
 
-    const nextQuestion = () => {
+    const [isFinished, setIsFinished] = useState(false);
+
+    const nextQuestion = (results) => {
+        setSimPartialScore(0); // Reset partial on step advance
+
+        // If this was a simulation result, evaluate success
+        if (results) {
+            const isSuccess = results.usp ? results.usp.isPassing : (results.score >= (results.total * 0.6) || results.isCorrect);
+            if (isSuccess) {
+                scoreRef.current += 1;
+                setGemsEarned(p => p + 5);
+            }
+        }
+
         if (currentIdx < questions.length - 1) {
-            setCurrentIdx(prev => prev + 1);
-            // Reset ALL per-question state — parity with other fetchers
-            setSelectedOption(null);
-            setIsAnswered(false);
-            setShowExplanation(false);
-            setHintUsed(false);
-            setAnswerChanged(false);
-            setChangeCount(0);
-            firstSelection.current = null;
-            questionStartTime.current = Date.now();
-        } else {
-            const mastery = calculateEnglishMastery(score, questions.length);
+            setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
+        } else if (!isFinished) {
+            setIsFinished(true);
+            const finalScore = scoreRef.current;
+            const mastery = Math.round((finalScore / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
-            setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
+            
+            // ── Quest Completion Rewards ─────────────────────────────────────
+            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
+            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
 
-            // ── Star + Chest + Coin completion rewards ────────────────────────
-            const stars = masteryToStars(mastery);
-            const bonusCoins = getStarBonusCoins(stars);
-            if (bonusCoins > 0) dispatch(awardCoins(bonusCoins));
-            const chestType = getQuestCompletionChest(stars);
-            if (chestType) dispatch(dropChest({ chestType, rewards: rollChestRewards(chestType) }));
-            if (result.xpReward) dispatch(addXP(result.xpReward));
-
-            // ── Achievement Check (New Unified Engine) ──────────────────────────
-            dispatch(checkAchievements());
             dispatch(syncUserData(store.getState().user.data));
 
-            setCompletionResult({ mastery, score, total: questions.length, stars, bonusCoins, chestType });
+            setCompletionResult({ 
+                mastery, 
+                score: finalScore, 
+                total: questions.length, 
+                stars: completion.stars, 
+                bonusCoins: finalTotalCoins, 
+                chestType: completion.chestType 
+            });
             setShowCompletion(true);
-            if (mastery >= 60) audioService.victory?.();
         }
     };
 
-    if (isLoading) {
-        const cfg = getLoadingConfig('english');
-        return (
-            <div className="flex-1 flex flex-col items-center justify-center bg-slate-50">
-                <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6" />
-                <p className="text-indigo-600 font-black uppercase tracking-[0.2em]">{cfg.title}</p>
-                <div className="mt-4 p-4 bg-white rounded-2xl border border-indigo-100 max-w-xs text-center text-xs text-slate-500 font-bold">{getRandomFact('english')}</div>
-            </div>
-        );
-    }
+    const handleFinish = () => {
+        const mastery = completionResult?.mastery || 0;
+        onResult?.({ isCorrect: mastery >= 60, score: completionResult?.score || scoreRef.current, total: completionResult?.total || questions.length, mastery, gemsEarned, type: 'adaptive_english' });
+        onComplete?.();
+    };
 
-    if (showCompletion) {
+    if (showCompletion && completionResult) {
         return (
             <CelebrationView 
-                subject="English" nodeType={nodeType} mastery={completionResult.mastery} 
-                score={completionResult.score} total={completionResult.total} 
-                gemsEarned={gemsEarned} onCollect={() => onComplete?.()} 
+                subject="English" 
+                nodeType={nodeType} 
+                mastery={completionResult.mastery} 
+                score={completionResult.score} 
+                total={completionResult.total} 
+                stars={completionResult.stars}
+                coinsEarned={completionResult.bonusCoins}
+                onCollect={handleFinish} 
             />
         );
     }
 
     const q = questions[currentIdx];
-    if (!q) return null;
-
-    if (q.isSimulation || q.item_type === 'QUEST_STORY') {
-        return <EnglishBridge step={q} onComplete={nextQuestion} nodeType={nodeType} />;
-    }
+    const isSim = q ? q.isSimulation : false;
 
     return (
         <EnglishRenderer 
-            currentQ={q} currentIdx={currentIdx} totalQuestions={questions.length}
-            nodeType={nodeType} selectedOption={selectedOption} isAnswered={isAnswered}
-            hintUsed={hintUsed} setHintUsed={setHintUsed}
-            // Pass handleSelect (not raw setSelectedOption) so change tracking works
-            setSelectedOption={handleSelect} handleSubmit={handleSubmit}
-            correctText={resolveCorrectText(q.answer, q.options)} 
-            userWasCorrect={verifyEnglishAnswer(selectedOption, q.answer, q.options)}
-            frustration={calculateFrustration(session)}
-            session={session}
-            gemsEarned={gemsEarned} showGemToast={showGemToast}
-            onContinue={nextQuestion}
+            isLoading={isLoading} loadingConfig={getLoadingConfig('english')} randomFact={getRandomFact('english')}
+            questions={questions} currentIdx={currentIdx} selectedOption={selectedOption} isAnswered={isAnswered}
+            showExplanation={showExplanation} gemsEarned={gemsEarned} showGemToast={showGemToast}
+            handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion}
+            onFinish={handleFinish} nodeType={nodeType} userWasCorrect={isAnswered && (selectedOption === q?.answer)}
+            session={{
+                ...session,
+                mastery: currentMastery,
+                correctCount: scoreRef.current + simPartialScore
+            }} 
+            BridgeNode={isSim ? <EnglishBridge key={q.id} step={q} onComplete={nextQuestion} onResult={handleSimResult} /> : null}
         />
     );
 }

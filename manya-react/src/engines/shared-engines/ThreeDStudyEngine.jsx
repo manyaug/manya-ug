@@ -15,7 +15,7 @@ import {
  * ───────────────────────────────────────────────────
  * - DECOUPLED: Logic (ThreeDLogic), Renderer (ThreeDRenderer), Controller (Engine)
  */
-export function ThreeDStudyEngine({ data, onComplete, onAttempt, skipDiscovery = false }) {
+export function ThreeDStudyEngine({ data, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) {
     const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
@@ -75,6 +75,18 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt, skipDiscovery =
 
         if (isCorrect) {
             audioService.success?.();
+            onSimSuccess?.(); // Cinematic Dim + Badge
+            
+            // 🚀 Coin Flight Burst
+            window.dispatchEvent(new CustomEvent('manya-fx-flight', {
+                detail: {
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    type: 'coin',
+                    amount: 5
+                }
+            }));
+
             setCorrectPinIds(prev => new Set([...prev, selectedPinId]));
             setFeedbackState({ type: 'success', id: selectedPinId });
             setTimeout(() => {
@@ -85,11 +97,27 @@ export function ThreeDStudyEngine({ data, onComplete, onAttempt, skipDiscovery =
             startTimeRef.current = Date.now();
         } else {
             audioService.whoosh?.();
+            onSimWrong?.(); // Snappy "Try Again" Overlay
             setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: selectedPinId });
             setTimeout(() => setFeedbackState(null), 800);
         }
     };
+
+    const lastReportedScore = useRef(0);
+
+    // REPORT PARTIAL PROGRESS
+    useEffect(() => {
+        if (onResult && isQuiz && hotspots.length > 0 && correctPinIds.size !== lastReportedScore.current) {
+            lastReportedScore.current = correctPinIds.size;
+            onResult({
+                isCorrect: correctPinIds.size === hotspots.length,
+                score: correctPinIds.size,
+                total: hotspots.length,
+                type: '3d_partial'
+            });
+        }
+    }, [correctPinIds.size, hotspots.length, onResult, isQuiz]);
 
     // CHECK COMPLETION
     useEffect(() => {

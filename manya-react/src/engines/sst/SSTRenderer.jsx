@@ -157,11 +157,11 @@ const SSTRenderer = ({
                 )}
             </AnimatePresence>
 
-            <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
+            <div className="flex-1 overflow-y-auto px-4 pt-4 no-scrollbar pb-6">
                 <div className="bg-[var(--bg-card)] rounded-[2rem] border-[4.5px] border-[#f59e0b] px-6 py-6 mb-4 shadow-xl flex-shrink-0 relative">
-            <div className="toy-card-gloss" />
-            <div className="flex items-center justify-end mb-4">
-                {!isAnswered && q.hint && (
+                    <div className="toy-card-gloss" />
+                    <div className="flex items-center justify-end mb-4">
+                        {!isAnswered && q.hint && (
                             <div className="relative">
                                 <button onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
                                     <Lightbulb size={18} />
@@ -179,7 +179,7 @@ const SSTRenderer = ({
                     <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">{q.question}</p>
                 </div>
 
-                <div className="flex flex-col gap-2.5 flex-shrink-0">
+                <div className="flex flex-col gap-2.5">
                     {q.options?.map((opt, i) => {
                         const isThisCorrect = isOptionCorrect(opt, q.answer, q.options);
                         const isSelected = opt === selectedOption;
@@ -211,10 +211,12 @@ const SSTRenderer = ({
                         );
                     })}
                 </div>
+            </div>
 
+            <div className="flex-none px-4 pt-4 pb-10 w-full bg-[var(--bg-main)]">
                 <button
                     onClick={handleSubmit} disabled={selectedOption === null}
-                    className={`mt-4 w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 flex-shrink-0 relative overflow-hidden ${
+                    className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
                         selectedOption !== null ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:translate-y-1' : 'bg-[#e5e5e5] text-[#a0a0a0] border-b-[4px] border-[#d4d4d4]'
                     }`}
                 >

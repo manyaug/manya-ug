@@ -114,14 +114,6 @@ export const syncService = {
             engagement_stats: profileData.engagement_stats || {},
             unlocked_badges: profileData.unlockedBadges || [],
             vault_artifacts: profileData.vaultArtifacts || [], // 🏺 Persist Knowledge Vault to cloud
-            math_correct: profileData.math_correct || 0,
-            science_correct: profileData.science_correct || 0,
-            english_correct: profileData.english_correct || 0,
-            sst_correct: profileData.sst_correct || 0,
-            stats_perfect_answers: profileData.stats_perfect_answers || 0,
-            stats_hints_used: profileData.stats_hints_used || 0,
-            stats_explanations_viewed: profileData.stats_explanations_viewed || 0,
-            last_security_update: profileData.lastSecurityUpdate || null,
             last_active_at: new Date().toISOString()
         };
 
@@ -357,7 +349,25 @@ export const syncService = {
 
                 let error;
                 if (item.type === 'profile') {
-                    ({ error } = await supabase.from('profiles').upsert(item.data));
+                    // 🛡️ SCHEMA JANITOR: Re-confirm payload to avoid 400 Bad Request from legacy/bad columns
+                    const sanitized = {
+                        id: item.data.id,
+                        full_name: item.data.full_name,
+                        xp: item.data.xp,
+                        gems_overall: item.data.gems_overall,
+                        gems_sst: item.data.gems_sst,
+                        gems_math: item.data.gems_math,
+                        gems_english: item.data.gems_english,
+                        gems_science: item.data.gems_science,
+                        streak_current: item.data.streak_current,
+                        streak_longest: item.data.streak_longest,
+                        avatar_url: item.data.avatar_url,
+                        preferences: item.data.preferences,
+                        unlocked_badges: item.data.unlocked_badges,
+                        vault_artifacts: item.data.vault_artifacts,
+                        last_active_at: item.data.last_active_at
+                    };
+                    ({ error } = await supabase.from('profiles').upsert(sanitized));
                 } else if (item.type === 'answer') {
                     ({ error } = await supabase.from('user_answers').insert(item.data));
                 } else if (item.type === 'progress') {

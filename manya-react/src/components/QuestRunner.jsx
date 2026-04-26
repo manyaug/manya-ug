@@ -151,6 +151,15 @@ export default function QuestRunner() {
     const handleEngineResult = useCallback(async (result) => {
         if (!sessionRef.current) return;
         
+        // ── Pulse Guard ──────────────────────────────────────────────────────
+        // Ignore partial/fractional progress updates from the new fetcher system.
+        // These are meant for the HUD Target Tracker, not the domain logic.
+        if (result?.type?.includes('partial') || result?.type?.includes('pulse')) {
+            sessionRef.current.peekResult(result);
+            setRenderTrigger(prev => prev + 1);
+            return;
+        }
+
         // Delegate domain rules entirely to the QuestSession Application service
         const outcome = await sessionRef.current.processResult(result);
         

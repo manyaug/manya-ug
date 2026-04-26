@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { dismissBadgeCelebration, awardGems } from '../store/userSlice';
+import { dismissBadgeCelebration, awardGems, syncUserData } from '../store/userSlice';
 import * as LucideIcons from 'lucide-react';
 import { ArrowRight, X } from 'lucide-react';
 import { BADGES } from '../config/badges';
@@ -16,7 +16,8 @@ const COOLDOWN_MS = 12000; // 12 second "breathing room"
 const BadgeCelebrationModal = () => {
     const dispatch = useDispatch();
     const location = useLocation();
-    const pending = useSelector(state => state.user.data.pendingBadgeCelebrations || EMPTY_ARRAY);
+    const user = useSelector(state => state.user.data);
+    const pending = user?.pendingBadgeCelebrations || EMPTY_ARRAY;
     const [isVisible, setIsVisible] = useState(false);
     const [isOnCooldown, setIsOnCooldown] = useState(false);
     
@@ -76,6 +77,11 @@ const BadgeCelebrationModal = () => {
             amount: 1, 
             xp: 0 
         }));
+        
+        // Ensure the achievement and reward are persisted immediately
+        setTimeout(() => {
+            dispatch(syncUserData(user)); 
+        }, 100);
         
         setTimeout(() => {
             dispatch(dismissBadgeCelebration());

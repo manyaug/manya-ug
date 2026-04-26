@@ -105,23 +105,22 @@ function QuestPathView() {
                     audioService.whoosh?.();
                     
                     // Trigger burst after move duration (matches CSS transition)
-                    // The character now moves "elegantly and slowly" over 2 seconds
-                    setTimeout(() => {
-                        setShowBurst(justFinished.nextNode);
-                        audioService.success?.();
-                        
-                        // IMPORTANT: Refresh local state to show the node as UNLOCKED after animation
-                        // This ensures the "locked" icon disappears at the exact moment of the burst
-                        const updatedProg = getQuestProgress(subject, questKey);
-                        setProgress(updatedProg);
-
+                        // The character now moves "elegantly and slowly" over 4 seconds
                         setTimeout(() => {
-                            setShowBurst(null);
-                            setAnimatingUnlock(null);
-                            setIsWalking(false);
-                        }, 1000);
-                    }, 2000); // Wait 2s for movement to finish
-                }, 1000);
+                            setShowBurst(justFinished.nextNode);
+                            audioService.success?.();
+                            
+                            // IMPORTANT: Refresh local state to show the node as UNLOCKED after animation
+                            const updatedProg = getQuestProgress(subject, questKey);
+                            setProgress(updatedProg);
+
+                            setTimeout(() => {
+                                setShowBurst(null);
+                                setAnimatingUnlock(null);
+                                setIsWalking(false);
+                            }, 1000);
+                        }, 4000); // Wait 4s for movement to finish
+                    }, 1000);
             }
         }
     }, [subject, questKey]);
@@ -175,6 +174,17 @@ function QuestPathView() {
     const totalStars = STEPS.length * 3;
     const earnedStars = progress ? getEarnedStars(subject, questKey) : 0;
     const progressPct = (earnedStars / totalStars) * 100;
+
+    const generatePathData = () => {
+        const points = layoutX.map((x, i) => ({ x, y: 85 - (i * 18) }));
+        let d = `M ${points[0].x},${points[0].y} `;
+        for (let i = 1; i < points.length; i++) {
+            d += `L ${points[i].x},${points[i].y} `;
+        }
+        return d;
+    };
+
+    const pathData = generatePathData();
 
     const handleStepTap = async (idx, stepDef, isLocked) => {
         if (isLocked || loading) return;
@@ -330,19 +340,27 @@ function QuestPathView() {
                 </div>
 
                 <svg className="quest-svg-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    {/* 🛣️ THE "WINDING ROAD" PIPE - EXTREMELY VISIBLE */}
-                    <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
+                    {/* ── CLEAN THIN BASE PATH ── */}
+                    <path d={pathData}
                         fill="none" 
-                        stroke={`rgba(${biomeRGB || '124, 58, 237'}, 0.25)`} 
-                        strokeWidth="12" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" />
+                        stroke="rgba(255, 255, 255, 0.1)" 
+                        strokeWidth="1.5" 
+                        strokeLinecap="round" />
                     
-                    {/* The Active Radiant Trail */}
-                    <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
+                    {/* ── FLOWING CENTER LINE (Dashed) ── */}
+                    <path d={pathData}
+                        className="road-center-line"
+                        fill="none" 
+                        stroke="rgba(255, 255, 255, 0.25)" 
+                        strokeWidth="1" 
+                        strokeDasharray="1, 3" 
+                        strokeLinecap="round" />
+
+                    {/* ── PROGRESS GLOW TRAIL ── */}
+                    <path d={pathData}
                         fill="none" 
                         stroke={biomeColor} 
-                        strokeWidth="12" 
+                        strokeWidth="2.5" 
                         strokeLinecap="round" 
                         strokeLinejoin="round"
                         pathLength="100"
@@ -350,22 +368,23 @@ function QuestPathView() {
                         strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
                         style={{ 
                             opacity: 0.6,
-                            transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                            transition: 'stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1)',
+                            filter: `drop-shadow(0 0 8px ${biomeColor})`
                         }} />
 
-                    {/* The Solid Glowing Progress Path */}
-                    <path d={`M${layoutX[0]},85 L${layoutX[1]},67 L${layoutX[2]},49 L${layoutX[3]},31 L${layoutX[4]},13`}
+                    {/* ── SHARP PROGRESS LINE ── */}
+                    <path d={pathData}
                         fill="none" 
                         stroke={biomeColor} 
-                        strokeWidth="5" 
+                        strokeWidth="1.2" 
                         strokeLinecap="round" 
                         strokeLinejoin="round"
                         pathLength="100"
                         strokeDasharray="100"
                         strokeDashoffset={100 - (100 * (currentStep / (STEPS.length - 1)))}
                         style={{ 
-                            transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                            filter: `drop-shadow(0 0 8px ${biomeColor}) drop-shadow(0 0 2px white)`
+                            transition: 'stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1)',
+                            filter: `brightness(1.5)`
                         }} />
                 </svg>
 
@@ -473,7 +492,7 @@ function QuestPathView() {
                             left: `${iconPos.x}%`,
                             top: `${iconPos.y}%`,
                             transform: 'translate(-50%, -50%)',
-                            transition: 'left 2s cubic-bezier(0.4, 0, 0.2, 1), top 2s cubic-bezier(0.4, 0, 0.2, 1)',
+                            transition: 'left 4s cubic-bezier(0.4, 0, 0.2, 1), top 4s cubic-bezier(0.4, 0, 0.2, 1)',
                             zIndex: 50
                         }}
                     >

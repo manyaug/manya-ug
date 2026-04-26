@@ -17,7 +17,7 @@ export const calculateOrbit = (normStr) => {
     // 45deg to 135deg is a safe "portrait" range for models like skeletons.
     phi = Math.max(45, Math.min(135, phi));
     
-    return `${theta}deg ${phi}deg 55%`;
+    return `${theta}deg ${phi}deg 40%`;
 };
 
 export const getThreeDAccent = (subject) => {

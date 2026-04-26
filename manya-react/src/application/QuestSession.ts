@@ -68,6 +68,20 @@ export class QuestSession {
         return this._lastMasteryScore;
     }
 
+    /**
+     * PEEK RESULT
+     * Used for live granular progress (pulses) from simulation engines.
+     * Updates scores without closing the step or triggering completion logic.
+     */
+    peekResult(engineResult: any) {
+        if (!this.currentStep) return;
+        const totalQuestions = engineResult.total || this._steps.length;
+        
+        // Use the absolute score (correct + fractional) if provided by the fetcher
+        const absoluteScore = engineResult.score !== undefined ? engineResult.score : (this._correctCount + (engineResult.pulseScore || 0));
+        this._lastMasteryScore = Math.min(100, Math.round((absoluteScore / totalQuestions) * 100));
+    }
+
     async processResult(engineResult: EngineResult) {
         if (!this.currentStep) return { isCorrect: false, shouldInjectRecap: false, xpEarned: 0, buttonEnabled: false, conceptId: 'unknown' };
 
@@ -84,10 +98,12 @@ export class QuestSession {
             }, this._meta.subject);
             this._lastMasteryScore = usp.masteryScore;
         } else {
-            // Fallback for MCQs/Reading: Simple Accuracy Based Mastery
-            const rawScore = engineResult.isCorrect ? 100 : 0;
-            // Weighted moving average toward 100
-            this._lastMasteryScore = Math.round((this._lastMasteryScore * 0.7) + (rawScore * 0.3));
+            // Updated: Calculate accuracy against the TOTAL quest questions
+            // Fetcher engines provide 'total' in the result.
+            const totalQuestions = engineResult.total || this._steps.length;
+            const currentCorrect = this._correctCount + (engineResult.isCorrect ? 1 : 0);
+            
+            this._lastMasteryScore = Math.round((currentCorrect / totalQuestions) * 100);
         }
         
         console.log(`📊 [QuestSession] USP Mastery Score: ${this._lastMasteryScore}%`);

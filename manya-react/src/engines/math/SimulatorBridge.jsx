@@ -1,4 +1,4 @@
-import React, { useRef, Suspense } from 'react';
+import React, { useState, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { getEngineType, SUPPORTED_SIM_ENGINES } from './MathLogic';
@@ -10,6 +10,8 @@ import ImageHotspotsEngine from '../shared-engines/ImageHotspotsEngine';
 import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
 import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
+import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
+import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 
 // Math Specialized Engines
 import SetTheoryEngine from './SetTheoryEngine';
@@ -25,7 +27,9 @@ import SetClassifierEngine from './SetClassifierEngine';
  * MATH SIMULATOR BRIDGE
  * Connects the Math Fetcher to specialized Simulation Engines with seamless transitions.
  */
-const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
+const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showWrong, setShowWrong] = useState(false);
     const simData = step?.data?.questions ? step.data : (step?.data || step);
     const resultRef = useRef(null);
     const finishedRef = useRef(false);
@@ -68,8 +72,14 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
 
     const sharedProps = {
         data: simData,
+        subject: simData.subject || 'math',
         onComplete: handleSimComplete,
         onResult: handleSimResult,
+        onSimSuccess: () => setShowSuccess(true),
+        onSimWrong: () => {
+            setShowWrong(true);
+            setShowSuccess(false);
+        },
         onAttempt
     };
 
@@ -141,6 +151,18 @@ const SimulatorBridge = ({ step, onComplete, onAttempt }) => {
                 transition={{ duration: 0.4, ease: "circOut" }}
                 className="flex-1 flex flex-col h-full w-full"
             >
+                {/* Global Sim Success Overlay */}
+                <SimSuccessOverlay 
+                    show={showSuccess} 
+                    subject={simData.subject || 'math'} 
+                    onDismiss={() => setShowSuccess(false)} 
+                />
+
+                <SimWrongOverlay 
+                    show={showWrong} 
+                    onDismiss={() => setShowWrong(false)} 
+                />
+
                 <Suspense fallback={
                     <div className="flex-1 flex flex-col items-center justify-center bg-slate-50/50 backdrop-blur-xl">
                         <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-4" />

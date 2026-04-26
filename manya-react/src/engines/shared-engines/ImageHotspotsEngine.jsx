@@ -14,7 +14,7 @@ import {
  * ImageHotspotsEngine - Atomic Edition
  * DECOUPLED: Logic (HotspotsLogic), Renderer (HotspotsRenderer), Controller (Engine)
  */
-export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, skipDiscovery = false }) {
+export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) {
     const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -83,8 +83,19 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, ski
         });
 
         if (isCorrect) {
-            if (window.addToast) window.addToast({ message: "Correct! Great job Hero.", type: "success" });
             audioService.success?.();
+            onSimSuccess?.(); // Cinematic Dim + Badge
+            
+            // 🚀 Coin Flight Burst
+            window.dispatchEvent(new CustomEvent('manya-fx-flight', {
+                detail: {
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    type: 'coin',
+                    amount: 5
+                }
+            }));
+
             setCorrectPinIds(prev => new Set([...prev, selectedPinId]));
             setFeedbackState({ type: 'success', id: word });
             setTimeout(() => {
@@ -93,13 +104,28 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, ski
             }, 800);
             startTimeRef.current = Date.now();
         } else {
-            if (window.addToast) window.addToast({ message: "Not quite. Try again!", type: "error" });
             audioService.whoosh?.();
+            onSimWrong?.(); // Snappy "Try Again" Overlay
             setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: word });
             setTimeout(() => setFeedbackState(null), 600);
         }
     };
+
+    const lastReportedScore = useRef(0);
+
+    // REPORT PARTIAL PROGRESS
+    useEffect(() => {
+        if (onResult && isQuizMode && hotspots.length > 0 && correctPinIds.size !== lastReportedScore.current) {
+            lastReportedScore.current = correctPinIds.size;
+            onResult({
+                isCorrect: correctPinIds.size === hotspots.length,
+                score: correctPinIds.size,
+                total: hotspots.length,
+                type: 'image_hotspots_partial'
+            });
+        }
+    }, [correctPinIds.size, hotspots.length, onResult, isQuizMode]);
 
     const handleFinish = () => {
         const { score, total } = calculateHotspotsScore(correctPinIds, hotspots, isQuizMode);

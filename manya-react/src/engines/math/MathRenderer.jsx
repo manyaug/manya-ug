@@ -233,7 +233,7 @@ const MathRenderer = ({
                 )}
             </AnimatePresence>
 
-            <div className="flex-1 flex flex-col px-4 pt-4 overflow-hidden">
+            <div className="flex-1 overflow-y-auto px-4 pt-4 no-scrollbar pb-6">
                 <div className="bg-[var(--bg-card)] rounded-[2rem] border-[4.5px] border-amber-400 px-6 py-6 mb-4 shadow-xl flex-shrink-0 relative">
                     <div className="toy-card-gloss" />
                     <div className="flex items-center justify-end mb-4">
@@ -255,7 +255,7 @@ const MathRenderer = ({
                     <p className="text-[var(--text-main)] font-bold text-[17px] leading-snug m-0">{q.question}</p>
                 </div>
 
-                <div className="flex flex-col gap-2.5 flex-shrink-0">
+                <div className="flex flex-col gap-2.5">
                     {q.options?.map((opt, i) => {
                         const isThisCorrect = correctText === opt;
                         const isSelected = opt === selectedOption;
@@ -288,23 +288,23 @@ const MathRenderer = ({
                         );
                     })}
                 </div>
+            </div>
 
-                <div className="mt-auto pt-4 pb-6 w-full flex-shrink-0">
-                    {!isAnswered ? (
-                        <button
-                            onClick={handleSubmit} disabled={selectedOption === null}
-                            className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
-                                selectedOption !== null ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:translate-y-1' : 'bg-[#e5e5e5] text-[#a0a0a0] border-b-[4px] border-[#d4d4d4]'
-                            }`}
-                        >
-                            <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
-                        </button>
-                    ) : (
-                        <div className={`w-full h-14 rounded-full border-2 flex items-center justify-center gap-2 font-black text-[11px] tracking-widest uppercase animate-in slide-in-from-bottom-2 ${userWasCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>
-                            {userWasCorrect ? <>EXCELLENT WORK! <Check size={16} /></> : <>REVIEWING STEPS... <AlertCircle size={16} /></>}
-                        </div>
-                    )}
-                </div>
+            <div className="flex-none px-4 pt-4 pb-10 w-full bg-[var(--bg-main)]">
+                {!isAnswered ? (
+                    <button
+                        onClick={handleSubmit} disabled={selectedOption === null}
+                        className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
+                            selectedOption !== null ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:translate-y-1' : 'bg-[#e5e5e5] text-[#a0a0a0] border-b-[4px] border-[#d4d4d4]'
+                        }`}
+                    >
+                        <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
+                    </button>
+                ) : (
+                    <div className={`w-full h-14 rounded-full border-2 flex items-center justify-center gap-2 font-black text-[11px] tracking-widest uppercase animate-in slide-in-from-bottom-2 ${userWasCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>
+                        {userWasCorrect ? <>EXCELLENT WORK! <Check size={16} /></> : <>REVIEWING STEPS... <AlertCircle size={16} /></>}
+                    </div>
+                )}
             </div>
 
             {/* ── WRONG SOLUTION PORTAL ── */}

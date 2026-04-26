@@ -15,7 +15,7 @@ import GlobeCanvas from './UniversalGlobe/GlobeCanvas';
  * -------------------------------------------------------------
  * - DECOUPLED: Logic (GlobeLogic), Renderer (GlobeRenderer), Canvas (GlobeCanvas), Controller (Engine)
  */
-const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDiscovery = false }) => {
+const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) => {
     const dispatch = useDispatch();
     const [activeTab, setActiveTab] = useState(0);
     const [worldData, setWorldData] = useState(null);
@@ -55,6 +55,21 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDisco
             .catch(err => console.error("Failed to load map data", err));
     }, []);
 
+    const lastReportedScore = useRef(0);
+
+    // --- REPORT PARTIAL PROGRESS ---
+    useEffect(() => {
+        if (onResult && data?.mode === 'quiz' && data?.questions?.length > 0 && activeTab !== lastReportedScore.current) {
+            lastReportedScore.current = activeTab;
+            onResult({
+                isCorrect: false,
+                score: activeTab,
+                total: data.questions.length,
+                type: 'globe_partial'
+            });
+        }
+    }, [activeTab, data?.questions?.length, onResult, data?.mode]);
+
     // --- 🧠 QUIZ LOGIC ---
     const handleQuizAnswer = (opt) => {
         if (quizFeedback?.type === 'success') return;
@@ -71,7 +86,20 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDisco
         if (onAttempt) onAttempt({ isCorrect, label: `Globe Quiz: ${activeTab + 1}`, duration, mistakes: isCorrect ? 0 : 1 });
 
         if (isCorrect) {
-            if (onResult) onResult({ isCorrect: true, score: 1, total: 1, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer });
+            audioService.success?.();
+            onSimSuccess?.(); // Cinematic Dim + Badge
+            
+            // 🚀 Coin Flight Burst
+            window.dispatchEvent(new CustomEvent('manya-fx-flight', {
+                detail: {
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    type: 'coin',
+                    amount: 5
+                }
+            }));
+
+            if (onResult) onResult({ isCorrect: true, score: activeTab + 1, total: data.questions.length, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer });
             setQuizFeedback({ type: 'success', text: "Correct!" });
             setTimeout(() => {
                 if (activeTab < data.questions.length - 1) {
@@ -93,9 +121,10 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDisco
                 }
             }, 1200);
         } else {
-            if (onResult) onResult({ isCorrect: false, score: 0, total: 1, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer, duration, mistakes: 1 });
+            if (onResult) onResult({ isCorrect: false, score: activeTab, total: data.questions.length, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer, duration, mistakes: 1 });
             mistakesRef.current += 1;
-            setQuizFeedback({ type: 'error', text: q.explanation || "Try again!", selectedOpt: selectedQuizOpt });
+            onSimWrong?.(); // Snappy "Try Again" Overlay
+            setQuizFeedback({ type: 'error', text: '' }); // Clear text to avoid distraction, just show overlay
         }
     };
 
@@ -129,11 +158,24 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDisco
                     const duration = Date.now() - startTimeRef.current;
 
                     if (isCorrect) {
+                        audioService.success?.();
+                        onSimSuccess?.(); // Cinematic Dim + Badge
+
+                        // 🚀 Coin Flight Burst
+                        window.dispatchEvent(new CustomEvent('manya-fx-flight', {
+                            detail: {
+                                x: uv_up.clientX,
+                                y: uv_up.clientY,
+                                type: 'coin',
+                                amount: 5
+                            }
+                        }));
+
                         if (onAttempt) onAttempt({ isCorrect: true, label: `Globe Puzzle Piece: ${piece.label}`, duration, mistakes: 0 });
                         setPlacedPieces(p => {
                             const n = [...p, piece.id];
+                            if (onResult) onResult({ isCorrect: true, score: n.length, total: data.pieces.length, type: 'puzzle' });
                             if (n.length === data.pieces.length) {
-                                if (onResult) onResult({ isCorrect: true, score: n.length, total: data.pieces.length, type: 'puzzle' });
                                 if (onComplete) setTimeout(() => onComplete({ isCorrect: true, score: data.pieces.length, total: data.pieces.length, type: 'puzzle' }), 1200);
                             }
                             return n;
@@ -141,6 +183,7 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, skipDisco
                         startTimeRef.current = Date.now();
                     } else {
                         mistakesRef.current += 1;
+                        onSimWrong?.(); // Snappy "Try Again" Overlay
                         if (onAttempt) onAttempt({ isCorrect: false, label: `Globe Puzzle Piece: ${piece.label}`, duration, mistakes: 1 });
                     }
                 }
