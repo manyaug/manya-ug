@@ -113,7 +113,11 @@ export const syncService = {
             grade_level: profileData.grade_level || profileData.goal,
             engagement_stats: profileData.engagement_stats || {},
             unlocked_badges: profileData.unlockedBadges || [],
-            vault_artifacts: profileData.vaultArtifacts || [], // 🏺 Persist Knowledge Vault to cloud
+            vault_artifacts: profileData.vaultArtifacts || [],
+            math_correct: profileData.math_correct || 0,
+            science_correct: profileData.science_correct || 0,
+            english_correct: profileData.english_correct || 0,
+            sst_correct: profileData.sst_correct || 0,
             last_active_at: new Date().toISOString()
         };
 
@@ -365,6 +369,10 @@ export const syncService = {
                         preferences: item.data.preferences,
                         unlocked_badges: item.data.unlocked_badges,
                         vault_artifacts: item.data.vault_artifacts,
+                        math_correct: item.data.math_correct,
+                        science_correct: item.data.science_correct,
+                        english_correct: item.data.english_correct,
+                        sst_correct: item.data.sst_correct,
                         last_active_at: item.data.last_active_at
                     };
                     ({ error } = await supabase.from('profiles').upsert(sanitized));

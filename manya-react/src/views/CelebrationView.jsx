@@ -119,8 +119,8 @@ const CelebrationView = ({
     }, [isPassing, nodeType]);
 
     return (
-        <div className="celebration-arena-overlay">
-            <WorldClassConfetti />
+        <div className={`celebration-arena-overlay ${!isPassing ? 'is-fail' : ''}`}>
+            {isPassing && <WorldClassConfetti />}
 
             <motion.div
                 className="celebration-card-container !py-8"
@@ -136,13 +136,16 @@ const CelebrationView = ({
                     <motion.img
                         src={char.image}
                         alt={char.name}
-                        className="celebration-mascot-hero"
-                        animate={{ y: [0, -6, 0] }}
+                        className={`celebration-mascot-hero ${!isPassing ? 'grayscale opacity-60' : ''}`}
+                        animate={isPassing ? { y: [0, -6, 0] } : { x: [-2, 2, -2] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                     />
                 </div>
 
-                <Ribbon text={`${nodeType} COMPLETE`} />
+                <Ribbon 
+                    text={isPassing ? `${nodeType} COMPLETE` : `${nodeType} ATTEMPTED`} 
+                    variant={isPassing ? 'success' : 'fail'} 
+                />
 
                 <h1 className="celebration-title-premium !text-2xl mt-2">{msg.title}</h1>
                 <p className="celebration-subtext-premium !mb-4">{msg.sub}</p>
@@ -177,9 +180,12 @@ const CelebrationView = ({
                     </div>
                 </div>
 
-                <button className="btn-collect-3d !h-14 !max-w-[240px]" onClick={handleCollectClick}>
+                <button 
+                    className={`btn-collect-3d !h-14 !max-w-[240px] ${!isPassing ? 'is-retry' : ''}`} 
+                    onClick={handleCollectClick}
+                >
                     <div className="btn-gloss-highlight" />
-                    <span className="!text-sm">COLLECT REWARDS</span>
+                    <span className="!text-sm">{isPassing ? 'COLLECT REWARDS' : 'BACK TO MAP'}</span>
                     <ArrowRight size={18} strokeWidth={3} />
                 </button>
             </motion.div>

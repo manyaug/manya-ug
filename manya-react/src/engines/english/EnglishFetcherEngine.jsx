@@ -252,7 +252,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
             const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
 
-            dispatch(syncUserData(store.getState().user.data));
+            dispatch(syncUserData());
 
             setCompletionResult({ 
                 mastery, 

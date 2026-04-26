@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
-export const Ribbon = ({ text }) => (
-    <div className="ribbon-3d-wrapper">
+export const Ribbon = ({ text, variant = 'success' }) => (
+    <div className={`ribbon-3d-wrapper variant-${variant}`}>
         <div className="ribbon-3d-fold-left" />
         <div className="ribbon-3d-main">{text}</div>
         <div className="ribbon-3d-fold-right" />

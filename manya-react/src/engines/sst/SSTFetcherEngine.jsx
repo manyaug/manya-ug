@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
@@ -183,7 +184,7 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
             const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
             const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
 
-            dispatch(syncUserData(store.getState().user.data));
+            dispatch(syncUserData());
 
             setCompletionResult({ 
                 mastery, 
@@ -219,6 +220,13 @@ export default function SSTFetcherEngine({ data, onComplete, onResult }) {
     }
 
     const q = questions[currentIdx];
+    if (!q && !showCompletion) {
+        return (
+            <div className="flex-1 flex items-center justify-center text-[var(--text-sub)]">
+                <RefreshCw className="animate-spin mr-2" /> Finalizing Quest...
+            </div>
+        );
+    }
     const eType = q ? getEngineType(q) : 'MCQ';
     const isSim = SUPPORTED_SIM_ENGINES.includes(eType);
 

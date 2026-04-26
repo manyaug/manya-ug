@@ -42,6 +42,20 @@ export const initializeUser = createAsyncThunk(
             sst_correct: Math.max(localUser?.sst_correct || 0, cloudProfile.sst_correct || 0),
             onboarded: true 
         };
+
+        // 🏺 SILENT ACHIEVEMENT CATCH-UP
+        // This prevents "Badge Floods" where the user logs in and gets 50 modals at once.
+        // We calculate what they SHOULD have unlocked based on restored stats.
+        const allUnlocked = new Set(merged.unlockedBadges);
+        BADGES.forEach(badge => {
+            try {
+                if (badge.check && badge.check(merged)) {
+                    allUnlocked.add(badge.id);
+                }
+            } catch(e) {}
+        });
+        merged.unlockedBadges = Array.from(allUnlocked);
+
         // Update local cache
         await ManyaDB.saveUser(merged);
         return merged;
@@ -58,7 +72,8 @@ export const initializeUser = createAsyncThunk(
 // Async thunk to push state to persistence layers
 export const syncUserData = createAsyncThunk(
   'user/sync',
-  async (profileData) => {
+  async (_, { getState }) => {
+    const profileData = getState().user.data;
     // Save to LocalDB (IndexedDB)
     await ManyaDB.saveUser(profileData);
     // Push to Cloud (Supabase)
@@ -154,7 +169,12 @@ export const userSlice = createSlice({
                 try {
                     if (badge.check && badge.check(state.data)) {
                         state.data.unlockedBadges.push(badge.id);
-                        state.data.pendingBadgeCelebrations.push(badge.id);
+                        
+                        // 🛡️ FLOOD PROTECTION: Max 5 pending celebrations at a time
+                        if (!state.data.pendingBadgeCelebrations.includes(badge.id) && state.data.pendingBadgeCelebrations.length < 5) {
+                            state.data.pendingBadgeCelebrations.push(badge.id);
+                        }
+                        
                         console.log(`🏅 [Badge] UNLOCKED: ${badge.name}`);
                     }
                 } catch (e) {

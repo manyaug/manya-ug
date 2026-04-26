@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
@@ -286,7 +287,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             const mastery = Math.round((finalScore / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
             dispatch(checkAchievements());
-            dispatch(syncUserData(store.getState().user.data));
+            dispatch(syncUserData());
             setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
             
             // Story progression
@@ -300,7 +301,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
             const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
 
-            dispatch(syncUserData(store.getState().user.data));
+            dispatch(syncUserData());
 
             setCompletionResult({ 
                 mastery, 
@@ -335,7 +336,17 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         );
     }
 
+
+
     const q = questions[currentIdx];
+    if (!q && !showCompletion) {
+        return (
+            <div className="flex-1 flex items-center justify-center text-[var(--text-sub)]">
+                <RefreshCw className="animate-spin mr-2" /> Finalizing Quest...
+            </div>
+        );
+    }
+    
     const eType = q ? getEngineType(q) : 'MCQ';
     const isSim = SUPPORTED_SIM_ENGINES.includes(eType);
 
@@ -348,7 +359,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion} handleFinish={handleFinish}
             nodeType={nodeType} correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
             frustration={calculateFrustration(session)}
-            userWasCorrect={isAnswered && validateScienceAnswer(selectedOption, q.answer, q.options)}
+            userWasCorrect={isAnswered && validateScienceAnswer(selectedOption, q?.answer, q?.options)}
             session={{
                 ...session,
                 mastery: currentMastery,

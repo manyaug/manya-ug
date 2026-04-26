@@ -214,7 +214,7 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
 
         // 🚀 FORCE PERSISTENCE
         setTimeout(() => {
-            dispatch(syncUserData(store.getState().user.data));
+            dispatch(syncUserData());
         }, 100);
 
         dispatch(addToast({
