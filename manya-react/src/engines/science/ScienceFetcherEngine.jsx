@@ -295,7 +295,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                 const mapIndex = data?.questIndex ?? 0;
                 if (mapIndex >= (user[`prog_${subject}`] || 0)) dispatch(updateProfile({ [`prog_${subject}`]: mapIndex + 1 }));
             }
-            if (result.xpReward) dispatch(addXP(result.xpReward));
+            // removed XP reward call
 
             // ── Quest Completion Rewards ─────────────────────────────────────
             const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);

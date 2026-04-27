@@ -69,6 +69,7 @@ export default function ChestRevealModal() {
 
     // Apply rewards to Redux state
     useEffect(() => {
+        if (!chest) return;
         for (const reward of chest.rewards || []) {
             if (reward.type === 'coins') dispatch(awardCoins(reward.amount));
             if (reward.type === 'gems')  dispatch(awardGems({ subject: 'general', amount: reward.amount }));

@@ -279,18 +279,18 @@ export const ManyaDB = {
     createDefaultRecord() {
 
         return {
-            uid: crypto.randomUUID(),
+            uid: null,
+            email: null,
             onboarded: false,
-            nickname: "",
+            nickname: "New Hero",
             fullName: "",
             avatarSeed: "Manya",
             diamonds: 150, 
-            coins: 0, // Reset to 0
+            coins: 0, 
             current_streak: 0,
             longest_streak: 0,
             last_active_at: null,
-            created_at: new Date().toISOString(),
-            unlockedBadges: ['gen_01'], // Everyone gets Apprentice
+            unlockedBadges: ['gen_01'], 
             stats_perfect_answers: 0,
             stats_hints_used: 0,
             stats_explanations_viewed: 0,

@@ -12,7 +12,7 @@ import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
  * - DECOUPLED: Separates structural validation from the bento-card UI and mastery-loop.
  */
 
-const SyntaxArchitectEngine = ({ data, onComplete }) => {
+const SyntaxArchitectEngine = ({ data, onResult, onComplete }) => {
     const [pool, setPool] = useState([]);
     const [index, setIndex] = useState(0);
     const [wrongQueue, setWrongQueue] = useState([]);
@@ -99,9 +99,11 @@ const SyntaxArchitectEngine = ({ data, onComplete }) => {
         const result = {
             ...baseResult,
             ...metrics, // Inject [idleTimeMs, hesitationCount, tabSwitched, etc.]
-            engineType: 'SYNTAX_ENGINE'
+            engineType: 'SYNTAX_ENGINE',
+            type: 'simulation'
         };
-        if (onComplete) onComplete(result);
+        if (onResult) onResult(result);
+        if (onComplete) onComplete();
     };
 
     const handleKbInput = (val) => setInputValue(p => p + val);

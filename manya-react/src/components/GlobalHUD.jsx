@@ -37,7 +37,6 @@ function GlobalHUD() {
 
     if (!user) return null;
 
-    const level      = Math.floor((user.xp || 0) / 1000) + 1;
     const streak     = user.current_streak || user.currentStreak || 0;
     const diamonds   = user.diamonds || 0;
 
@@ -52,11 +51,10 @@ function GlobalHUD() {
                 {/* ── LEFT: Avatar + XP bar ─────────────────────────────── */}
                 <div className="hud-left-content" onClick={() => navigate('/profile')}>
                     <div className="hud-avatar-wrapper">
-                        <img src="/assets/icons/pwa-192x192.png" alt="Manya" className="hud-avatar-img" />
-                        <div className="hud-level-badge">{level}</div>
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed || 'Hero'}`} alt="Manya" className="hud-avatar-img" />
                     </div>
                     <div className="hud-user-text">
-                        <span className="hud-nickname-text">{(user.nickname || 'Student').split(' ')[0]}</span>
+                        <span className="hud-nickname-text">{(user.nickname || 'Student')}</span>
                     </div>
                 </div>
 

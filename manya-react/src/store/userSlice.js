@@ -21,6 +21,9 @@ export const initializeUser = createAsyncThunk(
             nickname: cloudProfile.full_name,
             diamonds: cloudProfile.gems_overall || 0,
             math_correct: Math.max(localUser?.math_correct || 0, cloudProfile.math_correct || 0),
+            science_correct: Math.max(localUser?.science_correct || 0, cloudProfile.science_correct || 0),
+            english_correct: Math.max(localUser?.english_correct || 0, cloudProfile.english_correct || 0),
+            sst_correct: Math.max(localUser?.sst_correct || 0, cloudProfile.sst_correct || 0),
             is_pro: cloudProfile.is_pro || false,
             learning_type: cloudProfile.learning_type || 'ADAPTIVE',
             unlockedBadges: Array.from(new Set([
