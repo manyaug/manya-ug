@@ -162,10 +162,6 @@ export default function QuestRunner() {
 
         // Delegate domain rules entirely to the QuestSession Application service
         const outcome = await sessionRef.current.processResult(result);
-        
-        if (outcome.xpEarned > 0) {
-            dispatch(awardGems({ subject: meta.subject, amount: 0, xp: outcome.xpEarned }));
-        }
 
         if (outcome.shouldInjectRecap) {
             const newSteps = sessionRef.current.injectRecap(outcome.conceptId);
@@ -282,6 +278,13 @@ export default function QuestRunner() {
                         streakCount={sessionRef.current?.currentStreak || 0}
                         masteryScore={sessionRef.current?.lastMasteryScore || 0}
                         onClose={() => navigate(-1)} 
+                        hideTracker={
+                            meta.subject === 'english' && (
+                                location.state?.nodeType === 'EXPLORE' || 
+                                steps[stepIdx]?.engineType === 'ENGLISH_RULE_MASTER' ||
+                                steps[stepIdx]?.nodeType === 'EXPLORE'
+                            )
+                        }
                     />
                 )}
 

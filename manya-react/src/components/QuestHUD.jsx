@@ -18,6 +18,7 @@ const QuestHUD = ({
     correctCount = 0,
     streakCount = 0,
     masteryScore = 0,
+    hideTracker = false,
     onClose 
 }) => {
     const user = useSelector(state => state.user.data);
@@ -97,38 +98,40 @@ const QuestHUD = ({
             </div>
 
             {/* PROGRESS COMPONENT */}
-            <div className="hud-mastery-card-premium">
-                <div className="mastery-label-flex">
-                    <div className="mastery-progress-header">
-                         <Trophy size={10} className="text-amber-400" />
-                         <span>Target Tracker</span>
+            {!hideTracker && (
+                <div className="hud-mastery-card-premium">
+                    <div className="mastery-label-flex">
+                        <div className="mastery-progress-header">
+                             <Trophy size={10} className="text-amber-400" />
+                             <span>Target Tracker</span>
+                        </div>
+                        <span className="mastery-pct-val" style={{ 
+                            color: masteryColor,
+                            textShadow: isPassing ? `0 0 10px ${masteryColor}88` : 'none'
+                        }}>
+                            {Math.round(masteryScore)}% / {PASS_THRESHOLD}%
+                        </span>
                     </div>
-                    <span className="mastery-pct-val" style={{ 
-                        color: masteryColor,
-                        textShadow: isPassing ? `0 0 10px ${masteryColor}88` : 'none'
-                    }}>
-                        {Math.round(masteryScore)}% / {PASS_THRESHOLD}%
-                    </span>
-                </div>
 
-                <div className="hud-progress-container">
-                    <div className="hud-progress-track">
-                         {/* Scale Markers */}
-                         <div className="hud-scale-marker" style={{ left: '0%' }}><div className="marker-line" /></div>
-                         <div className="hud-scale-marker marker-target" style={{ left: '75%' }}><div className="marker-line" /></div>
-                         <div className="hud-scale-marker" style={{ left: '100%' }}><div className="marker-line" /></div>
+                    <div className="hud-progress-container">
+                        <div className="hud-progress-track">
+                             {/* Scale Markers */}
+                             <div className="hud-scale-marker" style={{ left: '0%' }}><div className="marker-line" /></div>
+                             <div className="hud-scale-marker marker-target" style={{ left: '75%' }}><div className="marker-line" /></div>
+                             <div className="hud-scale-marker" style={{ left: '100%' }}><div className="marker-line" /></div>
 
-                         {/* The Target-Based Fill */}
-                         <div className="hud-progress-fill-gradient" 
-                              style={{ 
-                                  width: `${masteryScore}%`, 
-                                  backgroundColor: masteryColor,
-                                  boxShadow: `0 0 15px ${fillGlow}`
-                              }} 
-                         />
+                             {/* The Target-Based Fill */}
+                             <div className="hud-progress-fill-gradient" 
+                                  style={{ 
+                                      width: `${masteryScore}%`, 
+                                      backgroundColor: masteryColor,
+                                      boxShadow: `0 0 15px ${fillGlow}`
+                                  }} 
+                             />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

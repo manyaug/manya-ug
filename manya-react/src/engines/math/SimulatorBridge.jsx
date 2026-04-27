@@ -68,6 +68,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
     const handleSimResult = (res) => {
         if (finishedRef.current) return;
         resultRef.current = res;
+        onResult?.(res);
     };
 
     const sharedProps = {

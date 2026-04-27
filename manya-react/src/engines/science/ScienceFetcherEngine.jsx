@@ -3,7 +3,7 @@ import { RefreshCw } from 'lucide-react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
-    updateProfile, awardGems, addXP, resetSession, 
+    updateProfile, awardGems, resetSession, 
     updateSessionAfterAnswer, checkAchievements, syncUserData,
     awardCoins, dropChest 
 } from '../../store/userSlice';
@@ -339,7 +339,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
 
     const q = questions[currentIdx];
-    if (!q && !showCompletion) {
+    if (!q && !showCompletion && !isLoading) {
         return (
             <div className="flex-1 flex items-center justify-center text-[var(--text-sub)]">
                 <RefreshCw className="animate-spin mr-2" /> Finalizing Quest...

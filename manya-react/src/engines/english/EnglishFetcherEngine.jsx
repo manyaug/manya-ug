@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
-    updateSessionAfterAnswer, awardGems, resetSession, awardCoins, dropChest, addXP, checkAchievements, syncUserData
+    updateSessionAfterAnswer, awardGems, resetSession, awardCoins, dropChest, checkAchievements, syncUserData
 } from '../../store/userSlice';
 // ── Gamification Domain (Headless) ───────────────────────────────────────────
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
@@ -185,7 +185,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             setGemsEarned(g => g + awards.gems);
             
             setShowGemToast(true);
-            setTimeout(() => { setShowGemToast(false); nextQuestion(); }, 1500);
+            setTimeout(() => { setShowGemToast(false); nextQuestion(); }, 2200);
         } else {
             audioService.error?.();
             trackWrongAnswer(subject, q.qid || q.id);
@@ -200,7 +200,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 recapUsedIndexRef.current += 1;
                 consecutiveWrongRef.current = 0;
             }
-            setTimeout(() => setShowExplanation(true), 600);
+            setTimeout(() => setShowExplanation(true), 1500);
         }
 
         const log = {
@@ -292,17 +292,33 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
 
     return (
         <EnglishRenderer 
-            isLoading={isLoading} loadingConfig={getLoadingConfig('english')} randomFact={getRandomFact('english')}
-            questions={questions} currentIdx={currentIdx} selectedOption={selectedOption} isAnswered={isAnswered}
-            showExplanation={showExplanation} gemsEarned={gemsEarned} showGemToast={showGemToast}
-            handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion}
-            onFinish={handleFinish} nodeType={nodeType} userWasCorrect={isAnswered && (selectedOption === q?.answer)}
+            isLoading={isLoading} 
+            loadingConfig={getLoadingConfig('english')} 
+            randomFact={getRandomFact('english')}
+            currentQ={q}
+            currentIdx={currentIdx}
+            totalQuestions={questions.length}
+            selectedOption={selectedOption}
+            isAnswered={isAnswered}
+            hintUsed={hintUsed}
+            setHintUsed={setHintUsed}
+            setSelectedOption={setSelectedOption}
+            showExplanation={showExplanation}
+            gemsEarned={gemsEarned}
+            showGemToast={showGemToast}
+            handleSelect={handleSelect}
+            handleSubmit={handleSubmit}
+            onContinue={nextQuestion}
+            onFinish={handleFinish}
+            nodeType={nodeType}
+            correctText={resolveCorrectText(q?.answer, q?.options)}
+            userWasCorrect={isAnswered && verifyEnglishAnswer(selectedOption, q?.answer, q?.options)}
             session={{
                 ...session,
                 mastery: currentMastery,
                 correctCount: scoreRef.current + simPartialScore
             }} 
-            BridgeNode={isSim ? <EnglishBridge key={q.id} step={q} onComplete={nextQuestion} onResult={handleSimResult} /> : null}
+            BridgeNode={isSim ? <EnglishBridge key={q.id} step={q} nodeType={nodeType} onComplete={nextQuestion} onResult={handleSimResult} /> : null}
         />
     );
 }

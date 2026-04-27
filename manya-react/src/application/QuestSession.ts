@@ -83,7 +83,7 @@ export class QuestSession {
     }
 
     async processResult(engineResult: EngineResult) {
-        if (!this.currentStep) return { isCorrect: false, shouldInjectRecap: false, xpEarned: 0, buttonEnabled: false, conceptId: 'unknown' };
+        if (!this.currentStep) return { isCorrect: false, shouldInjectRecap: false, buttonEnabled: false, conceptId: 'unknown' };
 
         const engineType = this.currentStep.engineType || engineResult.engineType || 'unknown';
         const isSimulation = engineResult.type === 'simulation' || engineResult.type === 'legacy_capture';
@@ -109,7 +109,6 @@ export class QuestSession {
         console.log(`📊 [QuestSession] USP Mastery Score: ${this._lastMasteryScore}%`);
 
         const isCorrect = usp ? usp.isPassing : engineResult.isCorrect;
-        const xpAmount = isCorrect ? (usp ? Math.floor(usp.masteryScore * 0.5) : (engineResult.score ? engineResult.score * 10 : 10)) : 0;
 
         const { conceptId, variant, pool } = deriveMetadata(this.currentStep);
 
@@ -123,6 +122,7 @@ export class QuestSession {
         // Async Push to Sync Service
         if (!engineResult.type?.includes('adaptive_')) {
             syncService.pushAnswer(this._meta.subject, {
+                ...engineResult, // Spread all new high-fidelity metrics (idleTimeMs, hesitationCount, etc.)
                 questionId: this.currentStep.file || this.currentStep.id || this.currentStep.topic || 'unknown_step',
                 concept_id: conceptId,
                 variant: variant,
@@ -134,7 +134,10 @@ export class QuestSession {
                 frustrationLevel: frustration.score,
                 pool: pool,
                 engine_type: engineType,
-                usp_data: usp
+                usp_data: usp,
+                questId: this._meta.questKey,
+                questQuestionNumber: this._currentIndex + 1,
+                streakAtTime: this._currentStreak
             });
         }
 
@@ -155,7 +158,6 @@ export class QuestSession {
 
         return {
             isCorrect,
-            xpEarned: xpAmount,
             shouldInjectRecap,
             conceptId,
             buttonEnabled: isCorrect, // Only enable if correct logic applies

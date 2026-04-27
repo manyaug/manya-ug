@@ -216,6 +216,14 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
         hideGlobalFooter: true,
         component: lazy(() => import('../engines/english/ChatEngine.jsx'))
     },
+    'SYNTAX_ENGINE': {
+        type: 'react',
+        isImmersive: true,
+        isGamified: true,
+        label: "Syntax Architect",
+        hideGlobalFooter: true,
+        component: lazy(() => import('../engines/english/SyntaxArchitectEngine.jsx'))
+    },
     'ENGLISH_RULE_MASTER': {
         type: 'react',
         isWait: true,

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
-import { Lightbulb, AlertCircle, Compass, Zap } from 'lucide-react';
+import { Lightbulb, AlertCircle, Compass, Zap, Check, X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { triggerRewardFlight } from '../../utils/fxUtils';
 
 // Decoupled Resources
 import { REGION_MAP, normalize, evaluateExpr, validateInteraction } from './SetTheory/SetTheoryLogic';
@@ -14,7 +15,7 @@ import ManyaKeyboard from '../../components/engine/ManyaKeyboard';
  * - DECOUPLED ARCHITECTURE: Separates Logic (JS), Renderer (Canvas), and UI (React).
  */
 
-const SetTheoryEngine = ({ data, onComplete, onResult }) => {
+const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong }) => {
   const [stepIdx, setStepIdx] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [selectedRegions, setSelectedRegions] = useState(new Set());
@@ -32,6 +33,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
   const draggingRef = useRef(null);
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   const containerRef = useRef(null);
+  const feedbackBtnRef = useRef(null);
   
   const currentStep = data?.questions?.[stepIdx];
   const isTwoSet = !!(data?.sets?.B && data?.sets?.B?.label !== "");
@@ -87,19 +89,37 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
     
     if (isCorrect) { 
         setIsResolved(true); 
-        setFeedback({ text: '🌟 EXCELLENT!', type: 'success' }); 
-        audioService.correct(); 
+        setFeedback({ text: 'CORRECT!', type: 'success' }); 
         
+        // Premium Feedback & Global Events
+        // onSimSuccess handles high-fidelity audio (success.mp3) and coin bursts
+        if (onSimSuccess) onSimSuccess();
+        else {
+            audioService.correct();
+            setTimeout(() => triggerRewardFlight({ x: window.innerWidth/2, y: window.innerHeight - 80 }, 'coin', 5), 200);
+        }
+        
+        window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: data.subject || 'math' } }));
+
+        // [Manya v4 Pulse] Notify parent HUD of step completion
+        onResult?.({
+            score: stepIdx + 1,
+            total: data.questions.length,
+            isCorrect: true,
+            type: 'step_complete'
+        });
+
         // Persist answers for retain_visuals
         if (Object.keys(userAnswers).length > 0) {
             setSuccessfulAnswers(prev => ({ ...prev, ...userAnswers }));
         }
     } else { 
-        setFeedback({ text: 'TRY AGAIN!', type: 'error' }); 
+        setFeedback({ text: 'NOT QUITE RIGHT', type: 'error' }); 
         audioService.wrong(); 
-        setTimeout(() => setFeedback(prev => prev.type === 'error' ? {text:'', type:''} : prev), 2000);
+        if (onSimWrong) onSimWrong();
+        window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: data.subject || 'math' } }));
     }
-  }, [isResolved, stepIdx, data, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult]);
+  }, [isResolved, stepIdx, data, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult, onSimSuccess, onSimWrong]);
 
   const onMouseDown = (e) => {
     if (e.cancelable) e.preventDefault();
@@ -326,81 +346,118 @@ const SetTheoryEngine = ({ data, onComplete, onResult }) => {
                 </div>
             )}
 
-            {/* Float Feedback */}
-            <AnimatePresence>
-                {feedback.text && (
+            {/* Legacy float feedback removed in favor of Unified Footer Feedback */}
+        </div>
+
+        {/* 3. PREMIUM UNIFIED HUD (Manya Elite Style) */}
+        <div className={`p-6 bg-[#0f172a] border-t-2 border-white/5 z-20 transition-all ${kbOpen ? 'pb-8' : 'pb-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]'}`}>
+            <AnimatePresence mode="wait">
+                {feedback.type ? (
+                    /* ELITE FEEDBACK LAYER */
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl z-50 flex items-center gap-3 border-2 ${
-                            feedback.type === 'success' ? 'bg-[#58cc02] border-[#46a302] text-white' : 'bg-rose-500 border-rose-400 text-white'
-                        }`}
+                        key="feedback-bar"
+                        initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+                        className="flex flex-col gap-5"
                     >
-                        {feedback.type === 'success' ? <Zap className="fill-white" /> : <AlertCircle />}
-                        <span className="text-xl font-black italic tracking-tight">{feedback.text}</span>
+                        <div className={`w-full py-4 px-6 rounded-2xl flex items-center justify-center gap-3 font-black text-[13px] tracking-[0.2em] uppercase border-2 ${
+                            feedback.type === 'success' 
+                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.1)]' 
+                            : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
+                        }`}>
+                            {feedback.type === 'success' ? (
+                                <><Check size={20} strokeWidth={4} /> Magnificent!</>
+                            ) : (
+                                <><AlertCircle size={20} strokeWidth={4} /> Solution Pending...</>
+                            )}
+                        </div>
+
+                        <button 
+                            onClick={() => {
+                                if (feedback.type === 'success') handleInteraction();
+                                else setFeedback({ text: '', type: '' });
+                            }}
+                            className={`w-full h-16 rounded-2xl font-black text-xs tracking-[0.25em] uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden shadow-xl active:translate-y-1 ${
+                                feedback.type === 'success' 
+                                ? 'bg-[#58cc02] border-b-[6px] border-[#46a302] text-white hover:bg-[#46a302]' 
+                                : 'bg-rose-500 border-b-[6px] border-rose-700 text-white hover:bg-rose-600'
+                            }`}
+                        >
+                            <div className="btn-toy-gloss" />
+                            <span className="relative z-10">
+                                {feedback.type === 'success' 
+                                    ? (stepIdx < data.questions.length - 1 ? 'Next Challenge' : 'Complete Quest') 
+                                    : 'Try Again'}
+                            </span>
+                            <ArrowRight size={18} className="relative z-10" />
+                        </button>
+                    </motion.div>
+                ) : (
+                    /* ELITE INTERACTION LAYER */
+                    <motion.div 
+                        key="interaction-bar"
+                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                        className="flex flex-col gap-4"
+                    >
+                        {/* 1. SELECTION ROW (for BINARY/CHOICE) */}
+                        {(currentStep.interaction === 'BINARY' || currentStep.interaction === 'CHOICE') && (
+                            <div className="flex flex-wrap gap-2">
+                                {(currentStep.interaction === 'BINARY' ? ['YES', 'NO'] : (currentStep.options || [])).map(opt => {
+                                    const isSelected = Object.values(userAnswers).includes(opt);
+                                    return (
+                                        <button 
+                                            key={opt} onClick={() => { setUserAnswers({ main: opt }); audioService.tap(); }}
+                                            className={`flex-1 min-w-[120px] h-14 rounded-2xl border-2 font-black text-[11px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
+                                                isSelected 
+                                                ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400 shadow-lg' 
+                                                : 'bg-white/5 border-white/10 text-slate-400'
+                                            }`}
+                                        >
+                                            <div className="toy-card-gloss" />
+                                            {opt}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        <div className="flex items-center justify-between gap-4 w-full">
+                            {/* 2. INPUT ROW (for Keyboards) */}
+                            {(currentStep.interaction !== 'DIAGRAM_FILL' && (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT', 'COUNT_SUM', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType))) && (
+                                <div className="flex-1 flex gap-2">
+                                    {(currentStep.inputs || [{ region: 'main', label: 'Answer' }]).map(inp => (
+                                        <button 
+                                            key={inp.region} onClick={() => openKeyboard(inp.region)}
+                                            className={`flex-1 h-16 rounded-2xl border-2 font-black text-xl flex items-center justify-center transition-all ${
+                                                activeKbId === inp.region ? 'border-indigo-500 bg-indigo-500/20 text-white shadow-lg' : 'bg-white/5 border-white/10 text-white shadow-sm'
+                                            }`}
+                                        >
+                                            {userAnswers[inp.region] || <span className="opacity-20 text-sm font-bold uppercase tracking-widest">{inp.label || 'Enter...'}</span>}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {(() => {
+                                const hasInteraction = selectedRegions.size > 0 || Object.keys(userAnswers).some(k => userAnswers[k]) || (currentStep.interaction === 'DRAG_SORT' && chips.some(c => c.region !== 'storage')) || (currentStep.interaction === 'DRAG_SETS' && Object.keys(activeSets).some(k => activeSets[k] && (activeSets[k].x !== (k === 'a' ? 100 : 300))));
+                                return (
+                                    <button 
+                                        onClick={handleInteraction}
+                                        disabled={!hasInteraction}
+                                        className={`flex-1 h-16 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden border-b-[6px] ${
+                                            hasInteraction 
+                                            ? 'bg-indigo-600 text-white border-indigo-900 hover:bg-link active:translate-y-1 active:shadow-none shadow-[0_10px_30px_rgba(79,70,229,0.3)]' 
+                                            : 'bg-slate-800 text-slate-500 border-slate-900 pointer-events-none'
+                                        }`}
+                                    >
+                                        <div className="btn-toy-gloss" />
+                                        <span className="relative z-10 flex items-center gap-2">Check Progress <Zap size={14} fill="currentColor" /></span>
+                                    </button>
+                                );
+                            })()}
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
-
-        {/* HUD Footbar */}
-        <div className={`p-4 flex flex-col gap-4 bg-transparent z-20 transition-all ${kbOpen ? 'pb-8' : ''}`}>
-            {/* 1. SELECTION ROW (for BINARY/CHOICE) */}
-            {(currentStep.interaction === 'BINARY' || currentStep.interaction === 'CHOICE') && (
-                <div className="flex flex-wrap gap-2 animate-in slide-in-from-bottom-4 duration-500">
-                    {(currentStep.interaction === 'BINARY' ? ['YES', 'NO'] : (currentStep.options || [])).map(opt => {
-                        const isSelected = Object.values(userAnswers).includes(opt);
-                        return (
-                            <button 
-                                key={opt}
-                                onClick={() => {
-                                    setUserAnswers({ main: opt });
-                                    audioService.tap();
-                                }}
-                                className={`flex-1 min-w-[120px] h-14 rounded-2xl border-2 font-black text-[11px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
-                                    isSelected 
-                                    ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/20 text-indigo-600 shadow-lg' 
-                                    : (isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-white border-slate-100 text-slate-400 shadow-sm')
-                                }`}
-                            >
-                                {isSelected && <div className="absolute inset-0 bg-indigo-500/5 animate-pulse" />}
-                                {opt}
-                            </button>
-                        );
-                    })}
-                </div>
-            )}
-
-            <div className="flex items-center justify-between gap-4 w-full">
-                {/* 2. INPUT ROW (for Keyboards) */}
-                {(currentStep.interaction !== 'DIAGRAM_FILL' && (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT', 'COUNT_SUM', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType))) && (
-                    <div className="flex-1 flex gap-2">
-                        {(currentStep.inputs || [{ region: 'main', label: 'Answer' }]).map(inp => (
-                            <button 
-                                key={inp.region}
-                                onClick={() => openKeyboard(inp.region)}
-                                className={`flex-1 h-16 rounded-2xl border-2 font-black text-xl flex items-center justify-center transition-all ${
-                                    activeKbId === inp.region ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10 shadow-lg' :
-                                    (isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm')
-                                }`}
-                            >
-                                {userAnswers[inp.region] || <span className="opacity-20 text-sm font-bold uppercase tracking-widest">{inp.label || 'Enter...'}</span>}
-                            </button>
-                        ))}
-                    </div>
-                )}
-
-                <button 
-                    onClick={handleInteraction}
-                    className={`flex-1 h-16 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
-                        isResolved 
-                        ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[6px] border-[#46a302] active:translate-y-1 shadow-lg' 
-                        : (isDark ? 'bg-indigo-600 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200 shadow-sm') + ' text-slate-500 border-b-[6px] border-slate-200'
-                    }`}
-                >
-                    {isResolved ? (stepIdx < data.questions.length - 1 ? 'NEXT STEP' : 'COMPLETE') : 'CHECK ANSWER'}
-                    <Zap size={14} fill="currentColor" />
-                </button>
-            </div>
         </div>
 
         {/* Custom Manya Keyboard */}

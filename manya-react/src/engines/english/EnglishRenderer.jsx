@@ -30,10 +30,12 @@ const EnglishRenderer = ({
     userWasCorrect,
     frustration,
     questMeta,
+    showExplanation,
     gemsEarned,
     showGemToast,
     onContinue,
-    session
+    session,
+    BridgeNode
 }) => {
     const correctBtnRef = useRef(null);
     const correctCount = session?.correctCount || 0;
@@ -62,6 +64,16 @@ const EnglishRenderer = ({
             }
         }
     }, [isAnswered, userWasCorrect]);
+    
+    // --- 🎮 SIMULATION ROUTING ---
+    if (BridgeNode) {
+        return (
+            <div className="flex-1 h-full flex flex-col overflow-hidden relative">
+                {BridgeNode}
+            </div>
+        );
+    }
+
     return (
         <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
             {/* Scrollable primary area */}
@@ -173,9 +185,10 @@ const EnglishRenderer = ({
             </div>
 
             {/* --- STICKY FOOTER --- */}
-            <div className="flex-none p-6 pb-10">
+            <div className="flex-none p-4 pb-8 w-full bg-[#0c111d]/80 backdrop-blur-lg border-t border-white/5 relative z-50">
                 {!isAnswered ? (
                     <button
+                        ref={correctBtnRef} // Attach ref for coin burst origin
                         onClick={handleSubmit}
                         disabled={!selectedOption}
                         className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
@@ -188,14 +201,14 @@ const EnglishRenderer = ({
                         <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                     </button>
                 ) : (
-                    <div className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
+                    <div ref={correctBtnRef} className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
                         {userWasCorrect ? <>Magnificent! Keep going! <Check size={18} /></> : <>Analyzing solution... <AlertCircle size={18} /></>}
                     </div>
                 )}
             </div>
 
             {/* --- SOLUTION PORTAL (Portals to Body) --- */}
-            {isAnswered && !userWasCorrect && createPortal(
+            {showExplanation && !userWasCorrect && createPortal(
                 <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
                     <div className="relative w-full max-w-md bg-[#151921] rounded-[3rem] p-8 border border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.5)] animate-in zoom-in duration-300">
                         <div className="toy-card-gloss" />

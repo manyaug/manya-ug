@@ -98,27 +98,15 @@ export const syncService = {
         const payload = {
             id: uid,
             full_name: profileData.fullName || profileData.nickname,
-            xp: profileData.xp || profileData.totalPoints || 0,
-            gems_overall: profileData.gems_overall || profileData.overallGems || profileData.diamonds || 0,
-            gems_sst: profileData.subjectGems?.sst || profileData.sstGems || 0,
-            gems_math: profileData.subjectGems?.math || profileData.mathGems || 0,
-            gems_english: profileData.subjectGems?.english || profileData.englishGems || 0,
-            gems_science: profileData.subjectGems?.science || profileData.scienceGems || 0,
-            streak_current: profileData.current_streak || 0,
-            streak_longest: profileData.longest_streak || 0,
             avatar_url: profileData.avatarSeed ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData.avatarSeed}` : null,
             preferences: profileData.preferences || {},
             parent_email: profileData.parent?.email || profileData.parent_email,
             parent_phone: profileData.parent?.whatsapp || profileData.parent_phone,
             grade_level: profileData.grade_level || profileData.goal,
             engagement_stats: profileData.engagement_stats || {},
-            unlocked_badges: profileData.unlockedBadges || [],
-            vault_artifacts: profileData.vaultArtifacts || [],
-            math_correct: profileData.math_correct || 0,
-            science_correct: profileData.science_correct || 0,
-            english_correct: profileData.english_correct || 0,
-            sst_correct: profileData.sst_correct || 0,
-            last_active_at: new Date().toISOString()
+            last_active_at: new Date().toISOString(),
+            learning_type: profileData.learning_type || 'ADAPTIVE',
+            is_pro: profileData.is_pro || false
         };
 
         try {
@@ -146,7 +134,7 @@ export const syncService = {
         const pointsEarned = answer.isCorrect ? (answer.hintUsed ? 2 : 3) : 0;
 
         const payload = {
-            id: answer.id || crypto.randomUUID(),  // RED FLAG FIX: Pin the ID locally
+            id: answer.id || crypto.randomUUID(),
             user_id: uid,
             question_id: answer.questionId,
             is_correct: answer.isCorrect,
@@ -154,15 +142,31 @@ export const syncService = {
             correct_answer: String(answer.correctAnswer || ''),
             time_spent_ms: answer.timeSpentMs,
             hint_used: answer.hintUsed,
+            hint_level: answer.hintLevel || 0,
             answer_changed: answer.answerChanged,
-            frustration_level: answer.frustrationLevel || 0,
-            frustration_clicks: answer.changeCount || 0, // Mapped locally
+            answer_history: answer.answerHistory || [],
+            option_hover_times: answer.optionHoverTimes || {},
+            confidence_rating: answer.confidenceRating || 0,
+            tab_switched: answer.tabSwitched || false,
+            idle_time_ms: answer.idleTimeMs || 0,
+            time_to_first_click_ms: answer.timeToFirstClickMs || 0,
+            hesitation_count: answer.hesitationCount || 0,
+            reaction_emoji: answer.reactionEmoji || null,
+            frustration_clicks: answer.changeCount || 0,
+            self_reported_difficulty: answer.selfReportedDifficulty || null,
             session_id: answer.session_id || storageService.getItem('manya_session_id'),
+            session_question_number: answer.sessionQuestionNumber || 0,
+            device_type: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+            network_type: navigator.connection?.effectiveType || 'unknown',
             time_of_day: timeOfDay,
             day_of_week: dayOfWeek,
+            quest_id: answer.questId || null,
+            quest_question_number: answer.questQuestionNumber || 0,
             points_earned: pointsEarned,
-            answered_at: answer.answeredAt || answer.clientTimestamp || new Date().toISOString(), // RED FLAG FIX: Bind to true offline time
-            client_timestamp: answer.clientTimestamp || new Date().toISOString() // RED FLAG FIX: Pin the exact hardware clock
+            streak_at_time: answer.streakAtTime || 0,
+            answered_at: answer.answeredAt || answer.clientTimestamp || new Date().toISOString(),
+            client_timestamp: answer.clientTimestamp || new Date().toISOString(),
+            frustration_level: answer.frustrationLevel || 0
         };
 
         try {
@@ -357,23 +361,13 @@ export const syncService = {
                     const sanitized = {
                         id: item.data.id,
                         full_name: item.data.full_name,
-                        xp: item.data.xp,
-                        gems_overall: item.data.gems_overall,
-                        gems_sst: item.data.gems_sst,
-                        gems_math: item.data.gems_math,
-                        gems_english: item.data.gems_english,
-                        gems_science: item.data.gems_science,
-                        streak_current: item.data.streak_current,
-                        streak_longest: item.data.streak_longest,
                         avatar_url: item.data.avatar_url,
                         preferences: item.data.preferences,
-                        unlocked_badges: item.data.unlocked_badges,
-                        vault_artifacts: item.data.vault_artifacts,
-                        math_correct: item.data.math_correct,
-                        science_correct: item.data.science_correct,
-                        english_correct: item.data.english_correct,
-                        sst_correct: item.data.sst_correct,
-                        last_active_at: item.data.last_active_at
+                        grade_level: item.data.grade_level,
+                        engagement_stats: item.data.engagement_stats,
+                        last_active_at: item.data.last_active_at,
+                        learning_type: item.data.learning_type,
+                        is_pro: item.data.is_pro
                     };
                     ({ error } = await supabase.from('profiles').upsert(sanitized));
                 } else if (item.type === 'answer') {

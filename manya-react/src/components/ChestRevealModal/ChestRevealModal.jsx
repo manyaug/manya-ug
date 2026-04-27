@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ArrowRight, X } from 'lucide-react';
-import { dismissChest, awardCoins, addXP, awardGems } from '../../store/userSlice.js';
+import { dismissChest, awardCoins, awardGems } from '../../store/userSlice.js';
 import { syncService } from '../../infrastructure/sync/syncService.js';
 import { assetUrl } from '../../config/assetUrls.js';
 import { audioService } from '../../infrastructure/audio/audioService';
@@ -69,11 +69,9 @@ export default function ChestRevealModal() {
 
     // Apply rewards to Redux state
     useEffect(() => {
-        if (!chest) return;
         for (const reward of chest.rewards || []) {
             if (reward.type === 'coins') dispatch(awardCoins(reward.amount));
-            if (reward.type === 'xp')    dispatch(addXP(reward.amount));
-            if (reward.type === 'gems')  dispatch(awardGems({ subject: 'general', amount: reward.amount, xp: 0 }));
+            if (reward.type === 'gems')  dispatch(awardGems({ subject: 'general', amount: reward.amount }));
         }
         // Persist to Supabase
         syncService.pushChestDrop(chest.chestType, chest.rewards).catch(() => {});

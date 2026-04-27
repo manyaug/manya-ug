@@ -29,24 +29,7 @@ function ProfileView() {
         visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
     };
 
-    // --- LEAGUE & LEVEL LOGIC ---
-    const xpToLevel = (xp) => {
-        const level = Math.floor((xp || 0) / 1000) + 1;
-        const progress = (xp % 1000) / 10;
-        const offset = 339.29 - (339.29 * (progress / 100));
-
-        let rank = "Novice Hero";
-        let league = "Bronze League";
-        let leagueColor = "#CD7F32";
-
-        if (level > 2) { rank = "Rising Scholar"; league = "Silver League"; leagueColor = "#94a3b8"; }
-        if (level > 5) { rank = "Elite Hero"; league = "Gold League"; leagueColor = "#f59e0b"; }
-        if (level > 10) { rank = "Manya Legend"; league = "Crystal League"; leagueColor = "#06b6d4"; }
-
-        return { level, progress, offset, rank, league, leagueColor };
-    };
-
-    const stats = xpToLevel(user?.xp || 150);
+    const stats = { rank: "Advanced Hero", league: "Bronze League", leagueColor: "#CD7F32" };
 
     const subjectProgress = [
         { name: 'Mathematics', val: 78, color: '#7c3aed', icon: getIsland('math') },
@@ -86,25 +69,12 @@ function ProfileView() {
         >
             {/* Aurora Engine removed for Opaque style */}
 
-            {/* 1. HERO IDENTITY (XP RING) */}
             <motion.div variants={itemVariants} className="hero-passport-header">
-                <div className="xp-ring-container">
-                    <svg className="xp-ring-svg" viewBox="0 0 120 120">
-                        <circle className="ring-bg" cx="60" cy="60" r="54"></circle>
-                        <motion.circle
-                            initial={{ strokeDashoffset: 339.29 }}
-                            animate={{ strokeDashoffset: stats.offset }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="ring-fill"
-                            cx="60" cy="60" r="54"
-                            style={{ strokeDasharray: 339.29 }}
-                        />
-                    </svg>
+                <div className="avatar-preview-halo">
                     <div className="avatar-circle">
                         <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed || 'Hero'}`} alt="Avatar" />
                         <div className="orb-thor-glow"></div>
                     </div>
-                    <div className="level-badge">LVL {stats.level}</div>
                 </div>
                 <h2 className="hero-display-name">{(user?.nickname || 'Hero').toUpperCase()}</h2>
                 <div className="hero-rank-pill">{stats.rank.toUpperCase()}</div>

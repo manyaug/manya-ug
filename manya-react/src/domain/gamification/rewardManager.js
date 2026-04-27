@@ -5,7 +5,7 @@
  * Prevents logic duplication and "infinite loop" bugs across subject engines.
  */
 
-import { awardGems, awardCoins, addXP, dropChest, checkAchievements } from '../../store/userSlice';
+import { awardGems, awardCoins, dropChest, checkAchievements } from '../../store/userSlice';
 import { getModeCoinMultiplier } from './gameModeEngine';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from './chestService';
 
@@ -32,13 +32,9 @@ export const rewardManager = {
         const baseCoins = isSimulation ? 12 : 8;
         const totalCoins = Math.floor((hintUsed ? Math.floor(baseCoins / 2.5) : baseCoins) * streakMultiplier * modeMultiplier);
         
-        const xpAmount = isSimulation ? 20 : 10;
-
         // 3. Dispatch Awards
         if (totalGems > 0) {
-            dispatch(awardGems({ subject, amount: totalGems, xp: xpAmount }));
-        } else {
-            dispatch(addXP(xpAmount));
+            dispatch(awardGems({ subject, amount: totalGems }));
         }
 
         if (totalCoins > 0) {
@@ -54,7 +50,7 @@ export const rewardManager = {
         // 5. Trigger Badge Check
         dispatch(checkAchievements());
 
-        return { gems: totalGems, coins: totalCoins, xp: xpAmount };
+        return { gems: totalGems, coins: totalCoins };
     },
 
     /**

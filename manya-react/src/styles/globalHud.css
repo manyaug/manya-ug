@@ -84,21 +84,6 @@
     letter-spacing: 0.2px;
 }
 
-.hud-xp-line {
-    width: 60px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 100px;
-    overflow: hidden;
-    position: relative;
-}
-
-.hud-xp-fill {
-    height: 100%;
-    background: var(--manya-purple);
-    border-radius: 100px;
-}
-
 /* RIGHT: PILLS (STREAK, GEMS, COINS) */
 .hud-right-content {
     display: flex;
@@ -224,7 +209,4 @@
 }
 [data-theme='light'] .hud-pill {
     background: var(--bg-card);
-}
-[data-theme='light'] .hud-xp-line {
-    background: rgba(0, 0, 0, 0.05);
-}
+}

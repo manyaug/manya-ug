@@ -1,11 +1,16 @@
 export const ManyaDB = {
     DB_NAME: 'ManyaSystemDB',
-    VERSION: 4, // v4: Added concept_mastery store for spaced repetition
+    VERSION: 5, // v5: Added gamification stores (badges, chests, challenges)
     STORE_USERS: 'users',
     STORE_QUESTIONS: 'questions',
     STORE_SYNC_LOGS: 'sync_logs',
     STORE_ANSWERS: 'answers',
     STORE_CONCEPT_MASTERY: 'concept_mastery',
+    STORE_ACHIEVEMENTS: 'achievements',
+    STORE_BADGES: 'badges',
+    STORE_CHESTS: 'user_chests',
+    STORE_CHALLENGES: 'daily_challenges',
+    STORE_POWER_UPS: 'power_ups',
 
     async connect() {
         return new Promise((resolve, reject) => {
@@ -30,6 +35,21 @@ export const ManyaDB = {
                     const cmStore = db.createObjectStore(this.STORE_CONCEPT_MASTERY, { keyPath: 'id' });
                     cmStore.createIndex('subject', 'subject', { unique: false });
                     cmStore.createIndex('baseId', 'baseId', { unique: false });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_ACHIEVEMENTS)) {
+                    db.createObjectStore(this.STORE_ACHIEVEMENTS, { keyPath: 'id', autoIncrement: true });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_BADGES)) {
+                    db.createObjectStore(this.STORE_BADGES, { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_CHESTS)) {
+                    db.createObjectStore(this.STORE_CHESTS, { keyPath: 'id', autoIncrement: true });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_CHALLENGES)) {
+                    db.createObjectStore(this.STORE_CHALLENGES, { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains(this.STORE_POWER_UPS)) {
+                    db.createObjectStore(this.STORE_POWER_UPS, { keyPath: 'id' });
                 }
             };
 
@@ -264,19 +284,12 @@ export const ManyaDB = {
             nickname: "",
             fullName: "",
             avatarSeed: "Manya",
-            school: "",
-            goal: "Agg 4-8",
-            diamonds: 150, // Global premium currency
-            coins: 500, // Regular currency
-            mathGems: 25, 
-            scienceGems: 12,
-            sstGems: 40,
-            englishGems: 18,
-            league: 'Bronze', // Bronze, Silver, Gold, Amethyst, Diamond
-            xp: 150,
-            current_streak: 1,
-            longest_streak: 1,
-            last_active_at: new Date().toISOString(),
+            diamonds: 150, 
+            coins: 0, // Reset to 0
+            current_streak: 0,
+            longest_streak: 0,
+            last_active_at: null,
+            created_at: new Date().toISOString(),
             unlockedBadges: ['gen_01'], // Everyone gets Apprentice
             stats_perfect_answers: 0,
             stats_hints_used: 0,
@@ -286,6 +299,8 @@ export const ManyaDB = {
             parent: { name: "", whatsapp: "" },
             pendingBadgeCelebrations: [],
             vaultArtifacts: [], 
+            is_pro: false,
+            learning_type: 'ADAPTIVE',
             created_at: new Date().toISOString()
         };
     }

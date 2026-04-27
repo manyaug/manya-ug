@@ -16,18 +16,13 @@ export const initializeUser = createAsyncThunk(
     
     if (cloudProfile) {
         console.log("☁️ [Sync] Profile restored from Supabase.");
-        // Merge cloud data into local structure
         const merged = {
             ...(localUser || ManyaDB.createDefaultRecord()),
             nickname: cloudProfile.full_name,
-            xp: cloudProfile.xp,
-            diamonds: cloudProfile.gems_overall,
-            sstGems: cloudProfile.gems_sst,
-            mathGems: cloudProfile.gems_math,
-            englishGems: cloudProfile.gems_english,
-            scienceGems: cloudProfile.gems_science,
-            currentStreak: cloudProfile.streak_current,
-            longestStreak: cloudProfile.streak_longest,
+            diamonds: cloudProfile.gems_overall || 0,
+            math_correct: Math.max(localUser?.math_correct || 0, cloudProfile.math_correct || 0),
+            is_pro: cloudProfile.is_pro || false,
+            learning_type: cloudProfile.learning_type || 'ADAPTIVE',
             unlockedBadges: Array.from(new Set([
                 ...(localUser?.unlockedBadges || []), 
                 ...(cloudProfile.unlocked_badges || [])
@@ -36,10 +31,6 @@ export const initializeUser = createAsyncThunk(
                 ...(localUser?.vaultArtifacts || []),
                 ...(cloudProfile.vault_artifacts || [])
             ])),
-            math_correct: Math.max(localUser?.math_correct || 0, cloudProfile.math_correct || 0),
-            science_correct: Math.max(localUser?.science_correct || 0, cloudProfile.science_correct || 0),
-            english_correct: Math.max(localUser?.english_correct || 0, cloudProfile.english_correct || 0),
-            sst_correct: Math.max(localUser?.sst_correct || 0, cloudProfile.sst_correct || 0),
             onboarded: true 
         };
 
@@ -105,9 +96,6 @@ export const userSlice = createSlice({
     addDiamonds: (state, action) => {
       state.data.diamonds += action.payload;
     },
-    addXP: (state, action) => {
-      state.data.xp += action.payload;
-    },
     updateProfile: (state, action) => {
       state.data = { ...state.data, ...action.payload };
     },
@@ -133,13 +121,12 @@ export const userSlice = createSlice({
     },
     // ── ECONOMY ─────────────────────────────────────────────────────────────
     awardGems: (state, action) => {
-      const { subject, amount, xp } = action.payload;
+      const { subject, amount } = action.payload;
       const gemKey = `${subject}Gems`;
       if (state.data[gemKey] !== undefined) {
         state.data[gemKey] += amount;
       }
       state.data.diamonds += Math.floor(amount / 2); // Bonus diamonds
-      state.data.xp += xp;
     },
     // Award coins (Manya soft currency)
     awardCoins: (state, action) => {
@@ -285,7 +272,6 @@ export const userSlice = createSlice({
 
 export const { 
     addDiamonds, 
-    addXP, 
     updateProfile, 
     completeOnboarding, 
     resetUser,

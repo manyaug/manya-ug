@@ -38,7 +38,6 @@ function GlobalHUD() {
     if (!user) return null;
 
     const level      = Math.floor((user.xp || 0) / 1000) + 1;
-    const xpProgress = ((user.xp || 0) % 1000) / 10; // 0-100 %
     const streak     = user.current_streak || user.currentStreak || 0;
     const diamonds   = user.diamonds || 0;
 
@@ -58,15 +57,6 @@ function GlobalHUD() {
                     </div>
                     <div className="hud-user-text">
                         <span className="hud-nickname-text">{(user.nickname || 'Student').split(' ')[0]}</span>
-                        <div className="hud-xp-line">
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${xpProgress}%` }}
-                                transition={{ duration: 0.8, ease: 'easeOut' }}
-                                className="hud-xp-fill"
-                            />
-                        </div>
-                        <span className="hud-xp-label">{user.xp || 0} XP</span>
                     </div>
                 </div>
 

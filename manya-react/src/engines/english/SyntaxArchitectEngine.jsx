@@ -4,6 +4,7 @@ import { audioService } from '../../infrastructure/audio/audioService.js';
 // Decoupled Resources
 import { normalizeSyntax, validateStructure, calculateSyntaxScoring } from './SyntaxArchitect/SyntaxLogic';
 import SyntaxRenderer from './SyntaxArchitect/SyntaxRenderer';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 /**
  * MANYA ENGLISH: SYNTAX ARCHITECT ENGINE v2.0 (Atomic)
@@ -18,10 +19,18 @@ const SyntaxArchitectEngine = ({ data, onComplete }) => {
     const [inputValue, setInputValue] = useState('');
     const [feedback, setFeedback] = useState(null); 
     const [isDark, setIsDark] = useState(false);
-    const [showFinish, setShowFinish] = useState(false);
+    const [kbOpen, setKbOpen] = useState(false);
 
     const startTimeRef = useRef(Date.now());
     const mistakesRef = useRef(0);
+
+    const { 
+        metrics, 
+        recordAnswerSelection, 
+        onOptionHoverStart, 
+        onOptionHoverEnd, 
+        resetMetrics 
+    } = useBehavioralTracker(!!pool.length);
     const initialQuestions = useMemo(() => data?.questions || [], [data]);
     const currentQ = pool[index];
 
@@ -40,8 +49,8 @@ const SyntaxArchitectEngine = ({ data, onComplete }) => {
         setIndex(0);
         setWrongQueue([]);
         setFeedback(null);
-        setShowFinish(false);
-    }, [initialQuestions]);
+        resetMetrics();
+    }, [initialQuestions, resetMetrics]);
 
     const handleCheck = () => {
         if (!currentQ || feedback?.type === 'success') return;
@@ -72,8 +81,9 @@ const SyntaxArchitectEngine = ({ data, onComplete }) => {
             setPool([...wrongQueue]);
             setWrongQueue([]);
             setIndex(0);
+            resetMetrics();
         } else {
-            setShowFinish(true);
+            handleFinishResult();
         }
     };
 
@@ -81,21 +91,34 @@ const SyntaxArchitectEngine = ({ data, onComplete }) => {
         if (feedback?.type === 'success') return;
         setInputValue(option);
         setFeedback(null);
+        recordAnswerSelection(option);
     };
 
     const handleFinishResult = () => {
-        const result = calculateSyntaxScoring(mistakesRef.current, initialQuestions.length, startTimeRef.current);
+        const baseResult = calculateSyntaxScoring(mistakesRef.current, initialQuestions.length, startTimeRef.current);
+        const result = {
+            ...baseResult,
+            ...metrics, // Inject [idleTimeMs, hesitationCount, tabSwitched, etc.]
+            engineType: 'SYNTAX_ENGINE'
+        };
         if (onComplete) onComplete(result);
     };
+
+    const handleKbInput = (val) => setInputValue(p => p + val);
+    const handleKbDelete = () => setInputValue(p => p.slice(0, -1));
 
     return (
         <SyntaxRenderer 
             isDark={isDark} pool={pool} index={index} 
             wrongQueue={wrongQueue} currentQ={currentQ} 
             inputValue={inputValue} feedback={feedback} 
-            showFinish={showFinish} setInputValue={setInputValue} 
+            setInputValue={setInputValue} 
             handleCheck={handleCheck} handleNext={handleNext} 
             fillInput={fillInput} onComplete={handleFinishResult} 
+            kbOpen={kbOpen} setKbOpen={setKbOpen}
+            onKbInput={handleKbInput} onKbDelete={handleKbDelete}
+            onOptionHoverStart={onOptionHoverStart}
+            onOptionHoverEnd={onOptionHoverEnd}
         />
     );
 };

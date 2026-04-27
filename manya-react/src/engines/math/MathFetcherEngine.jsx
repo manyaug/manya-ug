@@ -3,7 +3,7 @@ import { RefreshCw } from 'lucide-react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { 
-    updateProfile, awardGems, addXP, resetSession, 
+    updateProfile, awardGems, resetSession, 
     updateSessionAfterAnswer, awardCoins, dropChest, checkAchievements, syncUserData
 } from '../../store/userSlice';
 // ── Gamification Domain (Headless) ───────────────────────────────────────────
@@ -335,7 +335,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
     }
 
     const currentQ = questions[currentIdx];
-    if (!currentQ && !showCompletion) {
+    if (!currentQ && !showCompletion && !isLoading) {
         return (
             <div className="flex-1 flex items-center justify-center text-[var(--text-sub)]">
                 <RefreshCw className="animate-spin mr-2" /> Finalizing Quest...

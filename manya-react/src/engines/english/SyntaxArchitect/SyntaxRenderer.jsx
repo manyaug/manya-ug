@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PenTool, Trophy, ArrowRight, Zap, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { PenTool, Trophy, ArrowRight, Zap, AlertCircle, CheckCircle2, ChevronDown } from 'lucide-react';
+import ManyaKeyboard from '../../../components/engine/ManyaKeyboard';
 
 /**
  * SYNTAX ARCHITECT RENDERER
@@ -15,12 +16,17 @@ const SyntaxRenderer = ({
     currentQ, 
     inputValue, 
     feedback, 
-    showFinish, 
     setInputValue, 
     handleCheck, 
     handleNext, 
     fillInput,
-    onComplete 
+    onComplete,
+    kbOpen,
+    setKbOpen,
+    onKbInput,
+    onKbDelete,
+    onOptionHoverStart,
+    onOptionHoverEnd
 }) => {
     return (
         <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
@@ -39,26 +45,33 @@ const SyntaxRenderer = ({
             <div className="flex-1 overflow-y-auto px-8 py-4 space-y-6 scrollbar-hide">
                 <motion.div 
                     layout
-                    className={`p-8 sm:p-10 rounded-[48px] border transition-all ${isDark ? 'bg-white/5 border-white/5 shadow-2xl shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-xl shadow-slate-200/50'}`}
+                    className={`p-6 rounded-3xl border transition-all ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-100 shadow-lg'}`}
                 >
-                    <h2 className="text-xl sm:text-2xl font-black leading-tight mb-10 tracking-tight">
-                        {currentQ?.prompt}
-                    </h2>
+                    <h2 
+                        className="text-lg sm:text-xl font-black leading-tight mb-8 tracking-tight"
+                        dangerouslySetInnerHTML={{ __html: currentQ?.prompt }}
+                    />
 
-                    <div className="space-y-5">
-                        <input 
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder="Type or select an answer..."
-                            className={`w-full h-18 px-8 rounded-[28px] border-4 text-lg font-black transition-all outline-none ${feedback?.type === 'success' ? 'border-emerald-500 text-emerald-500 bg-emerald-50' : (feedback?.type === 'error' ? 'border-rose-500 text-rose-500 bg-rose-50' : (isDark ? 'bg-[#1E2530] border-white/5 text-white focus:border-indigo-500' : 'bg-slate-50 border-slate-100 text-indigo-700 focus:border-indigo-500 focus:bg-white'))}`}
-                        />
+                    <div className="space-y-4">
+                        <button 
+                            onClick={() => setKbOpen(true)}
+                            className={`w-full h-16 px-6 rounded-2xl border-2 text-base font-black transition-all flex items-center justify-between ${
+                                feedback?.type === 'success' 
+                                ? 'border-emerald-500 text-emerald-500 bg-emerald-50' 
+                                : (feedback?.type === 'error' ? 'border-rose-500 text-rose-500 bg-rose-50' : (isDark ? 'bg-[#1E2530] border-white/5 text-white' : 'bg-slate-50 border-slate-100 text-indigo-700'))
+                            }`}
+                        >
+                            <span>{inputValue || <span className="opacity-30">Construct your sentence...</span>}</span>
+                            {!feedback && <ChevronDown size={18} className="opacity-40" />}
+                        </button>
 
                         <div className="flex flex-wrap gap-2">
                             {currentQ?.options?.map((opt, i) => (
                                 <button
                                     key={i}
                                     onClick={() => fillInput(opt)}
+                                    onMouseEnter={() => onOptionHoverStart?.(opt)}
+                                    onMouseLeave={() => onOptionHoverEnd?.(opt)}
                                     className={`px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border-2 transition-all active:scale-95 ${isDark ? 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10' : 'bg-indigo-50 border-indigo-100 text-indigo-600 hover:bg-white hover:shadow-lg'}`}
                                 >
                                     {opt}
@@ -74,12 +87,12 @@ const SyntaxRenderer = ({
                             initial={{ y: 20, opacity: 0 }} 
                             animate={{ y: 0, opacity: 1 }} 
                             exit={{ y: 20, opacity: 0 }}
-                            className={`p-6 rounded-[35px] flex items-start gap-4 ${feedback.type === 'success' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}
+                            className={`p-5 rounded-2xl flex items-start gap-3 ${feedback.type === 'success' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}
                         >
-                            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${feedback.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
-                                {feedback.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${feedback.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
+                                {feedback.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                             </div>
-                            <p className="text-xs font-black italic mt-2 leading-relaxed">{feedback.msg}</p>
+                            <p className="text-[11px] font-black italic mt-1 leading-relaxed">{feedback.msg}</p>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -115,26 +128,18 @@ const SyntaxRenderer = ({
                 </AnimatePresence>
             </div>
 
-            {/* Success Wrap */}
-            <AnimatePresence>
-                {showFinish && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 flex flex-col items-center justify-center p-8 backdrop-blur-2xl bg-black/40">
-                        <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="bg-white dark:bg-[#151921] p-10 rounded-[50px] shadow-3xl border border-white/10 text-center max-w-sm w-full">
-                            <div className="w-24 h-24 bg-emerald-500 text-white rounded-[40px] flex items-center justify-center mx-auto mb-8 shadow-2xl rotate-12">
-                                <Trophy size={48} />
-                            </div>
-                            <h2 className="text-4xl font-black mb-2 tracking-tighter">Architect!</h2>
-                            <p className="text-slate-500 font-bold mb-10 text-lg">Infrastructure Secured</p>
-                            <button onClick={onComplete} className="w-full h-16 bg-indigo-600 text-white rounded-3xl font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all">
-                                Submit & Continue <ArrowRight size={20} />
-                            </button>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <ManyaKeyboard 
+                isOpen={kbOpen}
+                value={inputValue}
+                onInput={onKbInput}
+                onDelete={onKbDelete}
+                onClose={() => setKbOpen(false)}
+                onDone={() => setKbOpen(false)}
+            />
 
             <style>{`
                 .scrollbar-hide::-webkit-scrollbar { display: none; }
+                b, strong { color: #818cf8; font-weight: 900; }
             `}</style>
         </div>
     );

@@ -510,7 +510,8 @@ function QuestPathView() {
                     className="explore-tome-fixed-hub"
                     style={{ 
                         position: 'fixed', 
-                        right: '25px', 
+                        right: subject === 'english' ? 'auto' : '25px', 
+                        left: subject === 'english' ? '25px' : 'auto',
                         bottom: '25px', 
                         zIndex: 1000,
                         display: 'flex',
