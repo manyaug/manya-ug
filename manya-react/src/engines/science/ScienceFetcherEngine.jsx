@@ -95,9 +95,6 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
             try {
                 // Load Interactive Simulations
                 const simCandidates = [];
-                if (data?.simResources) {
-                    for (const simRes of data.simResources) {
-                const simCandidates = [];
                 const activeSims = data?.simResources || [];
                 const activeRecaps = data?.recapResources || [];
 
@@ -398,6 +395,8 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
         <ScienceRenderer
             isLoading={isLoading} loadingConfig={getLoadingConfig('science')} randomFact={getRandomFact('science')}
             renderError={renderError} questions={questions} currentIdx={currentIdx}
+            selectedOption={selectedOption} isAnswered={isAnswered} showExplanation={showExplanation}
+            gemsEarned={gemsEarned} showGemToast={showGemToast} hintUsed={hintUsed} setHintUsed={setHintUsed}
             handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion} handleFinish={handleFinish}
             nodeType={nodeType} correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
             currentMode={gameMode}

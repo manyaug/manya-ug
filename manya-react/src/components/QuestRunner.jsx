@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { X, AlertTriangle, RefreshCw } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
-import { updateProfile, awardGems } from '../store/userSlice';
-
+import { updateProfile, awardGems, awardCoins, incrementQuestCount, dropChest, checkAchievements, syncUserData } from '../store/userSlice';
+import { syncService } from '../infrastructure/sync/syncService.js';
 import { loadQuestSteps } from '../utils/questLoader';
 import { getGem } from '../config/assetUrls';
 import { getLoadingConfig, getRandomFact } from '../config/loadingData';
@@ -16,7 +16,6 @@ import { dynamicModeService } from '../domain/gamification/dynamicModeService';
 import { QuestBusProvider } from '../ui/context/QuestBus';
 import QuestHUD from './QuestHUD'; 
 import { evaluateRewards } from '../domain/gamification/chestService.js';
-import { awardCoins, dropChest } from '../store/userSlice';
 import { getNodeMastery, NODE_ORDER } from '../domain/progress/questProgressService.js';
 import PremiumFXOverlay from './PremiumFXOverlay';
 import React from 'react';
@@ -159,8 +158,9 @@ export default function QuestRunner() {
 
         // ── DYNAMIC MODE INJECTION ──────────────────────────────────────────
         const mode = dynamicModeService.getNextMode(location.state?.forceMode, location.state?.nodeType);
+        const baseData = currentStep.data || currentStep;
         let engineData = { 
-            ...currentStep.data, 
+            ...baseData, 
             currentMode: mode,
             unitId: location.state?.unitId,
             questFolder: location.state?.questFolder
@@ -263,16 +263,27 @@ export default function QuestRunner() {
         const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
         let masteryScore = 100;
 
+        let completionResult = null;
         if (questKey && safeNodeType && !hasFetcher) {
-            masteryScore = sessionRef.current?.lastMasteryScore || ((sessionRef.current?.correctCount || 1) / (sessionRef.current?.totalSteps || 1)) * 100;
-            const result = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
-            setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: result.unlocked, nextNode: result.nextNode });
+            // For EXPLORE (Library) nodes, finishing the unit means 100% mastery.
+            if (safeNodeType === 'EXPLORE') {
+                masteryScore = 100;
+            } else {
+                masteryScore = sessionRef.current?.lastMasteryScore || ((sessionRef.current?.correctCount || 1) / (sessionRef.current?.totalSteps || 1)) * 100;
+            }
+            completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
+            setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: completionResult.unlocked, nextNode: completionResult.nextNode });
         } else if (hasFetcher) {
             masteryScore = sessionRef.current?.lastMasteryScore || 100;
+            // Fetchers save their own completion internally, but we run it here again safely 
+            // to extract the unlock state so the QuestPathView animation can play!
+            completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
+            setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: completionResult.unlocked, nextNode: completionResult.nextNode });
         }
         
         // 2. Dispatch soft currency
         dispatch(awardCoins(earnedCoins));
+        dispatch(incrementQuestCount());
 
         // 3. Store final stats for CelebrationView
         performanceRef.current.finalMastery = masteryScore;
@@ -282,20 +293,30 @@ export default function QuestRunner() {
 
         // 4. 🎁 EVALUATE PREMIUM REWARDS (New Logic Matrix)
         const sessionDurationMinutes = (Date.now() - performanceRef.current.startTime) / 60000;
-        const rewards = evaluateRewards({
+        
+        // 🛡️ REWARD POLICY: 
+        // 1. Only give chests/gems on the FIRST successful completion of a node.
+        // 2. EXPLORE (Library) nodes never give gems, only coins (already handled in economy) and maybe a bronze chest on 1st try.
+        let rewards = [];
+        const isFirstTry = completionResult ? completionResult.isFirstCompletion : true;
+
+        // 🎁 Always evaluate rewards (rewards effort on replay too)
+        rewards = evaluateRewards({
             mastery: masteryScore,
             streak: user.current_streak || 0,
             sessionTime: sessionDurationMinutes,
             nodeType: safeNodeType,
+            isFirstQuest: isFirstTry && user.quests_completed === 0,
             modeAchievements: {
                 speedrunPerfect: performanceRef.current.speedrunEngaged && performanceRef.current.speedrunPerfect && (sessionRef.current?.correctCount || 0) > 2,
                 reversePerfect: performanceRef.current.reverseEngaged && performanceRef.current.reversePerfect && (sessionRef.current?.correctCount || 0) > 2
             }
         });
 
-        // Drop all earned chests
+        // Drop all earned chests & sync to cloud
         rewards.forEach(drop => {
             dispatch(dropChest(drop));
+            syncService.pushChestDrop(drop.chestType, drop.rewards || []);
         });
 
         if (rewards.length > 0) {
@@ -303,6 +324,10 @@ export default function QuestRunner() {
         } else {
             dispatch(addToast({ message: `🏁 Quest complete! +${earnedCoins} Coins earned`, type: 'success' }));
         }
+
+        // 🎖️ POST-QUEST HOUSEKEEPING
+        dispatch(checkAchievements());
+        dispatch(syncUserData());
 
         audioService.finish();
         // Navigation is now deferred until CelebrationView.onCollect

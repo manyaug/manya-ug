@@ -429,13 +429,11 @@ function QuestPathView() {
                             onClick={() => handleStepTap(i, step, isLocked)}
                         >
                             {/* Star rating */}
-                            {!step.isChest && (
-                                <div className="node-star-rating">
-                                    <Star size={20} className={`mini-star ${starsForNode >= 1 ? 'earned' : 'empty'}`} fill={starsForNode >= 1 ? '#FFD700' : 'none'} />
-                                    <Star size={24} className={`mini-star top-star ${starsForNode >= 2 ? 'earned' : 'empty'}`} fill={starsForNode >= 2 ? '#FFD700' : 'none'} />
-                                    <Star size={20} className={`mini-star ${starsForNode >= 3 ? 'earned' : 'empty'}`} fill={starsForNode >= 3 ? '#FFD700' : 'none'} />
-                                </div>
-                            )}
+                            <div className="node-star-rating">
+                                <Star size={20} className={`mini-star ${starsForNode >= 1 ? 'earned' : 'empty'}`} fill={starsForNode >= 1 ? '#FFD700' : 'none'} />
+                                <Star size={24} className={`mini-star top-star ${starsForNode >= 2 ? 'earned' : 'empty'}`} fill={starsForNode >= 2 ? '#FFD700' : 'none'} />
+                                <Star size={20} className={`mini-star ${starsForNode >= 3 ? 'earned' : 'empty'}`} fill={starsForNode >= 3 ? '#FFD700' : 'none'} />
+                            </div>
 
                             {/* Burst effect layer */}
                             {showBurst === nodeType && (

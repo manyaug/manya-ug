@@ -291,6 +291,7 @@ export const ManyaDB = {
             longest_streak: 0,
             last_active_at: null,
             unlockedBadges: ['gen_01'], 
+            stats_quests_completed: 0,
             stats_perfect_answers: 0,
             stats_hints_used: 0,
             stats_explanations_viewed: 0,

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { syncService } from '../infrastructure/sync/syncService.js';
+import { restoreCloudProgress } from '../domain/progress/questProgressService.js';
 import { BADGES } from '../config/badges';
 
 // Async thunk to boot user from IndexedDB
@@ -10,16 +11,26 @@ export const initializeUser = createAsyncThunk(
   async () => {
     // 1. Try Cloud Pull first
     const cloudProfile = await syncService.pullProfile();
+    const cloudProgress = await syncService.pullProgress();
+    const cloudVault = await syncService.pullVault();
+    
+    if (cloudProgress) {
+        restoreCloudProgress(cloudProgress);
+        console.log("☁️ [Sync] Progress restored from Supabase.");
+    }
     
     // 2. Fetch local as fallback/merge
     let localUser = await ManyaDB.getCurrentUser();
     
     if (cloudProfile) {
         console.log("☁️ [Sync] Profile restored from Supabase.");
+        const stats = cloudProfile.engagement_stats || {};
         const merged = {
             ...(localUser || ManyaDB.createDefaultRecord()),
             nickname: cloudProfile.full_name,
-            diamonds: cloudProfile.gems_overall || 0,
+            diamonds: stats.gems || cloudProfile.gems_overall || 0,
+            coins: stats.coins || localUser?.coins || 0,
+            stats_quests_completed: stats.quests_completed || localUser?.stats_quests_completed || 0,
             math_correct: Math.max(localUser?.math_correct || 0, cloudProfile.math_correct || 0),
             science_correct: Math.max(localUser?.science_correct || 0, cloudProfile.science_correct || 0),
             english_correct: Math.max(localUser?.english_correct || 0, cloudProfile.english_correct || 0),
@@ -28,11 +39,11 @@ export const initializeUser = createAsyncThunk(
             learning_type: cloudProfile.learning_type || 'ADAPTIVE',
             unlockedBadges: Array.from(new Set([
                 ...(localUser?.unlockedBadges || []), 
-                ...(cloudProfile.unlocked_badges || [])
+                ...(stats.unlocked_badges || cloudProfile.unlocked_badges || [])
             ])),
             vaultArtifacts: Array.from(new Set([
                 ...(localUser?.vaultArtifacts || []),
-                ...(cloudProfile.vault_artifacts || [])
+                ...(cloudVault || [])
             ])),
             onboarded: true 
         };
@@ -68,10 +79,14 @@ export const syncUserData = createAsyncThunk(
   'user/sync',
   async (_, { getState }) => {
     const profileData = getState().user.data;
-    // Save to LocalDB (IndexedDB)
+    // Save to LocalDB (IndexedDB) — this MUST succeed
     await ManyaDB.saveUser(profileData);
-    // Push to Cloud (Supabase)
-    await syncService.uploadProfile(profileData);
+    // Push to Cloud (Supabase) — fire-and-forget, never crash the UI
+    try {
+      await syncService.uploadProfile(profileData);
+    } catch (e) {
+      console.warn('☁️ [Sync] Cloud push failed (non-fatal):', e.message);
+    }
     return profileData;
   }
 );
@@ -167,6 +182,10 @@ export const userSlice = createSlice({
     // Award coins (Manya soft currency)
     awardCoins: (state, action) => {
       state.data.coins = (state.data.coins || 0) + action.payload;
+    },
+    // Increment quest count
+    incrementQuestCount: (state) => {
+        state.data.stats_quests_completed = (state.data.stats_quests_completed || 0) + 1;
     },
     // Deduct coins (quest skip, store purchase)
     deductCoins: (state, action) => {
@@ -293,6 +312,7 @@ export const {
     resetUser,
     awardGems,
     awardCoins,
+    incrementQuestCount,
     deductCoins,
     unlockBadge,
     dismissBadgeCelebration,

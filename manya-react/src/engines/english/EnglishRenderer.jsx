@@ -16,6 +16,9 @@ import { audioService } from '../../infrastructure/audio/audioService';
  * - INSIGHT BANNER: Fixed hint overlap and readability.
  */
 const EnglishRenderer = ({
+    isLoading,
+    loadingConfig,
+    randomFact,
     currentQ,
     currentIdx,
     totalQuestions,
@@ -44,6 +47,7 @@ const EnglishRenderer = ({
     const correctCount = session?.correctCount || 0;
     const streakCount = session?.streak || 0;
     const masteryScore = session?.mastery || 0;
+
 
     // --- ⚡ SPEEDRUN TIMER LISTENER ---
     useEffect(() => {
@@ -91,6 +95,33 @@ const EnglishRenderer = ({
             }
         }
     }, [isAnswered, userWasCorrect]);
+
+    // --- 📥 LOADING SCREEN ---
+    if (isLoading) {
+        const cfg = loadingConfig || {};
+        return (
+            <div className="quest-loading-overlay" style={{ '--loader-color': cfg.color, '--loader-dark': cfg.colorDark, '--loader-bg': cfg.bgLight }}>
+                <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
+                <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
+                <div className="loader-content-card">
+                    <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
+                        <img src={cfg.mascot} alt={cfg.name} className="loader-mascot-img" />
+                    </div>
+                    <h3 className="loader-title">{cfg.title}</h3>
+                    <div className="loader-bounce-dots">
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '200ms' }} />
+                        <span className="loader-dot" style={{ background: cfg.color, animationDelay: '400ms' }} />
+                    </div>
+                    <div className="loader-fact-card" style={{ borderColor: `${cfg.color}30` }}>
+                        <span className="loader-fact-label" style={{ color: cfg.color }}>Did you know?</span>
+                        <p className="loader-fact-text">{randomFact}</p>
+                    </div>
+                    <p className="loader-status-text">{cfg.sub}</p>
+                </div>
+            </div>
+        );
+    }
     
     // --- 🎮 SIMULATION ROUTING ---
     if (BridgeNode) {
@@ -161,8 +192,11 @@ const EnglishRenderer = ({
                                                 top: '55px', 
                                                 width: '240px',
                                                 background: '#ffffff',
+                                                backdropFilter: 'none',
+                                                WebkitBackdropFilter: 'none',
                                                 opacity: 1,
-                                                border: '3px solid #f59e0b'
+                                                border: '3px solid #f59e0b',
+                                                boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
                                             }}
                                         >
                                             <div className="toy-card-gloss" />

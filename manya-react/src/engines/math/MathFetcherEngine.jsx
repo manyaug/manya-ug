@@ -98,7 +98,6 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             try {
                 // Load Interactive Simulations
                 const simCandidates = [];
-                const simCandidates = [];
                 const activeSims = data?.simResources || [];
                 const activeRecaps = data?.recapResources || [];
 

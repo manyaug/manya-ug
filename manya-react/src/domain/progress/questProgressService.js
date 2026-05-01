@@ -79,6 +79,46 @@ export function saveAllProgress(subject, data) {
 }
 
 /**
+ * 🛡️ Cloud Restore (Called on Login)
+ */
+export function restoreCloudProgress(cloudRows) {
+    if (!cloudRows || cloudRows.length === 0) return;
+
+    const subjects = ['english', 'math', 'science', 'sst'];
+    
+    // 1. Group rows by quest_key
+    const grouped = {};
+    for (const row of cloudRows) {
+        const questKey = row.quest_key;
+        if (!grouped[questKey]) grouped[questKey] = {};
+        
+        grouped[questKey][row.node_type] = {
+            mastery: row.mastery,
+            status: row.status,
+            attempts: 1, 
+            lastAttempt: row.last_attempted_at
+        };
+    }
+
+    // 2. Merge into subject caches
+    for (const subject of subjects) {
+        const local = loadAllProgress(subject);
+        let changed = false;
+
+        for (const [key, nodes] of Object.entries(grouped)) {
+            if (key.startsWith(subject)) {
+                local[key] = { ...local[key], ...nodes };
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            saveAllProgress(subject, local);
+        }
+    }
+}
+
+/**
  * Build a stable quest key across the app.
  */
 export function getQuestKey(subject, unitId, folderOrTitle) {
@@ -144,9 +184,8 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
     if (!all[questKey][nodeType]) all[questKey][nodeType] = { mastery: 0, status: 'locked', attempts: 0, lastAttempt: null };
 
     const prev = all[questKey][nodeType];
-
-    // Keep highest mastery
     const finalMastery = Math.max(prev.mastery, mastery);
+    const isFirstCompletion = prev.status !== 'completed';
 
     all[questKey][nodeType] = {
         mastery: finalMastery,
@@ -199,6 +238,7 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
     return {
         unlocked,
         nextNode,
+        isFirstCompletion,
         mastery: finalMastery,
         needsRetry,
         threshold: nextNode ? UNLOCK_THRESHOLDS[nextNode] : 0,

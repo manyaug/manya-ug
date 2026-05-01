@@ -28,11 +28,11 @@ const hasProg = (sub, count) => (u) => (u[`prog_${sub.toLowerCase()}`] || 0) >= 
 const hasStreak = (days) => (u) => (u.current_streak || 0) >= days;
 const hasCoins = (amt) => (u) => (u.coins || 0) >= amt;
 const hasStat = (key, amt) => (u) => (u[key] || 0) >= amt;
-const hasXP = (amt) => (u) => (u.xp || 0) >= amt;
+const hasQuestCount = (amt) => (u) => (u.stats_quests_completed || 0) >= amt;
 
 export const BADGES = [
     // --- 🌍 GENERAL HEROISM (20) ---
-    { id: 'gen_01', cat: 'GENERAL', tier: 'BRONZE', icon: 'Wand2', name: 'Apprentice', desc: 'Complete your first quest ever.', check: hasXP(1) },
+    { id: 'gen_01', cat: 'GENERAL', tier: 'BRONZE', icon: 'Wand2', name: 'Apprentice', desc: 'Complete your first quest ever.', check: hasQuestCount(1) },
     { id: 'gen_02', cat: 'GENERAL', tier: 'BRONZE', icon: 'Zap', name: 'Current', desc: 'Achieve a 3-day streak.', check: hasStreak(3) },
     { id: 'gen_03', cat: 'GENERAL', tier: 'SILVER', icon: 'Zap', name: 'Live Wire', desc: 'Achieve a 7-day streak.', check: hasStreak(7) },
     { id: 'gen_04', cat: 'GENERAL', tier: 'GOLD', icon: 'Flame', name: 'Fire Starter', desc: 'Achieve a 14-day streak.', check: hasStreak(14) },
@@ -54,7 +54,7 @@ export const BADGES = [
         const today = new Date().toISOString().split('T')[0];
         return (u.engagement_stats?.[today] || 0) > 3600000;
     }},
-    { id: 'gen_14', cat: 'GENERAL', tier: 'GOLD', icon: 'Trophy', name: 'Champion', desc: 'Reach 10,000 XP.', check: hasXP(10000) },
+    { id: 'gen_14', cat: 'GENERAL', tier: 'GOLD', icon: 'Trophy', name: 'Champion', desc: 'Complete 100 units.', check: hasQuestCount(100) },
     { id: 'gen_15', cat: 'GENERAL', tier: 'BRONZE', icon: 'UserCheck', name: 'Profiled', desc: 'Set your nickname and avatar.', check: (u) => !!u.nickname },
     { id: 'gen_16', cat: 'GENERAL', tier: 'SILVER', icon: 'Target', name: 'Sniper', desc: 'Correct on first try 50 times.', check: hasStat('stats_perfect_answers', 50) },
     { id: 'gen_17', cat: 'GENERAL', tier: 'GOLD', icon: 'Crosshair', name: 'Deadeye', desc: 'Correct on first try 200 times.', check: hasStat('stats_perfect_answers', 200) },

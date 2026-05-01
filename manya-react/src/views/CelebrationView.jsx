@@ -24,11 +24,11 @@ const CoinCounter = ({ value }) => {
 };
 
 const CharacterMap = {
-    math: { name: 'Manya', image: '/assets/images/manya.png' },
-    science: { name: 'Kiki', image: '/assets/images/kiki.png' },
-    english: { name: 'Polly', image: '/assets/images/polly.png' },
-    sst: { name: 'Zany', image: '/assets/images/zany.png' },
-    default: { name: 'Manya', image: '/assets/images/manya.png' }
+    math: { name: 'Manya', image: '/assets/images/manya.png', color: '#7c3aed' },
+    science: { name: 'Kiki', image: '/assets/images/kiki.png', color: '#10b981' },
+    english: { name: 'Polly', image: '/assets/images/polly.png', color: '#818cf8' },
+    sst: { name: 'Zany', image: '/assets/images/zany.png', color: '#fbbf24' },
+    default: { name: 'Manya', image: '/assets/images/manya.png', color: '#7c3aed' }
 };
 
 const MilestoneMessages = {
@@ -75,6 +75,7 @@ const CelebrationView = ({
 }) => {
     const char = CharacterMap[subject.toLowerCase()] || CharacterMap.default;
     const isPassing = mastery >= 60;
+    const gemIcon = getGem(subject.toLowerCase() === 'general' ? 'master' : subject.toLowerCase());
 
     const subjectMessages = MilestoneMessages[subject.toLowerCase()];
     const milestone = subjectMessages ? subjectMessages[nodeType.toUpperCase()] : null;
@@ -89,7 +90,6 @@ const CelebrationView = ({
             const coinSource = document.getElementById('celebration-coin-source');
             if (coinSource) {
                 const rect = coinSource.getBoundingClientRect();
-                // 🚀 TRIGGER GLOBAL MANYA FX SYSTEM
                 window.dispatchEvent(new CustomEvent('manya-fx-flight', {
                     detail: {
                         x: rect.left + rect.width / 2,
@@ -99,7 +99,6 @@ const CelebrationView = ({
                     }
                 }));
             }
-            // Small delay to let the particles start their journey before closing the modal
             setTimeout(onCollect, 800);
         } else {
             onCollect();
@@ -124,8 +123,8 @@ const CelebrationView = ({
             {isPassing && <WorldClassConfetti />}
 
             <motion.div
-                className="celebration-card-container !py-8"
-                initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                className="celebration-card-container !py-10"
+                initial={{ scale: 0.8, opacity: 0, y: 30 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 transition={{ type: "spring", damping: 15, stiffness: 100 }}
             >
@@ -133,14 +132,22 @@ const CelebrationView = ({
                     <X size={20} strokeWidth={4} />
                 </button>
 
-                <div className="celebration-hero-blob !h-[120px] !w-[120px] !mb-0">
-                    <motion.img
-                        src={char.image}
-                        alt={char.name}
-                        className={`celebration-mascot-hero ${!isPassing ? 'grayscale opacity-60' : ''}`}
-                        animate={isPassing ? { y: [0, -6, 0] } : { x: [-2, 2, -2] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    />
+                {/* 🛡️ PREMIUM SUBJECT CREST */}
+                <div className="badge-hero-card !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-4">
+                    <div className="badge-glow-ring" style={{ background: `radial-gradient(circle, ${char.color} 0%, transparent 70%)` }} />
+                    
+                    <div className={`badge-crest-vault shape-royal !mb-0 z-10 relative`} style={{ '--tier-accent': char.color, '--tier-dark': '#0f172a' }}>
+                        <div className="badge-icon-reveal">
+                            <motion.img
+                                src={char.image}
+                                alt={char.name}
+                                className={`w-full h-full object-contain ${!isPassing ? 'grayscale opacity-60' : ''}`}
+                                animate={isPassing ? { y: [0, -6, 0] } : { x: [-2, 2, -2] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                        </div>
+                        <div className="badge-shine-effect" />
+                    </div>
                 </div>
 
                 <Ribbon 
@@ -148,34 +155,27 @@ const CelebrationView = ({
                     variant={isPassing ? 'success' : 'fail'} 
                 />
 
-                <h1 className="celebration-title-premium !text-2xl mt-2">{msg.title}</h1>
-                <p className="celebration-subtext-premium !mb-4">{msg.sub}</p>
+                <div className="celebration-text-content px-6 mt-4">
+                    <h1 className="celebration-title-premium !text-3xl mt-1">{msg.title}</h1>
+                    <p className="celebration-subtext-premium mb-2">{msg.sub}</p>
+                </div>
 
-                <div className="premium-stats-list-celebration !my-6">
+                <div className="premium-stats-list-celebration !my-6 !px-4">
                     <div className="stat-chip-celebration">
-                        <span className="label">QUEST STARS</span>
-                        <div className="val flex gap-1 items-center justify-center">
-                            {[1, 2, 3].map(s => (
-                                <Star key={s} size={16} fill={s <= stars ? "#fbbf24" : "rgba(255,255,255,0.05)"} stroke={s <= stars ? "#fbbf24" : "rgba(255,255,255,0.1)"} />
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="stat-chip-celebration !border-x !border-white/5">
                         <span className="label">MASTERY</span>
                         <span className="val" style={{ color: mastery >= 75 ? '#fbbf24' : '#10b981' }}>{mastery}%</span>
                     </div>
 
-                    <div className="stat-chip-celebration !border-x !border-white/5">
-                        <span className="label">GEMS EARNED</span>
-                        <div className="val flex items-center justify-center gap-1">
-                            <span style={{ color: '#10b981' }}>{gemsEarned}</span>
-                            <div className="w-3 h-3 bg-[#10b981] rotate-45 border border-[#065f46]" />
+                    <div className="stat-chip-celebration">
+                        <span className="label">GEMS</span>
+                        <div className="val flex items-center justify-center gap-1.5">
+                            <img src={gemIcon} alt="Gem" className="w-4 h-4 object-contain" />
+                            <span style={{ color: '#10b981' }}>+{gemsEarned}</span>
                         </div>
                     </div>
 
                     <div className="stat-chip-celebration">
-                        <span className="label">COIN REWARD</span>
+                        <span className="label">COINS</span>
                         <div className="val flex items-center justify-center gap-1.5" style={{ color: '#fbbf24' }}>
                            <CoinCounter value={coinsEarned} />
                            <motion.div
@@ -183,20 +183,24 @@ const CelebrationView = ({
                              animate={{ rotateY: [0, 360] }}
                              transition={{ repeat: Infinity, duration: 3, ease: 'linear' }}
                            >
-                              <div className="w-4 h-4 bg-amber-400 rounded-full border border-amber-600 shadow-[0_0_8px_#fbbf24]" />
+                              <div className="w-3.5 h-3.5 bg-amber-400 rounded-full border border-amber-600 shadow-[0_0_8px_#fbbf24]" />
                            </motion.div>
                         </div>
                     </div>
                 </div>
 
-                <button 
-                    className={`btn-collect-3d !h-14 !max-w-[240px] ${!isPassing ? 'is-retry' : ''}`} 
-                    onClick={handleCollectClick}
-                >
-                    <div className="btn-gloss-highlight" />
-                    <span className="!text-sm">{isPassing ? 'COLLECT REWARDS' : 'BACK TO MAP'}</span>
-                    <ArrowRight size={18} strokeWidth={3} />
-                </button>
+                <div className="px-8 w-full">
+                    <button 
+                        className={`btn-collect-3d !h-14 w-full ${!isPassing ? 'is-retry' : ''}`} 
+                        onClick={handleCollectClick}
+                    >
+                        <div className="btn-gloss-highlight" />
+                        <span className="flex items-center justify-center gap-2">
+                            {isPassing ? 'CLAIM REWARDS' : 'BACK TO MAP'}
+                            <ArrowRight size={20} strokeWidth={3} />
+                        </span>
+                    </button>
+                </div>
             </motion.div>
         </div>
     );

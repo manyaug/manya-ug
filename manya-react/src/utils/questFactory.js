@@ -72,7 +72,7 @@ export async function buildSteps({ subject, unitId, questFolder, prefix, practic
                     } else if (cdnUrl || storyAnchor.qid) {
                         const qid = storyAnchor.qid || storyAnchor.id;
                         const loaded = await loadQuestSteps('english', unitId, questFolder, qid);
-                        if (loaded.steps) return loaded.steps.map(tagStep);
+                        if (loaded.steps && loaded.steps.length > 0) return loaded.steps.map(tagStep);
                     }
                 }
 

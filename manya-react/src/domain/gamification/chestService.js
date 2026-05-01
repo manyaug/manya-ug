@@ -78,19 +78,28 @@ export function evaluateRewards(metrics) {
 
     // 1. Mastery Logic (Clamped to 100%)
     const m = Math.min(100, Number(mastery) || 0);
-    console.log(`🎁 [ChestService] Evaluating Rewards: Mastery=${m}, Streak=${streak}, Time=${sessionTime}`);
+    console.log(`🎁 [ChestService] Evaluating Rewards: Mastery=${m}, Streak=${streak}, Node=${nodeType}`);
+
+    // 🛡️ POLICY: EXPLORE nodes (Library) should be more modest. No gold/diamond chests.
+    const isExplore = nodeType === 'EXPLORE' || nodeType === 'explore';
 
     if (m === 100) {
-        if (hintCount === 0) drops.push({ ...REWARD_TRIGGERS.Q_PERFECT, subject });
-        else drops.push({ ...REWARD_TRIGGERS.Q_GOOD, subject });
+        if (hintCount === 0) {
+            drops.push({ 
+                ...(isExplore ? REWARD_TRIGGERS.Q_GREAT : REWARD_TRIGGERS.Q_PERFECT), 
+                subject 
+            });
+        } else {
+            drops.push({ ...REWARD_TRIGGERS.Q_GOOD, subject });
+        }
     } 
-    else if (m >= 95) drops.push({ ...REWARD_TRIGGERS.Q_ELITE, subject });
-    else if (m >= 90) drops.push({ ...REWARD_TRIGGERS.Q_MASTER, subject });
+    else if (m >= 95) drops.push({ ...(isExplore ? REWARD_TRIGGERS.Q_GREAT : REWARD_TRIGGERS.Q_ELITE), subject });
+    else if (m >= 90) drops.push({ ...(isExplore ? REWARD_TRIGGERS.Q_SOLID : REWARD_TRIGGERS.Q_MASTER), subject });
     else if (m >= 85) drops.push({ ...REWARD_TRIGGERS.Q_GREAT, subject });
     else if (m >= 80) drops.push({ ...REWARD_TRIGGERS.Q_SOLID, subject });
     else if (m >= 70) drops.push({ ...REWARD_TRIGGERS.Q_GOOD, subject });
 
-    if (isFirstQuest) drops.push({ ...REWARD_TRIGGERS.Q_FIRST, subject });
+    if (isFirstQuest && !isExplore) drops.push({ ...REWARD_TRIGGERS.Q_FIRST, subject });
 
     // 2. Streak Milestones
     if (streak === 3)   drops.push({ ...REWARD_TRIGGERS.S_3D, subject: 'master' });

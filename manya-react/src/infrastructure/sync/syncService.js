@@ -105,6 +105,7 @@ export const syncService = {
                 engagement_stats: {
                     gems: profileData.diamonds || 0,
                     coins: profileData.coins || 0,
+                    quests_completed: profileData.stats_quests_completed || 0,
                     unlocked_badges: profileData.unlockedBadges || []
                 },
                 preferences: profileData.preferences || {}
@@ -190,31 +191,29 @@ export const syncService = {
             const uid = await this.getUserId();
             if (!uid) return;
 
-            const record = {
-                user_id: uid,
-                badge_id: badge.id, // Aligned with user's achievements table
-                achievement_name: badge.name,
-                earned_at: badge.earnedAt || new Date().toISOString()
-            };
+            try {
+                // Write to achievements table
+                const { error: achError } = await supabase.from('achievements').upsert({
+                    user_id: uid,
+                    badge_id: badge.id,
+                    achievement_name: badge.name,
+                    earned_at: badge.earnedAt || new Date().toISOString()
+                }, { onConflict: 'user_id,badge_id', ignoreDuplicates: true });
+                if (achError) console.warn('⚠️ [Sync] achievements write failed:', achError.message);
 
-            // Robust Check-then-Action pattern for Achievements
-            const { data: existingBadge } = await supabase.from('achievements')
-                .select('id')
-                .eq('user_id', uid)
-                .eq('badge_id', badge.id)
-                .maybeSingle();
+                // Also write to badges table
+                const { error: badgeError } = await supabase.from('badges').upsert({
+                    user_id: uid,
+                    badge_type: badge.id,
+                    badge_name: badge.name,
+                    earned_at: badge.earnedAt || new Date().toISOString()
+                }, { onConflict: 'user_id,badge_type', ignoreDuplicates: true });
+                if (badgeError) console.warn('⚠️ [Sync] badges write failed:', badgeError.message);
 
-            if (existingBadge) {
-                const { error: updateError } = await supabase.from('achievements')
-                    .update(record)
-                    .eq('id', existingBadge.id);
-                if (updateError) throw updateError;
-            } else {
-                const { error: insertError } = await supabase.from('achievements')
-                    .insert(record);
-                if (insertError) throw insertError;
+                console.log(`🏆 [Sync] Badge Saved: ${badge.name}`);
+            } catch (e) {
+                console.warn(`⚠️ [Sync] Badge sync failed (non-fatal):`, e.message);
             }
-            console.log(`🏆 [Sync] Badge Saved: ${badge.name}`);
         }, 'pushBadge');
     },
 
@@ -226,24 +225,23 @@ export const syncService = {
             const uid = await this.getUserId();
             if (!uid) return;
 
-            const coins = rewards.find(r => r.type === 'coins')?.amount || 0;
-            const gems = rewards.find(r => r.type === 'gems')?.amount || 0;
-
-            const record = {
-                user_id: uid,
-                chest_type: chestType || 'wood',
-                gems_earned: gems,
-                coins_earned: coins,
-                items_unlocked: rewards.filter(r => r.type !== 'coins' && r.type !== 'gems'),
-                opened_at: new Date().toISOString()
-            };
-
-            // Save to a history table if it exists
             try {
+                const coins = rewards?.find?.(r => r.type === 'coins')?.amount || 0;
+                const gems = rewards?.find?.(r => r.type === 'gems')?.amount || 0;
+
+                const record = {
+                    user_id: uid,
+                    chest_type: chestType || 'wood',
+                    gems_earned: gems,
+                    coins_earned: coins,
+                    opened_at: new Date().toISOString()
+                };
+
                 const { error } = await supabase.from('chest_history').insert(record);
-                if (!error) console.log("🎁 [Sync] Chest rewards synced to cloud.");
+                if (error) console.warn('⚠️ [Sync] chest_history write failed:', error.message);
+                else console.log('🎁 [Sync] Chest rewards synced to cloud.');
             } catch (e) {
-                // Ignore 404/Missing table errors
+                console.warn('⚠️ [Sync] Chest sync failed (non-fatal):', e.message);
             }
         }, 'pushChestDrop');
     },
@@ -256,34 +254,39 @@ export const syncService = {
             const uid = await this.getUserId();
             if (!uid) return;
 
-            const payload = {
-                user_id: uid,
-                quest_key: questKey,
-                node_type: progress.nodeType || 'lesson',
-                mastery: progress.mastery || 0,
-                status: progress.status || 'completed',
-                last_attempted_at: new Date().toISOString()
-            };
+            try {
+                const payload = {
+                    user_id: uid,
+                    quest_key: questKey,
+                    node_type: progress.nodeType || 'lesson',
+                    mastery: progress.mastery || 0,
+                    status: progress.status || 'completed',
+                    last_attempted_at: new Date().toISOString()
+                };
 
-            // Robust Check-then-Action pattern for Progress
-            const { data: existingProgress } = await supabase.from('quest_progress')
-                .select('id')
-                .eq('user_id', uid)
-                .eq('quest_key', questKey)
-                .maybeSingle();
+                // Use composite key: user_id + quest_key + node_type
+                const { data: existing } = await supabase.from('quest_progress')
+                    .select('id')
+                    .eq('user_id', uid)
+                    .eq('quest_key', questKey)
+                    .eq('node_type', progress.nodeType || 'lesson')
+                    .maybeSingle();
 
-            if (existingProgress) {
-                const { error: updateError } = await supabase.from('quest_progress')
-                    .update(payload)
-                    .eq('id', existingProgress.id);
-                if (updateError) throw updateError;
-            } else {
-                const { error: insertError } = await supabase.from('quest_progress')
-                    .insert(payload);
-                if (insertError) throw insertError;
+                if (existing) {
+                    const { error } = await supabase.from('quest_progress')
+                        .update(payload)
+                        .eq('id', existing.id);
+                    if (error) console.warn('⚠️ [Sync] quest_progress update failed:', error.message);
+                } else {
+                    const { error } = await supabase.from('quest_progress')
+                        .insert(payload);
+                    if (error) console.warn('⚠️ [Sync] quest_progress insert failed:', error.message);
+                }
+                
+                console.log(`📈 [Sync] Progress Updated: ${questKey} / ${progress.nodeType}`);
+            } catch (e) {
+                console.warn('⚠️ [Sync] Progress sync failed (non-fatal):', e.message);
             }
-            
-            console.log(`📈 [Sync] Progress Updated: ${questKey}`);
         }, 'updateProgress');
     },
 
@@ -323,5 +326,69 @@ export const syncService = {
             return null;
         }
         return data;
+    },
+
+    async pullProgress() {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null' || uid === 'undefined') return null;
+        const { data, error } = await supabase.from('quest_progress').select('*').eq('user_id', uid);
+        if (error) {
+            console.warn(`⚠️ [Sync] Progress fetch failed:`, error.message);
+            return null;
+        }
+        return data;
+    },
+
+    async pullAchievements() {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null' || uid === 'undefined') return null;
+        const { data, error } = await supabase.from('achievements').select('*').eq('user_id', uid);
+        if (error) {
+            console.warn(`⚠️ [Sync] Achievements fetch failed:`, error.message);
+            return null;
+        }
+        return data;
+    },
+
+    async pullChestHistory() {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null' || uid === 'undefined') return null;
+        const { data, error } = await supabase.from('chest_history').select('*').eq('user_id', uid);
+        if (error) {
+            console.warn(`⚠️ [Sync] Chest history fetch failed:`, error.message);
+            return null;
+        }
+        return data;
+    },
+
+    /**
+     * Vault Sync
+     */
+    async pushVault(artifactId, subject) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            const payload = {
+                user_id: uid,
+                artifact_id: artifactId,
+                subject: subject
+            };
+
+            const { error } = await supabase.from('user_vault').upsert(payload, { onConflict: 'user_id,artifact_id' });
+            if (error) throw error;
+            console.log(`☁️ [Sync] Vault Artifact ${artifactId} synced.`);
+        }, 'pushVault');
+    },
+
+    async pullVault() {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null' || uid === 'undefined') return [];
+        const { data, error } = await supabase.from('user_vault').select('artifact_id').eq('user_id', uid);
+        if (error) {
+            console.warn(`⚠️ [Sync] Vault fetch failed:`, error.message);
+            return [];
+        }
+        return data.map(row => row.artifact_id);
     }
 };

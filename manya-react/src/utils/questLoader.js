@@ -27,8 +27,9 @@ function resolveQid(subject, unitId, questFolder, file) {
     const fileStr = typeof file === 'string' ? file : (file?.file || String(file));
     const filename = fileStr.replace(/\.json$/, '');
     
-    // Direct ID mapping (Handles ENG-quest-p7-001 etc)
-    if (filename.startsWith('ENG-') || filename.startsWith('PQ-')) {
+    // Direct ID mapping (Handles ENG-quest-p7-001 or pq-02-001 etc) - Case Insensitive
+    const upperFilename = filename.toUpperCase();
+    if (upperFilename.startsWith('ENG-') || upperFilename.startsWith('PQ-')) {
         return filename;
     }
 
@@ -37,15 +38,20 @@ function resolveQid(subject, unitId, questFolder, file) {
         return filename;
     }
     
+    // 🧠 ENGLISH IDENTITY RULE:
+    // If it starts with a number (like 02_going_to_mastery), keep it raw.
+    // This ensures we match the physical CDN filenames exactly.
+    if (subject === 'english' && /^\d/.test(filename)) {
+        return filename;
+    }
+
     // Pattern: TOPIC_SUBTOPIC_FILENAME (Standard Simulation/Note ID)
     const topic = (unitId || 'GENERAL').toUpperCase().replace(/-/g, '_');
     const subtopic = (questFolder || 'QUEST').toUpperCase().replace(/-/g, '_');
     const cleanFile = filename.toUpperCase().replace(/-/g, '_');
     
-    // 🧠 ENGLISH IDENTITY RULE:
-    // Simply use the filename. If it's a legacy quest starting with 01_, 
-    // we keep the raw name to ensure CDN match.
-    if (subject === 'english' && filename.startsWith('0')) {
+    // If it's already a full complex QID, don't wrap it again
+    if (cleanFile.includes(topic) || cleanFile.includes(subtopic)) {
         return filename;
     }
 
@@ -137,7 +143,11 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
                     topicDir = 'holidays';
                 }
                 const subtopicDir = row.subtopic ? row.subtopic.toLowerCase().replace(/\s+/g, '_') : questFolder;
-                cleanCdnUrl = `${BASE_CONTENT_URL}${subject.toLowerCase()}/${topicDir}/${subtopicDir}/${qid}.json`;
+                
+                // 🧩 FIX: For English, if we don't have a cdn_url, the QID is often an internal 'IDENTITY' key.
+                // We should use the raw 'file' name passed to the function to match the physical CDN filename.
+                const fileRef = (subject === 'english' && typeof file === 'string') ? file.replace(/\.json$/, '') : qid;
+                cleanCdnUrl = `${BASE_CONTENT_URL}${subject.toLowerCase()}/${topicDir}/${subtopicDir}/${fileRef}.json`;
             }
 
             if (cleanCdnUrl) {
@@ -163,6 +173,14 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         }
 
         const finalResult = { steps: allSteps, meta: masterMeta };
+
+        // 🛡️ [RECOVERY FALLBACK]: If vault rows were found but yielded NO usable steps,
+        // it means the database pointers are broken or content is missing.
+        // Fall back to legacy folder-based resolution.
+        if (allSteps.length === 0) {
+            console.warn(`[QuestLoader] Vault returned no steps for ${qid}. Trying legacy fallback.`);
+            return await loadQuestStepsLegacy(subject, unitId, questFolder, file);
+        }
 
         // Save to cache
         JSON_CACHE.set(cacheKey, finalResult);

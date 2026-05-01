@@ -61,6 +61,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
     const questionStartTime = useRef(Date.now());
     const firstSelection    = useRef(null);
     const fetchIterationRef = useRef(null);
+    const allBankRef        = useRef([]);
     const scoreRef          = useRef(0);
     const [simPartialScore, setSimPartialScore] = useState(0);
 
@@ -69,7 +70,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
         if (res.total > 0 && res.score !== undefined) {
             const fractional = res.score / res.total;
             setSimPartialScore(fractional);
-            
+        }
     }, [questions.length, onResult]);
 
     const currentMastery = useMemo(() => {
@@ -91,13 +92,6 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
             
             try {
                 const simCandidates = [];
-                if (data?.simResources?.length > 0) {
-                    for (const simRes of data.simResources) {
-                        try {
-                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            steps.forEach(s => {
-                const simCandidates = [];
                 const activeSims = data?.simResources || [];
                 const activeRecaps = data?.recapResources || [];
 
@@ -108,7 +102,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
                     const fileName = file.endsWith('.json') ? file : `${file}.json`;
                     try {
                         const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                        return steps.map(s => {
+                        return (steps || []).map(s => {
                             const eType = getEngineType(s);
                             return { ...s, isSimulation: SUPPORTED_SIM_ENGINES.includes(eType), id: s.id || `remote_${file.replace('.json','')}_${Math.random()}` };
                         });
