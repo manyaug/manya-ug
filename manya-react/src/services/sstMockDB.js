@@ -34,8 +34,8 @@ export const fetchSstQuestions = async (topicId) => {
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'sst')
-            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`)
-            .ilike('item_type', '%MCQ%');
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
+            // REMOVED: .ilike('item_type', '%MCQ%') to allow NOTES and RECAPS
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!error && (!data || data.length === 0)) {
@@ -52,8 +52,8 @@ export const fetchSstQuestions = async (topicId) => {
                     .from('manya_vault')
                     .select('*')
                     .ilike('subject', 'sst')
-                    .or(keywordFilter)
-                    .ilike('item_type', '%MCQ%');
+                    .or(keywordFilter);
+                    // REMOVED: .ilike('item_type', '%MCQ%')
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [SST Vault] Discovered ${keywordData.length} related questions via keywords.`);

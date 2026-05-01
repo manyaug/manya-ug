@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { RefreshCw } from 'lucide-react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { useDispatch, useSelector, useStore } from 'react-redux';
-import { 
-    updateProfile, awardGems, resetSession, 
+import {
+    updateProfile, awardGems, resetSession,
     updateSessionAfterAnswer, checkAchievements, syncUserData,
-    awardCoins, dropChest 
+    awardCoins, dropChest
 } from '../../store/userSlice';
 
 // Services & Utils
@@ -22,12 +22,13 @@ import { saveNodeCompletion, trackWrongAnswer, resolveRephrased, setJustFinished
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
+import { dynamicModeService } from '../../domain/gamification/dynamicModeService';
 import { rewardManager } from '../../domain/gamification/rewardManager.js';
 
 // Atomic Resources
-import { 
-    SUPPORTED_SIM_ENGINES, getEngineType, validateScienceAnswer, 
-    resolveCorrectText, findRephrasedVariant 
+import {
+    SUPPORTED_SIM_ENGINES, getEngineType, validateScienceAnswer,
+    resolveCorrectText, findRephrasedVariant
 } from './ScienceLogic';
 import SimulatorBridge from './SimulatorBridge';
 import ScienceRenderer from './ScienceRenderer';
@@ -39,12 +40,12 @@ import '../../styles/mcq-engine.css';
  * -------------------------------------------------------------
  * - DECOUPLED: Separates adaptive quest logic, simulation routing, and premium visuals.
  */
-export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
+export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeType }) {
     const dispatch = useDispatch();
     const store = useStore();
     const user = useSelector(state => state.user.data);
     const session = useSelector(state => state.user.session);
-    
+
     // State
     const [renderError, setRenderError] = useState(null);
     const [questions, setQuestions] = useState([]);
@@ -64,7 +65,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const [isFinished, setIsFinished] = useState(false);
     const [coinsEarnedState, setCoinsEarnedState] = useState(0);
 
-    
+
     // Rescue Recap state
     const [recapSteps, setRecapSteps] = useState([]);
     const consecutiveWrongRef = useRef(0);
@@ -78,7 +79,6 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
 
     const topicId = data?.topic || 'default';
-    const nodeType = data?.nodeType || 'PRACTICE';
     const subject = data?.subject || 'science';
     const questKey = data?.questKey || `science/${topicId}`;
     // Game mode set by adaptiveEngine metadata after load
@@ -97,36 +97,32 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                 const simCandidates = [];
                 if (data?.simResources) {
                     for (const simRes of data.simResources) {
-                        try {
-                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            steps.forEach(s => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.id = s.id || `sim_${simRes.file.replace('.json', '')}`;
-                            });
-                            simCandidates.push(...steps);
-                        } catch (e) { console.warn(`[ScienceEngine] Sim Load Error:`, e); }
-                    }
-                }
+                const simCandidates = [];
+                const activeSims = data?.simResources || [];
+                const activeRecaps = data?.recapResources || [];
 
-                // Load Recap Resources
-                const recapCandidates = [];
-                if (data?.recapResources) {
-                    for (const recapRes of data.recapResources) {
-                        try {
-                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            steps.forEach((s, idx) => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.isRecap = true;
-                                s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
-                            });
-                            recapCandidates.push(...steps);
-                        } catch (e) { console.warn(`[ScienceEngine] Recap Load Error:`, e); }
-                    }
-                    setRecapSteps(recapCandidates);
+                // 🌐 FETCH REMOTE RESOURCES (v5.1 - Unified GitHub CDN Loader)
+                const fetchResource = async (res) => {
+                    const file = typeof res === 'string' ? res : res?.file;
+                    if (!file) return [];
+                    const fileName = file.endsWith('.json') ? file : `${file}.json`;
+                    try {
+                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                        return steps.map(s => {
+                            const eType = getEngineType(s);
+                            return { ...s, isSimulation: SUPPORTED_SIM_ENGINES.includes(eType), id: s.id || `remote_${file.replace('.json','')}_${Math.random()}` };
+                        });
+                    } catch (e) { console.warn(`[Science] Failed to load ${file}`, e); return []; }
+                };
+
+                for (const res of activeSims) {
+                    const steps = await fetchResource(res);
+                    simCandidates.push(...steps);
+                }
+                for (const res of activeRecaps) {
+                    const steps = await fetchResource(res);
+                    steps.forEach(s => { s.isRecap = true; });
+                    simCandidates.push(...steps);
                 }
 
                 // Fetch Bank & Generate Quest
@@ -140,23 +136,46 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
-                
-                setQuestions(quest.questions);
+
+                let finalQuestions = quest.questions;
+                if (data?.forceMode === 'reverse') {
+                    finalQuestions = finalQuestions.map(q => {
+                        if (q.engineType?.includes('FETCHER') || q.question_type === 'MCQ' || !q.question_type) {
+                            return dynamicModeService.generateReverseQuestion(q, allQuestions) || q;
+                        }
+                        return q;
+                    });
+                }
+                setQuestions(finalQuestions);
                 // Capture game mode from adaptive metadata
                 if (quest.metadata?.gameMode) {
                     const gm = quest.metadata.gameMode.toLowerCase();
-                    setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
+                    setGameMode(['quickfire', 'timed', 'marathon'].includes(gm) ? gm : 'none');
                 }
                 // Standard delay for visual smoothness
                 setTimeout(() => setIsLoading(false), 300);
-            } catch (err) { 
+            } catch (err) {
                 console.error("Science Load Failed:", err);
-                setRenderError(err); 
-                setIsLoading(false); 
+                setRenderError(err);
+                setIsLoading(false);
             }
         };
         loadQuestions();
     }, [topicId, nodeType, questKey]);
+
+    // --- ⚡ SPEEDRUN TIMEOUT HANDLER ---
+    useEffect(() => {
+        const handleTimeout = () => {
+            if (!isAnswered) {
+                audioService.error?.();
+                setIsAnswered(true);
+                onResult?.({ isCorrect: false, score, total: questions.length, type: 'timeout' });
+                setTimeout(() => nextQuestion(), 1500);
+            }
+        };
+        window.addEventListener('manya-engine-timeout', handleTimeout);
+        return () => window.removeEventListener('manya-engine-timeout', handleTimeout);
+    }, [isAnswered, score, questions.length, currentIdx]);
 
     // --- 🧠 HANDLERS ---
     const handleSelect = (option) => {
@@ -167,7 +186,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         }
         if (!firstSelection.current) firstSelection.current = option;
         setSelectedOption(option);
-        audioService.pop?.();
+        audioService.playSFX('tap');
     };
 
     const handleSubmit = () => {
@@ -179,37 +198,34 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
         const correctText = resolveCorrectText(q.answer, q.options);
         const timeSpentMs = Date.now() - questionStartTime.current;
 
-        if (isCorrect) {
-            if (q.isRephrased) resolveRephrased(subject, q.originalId);
-        } else {
-            audioService.error?.();
-            trackWrongAnswer(subject, q.id);
-            const rephrased = findRephrasedVariant(q, allBankRef.current, questions);
-            if (rephrased) setQuestions(prev => [...prev, rephrased]);
-
-            // Rescue Recap Trigger
-            consecutiveWrongRef.current += 1;
-            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0 && nodeType !== 'WARMUP') {
-                const recapIdx = recapUsedIndexRef.current % recapSteps.length;
-                const recapToInject = { ...recapSteps[recapIdx] };
-                recapUsedIndexRef.current += 1; consecutiveWrongRef.current = 0;
-                setQuestions(prev => {
-                    const copy = [...prev]; copy.splice(currentIdx + 1, 0, recapToInject); return copy;
-                });
-            }
-        }
-
-        dispatch(updateSessionAfterAnswer({ 
-            subject, isCorrect, hintUsed, answerChanged, timeSpentMs 
-        }));
-        
+        // --- Behavioral Analysis 🛡️ ---
         const frustration = calculateFrustration(session);
         const baseId = q.id?.replace(/-V\d+$/, '') || q.id;
 
-        const log = { 
-            questionId: q.id, isCorrect, selectedAnswer: selectedOption, correctAnswer: correctText, 
-            timeSpentMs, hintUsed, answerChanged, changeCount, pool: q.isPLE ? 'yes' : 'no', 
-            concept_id: baseId, engine_type: 'MCQ', frustrationLevel: frustration?.score || 0 
+        // Calculate Confidence: (Fast response + Zero changes = 100, Slow + Changes = <40)
+        const timeToFirstClick = firstSelection.current ? (Date.now() - questionStartTime.current) : timeSpentMs;
+        let confidenceRating = 100;
+        if (changeCount > 0) confidenceRating -= (changeCount * 20);
+        if (timeToFirstClick > 10000) confidenceRating -= 30;
+        confidenceRating = Math.max(10, confidenceRating);
+
+        const log = {
+            questionId: q.id,
+            isCorrect,
+            selectedAnswer: selectedOption,
+            correctAnswer: correctText,
+            timeSpentMs,
+            hintUsed,
+            answerChanged,
+            changeCount,
+            hesitationCount: changeCount,
+            confidenceRating,
+            timeToFirstClick,
+            pointsEarned: isCorrect ? 10 : 0,
+            pool: q.isPLE ? 'yes' : 'no',
+            concept_id: baseId,
+            engine_type: 'MCQ',
+            frustrationLevel: frustration?.score || 0
         };
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
@@ -228,12 +244,16 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
             timeSpentMs, frustrationLevel: frustration?.score || 0,
         });
 
+        // 🧠 Update dynamic mode metrics BEFORE nextQuestion re-rolls
+        dynamicModeService.update(isCorrect, currentMastery, questions.length, currentIdx);
+
         // ── Unified Reward Logic ────────────────────────────────────────────
         if (isCorrect) {
             setScore(s => s + 1);
             scoreRef.current += 1;
             audioService.success?.();
             consecutiveWrongRef.current = 0;
+            if (q.isRephrased) resolveRephrased(subject, q.originalId);
 
             const awards = rewardManager.awardStepRewards({
                 subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: false
@@ -241,13 +261,33 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
 
             setCoinsEarnedState(prev => prev + awards.coins);
             setGemsEarned(g => g + awards.gems);
-            
+
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
-            
+
             setHintUsedCount(c => c + (hintUsed ? 1 : 0));
+
+            // --- ⚡ LIVE SYNC (Manya v4.5) ---
+            dispatch(checkAchievements());
+            dispatch(syncUserData());
+
             setTimeout(() => nextQuestion(), 800);
         } else {
+            audioService.error?.();
+            trackWrongAnswer(subject, q.id);
+            const rephrased = findRephrasedVariant(q, allBankRef.current, questions);
+            if (rephrased) setQuestions(prev => [...prev, rephrased]);
+
+            // Rescue Recap Trigger
+            consecutiveWrongRef.current += 1;
+            if (consecutiveWrongRef.current >= 3 && recapSteps.length > 0 && nodeType !== 'WARMUP') {
+                const recapIdx = recapUsedIndexRef.current % recapSteps.length;
+                const recapToInject = { ...recapSteps[recapIdx] };
+                recapUsedIndexRef.current += 1; consecutiveWrongRef.current = 0;
+                setQuestions(prev => {
+                    const copy = [...prev]; copy.splice(currentIdx + 1, 0, recapToInject); return copy;
+                });
+            }
             setTimeout(() => setShowExplanation(true), 500);
         }
     };
@@ -256,12 +296,12 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     const [simPartialScore, setSimPartialScore] = useState(0);
     const handleSimResult = useCallback((res) => {
         if (!res) return;
-        
+
         // If simulation reports steps (e.g. 3/10 pins), calculate fractional score
         if (res.total > 0 && res.score !== undefined) {
             const fractional = res.score / res.total;
             setSimPartialScore(fractional);
-            
+
             // Notify parent HUD live
             onResult?.({
                 isCorrect: res.isCorrect,
@@ -279,85 +319,88 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
     }, [score, simPartialScore, questions.length]);
 
     const nextQuestion = () => {
+        setSimPartialScore(0);
         if (currentIdx < questions.length - 1) {
-            setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
+            const nextIdx = currentIdx + 1;
+            
+            // 🧠 DYNAMIC MODE RE-ROLL (Manya v5)
+            const mode = dynamicModeService.getNextMode(null, nodeType);
+            console.log(`[ScienceFetcher] Question ${nextIdx + 1} Mode: ${mode.toUpperCase()}`);
+
+            // 1. Handle Speedrun
+            if (mode === 'speedrun') {
+                dynamicModeService.startSpeedrun(18, () => {
+                    console.warn('[ScienceFetcher] Speedrun TIMEOUT!');
+                    window.dispatchEvent(new CustomEvent('manya-engine-timeout'));
+                });
+            } else {
+                dynamicModeService.stopSpeedrun();
+            }
+
+            // 2. Handle Reverse Transformation
+            if (mode === 'reverse') {
+                window.dispatchEvent(new CustomEvent('manya-fx-reverse-start'));
+                setQuestions(prev => {
+                    const copy = [...prev];
+                    const nextQ = copy[nextIdx];
+                    if (nextQ && !nextQ.isReversed) {
+                        const reversed = dynamicModeService.generateReverseQuestion(nextQ, allBankRef.current);
+                        if (reversed) {
+                            reversed.isReversed = true;
+                            copy[nextIdx] = reversed;
+                        }
+                    }
+                    return copy;
+                });
+            }
+            setGameMode(mode);
+
+            // 3. Handle Earthquake (Mastery-based)
+            if (currentMastery >= 85) {
+                window.dispatchEvent(new CustomEvent('manya-fx-earthquake'));
+            }
+
+            setCurrentIdx(nextIdx); 
+            setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); 
+            setHintUsed(false); setAnswerChanged(false); setChangeCount(0); 
+            firstSelection.current = null; questionStartTime.current = Date.now();
         } else if (!isFinished) {
             setIsFinished(true);
             const finalScore = scoreRef.current;
             const mastery = Math.round((finalScore / questions.length) * 100);
             const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
             dispatch(checkAchievements());
+            saveNodeCompletion(subject, questKey, nodeType, currentMastery);
+            dispatch(checkAchievements());
             dispatch(syncUserData());
-            setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
-            
-            // Story progression
-            if (nodeType === 'MASTERY' && mastery >= 60) {
-                const mapIndex = data?.questIndex ?? 0;
-                if (mapIndex >= (user[`prog_${subject}`] || 0)) dispatch(updateProfile({ [`prog_${subject}`]: mapIndex + 1 }));
-            }
-            // removed XP reward call
-
-            // ── Quest Completion Rewards ─────────────────────────────────────
-            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
-            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
-
-            dispatch(syncUserData());
-
-            setCompletionResult({ 
-                mastery, 
-                score: finalScore, 
-                total: questions.length, 
-                stars: completion.stars, 
-                bonusCoins: finalTotalCoins, 
-                chestType: completion.chestType 
-            });
-            setShowCompletion(true);
+            handleFinish();
         }
     };
 
     const handleFinish = () => {
-        const mastery = completionResult?.mastery || 0;
-        onResult?.({ isCorrect: mastery >= 60, score: completionResult?.score || score, total: completionResult?.total || questions.length, mastery, gemsEarned, type: 'adaptive_science' });
+        onResult?.({ isCorrect: currentMastery >= 60, score: score + simPartialScore, total: questions.length, mastery: currentMastery, gemsEarned, type: 'adaptive_science' });
         onComplete?.();
     };
 
-    if (showCompletion && completionResult) {
-        return (
-            <CelebrationView 
-                subject="Science" 
-                nodeType={nodeType} 
-                mastery={completionResult.mastery} 
-                score={completionResult.score} 
-                total={completionResult.total} 
-                stars={completionResult.stars}
-                coinsEarned={completionResult.bonusCoins}
-                onCollect={handleFinish} 
-            />
-        );
-    }
-
-
-
     const q = questions[currentIdx];
-    if (!q && !showCompletion && !isLoading) {
+    if (!q && !isLoading) {
         return (
             <div className="flex-1 flex items-center justify-center text-[var(--text-sub)]">
                 <RefreshCw className="animate-spin mr-2" /> Finalizing Quest...
             </div>
         );
     }
-    
+
     const eType = q ? getEngineType(q) : 'MCQ';
     const isSim = SUPPORTED_SIM_ENGINES.includes(eType);
 
     return (
-        <ScienceRenderer 
+        <ScienceRenderer
             isLoading={isLoading} loadingConfig={getLoadingConfig('science')} randomFact={getRandomFact('science')}
             renderError={renderError} questions={questions} currentIdx={currentIdx}
-            selectedOption={selectedOption} isAnswered={isAnswered} showExplanation={showExplanation}
-            gemsEarned={gemsEarned} showGemToast={showGemToast} hintUsed={hintUsed} setHintUsed={setHintUsed}
             handleSelect={handleSelect} handleSubmit={handleSubmit} nextQuestion={nextQuestion} handleFinish={handleFinish}
             nodeType={nodeType} correctText={q ? resolveCorrectText(q.answer, q.options) : ''}
+            currentMode={gameMode}
             frustration={calculateFrustration(session)}
             userWasCorrect={isAnswered && validateScienceAnswer(selectedOption, q?.answer, q?.options)}
             session={{
@@ -366,7 +409,7 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                 correctCount: score + simPartialScore
             }}
             SimulatorBridgeNode={isSim ? (
-                <SimulatorBridge 
+                <SimulatorBridge
                     key={q.id || currentIdx} step={q}
                     onResult={handleSimResult}
                     onComplete={(results) => {
@@ -376,10 +419,10 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult }) {
                         const timeSpent = usp ? usp.timeSpentMs : (results?.duration || 30000);
                         dispatch(updateSessionAfterAnswer({ isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
                         ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
-                        if (isSuccess) { 
-                            setScore(p => p + 1); 
+                        if (isSuccess) {
+                            setScore(p => p + 1);
                             scoreRef.current += 1;
-                            setGemsEarned(p => p + 5); 
+                            setGemsEarned(p => p + 5);
                         }
                         nextQuestion();
                     }}

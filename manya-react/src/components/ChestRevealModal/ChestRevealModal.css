@@ -1,23 +1,194 @@
-/* ChestRevealModal.css */
-/* Legacy chest modal classes replaced by badge-hero-card system */
+/* ============================================================
+   CHEST REVEAL - CINEMATIC EDITION v3.5 (COMPACT)
+   ============================================================ */
 
-.badge-icon-reveal.shaking {
-    animation: shake 0.5s ease infinite !important;
+.celebration-arena-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.98), #020617);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
 }
 
-@keyframes shake {
-    0%,100% { transform: translateX(0) rotate(0deg); }
-    20%     { transform: translateX(-4px) rotate(-3deg); }
-    40%     { transform: translateX(4px) rotate(3deg); }
-    60%     { transform: translateX(-3px) rotate(-2deg); }
-    80%     { transform: translateX(3px) rotate(2deg); }
+/* 🌀 CINEMATIC RAYS */
+.manya-reward-rays {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150vw;
+    height: 150vw;
+    background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg 15deg,
+        var(--chest-glow, rgba(99, 102, 241, 0.15)) 15deg 30deg
+    );
+    z-index: 1;
+    animation: rotateRays 20s linear infinite;
+    opacity: 0.6;
+    pointer-events: none;
 }
 
-.reward-pop-in {
-    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+@keyframes rotateRays {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-@keyframes popIn {
-    from { transform: scale(0.5); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
+/* 🃏 CELEBRATION CARD */
+.celebration-card-container {
+    position: relative;
+    width: 90%;
+    max-width: 360px; /* Slimmer */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+
+/* 📦 CHEST WRAPPER */
+.chest-hero-wrapper {
+    position: relative;
+    width: 240px; /* Smaller */
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -10px;
+}
+
+.chest-glow-backlight {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: var(--chest-glow, #6366f1);
+    filter: blur(60px);
+    opacity: 0.4;
+    z-index: -1;
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.5; }
+}
+
+/* 🏷️ INFO SECTION */
+.chest-header-section {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.chest-reason-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 950;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.chest-tier-name {
+    font-family: var(--font-display);
+    font-size: 32px; /* Balanced */
+    font-weight: 950;
+    color: white;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* 💎 REWARD TILES */
+.reward-tiles-row {
+    display: flex;
+    gap: 12px;
+    margin: 15px 0;
+    perspective: 1000px;
+}
+
+.reward-tile {
+    width: 105px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.reward-tile-icon {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+.reward-tile-amount {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 950;
+    color: white;
+}
+
+/* 🕹️ CLAIM BUTTON */
+.btn-claim-royal {
+    width: 100%;
+    max-width: 240px;
+    height: 56px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 950;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #4338ca, 0 12px 25px rgba(99, 102, 241, 0.4);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-claim-royal:active {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 #4338ca, 0 6px 15px rgba(99, 102, 241, 0.2);
+}
+
+.btn-claim-royal:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+.collect-hint-text {
+    margin-top: 12px;
+    font-size: 9px;
+    font-weight: 950;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: pulseOpacity 2s infinite;
+}
+
+@keyframes pulseOpacity {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
 }

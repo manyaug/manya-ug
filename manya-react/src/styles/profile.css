@@ -17,17 +17,25 @@
     position: relative;
 }
 
-.xp-ring-container {
+.avatar-preview-halo {
     position: relative;
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
     margin: 0 auto 15px;
 }
 
 .xp-ring-svg {
     transform: rotate(-90deg);
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
+}
+
+.orb-thor-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.4) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 2;
 }
 
 .ring-bg {

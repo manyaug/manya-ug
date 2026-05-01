@@ -76,6 +76,39 @@ export const syncUserData = createAsyncThunk(
   }
 );
 
+
+
+// New: Check and sync achievements (Async Thunk for guaranteed sequence)
+export const checkAchievementsThunk = createAsyncThunk(
+    'user/checkAchievements',
+    async (_, { getState, dispatch }) => {
+        const state = getState().user.data;
+        const newlyUnlocked = [];
+
+        BADGES.forEach(badge => {
+            if (!state.unlockedBadges?.includes(badge.id)) {
+                try {
+                    if (badge.check && badge.check(state)) {
+                        newlyUnlocked.push(badge);
+                    }
+                } catch (e) {}
+            }
+        });
+
+        for (const badge of newlyUnlocked) {
+            // 1. Sync to Cloud
+            await syncService.pushBadge({
+                id: badge.id,
+                name: badge.name,
+                earnedAt: new Date().toISOString()
+            });
+            // 2. Unlock in Redux
+            dispatch(userSlice.actions.unlockBadge(badge.id));
+            console.log(`🏅 [Badge] UNLOCKED & SYNCED: ${badge.name}`);
+        }
+    }
+);
+
 const initialState = {
   data: ManyaDB.createDefaultRecord(),
   session: {
@@ -149,30 +182,6 @@ export const userSlice = createSlice({
             state.data.pendingBadgeCelebrations.push(badgeId);
         }
     },
-    checkAchievements: (state) => {
-        if (!state.data.unlockedBadges) state.data.unlockedBadges = [];
-        if (!state.data.pendingBadgeCelebrations) state.data.pendingBadgeCelebrations = [];
-        
-        BADGES.forEach(badge => {
-            // Only check if not already unlocked
-            if (!state.data.unlockedBadges.includes(badge.id)) {
-                try {
-                    if (badge.check && badge.check(state.data)) {
-                        state.data.unlockedBadges.push(badge.id);
-                        
-                        // 🛡️ FLOOD PROTECTION: Max 5 pending celebrations at a time
-                        if (!state.data.pendingBadgeCelebrations.includes(badge.id) && state.data.pendingBadgeCelebrations.length < 5) {
-                            state.data.pendingBadgeCelebrations.push(badge.id);
-                        }
-                        
-                        console.log(`🏅 [Badge] UNLOCKED: ${badge.name}`);
-                    }
-                } catch (e) {
-                    console.warn(`[Badge] Check failed for ${badge.id}:`, e);
-                }
-            }
-        });
-    },
     dismissBadgeCelebration: (state) => {
         if (state.data.pendingBadgeCelebrations?.length > 0) {
             state.data.pendingBadgeCelebrations.shift();
@@ -181,7 +190,11 @@ export const userSlice = createSlice({
     // ── CHEST SYSTEM ──────────────────────────────────────────────────────
     dropChest: (state, action) => {
         if (!state.data.pendingChests) state.data.pendingChests = [];
-        state.data.pendingChests.push(action.payload); // { chestType, rewards }
+        // Prevent exact duplicate chests for the same reason within the same session
+        const exists = state.data.pendingChests.some(c => c.reason === action.payload.reason && c.chestType === action.payload.chestType);
+        if (!exists) {
+            state.data.pendingChests.push(action.payload); // { chestType, rewards, reason }
+        }
     },
     dismissChest: (state) => {
         if (state.data.pendingChests?.length > 0) {
@@ -282,7 +295,6 @@ export const {
     awardCoins,
     deductCoins,
     unlockBadge,
-    checkAchievements,
     dismissBadgeCelebration,
     dropChest,
     dismissChest,
@@ -291,5 +303,8 @@ export const {
     updateSessionAfterAnswer,
     discoverArtifact
 } = userSlice.actions;
+
+// Re-export thunk as the main achievement checker
+export const checkAchievements = checkAchievementsThunk;
 
 export default userSlice.reducer;

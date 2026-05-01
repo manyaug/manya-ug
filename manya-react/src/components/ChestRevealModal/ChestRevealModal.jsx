@@ -1,143 +1,233 @@
 /**
- * ChestRevealModal
- * =================
- * Full-screen animated chest opening experience.
- * Shows reward items one by one with sparkle effects.
- * Reads from Redux `user.data.pendingChests` and dispatches `dismissChest` when done.
+ * ChestRevealModal - CINEMATIC EDITION v3.5
+ * =========================================
+ * A high-fidelity, full-screen reward experience.
+ * Compacted UI & Fixed Sync Logic.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { ArrowRight, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { dismissChest, awardCoins, awardGems } from '../../store/userSlice.js';
 import { syncService } from '../../infrastructure/sync/syncService.js';
-import { assetUrl } from '../../config/assetUrls.js';
 import { audioService } from '../../infrastructure/audio/audioService';
-import { Ribbon, WorldClassConfetti } from '../ui/CelebrationBling';
+import { WorldClassConfetti } from '../ui/CelebrationBling';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { IMAGES, getGem } from '../../config/assetUrls';
+import FlyingRewards from './FlyingRewards';
 import './ChestRevealModal.css';
 
 const CHEST_CONFIG = {
-    bronze: { img: 'chest_bronze.png', name: 'Bronze Chest', color: '#cd7f32', glow: 'rgba(205, 127, 50, 0.5)' },
-    silver: { img: 'chest_silver.png', name: 'Silver Chest', color: '#c0c0c0', glow: 'rgba(192, 192, 192, 0.5)' },
-    gold:   { img: 'chest_gold.png',   name: 'Gold Chest',   color: '#ffd700', glow: 'rgba(255, 215, 0, 0.5)' },
+    bronze:  { name: 'Bronze Chest',  color: '#cd7f32', glow: 'rgba(205, 127, 50, 0.4)' },
+    silver:  { name: 'Silver Chest',  color: '#cbd5e1', glow: 'rgba(192, 192, 192, 0.4)' },
+    gold:    { name: 'Gold Chest',    color: '#fbbf24', glow: 'rgba(251, 191, 36, 0.4)' },
+    diamond: { name: 'Diamond Chest', color: '#22d3ee', glow: 'rgba(34, 211, 238, 0.4)' },
 };
 
 const REWARD_ICONS = { 
-    coins: 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@v3.0.2/icons/coin.png',
-    gems: 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@v3.0.2/icons/gem.png',
-    xp: '⭐', 
-    unlock: '🔓', 
-    badge: '🏆' 
+    coins: IMAGES.coin_gem,
+    gems: (subject) => getGem(subject || 'master')
 };
 
 export default function ChestRevealModal() {
     const dispatch = useDispatch();
-    const pendingChests = useSelector(s => s.user.data.pendingChests || []);
-    const [phase, setPhase] = useState('closed'); // closed → shaking → open → rewards → done
+    const user = useSelector(s => s.user.data);
+    const pendingChests = useSelector(s => s.user.data.pendingChests || [], (a, b) => a?.length === b?.length);
+    const [phase, setPhase] = useState('closed'); // closed → intro → opening → rewards → done
     const [revealedRewards, setRevealedRewards] = useState([]);
+    const [isCollecting, setIsCollecting] = useState(false);
 
     const chest = pendingChests[0];
 
     // Trigger animation sequence when a new chest appears
     useEffect(() => {
-        if (!chest) { setPhase('closed'); return; }
-
-        setRevealedRewards([]);
-        setPhase('shaking');
-        audioService.playSFX('riser'); // Anticipation riser!
-
-        const t1 = setTimeout(() => {
-            setPhase('open');
-            audioService.playSFX('bass_drop'); // Lid bursts open
-        }, 1200);
-
-        const t2 = setTimeout(() => {
-            // Reveal rewards one by one
-            if (chest.rewards?.length) {
-                chest.rewards.forEach((r, i) => {
-                    setTimeout(() => {
-                        setRevealedRewards(prev => [...prev, r]);
-                        audioService.playSFX('challenge_click'); // Snappy click for each item popping out
-                    }, i * 400);
-                });
-            }
-            setPhase('rewards');
-            setTimeout(() => audioService.playSFX('challenge_win'), 800); // Final fanfare
-        }, 1800);
-
-        return () => { clearTimeout(t1); clearTimeout(t2); };
-    }, [chest?.chestType, pendingChests.length]);
-
-    // Apply rewards to Redux state
-    useEffect(() => {
-        if (!chest) return;
-        for (const reward of chest.rewards || []) {
-            if (reward.type === 'coins') dispatch(awardCoins(reward.amount));
-            if (reward.type === 'gems')  dispatch(awardGems({ subject: 'general', amount: reward.amount }));
+        if (!chest) {
+            setPhase('closed');
+            return;
         }
-        // Persist to Supabase
-        syncService.pushChestDrop(chest.chestType, chest.rewards).catch(() => {});
-    }, [chest]); // eslint-disable-line
+
+        if (phase === 'closed') {
+            const startSequence = async () => {
+                console.log("🎬 [ChestReveal] Starting Sequence for:", chest.chestType);
+                setRevealedRewards([]);
+                setPhase('intro');
+                audioService.playSFX('riser');
+
+                // 1. Shaking / Intro (0.8s)
+                await new Promise(r => setTimeout(r, 800));
+                setPhase('opening');
+                audioService.playSFX('bass_drop');
+
+                // 2. Open / Reward Reveal (1.8s total mark)
+                await new Promise(r => setTimeout(r, 1000));
+                setPhase('rewards');
+                
+                const items = (chest.rewards && chest.rewards.length > 0) 
+                    ? chest.rewards 
+                    : [{ type: 'coins', amount: 250 }, { type: 'gems', amount: 10, subject: 'master' }];
+
+                console.log("💎 [ChestReveal] Revealing Rewards:", items);
+
+                for (let i = 0; i < items.length; i++) {
+                    await new Promise(r => setTimeout(r, 300));
+                    setRevealedRewards(prev => [...prev, items[i]]);
+                    audioService.playSFX('challenge_click');
+                }
+
+                setTimeout(() => audioService.playSFX('victory'), 600); // Trumpet Fanfare per request
+            };
+
+            startSequence();
+        }
+    }, [chest]);
+
+    const handleCollect = useCallback(() => {
+        if (isCollecting || phase !== 'rewards') return;
+        setIsCollecting(true);
+        audioService.playSFX('collect-points');
+    }, [isCollecting, phase]);
+
+    const finalizeCollection = useCallback(() => {
+        console.log("✅ [ChestReveal] Finalizing Collection...");
+        
+        revealedRewards.forEach(r => {
+            if (r.type === 'coins') {
+                dispatch(awardCoins(r.amount));
+            } else if (r.type === 'gems') {
+                dispatch(awardGems({ subject: r.subject || 'master', amount: r.amount }));
+            }
+        });
+        
+        // Sync Logic FIXED: Use uploadProfile
+        const totalCoinsEarned = revealedRewards.reduce((sum, r) => r.type === 'coins' ? sum + r.amount : sum, 0);
+        const updatedUser = { ...user, coins: (user.coins || 0) + totalCoinsEarned };
+        syncService.uploadProfile(updatedUser).catch(console.error);
+        
+        // Cleanup
+        dispatch(dismissChest());
+        setPhase('closed');
+        setIsCollecting(false);
+        setRevealedRewards([]);
+    }, [dispatch, revealedRewards, user]);
 
     if (!chest || phase === 'closed') return null;
 
     const cfg = CHEST_CONFIG[chest.chestType] || CHEST_CONFIG.bronze;
 
-    const handleClose = () => {
-        setPhase('closed');
-        dispatch(dismissChest());
+    const getGemName = (subject) => {
+        if (!subject || subject === 'master' || subject === 'general') return 'Master Gem';
+        const s = subject.toLowerCase();
+        if (s === 'science') return 'Science Gem';
+        if (s === 'math' || s === 'mathematics') return 'Math Gem';
+        if (s === 'sst') return 'SST Gem';
+        if (s === 'english') return 'English Gem';
+        return `${subject.charAt(0).toUpperCase() + subject.slice(1)} Gem`;
     };
 
     return (
-        <div className="celebration-arena-overlay">
-            <WorldClassConfetti />
+        <div className="celebration-arena-overlay" style={{ '--chest-glow': cfg.glow }}>
+            {/* RAY BACKGROUND */}
+            {(phase === 'opening' || phase === 'rewards') && (
+                <motion.div 
+                    className="manya-reward-rays" 
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 0.6, scale: 1 }}
+                    transition={{ duration: 1 }}
+                />
+            )}
 
-            <div className="celebration-card-container relative z-10" style={{ animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-                {phase === 'rewards' && revealedRewards.length === (chest.rewards?.length || 0) && (
-                    <button className="celebration-close-x" onClick={handleClose}>
-                        <X size={20} strokeWidth={4} />
-                    </button>
-                )}
+            {/* CONFETTI LAYER */}
+            {phase === 'rewards' && <WorldClassConfetti />}
 
-                {/* UNIQUE ELEMENT: Badge Crest Vault nested inside Celebration Layout */}
-                <div className={`badge-hero-card tier-${chest.chestType.toLowerCase()} !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-6`}>
-                    <div className="badge-glow-ring" />
-                    <div className="badge-crest-vault !mb-0 z-10 relative">
-                        <div className={`badge-icon-reveal ${phase === 'shaking' ? 'shaking' : ''}`}>
-                            <img src={assetUrl(`chests/${cfg.img}`)} alt={cfg.name} className="w-24 h-24 object-contain" />
-                        </div>
-                        <div className="badge-shine-effect" />
-                    </div>
+            {/* FLYING REWARDS ANIMATION */}
+            <FlyingRewards 
+                rewards={revealedRewards} 
+                isCollecting={isCollecting} 
+                onComplete={finalizeCollection} 
+            />
+
+            <div className="celebration-card-container !max-w-[380px]">
+                {/* HEADER INFO */}
+                <motion.div 
+                    className="chest-header-section mb-2"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    {chest.reason && (
+                        <div className="chest-reason-tag !mb-2">{chest.reason}</div>
+                    )}
+                    <h1 className="chest-tier-name !text-3xl">{cfg.name}</h1>
+                </motion.div>
+
+                {/* THE CHEST HERO - Compacted */}
+                <div className="chest-hero-wrapper !w-[220px] !h-[220px]">
+                    <div className="chest-glow-backlight !w-[180px] !h-[180px]" />
+                    <motion.div
+                        className="w-full h-full relative z-10"
+                        animate={phase === 'intro' ? {
+                            rotate: [-2, 2, -2, 2, 0],
+                            scale: [1, 1.05, 1],
+                        } : {}}
+                        transition={phase === 'intro' ? { repeat: Infinity, duration: 0.2 } : {}}
+                    >
+                        <DotLottieReact
+                            src="/assets/chests/master_gem_chest.lottie"
+                            autoplay
+                            loop={false}
+                        />
+                    </motion.div>
                 </div>
 
-                <Ribbon text="CHEST UNLOCKED" />
+                {/* REWARD TILES - Compacted */}
+                <div className="min-h-[120px] flex items-center justify-center">
+                    <AnimatePresence>
+                        {phase === 'rewards' && (
+                            <motion.div className="reward-tiles-row !my-4">
+                                {revealedRewards.map((r, i) => (
+                                    <motion.div 
+                                        key={i}
+                                        className="reward-tile !w-[110px] !py-4"
+                                        initial={{ opacity: 0, scale: 0.5, y: 20, rotateX: 90 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                                        transition={{ type: 'spring', damping: 12, stiffness: 200 }}
+                                    >
+                                        <img 
+                                            src={r.type === 'coins' ? REWARD_ICONS.coins : REWARD_ICONS.gems(r.subject)} 
+                                            alt={r.type} 
+                                            className="reward-tile-icon !w-10 !h-10"
+                                        />
+                                        <div className="flex flex-col items-center">
+                                            <span className="reward-tile-amount !text-xl">+{r.amount}</span>
+                                            <span className="text-[9px] font-black text-white/40 uppercase tracking-tighter">
+                                                {r.type === 'coins' ? 'Coins' : getGemName(r.subject)}
+                                            </span>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
 
-                <h1 className="celebration-title-premium mt-4" style={{ color: 'white' }}>{cfg.name}</h1>
-                <p className="celebration-subtext-premium">Rewards have been added to your vault.</p>
-                
-                {phase === 'rewards' && (
-                    <div className="premium-stats-list-celebration mt-6 gap-2">
-                        {revealedRewards.map((r, i) => {
-                            const icon = REWARD_ICONS[r.type] || '✨';
-                            const isImg = icon.startsWith('http');
-                            return (
-                                <div key={i} className="stat-chip-celebration reward-pop-in" style={{ padding: '8px 16px' }}>
-                                    <span className="label text-[10px] uppercase tracking-wider">{r.type}</span>
-                                    <span className="val flex items-center gap-2" style={{ color: '#22d3ee' }}>
-                                        +{r.amount || 1}
-                                        {isImg ? <img src={icon} alt={r.type} className="w-5 h-5 object-contain" /> : <span className="text-sm">{icon}</span>}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {phase === 'rewards' && revealedRewards.length === (chest.rewards?.length || 0) && (
-                    <button className="btn-collect-3d mt-8 w-full max-w-[280px] mx-auto block" onClick={handleClose}>
-                        <div className="btn-gloss-highlight" />
-                        <span className="flex items-center justify-center gap-2">COLLECT REWARDS <ArrowRight size={20} className="inline" strokeWidth={3} /></span>
+                {/* ACTION BUTTON */}
+                <motion.div 
+                    className="w-full flex flex-col items-center mt-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: phase === 'rewards' ? 1 : 0 }}
+                >
+                    <button 
+                        className="btn-claim-royal !h-14 !max-w-[240px]"
+                        onClick={handleCollect}
+                        disabled={isCollecting || phase !== 'rewards'}
+                    >
+                        {isCollecting ? 'COLLECTING...' : 'CLAIM TREASURE'}
+                        {!isCollecting && <ArrowRight size={18} strokeWidth={3} />}
                     </button>
-                )}
+
+                    {phase === 'rewards' && !isCollecting && (
+                        <p className="collect-hint-text">Tap to claim your rewards</p>
+                    )}
+                </motion.div>
             </div>
         </div>
     );

@@ -68,12 +68,13 @@ const CelebrationView = ({
     total = 0,
     stars = 0,
     coinsEarned = 0,
+    gemsEarned = 0,
     customTitle = null,
     customSub = null,
     onCollect
 }) => {
     const char = CharacterMap[subject.toLowerCase()] || CharacterMap.default;
-    const isPassing = mastery >= 75;
+    const isPassing = mastery >= 60;
 
     const subjectMessages = MilestoneMessages[subject.toLowerCase()];
     const milestone = subjectMessages ? subjectMessages[nodeType.toUpperCase()] : null;
@@ -163,6 +164,14 @@ const CelebrationView = ({
                     <div className="stat-chip-celebration !border-x !border-white/5">
                         <span className="label">MASTERY</span>
                         <span className="val" style={{ color: mastery >= 75 ? '#fbbf24' : '#10b981' }}>{mastery}%</span>
+                    </div>
+
+                    <div className="stat-chip-celebration !border-x !border-white/5">
+                        <span className="label">GEMS EARNED</span>
+                        <div className="val flex items-center justify-center gap-1">
+                            <span style={{ color: '#10b981' }}>{gemsEarned}</span>
+                            <div className="w-3 h-3 bg-[#10b981] rotate-45 border border-[#065f46]" />
+                        </div>
                     </div>
 
                     <div className="stat-chip-celebration">

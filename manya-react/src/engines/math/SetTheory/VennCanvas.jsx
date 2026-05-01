@@ -153,16 +153,37 @@ const VennCanvas = ({
                     const items = Array.isArray(rawItems) ? rawItems : [rawItems];
                     
                     items.forEach((v, i) => {
-                        let lx, ly;
-                        if (reg === 'left') { lx = c1.x - (isDisjoint ? 0 : offset * 0.85); ly = cy; }
-                        else if (reg === 'right') { lx = c2.x + (isDisjoint ? 0 : offset * 0.85); ly = cy; }
-                        else if (reg === 'center') { lx = width/2; ly = cy; }
-                        else if (reg === 'outside') { lx = width - boxPad - 50; ly = height - boxPad - 50; }
+                        let lx, ly = cy;
+                        const spacing = isMobile ? 35 : 45; // Increased spacing for double-digit numbers
                         
-                        if (items.length > 1) { lx += (i - (items.length-1)/2) * 20; }
+                        if (reg === 'left') { 
+                            lx = c1.x - (isDisjoint ? 0 : offset * 0.85); 
+                        } else if (reg === 'right') { 
+                            lx = c2.x + (isDisjoint ? 0 : offset * 0.85); 
+                        } else if (reg === 'center') { 
+                            lx = width / 2; 
+                        } else if (reg === 'outside') { 
+                            lx = width - boxPad - 80; // Moved further in to avoid clipping
+                            ly = height - boxPad - 40; 
+                        }
+                        
+                        // Smart Grid/Staggering for multiple items
+                        if (items.length > 1) {
+                            const cols = Math.min(items.length, reg === 'outside' ? 3 : 4);
+                            const row = Math.floor(i / cols);
+                            const col = i % cols;
+                            
+                            const xOffset = (col - (cols - 1) / 2) * spacing;
+                            const yOffset = (row - Math.floor((items.length - 1) / cols) / 2) * 25;
+                            
+                            lx += xOffset;
+                            ly += yOffset;
+                        }
 
                         const displayVal = evaluateExpr(String(v), currentStep.x_val || 0);
-                        ctx.fillStyle = colors.text; ctx.font = "800 18px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign="center"; 
+                        ctx.fillStyle = colors.text; 
+                        ctx.font = "800 18px 'Plus Jakarta Sans', sans-serif"; 
+                        ctx.textAlign = "center"; 
                         ctx.fillText(displayVal, lx, ly);
                     });
                 });

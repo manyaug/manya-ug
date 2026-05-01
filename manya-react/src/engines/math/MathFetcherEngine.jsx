@@ -11,6 +11,7 @@ import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
 import { rewardManager } from '../../domain/gamification/rewardManager.js';
+import { dynamicModeService } from '../../domain/gamification/dynamicModeService';
 
 // Services & Utils
 import { fetchMathQuestions } from '../../services/mathMockDB';
@@ -97,39 +98,34 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             try {
                 // Load Interactive Simulations
                 const simCandidates = [];
-                if (data?.simResources) {
-                    for (const simRes of data.simResources) {
-                        try {
-                            const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            steps.forEach((s, idx) => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.id = s.id || `sim_${simRes.file.replace('.json', '')}_${idx}`;
-                            });
-                            simCandidates.push(...steps);
-                        } catch (e) { console.warn(`[MathEngine] Sim Load Error:`, e); }
-                    }
-                }
+                const simCandidates = [];
+                const activeSims = data?.simResources || [];
+                const activeRecaps = data?.recapResources || [];
 
-                // Load Recap Resources
-                const recapCandidates = [];
-                if (data?.recapResources) {
-                    for (const recapRes of data.recapResources) {
-                        try {
-                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                            const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            steps.forEach((s, idx) => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.isRecap = true;
-                                s.id = s.id || `recap_${recapRes.file.replace('.json', '')}_${idx}`;
-                            });
-                            recapCandidates.push(...steps);
-                        } catch (e) { console.warn(`[MathEngine] Recap Load Error:`, e); }
-                    }
-                    setRecapSteps(recapCandidates);
+                // 🌐 FETCH REMOTE RESOURCES (v5.1 - Unified GitHub CDN Loader)
+                const fetchResource = async (res) => {
+                    const file = typeof res === 'string' ? res : res?.file;
+                    if (!file) return [];
+                    const fileName = file.endsWith('.json') ? file : `${file}.json`;
+                    try {
+                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                        return steps.map(s => {
+                            const eType = getEngineType(s);
+                            return { ...s, isSimulation: SUPPORTED_SIM_ENGINES.includes(eType), id: s.id || `remote_${file.replace('.json','')}_${Math.random()}` };
+                        });
+                    } catch (e) { console.warn(`[Math] Failed to load ${file}`, e); return []; }
+                };
+
+                for (const res of activeSims) {
+                    const steps = await fetchResource(res);
+                    simCandidates.push(...steps);
                 }
+                for (const res of activeRecaps) {
+                    const steps = await fetchResource(res);
+                    steps.forEach(s => { s.isRecap = true; });
+                    simCandidates.push(...steps);
+                }
+                setRecapSteps(simCandidates.filter(s => s.isRecap));
 
                 // Fetch Bank & Generate Quest
                 const rawBank = await fetchMathQuestions(topicId);
@@ -157,6 +153,20 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         };
         loadQuestions();
     }, [topicId, nodeType, questKey]);
+
+    // --- ⚡ SPEEDRUN TIMEOUT HANDLER ---
+    useEffect(() => {
+        const handleTimeout = () => {
+            if (!isAnswered) {
+                audioService.error?.();
+                setIsAnswered(true);
+                onResult?.({ isCorrect: false, score: scoreRef.current, total: questions.length, type: 'timeout' });
+                setTimeout(() => nextQuestion(), 1500);
+            }
+        };
+        window.addEventListener('manya-engine-timeout', handleTimeout);
+        return () => window.removeEventListener('manya-engine-timeout', handleTimeout);
+    }, [isAnswered, questions.length, currentIdx]);
 
     // --- 🧠 HANDLERS ---
     const handleSelect = (option) => {
@@ -228,6 +238,9 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         // ── Emotion Tracking ─────────────────────────────────────────────────
         trackAndPushEmotion({ isCorrect, hintUsed, answerChanged, changeCount, timeSpentMs, frustrationLevel: frustration?.score || 0 });
 
+        // 🧠 Update dynamic mode metrics BEFORE nextQuestion re-rolls
+        dynamicModeService.update(isCorrect, currentMastery, questions.length, currentIdx);
+
         // ── Unified Reward Logic ────────────────────────────────────────────
         if (isCorrect) {
             setScore(s => s + 1);
@@ -277,65 +290,64 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
     }, [score, simPartialScore, questions.length]);
 
     const nextQuestion = () => {
+        setSimPartialScore(0);
         if (currentIdx < questions.length - 1) {
-            setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
+            const nextIdx = currentIdx + 1;
+            
+            // 🧠 DYNAMIC MODE RE-ROLL
+            const mode = dynamicModeService.getNextMode(null, nodeType);
+            setGameMode(mode);
+
+            if (mode === 'speedrun') {
+                dynamicModeService.startSpeedrun(18, () => {
+                    window.dispatchEvent(new CustomEvent('manya-engine-timeout'));
+                });
+            } else {
+                dynamicModeService.stopSpeedrun();
+            }
+
+            if (mode === 'reverse') {
+                window.dispatchEvent(new CustomEvent('manya-fx-reverse-start'));
+                setQuestions(prev => {
+                    const copy = [...prev];
+                    const nextQ = copy[nextIdx];
+                    if (nextQ && !nextQ.isReversed) {
+                        const reversed = dynamicModeService.generateReverseQuestion(nextQ, allBankRef.current);
+                        if (reversed) {
+                            reversed.isReversed = true;
+                            copy[nextIdx] = reversed;
+                        }
+                    }
+                    return copy;
+                });
+            }
+
+            setCurrentIdx(nextIdx); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
         } else if (!isFinished) {
             setIsFinished(true);
             const finalScore = scoreRef.current;
             const mastery = Math.round((finalScore / questions.length) * 100);
-            const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
+            saveNodeCompletion(subject, questKey, nodeType, mastery);
             dispatch(checkAchievements());
             dispatch(syncUserData());
-            setJustFinished({ subject, questKey, nodeType, mastery, unlocked: result.unlocked });
             
             // Story progression
             if (nodeType === 'MASTERY' && mastery >= 60) {
                 const mapIndex = data?.questIndex ?? 0;
                 if (mapIndex >= (user[`prog_${subject}`] || 0)) dispatch(updateProfile({ [`prog_${subject}`]: mapIndex + 1 }));
             }
-            // removed XP reward call
 
-            // ── Quest Completion Rewards ─────────────────────────────────────
-            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
-            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
-
-            dispatch(syncUserData());
-
-            setCompletionResult({ 
-                mastery, 
-                score: finalScore, 
-                total: questions.length, 
-                stars: completion.stars, 
-                bonusCoins: finalTotalCoins, 
-                chestType: completion.chestType 
-            });
-            setShowCompletion(true);
+            // Let QuestRunner handle the final celebration & rewards
+            onComplete?.();
         }
     };
 
     const handleFinish = () => {
-        const mastery = completionResult?.mastery || 0;
-        onResult?.({ isCorrect: mastery >= 60, score: completionResult?.score || score, total: completionResult?.total || questions.length, mastery, gemsEarned, type: 'adaptive_math' });
+        onResult?.({ isCorrect: currentMastery >= 60, score: score + simPartialScore, total: questions.length, mastery: currentMastery, gemsEarned, type: 'adaptive_math' });
         onComplete?.();
     };
-
-    if (showCompletion && completionResult) {
-        return (
-            <CelebrationView 
-                subject="Math" 
-                nodeType={nodeType} 
-                mastery={completionResult.mastery} 
-                score={completionResult.score} 
-                total={completionResult.total} 
-                stars={completionResult.stars}
-                coinsEarned={completionResult.bonusCoins}
-                onCollect={handleFinish} 
-            />
-        );
-    }
-
     const currentQ = questions[currentIdx];
-    if (!currentQ && !showCompletion && !isLoading) {
+    if (!currentQ && !isLoading) {
         return (
             <div className="flex-1 flex items-center justify-center text-[var(--text-sub)]">
                 <RefreshCw className="animate-spin mr-2" /> Finalizing Quest...
@@ -357,6 +369,7 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             userWasCorrect={isAnswered && validateMathAnswer(selectedOption, currentQ?.answer, currentQ?.options)}
             isLast={currentIdx === questions.length - 1}
             onSkip={nextQuestion}
+            currentMode={gameMode}
             session={{
                 ...session,
                 mastery: currentMastery,

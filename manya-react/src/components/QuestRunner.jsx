@@ -12,12 +12,15 @@ import { getLoadingConfig, getRandomFact } from '../config/loadingData';
 import { ENGINE_REGISTRY, getEngine } from '../config/engineRegistry';
 import { saveNodeCompletion, setJustFinished } from '../domain/progress/questProgressService.js';
 import { QuestSession } from '../application/QuestSession';
+import { dynamicModeService } from '../domain/gamification/dynamicModeService';
 import { QuestBusProvider } from '../ui/context/QuestBus';
 import QuestHUD from './QuestHUD'; 
-import { masteryToStars, getQuestCompletionChest, rollChestRewards } from '../domain/gamification/chestService.js';
+import { evaluateRewards } from '../domain/gamification/chestService.js';
 import { awardCoins, dropChest } from '../store/userSlice';
 import { getNodeMastery, NODE_ORDER } from '../domain/progress/questProgressService.js';
+import PremiumFXOverlay from './PremiumFXOverlay';
 import React from 'react';
+import CelebrationView from '../views/CelebrationView.jsx';
 import '../styles/engines.css';
 
 class QuestErrorBoundary extends React.Component {
@@ -69,6 +72,15 @@ export default function QuestRunner() {
     const [activeEngine, setActiveEngine] = useState(null);
     const [renderTrigger, setRenderTrigger] = useState(0);
     
+    // Performance Tracking
+    const performanceRef = useRef({
+        startTime: Date.now(),
+        speedrunEngaged: false,
+        speedrunPerfect: true,
+        reverseEngaged: false,
+        reversePerfect: true
+    });
+    
     // Application Service Orchestrator
     const sessionRef = useRef(null);
 
@@ -81,6 +93,7 @@ export default function QuestRunner() {
         if (!state) { navigate('/library'); return; }
 
         async function init() {
+            dynamicModeService.reset();
             try {
                 let resolvedSteps, resolvedMeta;
                 if (state.steps && Array.isArray(state.steps)) {
@@ -144,8 +157,32 @@ export default function QuestRunner() {
             footer.style.display = (isImmersive && meta.subject !== 'english') ? 'none' : '';
         }
 
-        setActiveEngine({ ...engineMeta, data: currentStep.data });
-    }, [phase, stepIdx, steps, meta.subject, dispatch]); // Removed advanceStep from deps intentionally
+        // ── DYNAMIC MODE INJECTION ──────────────────────────────────────────
+        const mode = dynamicModeService.getNextMode(location.state?.forceMode, location.state?.nodeType);
+        let engineData = { 
+            ...currentStep.data, 
+            currentMode: mode,
+            unitId: location.state?.unitId,
+            questFolder: location.state?.questFolder
+        };
+        
+        console.log(`[QuestRunner] Dynamic Mode Selected: ${mode.toUpperCase()} (Step ${stepIdx + 1})`);
+
+        if (mode === 'reverse' && engineType.includes('FETCHER')) {
+            engineData.forceMode = 'reverse';
+        }
+
+        if (mode === 'speedrun') {
+            dynamicModeService.startSpeedrun(18, () => {
+                console.warn('[QuestRunner] Speedrun TIMEOUT triggered!');
+                window.dispatchEvent(new CustomEvent('manya-engine-timeout'));
+            });
+        } else {
+            dynamicModeService.stopSpeedrun();
+        }
+
+        setActiveEngine({ ...engineMeta, data: engineData, currentMode: mode });
+    }, [phase, stepIdx, steps, meta.subject, dispatch]); 
 
     // ── CORE ORCHESTRATION BRIDGE ─────────────────────────────────────────────
     const handleEngineResult = useCallback(async (result) => {
@@ -177,10 +214,38 @@ export default function QuestRunner() {
             setBtnState(s => ({ ...s, enabled: true }));
         }
 
+        // Track mode performance before stopping
+        const activeMode = dynamicModeService.currentMode;
+        if (activeMode === 'speedrun') {
+            performanceRef.current.speedrunEngaged = true;
+            if (!result.isCorrect) performanceRef.current.speedrunPerfect = false;
+        }
+        if (activeMode === 'reverse') {
+            performanceRef.current.reverseEngaged = true;
+            if (!result.isCorrect) performanceRef.current.reversePerfect = false;
+        }
+
+        dynamicModeService.stopSpeedrun();
+
+        // Update Dynamic Mode Metrics
+        if (!result?.type?.includes('partial') && !result?.type?.includes('pulse')) {
+            const currentMastery = sessionRef.current?.lastMasteryScore || 0;
+            dynamicModeService.update(
+                result.isCorrect, 
+                currentMastery, 
+                steps.length, 
+                stepIdx
+            );
+        }
+
         setRenderTrigger(prev => prev + 1);
-    }, [dispatch, meta.subject]);
+        if (result.gemsEarned) {
+            performanceRef.current.totalGems = (performanceRef.current.totalGems || 0) + result.gemsEarned;
+        }
+    }, [dispatch, meta.subject, steps.length, stepIdx, activeEngine?.currentMode]);
 
     const finishQuest = useCallback(() => {
+        if (phase === 'finished') return;
         setPhase('finished');
         
         const { subject, questKey, nodeType } = location.state || {};
@@ -202,38 +267,46 @@ export default function QuestRunner() {
             masteryScore = sessionRef.current?.lastMasteryScore || ((sessionRef.current?.correctCount || 1) / (sessionRef.current?.totalSteps || 1)) * 100;
             const result = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
             setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: result.unlocked, nextNode: result.nextNode });
+        } else if (hasFetcher) {
+            masteryScore = sessionRef.current?.lastMasteryScore || 100;
         }
         
-        // 2. Dispatch the standard soft currency
+        // 2. Dispatch soft currency
         dispatch(awardCoins(earnedCoins));
 
-        // 3. Evaluate Chests using the Deterministic Model
-        const stars = masteryToStars(masteryScore);
-        let chestColor = null;
+        // 3. Store final stats for CelebrationView
+        performanceRef.current.finalMastery = masteryScore;
+        performanceRef.current.finalCoins = earnedCoins;
+        performanceRef.current.finalGems = performanceRef.current.totalGems || 0;
+        performanceRef.current.finalStars = masteryScore >= 85 ? 3 : masteryScore >= 70 ? 2 : masteryScore >= 60 ? 1 : 0;
 
-        if (safeNodeType === 'MASTERY') {
-            // Boss chest calculates cumulative stars from previous 4 nodes
-            let cumulativeStars = stars;
-            for (let i = 0; i < 4; i++) {
-                const pastMastery = getNodeMastery(subject, questKey, NODE_ORDER[i]);
-                cumulativeStars += masteryToStars(pastMastery || 0);
+        // 4. 🎁 EVALUATE PREMIUM REWARDS (New Logic Matrix)
+        const sessionDurationMinutes = (Date.now() - performanceRef.current.startTime) / 60000;
+        const rewards = evaluateRewards({
+            mastery: masteryScore,
+            streak: user.current_streak || 0,
+            sessionTime: sessionDurationMinutes,
+            nodeType: safeNodeType,
+            modeAchievements: {
+                speedrunPerfect: performanceRef.current.speedrunEngaged && performanceRef.current.speedrunPerfect && (sessionRef.current?.correctCount || 0) > 2,
+                reversePerfect: performanceRef.current.reverseEngaged && performanceRef.current.reversePerfect && (sessionRef.current?.correctCount || 0) > 2
             }
-            chestColor = getQuestCompletionChest(cumulativeStars, safeNodeType);
-        } else {
-            chestColor = getQuestCompletionChest(stars, safeNodeType);
-        }
+        });
 
-        if (chestColor) {
-            const guaranteedRewards = rollChestRewards(chestColor);
-            dispatch(dropChest({ chestType: chestColor, rewards: guaranteedRewards }));
-            dispatch(addToast({ message: `🏆 Quest complete! Earned ${earnedCoins} Coins and a ${chestColor.toUpperCase()} Chest!`, type: 'success' }));
+        // Drop all earned chests
+        rewards.forEach(drop => {
+            dispatch(dropChest(drop));
+        });
+
+        if (rewards.length > 0) {
+            dispatch(addToast({ message: `🏆 Quest complete! Earned ${earnedCoins} Coins and ${rewards.length} Reward Chests!`, type: 'success' }));
         } else {
             dispatch(addToast({ message: `🏁 Quest complete! +${earnedCoins} Coins earned`, type: 'success' }));
         }
 
         audioService.finish();
-        setTimeout(() => navigate(-1), 300);
-    }, [dispatch, location.state, navigate, steps, user]);
+        // Navigation is now deferred until CelebrationView.onCollect
+    }, [dispatch, location.state, navigate, steps, user.current_streak]);
 
     const advanceStep = useCallback(() => {
         if (window.__manyaIsTyping) {
@@ -246,10 +319,11 @@ export default function QuestRunner() {
         if (!sessionRef.current) return;
         
         sessionRef.current.advance();
-        setStepIdx(sessionRef.current.stepIndex); // Trigger React render
         
         if (sessionRef.current.isFinished) {
             finishQuest();
+        } else {
+            setStepIdx(sessionRef.current.stepIndex); // Only update index if we have more steps
         }
     }, [finishQuest]);
 
@@ -267,6 +341,7 @@ export default function QuestRunner() {
             },
             onEngineResult: handleEngineResult
         }}>
+            <PremiumFXOverlay />
             <div className="quest-runner-shell" style={{ '--biome-color': biomeColor }}>
                 {/* ── UNIFIED PREMIUM QUEST HUD ── */}
                 {phase === 'running' && (
@@ -288,7 +363,7 @@ export default function QuestRunner() {
                     />
                 )}
 
-                <main className="qr-content-area scroll-smooth min-h-0">
+                <main className="qr-content-area scroll-smooth min-h-0 !p-0 !m-0 !w-full !h-full">
                     <QuestErrorBoundary key={stepIdx + phase} onSkip={advanceStep}>
                         {phase === 'loading' && (() => {
                             const cfg = getLoadingConfig(meta.subject);
@@ -316,21 +391,38 @@ export default function QuestRunner() {
                         })()}
 
                         {phase === 'running' && activeEngine && (
-                            <div className="w-full flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden bg-[var(--bg-main)]">
+                            <div className="w-full !max-w-none flex-1 min-h-0 flex flex-col animate-in fade-in duration-500 overflow-hidden bg-[var(--bg-main)] !p-0 !m-0">
                                 <Suspense fallback={
                                     <div className="flex-1 flex flex-col items-center justify-center p-20 gap-4">
                                         <div className={`w-12 h-12 border-4 border-indigo-100 border-t-indigo-500 rounded-full animate-spin`} />
                                         <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600 animate-pulse">Loading Engine...</p>
                                     </div>
                                 }>
-                                    <activeEngine.component 
-                                        key={`${stepIdx}-${activeEngine.type}`}
-                                        data={activeEngine.data} 
-                                        onComplete={advanceStep} 
-                                        onResult={handleEngineResult}
-                                    />
+                                    {activeEngine && (
+                                        <div className="engine-container !w-full !max-w-none !h-full !p-0 !m-0" key={`${stepIdx}_${activeEngine.currentMode}`}>
+                                            <activeEngine.component 
+                                                data={activeEngine.data}
+                                                nodeType={location.state?.nodeType}
+                                                onComplete={advanceStep}
+                                                onResult={handleEngineResult}
+                                            />
+                                        </div>
+                                    )}
                                 </Suspense>
                             </div>
+                        )}
+                        {phase === 'finished' && (
+                            <CelebrationView 
+                                subject={meta.subject}
+                                nodeType={location.state?.nodeType || 'WARMUP'}
+                                mastery={performanceRef.current.finalMastery || 0}
+                                score={sessionRef.current?.correctCount || 0}
+                                total={steps.length}
+                                stars={performanceRef.current.finalStars || 0}
+                                coinsEarned={performanceRef.current.finalCoins || 0}
+                                gemsEarned={performanceRef.current.finalGems || 0}
+                                onCollect={() => navigate(-1)}
+                            />
                         )}
                     </QuestErrorBoundary>
                 </main>

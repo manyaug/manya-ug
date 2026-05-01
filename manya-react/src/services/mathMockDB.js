@@ -44,8 +44,7 @@ export const fetchMathQuestions = async (topicId) => {
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'math')
-            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`)
-            .ilike('item_type', '%MCQ%');
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!error && (!data || data.length === 0)) {
@@ -60,8 +59,7 @@ export const fetchMathQuestions = async (topicId) => {
                     .from('manya_vault')
                     .select('*')
                     .ilike('subject', 'math')
-                    .or(keywordFilter)
-                    .ilike('item_type', '%MCQ%');
+                    .or(keywordFilter);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Math Vault] Discovered ${keywordData.length} related questions via keywords.`);

@@ -4,6 +4,7 @@ import { discoverArtifact } from '../../store/userSlice';
 import { addToast } from '../../store/toastSlice';
 import * as d3 from 'd3';
 import { assetUrl } from '../../config/assetUrls';
+import { audioService } from '../../infrastructure/audio/audioService.js';
 
 // Atomic Resources
 import { validateQuizAnswer } from './UniversalGlobe/GlobeLogic';

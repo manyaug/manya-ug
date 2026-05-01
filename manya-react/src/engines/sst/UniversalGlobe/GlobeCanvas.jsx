@@ -75,7 +75,7 @@ const GlobeCanvas = ({
         if (curCase?.highlight || curCase?.highlightContinent) {
             const ids = CONTINENT_MAP[curCase.highlightContinent] || 
                        (Array.isArray(curCase.highlight) ? curCase.highlight : [curCase.highlight]);
-            ids.forEach(k => itemsToHighlight.push({ id: k, color: curCase.highlightColor || "rgba(242, 118, 5, 0.4)" }));
+            ids.forEach(k => itemsToHighlight.push({ id: k, color: curCase.highlightColor || "rgba(124, 58, 237, 0.4)" }));
         }
 
         if (data?.mode === 'puzzle') {
@@ -131,10 +131,10 @@ const GlobeCanvas = ({
                 else for(let i=90; i>=-90; i-=5) coords.push([l.value, i]);
                 
                 ctx.beginPath(); path({type: "LineString", coordinates: coords});
-                ctx.strokeStyle = l.color || (isDark ? "#fbbf24" : "#f59e0b"); 
+                ctx.strokeStyle = l.color || (isDark ? "#a78bfa" : "#7c3aed"); 
                 ctx.lineWidth = l.width || 3.5; ctx.lineCap = "round";
                 if(l.dashed) ctx.setLineDash([10, 8]); 
-                ctx.shadowBlur = 4; ctx.shadowColor = l.color || (isDark ? "#fbbf24" : "#f59e0b");
+                ctx.shadowBlur = 4; ctx.shadowColor = l.color || (isDark ? "#a78bfa" : "#7c3aed");
                 ctx.stroke(); ctx.shadowBlur = 0; ctx.setLineDash([]);
                 
                 if (l.label && !isDraggingRef.current) {
@@ -143,7 +143,7 @@ const GlobeCanvas = ({
                     if (d3.geoDistance(center, labelPoint) < 1.4) {
                         const pos = projection(labelPoint);
                         if(pos) {
-                            ctx.fillStyle = l.color || (isDark ? "#fbbf24" : "#f59e0b"); 
+                            ctx.fillStyle = l.color || (isDark ? "#a78bfa" : "#7c3aed"); 
                             ctx.font = "900 11px 'Plus Jakarta Sans'"; ctx.textAlign = "center";
                             ctx.shadowBlur = 8; ctx.shadowColor = isDark ? "rgba(0,0,0,0.9)" : "rgba(255,255,255,0.9)";
                             ctx.fillText(l.label.toUpperCase(), pos[0], pos[1] - 8); ctx.shadowBlur = 0;
@@ -182,8 +182,8 @@ const GlobeCanvas = ({
         ctx.beginPath(); path({type: "Sphere"});
         const shine = ctx.createRadialGradient(width/2 - 40, height/2 - 40, 0, width/2, height/2, scaleRef.current);
         shine.addColorStop(0, "rgba(255,255,255,0.05)"); shine.addColorStop(1, "rgba(0,0,0,0.25)"); ctx.fillStyle = shine; ctx.fill();
-        ctx.strokeStyle = "#f59e0b"; ctx.lineWidth = 4; ctx.stroke();
-        ctx.shadowBlur = 20; ctx.shadowColor = "rgba(245, 158, 11, 0.3)"; ctx.stroke(); ctx.shadowBlur = 0;
+        ctx.strokeStyle = "#7c3aed"; ctx.lineWidth = 4; ctx.stroke();
+        ctx.shadowBlur = 20; ctx.shadowColor = "rgba(124, 58, 237, 0.3)"; ctx.stroke(); ctx.shadowBlur = 0;
 
     }, [worldData, activeTab, placedPieces, isDark, data, projectionRef, pathRef, scaleRef, isDraggingRef]);
 

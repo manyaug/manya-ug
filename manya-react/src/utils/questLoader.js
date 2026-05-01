@@ -22,7 +22,10 @@ const BASE_CONTENT_URL = CDN_URL;
  */
 function resolveQid(subject, unitId, questFolder, file) {
     if (!file) return null;
-    const filename = file.replace(/\.json$/, '');
+    
+    // 🛡️ Safety: Ensure file is a string
+    const fileStr = typeof file === 'string' ? file : (file?.file || String(file));
+    const filename = fileStr.replace(/\.json$/, '');
     
     // Direct ID mapping (Handles ENG-quest-p7-001 etc)
     if (filename.startsWith('ENG-') || filename.startsWith('PQ-')) {

@@ -19,12 +19,13 @@ const InteractionFeedback = () => {
             setFlash('correct');
             setTimeout(() => setFlash(null), 600);
 
-            // 30% chance for a word flash on correct
-            if (Math.random() > 0.7) {
-                const cheers = ["AWESOME!", "SPOT ON!", "BRILLIANT!", "WOW!", "KEEP IT UP!"];
-                setWord(cheers[Math.floor(Math.random() * cheers.length)]);
-                setTimeout(() => setWord(null), 800);
-            }
+            // 100% chance for a royal word flash on every correct answer
+            const cheers = [
+                "AMAZING!", "AWESOME!", "BRILLIANT!", "WOW!", "EXCELLENT!", 
+                "CHAMPION!", "SUPERB!", "MAGNIFICENT!", "SPOT ON!", "ROYAL WIN!"
+            ];
+            setWord(cheers[Math.floor(Math.random() * cheers.length)]);
+            setTimeout(() => setWord(null), 800);
         };
 
         const handleWrong = () => {

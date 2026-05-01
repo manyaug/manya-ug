@@ -177,7 +177,7 @@ export async function fetchDynamicCurriculum(subject = 'english') {
             const uniqueTopics = Array.from(normalizedTopicMap.values());
             console.log(`✅ [Curriculum] Found ${uniqueTopics.length} normalized topics in DB.`);
 
-            // Step 2: Flatten all discoverable quests into a single unit for a clean linear path
+            // Step 2: Discover all quests and their parent topics
             const allDiscoverableQuests = [];
             
             for (const topicName of uniqueTopics) {
@@ -191,13 +191,13 @@ export async function fetchDynamicCurriculum(subject = 'english') {
 
                 const rawSubtopics = [...new Set(subtopics.map(s => s.subtopic).filter(Boolean))];
                 for (const subName of rawSubtopics) {
-                    // Extract numerical index for sorting (e.g., "quest_01" -> 1)
                     const indexMatch = subName.match(/\d+/);
                     const sortIndex = indexMatch ? parseInt(indexMatch[0]) : 999;
 
                     allDiscoverableQuests.push({
                         folder: subName,
                         sortIndex,
+                        topicName, // Store for grouping
                         title: formatQuestTitle(subName),
                         resources: [ { label: 'Story', file: deriveStoryFile(subName) } ],
                         practiceCount: 0 
@@ -205,10 +205,8 @@ export async function fetchDynamicCurriculum(subject = 'english') {
                 }
             }
 
-            // Step 3: Natural Sort and Strict Deduplication
-            // Sort by numerical index, then deduplicate by folder name to ensure unique nodes
+            // Step 3: Natural Sort and Deduplication
             const sorted = allDiscoverableQuests.sort((a,b) => a.sortIndex - b.sortIndex);
-            
             const uniqueQuests = [];
             const seenFolders = new Set();
             for (const q of sorted) {
@@ -217,14 +215,33 @@ export async function fetchDynamicCurriculum(subject = 'english') {
                 uniqueQuests.push(q);
             }
 
-            // Step 4: Final Unit Assembly
-            const finalUnit = {
-                id: 'english_master_path',
-                title: 'Primary 7 English',
-                quests: uniqueQuests
-            };
+            // Step 4: Unit Assembly
+            const units = [];
+            
+            if (sKey === 'english') {
+                units.push({
+                    id: 'english_master_path',
+                    title: 'Primary 7 English',
+                    quests: uniqueQuests
+                });
+            } else {
+                const topicGroups = {};
+                for (const q of uniqueQuests) {
+                    const tName = q.topicName || 'General';
+                    if (!topicGroups[tName]) topicGroups[tName] = [];
+                    topicGroups[tName].push(q);
+                }
 
-            const result = { units: [finalUnit] };
+                Object.entries(topicGroups).forEach(([tName, quests]) => {
+                    units.push({
+                        id: topicToId(tName),
+                        title: tName,
+                        quests: quests.sort((a,b) => a.sortIndex - b.sortIndex)
+                    });
+                });
+            }
+
+            const result = { units };
             dynamicContentCache[sKey] = result;
             return result;
 

@@ -78,9 +78,9 @@ export const LOADING_CONFIG = {
   sst: {
     name: 'Zany',
     mascot: '/assets/images/zany.png',
-    color: '#f59e0b',
-    colorDark: '#d97706',
-    bgLight: 'rgba(245, 158, 11, 0.08)',
+    color: '#7c3aed',
+    colorDark: '#6d28d9',
+    bgLight: 'rgba(124, 58, 237, 0.08)',
     title: 'Ready for Adventure! 🚀',
     sub: 'Preparing SST World...'
   },

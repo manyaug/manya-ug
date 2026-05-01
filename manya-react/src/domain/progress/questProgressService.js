@@ -246,15 +246,20 @@ export function getNodeMastery(subject, questKey, nodeType) {
 }
 
 /**
- * Get earned gems for the quest path (3 gems per completed node).
+ * Get earned stars for the quest path (1-3 stars per completed node based on mastery).
  */
 export function getEarnedGems(subject, questKey) {
     const progress = getQuestProgress(subject, questKey);
-    let gems = 0;
+    let stars = 0;
     for (const node of NODE_ORDER) {
-        if (progress[node]?.status === 'completed') gems += 3;
+        if (progress[node]?.status === 'completed') {
+            const mastery = progress[node]?.mastery || 0;
+            if (mastery >= 85) stars += 3;
+            else if (mastery >= 70) stars += 2;
+            else stars += 1;
+        }
     }
-    return gems;
+    return stars;
 }
 
 /**

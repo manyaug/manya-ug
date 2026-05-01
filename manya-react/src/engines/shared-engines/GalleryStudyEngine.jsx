@@ -93,7 +93,14 @@ export function GalleryStudyEngine({ data, onComplete, onResult, onAttempt }) {
         }
     };
 
-    if (!currentSlide) return <div className="p-8 text-center text-red-500 font-bold">No slides found.</div>;
+    if (!currentSlide) {
+        console.error("❌ [GalleryStudyEngine] CRITICAL: No slides found in data object!", { 
+            dataId: data?.id, 
+            slidesCount: slides.length,
+            fullData: data 
+        });
+        return <div className="p-8 text-center text-red-500 font-bold">No slides found.</div>;
+    }
 
     return (
         <GalleryRenderer 

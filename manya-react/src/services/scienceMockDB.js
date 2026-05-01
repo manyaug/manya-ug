@@ -41,8 +41,7 @@ export const fetchScienceQuestions = async (topicId) => {
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'science')
-            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`)
-            .ilike('item_type', '%MCQ%');
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!error && (!data || data.length === 0)) {
@@ -57,8 +56,7 @@ export const fetchScienceQuestions = async (topicId) => {
                     .from('manya_vault')
                     .select('*')
                     .ilike('subject', 'science')
-                    .or(keywordFilter)
-                    .ilike('item_type', '%MCQ%');
+                    .or(keywordFilter);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Science Vault] Discovered ${keywordData.length} related questions via keywords.`);

@@ -8,6 +8,7 @@ import {
 import { trackAndPushEmotion } from '../../domain/gamification/emotionTracker.js';
 import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCoins, getQuestCompletionChest } from '../../domain/gamification/chestService.js';
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
+import { dynamicModeService } from '../../domain/gamification/dynamicModeService';
 import { rewardManager } from '../../domain/gamification/rewardManager.js';
 import { syncService } from '../../infrastructure/sync/syncService.js';
 import { 
@@ -30,7 +31,7 @@ import {
     checkRescueInjection, SUPPORTED_SIM_ENGINES, getEngineType 
 } from './EnglishLogic';
 
-export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
+export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeType }) {
     const dispatch = useDispatch();
     const store    = useStore();
     const session  = useSelector(state => state.user.session);
@@ -69,14 +70,6 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             const fractional = res.score / res.total;
             setSimPartialScore(fractional);
             
-            // Notify parent HUD live
-            onResult?.({
-                isCorrect: true,
-                score: scoreRef.current + fractional,
-                total: questions.length,
-                type: 'partial_sim'
-            });
-        }
     }, [questions.length, onResult]);
 
     const currentMastery = useMemo(() => {
@@ -85,7 +78,6 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
     }, [score, simPartialScore, questions.length]);
 
     const topicId = data?.topic || 'default';
-    const nodeType = data?.nodeType || 'PRACTICE';
     const subject = 'english';
     const questKey = data?.questKey || `english/${topicId}`;
 
@@ -105,37 +97,50 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                             const fileName = simRes.file.endsWith('.json') ? simRes.file : `${simRes.file}.json`;
                             const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
                             steps.forEach(s => {
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.id = s.id || `sim_${simRes.file.replace('.json', '')}`;
-                            });
-                            simCandidates.push(...steps);
-                        } catch (e) { console.warn(`[EnglishEngine] Sim Load Error:`, e); }
-                    }
-                }
+                const simCandidates = [];
+                const activeSims = data?.simResources || [];
+                const activeRecaps = data?.recapResources || [];
 
-                if (data?.recapResources?.length > 0) {
-                    const candidates = [];
-                    for (const recapRes of data.recapResources) {
-                        try {
-                            const fileName = recapRes.file.endsWith('.json') ? recapRes.file : `${recapRes.file}.json`;
-                            const { steps: rSteps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                            rSteps.forEach((s, idx) => { 
-                                const eType = getEngineType(s);
-                                s.isSimulation = SUPPORTED_SIM_ENGINES.includes(eType);
-                                s.isRecap = true; 
-                                s.id = s.id || `recap_${idx}`; 
-                            });
-                            candidates.push(...rSteps);
-                        } catch (e) { console.warn(`[EnglishEngine] Recap Load Error:`, e); }
-                    }
-                    setRecapSteps(candidates);
+                // 🌐 FETCH REMOTE RESOURCES (v5.1 - Unified GitHub CDN Loader)
+                const fetchResource = async (res) => {
+                    const file = typeof res === 'string' ? res : res?.file;
+                    if (!file) return [];
+                    const fileName = file.endsWith('.json') ? file : `${file}.json`;
+                    try {
+                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
+                        return steps.map(s => {
+                            const eType = getEngineType(s);
+                            return { ...s, isSimulation: SUPPORTED_SIM_ENGINES.includes(eType), id: s.id || `remote_${file.replace('.json','')}_${Math.random()}` };
+                        });
+                    } catch (e) { console.warn(`[English] Failed to load ${file}`, e); return []; }
+                };
+
+                for (const res of activeSims) {
+                    const steps = await fetchResource(res);
+                    simCandidates.push(...steps);
                 }
+                for (const res of activeRecaps) {
+                    const steps = await fetchResource(res);
+                    steps.forEach(s => { s.isRecap = true; });
+                    simCandidates.push(...steps);
+                }
+                setRecapSteps(simCandidates.filter(s => s.isRecap));
 
                 const allQuestions = await fetchEnglishQuestions(topicId);
                 const userHistory = await ManyaDB.getAnswerHistory(subject);
+                allBankRef.current = allQuestions;
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
-                setQuestions(quest.questions);
+                
+                let finalQuestions = quest.questions;
+                if (data?.forceMode === 'reverse') {
+                    finalQuestions = finalQuestions.map(q => {
+                        if (q.engineType?.includes('FETCHER') || q.question_type === 'MCQ' || !q.question_type) {
+                            return dynamicModeService.generateReverseQuestion(q, allQuestions) || q;
+                        }
+                        return q;
+                    });
+                }
+                setQuestions(finalQuestions);
                 if (quest.metadata?.gameMode) {
                     const gm = quest.metadata.gameMode.toLowerCase();
                     setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
@@ -146,6 +151,20 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         loadQuestions();
     }, [topicId]);
 
+    // --- ⚡ SPEEDRUN TIMEOUT HANDLER ---
+    useEffect(() => {
+        const handleTimeout = () => {
+            if (!isAnswered) {
+                audioService.error?.();
+                setIsAnswered(true);
+                onResult?.({ isCorrect: false, score: scoreRef.current, total: questions.length, type: 'timeout' });
+                setTimeout(() => nextQuestion(), 1500);
+            }
+        };
+        window.addEventListener('manya-engine-timeout', handleTimeout);
+        return () => window.removeEventListener('manya-engine-timeout', handleTimeout);
+    }, [isAnswered, questions.length, currentIdx]);
+
     const handleSelect = (option) => {
         if (isAnswered) return;
         if (!firstSelection.current) firstSelection.current = option;
@@ -154,7 +173,7 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             setChangeCount(c => c + 1);
         }
         setSelectedOption(option);
-        audioService.pop?.();
+        audioService.playSFX('tap');
     };
 
     const handleSubmit = () => {
@@ -184,8 +203,12 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             setCoinsEarnedState(prev => prev + awards.coins);
             setGemsEarned(g => g + awards.gems);
             
+            // --- ⚡ LIVE SYNC (Manya v4.5) ---
+            dispatch(checkAchievements());
+            dispatch(syncUserData());
+            
             setShowGemToast(true);
-            setTimeout(() => { setShowGemToast(false); nextQuestion(); }, 2200);
+            setTimeout(() => { setShowGemToast(false); nextQuestion(); }, 1500);
         } else {
             audioService.error?.();
             trackWrongAnswer(subject, q.qid || q.id);
@@ -203,11 +226,15 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             setTimeout(() => setShowExplanation(true), 1500);
         }
 
+        const timeToFirstClickMs = firstSelection.current ? (Date.now() - questionStartTime.current) : 0;
+        const pointsEarned = isCorrect ? (10 + (timeSpentMs < 5000 ? 5 : 0)) : 0;
+
         const log = {
             questionId: q.id || q.qid, isCorrect,
             selectedAnswer: selectedOption,
             correctAnswer: resolveCorrectText(q.answer, q.options),
             timeSpentMs, hintUsed, answerChanged, changeCount,
+            timeToFirstClickMs, pointsEarned,
             pool: q.isPLE ? 'yes' : 'no',
             concept_id: baseId,
             engine_type: q.isSimulation ? 'SIMULATION' : 'MCQ',
@@ -215,6 +242,12 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
         };
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
+
+        // ── Emotion Tracking (New Premium Feature 🧠) ───────────────────────
+        trackAndPushEmotion({
+            isCorrect, hintUsed, answerChanged, changeCount,
+            timeSpentMs, frustrationLevel, timeToFirstClickMs
+        });
 
         // Notify parent live
         onResult?.({
@@ -224,14 +257,15 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             type: 'answer'
         });
 
+        // 🧠 Update dynamic mode metrics BEFORE nextQuestion re-rolls
+        dynamicModeService.update(isCorrect, currentMastery, questions.length, currentIdx);
+
     };
 
     const [isFinished, setIsFinished] = useState(false);
 
-    const nextQuestion = (results) => {
-        setSimPartialScore(0); // Reset partial on step advance
-
-        // If this was a simulation result, evaluate success
+    const nextQuestion = (results = null) => {
+        setSimPartialScore(0);
         if (results) {
             const isSuccess = results.usp ? results.usp.isPassing : (results.score >= (results.total * 0.6) || results.isCorrect);
             if (isSuccess) {
@@ -239,63 +273,66 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
                 setGemsEarned(p => p + 5);
             }
         }
-
         if (currentIdx < questions.length - 1) {
-            setCurrentIdx(c => c + 1); setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
+            const nextIdx = currentIdx + 1;
+            
+            // 🧠 DYNAMIC MODE RE-ROLL
+            const mode = dynamicModeService.getNextMode(null, nodeType);
+            setGameMode(mode);
+
+            if (mode === 'speedrun') {
+                dynamicModeService.startSpeedrun(18, () => {
+                    window.dispatchEvent(new CustomEvent('manya-engine-timeout'));
+                });
+            } else {
+                dynamicModeService.stopSpeedrun();
+            }
+
+            if (mode === 'reverse') {
+                window.dispatchEvent(new CustomEvent('manya-fx-reverse-start'));
+                setQuestions(prev => {
+                    const copy = [...prev];
+                    const nextQ = copy[nextIdx];
+                    if (nextQ && !nextQ.isReversed) {
+                        const bank = allBankRef.current.length > 0 ? allBankRef.current : copy;
+                        const reversed = dynamicModeService.generateReverseQuestion(nextQ, bank);
+                        if (reversed) {
+                            reversed.isReversed = true;
+                            copy[nextIdx] = reversed;
+                        }
+                    }
+                    return copy;
+                });
+            }
+
+            setCurrentIdx(nextIdx); 
+            setSelectedOption(null); setIsAnswered(false); setShowExplanation(false); setHintUsed(false); setAnswerChanged(false); setChangeCount(0); firstSelection.current = null; questionStartTime.current = Date.now();
         } else if (!isFinished) {
             setIsFinished(true);
             const finalScore = scoreRef.current;
             const mastery = Math.round((finalScore / questions.length) * 100);
-            const result = saveNodeCompletion(subject, questKey, nodeType, mastery);
-            
-            // ── Quest Completion Rewards ─────────────────────────────────────
-            const completion = rewardManager.awardQuestRewards({ mastery, nodeType }, dispatch);
-            const finalTotalCoins = coinsEarnedState + completion.bonusCoins;
-
+            saveNodeCompletion(subject, questKey, nodeType, mastery);
             dispatch(syncUserData());
-
-            setCompletionResult({ 
-                mastery, 
-                score: finalScore, 
-                total: questions.length, 
-                stars: completion.stars, 
-                bonusCoins: finalTotalCoins, 
-                chestType: completion.chestType 
-            });
-            setShowCompletion(true);
+            
+            // Let QuestRunner handle the final celebration & rewards
+            onComplete?.();
         }
     };
 
     const handleFinish = () => {
-        const mastery = completionResult?.mastery || 0;
-        onResult?.({ isCorrect: mastery >= 60, score: completionResult?.score || scoreRef.current, total: completionResult?.total || questions.length, mastery, gemsEarned, type: 'adaptive_english' });
+        onResult?.({ isCorrect: currentMastery >= 60, score: scoreRef.current, total: questions.length, mastery: currentMastery, gemsEarned, type: 'adaptive_english' });
         onComplete?.();
     };
 
-    if (showCompletion && completionResult) {
-        return (
-            <CelebrationView 
-                subject="English" 
-                nodeType={nodeType} 
-                mastery={completionResult.mastery} 
-                score={completionResult.score} 
-                total={completionResult.total} 
-                stars={completionResult.stars}
-                coinsEarned={completionResult.bonusCoins}
-                onCollect={handleFinish} 
-            />
-        );
-    }
-
-    const q = questions[currentIdx];
-    const isSim = q ? q.isSimulation : false;
+    const currentQ = questions[currentIdx];
+    const isSim = currentQ ? currentQ.isSimulation : false;
 
     return (
         <EnglishRenderer 
             isLoading={isLoading} 
             loadingConfig={getLoadingConfig('english')} 
             randomFact={getRandomFact('english')}
-            currentQ={q}
+            currentQ={currentQ}
             currentIdx={currentIdx}
             totalQuestions={questions.length}
             selectedOption={selectedOption}
@@ -311,14 +348,15 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult }) {
             onContinue={nextQuestion}
             onFinish={handleFinish}
             nodeType={nodeType}
-            correctText={resolveCorrectText(q?.answer, q?.options)}
-            userWasCorrect={isAnswered && verifyEnglishAnswer(selectedOption, q?.answer, q?.options)}
+            currentMode={gameMode}
+            correctText={resolveCorrectText(currentQ?.answer, currentQ?.options)}
+            userWasCorrect={isAnswered && verifyEnglishAnswer(selectedOption, currentQ?.answer, currentQ?.options)}
             session={{
                 ...session,
                 mastery: currentMastery,
                 correctCount: scoreRef.current + simPartialScore
             }} 
-            BridgeNode={isSim ? <EnglishBridge key={q.id} step={q} nodeType={nodeType} onComplete={nextQuestion} onResult={handleSimResult} /> : null}
+            BridgeNode={isSim ? <EnglishBridge key={currentQ.id} step={currentQ} nodeType={nodeType} onComplete={nextQuestion} onResult={handleSimResult} /> : null}
         />
     );
 }

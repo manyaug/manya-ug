@@ -151,7 +151,9 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             let engineType = (q.engine_type || q.engineType || q.type || "").toUpperCase();
             
             // Unified Simulation Detection
-            const isSimulation = (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP')) && (engineType !== 'MCQ');
+            // v6.2: Ensure MCQ items are NEVER treated as simulations regardless of engine_type string
+            const isStrictMCQ = itemType.includes('MCQ');
+            const isSimulation = !isStrictMCQ && (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP'));
             
             const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP'];
             const isInvalidMathSim = subject === 'math' && isSimulation && engineType !== '' && !MATH_SIM_WHITELIST.includes(engineType);
@@ -166,10 +168,11 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 pools.GRAMMAR.push({ ...q, isSimulation });
             } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory && !isInvalidMathSim) {
                 pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation });
-            } else if (itemType !== 'QUEST' && itemType !== 'SIMULATION') {
+            } else if (isStrictMCQ) {
                 const hasText = (q.question && q.question.trim() !== '' && q.question !== 'None') || 
                                 q.question_text || q.question_content || q.q_text;
-                if (hasText) pools.MCQ.push(q);
+                // Force engine_type to MCQ for items in this pool to prevent UI-engine mismatch
+                if (hasText) pools.MCQ.push({ ...q, engine_type: 'MCQ', engineType: 'MCQ' });
             }
         });
 
@@ -329,9 +332,15 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         // ─── EMERGENCY RECOVERY (v5.6) ───
         if (finalQuestions.length === 0 && allQuestions.length > 0) {
             console.warn(`🚨 [Adaptive] Emergency Recovery. Forcing ${Math.min(3, allQuestions.length)} items from bank.`);
-            finalQuestions = allQuestions.slice(0, 3).map(q => ({
-                ...q, isSimulation: (q.engine_type && q.engine_type !== 'MCQ')
-            }));
+            finalQuestions = allQuestions.slice(0, 3).map(q => {
+                const itemType = (q.item_type || q.question_type || q.type || "").toUpperCase();
+                const isStrictMCQ = itemType.includes('MCQ');
+                return {
+                    ...q, 
+                    isSimulation: !isStrictMCQ && (q.engine_type && q.engine_type !== 'MCQ' && q.engine_type !== 'NONE'),
+                    engine_type: isStrictMCQ ? 'MCQ' : (q.engine_type || 'MCQ')
+                };
+            });
         }
 
         finalQuestions = (finalQuestions.length > 0 ? finalQuestions : selectedMCQs).sort(() => 0.5 - Math.random());

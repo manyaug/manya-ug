@@ -28,6 +28,11 @@ export function assetUrl(path) {
   // 1. Clean the path
   let clean = path.trim().replace(/^\/+/, '');
 
+  // 1.1 Local Bypass for Chests (Premium)
+  if (clean.startsWith('chests/')) {
+    return `/images/${clean.replace('.png', '_compressed.png')}`;
+  }
+
   // 2. Flip extensions for webp consistency
   if (clean.match(/\.(png|jpg|jpeg)$/i)) {
     clean = clean.replace(/\.(png|jpg|jpeg)$/i, '.webp');
@@ -51,7 +56,7 @@ export function assetUrl(path) {
 
   // 5. Final Encoding (handles spaces in file names like "One More Try.mp3")
   const encoded = clean.split('/').map(seg => encodeURIComponent(seg)).join('/');
-  
+
   return `${BASE_CDN_URL}${encoded}`;
 }
 
@@ -61,7 +66,7 @@ export function assetUrl(path) {
  */
 export function resolveRemoteUrl(url, contextUrl = null) {
   if (!url) return '';
-  
+
   const originalUrl = url;
 
   // 1. Pre-clean & SANITIZE (Emergency Failsafe for Database-Hardcoded URLs)
@@ -97,13 +102,13 @@ export function resolveRemoteUrl(url, contextUrl = null) {
     const match = clean.match(/public\/assets\/(.+)$/);
     const fallbackMatch = clean.match(/manya-assets\/(.+)$/);
     let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
-    
+
     // Safety: if the extracted path already has 'assets/', strip it before calling assetUrl
     // since assetUrl will re-add it or manage it.
     if (relativePath.startsWith('assets/')) {
-        relativePath = relativePath.replace(/^assets\//, '');
+      relativePath = relativePath.replace(/^assets\//, '');
     }
-    
+
     if (relativePath) return assetUrl(relativePath);
   }
 
@@ -170,23 +175,26 @@ export const AUDIO = {
 
 
 export const SFX = {
-  correct:  assetUrl('audios/collect-points.mp3'),  // ✅ exists
-  mistake:  assetUrl('audios/error-mistake.mp3'),    // ✅ exists
-  wrong:    assetUrl('audios/error-mistake.mp3'),    // alias
-  applause: assetUrl('audios/applause.mp3'),          // ✅ exists
-  click:    assetUrl('audios/ui-click.mp3'),          // ✅ exists
-  tap:      assetUrl('audios/ui-click.mp3'),          // ✅ exists (tap→ui-click)
-  whoosh:   assetUrl('audios/whoosh.mp3'),            // ✅ exists
-  pop:      assetUrl('audios/twin-sparkle.mp3'),      // ✅ exists (pop→twin-sparkle)
-  victory:  assetUrl('audios/fanfare-trumpets.mp3'),  // ✅ exists
-  bonus:    assetUrl('audios/game-bonus.mp3'),        // ✅ exists
-  levelup:  assetUrl('audios/level-up.mp3'),          // ✅ exists
+  correct: assetUrl('audios/collect-points.mp3'),  // ✅ exists
+  mistake: assetUrl('audios/error-mistake.mp3'),    // ✅ exists
+  wrong: assetUrl('audios/error-mistake2.mp3'),    // alias
+  applause: assetUrl('audios/fanfare-trumpets.mp3'),     // 🎺 Replaced with trumpets per user request
+  click: assetUrl('audios/ui-click.mp3'),          // ✅ exists
+  tap: assetUrl('audios/ui-click.mp3'),          // ✅ exists (tap→ui-click)
+  whoosh: assetUrl('audios/whoosh.mp3'),            // ✅ exists
+  pop: assetUrl('audios/twin-sparkle.mp3'),      // ✅ exists (pop→twin-sparkle)
+  victory: assetUrl('audios/fanfare-trumpets.mp3'),  // ✅ exists
+  bonus: assetUrl('audios/game-bonus.mp3'),        // ✅ exists
+  levelup: assetUrl('audios/level-up.mp3'),          // ✅ exists
   drumroll: assetUrl('audios/drum-roll.mp3'),         // ✅ exists
-  
+  tick: assetUrl('audios/tick.mp3'),                  // ⏱️ Speedrun tick
+  rumble: assetUrl('audios/challenge_complete/bass_drop.mp3'), // 🌋 Earthquake rumble (High-fidelity fallback)
+  magic_positive: assetUrl('audios/magic-positive.mp3'), // ✨ Streak power
+
   // High-fidelity Celebration SFX
-  riser:         assetUrl('audios/challenge_complete/riser.mp3'),
-  riser2:        assetUrl('audios/challenge_complete/riser2.mp3'),
-  bass_drop:     assetUrl('audios/challenge_complete/bass_drop.mp3'),
+  riser: assetUrl('audios/challenge_complete/riser.mp3'),
+  riser2: assetUrl('audios/challenge_complete/riser2.mp3'),
+  bass_drop: assetUrl('audios/challenge_complete/bass_drop.mp3'),
   challenge_win: assetUrl('audios/challenge_complete/complete.mp3'),
   challenge_woosh: assetUrl('audios/challenge_complete/whoosh.mp3'),
   challenge_click: assetUrl('audios/challenge_complete/click.mp3'),
@@ -280,7 +288,7 @@ export function getGem(fileName) {
   if (file.includes('science')) return IMAGES.science_gem;
   if (file.includes('sst')) return IMAGES.sst_gem;
   if (file.includes('english')) return IMAGES.english_gem;
-  if (file.includes('master')) return IMAGES.master_gem;
+  if (file.includes('master') || file.includes('general')) return IMAGES.master_gem;
   return assetUrl(`images/gems/${file}`);
 }
 

@@ -35,12 +35,42 @@ const EnglishRenderer = ({
     showGemToast,
     onContinue,
     session,
-    BridgeNode
+    BridgeNode,
+    currentMode
 }) => {
+    const [timeLeft, setTimeLeft] = React.useState(null);
+    const [maxTime, setMaxTime] = React.useState(18);
     const correctBtnRef = useRef(null);
     const correctCount = session?.correctCount || 0;
     const streakCount = session?.streak || 0;
     const masteryScore = session?.mastery || 0;
+
+    // --- ⚡ SPEEDRUN TIMER LISTENER ---
+    useEffect(() => {
+        const onStart = (e) => {
+            const duration = e.detail?.duration || 18;
+            setMaxTime(duration);
+            setTimeLeft(duration);
+        };
+        const onStop = () => setTimeLeft(null);
+        
+        window.addEventListener('manya-fx-speedrun-start', onStart);
+        window.addEventListener('manya-fx-speedrun-stop', onStop);
+        window.addEventListener('manya-engine-timeout', onStop);
+
+        return () => {
+            window.removeEventListener('manya-fx-speedrun-start', onStart);
+            window.removeEventListener('manya-fx-speedrun-stop', onStop);
+            window.removeEventListener('manya-engine-timeout', onStop);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (timeLeft !== null && timeLeft > 0 && !isAnswered) {
+            const timer = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [timeLeft, isAnswered]);
 
     // Trigger flying coins and mascot reactions when user is answered
     useEffect(() => {
@@ -48,7 +78,6 @@ const EnglishRenderer = ({
             if (userWasCorrect) {
                 // Global event for feedback layer
                 window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'english' } }));
-                audioService.correct();
 
                 // Flying Coins
                 if (correctBtnRef.current) {
@@ -59,8 +88,6 @@ const EnglishRenderer = ({
             } else {
                 // Global event for feedback layer
                 window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'english' } }));
-                audioService.error();
-
             }
         }
     }, [isAnswered, userWasCorrect]);
@@ -68,7 +95,7 @@ const EnglishRenderer = ({
     // --- 🎮 SIMULATION ROUTING ---
     if (BridgeNode) {
         return (
-            <div className="flex-1 h-full flex flex-col overflow-hidden relative">
+            <div className="flex-1 !w-full !h-full flex flex-col overflow-hidden relative !p-0 !m-0">
                 {BridgeNode}
             </div>
         );
@@ -96,7 +123,23 @@ const EnglishRenderer = ({
                 {/* QUESTION CARD (Glowing & Glossy) */}
                 <div className="bg-[var(--bg-card)] rounded-[2.5rem] border-[4px] border-indigo-500/40 neon-glow-violet px-7 py-8 mb-6 shadow-2xl relative transition-all duration-500">
                     <div className="toy-card-gloss" />
-                    <div className="flex items-center justify-end mb-5 relative z-10">
+                    
+                    <div className="flex items-center justify-between mb-5 relative z-10">
+                        <div className="flex items-center gap-2">
+                            {timeLeft !== null && (
+                                <div className="flex items-center gap-2 bg-rose-500 text-white px-3 py-1 rounded-full text-[10px] font-black animate-pulse shadow-lg shadow-rose-500/30">
+                                    <Zap size={12} fill="currentColor" />
+                                    <span>{timeLeft}s</span>
+                                </div>
+                            )}
+                            {currentMode === 'reverse' && (
+                                <div className="flex items-center gap-2 bg-indigo-600 text-white px-3 py-1 rounded-full text-[10px] font-black shadow-lg shadow-indigo-500/30">
+                                    <RotateCcw size={12} />
+                                    <span>REVERSE MODE</span>
+                                </div>
+                            )}
+                        </div>
+
                         {!isAnswered && currentQ?.hint && (
                             <div className="relative">
                                 <button 

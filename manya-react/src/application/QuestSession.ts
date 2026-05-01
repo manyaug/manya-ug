@@ -142,7 +142,9 @@ export class QuestSession {
         }
 
         let shouldInjectRecap = false;
-        if (!isCorrect) {
+        const isAdaptive = engineResult.type?.includes('adaptive_');
+
+        if (!isCorrect && !isAdaptive) {
             this._wrongStreak++;
             this._currentStreak = 0;
             const threshold = this._meta.nodeType === 'PRACTICE' ? 1 : 3;

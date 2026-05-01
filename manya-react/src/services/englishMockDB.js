@@ -44,8 +44,7 @@ export const fetchEnglishQuestions = async (topicId) => {
             .from('manya_vault')
             .select('*')
             .ilike('subject', 'english')
-            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`)
-            .ilike('item_type', '%MCQ%');
+            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!error && (!data || data.length === 0)) {
@@ -60,8 +59,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                     .from('manya_vault')
                     .select('*')
                     .ilike('subject', 'english')
-                    .or(keywordFilter)
-                    .ilike('item_type', '%MCQ%');
+                    .or(keywordFilter);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [English Vault] Discovered ${keywordData.length} related questions via keywords.`);

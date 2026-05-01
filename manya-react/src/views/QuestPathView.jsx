@@ -222,6 +222,8 @@ function QuestPathView() {
                         // Pass context so SSTFetcherEngine can save progress
                         questKey,
                         nodeType,
+                        unitId: questData.unitId,
+                        questFolder: questData.folder,
                         questIndex: state?.index !== undefined ? state.index : 0,
                     }
                 });

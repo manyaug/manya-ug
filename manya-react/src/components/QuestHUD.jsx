@@ -63,8 +63,8 @@ const QuestHUD = ({
 
     const progressPct = Math.min(100, total > 0 ? (current / total) * 100 : 0);
     
-    // Target Calculation: Percentage of the way to the 75% PASS_THRESHOLD
-    const PASS_THRESHOLD = 75;
+    // Target Calculation: Percentage of the way to the 60% PASS_THRESHOLD
+    const PASS_THRESHOLD = 60;
     const isPassing = masteryScore >= PASS_THRESHOLD;
     const targetProgress = Math.min(100, (masteryScore / PASS_THRESHOLD) * 100);
     
@@ -117,7 +117,7 @@ const QuestHUD = ({
                         <div className="hud-progress-track">
                              {/* Scale Markers */}
                              <div className="hud-scale-marker" style={{ left: '0%' }}><div className="marker-line" /></div>
-                             <div className="hud-scale-marker marker-target" style={{ left: '75%' }}><div className="marker-line" /></div>
+                             <div className="hud-scale-marker marker-target" style={{ left: '60%' }}><div className="marker-line" /></div>
                              <div className="hud-scale-marker" style={{ left: '100%' }}><div className="marker-line" /></div>
 
                              {/* The Target-Based Fill */}

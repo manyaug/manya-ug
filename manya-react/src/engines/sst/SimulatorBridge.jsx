@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +29,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
     const [showWrong, setShowWrong] = useState(false);
     const user = useSelector(s => s.user.data);
     const simData = step?.data || step;
-    const resultRef = useRef(null);
+    const resultRef = React.useRef(null);
 
     const handleSimResult = (res) => {
         resultRef.current = res;

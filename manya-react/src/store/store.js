@@ -14,7 +14,10 @@ export const store = configureStore({
     audio: getPersistedAudioState() || undefined
   },
   middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(persistenceMiddleware, audioPersistenceMiddleware)
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false
+    }).concat(persistenceMiddleware, audioPersistenceMiddleware)
 });
 
 export default store;

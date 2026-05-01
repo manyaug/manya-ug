@@ -17,8 +17,8 @@ export default function GalleryRenderer({
     resolveImageUrl
 }) {
     return (
-        <div className="gallery-engine-root immersive-root animate-in fade-in duration-700">
-            <main className="ge-stage">
+        <div className="gallery-engine-root immersive-root animate-in fade-in duration-700 !p-0 !m-0 !w-full !h-full">
+            <main className="ge-stage !p-0 !m-0 !w-full !h-full">
                 <div className="ge-card">
                     {/* Progress Indicator */}
                     <div className="ge-progress-dots">
