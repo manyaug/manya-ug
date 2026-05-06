@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 // Decoupled Resources
 import { initializePunctuationData, validatePunctuation, calculatePunctuationScoring } from './PunctuationPortal/PunctuationLogic';
@@ -17,6 +18,9 @@ const PunctuationPortalEngine = ({ data, onComplete }) => {
     const [phase, setPhase] = useState('active'); 
     const [isDark, setIsDark] = useState(false);
     const [totalMistakes, setTotalMistakes] = useState(0);
+
+    // 🧠 BEHAVIORAL TRACKER (Phase 3)
+    const { metrics, recordFirstClick } = useBehavioralTracker(phase === 'active');
 
     const startTimeRef = useRef(Date.now());
     const initialData = useMemo(() => initializePunctuationData(data), [data]);
@@ -46,6 +50,7 @@ const PunctuationPortalEngine = ({ data, onComplete }) => {
             
             const newSlots = [...prev];
             newSlots[nextSlotIndex] = { ...newSlots[nextSlotIndex], current: mark };
+            recordFirstClick();
             return newSlots;
         });
     };
@@ -69,7 +74,14 @@ const PunctuationPortalEngine = ({ data, onComplete }) => {
 
     const handleFinish = () => {
         const finalResult = calculatePunctuationScoring(true, totalMistakes, initialData.queries.length, startTimeRef.current);
-        if (onComplete) onComplete(finalResult);
+        if (onComplete) onComplete({
+            ...finalResult,
+            // 🧠 Phase 3 Behavioral Telemetry
+            metrics: {
+                ...metrics,
+                frustrationClicks: totalMistakes
+            }
+        });
     };
 
     return (

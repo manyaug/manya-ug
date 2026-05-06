@@ -12,7 +12,12 @@ import TrainRenderer from './SentenceTrain/TrainRenderer';
  */
 
 const SentenceTrainEngine = ({ data, onComplete }) => {
-    const questions = useMemo(() => data?.questions || [], [data]);
+    const questions = useMemo(() => {
+        const raw = data?.questions || data?.queries || data?.items || [];
+        if (Array.isArray(raw) && raw.length > 0) return raw;
+        return [{ sentence: "The quick brown fox jumps over the lazy dog." }];
+    }, [data]);
+
     const [qIdx, setQIdx] = useState(0);
     const [pool, setPool] = useState([]);
     const [train, setTrain] = useState([]);
@@ -22,12 +27,13 @@ const SentenceTrainEngine = ({ data, onComplete }) => {
     const trackRef = useRef(null);
     const startTimeRef = useRef(Date.now());
     const mistakesRef = useRef(0);
-    const q = questions[qIdx];
+    const q = questions[qIdx] || { sentence: "" };
 
     // 1. Initialize Level
     const initLevel = useCallback((idx) => {
-        if (!questions[idx]) return;
-        setPool(prepareSentencePool(questions[idx].sentence, idx));
+        const target = questions[idx];
+        if (!target) return;
+        setPool(prepareSentencePool(target.sentence || "", idx));
         setTrain([]);
         setPhase('play');
     }, [questions]);

@@ -20,7 +20,7 @@ const HangmanRenderer = ({
     resetWord, 
     nextWord 
 }) => {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ'".split('');
 
     return (
         <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
@@ -46,7 +46,8 @@ const HangmanRenderer = ({
                 {/* Word Slots */}
                 <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-1.5 sm:gap-2">
                     {currentWord.split('').map((char, i) => {
-                        const isVisible = guessedLetters.has(char) || char === ' ' || char === '-';
+                        const isAlpha = /^[A-Z']$/.test(char);
+                        const isVisible = guessedLetters.has(char) || !isAlpha;
                         return (
                             <div key={i} className={`w-6 h-8 sm:w-8 sm:h-10 border-b-2 sm:border-b-4 flex items-center justify-center text-xl sm:text-2xl font-black transition-all duration-300 ${char === ' ' ? 'border-transparent w-3' : (isVisible ? 'border-indigo-500 text-indigo-500 scale-110' : 'border-slate-300 text-transparent')}`}>
                                 {isVisible ? char : ''}

@@ -1,10 +1,31 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Puzzle, AlertCircle } from 'lucide-react';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
-import CelebrationView from '../../views/CelebrationView.jsx';
 import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
 import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
+import { audioService } from '../../infrastructure/audio/audioService.js';
+
+class EngineErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+    static getDerivedStateFromError(error) { return { hasError: true }; }
+    componentDidCatch(error, errorInfo) { console.error("Game Engine Crash:", error, errorInfo); }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-500 bg-white">
+                    <AlertCircle size={40} className="mb-4 text-rose-500" />
+                    <p className="font-bold text-center">This activity encountered a technical issue.</p>
+                    <button onClick={() => this.props.onSkip?.()} className="mt-6 text-xs bg-indigo-600 text-white px-8 py-4 rounded-[2rem] font-black uppercase tracking-widest shadow-xl">Skip Activity</button>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
 
 /**
  * ENGLISH SIMULATOR BRIDGE v2.0
@@ -13,7 +34,6 @@ import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
  * Supports "Gamified" celebrations to provide variant gratification.
  */
 const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimSuccess, onSimWrong }) => {
-    const [celebData, setCelebData] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showWrong, setShowWrong] = useState(false);
     const simData = step?.data || step;
@@ -64,37 +84,37 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
     const EngineComponent = engineMeta.component;
     const isNarrative = engineType === 'CHAT' || nodeType === 'EXPLORE' || itemType === 'QUEST' || itemType === 'QUEST_STORY';
 
-    const handleEngineComplete = (res) => {
-        if (engineMeta.isGamified) {
-            setCelebData({
-                mastery: res?.accuracy !== undefined ? res.accuracy * 100 : 100,
-                score: res?.score || 100,
-                total: res?.total || 100,
-                gems: res?.gemsEarned || 20,
-                label: engineMeta.label || 'Activity'
-            });
+    const handleEngineComplete = useCallback((res) => {
+        const isWin = res?.isCorrect ?? (res?.accuracy !== undefined ? res.accuracy > 0.5 : true);
+        
+        if (isWin) {
+            audioService.victory?.();
+            setShowSuccess(true);
         } else {
+            audioService.error?.();
+            setShowWrong(true);
+        }
+
+        // Auto-advance after 1.5s to keep it snappy like an MCQ
+        setTimeout(() => {
             onComplete({ 
-                success: res?.isCorrect ?? true, 
+                success: isWin, 
                 score: res?.score ?? 100, 
                 accuracy: res?.accuracy ?? 1,
                 simResults: res 
             });
-        }
-    };
+        }, 1500);
+    }, [onComplete]);
 
-    const handleCollect = () => {
-        onComplete({ 
-            success: true, 
-            score: celebData.score, 
-            accuracy: celebData.mastery / 100,
-            simResults: celebData 
-        });
-        setCelebData(null);
-    };
+    const handleCollect = null; // Removed as we skip the celebration screen
+
+    const handleResult = useCallback((res) => {
+        onResult?.(res);
+        console.debug(`📊 [Bridge] ${engineType} update:`, res);
+    }, [onResult, engineType]);
 
     return (
-        <div className={`flex-1 flex flex-col h-full min-h-[80vh] ${isNarrative ? 'bg-slate-950' : 'bg-white'} relative`}>
+        <div className={`flex-1 flex flex-col h-full min-h-0 ${isNarrative ? 'bg-slate-950' : 'bg-white'} relative`}>
             <AnimatePresence mode="wait">
                 <motion.div
                     key={step.id || step.qid}
@@ -102,7 +122,7 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="flex-1 flex flex-col"
+                    className="flex-1 flex flex-col min-h-0"
                 >
                     {/* Global Sim Success Overlay */}
                     <SimSuccessOverlay 
@@ -123,39 +143,25 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
                             <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Entering {engineType}...</p>
                         </div>
                     }>
-                        <EngineComponent 
-                            data={simData} 
-                            onSimSuccess={() => setShowSuccess(true)}
-                            onSimWrong={() => {
-                                setShowWrong(true);
-                                setShowSuccess(false);
-                            }}
-                            onComplete={handleEngineComplete}
-                            onResult={(res) => {
-                                onResult?.(res);
-                                console.debug(`📊 [Bridge] ${engineType} update:`, res);
-                            }}
-                            onAttempt={onAttempt}
-                        />
+                        <EngineErrorBoundary onSkip={onComplete}>
+                            <EngineComponent 
+                                data={simData} 
+                                onSimSuccess={() => setShowSuccess(true)}
+                                onSimWrong={() => {
+                                    setShowWrong(true);
+                                    setShowSuccess(false);
+                                }}
+                                onComplete={handleEngineComplete}
+                                onResult={handleResult}
+                                onAttempt={onAttempt}
+                            />
+                        </EngineErrorBoundary>
+                    {console.debug(`🔌 [Bridge] Injecting into ${engineType}:`, simData)}
                     </Suspense>
                 </motion.div>
             </AnimatePresence>
 
-            {/* Gamified Celebration Overlay */}
-            <AnimatePresence>
-                {celebData && (
-                    <CelebrationView 
-                        subject="english"
-                        nodeType={nodeType}
-                        mastery={celebData.mastery}
-                        score={celebData.score}
-                        total={celebData.total}
-                        gemsEarned={celebData.gems}
-                        customTitle={`${celebData.label} Mastered!`}
-                        onCollect={handleCollect}
-                    />
-                )}
-            </AnimatePresence>
+            {/* Celebration View Removed as per request for snappier transitions */}
         </div>
     );
 };

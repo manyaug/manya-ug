@@ -24,8 +24,34 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
   const requestRef = useRef();
   const particlesRef = useRef([]);
 
-  const slides = useMemo(() => data.slides || [], [data]);
+  const slides = useMemo(() => {
+    // 🛡️ Robust extraction: Content can be at root, in .data, or named 'steps'
+    const candidates = [
+        data?.slides,
+        data?.data?.slides,
+        data?.steps,
+        data?.data?.steps,
+        data?.sections,
+        data?.data?.sections,
+        data?.notes,
+        data?.data?.notes
+    ];
+    const found = candidates.find(c => Array.isArray(c) && c.length > 0);
+    
+    // 🧠 v8.8 SINGLE OBJECT FALLBACK: If no arrays found, but data has text/prompt, treat it as a single slide
+    if (!found && (data?.text || data?.prompt || data?.data?.text || data?.data?.prompt)) {
+        return [data?.data || data];
+    }
+    
+    return found || [];
+  }, [data]);
+
   const currentSlide = slides[stepIdx];
+  useEffect(() => {
+    if (currentSlide) {
+        console.log(`%c 📖 [SetStudy] Slide ${stepIdx + 1}:`, 'color: #ec4899; font-weight: bold;', currentSlide);
+    }
+  }, [currentSlide, stepIdx]);
   const allSeen = visitedIndices.size === slides.length;
 
   // --- 🎨 CANVAS ANIMATION LOOP ---
@@ -33,7 +59,7 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
     if (!ctx || !currentSlide) return;
     const tick = tickRef.current;
     ctx.clearRect(0, 0, width, height);
-    
+
     // Background
     const grad = ctx.createLinearGradient(0, 0, 0, height);
     if (isDark) { grad.addColorStop(0, "#0F172A"); grad.addColorStop(1, "#0B0E14"); }
@@ -136,15 +162,15 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
       const cPink = isDark ? `rgba(236, 72, 153, ${pulse + 0.1})` : `rgba(219, 39, 119, ${pulse})`;
       const cPurp = isDark ? `rgba(139, 92, 246, ${pulse + 0.1})` : `rgba(124, 58, 237, ${pulse})`;
       if (hl.includes('outside')) drawZone('outside', isDark ? "rgba(30, 41, 59, 0.5)" : "#f8fafc");
-      if (hl.includes('left') || hl.includes('difference')) drawZone(hl.includes('left')?'left':'difference', cPink);
+      if (hl.includes('left') || hl.includes('difference')) drawZone(hl.includes('left') ? 'left' : 'difference', cPink);
       if (hl.includes('right')) drawZone('right', cPink);
-      if (hl.includes('center') || hl.includes('subset')) drawZone(isSubset?'subset':'center', cPurp);
+      if (hl.includes('center') || hl.includes('subset')) drawZone(isSubset ? 'subset' : 'center', cPurp);
 
       ctx.lineWidth = 2 * s; ctx.strokeStyle = isDark ? "rgba(255,255,255,0.15)" : "#e2e8f0";
       ctx.strokeRect(cx - r * 2.5, cy - r * 1.6, r * 5, r * 3.2);
       ctx.lineWidth = 6 * s; ctx.strokeStyle = "#7C3AED"; ctx.beginPath(); ctx.arc(c1.x, c1.y, r, 0, Math.PI * 2); ctx.stroke();
       ctx.strokeStyle = "#DB2777"; ctx.beginPath(); ctx.arc(c2.x, c2.y, r2, 0, Math.PI * 2); ctx.stroke();
-      
+
       ctx.font = `800 ${22 * s}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center";
       ctx.fillStyle = isDark ? "#64748b" : "#94a3b8"; ctx.fillText("ξ", cx - r * 2.3, cy - r * 1.3);
       ctx.fillStyle = "#7C3AED"; ctx.fillText(currentSlide.labels?.[1] || "A", c1.x - (isSubset ? 0 : r * 0.85), cy - r * 1.0);
@@ -169,10 +195,10 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
     const c = canvasRef.current; if (!c) return;
     const s = window.devicePixelRatio || 2;
     const w = c.clientWidth * s; const h = c.clientHeight * s;
-    if (c.width !== w || c.height !== h) { 
-      c.width = w; c.height = h; 
-      tempCanvasRef.current.width = w; tempCanvasRef.current.height = h; 
-      particlesRef.current = initParticles(w, h); 
+    if (c.width !== w || c.height !== h) {
+      c.width = w; c.height = h;
+      tempCanvasRef.current.width = w; tempCanvasRef.current.height = h;
+      particlesRef.current = initParticles(w, h);
     }
     tickRef.current += 1;
     draw(c.getContext('2d'), tempCanvasRef.current.getContext('2d'), w, h, s);
@@ -192,45 +218,45 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
     return () => cancelAnimationFrame(requestRef.current);
   }, [stepIdx, isDark, currentSlide]);
 
-  useEffect(() => { 
-    tickRef.current = 0; 
+  useEffect(() => {
+    tickRef.current = 0;
     if (slides.length > 0 && !visitedIndices.has(stepIdx)) {
-      setVisitedIndices(prev => new Set([...prev, stepIdx])); 
+      setVisitedIndices(prev => new Set([...prev, stepIdx]));
     }
   }, [stepIdx, slides.length]);
 
-  const hNext = () => { 
-    if (stepIdx < slides.length - 1) setStepIdx(s => s + 1); 
+  const hNext = () => {
+    if (stepIdx < slides.length - 1) setStepIdx(s => s + 1);
     else if (allSeen) {
       // 🏺 ARCHIVE to Knowledge Vault - ONLY if not a quiz/exercise and NOT already in vault
       if (data.mode !== 'quiz' && !skipDiscovery) {
         dispatch(discoverArtifact({
-            id: data.id || `math_set_${Date.now()}`,
-            type: 'set_study',
-            title: data.topic || 'Math Discovery',
-            subject: data.subject || 'MATH',
-            data: data 
+          id: data.id || `math_set_${Date.now()}`,
+          type: 'set_study',
+          title: data.topic || 'Math Discovery',
+          subject: data.subject || 'MATH',
+          data: data
         }));
 
         // 🚀 FORCE PERSISTENCE
         setTimeout(() => {
-            dispatch(syncUserData());
+          dispatch(syncUserData());
         }, 100);
 
         dispatch(addToast({
-            message: "Math Discovery Archived to Vault! 🏺✨",
-            type: "success"
+          message: "Math Discovery Archived to Vault! 🏺✨",
+          type: "success"
         }));
       }
 
       onResult?.({ isCorrect: true, score: 1, total: 1, type: 'study_complete' });
-      onComplete?.(); 
+      onComplete?.();
     }
   };
   const hPrev = () => { if (stepIdx > 0) setStepIdx(s => s - 1); };
 
   return (
-    <SetStudyRenderer 
+    <SetStudyRenderer
       stepIdx={stepIdx} slides={slides} isDark={isDark} visitedIndices={visitedIndices}
       canvasRef={canvasRef} containerRef={containerRef}
       hPrev={hPrev} hNext={hNext} topic={data.topic}

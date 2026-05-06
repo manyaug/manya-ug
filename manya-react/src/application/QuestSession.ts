@@ -4,6 +4,7 @@ import { calculateUSP } from '../domain/scoring/scoringUtility';
 import { calculateFrustration } from '../domain/psych/psychTracker';
 import { syncService } from '../infrastructure/sync/syncService';
 import { masteryService } from '../domain/mastery/masteryService';
+import { generateRescueStep } from '../services/adaptiveEngine';
 
 // Extract the 'deriveMetadata' from QuestRunner
 function deriveMetadata(step: QuestStep | any) {
@@ -28,6 +29,7 @@ export class QuestSession {
     private _correctCount: number = 0;
     private _currentStreak: number = 0;
     private _lastMasteryScore: number = 0;
+    private _lastFrustrationScore: number = 0;
     private _sessionStartTime: number = Date.now();
     // Removed dependency on direct React dispatch. We return outcomes.
 
@@ -141,6 +143,8 @@ export class QuestSession {
             });
         }
 
+        this._lastFrustrationScore = frustration.score;
+
         let shouldInjectRecap = false;
         const isAdaptive = engineResult.type?.includes('adaptive_');
 
@@ -162,22 +166,24 @@ export class QuestSession {
             isCorrect,
             shouldInjectRecap,
             conceptId,
-            buttonEnabled: isCorrect, // Only enable if correct logic applies
-            usp
+            buttonEnabled: isCorrect, 
+            usp,
+            frustration: frustration.score
         };
     }
 
-    injectRecap(conceptId: string) {
-        const recapStep: QuestStep = {
-            id: `injected-recap-${Date.now()}`,
-            engineType: 'GALLERY_STUDY',
-            file: `study_${conceptId}.json`,
-            mode: 'study',
-            data: { isRecap: true, conceptId }
-        };
+    async injectRecap(conceptId: string, subject: string) {
+        // --- 🧠 BRAIN PHASE 3: ADAPTIVE RESCUE ---
+        // Fetch original grammar/sim pools from the first step if available
+        // (In a real scenario, we might want to store these in the session)
+        const rescueStep = await generateRescueStep(
+            subject, 
+            this._lastFrustrationScore, 
+            conceptId
+        );
         
         // Mutate array and return it
-        this._steps.splice(this._currentIndex + 1, 0, recapStep);
+        this._steps.splice(this._currentIndex + 1, 0, rescueStep);
         return [...this._steps];
     }
 

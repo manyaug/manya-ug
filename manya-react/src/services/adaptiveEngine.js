@@ -1,4 +1,5 @@
-import { calculateFrustration } from '../domain/psych/psychTracker';
+import { calculateFrustration, calculateHistoricalPsych } from '../domain/psych/psychTracker';
+import { syncService } from '../infrastructure/sync/syncService.js';
 import { parseQuestionId, areSameConcept } from '../utils/questionParser';
 import { masteryService } from '../domain/mastery/masteryService';
 import { conceptMasteryService } from '../domain/mastery/conceptMasteryService';
@@ -29,9 +30,9 @@ const VARIANT_DISTRIBUTIONS = {
     MASTERY:   { V1: 0.10, V2: 0.20, V3: 0.70 },
 };
 
-const BASE_LENGTHS = { WARMUP: 4, EXPLORE: 8, PRACTICE: 10, REINFORCE: 12, MASTERY: 15 };
-const MIN_LENGTHS  = { WARMUP: 3, EXPLORE: 5, PRACTICE: 7,  REINFORCE: 8,  MASTERY: 10 };
-const MAX_LENGTHS  = { WARMUP: 6, EXPLORE: 10, PRACTICE: 12, REINFORCE: 14, MASTERY: 18 };
+const BASE_LENGTHS = { WARMUP: 6, EXPLORE: 10, PRACTICE: 12, REINFORCE: 15, MASTERY: 18 };
+const MIN_LENGTHS  = { WARMUP: 4, EXPLORE: 6, PRACTICE: 10, REINFORCE: 12, MASTERY: 15 };
+const MAX_LENGTHS  = { WARMUP: 8, EXPLORE: 12, PRACTICE: 15, REINFORCE: 18, MASTERY: 25 };
 
 const MASTERY_WEIGHTS = {
     new: 100,
@@ -84,6 +85,9 @@ export function scoreQuestion(question, history, subject, subjectMasteryMap, con
     if (mastery === 'ready_for_v2' && variant === 'V2') score += 50;
     else if (mastery === 'ready_for_v3' && variant === 'V3') score += 50;
     else if (mastery === 'new' && variant === 'V1') score += 50;
+    else if (mastery === 'struggling_v1' && variant === 'V1') score += 100;
+    else if (mastery === 'struggling_v2' && variant === 'V1') score += 150; // Force demotion to V1
+    else if (mastery === 'struggling_v3' && variant === 'V2') score += 150; // Force demotion to V2
     else if (mastery.startsWith('struggling') && variant === 'V1') score += 60;
 
     return { score, factors, mastery };
@@ -105,10 +109,18 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
     try {
         console.log(`🧠 [Adaptive V6] Generating ${nodeType} quest for ${subject}. Bank: ${allQuestions.length}`);
     
-        const frustration = calculateFrustration(session);
+        // ── THE BRAIN: FETCH HISTORICAL TELEMETRY ──
+        const recentTelemetry = await syncService.fetchRecentTelemetry(subject, 10);
+        const historicalPsych = calculateHistoricalPsych(recentTelemetry);
+        const sessionPsych = calculateFrustration(session);
+
+        // Calculate Integrated Frustration (History + Current Session)
+        const frustrationScore = Math.max(sessionPsych.score, historicalPsych.avgFrustration * 10); // scale 0-10 to 0-100
+        const isHistoricalBad = historicalPsych.avgFrustration > 7 || historicalPsych.trend === 'declining';
+        
         const subjectMasteryMap = await masteryService.getSubjectMasteryOverview(subject);
         const dominantMastery = Object.values(subjectMasteryMap)[0] || 'learning';
-        const questLength = calculateDynamicQuestLength(nodeType, frustration.score, dominantMastery);
+        const questLength = calculateDynamicQuestLength(nodeType, frustrationScore, dominantMastery);
 
         // ── BEHAVIORAL ENGINE: Detect guessing vs deep thinking patterns ─────
         const behaviorPattern = BehavioralEngine.analyzeAnswerPattern(history || []);
@@ -132,8 +144,8 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         const userStateForEngine = {
             overallAccuracy: Math.round(recentAccuracyRaw * 100),
             overallTopicAccuracy: Math.round(recentAccuracyRaw * 100),
-            confidence: session?.confidence || 70,
-            frustration: frustration.score,
+            confidence: Math.min(session?.confidence || 70, historicalPsych.avgConfidence * 10),
+            frustration: frustrationScore,
             hintUsage: recentAnswers.length > 0 ? Math.round((hintCountRecent / recentAnswers.length) * 100) : 0,
             consecutiveErrors: session?.consecutiveWrong || 0,
             avgResponseTime: behaviorPattern.averageTime || 15,
@@ -141,7 +153,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         const gameMode = QuestEngineCore.selectGameMode(userStateForEngine, questId);
         const simRatio = QuestEngineCore.getSimulationRatio(questId, userStateForEngine);
-        console.log(`🎮 [QuestCore] Game Mode: ${gameMode} | Sim Ratio: ${Math.round(simRatio * 100)}%`);
+        console.log(`🎮 [QuestCore] Game Mode: ${gameMode} | Sim Ratio: ${Math.round(simRatio * 100)}% | Integrated Frustration: ${frustrationScore}`);
 
         // 1. DISCOVERY & HYDRATION (v5.3 - Robust Routing)
         const pools = { MCQ: [], SIMULATION: [], QUEST_STORY: [], GRAMMAR: [] };
@@ -151,11 +163,18 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             let engineType = (q.engine_type || q.engineType || q.type || "").toUpperCase();
             
             // Unified Simulation Detection
+            // Unified Simulation Detection
             // v6.2: Ensure MCQ items are NEVER treated as simulations regardless of engine_type string
             const isStrictMCQ = itemType.includes('MCQ');
-            const isSimulation = !isStrictMCQ && (itemType === 'SIMULATION' || itemType === 'QUEST' || (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'STUDY_RECAP'));
+            const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP', 'READER_STUDY', 'GALLERY_STUDY', 'IMAGE_HOTSPOTS', 'NOTE_EXPLORER'];
             
-            const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP'];
+            const isSimulation = !isStrictMCQ && (
+                itemType === 'SIMULATION' || 
+                itemType === 'QUEST' || 
+                (engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE') ||
+                MATH_SIM_WHITELIST.includes(engineType)
+            );
+            
             const isInvalidMathSim = subject === 'math' && isSimulation && engineType !== '' && !MATH_SIM_WHITELIST.includes(engineType);
 
             // v5.8 NARRATIVE LOCKDOWN
@@ -223,8 +242,8 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         // 2. CONDITION CHECK — augmented with behavioral guessing signal
         const recentAccuracy = history.length > 0 ? (history.slice(-5).filter(h => h.isCorrect).length / Math.min(5, history.length)) : 1;
-        const isBadCondition = frustration.score > 70 || recentAccuracy <= 0.4 || dominantMastery.startsWith('struggling') || isHardGuesser;
-        const needsMotivation = frustration.score > 54 || recentAccuracy <= 0.6;
+        const isBadCondition = frustrationScore > 70 || recentAccuracy <= 0.4 || dominantMastery.startsWith('struggling') || isHardGuesser;
+        const needsMotivation = frustrationScore > 54 || recentAccuracy <= 0.6;
 
         console.log(`📡 [Adaptive] ${isBadCondition ? '🚨 CRITICAL' : needsMotivation ? '⚠️ STRUGGLING' : '✅ HEALTHY'} | Acc: ${recentAccuracy.toFixed(2)} | Guessing: ${behaviorPattern.guessingRate}%`);
 
@@ -236,7 +255,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         let mcqCandidates = pools.MCQ.map(q => {
             const metadata = scoreQuestion(q, history, subject, subjectMasteryMap, recordMap);
             // Frustration guardrail: no hard questions when frustrated
-            if (frustration.score > 70 && (q.variant === 'V3' || q.difficulty === 'H')) metadata.score = -1000;
+            if (frustrationScore > 70 && (q.variant === 'V3' || q.difficulty === 'H')) metadata.score = -1000;
             // PLE Pool selection: de-prioritize PLE questions if 'no' pool is needed
             if (selectedPool === 'no' && q.isPLE) metadata.score -= 200;
             return { ...q, _adaptive: metadata };
@@ -279,7 +298,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
         const selectedMCQs = mcqCandidates.slice(0, questLength);
 
-        // 4. INTERLEAVE & RESCUE LOGIC
+        // 4. INTERLEAVE & RESCUE LOGIC (v6.3 - Intelligence Patch)
         let finalQuestions = [];
         const mcqStack = [...selectedMCQs];
         
@@ -299,9 +318,10 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             if (simStack.length > 0) finalQuestions.push({ ...simStack.pop(), isRescuePractice: true });
         }
 
-        // ─── MOTIVATION / INTERLEAVE FILL ───
+        // ─── INTELLIGENT INTERLEAVE (Anti-Saturation) ───
         const isGameNode = ['PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType);
         const minSims = (subject === 'english' && isGameNode && simStack.length > 0) ? 2 : 0;
+        let consecutiveSims = 0;
         let forcedSims = 0;
 
         while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
@@ -313,16 +333,21 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
             } else if (hasSim && hasMcq) {
-                // ── Use QuestEngineCore's computed simRatio instead of hardcoded 0.30 ──
-                let simChance = needsMotivation ? Math.min(simRatio + 0.1, 0.70) : simRatio;
-                if (subject === 'english' && isGameNode) simChance = 0.50;
+                // ── Dynamic Balancing ──
+                // Lower base chance if we just saw a sim (Anti-Saturation)
+                let baseChance = needsMotivation ? Math.min(simRatio + 0.25, 0.70) : simRatio;
+                if (consecutiveSims >= 2) baseChance *= 0.3; // Dramatic drop if 2 sims in a row
+                
+                if (subject === 'english' && isGameNode) baseChance = 0.60;
 
                 const forceSim = forcedSims < minSims;
-                if (forceSim || Math.random() < simChance) {
+                if (forceSim || Math.random() < baseChance) {
                     finalQuestions.push(simStack.pop());
+                    consecutiveSims++;
                     forcedSims++;
                 } else {
                     finalQuestions.push(mcqStack.shift());
+                    consecutiveSims = 0;
                 }
             } else {
                 break;
@@ -349,7 +374,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             questions: finalQuestions,
             metadata: { 
                 questLength: finalQuestions.length, 
-                frustration: frustration.score, 
+                frustration: frustrationScore, 
                 isBadCondition, 
                 needsMotivation,
                 // gameMode now comes from QuestEngineCore with a fallback to rescue logic labels
@@ -377,4 +402,36 @@ export function needsWarmup(history, session) {
     }
     if (session.consecutiveWrong >= 3) return true;
     return false;
+}
+
+/**
+ * GENERATE RESCUE STEP
+ * --------------------
+ * Creates a dynamic mid-quest injection when the student is struggling.
+ */
+export async function generateRescueStep(subject, currentFrustration, currentConceptId, simResources = [], grammarPool = []) {
+    console.log(`🛡️ [RescueEngine] Generating rescue for ${subject} (Frustration: ${currentFrustration})`);
+    
+    // Priority 1: Grammar/Rule Note if available
+    if (grammarPool.length > 0) {
+        const rule = grammarPool[Math.floor(Math.random() * grammarPool.length)];
+        return {
+            ...rule,
+            id: `rescue_note_${Date.now()}`,
+            isRescue: true,
+            isSimulation: false,
+            message: "Pause: Let's quickly review the rule before trying again!"
+        };
+    }
+
+    // Priority 2: Simple V1 Practice from current concept or related
+    // We'd need to fetch more questions here or have a pool
+    return {
+        id: `rescue_fallback_${Date.now()}`,
+        item_type: 'GRAMMAR',
+        engine_type: 'MCQ',
+        question: "Don't worry! Take a deep breath and let's try a simpler version next.",
+        isRescue: true,
+        isSimulation: false
+    };
 }

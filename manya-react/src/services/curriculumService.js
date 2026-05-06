@@ -6,7 +6,7 @@
  */
 
 import { assetUrl } from '../config/assetUrls';
-import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { deriveStoryFile, formatQuestTitle } from '../utils/questHelpers.js';
 
 let curriculumCache = null;
@@ -27,18 +27,17 @@ export async function preloadCurriculum() {
 
         try {
             console.log("☁️ [Curriculum] Fetching remote master curriculum...");
-            let res = await fetch(CDN_URL);
-            
-            if (!res.ok) {
+            let raw;
+            try {
+                raw = await storageFacade.get(`file:${CDN_URL}`);
+            } catch (e) {
                 console.warn(`[Curriculum] Remote CDN fetch failed. Falling back to LOCAL bundled curriculum...`);
-                res = await fetch('/curriculum-master.json');
+                raw = await storageFacade.get('file:/curriculum-master.json');
             }
 
-            if (!res.ok) {
-                throw new Error(`Master curriculum not found anywhere (Status: ${res.status})`);
+            if (!raw) {
+                throw new Error(`Master curriculum not found anywhere`);
             }
-            
-            const raw = await res.json();
             
             // Normalize keys to lowercase for resilient lookup
             const norm = {};
@@ -67,9 +66,6 @@ export function getCachedCurriculum() {
 
 /**
  * NORMALISATION HELPER (Fuzzy Matching)
- * Strips prefixes like "quest_" and handles spaces/underscores/case.
- * e.g. "quest_1_world_stage" -> "1_world_stage"
- * e.g. "1 World Stage" -> "1_world_stage"
  */
 function normalizeForMatch(str) {
     if (!str) return "";
@@ -132,7 +128,6 @@ function searchInSubjData(subjData, unitId, titleOrFolder) {
 
 /**
  * FUZZY FOLDER MAPPING (Level 1.0 English Fix)
- * Maps long DB topics to short GitHub folder names.
  */
 function mapTopicToFolder(topic, subject) {
     const t = topic.toLowerCase();
@@ -141,7 +136,7 @@ function mapTopicToFolder(topic, subject) {
     if (s === 'english') {
         if (t.includes('holiday')) return 'holidays';
         if (t.includes('revision')) return 'final_revision';
-        if (t.includes('primary_7') || t.includes('p7')) return 'holidays'; // P7 defaults to holidays per user repo
+        if (t.includes('primary_7') || t.includes('p7')) return 'holidays'; 
     }
     
     return topicToId(topic);
@@ -156,13 +151,10 @@ export async function fetchDynamicCurriculum(subject = 'english') {
         try {
             console.log(`🌐 [Curriculum] Discovering dynamic nodes for ${subject}...`);
 
-            // 1. Fetch unique topics (Units) for this subject
-            const { data: topics, error: tErr } = await supabase
-                .from('manya_vault')
-                .select('topic')
-                .ilike('subject', subject);
+            // 1. Fetch unique topics (Units) for this subject via Facade
+            const topics = await storageFacade.get(`db:/manya_vault?subject=ilike:${subject}`);
             
-            if (tErr) throw tErr;
+            if (!topics) throw new Error('No topics found in vault');
             
             // Normalize topic names to handle variations in case/spacing
             const normalizedTopicMap = new Map();
@@ -181,13 +173,9 @@ export async function fetchDynamicCurriculum(subject = 'english') {
             const allDiscoverableQuests = [];
             
             for (const topicName of uniqueTopics) {
-                const { data: subtopics, error: sErr } = await supabase
-                    .from('manya_vault')
-                    .select('subtopic')
-                    .eq('topic', topicName)
-                    .ilike('subject', subject);
+                const subtopics = await storageFacade.get(`db:/manya_vault?topic=${topicName}&subject=ilike:${subject}`);
 
-                if (sErr) continue;
+                if (!subtopics) continue;
 
                 const rawSubtopics = [...new Set(subtopics.map(s => s.subtopic).filter(Boolean))];
                 for (const subName of rawSubtopics) {
@@ -255,8 +243,6 @@ export async function fetchDynamicCurriculum(subject = 'english') {
 
     return dynamicFetchPromise[sKey];
 }
-
-
 
 function topicToId(topic) {
     return topic.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');

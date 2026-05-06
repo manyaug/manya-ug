@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
+import { telemetryService } from '../../infrastructure/services/telemetryService.js';
 
 // Decoupled Resources
 import { initializeMemoryDeck, checkMatch, calculateMemoryScoring } from './MemoryMatch/MemoryLogic';
@@ -21,6 +22,8 @@ const MemoryMatchEngine = ({ data, onComplete }) => {
     const [showFinish, setShowFinish] = useState(false);
 
     const startTimeRef = useRef(Date.now());
+    const firstFlipTimeRef = useRef(null);
+    const flipHistoryRef = useRef([]); // timestamps for rapid flip detection
     const hint = data?.hint || "Find the matching pairs!";
 
     // --- 🪄 THEME SYNC ---
@@ -34,20 +37,44 @@ const MemoryMatchEngine = ({ data, onComplete }) => {
 
     // 1. Initialize Level
     useEffect(() => {
-        if (!data?.pairs) return;
-        setCards(initializeMemoryDeck(data.pairs));
+        setCards(initializeMemoryDeck(data));
     }, [data]);
 
     const handleCardClick = (index) => {
         if (lockBoard || flippedIndices.includes(index) || matches.has(cards[index].pairId)) return;
 
+        const now = Date.now();
+        
+        // 🧠 FRUSTRATION TRACKER: Detect rapid/erratic flipping
+        flipHistoryRef.current.push(now);
+        flipHistoryRef.current = flipHistoryRef.current.filter(t => now - t < 2000); // 2 second window
+        if (flipHistoryRef.current.length >= 6) { // 6 flips in 2 seconds is suspicious
+            telemetryService.trackInteraction('english', 'FRUSTRATION_SPIKE', {
+                type: 'RAPID_FLIP',
+                flipsInWindow: flipHistoryRef.current.length
+            });
+        }
+
         const newFlipped = [...flippedIndices, index];
         setFlippedIndices(newFlipped);
+
+        if (newFlipped.length === 1) {
+            firstFlipTimeRef.current = now;
+        }
 
         if (newFlipped.length === 2) {
             setLockBoard(true);
             const [idx1, idx2] = newFlipped;
             const { isMatch, pairId, scoreDelta } = checkMatch(idx1, idx2, cards);
+
+            // 🧠 HESITATION TRACKER: Time between first and second flip
+            const interval = now - firstFlipTimeRef.current;
+            if (interval > 5000) { // 5+ seconds to find the second card
+                telemetryService.trackInteraction('english', 'HESITATION_PAUSE', {
+                    type: 'MEMORY_DELAY',
+                    durationMs: interval
+                });
+            }
 
             if (isMatch) {
                 setMatches(prev => new Set(prev).add(pairId));
@@ -79,7 +106,7 @@ const MemoryMatchEngine = ({ data, onComplete }) => {
         setScore(0);
         setFlippedIndices([]);
         setShowFinish(false);
-        setCards(initializeMemoryDeck(data.pairs));
+        setCards(initializeMemoryDeck(data));
     };
 
     const handleFinish = () => {

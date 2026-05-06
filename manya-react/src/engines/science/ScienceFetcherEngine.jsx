@@ -24,6 +24,7 @@ import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCo
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
 import { dynamicModeService } from '../../domain/gamification/dynamicModeService';
 import { rewardManager } from '../../domain/gamification/rewardManager.js';
+import { conceptMasteryService } from '../../domain/mastery/conceptMasteryService.js';
 
 // Atomic Resources
 import {
@@ -227,11 +228,23 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
+        // 🧠 Update granular concept mastery
+        conceptMasteryService.updateAfterAnswer(subject, baseId, isCorrect);
+
         // [Manya v4 Patch] Immediately notify QuestRunner parent to update live HUD
+        const awards = isCorrect ? rewardManager.awardStepRewards({
+            subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: false
+        }) : { gems: 0, coins: 0 };
+
+        const nextCoins = coinsEarnedState + awards.coins;
+        const nextGems = gemsEarned + awards.gems;
+
         onResult?.({
             isCorrect: log.isCorrect,
-            score: isCorrect ? score + 1 : score, // predict next state
+            score: isCorrect ? score + 1 : score, 
             total: questions.length,
+            coinsEarned: nextCoins,
+            gemsEarned: nextGems, 
             type: 'answer'
         });
 
@@ -252,12 +265,8 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
             consecutiveWrongRef.current = 0;
             if (q.isRephrased) resolveRephrased(subject, q.originalId);
 
-            const awards = rewardManager.awardStepRewards({
-                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: false
-            }, dispatch);
-
-            setCoinsEarnedState(prev => prev + awards.coins);
-            setGemsEarned(g => g + awards.gems);
+            setCoinsEarnedState(nextCoins);
+            setGemsEarned(nextGems);
 
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
@@ -321,7 +330,12 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
             const nextIdx = currentIdx + 1;
             
             // 🧠 DYNAMIC MODE RE-ROLL (Manya v5)
-            const mode = dynamicModeService.getNextMode(null, nodeType);
+            const nextQ = questions[nextIdx];
+            const mode = dynamicModeService.getNextMode(null, nodeType, {
+                isRecap: nextQ?.isRecap,
+                isSimulation: nextQ?.isSimulation,
+                engineType: nextQ ? getEngineType(nextQ) : 'MCQ'
+            });
             console.log(`[ScienceFetcher] Question ${nextIdx + 1} Mode: ${mode.toUpperCase()}`);
 
             // 1. Handle Speedrun
@@ -375,7 +389,15 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
     };
 
     const handleFinish = () => {
-        onResult?.({ isCorrect: currentMastery >= 60, score: score + simPartialScore, total: questions.length, mastery: currentMastery, gemsEarned, type: 'adaptive_science' });
+        onResult?.({ 
+            isCorrect: currentMastery >= 60, 
+            score: score + simPartialScore, 
+            total: questions.length, 
+            mastery: currentMastery, 
+            gemsEarned, 
+            coinsEarned: coinsEarnedState,
+            type: 'adaptive_science' 
+        });
         onComplete?.();
     };
 
@@ -412,16 +434,51 @@ export default function ScienceFetcherEngine({ data, onComplete, onResult, nodeT
                     key={q.id || currentIdx} step={q}
                     onResult={handleSimResult}
                     onComplete={(results) => {
-                        setSimPartialScore(0); // Reset partial on completion
                         const usp = results?.usp;
-                        const isSuccess = usp ? usp.isPassing : (results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
-                        const timeSpent = usp ? usp.timeSpentMs : (results?.duration || 30000);
-                        dispatch(updateSessionAfterAnswer({ isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
-                        ManyaDB.recordAnswer(subject, { questionId: q.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
+                        const isSuccess = usp ? !!usp.isPassing : !!(results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
+                        const timeSpent = usp ? (usp.timeSpentMs || 30000) : (results?.duration || 30000);
+
+                        // 🧠 [Phase 3] Close the loop for Science Simulations
+                        const baseId = (q.id || '').replace(/-V\d+$/, '');
+                        const log = {
+                            questionId: q.id,
+                            isCorrect: isSuccess,
+                            timeSpentMs: timeSpent,
+                            // High-Fidelity Telemetry
+                            idleTimeMs: results?.metrics?.idleTimeMs || 0,
+                            tabSwitched: results?.metrics?.tabSwitched || false,
+                            hesitationCount: results?.metrics?.hesitationCount || 0,
+                            frustrationClicks: results?.metrics?.frustrationClicks || 0,
+                            engine_type: 'SIMULATION',
+                            pool: 'yes',
+                            concept_id: baseId,
+                            pointsEarned: isSuccess ? 25 : 5,
+                            frustrationLevel: results?.metrics?.frustrationLevel || 0
+                        };
+
+                        ManyaDB.recordAnswer(subject, log);
+                        syncService.pushAnswer(subject, log);
+                        conceptMasteryService.updateAfterAnswer(subject, baseId, isSuccess);
+
+                        dispatch(updateSessionAfterAnswer({ subject, isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
+                        
                         if (isSuccess) {
                             setScore(p => p + 1);
                             scoreRef.current += 1;
-                            setGemsEarned(p => p + 5);
+                            const nextGems = gemsEarned + 2;
+                            const nextCoins = coinsEarnedState + 15;
+                            setGemsEarned(nextGems);
+                            setCoinsEarnedState(nextCoins);
+
+                            // Notify HUD live
+                            onResult?.({
+                                isCorrect: true,
+                                score: scoreRef.current,
+                                total: questions.length,
+                                coinsEarned: nextCoins,
+                                gemsEarned: nextGems,
+                                type: 'answer'
+                            });
                         }
                         nextQuestion();
                     }}

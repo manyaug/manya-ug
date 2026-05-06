@@ -1,0 +1,106 @@
+.chest-3d-scene {
+    perspective: 1000px;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.chest-body {
+    width: 100px;
+    height: 80px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.face {
+    position: absolute;
+    background: var(--chest-primary);
+    border: 2px solid var(--chest-secondary);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+}
+
+/* ── BASE ───────────────────────────────────────────────────────────── */
+.chest-base {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    transform-style: preserve-3d;
+}
+
+.base-front { width: 100px; height: 50px; transform: translateZ(30px); }
+.base-back { width: 100px; height: 50px; transform: translateZ(-30px) rotateY(180deg); }
+.base-left { width: 60px; height: 50px; transform: translateX(-30px) rotateY(-90deg); }
+.base-right { width: 60px; height: 50px; transform: translateX(70px) rotateY(90deg); }
+.base-bottom { width: 100px; height: 60px; transform: translateY(20px) rotateX(-90deg); background: #000; }
+
+/* ── LID ────────────────────────────────────────────────────────────── */
+.chest-lid {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 30px;
+    transform-style: preserve-3d;
+    transform-origin: bottom;
+    z-index: 2;
+}
+
+.lid-front { width: 100px; height: 30px; transform: translateZ(30px); border-radius: 15px 15px 0 0; }
+.lid-back { width: 100px; height: 30px; transform: translateZ(-30px) rotateY(180deg); }
+.lid-top { width: 100px; height: 60px; transform: translateY(-30px) rotateX(90deg); border-radius: 30px; }
+.lid-left { width: 60px; height: 30px; transform: translateX(-30px) rotateY(-90deg); border-radius: 30px 30px 0 0; }
+.lid-right { width: 60px; height: 30px; transform: translateX(70px) rotateY(90deg); border-radius: 30px 30px 0 0; }
+
+.lid-lock {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--chest-accent);
+    left: 40px;
+    top: 20px;
+    transform: translateZ(35px);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+/* ── RARITY OVERRIDES ───────────────────────────────────────────────── */
+.bronze .face { background: linear-gradient(135deg, #cd7f32, #8b4513); }
+.silver .face { background: linear-gradient(135deg, #e0e0e0, #9e9e9e); border-color: #757575; }
+.gold .face { background: linear-gradient(135deg, #fff176, #ffc107); border-color: #ff8f00; }
+
+.gold .lid-lock { background: #fff; box-shadow: 0 0 20px #ffc107; }
+
+/* ── EFFECTS ────────────────────────────────────────────────────────── */
+.reward-beam {
+    position: absolute;
+    width: 60px;
+    height: 200px;
+    background: linear-gradient(to top, var(--chest-glow), transparent);
+    left: 20px;
+    bottom: 40px;
+    transform-origin: bottom;
+    filter: blur(10px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ── STATE ANIMATIONS ────────────────────────────────────────────────── */
+.chest-3d-scene.opening .lid-lock {
+    animation: rattle 0.1s infinite;
+}
+
+@keyframes rattle {
+    0% { transform: translateZ(35px) translateX(-1px); }
+    100% { transform: translateZ(35px) translateX(1px); }
+}
+
+/* Dark mode compatibility */
+[data-theme='dark'] .face {
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+}

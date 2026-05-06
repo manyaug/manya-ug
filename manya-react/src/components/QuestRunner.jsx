@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { X, AlertTriangle, RefreshCw } from 'lucide-react';
 import { addToast } from '../store/toastSlice';
-import { updateProfile, awardGems, awardCoins, incrementQuestCount, dropChest, checkAchievements, syncUserData } from '../store/userSlice';
+import { updateProfile, awardGems, awardCoins, incrementQuestCount, dropChest, checkAchievements, syncUserData, updateBalanceThunk } from '../store/userSlice';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { loadQuestSteps } from '../utils/questLoader';
 import { getGem } from '../config/assetUrls';
@@ -15,6 +15,7 @@ import { QuestSession } from '../application/QuestSession';
 import { dynamicModeService } from '../domain/gamification/dynamicModeService';
 import { QuestBusProvider } from '../ui/context/QuestBus';
 import QuestHUD from './QuestHUD'; 
+import { rewardService } from '../infrastructure/services/rewardService.js';
 import { evaluateRewards } from '../domain/gamification/chestService.js';
 import { getNodeMastery, NODE_ORDER } from '../domain/progress/questProgressService.js';
 import PremiumFXOverlay from './PremiumFXOverlay';
@@ -66,10 +67,12 @@ export default function QuestRunner() {
     const [phase,    setPhase]    = useState('loading');
     const [steps,    setSteps]    = useState([]);
     const [stepIdx,  setStepIdx]  = useState(0);
+    const [frustration, setFrustration] = useState(0); 
     const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE' });
     const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
     const [activeEngine, setActiveEngine] = useState(null);
     const [renderTrigger, setRenderTrigger] = useState(0);
+    const [sessionRewards, setSessionRewards] = useState({ coins: 0, gems: 0 });
     
     // Performance Tracking
     const performanceRef = useRef({
@@ -77,7 +80,9 @@ export default function QuestRunner() {
         speedrunEngaged: false,
         speedrunPerfect: true,
         reverseEngaged: false,
-        reversePerfect: true
+        reversePerfect: true,
+        totalGems: 0,
+        totalCoins: 0
     });
     
     // Application Service Orchestrator
@@ -157,7 +162,15 @@ export default function QuestRunner() {
         }
 
         // ── DYNAMIC MODE INJECTION ──────────────────────────────────────────
-        const mode = dynamicModeService.getNextMode(location.state?.forceMode, location.state?.nodeType);
+        const mode = dynamicModeService.getNextMode(
+            location.state?.forceMode, 
+            location.state?.nodeType,
+            {
+                isRecap: currentStep.isRecap,
+                isSimulation: currentStep.isSimulation,
+                engineType: currentStep.engineType
+            }
+        );
         const baseData = currentStep.data || currentStep;
         let engineData = { 
             ...baseData, 
@@ -201,9 +214,13 @@ export default function QuestRunner() {
         const outcome = await sessionRef.current.processResult(result);
 
         if (outcome.shouldInjectRecap) {
-            const newSteps = sessionRef.current.injectRecap(outcome.conceptId);
+            const newSteps = await sessionRef.current.injectRecap(outcome.conceptId, meta.subject);
             setSteps(newSteps); // Trigger react re-render to update progress bar length
             dispatch(addToast({ message: "Need a quick review? Let's take a look!", type: "info" }));
+        }
+
+        if (outcome.frustration !== undefined) {
+            setFrustration(outcome.frustration);
         }
         
         if (result.type === 'simulation') {
@@ -238,17 +255,25 @@ export default function QuestRunner() {
             );
         }
 
-        setRenderTrigger(prev => prev + 1);
-        if (result.gemsEarned) {
-            performanceRef.current.totalGems = (performanceRef.current.totalGems || 0) + result.gemsEarned;
+        if (result.gemsEarned !== undefined || result.coinsEarned !== undefined) {
+            const newCoins = result.coinsEarned !== undefined ? result.coinsEarned : performanceRef.current.totalCoins;
+            const newGems = result.gemsEarned !== undefined ? result.gemsEarned : performanceRef.current.totalGems;
+            
+            performanceRef.current.totalCoins = newCoins;
+            performanceRef.current.totalGems = newGems;
+            setSessionRewards({ coins: newCoins, gems: newGems });
         }
+
+        setRenderTrigger(prev => prev + 1);
     }, [dispatch, meta.subject, steps.length, stepIdx, activeEngine?.currentMode]);
 
     const finishQuest = useCallback(() => {
         if (phase === 'finished') return;
         setPhase('finished');
         
-        const { subject, questKey, nodeType } = location.state || {};
+        const rawSubject = location.state?.subject || 'overall';
+        const subject = rawSubject.toLowerCase();
+        const { questKey, nodeType } = location.state || {};
         const safeNodeType = (nodeType || 'WARMUP').toUpperCase();
         
         // 1. Calculate Economy Payouts
@@ -259,7 +284,8 @@ export default function QuestRunner() {
         else if (safeNodeType === 'REINFORCE') { baseCoins = 50; scale = 20; }
         else if (safeNodeType === 'MASTERY') { baseCoins = 100; scale = 25; }
         
-        const earnedCoins = baseCoins + ((sessionRef.current?.correctCount || 0) * scale);
+        const completionBonus = baseCoins + ((sessionRef.current?.correctCount || 0) * scale);
+        const earnedCoins = completionBonus + (performanceRef.current.totalCoins || 0);
         const hasFetcher = steps.some(s => s.engineType?.includes('FETCHER'));
         let masteryScore = 100;
 
@@ -273,54 +299,65 @@ export default function QuestRunner() {
             }
             completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
             setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: completionResult.unlocked, nextNode: completionResult.nextNode });
-        } else if (hasFetcher) {
+        }
+        
+        // 1.5 Economy Payouts: BASE COINS (Effort)
+        // We keep coins direct as they represent "time spent"
+        dispatch(updateBalanceThunk({
+            currency: 'coins',
+            amount: earnedCoins,
+            type: 'quest_reward',
+            contextId: questKey
+        }));
+
+        if (hasFetcher) {
             masteryScore = sessionRef.current?.lastMasteryScore || 100;
             // Fetchers save their own completion internally, but we run it here again safely 
             // to extract the unlock state so the QuestPathView animation can play!
             completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
             setJustFinished({ subject, questKey, nodeType: safeNodeType, mastery: masteryScore, unlocked: completionResult.unlocked, nextNode: completionResult.nextNode });
         }
-        
-        // 2. Dispatch soft currency
-        dispatch(awardCoins(earnedCoins));
-        dispatch(incrementQuestCount());
 
-        // 3. Store final stats for CelebrationView
-        performanceRef.current.finalMastery = masteryScore;
-        performanceRef.current.finalCoins = earnedCoins;
-        performanceRef.current.finalGems = performanceRef.current.totalGems || 0;
-        performanceRef.current.finalStars = masteryScore >= 85 ? 3 : masteryScore >= 70 ? 2 : masteryScore >= 60 ? 1 : 0;
-
-        // 4. 🎁 EVALUATE PREMIUM REWARDS (New Logic Matrix)
+        // 2. LOOT SYSTEM: SMART EVALUATION (Phase 2 🎁)
         const sessionDurationMinutes = (Date.now() - performanceRef.current.startTime) / 60000;
-        
-        // 🛡️ REWARD POLICY: 
-        // 1. Only give chests/gems on the FIRST successful completion of a node.
-        // 2. EXPLORE (Library) nodes never give gems, only coins (already handled in economy) and maybe a bronze chest on 1st try.
-        let rewards = [];
         const isFirstTry = completionResult ? completionResult.isFirstCompletion : true;
 
-        // 🎁 Always evaluate rewards (rewards effort on replay too)
-        rewards = evaluateRewards({
+        // Store final stats for CelebrationView
+        performanceRef.current.finalMastery = masteryScore;
+        performanceRef.current.finalCoins = earnedCoins;
+        performanceRef.current.finalStars = masteryScore >= 85 ? 3 : masteryScore >= 70 ? 2 : masteryScore >= 60 ? 1 : 0;
+
+        const earnedRewards = evaluateRewards({
             mastery: masteryScore,
             streak: user.current_streak || 0,
             sessionTime: sessionDurationMinutes,
             nodeType: safeNodeType,
-            isFirstQuest: isFirstTry && user.quests_completed === 0,
+            subject: subject || 'overall',
+            isFirstQuest: isFirstTry,
+            hintCount: sessionRef.current?.hintCount || 0,
             modeAchievements: {
                 speedrunPerfect: performanceRef.current.speedrunEngaged && performanceRef.current.speedrunPerfect && (sessionRef.current?.correctCount || 0) > 2,
                 reversePerfect: performanceRef.current.reverseEngaged && performanceRef.current.reversePerfect && (sessionRef.current?.correctCount || 0) > 2
             }
         });
 
-        // Drop all earned chests & sync to cloud
-        rewards.forEach(drop => {
-            dispatch(dropChest(drop));
-            syncService.pushChestDrop(drop.chestType, drop.rewards || []);
+        // Grant each earned chest transactionally
+        earnedRewards.forEach(drop => {
+            rewardService.grantChest(user.id, drop.chestType, drop.reason)
+                .then(chest => {
+                    dispatch(dropChest({ 
+                        chestType: drop.chestType, 
+                        id: chest.id,
+                        reason: drop.reason 
+                    }));
+                })
+                .catch(e => console.warn('🎁 [QuestRunner] Chest grant failed:', e.message));
         });
 
-        if (rewards.length > 0) {
-            dispatch(addToast({ message: `🏆 Quest complete! Earned ${earnedCoins} Coins and ${rewards.length} Reward Chests!`, type: 'success' }));
+        dispatch(incrementQuestCount());
+
+        if (earnedRewards.length > 0) {
+            dispatch(addToast({ message: `🏆 Quest complete! Earned ${earnedCoins} Coins and ${earnedRewards.length} Reward Chests!`, type: 'success' }));
         } else {
             dispatch(addToast({ message: `🏁 Quest complete! +${earnedCoins} Coins earned`, type: 'success' }));
         }
@@ -329,9 +366,57 @@ export default function QuestRunner() {
         dispatch(checkAchievements());
         dispatch(syncUserData());
 
+        // 🏁 Cloud Session Finalization (Schema Alignment 🛡️)
+        const sessionData = {
+            startedAt: performanceRef.current.startTime,
+            questId: questKey,
+            frustrationLevel: sessionRef.current?.lastFrustrationScore || 0,
+            engagementLevel: Math.round((sessionRef.current?.correctCount / steps.length) * 100) || 0,
+            cognitiveLoad: performanceRef.current.reverseEngaged ? 80 : 40, // higher if reverse mode was on
+            masteryLevel: masteryScore >= 85 ? 'mastered' : masteryScore >= 60 ? 'learning' : 'struggling',
+            results: {
+                score: sessionRef.current?.correctCount,
+                total: steps.length,
+                coins: earnedCoins,
+                gems: performanceRef.current.finalGems,
+                stars: performanceRef.current.finalStars
+            }
+        };
+
+        syncService.pushSession(sessionData);
+
+        // 🧪 Respective Table Updates (Per Schema v5 🛡️)
+        // syncService.recordCoinEarning is now handled by updateBalanceThunk
+        syncService.pushEmotionalMetrics(performanceRef.current.startTime, sessionData);
+
+        // 🔓 UNLOCK PERSISTENCE: Explicitly track newly opened content (Phase 5 🚀)
+        if (completionResult?.unlocked && completionResult?.nextNode) {
+            syncService.recordContentUnlock(
+                `${questKey}/${completionResult.nextNode}`, 
+                `Study: ${meta.title || completionResult.nextNode}`, 
+                subject
+            );
+        }
+
+        // 🎮 SIMULATION PERSISTENCE (Phase 4 🔓)
+        if (hasFetcher) {
+            syncService.recordSimulationUnlock(
+                questKey, 
+                subject, 
+                `Sim: ${meta.title || 'Interactive Lesson'}`
+            );
+        }
+
         audioService.finish();
         // Navigation is now deferred until CelebrationView.onCollect
     }, [dispatch, location.state, navigate, steps, user.current_streak]);
+
+    // [MOD] Auto-exit for English Stories (EXPLORE) to skip celebration
+    useEffect(() => {
+        if (phase === 'finished' && meta.subject === 'english' && location.state?.nodeType === 'EXPLORE') {
+            navigate(-1);
+        }
+    }, [phase, meta.subject, location.state?.nodeType, navigate]);
 
     const advanceStep = useCallback(() => {
         if (window.__manyaIsTyping) {
@@ -377,6 +462,9 @@ export default function QuestRunner() {
                         correctCount={sessionRef.current?.correctCount || 0}
                         streakCount={sessionRef.current?.currentStreak || 0}
                         masteryScore={sessionRef.current?.lastMasteryScore || 0}
+                        frustrationScore={frustration}
+                        sessionCoins={sessionRewards.coins}
+                        sessionGems={sessionRewards.gems}
                         onClose={() => navigate(-1)} 
                         hideTracker={
                             meta.subject === 'english' && (
@@ -388,7 +476,7 @@ export default function QuestRunner() {
                     />
                 )}
 
-                <main className="qr-content-area scroll-smooth min-h-0 !p-0 !m-0 !w-full !h-full">
+                <main className="qr-content-area scroll-smooth flex-1 min-h-0 !p-0 !m-0 !w-full">
                     <QuestErrorBoundary key={stepIdx + phase} onSkip={advanceStep}>
                         {phase === 'loading' && (() => {
                             const cfg = getLoadingConfig(meta.subject);
@@ -436,7 +524,7 @@ export default function QuestRunner() {
                                 </Suspense>
                             </div>
                         )}
-                        {phase === 'finished' && (
+                        {phase === 'finished' && meta.subject === 'english' && location.state?.nodeType === 'EXPLORE' ? null : phase === 'finished' && (
                             <CelebrationView 
                                 subject={meta.subject}
                                 nodeType={location.state?.nodeType || 'WARMUP'}

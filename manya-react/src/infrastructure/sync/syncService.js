@@ -1,7 +1,6 @@
 import { supabase } from '../remote/supabaseClient.js';
-import { ManyaDB } from '../db/manyaDB.js';
 import { storageService } from '../storage/storageService.js';
-
+import { storageFacade } from '../storage/storageFacade.js';
 /**
  * MANYA DATABASE QUEUE (Ported from Manya-Logic v1.0)
  * ==================================================
@@ -101,19 +100,15 @@ export const syncService = {
                 avatar_url: profileData.avatarUrl || profileData.avatar_url,
                 grade_level: profileData.gradeLevel || profileData.grade_level,
                 is_pro: profileData.is_pro || false,
+                current_streak: profileData.current_streak || 0,
+                longest_streak: profileData.longest_streak || 0,
                 last_active_at: new Date().toISOString(),
-                engagement_stats: {
-                    gems: profileData.diamonds || 0,
-                    coins: profileData.coins || 0,
-                    quests_completed: profileData.stats_quests_completed || 0,
-                    unlocked_badges: profileData.unlockedBadges || []
-                },
+                // Economy data moved to user_balances
                 preferences: profileData.preferences || {}
             };
 
-            const { error } = await supabase.from('profiles').upsert(payload);
-            if (error) throw error;
-            console.log("☁️ [Sync] Profile Synced.");
+            await storageFacade.put('db:/profiles', payload);
+            console.log("☁️ [Sync] Profile & Streak Synced.");
         }, 'uploadProfile');
     },
 
@@ -141,13 +136,18 @@ export const syncService = {
                 time_spent_ms: answer.timeSpentMs,
                 hint_used: answer.hintUsed || false,
                 
-                // --- Behavioral Telemetry (Your Schema 🛡️) ---
+                // --- Behavioral Telemetry (Schema Alignment 🛡️) ---
                 confidence_rating: answer.confidenceRating || 0,
                 hesitation_count: answer.hesitationCount || 0,
                 frustration_level: answer.frustrationLevel || 0,
                 answer_changed: answer.answerChanged || false,
                 time_to_first_click_ms: answer.timeToFirstClick || 0,
                 points_earned: answer.pointsEarned || 0,
+                
+                // New Behavioral Fields from Schema
+                tab_switched: answer.tabSwitched || false,
+                idle_time_ms: answer.idleTimeMs || 0,
+                frustration_clicks: answer.frustrationClicks || 0,
                 
                 // --- Contextual Data 🌐 ---
                 time_of_day: timeOfDay,
@@ -156,10 +156,24 @@ export const syncService = {
                 synced: true
             };
 
-            const { error } = await supabase.from('user_answers').insert(payload);
-            if (error) throw error;
+            await storageFacade.put('db:/user_answers', payload);
             console.log(`✅ [Sync] Answer Saved. (Frustration: ${payload.frustration_level})`);
         }, 'pushAnswer');
+    },
+
+    /**
+     * TELEMETRY: Fetch Recent (New 🧠)
+     */
+    async fetchRecentTelemetry(subject = null, limit = 10) {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null') return [];
+
+        try {
+            return await storageFacade.get(`db:/user_answers?uid=${uid}&order=answered_at:desc&limit=${limit}`);
+        } catch (error) {
+            console.warn('🧠 [Sync] Telemetry fetch failed:', error.message);
+            return [];
+        }
     },
 
     /**
@@ -178,9 +192,166 @@ export const syncService = {
                 recorded_at: new Date().toISOString()
             };
 
-            const { error } = await supabase.from('emotional_metrics').insert(record);
-            if (error) throw error;
+            await storageFacade.put('db:/emotional_metrics', record);
         }, 'pushEmotion');
+    },
+
+    /**
+     * ECONOMY: Wallet & Ledger (Phase 1 🏦)
+     */
+    async fetchUserBalance() {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null') return null;
+
+        try {
+            return await storageFacade.get(`db:/user_balances?uid=${uid}&single=maybe`);
+        } catch (error) {
+            console.warn('💰 [Sync] Balance fetch failed:', error.message);
+            return null;
+        }
+    },
+
+    async updateBalance(currency, amountChange, transactionType, contextId = null) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            const cleanCurrency = currency.toLowerCase();
+
+            try {
+                // 1. Log the Transaction (The Ledger 📜)
+                const transaction = {
+                    user_id: uid,
+                    currency,
+                    amount_change: amountChange,
+                    transaction_type: transactionType,
+                    context_id: contextId,
+                    created_at: new Date().toISOString()
+                };
+                
+                await storageFacade.put('db:/user_transactions', transaction);
+
+                // 2. Update the Balance (The Wallet 🏦)
+                const current = await storageFacade.get(`db:/user_balances?uid=${uid}&single=maybe`);
+
+                const newBalance = (current?.[cleanCurrency] || 0) + amountChange;
+                
+                await storageFacade.put('db:/user_balances', {
+                    user_id: uid,
+                    [cleanCurrency]: newBalance,
+                    updated_at: new Date().toISOString()
+                });
+
+                console.log(`💰 [Sync] Balance Updated: ${currency} ${amountChange > 0 ? '+' : ''}${amountChange} (${transactionType})`);
+                return newBalance;
+
+            } catch (e) {
+                console.error('❌ [Sync] Economy update failed:', e.message);
+                throw e;
+            }
+        }, 'updateBalance');
+    },
+
+    /**
+     * BEHAVIORAL ANALYTICS (Psychology 🧠)
+     */
+    async pushEmotionalMetrics(sessionId, metrics) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            try {
+                const record = {
+                    user_id: uid,
+                    session_id: sessionId,
+                    emotion: (metrics.frustrationLevel || 0) > 50 ? 'frustrated' : 'focused',
+                    intensity: Math.round(metrics.frustrationLevel || 0),
+                    context: metrics.context || 'quest_session',
+                    recorded_at: new Date().toISOString()
+                };
+
+                await storageFacade.put('db:/emotional_metrics', record);
+            } catch (e) {
+                console.warn('🧠 [Sync] Emotional telemetry failed:', e.message);
+            }
+        }, 'pushEmotionalMetrics');
+    },
+
+    /**
+     * REMEDIATION TRACKING (Logic 🧪)
+     */
+    async trackConceptError(subtopic, questionId) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            try {
+                // Upsert pattern (increment error_count)
+                const existing = await storageFacade.get(`db:/concept_error_tracking?uid=${uid}&subtopic=${subtopic}&single=maybe`);
+
+                if (existing) {
+                    await storageFacade.patch(`db:/concept_error_tracking/${existing.id}`, { 
+                        error_count: (existing.error_count || 0) + 1,
+                        last_question_id: questionId,
+                        updated_at: new Date().toISOString()
+                    });
+                } else {
+                    await storageFacade.put('db:/concept_error_tracking', {
+                        user_id: uid,
+                        subtopic,
+                        error_count: 1,
+                        last_question_id: questionId,
+                        updated_at: new Date().toISOString()
+                    });
+                }
+            } catch (e) {
+                console.warn('🧪 [Sync] Concept error tracking failed:', e.message);
+            }
+        }, 'trackConceptError');
+    },
+
+    /**
+     * UNIFIED VAULT: The Smart Discovery Engine (Phase 5 🔓)
+     * ====================================================
+     * Consolidates all discoveries (Notes, Sims, Recaps) into user_vault.
+     * Format: [TYPE]|[TITLE]|[PATH]
+     */
+    async pushToVault({ id, title, type, subject, path }) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            // Pack the Smart Key
+            const smartKey = `${type.toUpperCase()}|${title}|${path || id}`;
+
+            const payload = {
+                user_id: uid,
+                artifact_id: smartKey,
+                subject: subject
+            };
+
+            // 🛡️ Manual Upsert for Vault
+            const existing = await storageFacade.get(`db:/user_vault?uid=${uid}&artifact_id=${smartKey}&single=maybe`);
+
+            if (existing) {
+                await storageFacade.patch(`db:/user_vault/${existing.id}`, payload);
+            } else {
+                await storageFacade.put('db:/user_vault', payload);
+            }
+            
+            console.log(`☁️ [Vault] Saved: ${title} (${type})`);
+        }, 'pushToVault');
+    },
+
+    /**
+     * Legacy Aliases (Now routing to Unified Vault 🚀)
+     */
+    async recordContentUnlock(contentId, title = 'Study Note', subject = 'general') {
+        return this.pushToVault({ id: contentId, title, type: 'NOTE', subject });
+    },
+
+    async recordSimulationUnlock(simId, subject = 'math', title = 'Interactive Study') {
+        return this.pushToVault({ id: simId, title, type: 'SIM', subject });
     },
 
     /**
@@ -192,23 +363,22 @@ export const syncService = {
             if (!uid) return;
 
             try {
-                // Write to achievements table
-                const { error: achError } = await supabase.from('achievements').upsert({
-                    user_id: uid,
-                    badge_id: badge.id,
-                    achievement_name: badge.name,
-                    earned_at: badge.earnedAt || new Date().toISOString()
-                }, { onConflict: 'user_id,badge_id', ignoreDuplicates: true });
-                if (achError) console.warn('⚠️ [Sync] achievements write failed:', achError.message);
+                // 🛡️ Manual Upsert for Badges (aligned with new schema 🏅)
+                const existingBadge = await storageFacade.get(`db:/badges?uid=${uid}&badge_type=${badge.id}&single=maybe`);
 
-                // Also write to badges table
-                const { error: badgeError } = await supabase.from('badges').upsert({
-                    user_id: uid,
-                    badge_type: badge.id,
-                    badge_name: badge.name,
-                    earned_at: badge.earnedAt || new Date().toISOString()
-                }, { onConflict: 'user_id,badge_type', ignoreDuplicates: true });
-                if (badgeError) console.warn('⚠️ [Sync] badges write failed:', badgeError.message);
+                if (existingBadge) {
+                    await storageFacade.patch(`db:/badges/${existingBadge.id}`, { 
+                        earned_at: badge.earnedAt || new Date().toISOString(),
+                        badge_name: badge.name 
+                    });
+                } else {
+                    await storageFacade.put('db:/badges', {
+                        user_id: uid,
+                        badge_type: badge.id,
+                        badge_name: badge.name,
+                        earned_at: badge.earnedAt || new Date().toISOString()
+                    });
+                }
 
                 console.log(`🏆 [Sync] Badge Saved: ${badge.name}`);
             } catch (e) {
@@ -226,24 +396,82 @@ export const syncService = {
             if (!uid) return;
 
             try {
-                const coins = rewards?.find?.(r => r.type === 'coins')?.amount || 0;
-                const gems = rewards?.find?.(r => r.type === 'gems')?.amount || 0;
-
                 const record = {
                     user_id: uid,
                     chest_type: chestType || 'wood',
-                    gems_earned: gems,
-                    coins_earned: coins,
+                    opened: true,
                     opened_at: new Date().toISOString()
                 };
 
-                const { error } = await supabase.from('chest_history').insert(record);
-                if (error) console.warn('⚠️ [Sync] chest_history write failed:', error.message);
-                else console.log('🎁 [Sync] Chest rewards synced to cloud.');
+                await storageFacade.put('db:/user_chests', record);
+                console.log('🎁 [Sync] Chest drop recorded in cloud.');
             } catch (e) {
                 console.warn('⚠️ [Sync] Chest sync failed (non-fatal):', e.message);
             }
         }, 'pushChestDrop');
+    },
+
+    /**
+     * Concept Mastery Sync (New 📊)
+     */
+    async pushConceptMastery(subject, record) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            const payload = {
+                user_id: uid,
+                subject: subject,
+                base_id: record.baseId,
+                mastery_level: record.masteryLevel,
+                correct_streak: record.correctStreak,
+                total_attempts: record.totalAttempts,
+                total_correct: record.totalCorrect,
+                review_count: record.reviewCount,
+                last_reviewed_at: record.lastReviewedAt,
+                next_review_at: record.nextReviewAt,
+                updated_at: new Date().toISOString()
+            };
+
+            // 🛡️ Manual Upsert for Concept Mastery (Missing Unique Constraint)
+            const existing = await storageFacade.get(`db:/concept_mastery?uid=${uid}&subject=${subject}&base_id=${record.baseId}&single=maybe`);
+
+            if (existing) {
+                await storageFacade.patch(`db:/concept_mastery/${existing.id}`, payload);
+            } else {
+                await storageFacade.put('db:/concept_mastery', payload);
+            }
+
+            console.log(`📊 [Sync] Mastery Synced: ${record.baseId} (${record.masteryLevel})`);
+        }, 'pushConceptMastery');
+    },
+
+    /**
+     * Session Sync (New 🏁)
+     */
+    async pushSession(sessionData) {
+        return syncQueue.execute(async () => {
+            const uid = await this.getUserId();
+            if (!uid) return;
+
+            const payload = {
+                user_id: uid,
+                session_start: typeof sessionData.startedAt === 'number' ? new Date(sessionData.startedAt).toISOString() : sessionData.startedAt,
+                ended_at: new Date().toISOString(),
+                current_quest_id: null, // Avoid integer parsing error
+                frustration_level: sessionData.frustrationLevel || 0,
+                engagement_level: sessionData.engagementLevel || 0,
+                cognitive_load: sessionData.cognitiveLoad || 0,
+                mastery_level: sessionData.masteryLevel || 'learning',
+                quest_results: {
+                    ...sessionData.results,
+                    quest_key: sessionData.questId // Preserve string ID here
+                }
+            };
+
+            await storageFacade.put('db:/user_sessions', payload);
+            console.log(`🏁 [Sync] Session Finalized in Cloud.`);
+        }, 'pushSession');
     },
 
     /**
@@ -260,30 +488,32 @@ export const syncService = {
                     quest_key: questKey,
                     node_type: progress.nodeType || 'lesson',
                     mastery: progress.mastery || 0,
+                    stars: progress.stars || 0,
                     status: progress.status || 'completed',
                     last_attempted_at: new Date().toISOString()
                 };
 
-                // Use composite key: user_id + quest_key + node_type
-                const { data: existing } = await supabase.from('quest_progress')
-                    .select('id')
-                    .eq('user_id', uid)
-                    .eq('quest_key', questKey)
-                    .eq('node_type', progress.nodeType || 'lesson')
-                    .maybeSingle();
+                const existing = await storageFacade.get(`db:/quest_progress?uid=${uid}&quest_key=${questKey}&node_type=${progress.nodeType || 'lesson'}&single=maybe`);
 
                 if (existing) {
-                    const { error } = await supabase.from('quest_progress')
-                        .update(payload)
-                        .eq('id', existing.id);
-                    if (error) console.warn('⚠️ [Sync] quest_progress update failed:', error.message);
+                    // Only update if mastery or stars improved
+                    const finalMastery = Math.max(existing.mastery || 0, payload.mastery);
+                    const finalStars = Math.max(existing.stars || 0, payload.stars);
+                    
+                    await storageFacade.patch(`db:/quest_progress/${existing.id}`, {
+                        ...payload,
+                        mastery: finalMastery,
+                        stars: finalStars,
+                        attempts: (existing.attempts || 0) + 1
+                    });
                 } else {
-                    const { error } = await supabase.from('quest_progress')
-                        .insert(payload);
-                    if (error) console.warn('⚠️ [Sync] quest_progress insert failed:', error.message);
+                    await storageFacade.put('db:/quest_progress', {
+                        ...payload,
+                        attempts: 1
+                    });
                 }
                 
-                console.log(`📈 [Sync] Progress Updated: ${questKey} / ${progress.nodeType}`);
+                console.log(`📈 [Sync] Progress Updated: ${questKey} / ${progress.nodeType} (${progress.stars}⭐)`);
             } catch (e) {
                 console.warn('⚠️ [Sync] Progress sync failed (non-fatal):', e.message);
             }
@@ -305,6 +535,22 @@ export const syncService = {
         return data.user;
     },
 
+    async resetPassword(email) {
+        // Dispatches a recovery link to the user's email
+        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`,
+        });
+        return { data, error };
+    },
+
+    async updatePassword(newPassword) {
+        // Updates the password for the currently authenticated session (from recovery link)
+        const { data, error } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+        return { data, error };
+    },
+
     async signOut() {
         this._userIdCache = null;
         await supabase.auth.signOut();
@@ -320,45 +566,56 @@ export const syncService = {
             return null;
         }
 
-        const { data, error } = await supabase.from('profiles').select('*').eq('id', uid).single();
-        if (error) {
+        try {
+            return await storageFacade.get(`db:/profiles/${uid}`);
+        } catch (error) {
             console.warn(`⚠️ [Sync] Profile fetch failed for ${uid}:`, error.message);
             return null;
         }
-        return data;
     },
 
     async pullProgress() {
         const uid = await this.getUserId();
         if (!uid || uid === 'null' || uid === 'undefined') return null;
-        const { data, error } = await supabase.from('quest_progress').select('*').eq('user_id', uid);
-        if (error) {
+        try {
+            return await storageFacade.get(`db:/quest_progress?uid=${uid}`);
+        } catch (error) {
             console.warn(`⚠️ [Sync] Progress fetch failed:`, error.message);
             return null;
         }
-        return data;
     },
 
     async pullAchievements() {
         const uid = await this.getUserId();
         if (!uid || uid === 'null' || uid === 'undefined') return null;
-        const { data, error } = await supabase.from('achievements').select('*').eq('user_id', uid);
-        if (error) {
-            console.warn(`⚠️ [Sync] Achievements fetch failed:`, error.message);
+        try {
+            return await storageFacade.get(`db:/badges?uid=${uid}`);
+        } catch (error) {
+            console.warn(`⚠️ [Sync] Badges fetch failed:`, error.message);
             return null;
         }
-        return data;
     },
 
     async pullChestHistory() {
         const uid = await this.getUserId();
         if (!uid || uid === 'null' || uid === 'undefined') return null;
-        const { data, error } = await supabase.from('chest_history').select('*').eq('user_id', uid);
-        if (error) {
+        try {
+            return await storageFacade.get(`db:/user_chests?uid=${uid}`);
+        } catch (error) {
             console.warn(`⚠️ [Sync] Chest history fetch failed:`, error.message);
             return null;
         }
-        return data;
+    },
+
+    async pullConceptMastery(subject) {
+        const uid = await this.getUserId();
+        if (!uid || uid === 'null' || uid === 'undefined') return [];
+        try {
+            return await storageFacade.get(`db:/concept_mastery?uid=${uid}&subject=${subject}`);
+        } catch (error) {
+            console.warn(`⚠️ [Sync] Mastery fetch failed for ${subject}:`, error.message);
+            return [];
+        }
     },
 
     /**
@@ -375,8 +632,15 @@ export const syncService = {
                 subject: subject
             };
 
-            const { error } = await supabase.from('user_vault').upsert(payload, { onConflict: 'user_id,artifact_id' });
-            if (error) throw error;
+            // 🛡️ Manual Upsert for Vault (missing unique constraint)
+            const existing = await storageFacade.get(`db:/user_vault?uid=${uid}&artifact_id=${artifactId}&single=maybe`);
+
+            if (existing) {
+                await storageFacade.patch(`db:/user_vault/${existing.id}`, payload);
+            } else {
+                await storageFacade.put('db:/user_vault', payload);
+            }
+            
             console.log(`☁️ [Sync] Vault Artifact ${artifactId} synced.`);
         }, 'pushVault');
     },
@@ -384,11 +648,47 @@ export const syncService = {
     async pullVault() {
         const uid = await this.getUserId();
         if (!uid || uid === 'null' || uid === 'undefined') return [];
-        const { data, error } = await supabase.from('user_vault').select('artifact_id').eq('user_id', uid);
-        if (error) {
+        try {
+            const data = await storageFacade.get(`db:/user_vault?uid=${uid}`);
+            
+            // Unpack Smart Keys: [TYPE]|[TITLE]|[PATH]
+            return data.map(row => {
+                if (row.artifact_id.includes('|')) {
+                    const [type, title, path] = row.artifact_id.split('|');
+                    return {
+                        id: row.id,
+                        type,
+                        title,
+                        path,
+                        subject: row.subject,
+                        unlocked_at: row.unlocked_at
+                    };
+                }
+                // Fallback for legacy IDs
+                return { artifactId: row.artifact_id, subject: row.subject };
+            });
+        } catch (error) {
             console.warn(`⚠️ [Sync] Vault fetch failed:`, error.message);
             return [];
         }
-        return data.map(row => row.artifact_id);
+    },
+
+    /**
+     * RANKINGS: The Live Hero Engine (Phase 6 🏆)
+     */
+    async pullRankings(timeframe = 'all-time', subject = 'all') {
+        const uid = await this.getUserId();
+        try {
+            const { data, error } = await supabase.rpc('get_manya_rankings', {
+                p_timeframe: timeframe,
+                p_subject: subject.toLowerCase(),
+                p_user_id: uid
+            });
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('🏆 [Sync] Rankings fetch failed:', error.message);
+            return [];
+        }
     }
 };

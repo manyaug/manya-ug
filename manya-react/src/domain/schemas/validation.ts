@@ -41,17 +41,21 @@ export function validateAndNormalizeStep(raw: unknown, originUrl: string | null 
         } else if (data.mode === 'recap' || data.recap_facts || data.sections) {
             engineType = 'READER_STUDY';
         } else if (data.cases) {
-            engineType = 'GLOBE_TIME_ENGINE'; // Note: mapping might need adjustment in Registry
+            engineType = 'GLOBE_TIME_ENGINE'; 
         } else {
             engineType = 'UNKNOWN';
         }
     }
 
+    // 🧩 [SMART HYDRATION]: If data.data exists (already normalized), use it. 
+    // Otherwise, use the whole object as data (flattened).
+    const normalizedData = data.data || data;
+
     return {
         ...data,
         engineType: typeof engineType === 'string' ? engineType.toUpperCase() : 'UNKNOWN',
         data: {
-            ...(data.data || data),
+            ...normalizedData,
             _originUrl: originUrl
         }
     };

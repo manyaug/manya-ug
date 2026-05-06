@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X, Zap, Star, Sparkles, BookOpen, Layers, Trophy } from 'lucide-react';
 import { Ribbon, WorldClassConfetti } from '../components/ui/CelebrationBling';
 import { audioService } from '../infrastructure/audio/audioService';
 import { getGem } from '../config/assetUrls';
+import PremiumChest from '../components/ui/PremiumChest';
 
 const CoinCounter = ({ value }) => {
     const [count, setCount] = useState(0);
@@ -76,6 +78,15 @@ const CelebrationView = ({
     const char = CharacterMap[subject.toLowerCase()] || CharacterMap.default;
     const isPassing = mastery >= 60;
     const gemIcon = getGem(subject.toLowerCase() === 'general' ? 'master' : subject.toLowerCase());
+    
+    const user = useSelector(state => state.user.data);
+    const pendingChests = user?.pendingChests || [];
+    const activeChest = pendingChests[0];
+    const dispatch = useDispatch();
+
+    const [isOpening, setIsOpening] = useState(false);
+    const [openedRewards, setOpenedRewards] = useState(null);
+    const [revealPhase, setRevealPhase] = useState('closed'); // closed | opening | revealed
 
     const subjectMessages = MilestoneMessages[subject.toLowerCase()];
     const milestone = subjectMessages ? subjectMessages[nodeType.toUpperCase()] : null;
@@ -85,7 +96,50 @@ const CelebrationView = ({
         sub: customSub || (milestone ? milestone.sub : (isPassing ? DefaultMilestones.pass.sub : DefaultMilestones.fail.sub))
     };
 
+    const handleOpenChest = async () => {
+        if (!activeChest || isOpening) return;
+        setIsOpening(true);
+        setRevealPhase('opening');
+        audioService.playSFX('chest_unlock');
+        
+        try {
+            const result = await dispatch(openChestThunk({ chestId: activeChest.id })).unwrap();
+            setTimeout(() => {
+                setOpenedRewards(result.rewards);
+                setRevealPhase('revealed');
+                audioService.playSFX('epic');
+                // Trigger FX flight for each reward
+                result.rewards.forEach((r, idx) => {
+                    setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('manya-fx-flight', {
+                            detail: {
+                                x: window.innerWidth / 2,
+                                y: window.innerHeight / 2,
+                                type: r.currency === 'coins' ? 'coin' : 'gem',
+                                amount: r.amount
+                            }
+                        }));
+                    }, idx * 200);
+                });
+            }, 1000);
+        } catch (e) {
+            setIsOpening(false);
+            setRevealPhase('closed');
+        }
+    };
+
     const handleCollectClick = () => {
+        if (activeChest && revealPhase !== 'revealed') {
+            handleOpenChest();
+            return;
+        }
+        
+        if (activeChest) {
+            dispatch(dismissChest());
+            if (pendingChests.length === 1) onCollect();
+            return;
+        }
+
         if (coinsEarned > 0) {
             const coinSource = document.getElementById('celebration-coin-source');
             if (coinSource) {
@@ -132,61 +186,90 @@ const CelebrationView = ({
                     <X size={20} strokeWidth={4} />
                 </button>
 
-                {/* 🛡️ PREMIUM SUBJECT CREST */}
-                <div className="badge-hero-card !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-4">
-                    <div className="badge-glow-ring" style={{ background: `radial-gradient(circle, ${char.color} 0%, transparent 70%)` }} />
-                    
-                    <div className={`badge-crest-vault shape-royal !mb-0 z-10 relative`} style={{ '--tier-accent': char.color, '--tier-dark': '#0f172a' }}>
-                        <div className="badge-icon-reveal">
-                            <motion.img
-                                src={char.image}
-                                alt={char.name}
-                                className={`w-full h-full object-contain ${!isPassing ? 'grayscale opacity-60' : ''}`}
-                                animate={isPassing ? { y: [0, -6, 0] } : { x: [-2, 2, -2] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                            />
-                        </div>
-                        <div className="badge-shine-effect" />
-                    </div>
+                {/*  Mascot Hero or Active Chest */}
+                <div className="w-full flex items-center justify-center mb-6 relative min-h-[160px]">
+                    <AnimatePresence mode="wait">
+                        {activeChest ? (
+                            <motion.div
+                                key="chest"
+                                initial={{ scale: 0, rotate: -15 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                exit={{ scale: 0, opacity: 0 }}
+                            >
+                                <PremiumChest 
+                                    type={activeChest.chestType}
+                                    phase={revealPhase === 'closed' ? 'closed' : revealPhase === 'opening' ? 'opening' : 'open'}
+                                    onClick={handleOpenChest}
+                                />
+                            </motion.div>
+                        ) : (
+                            <motion.div key="mascot" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                <motion.img
+                                    src={char.image}
+                                    alt={char.name}
+                                    className={`w-32 h-32 object-contain ${!isPassing ? 'grayscale opacity-60' : ''}`}
+                                    animate={isPassing ? { y: [0, -10, 0] } : { x: [-2, 2, -2] }}
+                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 <Ribbon 
-                    text={isPassing ? `${nodeType} COMPLETE` : `${nodeType} ATTEMPTED`} 
+                    text={activeChest ? 'NEW LOOT EARNED!' : isPassing ? `${nodeType} COMPLETE` : `${nodeType} ATTEMPTED`} 
                     variant={isPassing ? 'success' : 'fail'} 
                 />
 
                 <div className="celebration-text-content px-6 mt-4">
-                    <h1 className="celebration-title-premium !text-3xl mt-1">{msg.title}</h1>
-                    <p className="celebration-subtext-premium mb-2">{msg.sub}</p>
+                    <h1 className="celebration-title-premium !text-3xl mt-1">
+                        {activeChest ? `${activeChest.chestType.toUpperCase()} CHEST` : msg.title}
+                    </h1>
+                    <p className="celebration-subtext-premium mb-2">
+                        {activeChest ? activeChest.reason : msg.sub}
+                    </p>
                 </div>
 
                 <div className="premium-stats-list-celebration !my-6 !px-4">
-                    <div className="stat-chip-celebration">
-                        <span className="label">MASTERY</span>
-                        <span className="val" style={{ color: mastery >= 75 ? '#fbbf24' : '#10b981' }}>{mastery}%</span>
-                    </div>
-
-                    <div className="stat-chip-celebration">
-                        <span className="label">GEMS</span>
-                        <div className="val flex items-center justify-center gap-1.5">
-                            <img src={gemIcon} alt="Gem" className="w-4 h-4 object-contain" />
-                            <span style={{ color: '#10b981' }}>+{gemsEarned}</span>
+                    {activeChest && revealPhase === 'revealed' ? (
+                        <div className="flex gap-4 justify-center w-full animate-in zoom-in duration-500">
+                            {openedRewards.map((r, i) => (
+                                <div key={i} className="stat-chip-celebration !flex-row gap-2">
+                                    <img src={r.currency === 'coins' ? getGem('coin.svg') : gemIcon} className="w-5 h-5" />
+                                    <span className="val" style={{ color: r.currency === 'coins' ? '#fbbf24' : '#10b981' }}>+{r.amount}</span>
+                                </div>
+                            ))}
                         </div>
-                    </div>
+                    ) : (
+                        <>
+                            <div className="stat-chip-celebration">
+                                <span className="label">MASTERY</span>
+                                <span className="val" style={{ color: mastery >= 75 ? '#fbbf24' : '#10b981' }}>{mastery}%</span>
+                            </div>
 
-                    <div className="stat-chip-celebration">
-                        <span className="label">COINS</span>
-                        <div className="val flex items-center justify-center gap-1.5" style={{ color: '#fbbf24' }}>
-                           <CoinCounter value={coinsEarned} />
-                           <motion.div
-                             id="celebration-coin-source"
-                             animate={{ rotateY: [0, 360] }}
-                             transition={{ repeat: Infinity, duration: 3, ease: 'linear' }}
-                           >
-                              <div className="w-3.5 h-3.5 bg-amber-400 rounded-full border border-amber-600 shadow-[0_0_8px_#fbbf24]" />
-                           </motion.div>
-                        </div>
-                    </div>
+                            <div className="stat-chip-celebration">
+                                <span className="label">GEMS</span>
+                                <div className="val flex items-center justify-center gap-1.5">
+                                    <img src={gemIcon} alt="Gem" className="w-4 h-4 object-contain" />
+                                    <span style={{ color: '#10b981' }}>+{gemsEarned}</span>
+                                </div>
+                            </div>
+
+                            <div className="stat-chip-celebration">
+                                <span className="label">COINS</span>
+                                <div className="val flex items-center justify-center gap-1.5" style={{ color: '#fbbf24' }}>
+                                <CoinCounter value={coinsEarned} />
+                                <motion.div
+                                    id="celebration-coin-source"
+                                    animate={{ rotateY: [0, 360] }}
+                                    transition={{ repeat: Infinity, duration: 3, ease: 'linear' }}
+                                >
+                                    <div className="w-3.5 h-3.5 bg-amber-400 rounded-full border border-amber-600 shadow-[0_0_8px_#fbbf24]" />
+                                </motion.div>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className="px-8 w-full">

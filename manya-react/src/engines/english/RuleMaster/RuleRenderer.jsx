@@ -21,7 +21,7 @@ const RuleRenderer = ({
     // 1. Vocabulary View
     if (actualData.type === "VOCABULARY_LIST") {
         return (
-            <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-700 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
+            <div className={`flex flex-col h-full min-h-0 overflow-hidden font-jakarta transition-colors duration-700 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
                 <div className="flex-none p-10 sm:p-14 sm:pb-8 text-center relative overflow-hidden">
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full -z-10" />
                     <div className={`inline-flex px-4 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase items-center gap-2 mb-4 ${isDark ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white shadow-sm text-indigo-600 border border-slate-100'}`}>
@@ -69,7 +69,7 @@ const RuleRenderer = ({
 
     // 2. Grammar Rules View
     return (
-        <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-all duration-700 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
+        <div className={`flex-1 flex flex-col h-full min-h-0 font-jakarta transition-all duration-700 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
             <div className="flex-none px-6 pt-3 pb-1 text-center">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500 text-[8px] font-black uppercase tracking-widest border border-indigo-500/10">
                     <Zap size={10} fill="currentColor" /> Logic Map
@@ -84,7 +84,7 @@ const RuleRenderer = ({
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-2 space-y-4 scrollbar-hide pb-28">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-2 space-y-4 pb-28">
                 {/* Rule Formula Chips */}
                 <div className={`relative p-5 rounded-3xl transition-all duration-500 ${isDark ? 'bg-white/5 border border-white/5' : 'bg-white border border-slate-100 shadow-sm'}`}>
                     <div className="flex flex-col gap-2">

@@ -25,8 +25,8 @@ export const processGuess = (letter, word, guessedLetters, currentIncorrect) => 
     const nextGuessed = new Set(guessedLetters);
     nextGuessed.add(letter);
 
-    // Check game state
-    const wordChars = word.replace(/[^A-Z]/g, '').split('');
+    // Check game state (Letters and apostrophes must be guessed)
+    const wordChars = word.replace(/[^A-Z']/g, '').split('');
     const isWon = wordChars.every(char => nextGuessed.has(char));
     const isLost = nextIncorrect >= MAX_INCORRECT;
 

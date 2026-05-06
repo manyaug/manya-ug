@@ -16,7 +16,9 @@ export const SUPPORTED_SIM_ENGINES = [
 export const getEngineType = (q) => {
     const data = q?.data || q;
     const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
-    return String(raw).toUpperCase().trim();
+    const detected = String(raw).toUpperCase().trim();
+    if (detected) console.debug(`🔍 [EnglishLogic] Detected Engine: ${detected}`);
+    return detected;
 };
 
 /**

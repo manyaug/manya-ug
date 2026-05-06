@@ -107,20 +107,29 @@ export const QuestEngineCore = {
      * @returns {number} Ratio 0.0 to 1.0
      */
     getSimulationRatio: (questId, userState) => {
-        const baseRatios = { 1: 0.10, 2: 0.12, 3: 0.20, 4: 0.22, 5: 0.25 };
-        let ratio = baseRatios[questId] || 0.10;
+        console.log("🚀 [QuestCore] getSimulationRatio CALLED with questId:", questId);
+        // Boosted base ratios: more sims as we go deeper
+        const baseRatios = { 
+            1: 0.15, // Quest 1: 15%
+            2: 0.25, // Quest 2: 25%
+            3: 0.40, // Quest 3: 40%
+            4: 0.45, // Quest 4: 45%
+            5: 0.50  // Quest 5: 50%
+        };
         
-        // Boost if confidence high but accuracy low
+        let ratio = baseRatios[questId] || 0.25;
+        
+        // Boost if confidence high but accuracy low (indicates student is ready for challenge but needs better intuition)
         if (userState.confidence >= 75 && userState.overallTopicAccuracy < 60) {
-            ratio += 0.05;
+            ratio += 0.10;
         }
         
-        // Boost if highly frustrated
+        // Boost if highly frustrated (interactive content helps break the cycle)
         if (userState.frustration > 60) {
-            ratio += 0.08;
+            ratio += 0.15;
         }
         
-        return Math.min(0.30, ratio); // Cap at 30%
+        return Math.min(0.60, ratio); // Cap at 60% for maximum engagement
     },
 
     getQuestMetadata: (questId, challengeName) => {

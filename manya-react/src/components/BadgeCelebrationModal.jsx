@@ -105,8 +105,6 @@ const BadgeCelebrationModal = () => {
                 </button>
 
                 <div className={`badge-hero-card tier-${badge.tier.toLowerCase()} !bg-transparent !border-0 !shadow-none !p-0 !transform-none w-full flex items-center justify-center mb-2`}>
-                    <div className="badge-glow-ring" />
-                    
                     <div className={`badge-crest-vault ${getShapeClass(badge.tier)} !mb-0 z-10 relative`}>
                         <div className="badge-icon-reveal">
                             {renderIcon(badge.icon)}

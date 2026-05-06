@@ -12,33 +12,22 @@ import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCo
 export const rewardManager = {
     /**
      * Awards rewards for a single correct question/step.
+     * v5.2: Removed direct dispatching to prevent "Sync Gap". 
+     * Now returns values for the QuestRunner to settle at the end.
      */
-    awardStepRewards({ subject, hintUsed, streak, gameMode, isSimulation }, dispatch) {
-        const streakMultiplier = (streak >= 7) ? 2.0 : (streak >= 5) ? 1.5 : (streak >= 3) ? 1.2 : 1.0;
+    awardStepRewards({ subject, hintUsed, streak, gameMode, isSimulation }) {
+        const streakMultiplier = (streak >= 7) ? 1.5 : (streak >= 5) ? 1.3 : (streak >= 3) ? 1.1 : 1.0;
         const modeMultiplier = getModeCoinMultiplier(gameMode);
 
-        const baseGems = isSimulation ? 8 : 4;
-        const totalGems = hintUsed ? Math.floor(baseGems / 4) : Math.floor(baseGems * streakMultiplier);
+        // Gems are rare: 1 for MCQ, 3 for Simulation
+        const baseGems = isSimulation ? 3 : 0.5; // 0.5 means 50% chance or we floor it
+        const totalGems = hintUsed ? 0 : Math.floor(baseGems * streakMultiplier);
         
-        const baseCoins = isSimulation ? 12 : 8;
-        const totalCoins = Math.floor((hintUsed ? Math.floor(baseCoins / 2.5) : baseCoins) * streakMultiplier * modeMultiplier);
+        // Coins: 5 for MCQ, 10 for Simulation
+        const baseCoins = isSimulation ? 10 : 5;
+        const totalCoins = Math.floor((hintUsed ? Math.floor(baseCoins / 2) : baseCoins) * streakMultiplier * modeMultiplier);
         
-        if (totalGems > 0) {
-            dispatch(awardGems({ subject, amount: totalGems }));
-        }
-
-        if (totalCoins > 0) {
-            dispatch(awardCoins(totalCoins));
-        }
-
-        // Random drops are now mostly handled by the end-of-quest matrix, 
-        // but we keep the legacy call for legacy safety (it returns false anyway).
-        if (shouldDropBronzeChest()) {
-            const rewards = rollChestRewards('bronze');
-            dispatch(dropChest({ chestType: 'bronze', rewards }));
-        }
-
-        dispatch(checkAchievements());
+        // NO DISPATCH HERE! Let the QuestRunner handle the final transaction.
         return { gems: totalGems, coins: totalCoins };
     },
 

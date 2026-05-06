@@ -21,11 +21,16 @@ function calculateMasteryLevelFromStats({ totalAttempts, totalCorrect, correctSt
 
     const accuracy = totalCorrect / totalAttempts;
 
+    // --- Mastery Progression ---
     if (accuracy >= 0.9 && totalAttempts >= 10 && correctStreak >= 5) return 'mastered';
     if (accuracy >= 0.8 && totalAttempts >= 5)  return 'ready_for_v3';
     if (accuracy >= 0.7 && totalAttempts >= 3)  return 'ready_for_v2';
-    if (accuracy >= 0.6)                        return 'learning';
-    if (totalAttempts >= 2 && accuracy < 0.6)   return 'struggling_v1';
+    
+    // --- Struggling Logic (Ported from Manya Logic v1) ---
+    // If accuracy is low after several attempts, identify WHICH level they are stuck on
+    if (totalAttempts >= 6 && accuracy < 0.5) return 'struggling_v3';
+    if (totalAttempts >= 4 && accuracy < 0.6) return 'struggling_v2';
+    if (totalAttempts >= 2 && accuracy < 0.6) return 'struggling_v1';
 
     return 'learning';
 }
@@ -169,17 +174,8 @@ export const conceptMasteryService = {
      */
     async pullFromCloud(subject) {
         try {
-            const uid = await syncService.getUserId();
-            if (!uid) return [];
-
-            const { supabase } = await import('../../infrastructure/remote/supabaseClient.js');
-            const { data, error } = await supabase
-                .from('concept_mastery')
-                .select('*')
-                .eq('user_id', uid)
-                .eq('subject', subject);
-
-            if (error || !data) return [];
+            const data = await syncService.pullConceptMastery(subject);
+            if (!data || data.length === 0) return [];
 
             // Store locally
             for (const row of data) {

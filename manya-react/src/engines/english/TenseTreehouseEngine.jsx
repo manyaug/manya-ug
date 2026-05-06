@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 // Decoupled Resources
 import { initializeTenseData, validateTenseSelection, calculateTenseScoring } from './TenseTreehouse/TenseLogic';
@@ -19,6 +20,9 @@ const TenseTreehouseEngine = ({ data, onComplete }) => {
     const [isDark, setIsDark] = useState(false);
     const [totalMistakes, setTotalMistakes] = useState(0);
 
+    // 🧠 BEHAVIORAL TRACKER (Phase 3)
+    const { metrics, recordFirstClick } = useBehavioralTracker(phase === 'active');
+
     const startTimeRef = useRef(Date.now());
     const initialData = useMemo(() => initializeTenseData(data), [data]);
     const q = initialData.queries[currentIdx];
@@ -35,6 +39,7 @@ const TenseTreehouseEngine = ({ data, onComplete }) => {
     const handleSelect = (opt) => {
         if (phase !== 'active') return;
         setSelectedOption(opt);
+        recordFirstClick();
 
         const isCorrect = validateTenseSelection(opt, q.correct);
 
@@ -61,7 +66,15 @@ const TenseTreehouseEngine = ({ data, onComplete }) => {
 
     const handleFinishResult = () => {
         const result = calculateTenseScoring(totalMistakes, initialData.queries.length, startTimeRef.current);
-        if (onComplete) onComplete({ ...result, total: initialData.queries.length });
+        if (onComplete) onComplete({ 
+            ...result, 
+            total: initialData.queries.length,
+            // 🧠 Phase 3 Behavioral Telemetry
+            metrics: {
+                ...metrics,
+                frustrationClicks: totalMistakes
+            }
+        });
     };
 
     return (

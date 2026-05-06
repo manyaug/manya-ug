@@ -220,9 +220,48 @@
     height: 8px;
 }
 
-/* Absorption Animation Pulse */
-.hud-absorb-pulse {
-    animation: absorbPulse 0.5s ease-out;
+/* 🧠 THE BRAIN INDICATOR */
+.hud-brain-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    height: 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    margin-left: 2px;
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.hud-brain-indicator.brain-healthy {
+    border-color: #10b98122;
+    opacity: 0.6;
+}
+
+.hud-brain-indicator.brain-tuning {
+    border-color: #f59e0b66;
+    animation: brainGlowAmber 2s infinite alternate;
+}
+
+.hud-brain-indicator.brain-rescue {
+    border-color: #3b82f688;
+    animation: brainGlowBlue 1.5s infinite alternate;
+}
+
+@keyframes brainGlowAmber {
+    from { box-shadow: 0 0 2px #f59e0b22; }
+    to { box-shadow: 0 0 8px #f59e0b44; }
+}
+
+@keyframes brainGlowBlue {
+    from { box-shadow: 0 0 2px #3b82f622; }
+    to { box-shadow: 0 0 12px #3b82f666; }
 }
 
 @keyframes absorbPulse {

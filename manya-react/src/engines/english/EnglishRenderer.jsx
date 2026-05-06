@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-    Check, X, Zap, Trophy, Compass, Lightbulb, Sparkles, AlertCircle, ArrowRight
+    Check, X, Zap, Trophy, Compass, Lightbulb, Sparkles, AlertCircle, ArrowRight, RotateCcw
 } from 'lucide-react';
 import QuestHUD from '../../components/QuestHUD';
 import { triggerRewardFlight } from '../../utils/fxUtils';
@@ -126,18 +126,18 @@ const EnglishRenderer = ({
     // --- 🎮 SIMULATION ROUTING ---
     if (BridgeNode) {
         return (
-            <div className="flex-1 !w-full !h-full flex flex-col overflow-hidden relative !p-0 !m-0">
+            <div className="flex-1 !w-full !h-full flex flex-col overflow-hidden relative !p-0 !m-0 min-h-0">
                 {BridgeNode}
             </div>
         );
     }
 
     return (
-        <div className="flex-1 flex flex-col animate-in fade-in duration-500 overflow-hidden relative" style={{ maxHeight: '100%' }}>
+        <div className="flex-1 flex flex-col animate-in fade-in duration-500 relative">
             {/* Scrollable primary area */}
 
             {/* --- SCROLLABLE CONTENT AREA --- */}
-            <div className="flex-1 overflow-y-auto px-4 pt-4 scrollbar-hide pb-4">
+            <div className="flex-1 overflow-y-auto px-4 pt-4 pb-4">
 
                 {currentQ?.isRephrased && (
                     <div className="text-[10px] uppercase tracking-widest text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-2 font-black mb-4 text-center">
@@ -278,7 +278,7 @@ const EnglishRenderer = ({
                         <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                     </button>
                 ) : (
-                    <div ref={correctBtnRef} className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
+                    <div ref={correctBtnRef} className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-amber-500/10 border-amber-500/30 text-amber-500'}`}>
                         {userWasCorrect ? <>Magnificent! Keep going! <Check size={18} /></> : <>Analyzing solution... <AlertCircle size={18} /></>}
                     </div>
                 )}
@@ -291,7 +291,7 @@ const EnglishRenderer = ({
                         <div className="toy-card-gloss" />
                         
                         <div className="flex items-center gap-5 mb-6">
-                            <div className="w-14 h-14 rounded-2xl bg-rose-500/20 flex items-center justify-center text-rose-500">
+                            <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-500">
                                 <X size={28} strokeWidth={3} />
                             </div>
                             <div>
@@ -315,7 +315,7 @@ const EnglishRenderer = ({
 
                         <button 
                             onClick={onContinue}
-                            className="w-full h-16 bg-rose-500 text-white rounded-[2rem] font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_8px_0_#9f1239] active:translate-y-1 active:shadow-none transition-all"
+                            className="w-full h-16 bg-amber-500 text-white rounded-[2rem] font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_8px_0_#b45309] active:translate-y-1 active:shadow-none transition-all"
                         >
                             <div className="btn-toy-gloss" />
                             Keep Exploring <ArrowRight size={20} />

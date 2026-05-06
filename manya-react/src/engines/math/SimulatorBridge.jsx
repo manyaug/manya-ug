@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { getEngineType, SUPPORTED_SIM_ENGINES } from './MathLogic';
 import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 // Shared Engines
 import UniversalGlobeEngine from '../sst/UniversalGlobeEngine.jsx';
@@ -30,7 +31,12 @@ import SetClassifierEngine from './SetClassifierEngine';
 const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showWrong, setShowWrong] = useState(false);
+    
+    // 🧠 [Phase 3] Universal Behavioral Tracking for Simulations
+    const { metrics } = useBehavioralTracker(true);
+
     const simData = step?.data?.questions ? step.data : (step?.data || step);
+    
     const resultRef = useRef(null);
     const finishedRef = useRef(false);
 
@@ -43,7 +49,6 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
     );
 
     let engineType = getEngineType(step);
-    if (engineType === 'IMAGE_HOTSPOTS' && !simData.engineType && !simData.type) engineType = 'IMAGE_HOTSPOTS';
 
     const handleSimComplete = (results) => {
         if (finishedRef.current) return;
@@ -61,7 +66,9 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
             success: true, 
             score: usp.masteryScore,
             usp: usp,
-            simResults: finalResults
+            simResults: finalResults,
+            // 🧠 Behavioral Pass-through
+            metrics: metrics 
         });
     };
 
@@ -104,6 +111,12 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
             case 'MATH_STUDY':
             case 'SET_STUDY':
             case 'STUDY_RECAP':
+                // 🧠 SMART ROUTING (v8.5): If a STUDY card actually contains simulation data, 
+                // we "promote" it to the SetTheoryEngine so it doesn't render as an empty card.
+                const hasSimData = simData.interaction || simData.targetRegion || simData.expression || simData.questions?.[0]?.interaction;
+                if (hasSimData && engineType !== 'STUDY_RECAP') {
+                    return <SetTheoryEngine {...sharedProps} />;
+                }
                 return <SetStudyEngine {...sharedProps} />;
             
             case 'VENN_PROB_ENGINE':

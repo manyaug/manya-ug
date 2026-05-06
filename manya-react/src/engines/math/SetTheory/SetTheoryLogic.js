@@ -46,26 +46,58 @@ export const normalize = (t) => {
 
 /**
  * Evaluates mathematical expressions using a secure sandbox.
- * Only evaluates strings that look like actual math formulas (contain operators, digits+letters, etc.).
- * Plain text labels like "M", "Sat", "Apple" are returned as-is.
+ * Can take a single value (x) or an object of variables.
  */
-export const evaluateExpr = (expr, val) => {
+export const evaluateExpr = (expr, vars = 0) => {
     if (!expr || typeof expr !== 'string') return expr;
-    const cleanVal = String(val || "").trim();
-    if (!cleanVal || isNaN(cleanVal)) return expr;
+    
+    // Normalize vars to an object
+    const variables = typeof vars === 'object' ? { ...vars } : { x: vars };
     
     // Only evaluate if the expression looks like a math formula or a common variable:
-    // Must contain math operators, digits alongside letters, or just be a single variable (x, y, z).
-    const isSingleVar = /^[xyz]$/i.test(expr);
-    const hasMathOp = /[+\-*/^]/.test(expr);
+    const isVar = /^[a-z]$/i.test(expr);
+    const hasMathOp = /[+\-*/^()]/.test(expr);
     const hasDigitAndLetter = /\d/.test(expr) && /[a-zA-Z]/.test(expr);
+    const hasMultipleVars = /[a-z].*[a-z]/i.test(expr);
     
-    if (!isSingleVar && !hasMathOp && !hasDigitAndLetter) return expr;
+    if (!isVar && !hasMathOp && !hasDigitAndLetter && !hasMultipleVars) return expr;
     
     try {
-        const num = parseFloat(cleanVal);
         const parser = new Parser();
-        return parser.evaluate(expr.toLowerCase().replace(/[a-z]/g, 'x'), { x: num });
+        // Standardize all variables in expression to lowercase for parser
+        const cleanExpr = expr.toLowerCase();
+        
+        // Prepare context: numeric conversion of all variables
+        const context = {};
+        let firstNum = null;
+        const SOLVED_KEYS = ['x', 'main', 'answer', 'ans'];
+        
+        Object.keys(variables).forEach(k => {
+            const val = parseFloat(variables[k]);
+            if (!isNaN(val)) {
+                const lowerK = k.toLowerCase();
+                context[lowerK] = val;
+                // Only use official solved variables as candidates for smart mapping
+                if (SOLVED_KEYS.includes(lowerK)) {
+                    if (firstNum === null || (firstNum === 0 && val !== 0)) firstNum = val;
+                }
+            }
+        });
+
+        // 🧠 v8.7 SMART MAPPING: If the expression has exactly one unknown variable, 
+        // and we have a candidate number (firstNum), map it!
+        const exprVars = parser.parse(cleanExpr).variables();
+        const missingVars = exprVars.filter(v => !(v in context));
+        
+        if (missingVars.length === 1 && firstNum !== null) {
+            context[missingVars[0]] = firstNum;
+        }
+
+        const result = parser.evaluate(cleanExpr, context);
+        console.log(`[MathLogic] evaluateExpr("${expr}") with vars:`, variables, "-> context:", context, "-> result:", result);
+        
+        // If result is valid number, return it, otherwise fallback to expression
+        return isNaN(result) ? expr : result;
     } catch (err) { 
         return expr; 
     }
@@ -88,20 +120,21 @@ export const validateInteraction = (params) => {
     let isCorrect = false;
     let corrected = "";
 
-    // Helper: Safely count members across one or more target regions
-    const getTargetMemberCount = (target) => {
+    // Helper: Safely count members across one or more target regions (supports Algebra)
+    const getTargetMemberCount = (target, vars) => {
         const zones = resolveZones(target);
         return zones.reduce((acc, z) => {
             const key = z === 'intersection' ? 'center' : z;
             const members = data.zones?.[key] || [];
             
-            // Logic: In "Survey" style questions, a single numeric string (e.g. "8") 
-            // represents the total pupils in that region. In "Theory" style, 
-            // multiple elements or characters (e.g. "a", "b") represent individual members.
-            if (members.length === 1 && !isNaN(members[0]) && parseInt(members[0]) > 2) {
-                return acc + parseInt(members[0]);
-            }
-            return acc + members.length;
+            let zoneSum = 0;
+            members.forEach(m => {
+                // v8.5: Evaluate each member (e.g. "2y+8")
+                const val = evaluateExpr(String(m), vars);
+                const num = parseFloat(val);
+                zoneSum += isNaN(num) ? 1 : num;
+            });
+            return acc + zoneSum;
         }, 0);
     };
 
@@ -143,11 +176,16 @@ export const validateInteraction = (params) => {
     } else if (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType)) {
         const userVal = String(Object.values(userAnswers).find(v => v !== '') || '').trim();
         let target = currentStep.expected || currentStep.answer || currentStep.expected_x || currentStep.expression;
-        const xVal = currentStep.x_val || 0;
+        
+        // Combine explicit x_val with anything solved in previous steps
+        const vars = { 
+            x: currentStep.x_val,
+            ...(params.successfulAnswers || {}) 
+        };
 
         // 1. Resolve Dynamic Metadata (Counting)
         if (currentStep.targetRegion && (!target || ['COUNT', 'COUNT_SUM', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type))) {
-            const n = getTargetMemberCount(currentStep.targetRegion);
+            const n = getTargetMemberCount(currentStep.targetRegion, vars);
             
             if (['SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type)) {
                 target = (currentStep.type === 'SUBSET_COUNT') ? Math.pow(2, n) : Math.pow(2, n) - 1;
@@ -176,7 +214,7 @@ export const validateInteraction = (params) => {
             corrected = String(target);
         } else {
             // Algebraic / Expression check
-            const evaluatedTarget = evaluateExpr(String(target), xVal);
+            const evaluatedTarget = evaluateExpr(String(target), vars);
             
             // If the evaluated target is a plain number but user entered same number, it's correct.
             // Normalize handles cases like "24-6" matching "18" if we wanted, but usually we match literal or result.

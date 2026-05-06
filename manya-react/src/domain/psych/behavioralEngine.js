@@ -51,7 +51,7 @@ export const BehavioralEngine = {
     },
 
     /**
-     * Analyze guessing vs thinking patterns based on time spent.
+     * Analyze guessing vs thinking patterns based on high-fidelity telemetry.
      * @param {Array} userAnswers - Array of previous formatted answer objects
      */
     analyzeAnswerPattern: (userAnswers) => {
@@ -60,7 +60,9 @@ export const BehavioralEngine = {
             deepThinkingRate: 0,
             hintDependency: 0,
             averageTime: 0,
-            consistency: 0
+            tabSwitchRate: 0,
+            avgIdleTime: 0,
+            hesitationRate: 0
         };
         
         if (!userAnswers || userAnswers.length === 0) return patterns;
@@ -70,18 +72,32 @@ export const BehavioralEngine = {
         let slowThoughtful = 0;
         let hints = 0;
         let totalTime = 0;
+        let tabSwitches = 0;
+        let totalIdleTime = 0;
+        let hesitations = 0;
         
         userAnswers.forEach(a => {
+            // 1. Core Timing Patterns
             if (a.timeSpentMs < 5000) fastGuesses++;
             if (a.timeSpentMs > 30000) slowThoughtful++;
-            if (a.hintUsed) hints++;
             totalTime += a.timeSpentMs || 0;
+            
+            // 2. Behavioral Metrics (Manya Logic v1.2)
+            if (a.hintUsed) hints++;
+            if (a.tabSwitched || a.tab_switched) tabSwitches++;
+            if (a.hesitationCount > 0) hesitations++;
+            totalIdleTime += a.idleTimeMs || a.idle_time_ms || 0;
         });
         
         patterns.guessingRate = Math.round((fastGuesses / total) * 100);
         patterns.deepThinkingRate = Math.round((slowThoughtful / total) * 100);
         patterns.hintDependency = Math.round((hints / total) * 100);
         patterns.averageTime = Math.round(totalTime / total / 1000);
+        
+        // Advanced Porting from Manya Logic v1.2
+        patterns.tabSwitchRate = Math.round((tabSwitches / total) * 100);
+        patterns.avgIdleTime = Math.round(totalIdleTime / total);
+        patterns.hesitationRate = Math.round((hesitations / total) * 100);
         
         return patterns;
     },

@@ -8,16 +8,27 @@
  */
 export const initializeTenseData = (data) => {
     const d = data?.data || data || {};
+    const rawQueries = d.queries || d.questions || d.items || [];
+    
+    const defaultQueries = [
+        { 
+            base: "She eats an apple", 
+            targetTense: "The Past", 
+            options: ["ate", "eaten", "eats"], 
+            correct: "ate", 
+            fullCorrect: "She ate an apple" 
+        },
+        { 
+            base: "I am going home", 
+            targetTense: "The Future", 
+            options: ["will go", "went", "gone"], 
+            correct: "will go", 
+            fullCorrect: "I will go home" 
+        }
+    ];
+
     return {
-        queries: d.queries || [
-            { 
-                base: "She eats an apple", 
-                targetTense: "The Past", 
-                options: ["ate", "eaten", "eats"], 
-                correct: "ate", 
-                fullCorrect: "She ate an apple" 
-            }
-        ]
+        queries: (Array.isArray(rawQueries) && rawQueries.length > 0) ? rawQueries : defaultQueries
     };
 };
 

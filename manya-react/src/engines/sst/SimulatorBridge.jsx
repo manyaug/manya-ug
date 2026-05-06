@@ -1,10 +1,11 @@
-import React, { useState, Suspense, useRef } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { discoverArtifact, syncUserData } from '../../store/userSlice';
 import { addToast } from '../../store/toastSlice';
 import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 import { getEngineType } from './SSTLogic';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
 import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
@@ -27,8 +28,22 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
     const dispatch = useDispatch();
     const [showSuccess, setShowSuccess] = useState(false);
     const [showWrong, setShowWrong] = useState(false);
+    
+    // 🧠 [Phase 3] Universal Behavioral Tracking
+    const { metrics } = useBehavioralTracker(true);
+
     const user = useSelector(s => s.user.data);
     const simData = step?.data || step;
+    const engineType = getEngineType(step);
+    
+    useEffect(() => {
+        console.log(`%c 🌉 [SimulatorBridge] Hydrating Engine: ${engineType}`, 'color: #3b82f6; font-weight: bold;', {
+            engineType,
+            stepId: step?.id || step?.qid,
+            hasData: !!step?.data,
+            resolvedPayload: simData
+        });
+    }, [engineType, step, simData]);
     const resultRef = React.useRef(null);
 
     const handleSimResult = (res) => {
@@ -149,7 +164,9 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
                                     success: true, 
                                     score: usp.masteryScore,
                                     usp: usp,
-                                    simResults: res 
+                                    simResults: res,
+                                    // 🧠 Behavioral Pass-through
+                                    metrics: metrics
                                 });
                             }}
                             onResult={(res) => console.debug(`📊 [Bridge] ${rawEngine} update:`, res)}

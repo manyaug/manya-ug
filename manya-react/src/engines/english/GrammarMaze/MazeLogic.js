@@ -6,27 +6,52 @@
 /**
  * Normalizes level data for the maze.
  */
-export const initializeLevel = (levelData) => {
-    if (!levelData) return null;
+export const initializeLevel = (data) => {
+    const raw = data?.data || data || {};
+    
+    const defaultMaze = [
+        [2, 0, 0, 0, 1],
+        [1, 1, 0, 1, 1],
+        [0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 3]
+    ];
+    
+    const maze = Array.isArray(raw.maze) ? raw.maze : defaultMaze;
+    const rawObstacles = Array.isArray(raw.obstacles) ? raw.obstacles : [];
+    const rawAnswers = Array.isArray(raw.answers) ? raw.answers : [
+        { r: 4, c: 4, isCorrect: true, text: "Victory!" }
+    ];
 
     let startPos = { r: 0, c: 0 };
-    for (let r = 0; r < levelData.maze.length; r++) {
-        for (let c = 0; c < levelData.maze[r].length; c++) {
-            if (levelData.maze[r][c] === 2) {
+    for (let r = 0; r < maze.length; r++) {
+        for (let c = 0; c < maze[r].length; c++) {
+            if (maze[r][c] === 2) {
                 startPos = { r, c };
                 break;
             }
         }
     }
 
-    const obstacles = levelData.obstacles.map(obs => ({
-        ...obs,
-        r: obs.path[0].r,
-        c: obs.path[0].c,
-        step: 0
-    }));
+    const obstacles = rawObstacles.map(obs => {
+        const path = Array.isArray(obs.path) && obs.path.length > 0 ? obs.path : [{ r: 0, c: 0 }];
+        return {
+            ...obs,
+            path,
+            r: path[0].r,
+            c: path[0].c,
+            step: 0
+        };
+    });
 
-    return { startPos, obstacles };
+    return { 
+        startPos, 
+        obstacles, 
+        maze, 
+        answers: rawAnswers,
+        title: raw.title || "Grammar Maze",
+        instructions: raw.instructions || "Find the correct path!"
+    };
 };
 
 /**

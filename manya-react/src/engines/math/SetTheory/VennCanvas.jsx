@@ -143,8 +143,17 @@ const VennCanvas = ({
             if (isTwoSet) drawStatic(c2.x, cy, r, c2.color);
 
             ctx.font = `800 ${isMobile ? 18 : 22}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign="center";
-            if (data.sets?.A) { ctx.fillStyle = c1.color; ctx.fillText(data.sets.A.label || data.sets.A.val || "", c1.x, cy - r - (isMobile ? 15 : 25)); }
-            if (isTwoSet && data.sets?.B) { ctx.fillStyle = c2.color; ctx.fillText(data.sets.B.label || data.sets.B.val || "", c2.x, cy - r - (isMobile ? 15 : 25)); }
+            const setA = data.sets?.A || data.sets?.a || currentStep?.sets?.A || currentStep?.sets?.a;
+            const setB = data.sets?.B || data.sets?.b || currentStep?.sets?.B || currentStep?.sets?.b;
+
+            if (setA) { 
+                ctx.fillStyle = c1.color; 
+                ctx.fillText(setA.label || setA.val || "", c1.x, cy - r - (isMobile ? 15 : 25)); 
+            }
+            if (isTwoSet && setB) { 
+                ctx.fillStyle = c2.color; 
+                ctx.fillText(setB.label || setB.val || "", c2.x, cy - r - (isMobile ? 15 : 25)); 
+            }
 
             const renderMembers = (src) => {
                 if (!src) return;
@@ -180,7 +189,10 @@ const VennCanvas = ({
                             ly += yOffset;
                         }
 
-                        const displayVal = evaluateExpr(String(v), currentStep.x_val || 0);
+                        const displayVal = evaluateExpr(String(v), { 
+                            x: currentStep.x_val,
+                            ...frozenZones 
+                        });
                         ctx.fillStyle = colors.text; 
                         ctx.font = "800 18px 'Plus Jakarta Sans', sans-serif"; 
                         ctx.textAlign = "center"; 

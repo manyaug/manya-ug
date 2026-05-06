@@ -16,6 +16,33 @@ import ManyaKeyboard from '../../components/engine/ManyaKeyboard';
  */
 
 const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong }) => {
+  // --- 🗃️ DATA NORMALIZATION (Manifest vs Single-Step) ---
+  const normalizedData = React.useMemo(() => {
+    // 🔍 PIPELINE TRACE: Log every level of the incoming data
+    console.log("%c 🛰️ [SetTheory] RAW DATA KEYS:", "color: #f59e0b; font-weight: bold;", Object.keys(data || {}));
+    console.log("%c 🛰️ [SetTheory] data.sets:", "color: #f59e0b;", data?.sets);
+    console.log("%c 🛰️ [SetTheory] data.data keys:", "color: #f59e0b;", data?.data ? Object.keys(data.data) : 'NO data.data');
+    console.log("%c 🛰️ [SetTheory] data.data.sets:", "color: #f59e0b;", data?.data?.sets);
+    console.log("%c 🛰️ [SetTheory] data.questions:", "color: #f59e0b;", data?.questions ? `Array(${data.questions.length})` : data?.questions);
+    console.log("%c 🛰️ [SetTheory] data.data.questions:", "color: #f59e0b;", data?.data?.questions ? `Array(${data.data.questions.length})` : data?.data?.questions);
+
+    // 🧠 v8.9: Aggressively hunt for the manifest root (containing questions/sets)
+    // Supports: root, data sub-object, or single-step payloads
+    const root = data?.questions ? data : (data?.data?.questions ? data.data : data);
+    const sets = root?.sets || root?.data?.sets || data?.sets || data?.data?.sets;
+    const zones = root?.zones || root?.data?.zones || data?.zones || data?.data?.zones;
+    const questions = root?.questions || root?.steps || root?.data?.questions || root?.data?.steps || (Array.isArray(data) ? data : [root]);
+    
+    console.log("%c 🛰️ [SetTheory] RESOLVED: root.sets=", "color: #22c55e; font-weight: bold;", sets, "| root.zones=", zones);
+
+    return {
+      ...root,
+      sets,
+      zones,
+      questions: Array.isArray(questions) ? questions : [questions]
+    };
+  }, [data]);
+  
   const [stepIdx, setStepIdx] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [selectedRegions, setSelectedRegions] = useState(new Set());
@@ -35,8 +62,13 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
   const containerRef = useRef(null);
   const feedbackBtnRef = useRef(null);
   
-  const currentStep = data?.questions?.[stepIdx];
-  const isTwoSet = !!(data?.sets?.B && data?.sets?.B?.label !== "");
+  const currentStep = normalizedData.questions[stepIdx];
+  useEffect(() => {
+    if (currentStep) {
+        console.log(`%c 🧠 [SetTheory] Rendering Step ${stepIdx + 1}:`, 'color: #8b5cf6; font-weight: bold;', currentStep);
+    }
+  }, [currentStep, stepIdx]);
+  const isTwoSet = !!(normalizedData.sets?.B || currentStep?.sets?.B);
 
   // --- 🪄 THEME SYNC ---
   useLayoutEffect(() => {
@@ -52,23 +84,26 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
     if (canvasSize.width === 0 || canvasSize.height === 0) return null;
     const { width, height } = canvasSize;
     const isMobile = width <= 480;
-    const isDisjoint = (data.topic || "").toLowerCase().includes("disjoint");
+    const isDisjoint = (normalizedData.topic || "").toLowerCase().includes("disjoint");
+
+    // Diagnostic Log
+    console.log(`[SetTheory] Computing Layout. Sets:`, normalizedData.sets, "isTwoSet:", isTwoSet);
 
     const r = Math.min(isMobile ? 85 : 120, width * 0.28);
     const offset = !isTwoSet ? 0 : (isDisjoint ? r * 1.05 : r * 0.55); 
     const cy = height * 0.5;
 
     return {
-      c1: { x: width/2 - offset, y: cy, color: data.sets?.A?.color || "#16a34a" },
-      c2: { x: width/2 + offset, y: cy, color: data.sets?.B?.color || "#ea580c" },
+      c1: { x: width/2 - offset, y: cy, color: (normalizedData.sets?.A?.color || normalizedData.sets?.a?.color || "#16a34a") },
+      c2: { x: width/2 + offset, y: cy, color: (normalizedData.sets?.B?.color || normalizedData.sets?.b?.color || "#ea580c") },
       r, cx: width/2, cy, width, height, s: window.devicePixelRatio || 2, isMobile, isDisjoint, offset
     };
-  }, [canvasSize, data, isTwoSet]);
+  }, [canvasSize, normalizedData, isTwoSet]);
 
   // --- 🧠 INTERACTION HANDLER ---
   const handleInteraction = useCallback(() => {
     if (isResolved) {
-        if (stepIdx < data.questions?.length - 1) { 
+        if (stepIdx < normalizedData.questions?.length - 1) { 
             setStepIdx(p => p+1); 
             setUserAnswers({}); 
             setSelectedRegions(new Set());
@@ -82,7 +117,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
     }
     
     const { isCorrect, corrected } = validateInteraction({
-        currentStep, userAnswers, chips, activeSets, l: computeLayout(), data, isTwoSet, selectedRegions
+        currentStep, userAnswers, chips, activeSets, l: computeLayout(), data: normalizedData, isTwoSet, selectedRegions, successfulAnswers
     });
 
     if (onResult) onResult({ isCorrect, selectedAnswer: Object.values(userAnswers).join('|'), correctAnswer: corrected, type: 'simulation' });
@@ -99,30 +134,44 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
             setTimeout(() => triggerRewardFlight({ x: window.innerWidth/2, y: window.innerHeight - 80 }, 'coin', 5), 200);
         }
         
-        window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: data.subject || 'math' } }));
+        window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: normalizedData.subject || 'math' } }));
 
         // [Manya v4 Pulse] Notify parent HUD of step completion
         onResult?.({
             score: stepIdx + 1,
-            total: data.questions.length,
+            total: normalizedData.questions.length,
             isCorrect: true,
             type: 'step_complete'
         });
 
-        // Persist answers for retain_visuals
+        // 🧠 v9.0: Persistent Variable Mapping
+        // Map generic 'main' inputs to specific variables (x, y, etc.) if the step defines them
+        const varName = currentStep.expected_var || (currentStep.expected_x ? 'x' : (currentStep.expected_y ? 'y' : null));
+        
         if (Object.keys(userAnswers).length > 0) {
-            setSuccessfulAnswers(prev => ({ ...prev, ...userAnswers }));
+            setSuccessfulAnswers(prev => {
+                const next = { ...prev };
+                Object.keys(userAnswers).forEach(k => {
+                    next[k] = userAnswers[k];
+                    if (k === 'main' && varName) next[varName] = userAnswers[k];
+                });
+                return next;
+            });
         }
     } else { 
-        setFeedback({ text: 'NOT QUITE RIGHT', type: 'error' }); 
+        setFeedback({ 
+            text: corrected ? `Correct solution: ${corrected}` : 'NOT QUITE RIGHT', 
+            type: 'error' 
+        }); 
         audioService.wrong(); 
         if (onSimWrong) onSimWrong();
-        window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: data.subject || 'math' } }));
+        window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: normalizedData.subject || 'math' } }));
     }
-  }, [isResolved, stepIdx, data, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult, onSimSuccess, onSimWrong]);
+  }, [isResolved, stepIdx, normalizedData, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult, onSimSuccess, onSimWrong, successfulAnswers]);
 
   const onMouseDown = (e) => {
     if (e.cancelable) e.preventDefault();
+    if (!currentStep) return;
     const rect = containerRef.current.getBoundingClientRect();
     const cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
     const px = (cx - rect.left) * (canvasSize.width / rect.width), py = (cy - rect.top) * (canvasSize.height / rect.height);
@@ -151,7 +200,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
   const onMouseMove = (e) => {
     const activeDrag = draggingRef.current;
     const dragOffset = dragOffsetRef.current;
-    if (!activeDrag) return;
+    if (!activeDrag || !currentStep) return;
 
     if (e.cancelable) e.preventDefault();
     const rect = containerRef.current.getBoundingClientRect();
@@ -195,7 +244,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
         const raw = currentStep.chips || currentStep.items || [];
         setChips(raw.map((v, i) => ({ id: i, val: v.val || v, target: v.target || 'outside', x: 50 + (i * 60), y: (canvasSize.height || 400) - 50 })));
     }
-  }, [stepIdx, data, canvasSize.height]);
+  }, [stepIdx, normalizedData, canvasSize.height, currentStep]);
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => { 
@@ -225,10 +274,17 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
   };
 
   // --- 🎨 FINAL RENDER ZONES (Always merge history for worksheets) ---
-  const mergedZones = { ...(data.zones || {}), ...successfulAnswers };
+  const mergedZones = { 
+      ...(normalizedData.zones || {}), 
+      ...(currentStep?.zones || {}),
+      ...successfulAnswers 
+  };
 
   return (
-    <div className="flex flex-col h-full w-full bg-transparent overflow-y-auto no-scrollbar select-none font-['Plus_Jakarta_Sans'] antialiased">
+    <div 
+        className="flex flex-col h-full w-full bg-transparent overflow-y-auto no-scrollbar select-none font-['Plus_Jakarta_Sans'] antialiased transition-all duration-300"
+        style={{ paddingBottom: kbOpen ? '320px' : '0px' }}
+    >
         {/* 1. FIXED HEADER (Bulletproof Manya) */}
         <div className="p-4 flex-shrink-0 z-20">
             <div className={`rounded-3xl p-5 border-2 shadow-xl relative overflow-hidden transition-all ${isDark ? 'bg-slate-900/80 border-slate-800 backdrop-blur-md' : 'bg-white border-slate-100'}`}>
@@ -238,13 +294,13 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                             <Compass size={14} />
                         </div>
                         <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                            {typeof data.topic === 'object' ? data.topic.label : (data.topic || "Set Theory")} · {stepIdx + 1}/{data.questions.length}
+                            {typeof normalizedData.topic === 'object' ? normalizedData.topic.label : (normalizedData.topic || "Set Theory")} · {stepIdx + 1}/{normalizedData.questions.length}
                         </span>
                     </div>
                     {/* Progress & Hint */}
                     <div className="flex items-center gap-3">
                         <div className="flex gap-1">
-                            {data.questions.map((_, i) => (
+                            {normalizedData.questions.map((_, i) => (
                                 <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === stepIdx ? 'bg-indigo-500 w-4' : (i < stepIdx ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-800')}`} />
                             ))}
                         </div>
@@ -270,7 +326,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
         <div ref={containerRef} className="flex-1 relative min-h-[280px]">
             <VennCanvas 
                 l={computeLayout()}
-                data={data}
+                data={normalizedData}
                 isDark={isDark}
                 isTwoSet={isTwoSet}
                 isResolved={isResolved}
@@ -365,9 +421,9 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                             : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
                         }`}>
                             {feedback.type === 'success' ? (
-                                <><Check size={20} strokeWidth={4} /> Magnificent!</>
+                                <><Check size={20} strokeWidth={4} /> {feedback.text || 'Magnificent!'}</>
                             ) : (
-                                <><AlertCircle size={20} strokeWidth={4} /> Solution Pending...</>
+                                <><AlertCircle size={20} strokeWidth={4} /> {feedback.text || 'Solution Pending...'}</>
                             )}
                         </div>
 
@@ -385,7 +441,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                             <div className="btn-toy-gloss" />
                             <span className="relative z-10">
                                 {feedback.type === 'success' 
-                                    ? (stepIdx < data.questions.length - 1 ? 'Next Challenge' : 'Complete Quest') 
+                                    ? (stepIdx < normalizedData.questions.length - 1 ? 'Next Challenge' : 'Complete Quest') 
                                     : 'Try Again'}
                             </span>
                             <ArrowRight size={18} className="relative z-10" />
@@ -438,7 +494,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                             )}
 
                             {(() => {
-                                const hasInteraction = selectedRegions.size > 0 || Object.keys(userAnswers).some(k => userAnswers[k]) || (currentStep.interaction === 'DRAG_SORT' && chips.some(c => c.region !== 'storage')) || (currentStep.interaction === 'DRAG_SETS' && Object.keys(activeSets).some(k => activeSets[k] && (activeSets[k].x !== (k === 'a' ? 100 : 300))));
+                                const hasInteraction = currentStep && (selectedRegions.size > 0 || Object.keys(userAnswers).some(k => userAnswers[k]) || (currentStep.interaction === 'DRAG_SORT' && chips.some(c => c.region !== 'storage')) || (currentStep.interaction === 'DRAG_SETS' && Object.keys(activeSets).some(k => activeSets[k] && (activeSets[k].x !== (k === 'a' ? 100 : 300)))));
                                 return (
                                     <button 
                                         onClick={handleInteraction}

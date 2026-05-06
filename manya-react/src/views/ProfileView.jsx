@@ -78,7 +78,38 @@ function ProfileView() {
                 </div>
                 <h2 className="hero-display-name">{(user?.nickname || 'Hero').toUpperCase()}</h2>
                 <div className="hero-rank-pill">{stats.rank.toUpperCase()}</div>
-                <div className="hero-title-tag">System Administrator</div>
+                <div className="hero-title-tag">Elite Manya Explorer</div>
+            </motion.div>
+
+            {/* GEM TREASURY (Phase 1 💎) */}
+            <motion.div variants={itemVariants} className="px-4 mb-4">
+                <div className="bento-card-elite p-4">
+                    <div className="toy-card-gloss" />
+                    <div className="flex items-center justify-between mb-4 relative z-10">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Gem Treasury</span>
+                        <div className="flex items-center gap-1 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                            <img src={IMAGES.coin_gem} className="w-3 h-3" />
+                            <span className="text-[10px] font-black text-amber-600">{(user?.coins || 0).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-3 relative z-10">
+                        {[
+                            { name: 'Math', val: user?.mathGems || 0, img: IMAGES.math_gem, color: 'var(--manya-purple)' },
+                            { name: 'Science', val: user?.scienceGems || 0, img: IMAGES.science_gem, color: '#10b981' },
+                            { name: 'SST', val: user?.sstGems || 0, img: IMAGES.sst_gem, color: '#f59e0b' },
+                            { name: 'English', val: user?.englishGems || 0, img: IMAGES.english_gem, color: '#f43f5e' }
+                        ].map(gem => (
+                            <div key={gem.name} className="flex flex-col items-center gap-1">
+                                <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-white/5 border border-white dark:border-white/10 shadow-sm flex items-center justify-center group overflow-hidden relative">
+                                    <img src={gem.img} className="w-7 h-7 object-contain group-hover:scale-110 transition-transform" alt={gem.name} />
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent to-white/20" />
+                                </div>
+                                <span className="text-[14px] font-black" style={{ color: gem.color }}>{gem.val}</span>
+                                <span className="text-[8px] font-black uppercase tracking-tighter text-slate-400">{gem.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </motion.div>
 
             {/* 2. FORCED HORIZONTAL HUD */}

@@ -3,7 +3,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { restoreCloudProgress } from '../domain/progress/questProgressService.js';
+import { conceptMasteryService } from '../domain/mastery/conceptMasteryService.js';
 import { BADGES } from '../config/badges';
+import { rewardService } from '../infrastructure/services/rewardService.js';
 
 // Async thunk to boot user from IndexedDB
 export const initializeUser = createAsyncThunk(
@@ -13,10 +15,19 @@ export const initializeUser = createAsyncThunk(
     const cloudProfile = await syncService.pullProfile();
     const cloudProgress = await syncService.pullProgress();
     const cloudVault = await syncService.pullVault();
+    const cloudBalance = await syncService.fetchUserBalance();
     
     if (cloudProgress) {
         restoreCloudProgress(cloudProgress);
         console.log("☁️ [Sync] Progress restored from Supabase.");
+        
+        // 🧠 Also pull granular concept mastery for all subjects
+        const subjects = ['science', 'math', 'sst', 'english'];
+        for (const sub of subjects) {
+            conceptMasteryService.pullFromCloud(sub).catch(e => 
+                console.warn(`[Sync] Failed to pull ${sub} mastery:`, e.message)
+            );
+        }
     }
     
     // 2. Fetch local as fallback/merge
@@ -24,13 +35,18 @@ export const initializeUser = createAsyncThunk(
     
     if (cloudProfile) {
         console.log("☁️ [Sync] Profile restored from Supabase.");
-        const stats = cloudProfile.engagement_stats || {};
         const merged = {
             ...(localUser || ManyaDB.createDefaultRecord()),
             nickname: cloudProfile.full_name,
-            diamonds: stats.gems || cloudProfile.gems_overall || 0,
-            coins: stats.coins || localUser?.coins || 0,
-            stats_quests_completed: stats.quests_completed || localUser?.stats_quests_completed || 0,
+            // START FRESH: Ignore old engagement_stats, use new user_balances
+            diamonds: cloudBalance?.gem_overall || 0,
+            coins: cloudBalance?.coins || 0,
+            mathGems: cloudBalance?.gem_math || 0,
+            scienceGems: cloudBalance?.gem_science || 0,
+            englishGems: cloudBalance?.gem_english || 0,
+            sstGems: cloudBalance?.gem_sst || 0,
+            
+            stats_quests_completed: localUser?.stats_quests_completed || 0,
             math_correct: Math.max(localUser?.math_correct || 0, cloudProfile.math_correct || 0),
             science_correct: Math.max(localUser?.science_correct || 0, cloudProfile.science_correct || 0),
             english_correct: Math.max(localUser?.english_correct || 0, cloudProfile.english_correct || 0),
@@ -39,12 +55,13 @@ export const initializeUser = createAsyncThunk(
             learning_type: cloudProfile.learning_type || 'ADAPTIVE',
             unlockedBadges: Array.from(new Set([
                 ...(localUser?.unlockedBadges || []), 
-                ...(stats.unlocked_badges || cloudProfile.unlocked_badges || [])
+                ...(cloudProfile.unlocked_badges || [])
             ])),
             vaultArtifacts: Array.from(new Set([
                 ...(localUser?.vaultArtifacts || []),
                 ...(cloudVault || [])
             ])),
+            pendingChests: await rewardService.fetchPendingChests(cloudProfile.id),
             onboarded: true 
         };
 
@@ -124,6 +141,58 @@ export const checkAchievementsThunk = createAsyncThunk(
     }
 );
 
+/**
+ * TRANSACTIONAL ECONOMY THUNK (Phase 1 🏦)
+ * Handles dual-write to Local Redux + Cloud Ledger
+ */
+export const updateBalanceThunk = createAsyncThunk(
+    'user/updateBalance',
+    async ({ currency, amount, type, contextId }, { dispatch }) => {
+        // 1. Instant UI update via reducer
+        if (currency === 'coins') {
+            dispatch(userSlice.actions.awardCoins(amount));
+        } else if (currency.includes('gem')) {
+            const subject = currency.replace('gem_', '');
+            dispatch(userSlice.actions.awardGems({ subject, amount }));
+        }
+
+        // 2. Persistent Cloud Ledger update
+        try {
+            await syncService.updateBalance(currency, amount, type, contextId);
+        } catch (e) {
+            console.error('💰 [Economy] Cloud sync failed:', e.message);
+        }
+    }
+);
+
+/**
+ * LOOT SYSTEM THUNK (Phase 2 🎁)
+ * Opens a chest and updates the ledger.
+ */
+export const openChestThunk = createAsyncThunk(
+    'user/openChest',
+    async ({ chestId }, { dispatch }) => {
+        try {
+            const rewards = await rewardService.openChest(chestId);
+            
+            // Apply rewards to local state
+            for (const r of rewards) {
+                if (r.currency === 'coins') {
+                    dispatch(userSlice.actions.awardCoins(r.amount));
+                } else if (r.currency.includes('gem')) {
+                    const subject = r.currency.replace('gem_', '');
+                    dispatch(userSlice.actions.awardGems({ subject, amount: r.amount }));
+                }
+            }
+            
+            return { chestId, rewards };
+        } catch (e) {
+            console.error('❌ [Loot] Failed to open chest:', e.message);
+            throw e;
+        }
+    }
+);
+
 const initialState = {
   data: ManyaDB.createDefaultRecord(),
   session: {
@@ -135,10 +204,30 @@ const initialState = {
     questionsAnswered: 0,
     hintCount: 0,
     answerChangeCount: 0,
+    question_history: [],
   },
   isLoading: true,
   isError: false,
 };
+
+/**
+ * VAULT DISCOVERY THUNK (Phase 4 🏺)
+ * Syncs discovered artifacts to the cloud vault table.
+ */
+export const discoverArtifactThunk = createAsyncThunk(
+    'user/discoverArtifact',
+    async (artifact, { dispatch }) => {
+        // 1. Sync to Cloud
+        try {
+            await syncService.pushVault(artifact.id, artifact.subject || 'overall');
+        } catch (e) {
+            console.warn('🏺 [Vault] Cloud sync failed:', e.message);
+        }
+        
+        // 2. Update Redux
+        dispatch(userSlice.actions.discoverArtifact(artifact));
+    }
+);
 
 export const userSlice = createSlice({
   name: 'user',
@@ -257,6 +346,15 @@ export const userSlice = createSlice({
           d.stats_hints_used = (d.stats_hints_used || 0) + 1;
       }
       if (answerChanged) s.answerChangeCount += 1;
+      
+      // 📝 Track Question History for Session Sync
+      s.question_history.push({
+          questionId: action.payload.questionId,
+          subject: subject,
+          isCorrect: isCorrect,
+          timeSpentMs: timeSpentMs,
+          timestamp: new Date().toISOString()
+      });
 
       if (isCorrect) {
         s.consecutiveWrong = 0;
@@ -276,6 +374,11 @@ export const userSlice = createSlice({
         s.consecutiveWrong += 1;
         s.frustrationLevel = Math.min(100, s.frustrationLevel + 15);
         d.stats_explanations_viewed = (d.stats_explanations_viewed || 0) + 1;
+
+        // 🧪 REMEDIATION: Track errors in specialized table
+        if (subject && action.payload.questionId) {
+            syncService.trackConceptError(`${subject}::${action.payload.topic || 'general'}`, action.payload.questionId);
+        }
       }
 
       if (timeSpentMs > 30000) s.frustrationLevel = Math.min(100, s.frustrationLevel + 10);
@@ -321,10 +424,11 @@ export const {
     updateStreak,
     resetSession,
     updateSessionAfterAnswer,
-    discoverArtifact
+    discoverArtifact: discoverArtifactLocal
 } = userSlice.actions;
 
-// Re-export thunk as the main achievement checker
+// Re-export thunks as primary actions
 export const checkAchievements = checkAchievementsThunk;
+export const discoverArtifact = discoverArtifactThunk;
 
 export default userSlice.reducer;

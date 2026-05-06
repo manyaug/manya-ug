@@ -2,8 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
+    <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <script>
+      // Automatically shrink the UI on narrow Android devices (like Samsung) to match the iPhone's layout proportions.
+      if (window.screen && window.screen.width < 390) {
+        document.getElementById('viewport-meta').setAttribute('content', 'width=390, viewport-fit=cover');
+      }
+    </script>
     <!-- PWA / App Meta -->
     <meta name="theme-color" content="#7c3aed" />
     <meta name="mobile-web-app-capable" content="yes" />

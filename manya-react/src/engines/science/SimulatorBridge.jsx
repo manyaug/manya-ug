@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
 import { getEngineType, SUPPORTED_SIM_ENGINES } from './ScienceLogic';
 import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 // Engines
 import UniversalGlobeEngine from '../sst/UniversalGlobeEngine.jsx';
@@ -21,6 +22,10 @@ import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showWrong, setShowWrong] = useState(false);
+
+    // 🧠 [Phase 3] Universal Behavioral Tracking
+    const { metrics } = useBehavioralTracker(true);
+
     const simData = step?.data || step;
     const resultRef = useRef(null);
 
@@ -49,7 +54,9 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
             success: true, 
             score: usp.masteryScore,
             usp: usp,
-            simResults: finalResults
+            simResults: finalResults,
+            // 🧠 Behavioral Pass-through
+            metrics: metrics
         });
     };
 

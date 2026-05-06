@@ -12,6 +12,7 @@ import { shouldDropBronzeChest, rollChestRewards, masteryToStars, getStarBonusCo
 import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.js';
 import { rewardManager } from '../../domain/gamification/rewardManager.js';
 import { dynamicModeService } from '../../domain/gamification/dynamicModeService';
+import { conceptMasteryService } from '../../domain/mastery/conceptMasteryService.js';
 
 // Services & Utils
 import { fetchMathQuestions } from '../../services/mathMockDB';
@@ -128,7 +129,9 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
 
                 // Fetch Bank & Generate Quest
                 const rawBank = await fetchMathQuestions(topicId);
-                const allQuestions = rawBank.map(q => ({ ...q, id: String(q.id || q.qid) }));
+                const allQuestions = rawBank
+                    .filter(q => q.question && q.question.trim().length > 0)
+                    .map(q => ({ ...q, id: String(q.id || q.qid) }));
                 allBankRef.current = allQuestions;
 
                 if (allQuestions.length === 0 && simCandidates.length === 0) {
@@ -226,11 +229,23 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
+        // 🧠 Update granular concept mastery
+        conceptMasteryService.updateAfterAnswer(subject, baseId, isCorrect);
+
         // [Manya v4 Patch] Immediately notify QuestRunner parent to update live HUD
+        const awards = isCorrect ? rewardManager.awardStepRewards({
+            subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: q.isSimulation || false
+        }) : { gems: 0, coins: 0 };
+
+        const nextCoins = coinsEarnedState + awards.coins;
+        const nextGems = gemsEarned + awards.gems;
+
         onResult?.({
             isCorrect: log.isCorrect,
             score: isCorrect ? score + 1 : score,
             total: questions.length,
+            coinsEarned: nextCoins,
+            gemsEarned: nextGems,
             type: 'answer'
         });
 
@@ -247,12 +262,8 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             audioService.success?.();
             consecutiveWrongRef.current = 0;
 
-            const awards = rewardManager.awardStepRewards({
-                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: q.isSimulation || false
-            }, dispatch);
-
-            setCoinsEarnedState(prev => prev + awards.coins);
-            setGemsEarned(g => g + awards.gems);
+            setCoinsEarnedState(nextCoins);
+            setGemsEarned(nextGems);
             
             setShowGemToast(true);
             setTimeout(() => setShowGemToast(false), 1500);
@@ -294,7 +305,12 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
             const nextIdx = currentIdx + 1;
             
             // 🧠 DYNAMIC MODE RE-ROLL
-            const mode = dynamicModeService.getNextMode(null, nodeType);
+            const nextQ = questions[nextIdx];
+            const mode = dynamicModeService.getNextMode(null, nodeType, {
+                isRecap: nextQ?.isRecap,
+                isSimulation: nextQ?.isSimulation,
+                engineType: nextQ ? getEngineType(nextQ) : 'MCQ'
+            });
             setGameMode(mode);
 
             if (mode === 'speedrun') {
@@ -354,7 +370,22 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
         );
     }
     const eType = currentQ ? getEngineType(currentQ) : 'MCQ';
-    const isSim = SUPPORTED_SIM_ENGINES.includes(eType);
+    
+    // 🧠 v8.9 FIX: An MCQ from the database may have engine_type="SET_THEORY" 
+    // (because it belongs to the Set Theory topic), but it should NOT be rendered 
+    // as an interactive simulation. A real simulation has structural data like 
+    // sets/zones/questions/interaction — an MCQ just has options/answer.
+    const hasSimStructure = !!(
+        currentQ?.data?.questions ||      // Simulation manifest with steps
+        currentQ?.data?.sets ||           // Venn diagram sets definition  
+        currentQ?.data?.zones ||          // Venn diagram region data
+        currentQ?.data?.interaction ||    // Interactive element type
+        currentQ?.sets ||                 // Root-level sets
+        currentQ?.zones ||               // Root-level zones
+        currentQ?.questions              // Root-level questions array
+    );
+    const isMCQ = !!(currentQ?.options && currentQ?.answer);
+    const isSim = SUPPORTED_SIM_ENGINES.includes(eType) && hasSimStructure && !isMCQ;
 
     return (
         <MathRenderer 
@@ -383,14 +414,49 @@ export default function MathFetcherEngine({ data, onComplete, onResult }) {
                     onComplete={(results) => {
                         setSimPartialScore(0); // Reset partial on completion
                         const usp = results?.usp;
-                        const isSuccess = usp ? usp.isPassing : (results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
+                        const isSuccess = usp ? !!usp.isPassing : !!(results ? (results.score >= (results.total * 0.6) || results.isCorrect) : true);
                         const timeSpent = usp ? (usp.duration || 30000) : (results?.duration || 30000);
-                        dispatch(updateSessionAfterAnswer({ isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
-                        ManyaDB.recordAnswer(subject, { questionId: currentQ.id, isCorrect: isSuccess, selectedAnswer: 'COMPLETED', engine_type: 'SIMULATION' });
+                        
+                        // 🧠 [Phase 3] Close the loop for Math Simulations
+                        const baseId = (currentQ.id || '').replace(/-V\d+$/, '');
+                        const log = {
+                            questionId: currentQ.id,
+                            isCorrect: isSuccess,
+                            timeSpentMs: timeSpent,
+                            // High-Fidelity Telemetry
+                            idleTimeMs: results?.metrics?.idleTimeMs || 0,
+                            tabSwitched: results?.metrics?.tabSwitched || false,
+                            hesitationCount: results?.metrics?.hesitationCount || 0,
+                            frustrationClicks: results?.metrics?.frustrationClicks || 0,
+                            engine_type: 'SIMULATION',
+                            pool: 'yes',
+                            concept_id: baseId,
+                            pointsEarned: isSuccess ? 25 : 5,
+                            frustrationLevel: results?.metrics?.frustrationLevel || 0
+                        };
+
+                        ManyaDB.recordAnswer(subject, log);
+                        syncService.pushAnswer(subject, log);
+                        conceptMasteryService.updateAfterAnswer(subject, baseId, isSuccess);
+
+                        dispatch(updateSessionAfterAnswer({ subject, isCorrect: isSuccess, hintUsed: false, answerChanged: false, timeSpentMs: timeSpent }));
+                        
                         if (isSuccess) { 
                             setScore(p => p + 1); 
                             scoreRef.current += 1;
-                            setGemsEarned(p => p + 5); 
+                            const nextGems = gemsEarned + 5;
+                            const nextCoins = coinsEarnedState + 15;
+                            setGemsEarned(nextGems);
+                            setCoinsEarnedState(nextCoins);
+
+                            onResult?.({
+                                isCorrect: true,
+                                score: scoreRef.current,
+                                total: questions.length,
+                                coinsEarned: nextCoins,
+                                gemsEarned: nextGems,
+                                type: 'answer'
+                            });
                         }
                         nextQuestion();
                     }}

@@ -7,7 +7,8 @@
  * Prepares a sentence pool from raw string.
  */
 export const prepareSentencePool = (sentence, qIdx) => {
-    const words = sentence.split(' ');
+    if (!sentence) return [];
+    const words = sentence.split(' ').filter(w => w.trim() !== '');
     return words.map(w => ({ 
         id: `${qIdx}-${Math.random().toString(36).slice(2)}`, 
         text: w 

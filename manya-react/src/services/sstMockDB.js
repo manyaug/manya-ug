@@ -1,4 +1,4 @@
-import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 
 const BANK_CACHE = {};
@@ -30,30 +30,18 @@ export const fetchSstQuestions = async (topicId) => {
         }
 
         // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let { data, error } = await supabase
-            .from('manya_vault')
-            .select('*')
-            .ilike('subject', 'sst')
-            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
-            // REMOVED: .ilike('item_type', '%MCQ%') to allow NOTES and RECAPS
+        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:sst&or=(subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%)`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
-        if (!error && (!data || data.length === 0)) {
+        if (!data || data.length === 0) {
             const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
-            const keywords = cleanSub.split(' ').filter(k => k.length > 2); // Exclude small words like "of", "and"
+            const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
             
             if (keywords.length > 0) {
                 console.log(`🔍 [SST Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
-                
-                // Construct a broad OR query for each keyword
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const { data: keywordData } = await supabase
-                    .from('manya_vault')
-                    .select('*')
-                    .ilike('subject', 'sst')
-                    .or(keywordFilter);
-                    // REMOVED: .ilike('item_type', '%MCQ%')
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:sst&or=(${keywordFilter})`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [SST Vault] Discovered ${keywordData.length} related questions via keywords.`);
@@ -62,7 +50,6 @@ export const fetchSstQuestions = async (topicId) => {
             }
         }
 
-        if (error) throw error;
         if (!data || data.length === 0) return [];
 
         const transformed = data.map(q => {
@@ -70,6 +57,7 @@ export const fetchSstQuestions = async (topicId) => {
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
             return {
+                ...q,
                 id: q.qid,
                 qid: q.qid,
                 subject: 'sst',

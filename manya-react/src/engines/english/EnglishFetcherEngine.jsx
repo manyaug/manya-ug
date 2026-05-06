@@ -11,6 +11,7 @@ import { getModeCoinMultiplier } from '../../domain/gamification/gameModeEngine.
 import { dynamicModeService } from '../../domain/gamification/dynamicModeService';
 import { rewardManager } from '../../domain/gamification/rewardManager.js';
 import { syncService } from '../../infrastructure/sync/syncService.js';
+import { conceptMasteryService } from '../../domain/mastery/conceptMasteryService.js';
 import { 
     fetchEnglishQuestions 
 } from '../../services/englishMockDB';
@@ -69,9 +70,11 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
         if (!res) return;
         if (res.total > 0 && res.score !== undefined) {
             const fractional = res.score / res.total;
-            setSimPartialScore(fractional);
+            requestAnimationFrame(() => {
+                setSimPartialScore(fractional);
+            });
         }
-    }, [questions.length, onResult]);
+    }, [questions.length]);
 
     const currentMastery = useMemo(() => {
         if (!questions.length) return 0;
@@ -101,12 +104,20 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
                     if (!file) return [];
                     const fileName = file.endsWith('.json') ? file : `${file}.json`;
                     try {
-                        const { steps } = await loadQuestSteps(subject, data.unitId || 'default', topicId, fileName);
-                        return (steps || []).map(s => {
+                        console.log(`🌐 [English] Fetching resource: ${fileName}`);
+                        const { steps } = await loadQuestSteps(subject, data.unitId || 'holidays', topicId, fileName);
+                        console.log(`✅ [English] Loaded ${steps?.length || 0} steps from ${fileName}`);
+                        return (steps || []).map((s, idx) => {
                             const eType = getEngineType(s);
+                            console.log(`🔎 [EnglishFetcher] Step ${idx} Raw Analysis:`, { 
+                                file: s.file || s.referencePath || s.id, 
+                                eType, 
+                                hasData: !!s.data, 
+                                dataKeys: s.data ? Object.keys(s.data) : [] 
+                            });
                             return { ...s, isSimulation: SUPPORTED_SIM_ENGINES.includes(eType), id: s.id || `remote_${file.replace('.json','')}_${Math.random()}` };
                         });
-                    } catch (e) { console.warn(`[English] Failed to load ${file}`, e); return []; }
+                    } catch (e) { console.error(`❌ [English] Failed to load ${file}`, e); return []; }
                 };
 
                 for (const res of activeSims) {
@@ -126,6 +137,37 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
                 const quest = await generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, userHistory, simCandidates);
                 
                 let finalQuestions = quest.questions;
+
+                // 🌐 [JIT HYDRATION]: Hydrate any DB simulation pointers selected by the Adaptive Engine
+                finalQuestions = await Promise.all(finalQuestions.map(async (q) => {
+                    const eType = getEngineType(q);
+                    const isSim = SUPPORTED_SIM_ENGINES.includes(eType);
+                    
+                    // If it's a simulation but has no data, it's a DB pointer. Fetch its JSON.
+                    if (isSim && (!q.data || Object.keys(q.data).length === 0)) {
+                        let targetFile = q.file || q.qid || q.id;
+                        if (targetFile) {
+                            // Convert DB ID "PQ-SIM-ENG-06-007" to GitHub file "pq-06-007.json"
+                            let cleanName = targetFile.toLowerCase();
+                            if (cleanName.includes('sim-eng-')) {
+                                cleanName = cleanName.replace('sim-eng-', '');
+                            }
+                            const fileName = cleanName.endsWith('.json') ? cleanName : `${cleanName}.json`;
+                            console.log(`🌐 [English JIT] Hydrating dynamic DB simulation: ${fileName}`);
+                            try {
+                                const { steps } = await loadQuestSteps(subject, data.unitId || 'holidays', topicId, fileName);
+                                if (steps && steps.length > 0) {
+                                    console.log(`✅ [English JIT] Hydrated ${fileName} successfully!`);
+                                    return { ...q, ...steps[0], id: q.id || q.qid, isSimulation: true };
+                                }
+                            } catch (e) {
+                                console.warn(`❌ [English JIT] Failed to hydrate DB sim ${fileName}`, e);
+                            }
+                        }
+                    }
+                    return q;
+                }));
+
                 if (data?.forceMode === 'reverse') {
                     finalQuestions = finalQuestions.map(q => {
                         if (q.engineType?.includes('FETCHER') || q.question_type === 'MCQ' || !q.question_type) {
@@ -135,12 +177,19 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
                     });
                 }
                 setQuestions(finalQuestions);
+                console.log(`🎯 [EnglishFetcher] Final Quest Sequence:`, finalQuestions.map(q => ({ 
+                    id: q.id || q.qid, 
+                    engine: getEngineType(q), 
+                    dataType: q.data ? 'Object' : 'None',
+                    hasQueries: q.data?.queries ? 'Yes' : 'No'
+                })));
+
                 if (quest.metadata?.gameMode) {
                     const gm = quest.metadata.gameMode.toLowerCase();
                     setGameMode(['quickfire','timed','marathon'].includes(gm) ? gm : 'none');
                 }
                 setTimeout(() => setIsLoading(false), 800);
-            } catch (err) { console.error(err); setIsLoading(false); }
+            } catch (err) { console.error("❌ [English] Fetcher Error:", err); setIsLoading(false); }
         };
         loadQuestions();
     }, [topicId]);
@@ -184,18 +233,31 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
         // ── Unified Reward Logic ────────────────────────────────────────────
         dispatch(updateSessionAfterAnswer({ subject, isCorrect, hintUsed, answerChanged, timeSpentMs }));
         
+        // [Manya v4 Patch] Immediately notify QuestRunner parent to update live HUD
+        const awards = isCorrect ? rewardManager.awardStepRewards({
+            subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: q.isSimulation || false
+        }) : { gems: 0, coins: 0 };
+
+        const nextCoins = coinsEarnedState + awards.coins;
+        const nextGems = gemsEarned + awards.gems;
+
+        onResult?.({
+            isCorrect,
+            score: isCorrect ? score + 1 : score,
+            total: questions.length,
+            coinsEarned: nextCoins,
+            gemsEarned: nextGems,
+            type: 'answer'
+        });
+
         if (isCorrect) {
             setScore(s => s + 1);
             scoreRef.current += 1;
             audioService.success?.();
             consecutiveWrongRef.current = 0;
 
-            const awards = rewardManager.awardStepRewards({
-                subject, hintUsed, streak: user.current_streak, gameMode, isSimulation: q.isSimulation || false
-            }, dispatch);
-
-            setCoinsEarnedState(prev => prev + awards.coins);
-            setGemsEarned(g => g + awards.gems);
+            setCoinsEarnedState(nextCoins);
+            setGemsEarned(nextGems);
             
             // --- ⚡ LIVE SYNC (Manya v4.5) ---
             dispatch(checkAchievements());
@@ -237,18 +299,13 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
         ManyaDB.recordAnswer(subject, log);
         syncService.pushAnswer(subject, log);
 
+        // 🧠 Update granular concept mastery
+        conceptMasteryService.updateAfterAnswer(subject, baseId, isCorrect);
+
         // ── Emotion Tracking (New Premium Feature 🧠) ───────────────────────
         trackAndPushEmotion({
             isCorrect, hintUsed, answerChanged, changeCount,
             timeSpentMs, frustrationLevel, timeToFirstClickMs
-        });
-
-        // Notify parent live
-        onResult?.({
-            isCorrect,
-            score: scoreRef.current,
-            total: questions.length,
-            type: 'answer'
         });
 
         // 🧠 Update dynamic mode metrics BEFORE nextQuestion re-rolls
@@ -261,17 +318,60 @@ export default function EnglishFetcherEngine({ data, onComplete, onResult, nodeT
     const nextQuestion = (results = null) => {
         setSimPartialScore(0);
         if (results) {
-            const isSuccess = results.usp ? results.usp.isPassing : (results.score >= (results.total * 0.6) || results.isCorrect);
+            const isSuccess = results.usp ? !!results.usp.isPassing : !!(results.isCorrect ?? (results.score >= (results.total * 0.6) || true));
+            
+            // 🧠 [Phase 3] Close the loop for Simulations!
+            // Every simulation completion now counts as an "Answer" for the AI Brain.
+            const q = questions[currentIdx];
+            const baseId = (q.id || q.qid || '').replace(/-V\d+$/, '');
+            
+            const log = {
+                questionId: q.id || q.qid,
+                isCorrect: isSuccess,
+                timeSpentMs: results.timeSpentMs || (Date.now() - questionStartTime.current),
+                // Behavioral Metrics from the Simulation
+                idleTimeMs: results.metrics?.idleTimeMs || 0,
+                tabSwitched: results.metrics?.tabSwitched || false,
+                hesitationCount: results.metrics?.hesitationCount || 0,
+                frustrationClicks: results.metrics?.frustrationClicks || 0,
+                engine_type: 'SIMULATION',
+                pool: 'yes',
+                concept_id: baseId,
+                pointsEarned: isSuccess ? 25 : 5,
+                frustrationLevel: results.metrics?.frustrationLevel || 0
+            };
+
+            ManyaDB.recordAnswer(subject, log);
+            syncService.pushAnswer(subject, log);
+            conceptMasteryService.updateAfterAnswer(subject, baseId, isSuccess);
+
             if (isSuccess) {
                 scoreRef.current += 1;
-                setGemsEarned(p => p + 5);
+                const nextGems = gemsEarned + 5;
+                const nextCoins = coinsEarnedState + 15;
+                setGemsEarned(nextGems);
+                setCoinsEarnedState(nextCoins);
+
+                onResult?.({
+                    isCorrect: true,
+                    score: scoreRef.current,
+                    total: questions.length,
+                    coinsEarned: nextCoins,
+                    gemsEarned: nextGems,
+                    type: 'answer'
+                });
             }
         }
         if (currentIdx < questions.length - 1) {
             const nextIdx = currentIdx + 1;
             
             // 🧠 DYNAMIC MODE RE-ROLL
-            const mode = dynamicModeService.getNextMode(null, nodeType);
+            const nextQ = questions[nextIdx];
+            const mode = dynamicModeService.getNextMode(null, nodeType, {
+                isRecap: nextQ?.isRecap,
+                isSimulation: nextQ?.isSimulation,
+                engineType: nextQ ? getEngineType(nextQ) : 'MCQ'
+            });
             setGameMode(mode);
 
             if (mode === 'speedrun') {

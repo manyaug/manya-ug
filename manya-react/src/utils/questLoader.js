@@ -5,7 +5,7 @@
  * Fetches curriculum by QID and normalises it into a uniform steps[] array.
  * Fallback to local /content/ folders if the database record is missing.
  */
-import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 
 import QuickLRU from 'quick-lru';
 const JSON_CACHE = new QuickLRU({ maxSize: 50 });
@@ -13,6 +13,26 @@ const JSON_CACHE = new QuickLRU({ maxSize: 50 });
 import { CDN_BASE, ASSET_VERSION } from '../config/constants';
 import { validateAndNormalizeStep } from '../domain/schemas/validation';
 import { resolveRef } from './questHelpers.js';
+
+/**
+ * 🛠️ [UTF-16 RESILIENCE]: Safely parses JSON even if the CDN serves UTF-16 files as UTF-8.
+ * Detects the BOM (Byte Order Mark) and decodes accordingly.
+ */
+async function safeFetchJson(data) {
+    if (typeof data === 'object') return data;
+    
+    // If it's a string, it might be raw text that needs parsing
+    try {
+        return JSON.parse(data);
+    } catch (e) {
+        // Handle BOM and other issues if data is a string
+        let decodedText = data;
+        if (decodedText.charCodeAt(0) === 0xFEFF) {
+            decodedText = decodedText.slice(1);
+        }
+        return JSON.parse(decodedText);
+    }
+}
 
 const CDN_URL = `${CDN_BASE}content/`;
 const BASE_CONTENT_URL = CDN_URL;
@@ -100,21 +120,16 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
     try {
         console.debug(`[QuestLoader] Fetching Vault Row: ${qid} (Sub: ${subject})`);
         
-        // 2. Query Supabase Vault
-        // Note: Using case-insensitive ilike for subject to catch "English" / "english" / "ENGLISH"
-        let query = supabase
-            .from('manya_vault')
-            .select('cdn_url, topic, subtopic, item_type, qid')
-            .eq('qid', qid)
-            .ilike('subject', subject);
+        // 2. Query Supabase Vault via Facade
+        const queryParams = new URLSearchParams({
+            qid,
+            subject: `ilike:${subject}`
+        });
+        if (targetType) queryParams.append('item_type', targetType);
 
-        if (targetType) {
-            query = query.eq('item_type', targetType);
-        }
+        const vaultRows = await storageFacade.get(`db:/manya_vault?${queryParams.toString()}`);
 
-        const { data: vaultRows, error } = await query;
-
-        if (error || !vaultRows || vaultRows.length === 0) {
+        if (!vaultRows || vaultRows.length === 0) {
             console.debug(`📡 [QuestLoader] ${qid} not in Vault. Using CDN.`);
             // 🛡️ Safety Guard: Only fallback if we have valid folder paths
             if (!unitId || !questFolder) {
@@ -137,28 +152,22 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
                 cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
             } else {
                 // Reconstruct from topics if missing. 
-                // Fix: map 'primary_7_english' concepts back to 'holidays'
                 let topicDir = row.topic ? row.topic.toLowerCase().replace(/\s+/g, '_') : unitId;
                 if (subject === 'english' && (topicDir.includes('primary_7') || topicDir.includes('master_path'))) {
                     topicDir = 'holidays';
                 }
                 const subtopicDir = row.subtopic ? row.subtopic.toLowerCase().replace(/\s+/g, '_') : questFolder;
                 
-                // 🧩 FIX: For English, if we don't have a cdn_url, the QID is often an internal 'IDENTITY' key.
-                // We should use the raw 'file' name passed to the function to match the physical CDN filename.
                 const fileRef = (subject === 'english' && typeof file === 'string') ? file.replace(/\.json$/, '') : qid;
                 cleanCdnUrl = `${BASE_CONTENT_URL}${subject.toLowerCase()}/${topicDir}/${subtopicDir}/${fileRef}.json`;
             }
 
             if (cleanCdnUrl) {
                 try {
-                    const remoteRes = await fetch(cleanCdnUrl);
-                    if (remoteRes.ok) {
-                        json = await remoteRes.json();
-                        json._originUrl = cleanCdnUrl; 
-                    } else {
-                        throw new Error(`Status ${remoteRes.status}`);
-                    }
+                    // Use file scheme for external URLs too
+                    json = await storageFacade.get(`file:${cleanCdnUrl}`);
+                    json._originUrl = cleanCdnUrl; 
+                    console.log(`%c 📜 [QuestLoader] Resource Loaded: ${qid}`, 'color: #10b981; font-weight: bold;', { url: cleanCdnUrl, type: row.item_type });
                 } catch (e) { 
                     console.warn(`[QuestLoader] CDN redirect failed for row in ${qid}: ${cleanCdnUrl}`); 
                     continue; // Skip if we can't load the JSON
@@ -174,9 +183,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
 
         const finalResult = { steps: allSteps, meta: masterMeta };
 
-        // 🛡️ [RECOVERY FALLBACK]: If vault rows were found but yielded NO usable steps,
-        // it means the database pointers are broken or content is missing.
-        // Fall back to legacy folder-based resolution.
+        // 🛡️ [RECOVERY FALLBACK]: If vault rows were found but yielded NO usable steps, fall back to legacy.
         if (allSteps.length === 0) {
             console.warn(`[QuestLoader] Vault returned no steps for ${qid}. Trying legacy fallback.`);
             return await loadQuestStepsLegacy(subject, unitId, questFolder, file);
@@ -187,8 +194,6 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
         return finalResult;
 
     } catch (err) {
-        // 🤫 SILENT RESILIENCE (Best Practice): 
-        // If it's a missing asset during an optional lookup, don't scream "Major Error"
         const isMiss = err.message?.includes('404') || err.message?.includes('missing from Vault') || err.message?.includes('fetch_failed');
         
         if (isMiss) {
@@ -205,27 +210,20 @@ async function loadQuestStepsLegacy(subject, unitId, questFolder, file) {
     let url = contentUrl(subject, unitId, questFolder, file);
     
     try {
-        let res = await fetch(url);
-        
-        // 🛡️ FALLBACK: If folder-specific path fails (404), try the parent unit folder
-        if (!res.ok) {
+        let json = null;
+        try {
+            json = await storageFacade.get(`file:${url}`);
+        } catch (e) {
+            // 🛡️ FALLBACK: If folder-specific path fails, try the parent unit folder
             const fallbackUrl = `${BASE_CONTENT_URL}${subject}/${unitId}/${file.replace(/\.json$/, '')}.json`;
-            res = await fetch(fallbackUrl);
-            
-            if (!res.ok) {
-                // Return empty instead of throwing to prevent console red-out
-                return { steps: [], meta: { status: 'missing', url } };
-            }
+            json = await storageFacade.get(`file:${fallbackUrl}`);
+            url = fallbackUrl;
         }
 
-        const contentType = res.headers.get('content-type') || '';
-        // Relax content-type check for raw githubusercontent which often serves JSON as text/plain
-        if (!contentType.includes('application/json') && !contentType.includes('text/plain')) {
-            return { steps: [], meta: { status: 'not_json', url, contentType } };
-        }
+        if (!json) return { steps: [], meta: { status: 'missing', url } };
 
-        const json = await res.json();
-        json._originUrl = res.url || url; // Ensure absolute base is preserved
+        json._originUrl = url;
+        console.log(`%c 📜 [QuestLoader] Legacy Resource Loaded: ${url}`, 'color: #f59e0b; font-weight: bold;');
         return await transformJsonToSteps(json, subject, unitId, questFolder, file);
     } catch (e) {
         return { steps: [], meta: { status: 'fetch_failed', error: e.message } };
@@ -239,25 +237,24 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
     let result;
 
     if (Array.isArray(json.steps)) {
-        // If we have a CDN origin, that becomes our base context. 
-        // Fallback to absolute CDN path if origin is missing.
         const origin = json._originUrl || contentUrl(subject, unitId, questFolder, file);
         const baseDir = origin.substring(0, origin.lastIndexOf('/') + 1);
         
         const resolvedSteps = await Promise.all(
-            json.steps.map(async (step) => {
-                if (step.referencePath) {
-                    const refUrl = resolveRef(step.referencePath, baseDir);
+            json.steps.map(async (step, idx) => {
+                const ref = step.referencePath || step.file;
+                if (ref) {
+                    const fileName = String(ref).endsWith('.json') ? ref : `${ref}.json`;
+                    const refUrl = resolveRef(fileName, baseDir);
+                    
                     if (refUrl) {
                         try {
-                            const refRes = await fetch(refUrl);
-                            const contentType = refRes.headers.get('content-type') || '';
-                            if (refRes.ok && (contentType.includes('application/json') || contentType.includes('text/plain'))) {
-                                step.data = await refRes.json();
-                            } else {
-                                console.debug(`[QuestLoader] Skipping minor resource ${step.referencePath}: ${refRes.status}`);
-                            }
-                        } catch (_) { }
+                            const refData = await storageFacade.get(`file:${refUrl}`);
+                            step.data = refData;
+                            console.log(`✅ [QuestLoader] Successfully hydrated step ${idx} from ${ref}`);
+                        } catch (e) { 
+                            console.error(`❌ [QuestLoader] Error fetching sub-resource ${ref}:`, e);
+                        }
                     }
                 }
                 return validateAndNormalizeStep(step, json._originUrl);

@@ -8,29 +8,39 @@
  */
 export const initializeGardenData = (data) => {
     const d = data?.data || data || {};
-    return {
-        queries: d.queries || [
-            { text: "The team play well today", error: "play", correct: "plays" },
-            { text: "She don't like apples", error: "don't", correct: "doesn't" }
-        ],
-        winScore: d.winScore || 300,
-        spawnRate: d.spawnRate || 5000
+    
+    // Support both 'queries' and 'questions' keys
+    const rawQueries = d.queries || d.questions || d.items || [];
+    
+    const defaultQueries = [
+        { text: "The team play well today", error: "play", correct: "plays" },
+        { text: "She don't like apples", error: "don't", correct: "doesn't" },
+        { text: "He go to school daily", error: "go", correct: "goes" }
+    ];
+
+    const config = {
+        queries: (Array.isArray(rawQueries) && rawQueries.length > 0) ? rawQueries : defaultQueries,
+        winScore: d.winScore || d.targetScore || 300,
+        spawnRate: d.spawnRate || (d.difficulty === 'hard' ? 5000 : 8000)
     };
+    console.log("🌳 [GardenLogic] Initialized Config:", config);
+    return config;
 };
 
 /**
  * Spawns a new marching sentence object.
  */
 export const spawnSentence = (queries) => {
-    const query = queries[Math.floor(Math.random() * queries.length)];
+    if (!queries || queries.length === 0) return null;
+    const q = queries[Math.floor(Math.random() * queries.length)];
     const id = Math.random().toString(36).substr(2, 9);
     
     return {
-        id,
-        ...query,
-        words: query.text.split(' '),
+        id: `sg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        ...q,
+        words: (q.text || "").split(' '),
         startTime: Date.now(),
-        duration: 10000 + Math.random() * 4000, 
+        duration: q.duration || 20000, 
         isHealed: false
     };
 };

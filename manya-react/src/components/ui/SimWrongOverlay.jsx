@@ -21,7 +21,7 @@ const SimWrongOverlay = ({ show = false, onDismiss }) => {
                 >
                     {/* Centered Try Again Badge (Set Theory Style) */}
                     <motion.div
-                        className="bg-rose-500 border-2 border-rose-400 text-white px-8 py-4 rounded-[2rem] shadow-[0_20px_40px_rgba(244,63,94,0.4)] flex items-center gap-3"
+                        className="bg-amber-500 border-2 border-amber-400 text-white px-8 py-4 rounded-[2rem] shadow-[0_20px_40px_rgba(245,158,11,0.4)] flex items-center gap-3"
                         initial={{ scale: 0.8, y: 20, opacity: 0 }}
                         animate={{ scale: 1, y: 0, opacity: 1 }}
                         exit={{ scale: 1.1, opacity: 0 }}

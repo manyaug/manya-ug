@@ -38,34 +38,34 @@ const TenseRenderer = ({
                     </div>
                 </div>
 
-                <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-10">
-                    <div className="flex flex-col items-center gap-6 w-full max-w-2xl px-2">
+                <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6">
+                    <div className="flex flex-col items-center gap-4 w-full max-w-2xl px-2">
                         <motion.div 
                             initial={{ scale: 0.9, y: -10 }} animate={{ scale: 1, y: 0 }}
-                            className={`inline-flex items-center gap-3 px-5 py-3 rounded-[24px] border-2 transition-all ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-emerald-100 shadow-xl'}`}
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-[1rem] border-2 transition-all ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-emerald-100 shadow-sm'}`}
                         >
-                            <CloudSun size={20} className="text-amber-500 animate-bounce" />
-                            <span className={`text-[10px] font-black uppercase tracking-widest leading-none ${isDark ? 'text-indigo-400' : 'text-emerald-800'}`}>Tense Season: {q?.targetTense}</span>
+                            <CloudSun size={16} className="text-amber-500 animate-bounce" />
+                            <span className={`text-[9px] font-black uppercase tracking-widest leading-none ${isDark ? 'text-indigo-400' : 'text-emerald-800'}`}>Tense Season: {q?.targetTense}</span>
                         </motion.div>
                         
-                        <div className={`w-full p-12 rounded-[48px] shadow-2xl relative border-t-8 transition-all animate-in slide-in-from-bottom-8 duration-700 ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-emerald-100'}`}>
-                             <h3 className={`text-xl sm:text-4xl font-black px-2 leading-tight tracking-tight text-center ${isDark ? 'text-white' : 'text-emerald-950'}`}>
+                        <div className={`w-full p-6 sm:p-8 rounded-[2rem] shadow-xl relative border-t-4 transition-all animate-in slide-in-from-bottom-8 duration-700 ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-emerald-100'}`}>
+                             <h3 className={`text-lg sm:text-2xl font-black px-2 leading-relaxed tracking-tight text-center ${isDark ? 'text-white' : 'text-emerald-950'}`}>
                                 {phase === 'success' ? q?.fullCorrect : q?.base}
                              </h3>
-                             <Leaf className="absolute -top-4 -right-4 text-emerald-400 rotate-45 opacity-50 sm:opacity-100" size={32} fill="currentColor" />
-                             <Leaf className="absolute -bottom-4 -left-4 text-orange-400 -rotate-12 opacity-50 sm:opacity-100" size={24} fill="currentColor" />
+                             <Leaf className="absolute -top-3 -right-3 text-emerald-400 rotate-45 opacity-30 sm:opacity-50" size={24} fill="currentColor" />
+                             <Leaf className="absolute -bottom-3 -left-3 text-orange-400 -rotate-12 opacity-30 sm:opacity-50" size={18} fill="currentColor" />
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap justify-center gap-4 max-w-2xl px-4">
+                    <div className="flex flex-wrap justify-center gap-3 max-w-2xl px-4">
                         {q?.options.map((opt, i) => (
                             <motion.button
-                                key={i} whileHover={{ y: -5, scale: 1.02 }} whileTap={{ scale: 0.95 }}
+                                key={i} whileHover={{ y: -2, scale: 1.02 }} whileTap={{ scale: 0.95 }}
                                 onClick={() => handleSelect(opt)}
-                                className={`px-10 py-6 rounded-[32px] font-black text-lg transition-all shadow-[0_8px_0_rgba(0,0,0,0.15)] active:shadow-none uppercase tracking-wider min-w-[180px] ${
-                                    selectedOption === opt && opt === q.correct ? 'bg-emerald-500 text-white' :
-                                    selectedOption === opt && opt !== q.correct ? 'bg-rose-500 text-white shadow-[0_8px_0_#9f1239]' :
-                                    (isDark ? 'bg-white/10 text-white border-2 border-white/5' : 'bg-white text-emerald-900 border-2 border-emerald-50')
+                                className={`px-6 py-4 rounded-2xl font-black text-sm transition-all shadow-[0_6px_0_rgba(0,0,0,0.15)] active:translate-y-1 active:shadow-none uppercase tracking-wider min-w-[120px] ${
+                                    selectedOption === opt && opt === q.correct ? 'bg-emerald-500 text-white shadow-[0_6px_0_#059669]' :
+                                    selectedOption === opt && opt !== q.correct ? 'bg-rose-500 text-white shadow-[0_6px_0_#be123c]' :
+                                    (isDark ? 'bg-white/10 text-white border-2 border-white/5 shadow-[0_6px_0_rgba(255,255,255,0.05)]' : 'bg-white text-emerald-900 border-2 border-emerald-50')
                                 }`}
                             >
                                 {opt}
@@ -76,31 +76,31 @@ const TenseRenderer = ({
                     <AnimatePresence>
                         {error && (
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                                className="flex items-center gap-3 text-rose-600 bg-rose-50 px-8 py-4 rounded-full border-2 border-rose-200 shadow-xl"
+                                className="flex items-center gap-2 text-rose-600 bg-rose-50 px-6 py-3 rounded-full border-2 border-rose-200 shadow-lg absolute bottom-4"
                             >
-                                <AlertTriangle size={18} />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Temporal Anomaly!</span>
+                                <AlertTriangle size={16} />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Temporal Anomaly!</span>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
             </div>
 
-            <div className={`p-10 transition-all border-t-4 ${isDark ? 'bg-[#0B0E14] border-white/5' : 'bg-white border-emerald-50'}`}>
-                <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-10">
-                    <div className="flex-1 w-full space-y-4">
+            <div className={`p-4 sm:p-6 transition-all border-t-2 ${isDark ? 'bg-[#0B0E14] border-white/5' : 'bg-white border-emerald-50'}`}>
+                <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                    <div className="flex-1 w-full space-y-2">
                         <div className="flex justify-between items-center text-emerald-600/50">
-                            <span className="text-[10px] font-black uppercase tracking-widest leading-none">Climb Altitude</span>
-                            <span className="text-[10px] font-black italic tracking-tighter uppercase leading-none">Checkpoint {currentIdx + 1}/{totalQueries}</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest leading-none">Climb Altitude</span>
+                            <span className="text-[9px] font-black italic tracking-tighter uppercase leading-none">Checkpoint {currentIdx + 1}/{totalQueries}</span>
                         </div>
-                        <div className="h-4 w-full bg-emerald-500/10 rounded-full p-1 border border-emerald-100 overflow-hidden">
-                            <motion.div animate={{ width: `${((currentIdx + 1) / totalQueries) * 100}%` }} className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full shadow-lg" />
+                        <div className="h-3 w-full bg-emerald-500/10 rounded-full p-0.5 border border-emerald-100 overflow-hidden">
+                            <motion.div animate={{ width: `${((currentIdx + 1) / totalQueries) * 100}%` }} className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full shadow-md" />
                         </div>
                     </div>
 
-                    <div className={`p-6 rounded-[40px] border-2 max-w-xs flex items-center gap-5 ${isDark ? 'bg-white/5 border-white/5 shadow-inner' : 'bg-emerald-50 border-emerald-100'}`}>
-                        <Box size={24} className="text-emerald-500 shrink-0 opacity-60" />
-                        <p className={`text-[11px] font-black leading-relaxed ${isDark ? 'text-slate-400' : 'text-emerald-900/60 uppercase'}`}>
+                    <div className={`p-3 sm:p-4 rounded-[1.5rem] border-2 max-w-xs flex items-center gap-3 ${isDark ? 'bg-white/5 border-white/5 shadow-inner' : 'bg-emerald-50 border-emerald-100'}`}>
+                        <Box size={20} className="text-emerald-500 shrink-0 opacity-60" />
+                        <p className={`text-[9px] sm:text-[10px] font-black leading-relaxed ${isDark ? 'text-slate-400' : 'text-emerald-900/60 uppercase'}`}>
                             Ascend the treehouse by matching the verb syntax to the <span className="text-emerald-500">Target Season</span>.
                         </p>
                     </div>

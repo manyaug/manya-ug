@@ -28,7 +28,8 @@ const GlobeRenderer = ({
     submitQuizAnswer,
     handleDragStart,
     focusOn,
-    onFinishActivity
+    onFinishActivity,
+    mode
 }) => {
     return (
         <div className="globe-engine-root flex flex-col h-full bg-[#f8fafc] dark:bg-[#0f172a] overflow-hidden">
@@ -60,7 +61,7 @@ const GlobeRenderer = ({
                 <div className="w-16 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto mt-5 mb-2" />
 
                 <div className="flex-1 overflow-y-auto px-5 pt-3 pb-12 space-y-5 no-scrollbar">
-                    {data.mode === 'study' && (
+                    {mode === 'study' && data.cases && (
                         <div className="flex overflow-x-auto gap-2 px-1 py-1 no-scrollbar sticky top-0 z-10 bg-white dark:bg-slate-900 shadow-sm mb-4">
                             {data.cases.map((c, i) => (
                                 <button 
@@ -72,13 +73,13 @@ const GlobeRenderer = ({
                                             : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'
                                     }`}
                                 >
-                                    {c.tabTitle}
+                                    {c.tabTitle || c.label || `Part ${i+1}`}
                                 </button>
                             ))}
                         </div>
                     )}
 
-                    {data.mode === 'study' && (
+                    {mode === 'study' && data.cases && (
                         <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
                             <div className="mcq-q-card border-[4.5px] border-indigo-500 bg-white dark:bg-slate-800">
                                 <div className="toy-card-gloss" />
@@ -109,10 +110,11 @@ const GlobeRenderer = ({
                         </div>
                     )}
 
-                    {data.mode === 'quiz' && (
+                    {mode === 'quiz' && data.questions && (
                         <div className="space-y-5 animate-in slide-in-from-right-4 duration-400">
                             <div className="mcq-q-card border-[4.5px] border-indigo-500 shadow-xl relative overflow-hidden bg-white dark:bg-slate-800">
                                 <div className="toy-card-gloss" />
+                                <h1 className="text-[14px] font-black tracking-wide leading-tight text-center text-slate-400 dark:text-slate-500 uppercase mb-2">Quest {activeTab + 1}/{data.questions.length}</h1>
                                 <p className="text-[15px] font-black leading-relaxed text-center relative z-10 text-slate-800 dark:text-slate-200">
                                     {data.questions[activeTab].question}
                                 </p>
@@ -122,30 +124,25 @@ const GlobeRenderer = ({
                                 {data.questions[activeTab].options.map((opt, i) => {
                                     const isSelected = selectedQuizOpt === opt;
                                     const isCorrect = quizFeedback?.type === 'success' && opt === data.questions[activeTab].correctAnswer;
-                                    const isWrong = quizFeedback?.type === 'error' && opt === quizFeedback.selectedOpt;
-
-                                    let cardClass = "mcq-option bg-white dark:bg-slate-800 py-4 px-5 rounded-2xl border-[3.5px] transition-all relative overflow-hidden";
-                                    let borderStyle = isSelected ? { borderColor: '#7c3aed' } : { borderColor: isDark ? '#1e293b' : '#f1f5f9' };
-
-                                    if (isCorrect) borderStyle = { borderColor: '#22c55e', backgroundColor: isDark ? '#064e3b' : '#f0fdf4' };
-                                    if (isSelected && !isCorrect && !isWrong) borderStyle = { borderColor: '#7c3aed', backgroundColor: isDark ? '#1e1b4b' : '#f5f3ff', transform: 'translateY(-2px)' };
-                                    if (isWrong) borderStyle = { borderColor: '#f43f5e', backgroundColor: isDark ? '#450a0a' : '#fff1f2' };
+                                    const isWrong = quizFeedback?.type === 'error' && isSelected;
 
                                     return (
                                         <button
                                             key={i}
                                             disabled={quizFeedback?.type === 'success'}
                                             onClick={() => handleQuizAnswer(opt)}
-                                            className={cardClass}
-                                            style={borderStyle}
+                                            className={`mcq-fe-btn relative overflow-hidden transition-all ${
+                                                isCorrect ? 'mcq-fe-correct' : 
+                                                isWrong ? 'mcq-fe-wrong' : 
+                                                isSelected ? 'mcq-fe-selected' : ''
+                                            }`}
                                         >
-                                            <div className="toy-card-gloss opacity-40" />
-                                            <div className="flex items-center justify-between relative z-10">
-                                                <span className={`font-black text-[13px] ${isCorrect ? 'text-green-700 dark:text-green-400' : isWrong ? 'text-rose-700 dark:text-rose-400' : isSelected ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-600 dark:text-slate-400'}`}>
-                                                    {opt}
-                                                </span>
-                                                {isCorrect && <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg"><CheckCircle2 size={14} /></div>}
-                                                {isWrong && <div className="w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center text-white shadow-lg"><X size={14} /></div>}
+                                            <div className="toy-card-gloss" />
+                                            <div className="flex items-center gap-4 relative z-10">
+                                                <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-black text-xs text-slate-400">{String.fromCharCode(65 + i)}</div>
+                                                <span className="text-[14px] font-bold text-slate-700 dark:text-slate-200">{opt}</span>
+                                                {isCorrect && <div className="ml-auto"><CheckCircle2 size={18} className="text-emerald-500" strokeWidth={3} /></div>}
+                                                {isWrong && <div className="ml-auto"><X size={18} className="text-rose-500" strokeWidth={3} /></div>}
                                             </div>
                                         </button>
                                     );
@@ -164,7 +161,87 @@ const GlobeRenderer = ({
                         </div>
                     )}
 
-                    {data.mode === 'puzzle' && (
+                    {mode === 'study' && !data.cases && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="space-y-4"
+                        >
+                             <div className="mcq-q-card border-[4.5px] border-indigo-500 bg-white dark:bg-slate-800">
+                                <div className="toy-card-gloss" />
+                                <h1 className="text-[17px] uppercase font-black tracking-wide leading-tight text-center text-indigo-600 dark:text-indigo-400 relative z-10">
+                                    {data.title || data.topic || data.concept || 'Lesson Overview'}
+                                </h1>
+                            </div>
+                            
+                             <p className="text-[14px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed px-2">
+                                {data.text || data.question || data.description || data.body || 'Global Concept Discovery'}
+                            </p>
+
+                            {(data.explanation || data.content || data.body || data.notes || data.q_explanation || data.question_explanation || data.explanation_text) && (
+                                <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 text-[13px] font-bold text-indigo-700 dark:text-indigo-300 leading-relaxed italic">
+                                    {data.explanation || data.content || data.body || data.notes || data.q_explanation || data.question_explanation || data.explanation_text}
+                                </div>
+                            )}
+
+                            {data.sections && data.sections.map((sec, idx) => (
+                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700">
+                                    <h4 className="text-[11px] font-black text-indigo-500 uppercase tracking-widest">{sec.title || sec.label}</h4>
+                                    <p className="text-[12px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        {sec.content || sec.text || sec.body}
+                                    </p>
+                                </div>
+                            ))}
+
+                            {(data.markers || data.points) && (
+                                <div className="space-y-3 mt-4">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Discovery Points</h4>
+                                    {(data.markers || data.points).map((p, i) => (
+                                        <div key={i} className="flex flex-col gap-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-500 shadow-sm"><Navigation size={16} /></div>
+                                                <div className="text-[13px] font-black text-slate-800 dark:text-slate-200">{p.label || p.title}</div>
+                                            </div>
+                                            {(p.description || p.text || p.content) && (
+                                                <p className="text-[12px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed pl-11">
+                                                    {p.description || p.text || p.content}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {(data.steps || data.points || data.features || data.items || data.recap_facts || data.facts) && (
+                                <div className="space-y-3 mt-4">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Key Highlights</h4>
+                                    {(data.steps || data.points || data.features || data.items || data.recap_facts || data.facts).map((step, i) => (
+                                        <div key={i} className="flex gap-3 items-start p-4 rounded-2xl bg-white dark:bg-slate-800 border-[3.5px] border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
+                                            <div className="toy-card-gloss opacity-30" />
+                                            <div className="mt-0.5 flex-shrink-0 w-7 h-7 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-black text-[12px] shadow-lg shadow-indigo-500/20 relative z-10">
+                                                {i + 1}
+                                            </div>
+                                            <p className="text-[13px] font-bold leading-relaxed text-slate-700 dark:text-slate-300 pt-0.5 relative z-10">
+                                                {typeof step === 'string' ? step : step.label || step.text || step.content || step.fact}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+
+                    {mode === 'study' && (
+                        <button
+                            onClick={onFinishActivity}
+                            className="mcq-btn-solid w-full bg-indigo-600 border-b-[6px] border-indigo-800 text-white rounded-2xl py-4 font-black text-[14px] uppercase tracking-widest shadow-xl shadow-indigo-500/30 mt-6 active:scale-95 active:border-b-0 transition-all relative overflow-hidden"
+                        >
+                            <div className="toy-card-gloss" />
+                            FINISH ACTIVITY
+                        </button>
+                    )}
+
+                    {mode === 'puzzle' && (
                         <div className="grid grid-cols-2 gap-4 pt-4">
                             {data.pieces?.map((p, i) => (
                                 <div key={i} onMouseDown={e => handleDragStart(e, p)} onTouchStart={e => handleDragStart(e, p)}

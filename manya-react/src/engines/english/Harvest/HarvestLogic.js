@@ -3,35 +3,58 @@
  * Internal rules for falling item physics, lane management, and collision detection.
  */
 
-export const LANE_X = { left: 25, right: 75 }; // Adjusted for wider basket
+export const LANE_X = { left: 25, right: 75 }; // Perfectly centered with 50% width halves
 
 /**
  * Initializes simulation config.
  */
 export const initializeHarvestData = (data) => {
-    return {
-        leftCat: (data?.leftCategory || 'NOUN').toUpperCase().trim(),
-        rightCat: (data?.rightCategory || 'VERB').toUpperCase().trim(),
-        wordPool: data?.words || [],
-        winScore: data?.winScore ?? 50
+    const d = data?.data || data || {};
+    
+    // Support both 'words' and 'questions' or 'items' keys
+    const rawWords = d.words || d.questions || d.items || [];
+    
+    const defaultWords = [
+        { text: "Apple", type: "NOUN" },
+        { text: "Run", type: "VERB" },
+        { text: "Book", type: "NOUN" },
+        { text: "Jump", type: "VERB" },
+        { text: "Happy", type: "ADJECTIVE" },
+        { text: "Beautiful", type: "ADJECTIVE" }
+    ];
+
+    const wordPool = (Array.isArray(rawWords) && rawWords.length > 0) ? rawWords : defaultWords;
+
+    // Auto-detect categories if not provided
+    const leftCategory = d.leftCategory || d.category1 || 'NOUN';
+    const rightCategory = d.rightCategory || d.category2 || 'VERB';
+
+    const config = {
+        leftCat: String(leftCategory).toUpperCase().trim(),
+        rightCat: String(rightCategory).toUpperCase().trim(),
+        wordPool,
+        winScore: d.winScore || d.targetScore || 50
     };
+    console.log("🌾 [HarvestLogic] Initialized Config:", config);
+    return config;
 };
 
 /**
  * Spawns a new falling item.
  */
 export const spawnHarvestItem = (wordPool, leftCat, nextId) => {
+    if (!wordPool || wordPool.length === 0) return null;
     const word = wordPool[Math.floor(Math.random() * wordPool.length)];
     const laneSide = Math.random() > 0.5 ? 'left' : 'right';
     
     return {
         id: nextId,
-        text: word.text,
-        cat: word.type.toUpperCase().trim(),
+        text: word.text || word.word || "",
+        cat: (word.type || word.category || "").toUpperCase().trim(),
         side: laneSide,
         x: LANE_X[laneSide],
         y: -10,
-        vy: 0.6 + Math.random() * 0.25, // Base velocity
+        vy: 0.25 + Math.random() * 0.15, // Slowed down from 0.6 to improve readability
         hue: Math.random() * 360 // For "Juicy" variety
     };
 };

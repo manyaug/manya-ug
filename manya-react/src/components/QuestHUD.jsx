@@ -5,7 +5,7 @@
  * Features a dark theme, recessed close button, and glowing subject labels.
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Trophy, Check, Zap } from 'lucide-react';
+import { X, Trophy, Check, Zap, Brain } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { getGem } from '../config/assetUrls.js';
 import { audioService } from '../infrastructure/audio/audioService';
@@ -18,6 +18,9 @@ const QuestHUD = ({
     correctCount = 0,
     streakCount = 0,
     masteryScore = 0,
+    sessionCoins = 0,
+    sessionGems = 0,
+    frustration = 0,
     hideTracker = false,
     onClose 
 }) => {
@@ -28,6 +31,10 @@ const QuestHUD = ({
     // Current coin value from Redux
     const coins = user?.coins || 0;
 
+    // Brain State Styling
+    const brainState = frustration > 70 ? 'rescue' : frustration > 40 ? 'tuning' : 'healthy';
+    const brainColor = brainState === 'rescue' ? '#3b82f6' : brainState === 'tuning' ? '#f59e0b' : '#10b981';
+    const brainLabel = brainState === 'rescue' ? 'Rescue Mode' : brainState === 'tuning' ? 'Adaptive' : 'Healthy Focus';
 
     // Listen for global reward arrival (emitted by FXLayer)
     useEffect(() => {
@@ -66,7 +73,6 @@ const QuestHUD = ({
     // Target Calculation: Percentage of the way to the 60% PASS_THRESHOLD
     const PASS_THRESHOLD = 60;
     const isPassing = masteryScore >= PASS_THRESHOLD;
-    const targetProgress = Math.min(100, (masteryScore / PASS_THRESHOLD) * 100);
     
     // Gold state for passing, Green for leading up to it
     const masteryColor = isPassing ? '#fbbf24' : '#10b981'; 
@@ -83,16 +89,22 @@ const QuestHUD = ({
                     <div className="hud-subject-badge">
                         {subjectNames[subject.toLowerCase()] || subject.toUpperCase()}
                     </div>
+
+                    {/* 🧠 THE BRAIN INDICATOR */}
+                    <div className={`hud-brain-indicator brain-${brainState}`} title={brainLabel}>
+                        <Brain size={12} color={brainColor} />
+                        <span style={{ color: brainColor }}>{brainLabel}</span>
+                    </div>
                 </div>
 
                 <div className="hud-right-group">
                     <div id="hud-coin-pill" className={`hud-pill-premium ${isCoinAbsorbing ? 'hud-absorb-pulse' : ''}`}>
                         <img src={getGem('coin.svg')} alt="C" className="w-3.5 h-3.5" />
-                        <span>{coins.toLocaleString()}</span>
+                        <span>{(coins + sessionCoins).toLocaleString()}</span>
                     </div>
                     <div id="hud-gem-pill" className={`hud-pill-premium ${isAbsorbing ? 'hud-absorb-pulse' : ''}`}>
                         <img src={gemIcon} alt="G" className="w-3.5 h-3.5" />
-                        <span>{subjectGems}</span>
+                        <span>{subjectGems + sessionGems}</span>
                     </div>
                 </div>
             </div>

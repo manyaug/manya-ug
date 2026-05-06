@@ -51,14 +51,15 @@ function HomeView() {
 
   // Load Curriculum
   useEffect(() => {
-    fetch('/curriculum-master.json')
-      .then(res => res.json())
-      .then(data => {
-          const norm = {};
-          Object.keys(data).forEach(k => { norm[k.toLowerCase()] = data[k]; });
-          setCurriculum(norm);
-      })
-      .catch(console.error);
+    import('../infrastructure/storage/storageFacade.js').then(({ storageFacade }) => {
+      storageFacade.get('file:/curriculum-master.json')
+        .then(data => {
+            const norm = {};
+            Object.keys(data).forEach(k => { norm[k.toLowerCase()] = data[k]; });
+            setCurriculum(norm);
+        })
+        .catch(console.error);
+    });
   }, []);
 
   // Determine Active Bounty

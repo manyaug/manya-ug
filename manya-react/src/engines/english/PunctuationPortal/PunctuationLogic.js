@@ -8,14 +8,22 @@
  */
 export const initializePunctuationData = (data) => {
     const d = data?.data || data || {};
+    const rawQueries = d.queries || d.questions || d.items || [];
+    
+    const defaultQueries = [
+        { 
+            parts: ["Wait", " I'm coming with you", "!"], 
+            slots: [{ index: 1, expected: ',', hint: "Use a comma after 'Wait'!" }]
+        },
+        {
+            parts: ["Hello", " how are you", "?"],
+            slots: [{ index: 1, expected: ',', hint: "Greeting needs a pause." }]
+        }
+    ];
+
     return {
-        queries: d.queries || [
-            { 
-                parts: ["Wait", " I'm coming with you", "!"], 
-                slots: [{ index: 1, expected: ',', hint: "Use a comma after 'Wait'!" }]
-            }
-        ],
-        availableMarks: d.marks || [',', '.', '!', '?', ';', ':', '-', '"']
+        queries: (Array.isArray(rawQueries) && rawQueries.length > 0) ? rawQueries : defaultQueries,
+        availableMarks: d.marks || d.availableMarks || [',', '.', '!', '?', ';', ':', '-', '"']
     };
 };
 

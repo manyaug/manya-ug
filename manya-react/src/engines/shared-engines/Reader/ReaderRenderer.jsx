@@ -191,19 +191,63 @@ export default function ReaderRenderer({
                 </header>
 
                 <div className="flex flex-col gap-6 md:gap-8">
-                    {(data.sections || []).map((sec, idx) => (
+                    {data.sections && data.sections.length > 0 ? (
+                        data.sections.map((sec, idx) => (
+                            <div 
+                                key={idx}
+                                className={`transition-all duration-1000 ease-out`}
+                                style={{ 
+                                    transitionDelay: `${200 + idx * 100}ms`,
+                                    opacity: isVisible ? 1 : 0,
+                                    transform: isVisible ? 'translateY(0)' : 'translateY(30px)'
+                                }}
+                            >
+                                <SectionRenderer section={sec} accent={accent} index={idx} />
+                            </div>
+                        ))
+                    ) : (
                         <div 
-                            key={idx}
-                            className={`transition-all duration-1000 ease-out`}
+                            className={`transition-all duration-1000 ease-out space-y-8`}
                             style={{ 
-                                transitionDelay: `${200 + idx * 100}ms`,
                                 opacity: isVisible ? 1 : 0,
                                 transform: isVisible ? 'translateY(0)' : 'translateY(30px)'
                             }}
                         >
-                            <SectionRenderer section={sec} accent={accent} index={idx} />
+                            {(data.text || data.question || data.description || data.body || data.content || data.question_text) && (
+                                <p className="text-xl md:text-3xl font-black text-[var(--text-main)] leading-tight tracking-tight">
+                                    {data.text || data.question || data.description || data.body || data.content || data.question_text}
+                                </p>
+                            )}
+                            
+                            {(data.explanation || data.explanation_text || data.notes || data.insight || data.q_explanation || data.question_explanation || data.content_text) && (
+                                <div className="p-8 md:p-12 rounded-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm">
+                                    <div className="flex items-center gap-2 mb-4 text-[var(--accent-color)]">
+                                        <Zap size={16} fill="currentColor" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Core Insight</span>
+                                    </div>
+                                    <p className="text-base md:text-xl font-bold text-[var(--text-sub)] leading-relaxed">
+                                        {data.explanation || data.explanation_text || data.notes || data.insight || data.q_explanation || data.question_explanation || data.content_text}
+                                    </p>
+                                </div>
+                            )}
+
+                            {(data.steps || data.points || data.features || data.items || data.recap_facts || data.facts) && (
+                                <div className="space-y-4">
+                                    <h4 className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4">Key Takeaways</h4>
+                                    {(data.steps || data.points || data.features || data.items || data.recap_facts || data.facts).map((step, i) => (
+                                        <div key={i} className="flex gap-4 p-5 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] group hover:border-[var(--accent-color)]/30 transition-all">
+                                            <div className="w-8 h-8 rounded-xl bg-[var(--accent-color)] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-lg shadow-[var(--accent-color)]/20">
+                                                {i + 1}
+                                            </div>
+                                            <p className="text-sm md:text-base font-bold text-[var(--text-sub)] pt-1 leading-relaxed">
+                                                {typeof step === 'string' ? step : step.label || step.text || step.content}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    ))}
+                    )}
                 </div>
 
                 {data.cards && data.cards.length > 0 && (

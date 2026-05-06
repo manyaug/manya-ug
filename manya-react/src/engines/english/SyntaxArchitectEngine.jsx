@@ -31,8 +31,17 @@ const SyntaxArchitectEngine = ({ data, onResult, onComplete }) => {
         onOptionHoverEnd, 
         resetMetrics 
     } = useBehavioralTracker(!!pool.length);
-    const initialQuestions = useMemo(() => data?.questions || [], [data]);
-    const currentQ = pool[index];
+    const initialQuestions = useMemo(() => {
+        const raw = data?.questions || data?.queries || data?.items || [];
+        if (Array.isArray(raw) && raw.length > 0) return raw;
+        return [{
+            prompt: "She ___ (to be) a doctor.",
+            options: ["is", "am", "are"],
+            expected: "is",
+            hint: "Third person singular of 'to be'."
+        }];
+    }, [data]);
+    const currentQ = pool[index] || { prompt: "", options: [], expected: "" };
 
     // --- 🪄 THEME SYNC ---
     useLayoutEffect(() => {

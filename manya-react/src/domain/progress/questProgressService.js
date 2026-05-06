@@ -175,20 +175,34 @@ export function getQuestProgress(subject, questKey) {
 }
 
 /**
+ * Helper to calculate stars (1-3) based on mastery
+ */
+export function calculateStars(mastery) {
+    if (mastery >= 85) return 3;
+    if (mastery >= 70) return 2;
+    if (mastery >= 40) return 1;
+    return 0;
+}
+
+/**
  * Save the result of completing a node.
  * Returns: { unlocked: boolean, nextNode: string|null, mastery: number, needsRetry: boolean }
  */
 export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
     const all = loadAllProgress(subject);
     if (!all[questKey]) all[questKey] = {};
-    if (!all[questKey][nodeType]) all[questKey][nodeType] = { mastery: 0, status: 'locked', attempts: 0, lastAttempt: null };
+    if (!all[questKey][nodeType]) all[questKey][nodeType] = { mastery: 0, stars: 0, status: 'locked', attempts: 0, lastAttempt: null };
 
     const prev = all[questKey][nodeType];
-    const finalMastery = Math.max(prev.mastery, mastery);
+    const finalMastery = Math.max(prev.mastery || 0, mastery);
+    const nodeStars = calculateStars(mastery);
+    const finalStars = Math.max(prev.stars || 0, nodeStars);
+    
     const isFirstCompletion = prev.status !== 'completed';
 
     all[questKey][nodeType] = {
         mastery: finalMastery,
+        stars: finalStars,
         status: 'completed',
         attempts: (prev.attempts || 0) + 1,
         lastAttempt: new Date().toISOString(),
@@ -205,7 +219,7 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
         if (finalMastery >= threshold) {
             // Unlock next node
             if (!all[questKey][nextNode]) {
-                all[questKey][nextNode] = { mastery: 0, status: 'available', attempts: 0, lastAttempt: null };
+                all[questKey][nextNode] = { mastery: 0, stars: 0, status: 'available', attempts: 0, lastAttempt: null };
             } else if (all[questKey][nextNode].status === 'locked') {
                 all[questKey][nextNode].status = 'available';
             }
@@ -221,8 +235,8 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
     syncService.updateProgress(questKey, {
         nodeType,
         mastery: finalMastery,
-        status: 'completed',
-        attempts: all[questKey][nodeType].attempts
+        stars: finalStars,
+        status: 'completed'
     }).catch(e => console.warn('[Sync] Failed to fire progress sync:', e));
 
     // ─── CLOUD SYNC: Push next node unlock to Supabase ───
@@ -230,8 +244,8 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
         syncService.updateProgress(questKey, {
             nodeType: nextNode,
             mastery: all[questKey][nextNode].mastery,
-            status: all[questKey][nextNode].status,
-            attempts: all[questKey][nextNode].attempts
+            stars: all[questKey][nextNode].stars,
+            status: all[questKey][nextNode].status
         }).catch(e => console.warn('[Sync] Failed to fire unlock sync:', e));
     }
 
@@ -240,6 +254,7 @@ export function saveNodeCompletion(subject, questKey, nodeType, mastery) {
         nextNode,
         isFirstCompletion,
         mastery: finalMastery,
+        stars: finalStars,
         needsRetry,
         threshold: nextNode ? UNLOCK_THRESHOLDS[nextNode] : 0,
         attempts: all[questKey][nodeType].attempts,

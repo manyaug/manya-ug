@@ -98,9 +98,24 @@ export default function ChestRevealModal() {
             }
         });
         
-        // Sync Logic FIXED: Use uploadProfile
-        const totalCoinsEarned = revealedRewards.reduce((sum, r) => r.type === 'coins' ? sum + r.amount : sum, 0);
-        const updatedUser = { ...user, coins: (user.coins || 0) + totalCoinsEarned };
+        // Sync Logic FIXED: Aggregate both Coins and Gems (Diamonds)
+        const totalCoins = revealedRewards.reduce((sum, r) => r.type === 'coins' ? sum + r.amount : sum, 0);
+        const totalGems = revealedRewards.reduce((sum, r) => r.type === 'gems' ? sum + r.amount : sum, 0);
+        
+        const updatedUser = { 
+            ...user, 
+            coins: (user.coins || 0) + totalCoins,
+            diamonds: (user.diamonds || 0) + Math.floor(totalGems / 2) // Diamonds are the base currency
+        };
+
+        // Add subject-specific gems if applicable
+        revealedRewards.forEach(r => {
+            if (r.type === 'gems' && r.subject) {
+                const key = `${r.subject}Gems`;
+                updatedUser[key] = (updatedUser[key] || 0) + r.amount;
+            }
+        });
+
         syncService.uploadProfile(updatedUser).catch(console.error);
         
         // Cleanup

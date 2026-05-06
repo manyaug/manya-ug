@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
 import { BADGES, BADGE_CATEGORIES } from '../config/badges';
-import { getGem } from '../config/assetUrls';
+import { getGem, IMAGES } from '../config/assetUrls';
 import '../styles/achievement.css';
 import '../styles/badge-celebration.css';
 
@@ -15,10 +15,10 @@ function AchievementsView() {
 
   // Subject Treasury Mapping
   const subjectGems = [
-      { name: 'Math', val: user?.mathGems || 0, file: 'math_gem.svg', color: '#6366f1' },
-      { name: 'Science', val: user?.scienceGems || 0, file: 'science_svg.svg', color: '#10b981' },
-      { name: 'SST', val: user?.sstGems || 0, file: 'sst_gem.svg', color: '#f59e0b' },
-      { name: 'English', val: user?.englishGems || 0, file: 'english_gem.svg', color: '#db2777' }
+      { name: 'Math', val: user?.mathGems || 0, img: getGem('math_gem.svg'), color: '#6366f1' },
+      { name: 'Science', val: user?.scienceGems || 0, img: getGem('science_gem.svg'), color: '#10b981' },
+      { name: 'SST', val: user?.sstGems || 0, img: getGem('sst_gem.svg'), color: '#f59e0b' },
+      { name: 'English', val: user?.englishGems || 0, img: getGem('english_gem.svg'), color: '#db2777' }
   ];
 
   // Group badges by Category
@@ -62,7 +62,7 @@ function AchievementsView() {
                 {subjectGems.map(gem => (
                     <div key={gem.name} className="gem-item-minimal">
                         <div className="gem-stone-v2 !h-10 !w-10">
-                            <img src={getGem(gem.file)} alt={gem.name} />
+                            <img src={gem.img} alt={gem.name} />
                         </div>
                         <div className="gem-count-v2 !text-sm" style={{ color: gem.color }}>{gem.val}</div>
                         <div className="gem-label-v2 !text-[9px]">{gem.name}</div>

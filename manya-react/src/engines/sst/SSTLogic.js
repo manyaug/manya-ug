@@ -24,6 +24,11 @@ export const getEngineType = (q) => {
     
     // Auto-detect NoteExplorer
     if (data?.study_notes || data?.mode === 'note_explorer') return 'NOTE_EXPLORER';
+
+    // Auto-detect ReaderStudy for generic lesson nodes
+    if (!type && (data?.text || data?.explanation || data?.steps || data?.content)) {
+        return 'READER_STUDY';
+    }
     
     return type;
 };

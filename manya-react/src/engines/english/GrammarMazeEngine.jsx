@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
+import { telemetryService } from '../../infrastructure/services/telemetryService.js';
 
 // Decoupled Resources
 import { initializeLevel, moveObstacle, validateMove, calculateMazeScoring } from './GrammarMaze/MazeLogic';
@@ -12,8 +13,13 @@ import MazeRenderer from './GrammarMaze/MazeRenderer';
  */
 
 const GrammarMazeEngine = ({ data, onComplete }) => {
-    const levels = useMemo(() => data?.levels || [], [data]);
+    const levels = useMemo(() => {
+        const raw = data?.levels || data?.questions || data?.items || [];
+        return (Array.isArray(raw) && raw.length > 0) ? raw : [{}];
+    }, [data]);
+
     const [lvlIdx, setLvlIdx] = useState(0);
+    const [currentLvl, setCurrentLvl] = useState(null);
     const [playerPos, setPlayerPos] = useState({ r: 0, c: 0 });
     const [lives, setLives] = useState(5);
     const [score, setScore] = useState(0);
@@ -25,7 +31,8 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
     const [totalMistakes, setTotalMistakes] = useState(0);
 
     const globalStartTimeRef = useRef(Date.now());
-    const currentLvl = levels[lvlIdx];
+    const lastMoveTimeRef = useRef(Date.now());
+    const mistakeCountWindowRef = useRef([]); // Stores timestamps of mistakes
 
     // --- 🪄 THEME SYNC ---
     useLayoutEffect(() => {
@@ -38,11 +45,11 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
 
     // 1. Initialize Level
     const initLevel = useCallback((idx) => {
-        const lvl = levels[idx];
-        if (!lvl) return;
-        const { startPos, obstacles } = initializeLevel(lvl);
-        setPlayerPos(startPos);
-        setObstacles(obstacles);
+        const rawLvl = levels[idx];
+        const initialized = initializeLevel(rawLvl);
+        setCurrentLvl(initialized);
+        setPlayerPos(initialized.startPos);
+        setObstacles(initialized.obstacles);
         setFeedback(null);
         setIsGameOver(false);
     }, [levels]);
@@ -59,8 +66,23 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
                 return next;
             }));
         }, 600);
-        return () => clearInterval(interval);
-    }, [playerPos, isGameOver, showFinish]);
+
+        // 🧠 HESITATION TRACKER: Detect long pauses
+        const hesitationCheck = setInterval(() => {
+            if (Date.now() - lastMoveTimeRef.current > 7000) { // 7 seconds idle
+                telemetryService.trackInteraction('english', 'HESITATION_PAUSE', {
+                    idleTimeMs: Date.now() - lastMoveTimeRef.current,
+                    lvlIdx
+                });
+                lastMoveTimeRef.current = Date.now(); // reset to avoid spam
+            }
+        }, 2000);
+
+        return () => {
+            clearInterval(interval);
+            clearInterval(hesitationCheck);
+        };
+    }, [playerPos, isGameOver, showFinish, lvlIdx]);
 
     const handleHit = useCallback(() => {
         setLives(l => {
@@ -72,20 +94,44 @@ const GrammarMazeEngine = ({ data, onComplete }) => {
         setTotalMistakes(m => m + 1);
         audioService.error?.();
         
+        // 🧠 FRUSTRATION TRACKER: Detect mistake spikes
+        const now = Date.now();
+        mistakeCountWindowRef.current.push(now);
+        // Keep only mistakes in the last 10 seconds
+        mistakeCountWindowRef.current = mistakeCountWindowRef.current.filter(t => now - t < 10000);
+        
+        if (mistakeCountWindowRef.current.length >= 3) {
+            telemetryService.trackInteraction('english', 'FRUSTRATION_SPIKE', {
+                mistakesInWindow: mistakeCountWindowRef.current.length,
+                type: 'GUARD_HIT'
+            });
+        }
+
         // Reset player
-        const { startPos } = initializeLevel(levels[lvlIdx]);
-        setPlayerPos(startPos);
-    }, [levels, lvlIdx]);
+        if (currentLvl) setPlayerPos(currentLvl.startPos);
+    }, [currentLvl]);
 
     const attemptMove = useCallback((dr, dc) => {
         if (isGameOver || showFinish || feedback?.type === 'success') return;
         
         const rows = currentLvl?.maze?.length || 0;
         const cols = currentLvl?.maze?.[0]?.length || 0;
-        const { isValid, r, c } = validateMove(dr, dc, playerPos, currentLvl.maze, rows, cols);
+        const { isValid, r, c } = validateMove(dr, dc, playerPos, currentLvl?.maze, rows, cols);
 
-        if (!isValid) return;
+        if (!isValid) {
+            // Track wall hits for frustration
+            const now = Date.now();
+            mistakeCountWindowRef.current.push(now);
+            mistakeCountWindowRef.current = mistakeCountWindowRef.current.filter(t => now - t < 5000);
+            if (mistakeCountWindowRef.current.length >= 4) {
+                telemetryService.trackInteraction('english', 'FRUSTRATION_SPIKE', {
+                    type: 'WALL_HIT'
+                });
+            }
+            return;
+        }
         setPlayerPos({ r, c });
+        lastMoveTimeRef.current = Date.now();
 
         // Check Answer Gate
         const gate = currentLvl.answers.find(ans => ans.r === r && ans.c === c);

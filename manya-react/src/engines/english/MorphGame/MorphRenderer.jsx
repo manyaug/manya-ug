@@ -18,7 +18,11 @@ const MorphRenderer = ({
     hint, 
     variantTitle, 
     handleToggle, 
-    onComplete 
+    onComplete,
+    selectionMode,
+    userSelectedIds,
+    handleWordClick,
+    showCorrection
 }) => {
     return (
         <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-700 relative ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-900 text-white'}`}>
@@ -33,9 +37,11 @@ const MorphRenderer = ({
             <div className="flex-none p-8 pt-12 z-20 text-center">
                 <div className="max-w-md mx-auto">
                     <h2 className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-3">{variantTitle}</h2>
-                    <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl">
-                        <Zap size={14} className="text-amber-400 fill-amber-400 animate-pulse" />
-                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-300">Pro Morphing Engine</span>
+                    <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-500" style={{ borderColor: selectionMode ? '#6366f1' : '#10b981' }}>
+                        <Zap size={14} className={`${selectionMode ? 'text-indigo-400' : 'text-emerald-400'} fill-current animate-pulse`} />
+                        <span className="text-[10px] font-black tracking-widest uppercase text-slate-300">
+                            {selectionMode ? 'Challenge: Spot the Morph' : 'Discovery: Morph Portal Active'}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -52,18 +58,32 @@ const MorphRenderer = ({
                     }}
                 >
                     <div className={`flex flex-wrap justify-center gap-x-4 gap-y-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-                        {currentWords.map((w, i) => (
-                            <div key={`${isTransformed ? 'ind' : 'dir'}-${w.id}-${i}`} className="relative group">
-                                <span className={`text-3xl sm:text-5xl font-black transition-all duration-700 block animate-in fade-in slide-in-from-bottom-4 ${isTransformed && w.changed ? 'text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]' : 'text-white'}`}>
-                                    {w.text}
-                                </span>
-                                {isTransformed && w.changed && (
-                                    <div className="absolute -top-4 -right-4">
-                                        <Sparkles size={16} className="text-amber-300 animate-bounce" />
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                        {currentWords.map((w, i) => {
+                            const isSelected = userSelectedIds?.has(w.id);
+                            return (
+                                <div 
+                                    key={`${isTransformed ? 'ind' : 'dir'}-${w.id}-${i}`} 
+                                    className={`relative group cursor-pointer transition-all duration-300 ${selectionMode && isSelected ? 'scale-110' : ''}`}
+                                    onClick={() => handleWordClick?.(w.id)}
+                                >
+                                    <span className={`text-3xl sm:text-5xl font-black transition-all duration-700 block animate-in fade-in slide-in-from-bottom-4 
+                                        ${isTransformed && w.changed ? 'text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]' : 'text-white'}
+                                        ${selectionMode && isSelected ? '!text-indigo-400 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]' : ''}
+                                        ${showCorrection && w.changed ? '!text-rose-400 animate-bounce' : ''}
+                                    `}>
+                                        {w.text}
+                                    </span>
+                                    {isTransformed && w.changed && (
+                                        <div className="absolute -top-4 -right-4">
+                                            <Sparkles size={16} className="text-amber-300 animate-bounce" />
+                                        </div>
+                                    )}
+                                    {selectionMode && isSelected && (
+                                        <motion.div layoutId="selection-glow" className="absolute -inset-2 bg-indigo-500/10 rounded-xl border border-indigo-500/30 -z-10" />
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="absolute top-6 left-10 flex gap-1.5 opacity-20">
@@ -107,20 +127,22 @@ const MorphRenderer = ({
                             className="absolute w-16 h-16 rounded-[24px] shadow-3xl transition-all duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] z-20 flex items-center justify-center text-slate-900 border-[6px]"
                             style={{ 
                                 left: isTransformed ? 'calc(100% - 64px)' : '0%',
-                                backgroundColor: isTransformed ? '#fbbf24' : '#fff',
+                                backgroundColor: isTransformed ? '#fbbf24' : selectionMode ? '#818cf8' : '#fff',
                                 borderColor: isDark ? '#151921' : '#1E2530',
-                                boxShadow: isTransformed ? '0 0 50px rgba(251,191,36,0.5)' : '0 0 40px rgba(255,255,255,0.2)',
+                                boxShadow: isTransformed ? '0 0 50px rgba(251,191,36,0.5)' : selectionMode ? '0 0 30px rgba(129,140,248,0.4)' : '0 0 40px rgba(255,255,255,0.2)',
                                 transform: isAnimating ? 'scale(1.2) rotate(180deg)' : 'scale(1) rotate(0deg)'
                             }}
                         >
-                            {isAnimating ? <RefreshCcw size={24} className="animate-spin" /> : <MoveHorizontal size={24} strokeWidth={3} />}
+                            {isAnimating ? <RefreshCcw size={24} className="animate-spin" /> : selectionMode ? <Zap size={24} className="text-white" fill="currentColor" /> : <MoveHorizontal size={24} strokeWidth={3} />}
                         </div>
                     </div>
 
-                    <div className={`p-6 rounded-[32px] border transition-all duration-500 min-h-[80px] flex items-center justify-center ${isDark ? 'bg-white/5 border-white/5 shadow-inner' : 'bg-white/5 border-white/10'}`}>
+                    <div className={`p-6 rounded-[32px] border transition-all duration-500 min-h-[80px] flex items-center justify-center ${isDark ? 'bg-white/5 border-white/5 shadow-inner' : 'bg-white/5 border-white/10'} ${showCorrection ? 'border-rose-500/50 bg-rose-500/5' : ''}`}>
                         <div className="flex gap-4 items-center">
-                            <Lightbulb size={20} className={isTransformed ? 'text-amber-500' : 'text-indigo-400'} />
-                            <p className="text-xs font-black italic text-slate-300">{hint || "Slide the portal to transform the speech."}</p>
+                            <Lightbulb size={20} className={showCorrection ? 'text-rose-500' : isTransformed ? 'text-amber-500' : 'text-indigo-400'} />
+                            <p className={`text-xs font-black italic transition-colors ${showCorrection ? 'text-rose-400' : 'text-slate-300'}`}>
+                                {showCorrection ? "Almost! Look at the words bouncing." : selectionMode ? "Click the words that will change during the morph." : (hint || "Slide the portal to transform the speech.")}
+                            </p>
                         </div>
                     </div>
 

@@ -17,7 +17,13 @@ const SetStudyRenderer = ({
   hNext,
   topic
 }) => {
-  const currentSlide = slides[stepIdx] || { title: "Concept Study", text: "Explore the details of this topic below." };
+  const slideData = slides[stepIdx];
+  const currentSlide = (slideData && (slideData.title || slideData.text)) 
+    ? slideData 
+    : { 
+        title: slideData?.title || "Concept Study", 
+        text: slideData?.text || slideData?.content || slideData?.prompt || slideData?.expression || slideData?.question || "Explore the details of this topic below." 
+      };
   const isLast = stepIdx === slides.length - 1;
   const allSeen = visitedIndices.size === slides.length;
   const theme = isDark ? THEMES.dark : THEMES.light;
@@ -44,7 +50,7 @@ const SetStudyRenderer = ({
 
       {/* 2. LESSON CARD */}
       <div className={`flex-1 min-h-0 flex flex-col ${theme.card} relative z-10 shadow-up`}>
-         <div className="flex-1 min-h-0 overflow-y-auto px-7 py-10 no-scrollbar">
+         <div className="flex-1 min-h-0 overflow-y-auto px-7 py-10 no-scrollbar pb-20">
             <h2 className={`text-2xl font-black mb-5 leading-tight ${theme.text} tracking-tighter`}>{currentSlide.title}</h2>
             <div className={`text-[1.125rem] leading-[1.8] font-semibold ${theme.sub} prose-premium`} dangerouslySetInnerHTML={{ __html: currentSlide.text }} />
          </div>

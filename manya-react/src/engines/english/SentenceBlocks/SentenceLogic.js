@@ -8,12 +8,24 @@
  */
 export const initializeLevelData = (data) => {
     const raw = data?.data || data || {};
-    const slots = raw.slots || [
+    
+    // Support 'slots', 'questions', 'items', or 'words'
+    const rawSlots = raw.slots || raw.questions || raw.items || raw.words || [];
+    
+    const defaultSlots = [
         { id: 's1', expected: 'The brave knight' },
         { id: 's2', expected: 'conquered' },
         { id: 's3', expected: 'the dragon' },
     ];
-    const distractors = raw.distractors || ['quickly', 'sleeping'];
+
+    const slots = (Array.isArray(rawSlots) && rawSlots.length > 0) 
+        ? rawSlots.map((s, i) => ({
+            id: s.id || `s${i}`,
+            expected: s.expected || s.text || s.word || (typeof s === 'string' ? s : '???')
+          }))
+        : defaultSlots;
+
+    const distractors = raw.distractors || raw.fakeWords || ['quickly', 'sleeping'];
 
     const initialSlots = slots.map(slot => ({ ...slot, current: null }));
     
@@ -27,8 +39,8 @@ export const initializeLevelData = (data) => {
         })),
         ...distractors.map((text, i) => ({ 
             id: `d-${i}`, 
-            text: text, 
-            color: 'bg-slate-400' 
+            text: typeof text === 'string' ? text : (text.text || text.word || '???'), 
+            color: colors[Math.floor(Math.random() * colors.length)] 
         }))
     ].sort(() => Math.random() - 0.5);
 

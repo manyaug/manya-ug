@@ -4,6 +4,7 @@ import { discoverArtifact } from '../../store/userSlice';
 import { addToast } from '../../store/toastSlice';
 import * as d3 from 'd3';
 import { assetUrl } from '../../config/assetUrls';
+import { storageFacade } from '../../infrastructure/storage/storageFacade.js';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 
 // Atomic Resources
@@ -16,7 +17,23 @@ import GlobeCanvas from './UniversalGlobe/GlobeCanvas';
  * -------------------------------------------------------------
  * - DECOUPLED: Logic (GlobeLogic), Renderer (GlobeRenderer), Canvas (GlobeCanvas), Controller (Engine)
  */
-const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) => {
+const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) => {
+    // 🛡️ [Manya v5.9] Payload Normalization
+    // If the data comes from a single database row (MCQ), wrap it into the expected simulation format.
+    const data = (rawData.question && !rawData.questions) 
+        ? { ...rawData, questions: [{ 
+            ...rawData,
+            question: rawData.question, 
+            options: rawData.options || [], 
+            correctAnswer: rawData.answer || rawData.correctAnswer,
+            explanation: rawData.explanation 
+          }], mode: 'quiz' }
+        : rawData;
+
+    const mode = data.mode?.toLowerCase() || 
+                 (data.questions?.length > 0 ? 'quiz' : 
+                  (data.pieces?.length > 0 ? 'puzzle' : 
+                   (data.cases?.length > 0 || data.points?.length > 0) ? 'study' : 'study'));
     const dispatch = useDispatch();
     const [activeTab, setActiveTab] = useState(0);
     const [worldData, setWorldData] = useState(null);
@@ -47,8 +64,14 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, onSimSucc
 
     // --- 📡 DATA LOAD ---
     useEffect(() => {
-        fetch(assetUrl('data/world-atlas.json'))
-            .then(res => res.json())
+        console.log(`%c 🌍 [UniversalGlobeEngine] Active Node: ${data.id || data.qid}`, 'color: #8b5cf6; font-weight: bold;');
+        console.log(`[UniversalGlobeEngine] Raw Payload:`, rawData);
+        console.log(`[UniversalGlobeEngine] Normalized Data:`, data);
+        console.log(`[UniversalGlobeEngine] Resolved Mode: ${mode}`);
+    }, [data, rawData, mode]);
+    
+    useEffect(() => {
+        storageFacade.get(`file:${assetUrl('data/world-atlas.json')}`)
             .then(json => {
                 setWorldData(json);
                 setIsD3Ready(true);
@@ -240,6 +263,7 @@ const UniversalGlobeEngine = ({ data, onComplete, onResult, onAttempt, onSimSucc
         <GlobeRenderer 
             isDark={isDark}
             data={data}
+            mode={mode}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             placedPieces={placedPieces}

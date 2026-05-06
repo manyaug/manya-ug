@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, ArrowRight } from 'lucide-react';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 // Decoupled Resources
 import { initializeLevelData, validateStructure, calculateSentenceScoring } from './SentenceBlocks/SentenceLogic';
@@ -20,6 +21,9 @@ const SentenceBlocksEngine = ({ data, onComplete, onResult }) => {
     const [bank, setBank] = useState([]);
     const [totalMistakes, setTotalMistakes] = useState(0);
     const [startTime] = useState(Date.now());
+
+    // 🧠 BEHAVIORAL TRACKER (Phase 3)
+    const { metrics, recordFirstClick } = useBehavioralTracker(phase === 'build');
 
     // --- 🪄 THEME SYNC ---
     useLayoutEffect(() => {
@@ -46,6 +50,7 @@ const SentenceBlocksEngine = ({ data, onComplete, onResult }) => {
             s.id === emptySlot.id ? { ...s, current: word } : s
         ));
         setBank(prev => prev.filter(w => w.id !== word.id));
+        recordFirstClick();
         audioService.tap?.();
     };
 
@@ -75,8 +80,16 @@ const SentenceBlocksEngine = ({ data, onComplete, onResult }) => {
 
     const handleFinish = () => {
         const result = calculateSentenceScoring(true, totalMistakes, slots.length, startTime);
-        if (onResult) onResult(result);
-        if (onComplete) onComplete(result);
+        const finalPayload = { 
+            ...result,
+            // 🧠 Phase 3 Behavioral Telemetry
+            metrics: {
+                ...metrics,
+                frustrationClicks: totalMistakes
+            }
+        };
+        if (onResult) onResult(finalPayload);
+        if (onComplete) onComplete(finalPayload);
     };
 
     return (

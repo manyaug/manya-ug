@@ -154,15 +154,27 @@ class DynamicModeService {
      * Determine the next mode based on performance
      * @param {string|null} forceMode - Manually requested mode
      * @param {string} nodeType - WARMUP, EXPLORE, PRACTICE, REINFORCE, MASTERY
+     * @param {object} context - Additional metadata (isRecap, engineType, etc.)
      */
-    getNextMode(forceMode = null, nodeType = 'PRACTICE') {
+    getNextMode(forceMode = null, nodeType = 'PRACTICE', context = {}) {
         const type = String(nodeType).toUpperCase();
         
         // 1. Force override (if any)
         if (forceMode && forceMode !== 'random') return forceMode;
 
-        // 2. Study Protection: Never trigger challenges in study nodes
-        if (type === 'WARMUP' || type === 'EXPLORE' || type === 'LESSON') {
+        // 2. Study Protection: Never trigger challenges in study nodes, recaps or simulations
+        const STUDY_ENGINES = ['READER_STUDY', 'NOTE_EXPLORER', 'GALLERY_STUDY', 'READER_ENGINE', 'READER'];
+        const isStudyEngine = context.engineType && STUDY_ENGINES.includes(context.engineType);
+        
+        if (
+            type === 'WARMUP' || 
+            type === 'EXPLORE' || 
+            type === 'LESSON' || 
+            context.isRecap || 
+            context.isStudy ||
+            context.isSimulation ||
+            isStudyEngine
+        ) {
             return 'normal';
         }
 

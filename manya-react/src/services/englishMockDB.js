@@ -1,4 +1,4 @@
-import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 
 const BANK_CACHE = {};
@@ -40,14 +40,10 @@ export const fetchEnglishQuestions = async (topicId) => {
         }
 
         // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let { data, error } = await supabase
-            .from('manya_vault')
-            .select('*')
-            .ilike('subject', 'english')
-            .or(`subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
+        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=(subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId})`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
-        if (!error && (!data || data.length === 0)) {
+        if (!data || data.length === 0) {
             const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
             const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
             
@@ -55,11 +51,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                 console.log(`🔍 [English Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const { data: keywordData } = await supabase
-                    .from('manya_vault')
-                    .select('*')
-                    .ilike('subject', 'english')
-                    .or(keywordFilter);
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=(${keywordFilter})`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [English Vault] Discovered ${keywordData.length} related questions via keywords.`);
@@ -68,7 +60,6 @@ export const fetchEnglishQuestions = async (topicId) => {
             }
         }
 
-        if (error) throw error;
         if (!data || data.length === 0) return [];
 
         const transformed = data.map(q => {
