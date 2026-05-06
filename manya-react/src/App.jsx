@@ -101,6 +101,9 @@ function RouterLayout() {
                     {/* Diagnostic Audit */}
                     <Route path="/debug-audit" element={<DebugAuditView />} />
 
+                    {/* Security Portal (Accessible while logged in) */}
+                    <Route path="/reset-password" element={<ResetPasswordView />} />
+
                     {/* Catch-all for authenticated state: Redirect to home if path doesn't match */}
                     <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
