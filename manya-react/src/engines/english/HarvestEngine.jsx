@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { awardCoins, updateBalanceThunk } from '../../store/userSlice';
 import { CoinBurst } from '../../components/ui/CoinBurst';
-import { useBehavioralTracker } from '../../../hooks/useBehavioralTracker';
+import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 
 // Decoupled Resources
 import { initializeHarvestData, spawnHarvestItem, checkHarvestCollision, calculateHarvestScoring } from './Harvest/HarvestLogic';
