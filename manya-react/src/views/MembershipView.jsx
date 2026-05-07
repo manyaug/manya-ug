@@ -55,7 +55,7 @@ function MembershipView() {
         {/* 0. DYNAMIC AURORA ENGINE */}
         <div className="aurora-engine">
             <div className="blob aurora-1"></div>
-            <div className="blob aurora-2" style={{ background: '#f59e0b' }}></div>
+            <div className="blob aurora-2" style={{ background: 'var(--manya-gold)' }}></div>
         </div>
 
         {/* 1. ARENA-STYLE HEADER (UNITED) */}
@@ -104,8 +104,8 @@ function MembershipView() {
                 <div className="best-value-ribbon">
                     <Crown size={12} color="#fff" style={{ marginRight: '4px' }} /> MOST POPULAR
                 </div>
-                <div className="card-glass-glow" style={{ background: '#f59e0b', opacity: 0.15 }}></div>
-                <span className="tier-title-small" style={{ color: '#f59e0b' }}>Termly Legend</span>
+                <div className="card-glass-glow" style={{ background: 'var(--manya-gold)', opacity: 0.15 }}></div>
+                <span className="tier-title-small" style={{ color: 'var(--manya-gold)' }}>Termly Legend</span>
                 <div className="tier-cost">UGX 20,000<span className="period">/tm</span></div>
             </div>
         </motion.div>

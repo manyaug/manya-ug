@@ -15,10 +15,10 @@ const ImageHotspotsEngine = lazy(() => import('../engines/shared-engines/ImageHo
 const UniversalGlobeEngine = lazy(() => import('../engines/sst/UniversalGlobeEngine.jsx'));
 
 const SUBJECTS = [
-    { id: 'math', label: 'Math', color: '#7c3aed', rgb: '124, 58, 237' },
-    { id: 'science', label: 'Sci', color: '#10b981', rgb: '16, 185, 129' },
-    { id: 'english', label: 'Eng', color: '#db2777', rgb: '219, 39, 119' },
-    { id: 'sst', label: 'SST', color: '#f59e0b', rgb: '245, 158, 11' },
+    { id: 'math', label: 'Math', color: 'var(--subject-math)', rgb: '124, 58, 237' },
+    { id: 'science', label: 'Sci', color: 'var(--subject-science)', rgb: '16, 185, 129' },
+    { id: 'english', label: 'Eng', color: 'var(--subject-english)', rgb: '219, 39, 119' },
+    { id: 'sst', label: 'SST', color: 'var(--subject-sst)', rgb: '245, 158, 11' },
 ];
 
 export default function LibraryView() {

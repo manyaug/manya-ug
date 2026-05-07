@@ -37,9 +37,9 @@
 .live-pulse-dot {
     width: 8px;
     height: 8px;
-    background: #22c55e;
+    background: var(--manya-green);
     border-radius: 50%;
-    box-shadow: 0 0 12px #22c55e;
+    box-shadow: 0 0 12px var(--manya-green);
     margin-bottom: 12px;
     animation: pulse 2s infinite;
 }
@@ -226,9 +226,9 @@
     height: 16px;
 }
 
-.pod-rank-1 { height: 190px; border-color: var(--manya-gold); }
-.pod-rank-2 { height: 160px; border-color: #94a3b8; }
-.pod-rank-3 { height: 140px; border-color: #cd7f32; }
+.pod-rank-1 { height: 190px; border-color: var(--league-gold); }
+.pod-rank-2 { height: 160px; border-color: var(--league-silver); }
+.pod-rank-3 { height: 140px; border-color: var(--league-bronze); }
 
 .crown-badge {
     position: absolute;

@@ -11,13 +11,13 @@ import { LogOut, Heart } from 'lucide-react';
 const QuestExitModal = ({ isOpen, onClose, onConfirm, subject = 'math' }) => {
     // Subject-specific accents
     const subjectColors = {
-        math: '#7c3aed',
-        science: '#16a34a',
-        sst: '#0ea5e9',
-        english: '#db2777'
+        math: 'var(--subject-math)',
+        science: 'var(--subject-science)',
+        sst: 'var(--subject-sst)',
+        english: 'var(--subject-english)'
     };
 
-    const accent = subjectColors[subject.toLowerCase()] || '#6366f1';
+    const accent = subjectColors[subject.toLowerCase()] || 'var(--manya-purple)';
 
     return (
         <PremiumModal 

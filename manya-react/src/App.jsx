@@ -127,7 +127,7 @@ function AppContent() {
     // 🎯 GLOBAL AUTH GUARDIAN: Listen for Supabase events (Recovery, Sign-in, etc.)
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log(`🛡️ [Auth] Event: ${event}`);
+            console.log(`🛡️ [Auth] Event: ${event} | Session: ${session ? 'YES' : 'NO'}`);
             
             if (event === 'PASSWORD_RECOVERY') {
                 console.log("🗝️ [Security] Recovery Session Detected. Moving to Reset Portal...");
@@ -136,7 +136,13 @@ function AppContent() {
             
             if (event === 'SIGNED_IN' && session) {
                 // If we just signed in, re-initialize to ensure profile is synced
+                console.log("👤 [Auth] User Signed In. Initializing Profile...");
                 dispatch(initializeUser());
+            }
+
+            if (event === 'SIGNED_OUT') {
+                console.log("👋 [Auth] User Signed Out. Cleaning up...");
+                dispatch({ type: 'user/resetUser' }); // Ensure local state is wiped
             }
         });
 
@@ -154,7 +160,7 @@ function AppContent() {
         document.documentElement.setAttribute('data-theme', theme);
     }, [user?.theme]);
 
-    // Show splash while loading
+    // Show splash while loading or booting
     if (!splashFinished || isLoading) {
         return <SplashScreen onFinish={() => setSplashFinished(true)} />;
     }
@@ -169,7 +175,7 @@ function AppContent() {
                     <Route path="/login" element={<LoginView />} />
                     <Route path="/onboarding" element={<OnboardingView />} />
                     <Route path="/reset-password" element={<ResetPasswordView />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<Navigate to={user?.uid ? "/onboarding" : "/"} replace />} />
                 </Routes>
             </>
         );

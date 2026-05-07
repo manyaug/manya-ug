@@ -16,8 +16,7 @@ import {
     GraduationCap,
     Mail,
     Edit3,
-    RefreshCw,
-    Lock
+    RefreshCw
 } from 'lucide-react';
 import '../styles/setting.css';
 
@@ -59,12 +58,7 @@ function SettingsView() {
         parent_phone: user?.parent_phone || ''
     });
 
-    const [passwordState, setPasswordState] = useState({
-        newPassword: '',
-        confirmPassword: ''
-    });
 
-    const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -196,45 +190,6 @@ function SettingsView() {
         }
     };
 
-    const handlePasswordUpdate = async () => {
-        if (!isOnline) {
-            dispatch(addToast({ message: "CRITICAL: Live Sync Required for Security Updates", type: "error" }));
-            return;
-        }
-
-        if (passwordState.newPassword.length < 6) {
-            dispatch(addToast({ message: "Security Protocol: Password too short (min 6 chars)", type: "error" }));
-            return;
-        }
-
-        if (passwordState.newPassword !== passwordState.confirmPassword) {
-            dispatch(addToast({ message: "Logic Error: Passwords do not match", type: "error" }));
-            return;
-        }
-
-        setIsUpdatingPassword(true);
-        try {
-            // 1. Attempt Auth Update (Passes through resilient syncService)
-            const { error, warning } = await syncService.updatePassword(passwordState.newPassword);
-            if (error && !warning) throw error;
-
-            // 2. 🚀 RECORD IN DB (Always recorded to profiles table)
-            const updatedProfile = { ...user, lastSecurityUpdate: new Date().toISOString() };
-            dispatch(updateProfile(updatedProfile));
-            await syncService.uploadProfile(updatedProfile);
-
-            const msg = warning === 'local_only' 
-                ? "DNA Record Stabilized locally (Cloud Sync Pending)" 
-                : "Security Matrix Re-Keyed Successfully!";
-            
-            dispatch(addToast({ message: msg, type: warning === 'local_only' ? "warning" : "success" }));
-            setPasswordState({ newPassword: '', confirmPassword: '' });
-        } catch (err) {
-            dispatch(addToast({ message: `Access Refraction: ${err.message}`, type: "error" }));
-        } finally {
-            setIsUpdatingPassword(false);
-        }
-    };
 
     return (
         <motion.div
@@ -341,55 +296,6 @@ function SettingsView() {
                     </div>
                 </div>
 
-                {/* 🛡️ SECURITY MATRIX (BENTO) */}
-                <div className="bento-card security-card">
-                    <div className="section-header">
-                         <div className="flex items-center gap-2">
-                             <p className="section-title">Security Matrix</p>
-                             <span className="text-[8px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-black uppercase">Restricted</span>
-                         </div>
-                         <ShieldCheck size={16} className="text-slate-400" />
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="input-group">
-                            <div className="input-label-row">
-                                <div className="icon-halo"><Lock size={14} /></div>
-                                <span>New Identity Key</span>
-                            </div>
-                            <input 
-                                type="password"
-                                className="premium-glass-input"
-                                value={passwordState.newPassword}
-                                onChange={(e) => setPasswordState({ ...passwordState, newPassword: e.target.value })}
-                                placeholder="Min 6 characters..."
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <div className="input-label-row">
-                                <div className="icon-halo"><ShieldCheck size={14} /></div>
-                                <span>Confirm Key DNA</span>
-                            </div>
-                            <input 
-                                type="password"
-                                className="premium-glass-input"
-                                value={passwordState.confirmPassword}
-                                onChange={(e) => setPasswordState({ ...passwordState, confirmPassword: e.target.value })}
-                                placeholder="Match security key..."
-                            />
-                        </div>
-                    </div>
-
-                    <button 
-                        className="w-full mt-4 btn-toy btn-toy-slate h-16 text-xs uppercase"
-                        onClick={handlePasswordUpdate}
-                        disabled={isUpdatingPassword || !passwordState.newPassword}
-                    >
-                       {isUpdatingPassword ? <RefreshCw className="animate-spin inline mr-2" size={14} /> : <Lock size={14} className="inline mr-2" />}
-                       Stabilize Security Matrix
-                    </button>
-                </div>
 
                 {/* 💾 ACTIONS */}
                 <button 

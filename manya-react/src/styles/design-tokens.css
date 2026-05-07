@@ -1,5 +1,5 @@
 /* 
-  MANYA DESIGN SYSTEM - TOKENS v2.0 ("Manya World" Rebrand)
+  MANYA DESIGN SYSTEM - TOKENS v2.1 ("Manya World" Rebrand)
   ============================================================
   Warm, playful, kid-adventure palette.
   Light = "Sunny Day" | Dark = "Starry Night"
@@ -19,19 +19,38 @@
   --manya-pink-s: 70%;
   --manya-pink-l: 51%;
   --manya-pink: hsl(var(--manya-pink-h), var(--manya-pink-s), var(--manya-pink-l));
+  --manya-pink-light: hsl(var(--manya-pink-h), var(--manya-pink-s), calc(var(--manya-pink-l) + 40%));
 
   --manya-gold-h: 38;
   --manya-gold-s: 92%;
   --manya-gold-l: 50%;
   --manya-gold: hsl(var(--manya-gold-h), var(--manya-gold-s), var(--manya-gold-l));
+  --manya-gold-light: hsl(var(--manya-gold-h), var(--manya-gold-s), calc(var(--manya-gold-l) + 40%));
 
   --manya-green-h: 161;
   --manya-green-s: 84%;
   --manya-green-l: 39%;
   --manya-green: hsl(var(--manya-green-h), var(--manya-green-s), var(--manya-green-l));
+  --manya-green-light: hsl(var(--manya-green-h), var(--manya-green-s), calc(var(--manya-green-l) + 50%));
+
+  /* --- SUBJECT IDENTITY TOKENS --- */
+  --subject-math: #7c3aed;
+  --subject-math-light: #ede9fe;
+  --subject-science: #10b981;
+  --subject-science-light: #ecfdf5;
+  --subject-sst: #f59e0b;
+  --subject-sst-light: #fffbeb;
+  --subject-english: #db2777;
+  --subject-english-light: #fdf2f8;
+
+  /* --- SOCIAL & LEAGUE TOKENS --- */
+  --league-bronze: #CD7F32;
+  --league-silver: #94a3b8;
+  --league-gold: #FFD700;
 
   /* --- NEW: Warm Accent Colors --- */
   --manya-orange: #E8652B;
+  --manya-danger: #ef4444;
   --manya-cream: #FFF8F0;
   --manya-peach: #FFE8D4;
   --manya-warm-grey: #8B7FA3;
@@ -66,7 +85,7 @@
   --toy-inner-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.3), inset 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Standard Theme Variables - Starry Night (Dark) is now the DEFAULT */
+/* Starry Night (Dark) - Default */
 :root {
   --bg-primary: #050714;
   --bg-secondary: #0A0C1A;
@@ -92,7 +111,7 @@
   --shadow-float: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Sunny Day (Light) - Now requires explicit [data-theme='light'] */
+/* Sunny Day (Light) */
 [data-theme='light'] {
   --bg-primary: #FFF8F0;
   --bg-secondary: #FFF5EB;
@@ -117,5 +136,3 @@
   --shadow-premium: 0 10px 30px -10px rgba(232, 101, 43, 0.15);
   --shadow-float: 0 12px 40px rgba(139, 90, 43, 0.1);
 }
-
-/* Redundant data-theme='dark' removed as it is now the :root default */

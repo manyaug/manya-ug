@@ -155,17 +155,16 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         const simRatio = QuestEngineCore.getSimulationRatio(questId, userStateForEngine);
         console.log(`🎮 [QuestCore] Game Mode: ${gameMode} | Sim Ratio: ${Math.round(simRatio * 100)}% | Integrated Frustration: ${frustrationScore}`);
 
-        // 1. DISCOVERY & HYDRATION (v5.3 - Robust Routing)
-        const pools = { MCQ: [], SIMULATION: [], QUEST_STORY: [], GRAMMAR: [] };
+        // 1. DISCOVERY & HYDRATION (v6.4 - Hardened MCQ Detection)
+        const pools = { MCQ: [], SIMULATION: [], QUEST_STORY: [], NOTE: [], RECAP: [] };
         
         allQuestions.forEach(q => {
-            const itemType = (q.item_type || q.question_type || q.type || "").toUpperCase();
-            let engineType = (q.engine_type || q.engineType || q.type || "").toUpperCase();
+            const itemType = (q.item_type || q.question_type || q.type || q.q_type || "").toUpperCase();
+            const engineType = (q.engine_type || q.engineType || q.type || "").toUpperCase();
             
-            // Unified Simulation Detection
-            // Unified Simulation Detection
-            // v6.2: Ensure MCQ items are NEVER treated as simulations regardless of engine_type string
-            const isStrictMCQ = itemType.includes('MCQ');
+            // v6.4: Robust MCQ Detection
+            const isStrictMCQ = itemType.includes('MCQ') || itemType === 'QUESTION' || itemType === 'PRACTICE';
+            
             const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP', 'READER_STUDY', 'GALLERY_STUDY', 'IMAGE_HOTSPOTS', 'NOTE_EXPLORER'];
             
             const isSimulation = !isStrictMCQ && (
@@ -177,70 +176,68 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             
             const isInvalidMathSim = subject === 'math' && isSimulation && engineType !== '' && !MATH_SIM_WHITELIST.includes(engineType);
 
-            // v5.8 NARRATIVE LOCKDOWN
+            // v6.4: Explicit Note vs Recap vs Story partitioning
+            const idLower = (q.qid || q.id || "").toLowerCase();
             const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
-            const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
+            const isRecap = idLower.includes('recap') || itemType === 'RECAP' || q.isRecap;
+            const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER' || idLower.includes('note') || idLower.includes('study') || q.isNote);
 
-            if (isStory) {
+            // 🛡️ [Hydration Guard]: Only pool as Sim/Note if it's already hydrated or has 'data'
+            const isHydrated = !!(q.data || q.steps || q.content);
+
+            if (isStory && isHydrated) {
                 pools.QUEST_STORY.push({ ...q, isSimulation });
-            } else if (isNote) {
-                pools.GRAMMAR.push({ ...q, isSimulation });
-            } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory && !isInvalidMathSim) {
-                pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation });
+            } else if (isNote && isHydrated) {
+                pools.NOTE.push({ ...q, isSimulation: true });
+            } else if (isRecap && isHydrated) {
+                pools.RECAP.push({ ...q, isSimulation: true });
+            } else if ((itemType === 'SIMULATION' || isSimulation) && !isStory && !isInvalidMathSim && isHydrated) {
+                pools.SIMULATION.push({ ...q, id: q.qid || q.id, isSimulation: true });
             } else if (isStrictMCQ) {
                 const hasText = (q.question && q.question.trim() !== '' && q.question !== 'None') || 
                                 q.question_text || q.question_content || q.q_text;
-                // Force engine_type to MCQ for items in this pool to prevent UI-engine mismatch
-                if (hasText) pools.MCQ.push({ ...q, engine_type: 'MCQ', engineType: 'MCQ' });
+                if (hasText) pools.MCQ.push({ ...q, engine_type: 'MCQ', engineType: 'MCQ', isSimulation: false });
             }
         });
 
-        // ─── INJECT EXPLICIT SIMULATIONS (v5.4 FIX) ───
+        // ─── INJECT EXPLICIT SIMULATIONS (v6.4 FIX) ───
         if (Array.isArray(simResources) && simResources.length > 0) {
             simResources.forEach(sim => {
                 const itemType = (sim.item_type || sim.question_type || sim.type || "").toUpperCase();
                 const engineType = (sim.engine_type || sim.engineType || sim.type || "").toUpperCase();
+                const idLower = (sim.qid || sim.id || sim.file || "").toLowerCase();
                 
                 const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
-                const isNote = itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER';
+                const isRecap = idLower.includes('recap') || itemType === 'RECAP' || sim.isRecap;
+                const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER' || idLower.includes('note') || idLower.includes('study') || sim.isNote);
 
                 const hydration = { ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file };
 
-                if (isStory) {
-                    pools.QUEST_STORY.push(hydration);
-                } else if (isNote) {
-                    pools.GRAMMAR.push(hydration);
-                } else {
-                    pools.SIMULATION.push(hydration);
-                }
+                if (isStory) pools.QUEST_STORY.push(hydration);
+                else if (isNote) pools.NOTE.push(hydration);
+                else if (isRecap) pools.RECAP.push(hydration);
+                else pools.SIMULATION.push(hydration);
             });
             console.log(`🔌 [Adaptive] Injected ${simResources.length} explicit simulations into pools.`);
         }
 
         // ─── STRICT EXPLORE RULE: STORY, NOTE, or SST SIMULATIONS ───
         if (nodeType === 'EXPLORE') {
-            const exploreCandidates = [...pools.QUEST_STORY, ...pools.GRAMMAR];
-            
-            // v6.1: Allow SST Simulations in EXPLORE phase (Globe/Maps are teaching nodes)
-            if (subject === 'sst' || exploreCandidates.length === 0) {
-                exploreCandidates.push(...pools.SIMULATION);
-            }
+            const exploreCandidates = [...pools.QUEST_STORY, ...pools.NOTE];
+            if (subject === 'sst' || exploreCandidates.length === 0) exploreCandidates.push(...pools.SIMULATION);
 
             const subtopicExplore = exploreCandidates.find(q => q.subtopic === (allQuestions[0]?.subtopic || q.subtopic)) || exploreCandidates[0];
             
             if (subtopicExplore) {
                 console.log(`🎬 [Adaptive] EXPLORE Node: Delivering Primary Teaching Content (${subtopicExplore.qid || subtopicExplore.id}).`);
-                const eType = (subtopicExplore.engine_type || subtopicExplore.engineType || subtopicExplore.type || "").toUpperCase();
-                const shouldBeSim = eType !== 'MCQ' && eType !== 'NONE' && eType !== 'NULL';
-                
                 return {
-                    questions: [{ ...subtopicExplore, isSimulation: shouldBeSim }],
+                    questions: [subtopicExplore],
                     metadata: { questLength: 1, gameMode: 'STORY' }
                 };
             }
         }
 
-        // 2. CONDITION CHECK — augmented with behavioral guessing signal
+        // 2. CONDITION CHECK
         const recentAccuracy = history.length > 0 ? (history.slice(-5).filter(h => h.isCorrect).length / Math.min(5, history.length)) : 1;
         const isBadCondition = frustrationScore > 70 || recentAccuracy <= 0.4 || dominantMastery.startsWith('struggling') || isHardGuesser;
         const needsMotivation = frustrationScore > 54 || recentAccuracy <= 0.6;
@@ -254,14 +251,12 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         let mcqCandidates = pools.MCQ.map(q => {
             const metadata = scoreQuestion(q, history, subject, subjectMasteryMap, recordMap);
-            // Frustration guardrail: no hard questions when frustrated
             if (frustrationScore > 70 && (q.variant === 'V3' || q.difficulty === 'H')) metadata.score = -1000;
-            // PLE Pool selection: de-prioritize PLE questions if 'no' pool is needed
             if (selectedPool === 'no' && q.isPLE) metadata.score -= 200;
             return { ...q, _adaptive: metadata };
         });
 
-        // --- Concept De-duplication (v5.5) ---
+        // Concept De-duplication
         const conceptMap = {};
         mcqCandidates.forEach(cand => {
             const { baseId } = parseQuestionId(cand.id || cand.qid);
@@ -271,114 +266,71 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         });
         mcqCandidates = Object.values(conceptMap);
 
-        // ── VARIANT SPACING (PriorityScorer): No same concept within last 3 questions ──
+        // Variant Spacing
         const recentQIds = (history || []).slice(-3).map(h => h.questionId).filter(Boolean);
         if (recentQIds.length > 0) {
             const spaced = mcqCandidates.filter(q => priScorer.validateVariantSpacing(q.id || q.qid, recentQIds, 3));
-            // Only apply spacing if it doesn't wipe out all candidates
             if (spaced.length > 0) mcqCandidates = spaced;
-            else console.warn('⚠️ [PriorityScorer] Variant spacing skipped: all concepts seen recently.');
-        }
-
-        // ─── ENGLISH STRUCTURED PARTITIONING ───
-        if (subject === 'english') {
-            const diffMap = {
-                'WARMUP': ['E'], 'EXPLORE': ['E', 'M'], 'PRACTICE': ['M'],
-                'REINFORCE': ['M'], 'MASTERY': ['H']
-            };
-            const targetDifficulty = diffMap[nodeType] || ['M'];
-            let filteredCandidates = mcqCandidates.filter(c => targetDifficulty.includes(c.difficulty));
-            if (filteredCandidates.length < 3) {
-                console.warn(`⚠️ [Adaptive] Low candidate count for ${nodeType} (${subject}). Opening to adjacent difficulties.`);
-                filteredCandidates = mcqCandidates; 
-            }
-            mcqCandidates = filteredCandidates;
         }
 
         mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
         const selectedMCQs = mcqCandidates.slice(0, questLength);
 
-        // 4. INTERLEAVE & RESCUE LOGIC (v6.3 - Intelligence Patch)
-        let finalQuestions = [];
-        const mcqStack = [...selectedMCQs];
-        
+        // 4. STRUCTURED FLOW ASSEMBLY (v6.4 - No more random recaps at start)
+        const finalQuestions = [];
         const isWarmup = nodeType === 'WARMUP';
-        const isExplore = nodeType === 'EXPLORE';
-
         const mustAllowSims = pools.MCQ.length === 0 && pools.SIMULATION.length > 0;
-        const excludeSims = (isWarmup || isExplore) && !mustAllowSims;
         
-        const simStack = excludeSims ? [] : [...pools.SIMULATION].sort(() => 0.5 - Math.random());
-        const grammarStack = excludeSims ? [] : [...pools.GRAMMAR].sort(() => 0.5 - Math.random());
-
-        // ─── THE RESCUE PATTERN ─────
-        if (isBadCondition && grammarStack.length > 0 && !isWarmup) {
-            const rule = grammarStack.pop();
-            finalQuestions.push({ ...rule, isRescue: true, message: "Let's pause and review the rule!" });
-            if (simStack.length > 0) finalQuestions.push({ ...simStack.pop(), isRescuePractice: true });
+        // ── Step A: INTRO (Note or Story) ──
+        if (!isWarmup && (pools.NOTE.length > 0 || pools.QUEST_STORY.length > 0)) {
+            const intro = pools.NOTE.length > 0 ? pools.NOTE[0] : pools.QUEST_STORY[0];
+            finalQuestions.push({ ...intro, isIntro: true });
         }
 
-        // ─── INTELLIGENT INTERLEAVE (Anti-Saturation) ───
-        const isGameNode = ['PRACTICE', 'REINFORCE', 'MASTERY'].includes(nodeType);
-        const minSims = (subject === 'english' && isGameNode && simStack.length > 0) ? 2 : 0;
+        // ── Step B: CORE (Interleaved MCQs & Sims) ──
+        const mcqStack = [...selectedMCQs];
+        const simStack = (isWarmup && !mustAllowSims) ? [] : [...pools.SIMULATION].sort(() => 0.5 - Math.random());
+        
         let consecutiveSims = 0;
-        let forcedSims = 0;
-
         while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
-            const hasSim = simStack.length > 0 && (!isWarmup || mustAllowSims);
+            const hasSim = simStack.length > 0;
             const hasMcq = mcqStack.length > 0;
 
             if (hasSim && !hasMcq) {
                 finalQuestions.push(simStack.pop());
             } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
-            } else if (hasSim && hasMcq) {
-                // ── Dynamic Balancing ──
-                // Lower base chance if we just saw a sim (Anti-Saturation)
-                let baseChance = needsMotivation ? Math.min(simRatio + 0.25, 0.70) : simRatio;
-                if (consecutiveSims >= 2) baseChance *= 0.3; // Dramatic drop if 2 sims in a row
+            } else {
+                let chance = needsMotivation ? Math.min(simRatio + 0.2, 0.8) : simRatio;
+                if (consecutiveSims >= 2) chance *= 0.2;
                 
-                if (subject === 'english' && isGameNode) baseChance = 0.60;
-
-                const forceSim = forcedSims < minSims;
-                if (forceSim || Math.random() < baseChance) {
+                if (Math.random() < chance) {
                     finalQuestions.push(simStack.pop());
                     consecutiveSims++;
-                    forcedSims++;
                 } else {
                     finalQuestions.push(mcqStack.shift());
                     consecutiveSims = 0;
                 }
-            } else {
-                break;
             }
         }
 
-        // ─── EMERGENCY RECOVERY (v5.6) ───
-        if (finalQuestions.length === 0 && allQuestions.length > 0) {
-            console.warn(`🚨 [Adaptive] Emergency Recovery. Forcing ${Math.min(3, allQuestions.length)} items from bank.`);
-            finalQuestions = allQuestions.slice(0, 3).map(q => {
-                const itemType = (q.item_type || q.question_type || q.type || "").toUpperCase();
-                const isStrictMCQ = itemType.includes('MCQ');
-                return {
-                    ...q, 
-                    isSimulation: !isStrictMCQ && (q.engine_type && q.engine_type !== 'MCQ' && q.engine_type !== 'NONE'),
-                    engine_type: isStrictMCQ ? 'MCQ' : (q.engine_type || 'MCQ')
-                };
-            });
+        // ── Step C: OUTRO (Recap) ──
+        if (pools.RECAP.length > 0 && finalQuestions.length < questLength + 1) {
+            finalQuestions.push({ ...pools.RECAP[0], isOutro: true });
         }
 
-        finalQuestions = (finalQuestions.length > 0 ? finalQuestions : selectedMCQs).sort(() => 0.5 - Math.random());
+        // ── Step D: EMERGENCY FALLBACK ──
+        if (finalQuestions.length === 0 && allQuestions.length > 0) {
+            finalQuestions.push(...allQuestions.slice(0, 3));
+        }
 
         return {
-            questions: finalQuestions,
+            questions: finalQuestions, // No global shuffle anymore!
             metadata: { 
                 questLength: finalQuestions.length, 
                 frustration: frustrationScore, 
                 isBadCondition, 
-                needsMotivation,
-                // gameMode now comes from QuestEngineCore with a fallback to rescue logic labels
-                gameMode: gameMode !== 'none' ? gameMode.toUpperCase() : (isBadCondition ? 'RESCUE' : needsMotivation ? 'MOTIVATION' : 'NORMAL'),
+                gameMode: gameMode !== 'none' ? gameMode.toUpperCase() : (isBadCondition ? 'RESCUE' : 'NORMAL'),
                 selectedPool,
                 behaviorPattern,
             }

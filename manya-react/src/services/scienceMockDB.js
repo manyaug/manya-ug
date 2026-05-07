@@ -37,7 +37,7 @@ export const fetchScienceQuestions = async (topicId) => {
         }
 
         // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=(subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%)`);
+        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:science&item_type=eq:MCQ&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!data || data.length === 0) {
@@ -48,7 +48,7 @@ export const fetchScienceQuestions = async (topicId) => {
                 console.log(`🔍 [Science Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=(${keywordFilter})`);
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:science&item_type=eq:MCQ&or=${keywordFilter}`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Science Vault] Discovered ${keywordData.length} related questions via keywords.`);

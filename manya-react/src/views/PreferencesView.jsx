@@ -81,7 +81,7 @@ function PreferencesView() {
                 {/* NIGHT MODE (SQUARE BENTO) */}
                 <div className="bento-card-elite" onClick={toggleTheme}>
                     <div className="toy-card-gloss" />
-                    <div className="pref-icon-box" style={{ background: '#f5f3ff', color: '#7c3aed' }}>
+                    <div className="pref-icon-box" style={{ background: 'var(--manya-purple-light)', color: 'var(--manya-purple)' }}>
                         {user?.theme === 'dark' ? <Moon size={22} /> : <Sun size={22} />}
                     </div>
                     <span className="bento-label">Night Mode</span>
@@ -104,7 +104,7 @@ function PreferencesView() {
                 {/* NOTIFICATION PULSE (SQUARE BENTO) */}
                 <div className="bento-card-elite">
                     <div className="toy-card-gloss" />
-                    <div className="pref-icon-box" style={{ background: '#f0fdf4', color: '#22c55e' }}>
+                    <div className="pref-icon-box" style={{ background: 'var(--manya-green-light)', color: 'var(--manya-green)' }}>
                         <Bell size={22} />
                     </div>
                     <span className="bento-label">Pulse</span>
@@ -128,7 +128,7 @@ function PreferencesView() {
                 <div className="bento-card-elite bento-card-wide">
                     <div className="toy-card-gloss" />
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="pref-icon-box mb-0" style={{ background: '#fff1f2', color: '#f43f5e' }}>
+                        <div className="pref-icon-box mb-0" style={{ background: 'var(--manya-pink-light)', color: 'var(--manya-pink)' }}>
                             <Zap size={22} />
                         </div>
                         <div>
@@ -162,7 +162,7 @@ function PreferencesView() {
                 <div className="bento-card-elite bento-card-wide" onClick={triggerManualSync}>
                      <div className="toy-card-gloss" />
                      <div className="flex items-center gap-4 w-full">
-                         <div className="pref-icon-box mb-0" style={{ background: '#eff6ff', color: '#3b82f6' }}>
+                         <div className="pref-icon-box mb-0" style={{ background: 'var(--manya-purple-light)', color: 'var(--manya-purple)' }}>
                              {isSyncing ? <RefreshCw className="animate-spin" size={22} /> : <RefreshCw size={22} />}
                          </div>
                          <div className="flex-1">

@@ -82,8 +82,10 @@ export const ManyaDB = {
                 const transaction = db.transaction(this.STORE_USERS, 'readwrite');
                 const store = transaction.objectStore(this.STORE_USERS);
                 
-                // Set session ID immediately
-                localStorage.setItem('manya_session_id', userData.uid);
+                // Set session ID immediately (if valid)
+                if (userData.uid && userData.uid !== 'null' && userData.uid !== 'undefined') {
+                    localStorage.setItem('manya_session_id', userData.uid);
+                }
                 
                 const request = store.put(userData);
                 request.onsuccess = () => resolve(true);

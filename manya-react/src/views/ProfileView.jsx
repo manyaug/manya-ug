@@ -29,13 +29,13 @@ function ProfileView() {
         visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
     };
 
-    const stats = { rank: "Advanced Hero", league: "Bronze League", leagueColor: "#CD7F32" };
+    const stats = { rank: "Advanced Hero", league: "Bronze League", leagueColor: "var(--league-bronze)" };
 
     const subjectProgress = [
-        { name: 'Mathematics', val: 78, color: '#7c3aed', icon: getIsland('math') },
-        { name: 'Science', val: 45, color: '#10b981', icon: getIsland('science') },
-        { name: 'SST', val: 62, color: '#f59e0b', icon: getIsland('sst') },
-        { name: 'English', val: 90, color: '#db2777', icon: getIsland('english') }
+        { name: 'Mathematics', val: 78, color: 'var(--subject-math)', icon: getIsland('math') },
+        { name: 'Science', val: 45, color: 'var(--subject-science)', icon: getIsland('science') },
+        { name: 'SST', val: 62, color: 'var(--subject-sst)', icon: getIsland('sst') },
+        { name: 'English', val: 90, color: 'var(--subject-english)', icon: getIsland('english') }
     ];
 
     const past7Days = Array.from({ length: 7 }, (_, i) => {
@@ -45,7 +45,7 @@ function ProfileView() {
     });
 
     const days = past7Days.map(d => d.toLocaleDateString('en-US', { weekday: 'short' }));
-    const colors = ['#f87171', '#fb923c', '#fbbf24', '#4ade80', '#818cf8', '#a78bfa', '#f472b6'];
+    const colors = ['var(--manya-pink)', 'var(--manya-orange)', 'var(--manya-gold)', 'var(--manya-green)', 'var(--subject-math)', 'var(--manya-purple)', 'var(--manya-pink)'];
 
     const rawEngagementsHours = past7Days.map(d => {
         const dateStr = d.toISOString().split('T')[0];
@@ -95,9 +95,9 @@ function ProfileView() {
                     <div className="grid grid-cols-4 gap-3 relative z-10">
                         {[
                             { name: 'Math', val: user?.mathGems || 0, img: IMAGES.math_gem, color: 'var(--manya-purple)' },
-                            { name: 'Science', val: user?.scienceGems || 0, img: IMAGES.science_gem, color: '#10b981' },
-                            { name: 'SST', val: user?.sstGems || 0, img: IMAGES.sst_gem, color: '#f59e0b' },
-                            { name: 'English', val: user?.englishGems || 0, img: IMAGES.english_gem, color: '#f43f5e' }
+                            { name: 'Science', val: user?.scienceGems || 0, img: IMAGES.science_gem, color: 'var(--subject-science)' },
+                            { name: 'SST', val: user?.sstGems || 0, img: IMAGES.sst_gem, color: 'var(--subject-sst)' },
+                            { name: 'English', val: user?.englishGems || 0, img: IMAGES.english_gem, color: 'var(--subject-english)' }
                         ].map(gem => (
                             <div key={gem.name} className="flex flex-col items-center gap-1">
                                 <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-white/5 border border-white dark:border-white/10 shadow-sm flex items-center justify-center group overflow-hidden relative">
@@ -148,7 +148,7 @@ function ProfileView() {
                 <div className="toy-card-gloss" />
                 <div className="activity-header">
                     <div className="activity-icon-halo">
-                        <BrainCircuit size={20} color="#7c3aed" />
+                        <BrainCircuit size={20} color="var(--manya-purple)" />
                     </div>
                     <div>
                         <div className="activity-title">Matrix Engagement</div>
@@ -181,9 +181,9 @@ function ProfileView() {
                     
                     {[
                         { name: 'Mathematics', val: 78, color: 'var(--manya-purple)', img: IMAGES.math_gem },
-                        { name: 'Science', val: 45, color: '#10b981', img: IMAGES.science_gem },
-                        { name: 'SST', val: 62, color: '#f59e0b', img: IMAGES.sst_gem },
-                        { name: 'English', val: 90, color: '#f43f5e', img: IMAGES.english_gem }
+                        { name: 'Science', val: 45, color: 'var(--subject-science)', img: IMAGES.science_gem },
+                        { name: 'SST', val: 62, color: 'var(--subject-sst)', img: IMAGES.sst_gem },
+                        { name: 'English', val: 90, color: 'var(--subject-english)', img: IMAGES.english_gem }
                     ].map((subj, idx) => (
                         <div key={idx} className="mb-4 last:mb-0">
                             <div className="flex items-center justify-between mb-1.5">

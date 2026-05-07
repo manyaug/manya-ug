@@ -33,7 +33,7 @@ const QuestHUD = ({
 
     // Brain State Styling
     const brainState = frustration > 70 ? 'rescue' : frustration > 40 ? 'tuning' : 'healthy';
-    const brainColor = brainState === 'rescue' ? '#3b82f6' : brainState === 'tuning' ? '#f59e0b' : '#10b981';
+    const brainColor = brainState === 'rescue' ? 'var(--manya-purple)' : brainState === 'tuning' ? 'var(--manya-gold)' : 'var(--manya-green)';
     const brainLabel = brainState === 'rescue' ? 'Rescue Mode' : brainState === 'tuning' ? 'Adaptive' : 'Healthy Focus';
 
     // Listen for global reward arrival (emitted by FXLayer)
@@ -75,8 +75,8 @@ const QuestHUD = ({
     const isPassing = masteryScore >= PASS_THRESHOLD;
     
     // Gold state for passing, Green for leading up to it
-    const masteryColor = isPassing ? '#fbbf24' : '#10b981'; 
-    const fillGlow = isPassing ? 'rgba(251, 191, 36, 0.4)' : 'rgba(16, 185, 129, 0.3)';
+    const masteryColor = isPassing ? 'var(--manya-gold)' : 'var(--manya-green)'; 
+    const fillGlow = isPassing ? 'rgba(var(--manya-gold-h), var(--manya-gold-s), var(--manya-gold-l), 0.4)' : 'rgba(var(--manya-green-h), var(--manya-green-s), var(--manya-green-l), 0.3)';
 
     return (
         <div className="quest-hud-premium">

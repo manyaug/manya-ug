@@ -67,17 +67,26 @@ export const syncService = {
      * Auth Singleton (v10.5 Port)
      */
     async getUserId() {
-        if (this._userIdCache) return this._userIdCache;
+        if (this._userIdCache && this._userIdCache !== 'null' && this._userIdCache !== 'undefined') {
+            return this._userIdCache;
+        }
+        
         if (this._activeUserIdRequest) return this._activeUserIdRequest;
 
         this._activeUserIdRequest = (async () => {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
-                const uid = session?.user?.id || localStorage.getItem('manya_session_id') || null;
+                let uid = session?.user?.id || localStorage.getItem('manya_session_id') || null;
+                
+                // Sanitize: Treat "null" or "undefined" strings as actual null
+                if (uid === 'null' || uid === 'undefined') uid = null;
+                
                 if (uid) this._userIdCache = uid;
                 return uid;
             } catch(e) { 
-                return localStorage.getItem('manya_session_id') || null; 
+                let uid = localStorage.getItem('manya_session_id') || null;
+                if (uid === 'null' || uid === 'undefined') uid = null;
+                return uid; 
             } finally {
                 this._activeUserIdRequest = null;
             }
@@ -524,12 +533,14 @@ export const syncService = {
      * Auth Methods
      */
     async signUp(email, password, metadata = {}) {
+        this._userIdCache = null; // Force refresh
         const { data, error } = await supabase.auth.signUp({ email, password, options: { data: metadata } });
         if (error) throw error;
         return data.user;
     },
 
     async signIn(email, password) {
+        this._userIdCache = null; // Force refresh
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         return data.user;

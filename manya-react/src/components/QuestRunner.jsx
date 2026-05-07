@@ -56,7 +56,12 @@ class QuestErrorBoundary extends React.Component {
     }
 }
 
-const SUBJECT_COLOR = { math: '#7c3aed', science: '#16a34a', sst: '#0ea5e9', english: '#db2777' };
+const SUBJECT_COLOR = { 
+    math: 'var(--subject-math)', 
+    science: 'var(--subject-science)', 
+    sst: 'var(--subject-sst)', 
+    english: 'var(--subject-english)' 
+};
 
 export default function QuestRunner() {
     const location = useLocation();

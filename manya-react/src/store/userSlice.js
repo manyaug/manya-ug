@@ -33,10 +33,14 @@ export const initializeUser = createAsyncThunk(
     // 2. Fetch local as fallback/merge
     let localUser = await ManyaDB.getCurrentUser();
     
+    // 3. Robust Session Check: If no cloud profile, ensure we at least have the UID from Auth
+    const activeUid = await syncService.getUserId();
+
     if (cloudProfile) {
         console.log("☁️ [Sync] Profile restored from Supabase.");
         const merged = {
             ...(localUser || ManyaDB.createDefaultRecord()),
+            uid: activeUid, // Ensure ID is synced
             nickname: cloudProfile.full_name,
             // START FRESH: Ignore old engagement_stats, use new user_balances
             diamonds: cloudBalance?.gem_overall || 0,
@@ -66,8 +70,6 @@ export const initializeUser = createAsyncThunk(
         };
 
         // 🏺 SILENT ACHIEVEMENT CATCH-UP
-        // This prevents "Badge Floods" where the user logs in and gets 50 modals at once.
-        // We calculate what they SHOULD have unlocked based on restored stats.
         const allUnlocked = new Set(merged.unlockedBadges);
         BADGES.forEach(badge => {
             try {
@@ -78,15 +80,19 @@ export const initializeUser = createAsyncThunk(
         });
         merged.unlockedBadges = Array.from(allUnlocked);
 
-        // Update local cache
         await ManyaDB.saveUser(merged);
         return merged;
     }
 
     if (!localUser) {
       localUser = ManyaDB.createDefaultRecord();
+      localUser.uid = activeUid; // Bind the auth session
       await ManyaDB.saveUser(localUser);
+    } else if (activeUid && !localUser.uid) {
+        localUser.uid = activeUid;
+        await ManyaDB.saveUser(localUser);
     }
+    
     return localUser;
   }
 );

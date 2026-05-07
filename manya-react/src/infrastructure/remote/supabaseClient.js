@@ -16,7 +16,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
             signInWithPassword: async () => ({ data: null, error: { message: "Local Environment missing Supabase Keys. Check your .env file or refresh the server." } }),
             signUp: async () => ({ data: null, error: { message: "Keys missing." } }),
             signOut: async () => ({ error: null }),
-            updateUser: async ({ password }) => ({ data: { user: { id: 'mock-hero' } }, error: null })
+            updateUser: async ({ password }) => ({ data: { user: { id: 'mock-hero' } }, error: null }),
+            resetPasswordForEmail: async () => ({ data: null, error: { message: "Local Environment missing Supabase Keys. Check your .env file." } })
         },
         from: (table) => ({
             select: () => ({ eq: () => ({ single: async () => ({ data: null, error: { message: "Offline Proxy" } }) }) }),

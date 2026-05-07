@@ -1,9 +1,23 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { UserPlus, LogIn, ShieldCheck, Globe } from 'lucide-react';
 import '../styles/onboarding.css';
 
 function LandingView() {
     const navigate = useNavigate();
+    const { data: user } = useSelector(state => state.user);
+
+    // 🛡️ AUTH PROTECTOR: If already logged in, don't show landing
+    useEffect(() => {
+        if (user?.uid) {
+            if (user.onboarded) {
+                navigate('/home');
+            } else {
+                navigate('/onboarding');
+            }
+        }
+    }, [user, navigate]);
 
     return (
         <div className="premium-ob-shell landing-shell" data-theme="light">

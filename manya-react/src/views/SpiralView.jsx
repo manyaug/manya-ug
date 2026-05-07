@@ -30,7 +30,7 @@ const BIOMES = {
     math: {
         color: 'var(--manya-purple)',
         alpha: 'hsla(var(--manya-purple-h), 80%, 60%, 0.2)',
-        bg: '#F5F3FF',
+        bg: 'var(--subject-math-light)',
         icon: '📐',
         gemFile: 'math_gem.svg',
         folder: 'math_path',
@@ -42,7 +42,7 @@ const BIOMES = {
     science: {
         color: 'var(--manya-green)',
         alpha: 'hsla(var(--manya-green-h), 80%, 40%, 0.2)',
-        bg: '#F0FDF4',
+        bg: 'var(--subject-science-light)',
         icon: '🌱',
         gemFile: 'science_svg.svg',
         folder: 'science_path',
@@ -54,7 +54,7 @@ const BIOMES = {
     sst: {
         color: 'var(--manya-gold)',
         alpha: 'hsla(var(--manya-gold-h), 80%, 50%, 0.2)',
-        bg: '#FFFBEB',
+        bg: 'var(--subject-sst-light)',
         icon: '🌍',
         gemFile: 'sst_gem.svg',
         folder: 'sst_path',
@@ -66,7 +66,7 @@ const BIOMES = {
     english: {
         color: 'var(--manya-pink)',
         alpha: 'hsla(var(--manya-pink-h), 80%, 50%, 0.2)',
-        bg: '#FDF2F8',
+        bg: 'var(--subject-english-light)',
         icon: '📖',
         gemFile: 'english_gem.svg',
         folder: 'english_path',
@@ -274,7 +274,7 @@ function SpiralView() {
                 unitId: unit.unitId,
                 title: unit.title,
                 gemFile: biome.gemFile || 'math_gem.svg',
-                biomeColor: biome.theme || '#7c3aed',
+                biomeColor: biome.theme || 'var(--manya-purple)',
             }
         });
     };

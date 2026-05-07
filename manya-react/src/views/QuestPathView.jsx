@@ -65,7 +65,7 @@ function QuestPathView() {
         unitId = '',
         title = 'Quest',
         gemFile = 'math_gem.svg',
-        biomeColor = '#7c3aed',
+        biomeColor = 'var(--manya-purple)',
     } = state || {};
 
     const layoutX = PATH_LAYOUTS[subject] || PATH_LAYOUTS.default;
@@ -287,7 +287,7 @@ function QuestPathView() {
                     onClick={() => navigate('/achievements')}
                     style={{ cursor: 'pointer' }}
                 >
-                    <Star size={20} fill="#FFD700" color="#B8860B" strokeWidth={2.5} />
+                    <Star size={20} fill="var(--league-gold)" color="var(--manya-gold)" strokeWidth={2.5} />
                     <span>{earnedStars}/{totalStars}</span>
                 </div>
             </div>
@@ -430,9 +430,9 @@ function QuestPathView() {
                         >
                             {/* Star rating */}
                             <div className="node-star-rating">
-                                <Star size={20} className={`mini-star ${starsForNode >= 1 ? 'earned' : 'empty'}`} fill={starsForNode >= 1 ? '#FFD700' : 'none'} />
-                                <Star size={24} className={`mini-star top-star ${starsForNode >= 2 ? 'earned' : 'empty'}`} fill={starsForNode >= 2 ? '#FFD700' : 'none'} />
-                                <Star size={20} className={`mini-star ${starsForNode >= 3 ? 'earned' : 'empty'}`} fill={starsForNode >= 3 ? '#FFD700' : 'none'} />
+                                <Star size={20} className={`mini-star ${starsForNode >= 1 ? 'earned' : 'empty'}`} fill={starsForNode >= 1 ? 'var(--league-gold)' : 'none'} />
+                                <Star size={24} className={`mini-star top-star ${starsForNode >= 2 ? 'earned' : 'empty'}`} fill={starsForNode >= 2 ? 'var(--league-gold)' : 'none'} />
+                                <Star size={20} className={`mini-star ${starsForNode >= 3 ? 'earned' : 'empty'}`} fill={starsForNode >= 3 ? 'var(--league-gold)' : 'none'} />
                             </div>
 
                             {/* Burst effect layer */}
@@ -471,7 +471,7 @@ function QuestPathView() {
                             {isCompleted && (
                                 <div style={{
                                     fontSize: '9px', fontWeight: 900, marginTop: '2px',
-                                    color: needsRetry ? '#ef4444' : '#10b981',
+                                    color: needsRetry ? 'var(--manya-danger)' : 'var(--manya-green)',
                                     textAlign: 'center', letterSpacing: '0.5px'
                                 }}>
                                     {nodeMastery}% {needsRetry && '↻'}

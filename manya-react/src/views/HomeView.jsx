@@ -116,49 +116,44 @@ function HomeView() {
     >
       {/* Aurora Engine removed for Solid Opaque style */}
 
-      {/* PREMIUM STATUS HEADER */}
-      <motion.div variants={itemVariants} className="home-status-header-glass">
-        <div className="status-user-info" style={{ zIndex: 2 }}>
-          <span className="hi-text">Hi, {user.nickname || 'Hero'} 👋</span>
-          <p className="status-subtext">Ready for today's mission?</p>
-        </div>
-        <div className="status-streak-pill" onClick={() => navigate('/achievements')}>
-          <div className="streak-icon-circle">
-            <Zap size={22} fill="currentColor" />
+      {/* 🚀 UNIFIED COMMAND CENTER */}
+      <motion.div variants={itemVariants} className="home-command-center">
+        <div className="toy-card-gloss" />
+        
+        {/* Top Row: User & Streak */}
+        <div className="command-header">
+          <div className="user-profile-mini" onClick={() => navigate('/profile')}>
+            <div className="avatar-ring">
+               <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
+            </div>
+            <div className="user-text">
+               <span className="hi-msg">Hi, {user.nickname || 'Hero'} 👋</span>
+               <span className="status-msg">Level 1 Voyager</span>
+            </div>
           </div>
-          <div className="streak-stats">
-            <span className="streak-val">{user.current_streak || 0}</span>
-            <span className="streak-lab">STREAK</span>
-          </div>
-        </div>
-      </motion.div>
 
-      {/* HERO RESUME CARD */}
-      <motion.div
-        variants={itemVariants}
-        whileHover={{ scale: 1.025 }}
-        whileTap={{ scale: 0.97 }}
-        className={`resume-mission-card mission-card-${activeBounty?.sub || 'math'}`}
-        onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
-      >
-        <div className="mission-visual">
-          <div className="mission-avatar-frame">
-            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
+          <div className="streak-badge-premium" onClick={() => navigate('/achievements')}>
+             <Zap size={16} fill="var(--manya-gold)" color="var(--manya-gold)" />
+             <span>{user.current_streak || 0}</span>
           </div>
         </div>
-        <div className="mission-details" style={{ zIndex: 2 }}>
-          <span className="mission-kicker flex items-center gap-1">
-            <Target size={12} className="text-white/70" />
-            DAILY MISSION!
-          </span>
-          <h3 className="mission-title">
-            {activeBounty?.quest?.title || 'Starting the Journey'}
-          </h3>
-        </div>
-        <div className="play-pill-neon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style={{ marginLeft: '3px' }}>
-            <path d="M8 5v14l11-7z" />
-          </svg>
+
+        {/* Bottom Row: Active Quest (Live Activity Style) */}
+        <div 
+          className="command-mission-bar"
+          onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
+        >
+          <div className="mission-info">
+             <span className="mission-label">RESUME DISCOVERY</span>
+             <h3 className="mission-name">
+                {activeBounty?.sub?.toUpperCase()}: {activeBounty?.quest?.title || 'Kickoff'}
+             </h3>
+          </div>
+          <button className="mission-play-btn">
+             <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5v14l11-7z" />
+             </svg>
+          </button>
         </div>
       </motion.div>
 

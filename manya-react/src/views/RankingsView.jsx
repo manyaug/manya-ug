@@ -7,11 +7,11 @@ import { getGem, IMAGES, getIsland } from '../config/assetUrls';
 import '../styles/ranking.css';
 
 const SUBJECTS = [
-    { id: 'all', label: 'TOP', gem: getGem('master'), color: '#7c3aed' },
-    { id: 'math', label: 'Math', gem: getGem('math'), color: '#6366F1' },
-    { id: 'science', label: 'Sci', gem: getGem('science'), color: '#10B981' },
-    { id: 'sst', label: 'SST', gem: getGem('sst'), color: '#F59E0B' },
-    { id: 'english', label: 'Eng', gem: getGem('english'), color: '#DB2777' }
+    { id: 'all', label: 'TOP', gem: getGem('master'), color: 'var(--manya-purple)' },
+    { id: 'math', label: 'Math', gem: getGem('math'), color: 'var(--subject-math)' },
+    { id: 'science', label: 'Sci', gem: getGem('science'), color: 'var(--subject-science)' },
+    { id: 'sst', label: 'SST', gem: getGem('sst'), color: 'var(--subject-sst)' },
+    { id: 'english', label: 'Eng', gem: getGem('english'), color: 'var(--subject-english)' }
 ];
 
 export default function RankingsView() {
