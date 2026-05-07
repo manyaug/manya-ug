@@ -103,7 +103,7 @@ function ResetPasswordView() {
     }
 
     return (
-        <div className="premium-ob-shell">
+        <div className="premium-ob-shell" data-theme="light">
             <div className="ob-background-fx"></div>
             
             <div className="ob-container">

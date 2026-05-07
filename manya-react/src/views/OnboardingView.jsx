@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { updateProfile, completeOnboarding } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
 import { syncService } from '../infrastructure/sync/syncService.js';
-import { ChevronRight, ChevronLeft, ShieldCheck, Mail, Lock, User, GraduationCap, Phone, Zap, Globe } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ShieldCheck, Mail, Lock, User, GraduationCap, Phone, Zap, Globe, Rocket } from 'lucide-react';
 import '../styles/onboarding.css';
 
 function OnboardingView() {
@@ -40,19 +40,19 @@ function OnboardingView() {
     }, [step, profile.nickname, avatarOptions.length]);
 
     const handleNext = async () => {
-        // Validation Logic
         if (step === 1) {
+            // Goal step - no validation needed as it's a select
+        }
+        
+        if (step === 2) {
             if (!profile.nickname || profile.nickname.length < 2) {
                 dispatch(addToast({ message: "Names make Heroes! Give us a nickname.", type: "error" }));
                 return;
             }
         }
-        
-        if (step === 2) {
-             if (!profile.parent.email || !profile.parent.whatsapp) {
-                dispatch(addToast({ message: "Guardian details are required for security.", type: "error" }));
-                return;
-            }
+
+        if (step === 3) {
+             // Avatar is always selected by default
         }
 
         if (step === 4) {
@@ -62,39 +62,33 @@ function OnboardingView() {
             }
 
             setLoading(true);
-            dispatch(addToast({ message: "Forging your Identity in the Council Database...", type: "info" }));
-            
             try {
-                // 1. SIGN UP TO SUPABASE
-                const { data, error } = await syncService.signUp(
+                // 1. Sign Up (Returns user object)
+                const user = await syncService.signUp(
                     profile.auth.email, 
                     profile.auth.password,
                     { full_name: profile.nickname, avatar_url: profile.avatarSeed }
                 );
 
-                if (error) throw error;
+                if (!user) throw new Error("Authentication failed");
 
-                // 2. SYNC PROFILE EXTRA DATA (CRITICAL FIX: Passing manualUid)
+                // 2. Upload Profile (Fixed: using user.id)
                 await syncService.uploadProfile({
                     ...profile,
-                    parent_email: profile.parent.email,
-                    parent_phone: profile.parent.whatsapp
-                }, data.user.id);
+                    onboarded: true
+                }, user.id);
 
-                // 3. UPDATE LOCAL STATE
                 dispatch(updateProfile({ 
                     ...profile, 
-                    onboarded: true,
-                    parent_email: profile.parent.email,
-                    parent_phone: profile.parent.whatsapp
+                    onboarded: true
                 }));
                 dispatch(completeOnboarding());
 
-                dispatch(addToast({ message: "Welcome to Manya, Hero!", type: "success" }));
+                dispatch(addToast({ message: `Welcome aboard, ${profile.nickname}!`, type: "success" }));
                 navigate('/home');
 
             } catch (err) {
-                dispatch(addToast({ message: `Forging Failed: ${err.message}`, type: "error" }));
+                dispatch(addToast({ message: `Sign up failed: ${err.message}`, type: "error" }));
             } finally {
                 setLoading(false);
             }
@@ -106,26 +100,28 @@ function OnboardingView() {
 
     const renderStep = () => {
         switch(step) {
-            case 1: // Identity & Level
+            case 1: 
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><ShieldCheck size={38} strokeWidth={2.5} /></div>
-                        <h3>Create Profile</h3>
-                        <p>Welcome to Manya! What's your nickname?</p>
+                        <div className="ob-icon-circle"><Rocket size={32} /></div>
+                        <h3>Set Your Target</h3>
+                        <p>We'll tailor your quests to help you reach your academic goals.</p>
                         
-                        <div className="input-with-icon">
-                            <User className="i-icon" size={20} />
-                            <input 
-                                type="text" 
-                                placeholder="Your Nickname" 
-                                value={profile.nickname} 
-                                onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} 
-                                autoFocus 
-                            />
+                        <div className="ob-select-group">
+                            <label><Zap size={14} /> ACADEMIC GOAL</label>
+                            <select 
+                                className="premium-ob-select"
+                                value={profile.goal}
+                                onChange={e => setProfile(p => ({ ...p, goal: e.target.value }))}
+                            >
+                                <option value="Grade 1 (Top Score)">Grade 1 (Top Score)</option>
+                                <option value="Grade 2 (Great Score)">Grade 2 (Great Score)</option>
+                                <option value="Grade 3+ (Steady Progress)">Grade 3+ (Steady Progress)</option>
+                            </select>
                         </div>
 
                         <div className="ob-select-group">
-                            <label><GraduationCap size={16} /> Grade Level</label>
+                            <label><GraduationCap size={14} /> GRADE LEVEL</label>
                             <select 
                                 className="premium-ob-select"
                                 value={profile.grade_level}
@@ -138,56 +134,50 @@ function OnboardingView() {
                         </div>
                     </div>
                 );
-            case 2: // Guardian (Reports)
+            case 2:
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Mail size={34} strokeWidth={2.5} /></div>
-                        <h3>Parent or Guardian</h3>
-                        <p>We'll send your progress reports here.</p>
+                        <div className="ob-icon-circle"><User size={28} /></div>
+                        <h3>Identity</h3>
+                        <p>What should we call you in the Manya World?</p>
+                        
                         <div className="input-with-icon">
-                            <Mail className="i-icon" size={18} />
+                            <User className="i-icon" size={18} />
                             <input 
-                                type="email" 
-                                placeholder="Parent's Email" 
-                                value={profile.parent.email} 
-                                onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, email: e.target.value } }))} 
+                                type="text" 
+                                placeholder="Your Nickname" 
+                                value={profile.nickname} 
+                                onChange={e => setProfile(p => ({ ...p, nickname: e.target.value }))} 
+                                autoFocus 
                             />
                         </div>
-                        <div className="input-with-icon">
-                            <Phone className="i-icon" size={18} />
-                            <input 
-                                type="tel" 
-                                placeholder="Parent's WhatsApp" 
-                                value={profile.parent.whatsapp} 
-                                onChange={e => setProfile(p => ({ ...p, parent: { ...p.parent, whatsapp: e.target.value } }))} 
-                            />
-                        </div>
+                        <p className="helper-text">This will be your name on the Leaderboards!</p>
                     </div>
                 );
-            case 3: // Avatar (DNA Sequence)
+            case 3:
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Zap size={34} strokeWidth={2.5} /></div>
-                        <h3>Choose Your Avatar</h3>
-                        <p>Pick a character that matches your vibe.</p>
+                        <div className="ob-icon-circle"><Zap size={28} /></div>
+                        <h3>Hero Appearance</h3>
+                        <p>Select an avatar for your Manya ID.</p>
                         <div className="lab-grid-ob">
                             {avatarOptions.map(seed => (
                                 <div key={seed} className={`lab-item-ob ${profile.avatarSeed === seed ? 'active' : ''}`} onClick={() => setProfile(p => ({ ...p, avatarSeed: seed }))}>
-                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="DNA Sequence" />
+                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="Avatar" />
                                 </div>
                             ))}
                         </div>
                         <button className="btn-lab-shuffle" onClick={() => generateSeeds(profile.nickname)}>
-                            🔄 SHUFFLE AVATARS
+                            🔄 SHUFFLE DNA
                         </button>
                     </div>
                 );
-            case 4: // Auth (Security Vault)
+            case 4:
                 return (
                     <div className="ob-step-content animate-in">
-                        <div className="ob-icon-circle"><Lock size={34} strokeWidth={2.5} /></div>
-                        <h3>Account Setup</h3>
-                        <p>Create your login details.</p>
+                        <div className="ob-icon-circle"><Lock size={28} /></div>
+                        <h3>Secure Your Progress</h3>
+                        <p>Create an account to save your achievements and sync across devices.</p>
                         <div className="input-with-icon">
                             <Mail className="i-icon" size={18} />
                             <input 
@@ -201,12 +191,11 @@ function OnboardingView() {
                             <Lock className="i-icon" size={18} />
                             <input 
                                 type="password" 
-                                placeholder="Password" 
+                                placeholder="Password (6+ chars)" 
                                 value={profile.auth.password} 
                                 onChange={e => setProfile(p => ({ ...p, auth: { ...p.auth, password: e.target.value } }))} 
                             />
                         </div>
-                        <p className="terms-notice">Password must be at least 6 characters.</p>
                     </div>
                 );
             default: return null;
@@ -214,7 +203,7 @@ function OnboardingView() {
     };
 
     return (
-        <div className="premium-ob-shell">
+        <div className="premium-ob-shell" data-theme="light">
             <div className="ob-background-fx"></div>
             
             <div className="ob-container">
@@ -234,13 +223,12 @@ function OnboardingView() {
                     </div>
                 </div>
 
-                <div className="ob-main-card">
-                    <div className="ob-progress-dots">
-                        {[1, 2, 3, 4].map(i => (
-                            <div key={i} className={`dot ${step >= i ? 'active' : ''}`}></div>
-                        ))}
-                    </div>
+                {/* Progress Bar */}
+                <div className="ob-progress-track">
+                    <div className="ob-progress-fill" style={{ width: `${(step / 4) * 100}%` }}></div>
+                </div>
 
+                <div className="ob-main-card">
                     <div className="ob-view-portal" style={{ width: '100%' }}>
                         {renderStep()}
                     </div>
@@ -252,16 +240,11 @@ function OnboardingView() {
                         onClick={handleNext}
                         disabled={loading}
                     >
-                        {loading ? "WORKING..." : step === 4 ? "FINISH SETUP →" : "NEXT →"}
+                        {loading ? "PREPARING..." : step === 4 ? "BEGIN JOURNEY →" : "CONTINUE →"}
                     </button>
                     
-                    <div className="ob-footer-badges">
-                        <div className="badge-item">
-                            <ShieldCheck size={12} strokeWidth={3} /> SECURE
-                        </div>
-                        <div className="badge-item">
-                            <Globe size={12} strokeWidth={3} /> MANYA
-                        </div>
+                    <div className="security-badge">
+                        <ShieldCheck size={12} /> SECURE IDENTITY VAULT
                     </div>
                 </footer>
             </div>

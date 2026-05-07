@@ -6,7 +6,7 @@ function LandingView() {
     const navigate = useNavigate();
 
     return (
-        <div className="premium-ob-shell landing-shell">
+        <div className="premium-ob-shell landing-shell" data-theme="light">
             <div className="ob-background-fx"></div>
             
             <div className="ob-container landing-container">
@@ -49,14 +49,14 @@ function LandingView() {
                     margin-bottom: 30px; /* Reduced to avoid scroll */
                 }
                 .landing-logo-glitch {
-                    width: 120px;
-                    height: 120px;
+                    width: 90px;
+                    height: 90px;
                     margin: 0 auto 20px;
                     position: relative;
                 }
                 .manya-main-logo {
                     width: 100%;
-                    filter: drop-shadow(0 0 20px rgba(129, 140, 248, 0.6));
+                    filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.4));
                 }
                 .landing-title {
                     font-size: 32px;
