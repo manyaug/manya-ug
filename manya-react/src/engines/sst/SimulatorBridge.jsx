@@ -8,8 +8,6 @@ import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
 import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
 import { getEngineType } from './SSTLogic';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
-import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
-import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 
 /* Study engine types that produce library artifacts — must match engineRegistry.ts keys exactly */
 const STUDY_ENGINE_TYPES = [
@@ -26,8 +24,7 @@ const STUDY_ENGINE_TYPES = [
  */
 const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst' }) => {
     const dispatch = useDispatch();
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showWrong, setShowWrong] = useState(false);
+    // --- REMOVED INTERNAL OVERLAYS (Now using global InteractionFeedback) ---
     
     // 🧠 [Phase 3] Universal Behavioral Tracking
     const { metrics } = useBehavioralTracker(true);
@@ -87,18 +84,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 flex flex-col h-full"
                 >
-                    {/* Global Sim Success Overlay */}
-                    <SimSuccessOverlay 
-                        show={showSuccess} 
-                        subject={simData.subject || subject || 'sst'} 
-                        onDismiss={() => setShowSuccess(false)} 
-                    />
-
-                    {/* Global Sim Wrong Overlay */}
-                    <SimWrongOverlay 
-                        show={showWrong} 
-                        onDismiss={() => setShowWrong(false)} 
-                    />
+                    {/* Global celebrations are handled by InteractionFeedback in the App root */}
 
                     <Suspense fallback={
                         <div className="flex-1 flex flex-col items-center justify-center">
@@ -108,10 +94,15 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
                     }>
                         <EngineComponent 
                             data={simData} 
-                            onSimSuccess={() => setShowSuccess(true)}
+                            onSimSuccess={() => {
+                                window.dispatchEvent(new CustomEvent('manya-correct', { 
+                                    detail: { subject: simData.subject || subject || 'sst' } 
+                                }));
+                            }}
                             onSimWrong={() => {
-                                setShowWrong(true);
-                                setShowSuccess(false);
+                                window.dispatchEvent(new CustomEvent('manya-wrong', { 
+                                    detail: { subject: simData.subject || subject || 'sst' } 
+                                }));
                             }}
                             onComplete={(res) => {
                                 const usp = calculateUSP({
@@ -132,9 +123,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
 
                                     dispatch(discoverArtifact({
                                         id: step?.id || `sst_study_${Date.now()}`,
-                                        type: rawEngine === 'READER' || rawEngine === 'READER_ENGINE'
-                                            ? 'recap'
-                                            : 'note',
+                                        type: rawEngine === 'READER_STUDY' ? 'recap' : 'note',
                                         title: artifactTitle,
                                         subject: simData?.subject || subject || 'sst',
                                         data: simData,
@@ -144,20 +133,6 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult, subject = 'sst
                                         message: `"${artifactTitle}" saved to your Library! 🏺`,
                                         type: 'success',
                                     }));
-
-                                    const newArtifact = {
-                                        id: step?.id || `sst_study_${Date.now()}`,
-                                        type: rawEngine === 'READER_STUDY' ? 'recap' : 'note',
-                                        title: artifactTitle,
-                                        subject: simData?.subject || subject || 'sst',
-                                        data: simData,
-                                        discoveredAt: new Date().toISOString(),
-                                    };
-                                    const mergedVault = [
-                                        ...(user.vaultArtifacts || []).filter(a => a.id !== newArtifact.id),
-                                        newArtifact,
-                                    ];
-                                    dispatch(syncUserData({ ...user, vaultArtifacts: mergedVault }));
                                 }
 
                                 onComplete({ 

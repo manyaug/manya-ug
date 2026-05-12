@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { audioService } from '../infrastructure/audio/audioService.js';
 
 /**
  * PremiumFXOverlay
@@ -13,10 +14,17 @@ const PremiumFXOverlay = () => {
     const [isEarthquake, setIsEarthquake] = useState(false);
     const [streakCount, setStreakCount] = useState(0);
     const [speedrun, setSpeedrun] = useState(null); // { duration, timeLeft }
+    const [motivation, setMotivation] = useState(null); // { word, id }
     
     const timerRef = useRef(null);
 
     useEffect(() => {
+        const handleCorrect = () => {
+            // Trigger celebration FX (particles + pulse) without text
+            setMotivation({ id: Math.random() });
+            setTimeout(() => setMotivation(null), 2500);
+        };
+
         const handleEarthquake = () => {
             setIsEarthquake(true);
             const shell = document.querySelector('.quest-runner-shell');
@@ -30,7 +38,7 @@ const PremiumFXOverlay = () => {
 
         const handleStreak = (e) => {
             setStreakCount(e.detail?.count || 4);
-            setTimeout(() => setStreakCount(0), 3000);
+            setTimeout(() => setStreakCount(0), 3500);
         };
 
         const handleSpeedrunStart = (e) => {
@@ -54,12 +62,14 @@ const PremiumFXOverlay = () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
 
+        window.addEventListener('manya-fx-correct', handleCorrect);
         window.addEventListener('manya-fx-earthquake', handleEarthquake);
         window.addEventListener('manya-fx-streak', handleStreak);
         window.addEventListener('manya-fx-speedrun-start', handleSpeedrunStart);
         window.addEventListener('manya-fx-speedrun-stop', handleSpeedrunStop);
 
         return () => {
+            window.removeEventListener('manya-fx-correct', handleCorrect);
             window.removeEventListener('manya-fx-earthquake', handleEarthquake);
             window.removeEventListener('manya-fx-streak', handleStreak);
             window.removeEventListener('manya-fx-speedrun-start', handleSpeedrunStart);
@@ -67,6 +77,10 @@ const PremiumFXOverlay = () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
     }, []);
+
+    useEffect(() => {
+        if (motivation) audioService.collect?.();
+    }, [motivation]);
 
     return (
         <div className="premium-fx-container pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
@@ -87,13 +101,49 @@ const PremiumFXOverlay = () => {
                 )}
             </AnimatePresence>
 
+            {/* 🎉 Celebration Ambient & Particles */}
+            <AnimatePresence mode="wait">
+                {motivation && (
+                    <div key={motivation.id} className="fixed inset-0 flex items-center justify-center">
+                        {/* 🟢 Full Screen Ambient Pulse */}
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: [0, 0.4, 0] }}
+                            transition={{ duration: 1 }}
+                            className="fixed inset-0 bg-emerald-500/20 mix-blend-screen"
+                        />
+
+                        {/* ✨ Particle Confetti Burst */}
+                        <div className="absolute inset-0">
+                            {[...Array(30)].map((_, i) => (
+                                <motion.span
+                                    key={`part-${motivation.id}-${i}`}
+                                    initial={{ x: '50vw', y: '50vh', opacity: 1, scale: 0 }}
+                                    animate={{ 
+                                        x: (Math.random() * 100) + 'vw',
+                                        y: (Math.random() * 100) + 'vh',
+                                        opacity: 0,
+                                        scale: Math.random() * 2 + 1,
+                                        rotate: Math.random() * 720
+                                    }}
+                                    transition={{ duration: 2, ease: "easeOut" }}
+                                    className="absolute text-3xl"
+                                >
+                                    {['✨', '⭐', '🔥', '⚡', '🎉'][i % 5]}
+                                </motion.span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </AnimatePresence>
+
             {/* ✨ Streak Power Particles */}
             <AnimatePresence>
                 {streakCount > 0 && (
                     <motion.div className="fixed inset-0 flex items-center justify-center">
                         {[...Array(20)].map((_, i) => (
                             <motion.span
-                                key={i}
+                                key={`streak-${i}`}
                                 initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
                                 animate={{ 
                                     x: (Math.random() - 0.5) * window.innerWidth,

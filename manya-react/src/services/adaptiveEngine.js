@@ -179,8 +179,8 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             // v6.4: Explicit Note vs Recap vs Story partitioning
             const idLower = (q.qid || q.id || "").toLowerCase();
             const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
-            const isRecap = idLower.includes('recap') || itemType === 'RECAP' || q.isRecap;
-            const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER' || idLower.includes('note') || idLower.includes('study') || q.isNote);
+            const isRecap = itemType === 'RECAP' || q.isRecap; // Removed idLower.includes('recap')
+            const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER' || q.isNote); // Removed idLower.includes('note/study')
 
             // 🛡️ [Hydration Guard]: Only pool as Sim/Note if it's already hydrated or has 'data'
             const isHydrated = !!(q.data || q.steps || q.content);
@@ -232,7 +232,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 console.log(`🎬 [Adaptive] EXPLORE Node: Delivering Primary Teaching Content (${subtopicExplore.qid || subtopicExplore.id}).`);
                 return {
                     questions: [subtopicExplore],
-                    metadata: { questLength: 1, gameMode: 'STORY' }
+                    metadata: { questLength: subtopicExplore.isSimulationBundle ? subtopicExplore.steps.length : 1, gameMode: 'STORY' }
                 };
             }
         }
@@ -282,7 +282,9 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         const mustAllowSims = pools.MCQ.length === 0 && pools.SIMULATION.length > 0;
         
         // ── Step A: INTRO (Note or Story) ──
-        if (!isWarmup && (pools.NOTE.length > 0 || pools.QUEST_STORY.length > 0)) {
+        // [Manya Logic v8.1] ONLY inject intro if this is an EXPLORE node or if explicitly forced.
+        // Practice/Reinforce/Mastery should dive straight into questions.
+        if (nodeType === 'EXPLORE' && (pools.NOTE.length > 0 || pools.QUEST_STORY.length > 0)) {
             const intro = pools.NOTE.length > 0 ? pools.NOTE[0] : pools.QUEST_STORY[0];
             finalQuestions.push({ ...intro, isIntro: true });
         }
@@ -292,32 +294,37 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         const simStack = (isWarmup && !mustAllowSims) ? [] : [...pools.SIMULATION].sort(() => 0.5 - Math.random());
         
         let consecutiveSims = 0;
-        while (finalQuestions.length < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
+        let currentLength = 0;
+        while (currentLength < questLength && (mcqStack.length > 0 || simStack.length > 0)) {
             const hasSim = simStack.length > 0;
             const hasMcq = mcqStack.length > 0;
 
             if (hasSim && !hasMcq) {
-                finalQuestions.push(simStack.pop());
+                const sim = simStack.pop();
+                finalQuestions.push(sim);
+                currentLength++;
             } else if (!hasSim && hasMcq) {
                 finalQuestions.push(mcqStack.shift());
+                currentLength++;
             } else {
                 let chance = needsMotivation ? Math.min(simRatio + 0.2, 0.8) : simRatio;
                 if (consecutiveSims >= 2) chance *= 0.2;
                 
                 if (Math.random() < chance) {
-                    finalQuestions.push(simStack.pop());
+                    const sim = simStack.pop();
+                    finalQuestions.push(sim);
+                    currentLength++;
                     consecutiveSims++;
                 } else {
                     finalQuestions.push(mcqStack.shift());
+                    currentLength++;
                     consecutiveSims = 0;
                 }
             }
         }
 
         // ── Step C: OUTRO (Recap) ──
-        if (pools.RECAP.length > 0 && finalQuestions.length < questLength + 1) {
-            finalQuestions.push({ ...pools.RECAP[0], isOutro: true });
-        }
+        // [Manya Logic v8.1] No more forced recaps. Recaps are now mid-quest 'Rescue' injections or EXPLORE content.
 
         // ── Step D: EMERGENCY FALLBACK ──
         if (finalQuestions.length === 0 && allQuestions.length > 0) {
@@ -327,7 +334,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         return {
             questions: finalQuestions, // No global shuffle anymore!
             metadata: { 
-                questLength: finalQuestions.length, 
+                questLength: currentLength || finalQuestions.length, 
                 frustration: frustrationScore, 
                 isBadCondition, 
                 gameMode: gameMode !== 'none' ? gameMode.toUpperCase() : (isBadCondition ? 'RESCUE' : 'NORMAL'),
@@ -376,13 +383,15 @@ export async function generateRescueStep(subject, currentFrustration, currentCon
         };
     }
 
-    // Priority 2: Simple V1 Practice from current concept or related
-    // We'd need to fetch more questions here or have a pool
+    // Priority 2: Simple Supportive Note
     return {
         id: `rescue_fallback_${Date.now()}`,
-        item_type: 'GRAMMAR',
-        engine_type: 'MCQ',
-        question: "Don't worry! Take a deep breath and let's try a simpler version next.",
+        item_type: 'NOTE',
+        engineType: 'NOTE_EXPLORER',
+        study_notes: {
+            title: "Take a breath 🌟",
+            introduction: "Don't worry! Mistakes help us grow. Take a deep breath and let's try a simpler version next."
+        },
         isRescue: true,
         isSimulation: false
     };

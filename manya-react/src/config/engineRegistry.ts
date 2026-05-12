@@ -32,6 +32,7 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
     'MCQ_STANDALONE': {
         type: 'react',
         isImmersive: true,
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/shared-engines/MCQStandaloneEngine.jsx'))
     },
 
@@ -45,11 +46,13 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
     // We removed GLOBE_ENGINE alias and update the parser to return UNIVERSAL_GLOBE if needed mappings occur.
     'SST_FETCHER': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/sst/SSTFetcherEngine.jsx'))
     },
     'SST_STUDY': {
         type: 'react',
         isImmersive: true,
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/sst/SSTStudyEngine.jsx'))
     },
 
@@ -61,6 +64,7 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
     },
     'MATH_FETCHER': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/math/MathFetcherEngine.jsx'))
     },
     'SUBSET_GAME': {
@@ -106,6 +110,7 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
     'SET_STUDY': {
         type: 'react',
         isImmersive: true,
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/math/SetStudyEngine.jsx'))
     },
     'MATH_STUDY': {
@@ -234,6 +239,7 @@ export const ENGINE_REGISTRY: Record<string, EngineRegistryEntry> = {
     // ── Science & 3D Interactive ────────────────────────────────────────────
     'SCIENCE_FETCHER': {
         type: 'react',
+        hideGlobalFooter: true,
         component: lazy(() => import('../engines/science/ScienceFetcherEngine.jsx'))
     },
     '3D_SKELETON': {
@@ -272,6 +278,9 @@ export function getEngine(engineType: string): EngineRegistryEntry {
     // Handle mapping from the normaliser for GLOBE_TIME_ENGINE
     else if (resolvedType === 'GLOBE_TIME_ENGINE') {
         resolvedType = 'UNIVERSAL_GLOBE';
+    }
+    else if (resolvedType === 'MCQ') {
+        resolvedType = 'MCQ_STANDALONE';
     }
 
     const entry = ENGINE_REGISTRY[resolvedType];

@@ -67,45 +67,53 @@ export function useCoinAnimation(realCoins) {
             position: fixed;
             left: ${srcRect.left + srcRect.width / 2}px;
             top:  ${srcRect.top  + srcRect.height / 2}px;
-            font-size: 28px;
+            font-size: 32px;
             z-index: 20000;
             pointer-events: none;
-            transition: left 0.6s cubic-bezier(0.34,1.2,0.64,1),
-                        top  0.6s cubic-bezier(0.34,1.2,0.64,1),
-                        transform 0.6s ease,
-                        opacity 0.6s ease;
+            transition: left 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        top  0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        transform 0.7s ease,
+                        opacity 0.7s ease;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
         `;
         document.body.appendChild(coin);
 
-        // Value bubble
-        const label = document.createElement('div');
-        label.textContent = `+${amount}`;
-        label.style.cssText = `
-            position: fixed;
-            left: ${srcRect.left + srcRect.width / 2}px;
-            top:  ${srcRect.top  + srcRect.height / 2 - 20}px;
-            font-size: 18px; font-weight: 800;
-            color: gold; z-index: 20001;
-            pointer-events: none;
-            animation: manya-coin-float 0.8s ease-out forwards;
-        `;
-        document.body.appendChild(label);
+        // Value bubble (optional/staggered)
+        if (amount > 1) {
+            const label = document.createElement('div');
+            label.textContent = `+${amount}`;
+            label.style.cssText = `
+                position: fixed;
+                left: ${srcRect.left + srcRect.width / 2}px;
+                top:  ${srcRect.top  + srcRect.height / 2 - 20}px;
+                font-size: 20px; font-weight: 1000;
+                color: #fbbf24; z-index: 20001;
+                pointer-events: none;
+                text-shadow: 0 0 10px rgba(0,0,0,0.5);
+                animation: manya-coin-float 0.8s ease-out forwards;
+            `;
+            document.body.appendChild(label);
+            setTimeout(() => label.remove(), 800);
+        }
+
+        // Add some "jitter" for a richer burst
+        const jitterX = (Math.random() - 0.5) * 60;
+        const jitterY = (Math.random() - 0.5) * 60;
 
         // Start flight on next frame
         requestAnimationFrame(() => {
-            coin.style.left      = `${destRect.left + destRect.width / 2}px`;
-            coin.style.top       = `${destRect.top  + destRect.height / 2}px`;
-            coin.style.transform = 'rotate(720deg) scale(0.5)';
-            coin.style.opacity   = '0.8';
+            coin.style.left      = `${destRect.left + destRect.width / 2 + jitterX}px`;
+            coin.style.top       = `${destRect.top  + destRect.height / 2 + jitterY}px`;
+            coin.style.transform = `rotate(${360 + Math.random() * 720}deg) scale(0.6)`;
+            coin.style.opacity   = '0.9';
         });
 
         setTimeout(() => {
             coin.remove();
-            label.remove();
             // Shake the target HUD pill
             targetRef.current?.classList.add('coin-hud-shake');
             setTimeout(() => targetRef.current?.classList.remove('coin-hud-shake'), 350);
-        }, 650);
+        }, 750);
     }, []);
 
     /**

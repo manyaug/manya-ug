@@ -21,8 +21,13 @@ export const triggerRewardFlight = (source, type = 'coin', amount = 0) => {
     } else if (source && typeof source.x === 'number') {
         x = source.x;
         y = source.y;
+    } else {
+        // Fallback to center of screen
+        x = window.innerWidth / 2;
+        y = window.innerHeight / 2;
     }
 
+    console.log(`🚀 [triggerRewardFlight] Type: ${type}, Amount: ${amount}, Source:`, source);
     const event = new CustomEvent('manya-fx-flight', {
         detail: { x, y, type, amount }
     });

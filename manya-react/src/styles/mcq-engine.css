@@ -1,22 +1,33 @@
 /* ================================================================
+
+:root {
+    --motivation-text: #ffffff;
+    --motivation-stroke: #1e293b;
+}
+
+[data-theme='light'] {
+    --motivation-text: #0f172a;
+    --motivation-stroke: #ffffff;
+}
+
    MANYA MCQ ENGINE — v3.0  (World-Class Edition)
    ================================================================ */
 
-/* ── ROOT: zero-scroll, fits within QuestRunner content area ─── */
+/* ── ROOT: scrollable when content is long ─── */
 .mcq-world-root {
     position: relative;
-    /* popup/flash positioned relative to this */
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     max-width: 460px;
     margin: 0 auto;
-    padding: 16px 16px 0;
+    padding: 16px 16px 40px; /* More bottom padding for scroll space */
     gap: 14px;
-    /* Never let this element itself scroll */
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     box-sizing: border-box;
+    flex: 1; /* Fill parent */
 }
 
 /* ── QUESTION CARD ──────────────────────────────────────────── */
@@ -24,13 +35,13 @@
     width: 100%;
     background: var(--bg-card, #fff);
     border: 4.5px solid var(--sub-theme-bg, #e2e8f0);
-    /* THEMED BORDER */
     border-radius: 30px;
     padding: 24px 26px;
     box-shadow: 0 8px 0 rgba(0, 0, 0, 0.08);
     text-align: center;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; Removed so hint bubble can pop out! */
+    flex-shrink: 0; /* Prevent squeezing */
 }
 
 .mcq-q-image {
@@ -62,6 +73,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    flex-shrink: 0; /* Prevent squeezing */
 }
 
 .mcq-option-btn {
@@ -80,6 +92,7 @@
     -webkit-tap-highlight-color: transparent;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0; /* Prevent squeezing */
 }
 
 .mcq-option-btn:not(:disabled):active {
@@ -155,24 +168,24 @@
 
 /* Wrong (user's pick) */
 .mcq-option-btn.wrong {
-    border-color: #ef4444;
-    background: #fef2f2;
-    box-shadow: 0 6px 0 #fecaca;
+    border-color: #f59e0b;
+    background: #fffbeb;
+    box-shadow: 0 6px 0 #fde68a;
     animation: wrongShake 0.45s ease;
 }
 
 .mcq-option-btn.wrong .mcq-opt-letter {
-    background: #ef4444;
+    background: #f59e0b;
     color: white;
 }
 
 .mcq-option-btn.wrong .mcq-opt-text {
-    color: #b91c1c;
+    color: #92400e;
     font-weight: 800;
 }
 
 .mcq-option-btn.wrong .mcq-opt-icon {
-    color: #ef4444;
+    color: #f59e0b;
 }
 
 /* Reveal correct answer after wrong */
@@ -233,8 +246,9 @@
 }
 
 .mcq-success-label {
+    font-family: 'Roboto', sans-serif;
     font-size: 28px;
-    font-weight: 950;
+    font-weight: 900;
     color: #15803d;
     letter-spacing: -0.5px;
 }
@@ -297,13 +311,14 @@
 }
 
 .mcq-popup-icon-wrap.wrong {
-    background: #fef2f2;
-    color: #ef4444;
+    background: #fffbeb;
+    color: #f59e0b;
 }
 
 .mcq-popup-title {
+    font-family: 'Roboto', sans-serif;
     font-size: 18px;
-    font-weight: 950;
+    font-weight: 900;
     color: var(--text-main, #1e293b);
     letter-spacing: -0.3px;
 }
@@ -395,28 +410,30 @@
 /* ── Continue Button (shared) ── */
 .mcq-popup-continue {
     display: flex;
+    flex-direction: row; /* Ensure row */
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    height: 56px;
-    border-radius: 18px;
+    height: 58px;
+    border-radius: 20px;
     border: none;
-    background: #ef4444;
+    background: #f59e0b; /* Yellow */
     color: white;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 950;
     letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 6px 0 #b91c1c;
-    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 0 6px 0 #d97706; /* Darker yellow */
+    transition: all 0.1s;
     flex-shrink: 0;
-    margin-top: 4px;
+    margin-top: 8px;
+    white-space: nowrap; /* Prevent wrap */
 }
 
 .mcq-popup-continue:active {
     transform: translateY(4px);
-    box-shadow: 0 2px 0 #b91c1c;
+    box-shadow: 0 2px 0 #d97706;
 }
 
 .mcq-popup-continue.success {
@@ -584,9 +601,9 @@
 }
 
 .mcq-option-btn.wrong {
-    background: rgba(239, 68, 68, 0.2) !important;
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 30px rgba(239, 68, 68, 0.4) !important;
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.3) !important;
 }
 
 .mcq-opt-letter {
@@ -722,14 +739,16 @@
 .celebration-card-container {
     width: 100%;
     max-width: 400px;
-    background: #0f172a; /* PREMIUM DARK BASE */
+    background: #0f172a;
+    /* PREMIUM DARK BASE */
     border-radius: 40px;
     padding: 60px 24px 32px;
     position: relative;
     box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
     text-align: center;
     animation: badgeAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    overflow: hidden; /* Anchor the arc at the bottom */
+    overflow: hidden;
+    /* Anchor the arc at the bottom */
 }
 
 .celebration-hero-blob {
@@ -783,6 +802,7 @@
     position: relative;
     background: linear-gradient(to right, #f43f5e, #fb923c);
     color: white;
+    font-family: 'Roboto', sans-serif;
     font-size: 14px;
     font-weight: 900;
     padding: 8px 30px;
@@ -818,8 +838,9 @@
 }
 
 .celebration-title-premium {
+    font-family: 'Roboto', sans-serif;
     font-size: 32px;
-    font-weight: 950;
+    font-weight: 900;
     color: #ffffff;
     margin: 0 0 8px;
     letter-spacing: -0.5px;
@@ -915,6 +936,7 @@
         opacity: 1;
     }
 }
+
 /* --- CELEBRATION FAIL STATES --- */
 .celebration-arena-overlay.is-fail {
     background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98)) !important;
@@ -924,8 +946,8 @@
 .variant-fail .ribbon-3d-main {
     background: linear-gradient(to bottom, #475569, #1e293b) !important;
     color: #94a3b8 !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .variant-fail .ribbon-3d-fold-left,
@@ -941,13 +963,213 @@
 
 .btn-collect-3d.is-retry {
     background: linear-gradient(to bottom, #334155, #0f172a) !important;
-    box-shadow: 
+    box-shadow:
         0 4px 0 #020617,
-        0 10px 20px rgba(0,0,0,0.4),
-        inset 0 1px 0 rgba(255,255,255,0.05) !important;
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 .btn-collect-3d.is-retry:active {
-    box-shadow: 0 0 0 #020617, 0 4px 10px rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 0 #020617, 0 4px 10px rgba(0, 0, 0, 0.4) !important;
 }
 
+/* ── ACTION FOOTER (Restored Submit/Hint) ────────────────────────── */
+.mcq-action-footer {
+    width: 100%;
+    margin-top: 10px;
+    padding-bottom: 24px;
+    min-height: 80px;
+}
+
+/* Floating Hint System */
+.mcq-hint-container {
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    z-index: 100;
+    /* Above all */
+}
+
+.mcq-hint-toggle-v2 {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    /* Circular looks better for the bulb */
+    border: none;
+    background: #7c3aed;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+}
+
+.mcq-hint-toggle-v2.active {
+    background: #f59e0b;
+    /* Amber when active */
+    transform: scale(1.1) rotate(-10deg);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}
+
+.mcq-hint-bubble-v2 {
+    position: absolute;
+    top: 54px;
+    right: -4px;
+    width: 250px;
+    background: #1e293b;
+    border: 3.5px solid #334155;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    text-align: left;
+    z-index: 1000;
+    /* Master layer */
+}
+
+.mcq-hint-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.mcq-hint-badge {
+    font-size: 10px;
+    font-weight: 950;
+    color: #f59e0b;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.mcq-hint-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f1f5f9 !important;
+    /* FIXED: High contrast white */
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Premium Submit Button Fixes */
+.manya-btn-pro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 60px;
+    border-radius: 20px;
+    border: none;
+    font-weight: 950;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    cursor: pointer;
+    color: white;
+    /* Force white text */
+}
+
+.manya-btn-pro.disabled {
+    background: #334155 !important;
+    color: #64748b !important;
+    box-shadow: 0 4px 0 #1e293b !important;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+[data-theme='light'] .mcq-hint-text {
+    color: #1e293b !important;
+}
+
+[data-theme='light'] .manya-btn-pro.disabled {
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    box-shadow: 0 4px 0 #cbd5e1 !important;
+}
+
+/* Dynamic Feedback Banners */
+.mcq-feedback-banner {
+    width: 100%;
+    border-radius: 24px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 3px solid;
+}
+
+.mcq-feedback-banner.correct {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: #22c55e;
+}
+
+.mcq-feedback-banner.wrong {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+}
+
+.mcq-feedback-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.correct .mcq-feedback-icon {
+    background: #22c55e;
+    color: white;
+}
+
+.wrong .mcq-feedback-icon {
+    background: #f59e0b;
+    color: white;
+}
+
+.mcq-feedback-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.correct .mcq-feedback-title {
+    color: #22c55e;
+}
+
+.wrong .mcq-feedback-title {
+    color: #f59e0b;
+}
+
+.mcq-feedback-sub {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+.mcq-btn-continue {
+    height: 48px;
+    padding: 0 24px;
+    background: #58cc02;
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-weight: 950;
+    font-size: 13px;
+    box-shadow: 0 4px 0 #46a302;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.mcq-btn-continue:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #46a302;
+}

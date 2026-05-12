@@ -2,8 +2,6 @@ import React, { Suspense, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Puzzle, AlertCircle } from 'lucide-react';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
-import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
-import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 
 class EngineErrorBoundary extends React.Component {
@@ -34,8 +32,7 @@ class EngineErrorBoundary extends React.Component {
  * Supports "Gamified" celebrations to provide variant gratification.
  */
 const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimSuccess, onSimWrong }) => {
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showWrong, setShowWrong] = useState(false);
+    // --- REMOVED INTERNAL OVERLAYS (Now using global InteractionFeedback) ---
     const simData = step?.data || step;
     
     if (!simData) return (
@@ -89,10 +86,10 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
         
         if (isWin) {
             audioService.victory?.();
-            setShowSuccess(true);
+            window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'english' } }));
         } else {
             audioService.error?.();
-            setShowWrong(true);
+            window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'english' } }));
         }
 
         // Auto-advance after 1.5s to keep it snappy like an MCQ
@@ -124,18 +121,7 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 flex flex-col min-h-0"
                 >
-                    {/* Global Sim Success Overlay */}
-                    <SimSuccessOverlay 
-                        show={showSuccess} 
-                        subject="english" 
-                        onDismiss={() => setShowSuccess(false)} 
-                    />
-
-                    {/* Global Sim Wrong Overlay */}
-                    <SimWrongOverlay 
-                        show={showWrong} 
-                        onDismiss={() => setShowWrong(false)} 
-                    />
+                    {/* Global celebrations are handled by InteractionFeedback in the App root */}
 
                     <Suspense fallback={
                         <div className="flex-1 flex flex-col items-center justify-center">
@@ -146,10 +132,11 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
                         <EngineErrorBoundary onSkip={onComplete}>
                             <EngineComponent 
                                 data={simData} 
-                                onSimSuccess={() => setShowSuccess(true)}
+                                onSimSuccess={() => {
+                                    window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'english' } }));
+                                }}
                                 onSimWrong={() => {
-                                    setShowWrong(true);
-                                    setShowSuccess(false);
+                                    window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'english' } }));
                                 }}
                                 onComplete={handleEngineComplete}
                                 onResult={handleResult}

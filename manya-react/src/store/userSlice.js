@@ -40,7 +40,8 @@ export const initializeUser = createAsyncThunk(
         console.log("☁️ [Sync] Profile restored from Supabase.");
         const merged = {
             ...(localUser || ManyaDB.createDefaultRecord()),
-            uid: activeUid, // Ensure ID is synced
+            uid: activeUid, 
+            id: cloudProfile.id, // Primary key for Supabase relational tables
             nickname: cloudProfile.full_name,
             // START FRESH: Ignore old engagement_stats, use new user_balances
             diamonds: cloudBalance?.gem_overall || 0,
@@ -179,15 +180,14 @@ export const openChestThunk = createAsyncThunk(
     'user/openChest',
     async ({ chestId }, { dispatch }) => {
         try {
-            const rewards = await rewardService.openChest(chestId);
+            const { rewards } = await rewardService.openChest(chestId);
             
             // Apply rewards to local state
             for (const r of rewards) {
-                if (r.currency === 'coins') {
+                if (r.type === 'coins') {
                     dispatch(userSlice.actions.awardCoins(r.amount));
-                } else if (r.currency.includes('gem')) {
-                    const subject = r.currency.replace('gem_', '');
-                    dispatch(userSlice.actions.awardGems({ subject, amount: r.amount }));
+                } else if (r.type === 'gems') {
+                    dispatch(userSlice.actions.awardGems({ subject: r.subject || 'master', amount: r.amount }));
                 }
             }
             
@@ -222,7 +222,24 @@ const initialState = {
  */
 export const discoverArtifactThunk = createAsyncThunk(
     'user/discoverArtifact',
-    async (artifact, { dispatch }) => {
+    async (artifact, { getState, dispatch }) => {
+        const state = getState().user.data;
+        
+        // 🛡️ VALIDATION: Only allow STUDY/SIMULATION types in the vault
+        // No MCQs, Quizzes, or interactive questions should be vaulted.
+        const allowedTypes = ['note', 'recap', 'study_sim', 'simulation', 'artifact'];
+        if (!allowedTypes.includes(artifact.type)) {
+            console.log(`🚫 [Vault] Skipping non-study artifact type: ${artifact.type}`);
+            return;
+        }
+
+        // 🛡️ DE-DUPLICATION: Don't record if already discovered
+        const exists = state.vaultArtifacts?.some(a => a.id === artifact.id);
+        if (exists) {
+            console.debug(`🏺 [Vault] Artifact already exists: ${artifact.id}`);
+            return;
+        }
+
         // 1. Sync to Cloud
         try {
             await syncService.pushVault(artifact.id, artifact.subject || 'overall');
@@ -230,7 +247,7 @@ export const discoverArtifactThunk = createAsyncThunk(
             console.warn('🏺 [Vault] Cloud sync failed:', e.message);
         }
         
-        // 2. Update Redux
+        // 2. Update Redux (Local State)
         dispatch(userSlice.actions.discoverArtifact(artifact));
     }
 );

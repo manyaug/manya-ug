@@ -25,11 +25,6 @@ export const fetchMathQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
         
-        if (!CACHE_CLEARED) {
-            await ManyaDB.clearQuestionCache();
-            CACHE_CLEARED = true;
-        }
-        
         if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
 
         const allCached = await ManyaDB.getCachedQuestions('math');
@@ -39,10 +34,16 @@ export const fetchMathQuestions = async (topicId) => {
             return cached;
         }
 
-        // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:math&item_type=eq:MCQ&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
+        // --- RESILIENT VAULT QUERY (v5.0 - Hybrid Matcher) ---
+        // 1. Try subject with wildcards (matches 'math' and 'mathematics')
+        // 2. Allow MCQ, Question, and Practice item types
+        // 3. Match subtopic with underscores or spaces
+        const spaceSub = subtopic.replace(/_/g, ' ');
+        const itemFilter = 'item_type.ilike.%MCQ%,item_type.ilike.%Question%,item_type.ilike.%Practice%';
+        
+        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${itemFilter}&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${spaceSub}%,subtopic.ilike.%${topicId}%`);
 
-        // FALLBACK: Aggressive Keyword Splitting (v4.5)
+        // FALLBACK: Aggressive Keyword Splitting (v5.0)
         if (!data || data.length === 0) {
             const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
             const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
@@ -51,7 +52,7 @@ export const fetchMathQuestions = async (topicId) => {
                 console.log(`🔍 [Math Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:math&item_type=eq:MCQ&or=${keywordFilter}`);
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${itemFilter}&or=${keywordFilter}`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Math Vault] Discovered ${keywordData.length} related questions via keywords.`);
@@ -62,18 +63,20 @@ export const fetchMathQuestions = async (topicId) => {
 
         if (!data || data.length === 0) return [];
 
+        console.log("🔍 [Math Vault] Sample Record:", data[0]);
+
         const transformed = data.map(q => {
             const options = [q.option_a, q.option_b, q.option_c, q.option_d]
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
             return {
-                id: q.qid,
-                qid: q.qid,
+                id: q.qid || q.id,
+                qid: q.qid || q.id,
                 subject: typeof q.subject === 'object' ? (q.subject.label || q.subject.id) : (q.subject || 'math'),
                 topic: typeof q.topic === 'object' ? (q.topic.label || q.topic.id) : (q.topic || q.subtopic),
                 subtopic: q.subtopic,
                 difficulty: q.difficulty || 'E',
-                question: q.question_text,
+                question: q.question_text || q.prompt || q.text || q.content || q.description || q.question || 'Select the correct option:',
                 options: options,
                 answer: q.correct_answer,
                 explanation: parseSolutionToSteps(q.explanation),

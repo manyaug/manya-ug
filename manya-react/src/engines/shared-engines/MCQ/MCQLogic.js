@@ -43,16 +43,37 @@ export const getThemeForSubject = (subject) => {
 };
 
 export const validateMCQAnswer = (selectedId, correctId, options) => {
-    const normalize = (val) => String(val || '').trim().toLowerCase();
+    const normalize = (val) => {
+        let s = String(val || '').trim().toLowerCase();
+        // Strip common prefixes from database identifiers
+        s = s.replace(/^(option|choice|answer)[_\s-]?/, '');
+        return s;
+    };
+    
     const sel = normalize(selectedId);
     const cor = normalize(correctId);
     
-    // Direct match
+    // 1. Direct Normalized Match (e.g., "option_d" vs "d" -> "d" === "d")
     if (sel === cor) return true;
     
-    // Match by text (if ID is something like Option_A)
-    const corOpt = options.find(o => normalize(o.id) === cor);
-    if (corOpt && normalize(corOpt.text) === sel) return true;
+    // 2. Cross-reference options
+    const selectedOpt = options.find(o => 
+        normalize(o.id) === sel || 
+        normalize(o.letter) === sel || 
+        normalize(o.text) === sel
+    );
+    const correctOpt = options.find(o => 
+        normalize(o.id) === cor || 
+        normalize(o.letter) === cor || 
+        normalize(o.text) === cor
+    );
+
+    if (selectedOpt && correctOpt) {
+        return selectedOpt.id === correctOpt.id;
+    }
+
+    // 3. Fallback: match selected normalized value against correct option's components
+    if (correctOpt && (sel === normalize(correctOpt.letter) || sel === normalize(correctOpt.text))) return true;
     
     return false;
 };

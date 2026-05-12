@@ -145,9 +145,10 @@ export function evaluateRewards(metrics) {
     if (artifactCount === 5)  drops.push({ ...REWARD_TRIGGERS.V_ARCHIVIST, subject: 'master' });
     if (artifactCount === 20) drops.push({ ...REWARD_TRIGGERS.V_MUSEUM, subject: 'master' });
 
-    // 7. Participation (Fallback)
+    // 7. Participation (Fallback) - DISABLED per strict logic request
     if (drops.length === 0) {
-        drops.push({ ...REWARD_TRIGGERS.Q_GOOD, reason: 'Quest Completed!', subject: 'master' });
+        console.log("🎁 [ChestService] No rewards earned for this quest (Strict Logic)");
+        return [];
     }
 
     // Sort by tier: Diamond > Gold > Silver > Bronze
@@ -167,7 +168,7 @@ export function evaluateRewards(metrics) {
  * Reward Generator
  * Strictly Awards COINS and GEMS. No XP.
  */
-function generateBalancedRewards(type, subject = 'general') {
+function generateBalancedRewards(type, subject = 'overall') {
     const config = {
         bronze:  { coins: [50, 100],   gems: [2, 5] },
         silver:  { coins: [150, 250],  gems: [8, 12] },

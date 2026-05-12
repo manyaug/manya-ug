@@ -7,7 +7,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Trophy, Check, Zap, Brain } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { getGem } from '../config/assetUrls.js';
+import { getGem, IMAGES } from '../config/assetUrls.js';
 import { audioService } from '../infrastructure/audio/audioService';
 import '../styles/QuestHUD.css';
 
@@ -21,7 +21,11 @@ const QuestHUD = ({
     sessionCoins = 0,
     sessionGems = 0,
     frustration = 0,
+    nodeType = 'PRACTICE',
     hideTracker = false,
+    immersive = false,
+    internalIndex = 0,
+    internalTotal = 0,
     onClose 
 }) => {
     const user = useSelector(state => state.user.data);
@@ -68,19 +72,32 @@ const QuestHUD = ({
     const subjectGems = user?.subjectGems?.[subject.toLowerCase()] || user?.[`${subject.toLowerCase()}Gems`] || 0;
     const gemIcon = getGem(`${subject.toLowerCase()}_gem.svg`);
 
-    const progressPct = Math.min(100, total > 0 ? (current / total) * 100 : 0);
+    // Progress = Percentage passed from the runner (which now includes sub-progress)
+    const progressPct = Math.min(100, current); 
     
-    // Target Calculation: Percentage of the way to the 60% PASS_THRESHOLD
+    // Mastery = Accuracy (Toward the 60% goal)
     const PASS_THRESHOLD = 60;
     const isPassing = masteryScore >= PASS_THRESHOLD;
     
-    // Gold state for passing, Green for leading up to it
-    const masteryColor = isPassing ? 'var(--manya-gold)' : 'var(--manya-green)'; 
-    const fillGlow = isPassing ? 'rgba(var(--manya-gold-h), var(--manya-gold-s), var(--manya-gold-l), 0.4)' : 'rgba(var(--manya-green-h), var(--manya-green-s), var(--manya-green-l), 0.3)';
+    const themeColor = isPassing ? 'var(--manya-gold)' : 'var(--manya-purple)';
+
+    const showMastery = nodeType !== 'EXPLORE' && nodeType !== 'WARMUP';
 
     return (
-        <div className="quest-hud-premium">
-            {/* HEADER ROW: EXIT | SUBJECT | RESOURCES */}
+        <div className="quest-hud-premium" data-subject={subject.toLowerCase()}>
+            {/* 📏 TOP INDICATOR (v8.3) */}
+            <div className="hud-completion-track">
+                <div 
+                    className="hud-completion-fill" 
+                    style={{ 
+                        width: `${progressPct}%`, 
+                        background: isPassing ? 'var(--manya-gold)' : 'var(--manya-green)',
+                        transition: 'background 0.6s ease, width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }} 
+                />
+            </div>
+
+            {/* HEADER ROW */}
             <div className="hud-top-flex">
                 <div className="hud-left-group">
                     <button className="hud-x-btn" onClick={handleClose}>
@@ -88,12 +105,6 @@ const QuestHUD = ({
                     </button>
                     <div className="hud-subject-badge">
                         {subjectNames[subject.toLowerCase()] || subject.toUpperCase()}
-                    </div>
-
-                    {/* 🧠 THE BRAIN INDICATOR */}
-                    <div className={`hud-brain-indicator brain-${brainState}`} title={brainLabel}>
-                        <Brain size={12} color={brainColor} />
-                        <span style={{ color: brainColor }}>{brainLabel}</span>
                     </div>
                 </div>
 
@@ -109,35 +120,41 @@ const QuestHUD = ({
                 </div>
             </div>
 
-            {/* PROGRESS COMPONENT */}
+            {/* PROGRESS SECTION */}
             {!hideTracker && (
-                <div className="hud-mastery-card-premium">
+                <div className={`hud-mastery-card-premium ${immersive ? 'hud-immersive-compact' : ''}`}>
                     <div className="mastery-label-flex">
                         <div className="mastery-progress-header">
-                             <Trophy size={10} className="text-amber-400" />
-                             <span>Target Tracker</span>
+                             <span>{internalTotal > 0 ? `Quest ${internalIndex}/${internalTotal}` : 'Quest Progress'}</span>
                         </div>
-                        <span className="mastery-pct-val" style={{ 
-                            color: masteryColor,
-                            textShadow: isPassing ? `0 0 10px ${masteryColor}88` : 'none'
-                        }}>
-                            {Math.round(masteryScore)}% / {PASS_THRESHOLD}%
-                        </span>
+                        {showMastery && (
+                            <span className="mastery-pct-val" style={{ 
+                                color: themeColor,
+                                textShadow: isPassing ? `0 0 10px ${themeColor}88` : 'none'
+                            }}>
+                                <Trophy size={10} className="inline mr-1" />
+                                Mastery: {Math.round(masteryScore)}% / {PASS_THRESHOLD}%
+                            </span>
+                        )}
                     </div>
 
                     <div className="hud-progress-container">
                         <div className="hud-progress-track">
-                             {/* Scale Markers */}
                              <div className="hud-scale-marker" style={{ left: '0%' }}><div className="marker-line" /></div>
-                             <div className="hud-scale-marker marker-target" style={{ left: '60%' }}><div className="marker-line" /></div>
+                             {showMastery && (
+                                 <div className="hud-scale-marker marker-target" style={{ left: '60%' }}><div className="marker-line" /></div>
+                             )}
                              <div className="hud-scale-marker" style={{ left: '100%' }}><div className="marker-line" /></div>
 
-                             {/* The Target-Based Fill */}
+                             {/* MAIN BAR = COMPLETION */}
                              <div className="hud-progress-fill-gradient" 
                                   style={{ 
-                                      width: `${masteryScore}%`, 
-                                      backgroundColor: masteryColor,
-                                      boxShadow: `0 0 15px ${fillGlow}`
+                                      width: `${progressPct}%`, 
+                                      backgroundColor: isPassing ? 'var(--manya-gold)' : 'var(--manya-green)',
+                                      boxShadow: isPassing 
+                                          ? '0 0 15px rgba(251, 191, 36, 0.4)'
+                                          : '0 0 15px rgba(16, 185, 129, 0.3)',
+                                      transition: 'background-color 0.6s ease, box-shadow 0.6s ease'
                                   }} 
                              />
                         </div>

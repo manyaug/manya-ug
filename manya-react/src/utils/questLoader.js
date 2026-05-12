@@ -147,8 +147,9 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
             let cleanCdnUrl = null;
 
             if (row.cdn_url) {
-                // Remove repeated "content/" parts and inject ASSET_VERSION
-                cleanCdnUrl = row.cdn_url.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                // 🛡️ SANITIZATION (v2.2): Fix duplicate .net and repeated content folders
+                cleanCdnUrl = row.cdn_url.replace('.net.net', '.net');
+                cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
                 cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
             } else {
                 // Reconstruct from topics if missing. 

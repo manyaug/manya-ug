@@ -7,7 +7,8 @@ import {
   Puzzle,
   Navigation,
   Trophy,
-  X
+  X,
+  Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -32,17 +33,15 @@ const GlobeRenderer = ({
     mode
 }) => {
     return (
-        <div className="globe-engine-root flex flex-col h-full bg-[#f8fafc] dark:bg-[#0f172a] overflow-hidden">
+        <div className="globe-engine-root flex flex-col h-full bg-[#0B0E14] overflow-hidden">
             <style>{`
             .globe-engine-root { font-family: 'Plus Jakarta Sans', sans-serif; }
             .sheet-toy { 
-                background: var(--sheet-bg, #fff);
+                background: #151921;
                 border-top: 5px solid #7c3aed;
-                box-shadow: 0 -15px 50px rgba(0,0,0,0.1);
-            }
-            .dark .sheet-toy {
-                background: #0f172a;
                 box-shadow: 0 -15px 50px rgba(0,0,0,0.4);
+                border-radius: 3rem 3rem 0 0;
+                margin-top: -2rem;
             }
             .no-scrollbar::-webkit-scrollbar { display: none; }
             `}</style>
@@ -114,7 +113,6 @@ const GlobeRenderer = ({
                         <div className="space-y-5 animate-in slide-in-from-right-4 duration-400">
                             <div className="mcq-q-card border-[4.5px] border-indigo-500 shadow-xl relative overflow-hidden bg-white dark:bg-slate-800">
                                 <div className="toy-card-gloss" />
-                                <h1 className="text-[14px] font-black tracking-wide leading-tight text-center text-slate-400 dark:text-slate-500 uppercase mb-2">Quest {activeTab + 1}/{data.questions.length}</h1>
                                 <p className="text-[15px] font-black leading-relaxed text-center relative z-10 text-slate-800 dark:text-slate-200">
                                     {data.questions[activeTab].question}
                                 </p>
@@ -152,10 +150,9 @@ const GlobeRenderer = ({
                             {selectedQuizOpt && !quizFeedback && (
                                 <button
                                     onClick={submitQuizAnswer}
-                                    className="mcq-btn-solid bg-indigo-600 border-b-[6px] border-indigo-800 text-white rounded-2xl py-4 font-black text-[14px] uppercase tracking-widest shadow-xl shadow-indigo-500/30 mt-4 active:scale-95 active:border-b-0 transition-all relative overflow-hidden"
+                                    className="w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden bg-[#58cc02] hover:bg-[#46a302] text-white border-b-[4px] border-[#46a302] active:translate-y-1 mt-4"
                                 >
-                                    <div className="toy-card-gloss" />
-                                    SUBMIT ANSWER
+                                    <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                                 </button>
                             )}
                         </div>

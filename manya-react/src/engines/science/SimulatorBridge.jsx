@@ -12,16 +12,13 @@ import GalleryStudyEngine from '../shared-engines/GalleryStudyEngine';
 import ThreeDStudyEngine from '../shared-engines/ThreeDStudyEngine';
 import NoteExplorerEngine from '../shared-engines/NoteExplorerEngine';
 import ReaderStudyEngine from '../shared-engines/ReaderStudyEngine';
-import SimSuccessOverlay from '../../components/ui/SimSuccessOverlay';
-import SimWrongOverlay from '../../components/ui/SimWrongOverlay';
 
 /**
  * SCIENCE SIMULATOR BRIDGE
  * Connects the Science Fetcher to specialized Simulation Engines with seamless transitions.
  */
 const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showWrong, setShowWrong] = useState(false);
+    // --- REMOVED INTERNAL OVERLAYS (Now using global InteractionFeedback) ---
 
     // 🧠 [Phase 3] Universal Behavioral Tracking
     const { metrics } = useBehavioralTracker(true);
@@ -70,10 +67,15 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
         subject: simData.subject || 'science',
         onComplete: handleSimComplete,
         onResult: handleSimResult,
-        onSimSuccess: () => setShowSuccess(true),
+        onSimSuccess: () => {
+            window.dispatchEvent(new CustomEvent('manya-correct', { 
+                detail: { subject: simData.subject || 'science' } 
+            }));
+        },
         onSimWrong: () => {
-            setShowWrong(true);
-            setShowSuccess(false);
+            window.dispatchEvent(new CustomEvent('manya-wrong', { 
+                detail: { subject: simData.subject || 'science' } 
+            }));
         },
         onAttempt
     };
@@ -122,17 +124,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
                 transition={{ duration: 0.4, ease: "circOut" }}
                 className="flex-1 flex flex-col h-full w-full"
             >
-                {/* Global Sim Success Overlay */}
-                <SimSuccessOverlay 
-                    show={showSuccess} 
-                    subject={simData.subject || 'science'} 
-                    onDismiss={() => setShowSuccess(false)} 
-                />
-
-                <SimWrongOverlay 
-                    show={showWrong} 
-                    onDismiss={() => setShowWrong(false)} 
-                />
+                {/* Global celebrations are handled by InteractionFeedback in the App root */}
 
                 <Suspense fallback={
                     <div className="flex-1 flex flex-col items-center justify-center bg-slate-50/50 backdrop-blur-xl">

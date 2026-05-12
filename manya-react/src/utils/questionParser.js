@@ -18,8 +18,8 @@ export function parseQuestionId(qId) {
         };
     }
 
-    // Pattern 2: Rephrased suffixes (-R, -REP, -REPHRASED)
-    const rMatch = qId.match(/^(.+)-(R|REP|REPHRASED)$/i);
+    // Pattern 2: Rephrased suffixes (-R, -R1, -REP, -REP2, -REPHRASED)
+    const rMatch = qId.match(/^(.+)-(R|REP|REPHRASED)\d*$/i);
     if (rMatch) {
         return {
             baseId: rMatch[1],

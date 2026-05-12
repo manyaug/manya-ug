@@ -5,6 +5,9 @@ import { calculateFrustration } from '../domain/psych/psychTracker';
 import { syncService } from '../infrastructure/sync/syncService';
 import { masteryService } from '../domain/mastery/masteryService';
 import { generateRescueStep } from '../services/adaptiveEngine';
+import { saveNodeCompletion } from '../domain/progress/questProgressService';
+import { evaluateRewards } from '../domain/gamification/chestService';
+import { rewardService } from '../infrastructure/services/rewardService';
 
 // Extract the 'deriveMetadata' from QuestRunner
 function deriveMetadata(step: QuestStep | any) {
@@ -42,6 +45,10 @@ export class QuestSession {
         return this._steps[this._currentIndex];
     }
 
+    set steps(newSteps: QuestStep[]) {
+        this._steps = newSteps;
+    }
+
     get stepIndex(): number {
         return this._currentIndex;
     }
@@ -77,7 +84,8 @@ export class QuestSession {
      */
     peekResult(engineResult: any) {
         if (!this.currentStep) return;
-        const totalQuestions = engineResult.total || this._steps.length;
+        // Denominator should be the total questions in the pool or the total steps in the quest
+        const totalQuestions = Math.max(engineResult.total || 0, this._steps.length);
         
         // Use the absolute score (correct + fractional) if provided by the fetcher
         const absoluteScore = engineResult.score !== undefined ? engineResult.score : (this._correctCount + (engineResult.pulseScore || 0));
@@ -102,7 +110,7 @@ export class QuestSession {
         } else {
             // Updated: Calculate accuracy against the TOTAL quest questions
             // Fetcher engines provide 'total' in the result.
-            const totalQuestions = engineResult.total || this._steps.length;
+            const totalQuestions = Math.max(engineResult.total || 0, this._steps.length);
             const currentCorrect = this._correctCount + (engineResult.isCorrect ? 1 : 0);
             
             this._lastMasteryScore = Math.round((currentCorrect / totalQuestions) * 100);
@@ -151,7 +159,7 @@ export class QuestSession {
         if (!isCorrect && !isAdaptive) {
             this._wrongStreak++;
             this._currentStreak = 0;
-            const threshold = this._meta.nodeType === 'PRACTICE' ? 1 : 3;
+            const threshold = 3; // Increased from 1 to prevent aggressive interruptions
             if (this._wrongStreak >= threshold && this._meta.nodeType !== 'WARMUP') {
                 shouldInjectRecap = true;
                 this._wrongStreak = 0;
@@ -185,6 +193,107 @@ export class QuestSession {
         // Mutate array and return it
         this._steps.splice(this._currentIndex + 1, 0, rescueStep);
         return [...this._steps];
+    }
+
+    async finalize(performance: any, user: any, locationState: any) {
+        const rawSubject = locationState?.subject || 'overall';
+        const subject = rawSubject.toLowerCase();
+        const { questKey, nodeType } = locationState || {};
+        const safeNodeType = (nodeType || 'WARMUP').toUpperCase();
+        
+        let baseCoins = 0; let scale = 0;
+        if (safeNodeType === 'WARMUP') { baseCoins = 20; scale = 5; }
+        else if (safeNodeType === 'EXPLORE') { baseCoins = 30; scale = 10; }
+        else if (safeNodeType === 'PRACTICE') { baseCoins = 40; scale = 15; }
+        else if (safeNodeType === 'REINFORCE') { baseCoins = 50; scale = 20; }
+        else if (safeNodeType === 'MASTERY') { baseCoins = 100; scale = 25; }
+        
+        const completionBonus = baseCoins + (this._correctCount * scale);
+        const earnedCoins = completionBonus + (performance.totalCoins || 0);
+        const hasFetcher = this._steps.some(s => s.engineType?.includes('FETCHER'));
+        let masteryScore = 100;
+
+        let completionResult = null;
+        if (questKey && safeNodeType && !hasFetcher) {
+            if (safeNodeType === 'EXPLORE') {
+                masteryScore = 100;
+            } else {
+                masteryScore = this._lastMasteryScore || Math.round((this._correctCount / this._steps.length) * 100);
+            }
+            // @ts-ignore
+            completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
+        }
+        
+        if (hasFetcher) {
+            masteryScore = this._lastMasteryScore ?? 0;
+            // @ts-ignore
+            completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
+        }
+
+        const sessionDurationMinutes = (Date.now() - performance.startTime) / 60000;
+        const isFirstTry = completionResult ? completionResult.isFirstCompletion : true;
+
+        const stars = masteryScore >= 85 ? 3 : masteryScore >= 70 ? 2 : masteryScore >= 60 ? 1 : 0;
+
+        // @ts-ignore
+        const earnedRewards = evaluateRewards({
+            mastery: masteryScore,
+            streak: user.current_streak || 0,
+            sessionTime: sessionDurationMinutes,
+            nodeType: safeNodeType,
+            subject: subject || 'overall',
+            isFirstQuest: isFirstTry,
+            hintCount: performance.hintCount || 0,
+            modeAchievements: {
+                speedrunPerfect: performance.speedrunEngaged && performance.speedrunPerfect && this._correctCount > 2,
+                reversePerfect: performance.reverseEngaged && performance.reversePerfect && this._correctCount > 2
+            }
+        });
+
+        const grantedChests = await Promise.all(earnedRewards.map(async (drop: any) => {
+            try {
+                const chest = await rewardService.grantChest(user.id, drop.chestType, drop.reason);
+                return { ...drop, id: chest.id };
+            } catch (e) {
+                console.warn('🎁 [QuestSession] Chest grant failed:', e.message);
+                return null;
+            }
+        }));
+
+        const sessionData = {
+            startedAt: performance.startTime,
+            questId: questKey,
+            frustrationLevel: this._lastFrustrationScore || 0,
+            engagementLevel: Math.round((this._correctCount / this._steps.length) * 100) || 0,
+            cognitiveLoad: performance.reverseEngaged ? 80 : 40,
+            masteryLevel: masteryScore >= 85 ? 'mastered' : masteryScore >= 60 ? 'learning' : 'struggling',
+            results: {
+                score: this._correctCount,
+                total: this._steps.length,
+                coins: earnedCoins,
+                gems: performance.totalGems,
+                stars: stars
+            }
+        };
+
+        syncService.pushSession(sessionData);
+        syncService.pushEmotionalMetrics(performance.startTime, sessionData);
+
+        if (completionResult?.unlocked && completionResult?.nextNode) {
+            syncService.recordContentUnlock(`${questKey}/${completionResult.nextNode}`, `Study: ${this._meta.title || completionResult.nextNode}`, subject);
+        }
+
+        if (hasFetcher) {
+            syncService.recordSimulationUnlock(questKey, subject, `Sim: ${this._meta.title || 'Interactive Lesson'}`);
+        }
+
+        return {
+            earnedCoins,
+            masteryScore,
+            stars,
+            earnedRewards: grantedChests.filter(Boolean),
+            completionResult
+        };
     }
 
     advance() {

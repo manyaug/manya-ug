@@ -4,12 +4,11 @@
  * A high-fidelity, full-screen reward experience.
  * Compacted UI & Fixed Sync Logic.
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { dismissChest, awardCoins, awardGems } from '../../store/userSlice.js';
-import { syncService } from '../../infrastructure/sync/syncService.js';
+import { dismissChest, awardCoins, awardGems, openChestThunk } from '../../store/userSlice.js';
 import { audioService } from '../../infrastructure/audio/audioService';
 import { WorldClassConfetti } from '../ui/CelebrationBling';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -36,6 +35,7 @@ export default function ChestRevealModal() {
     const [phase, setPhase] = useState('closed'); // closed → intro → opening → rewards → done
     const [revealedRewards, setRevealedRewards] = useState([]);
     const [isCollecting, setIsCollecting] = useState(false);
+    const hasStartedRef = useRef(false);
 
     const chest = pendingChests[0];
 
@@ -46,40 +46,56 @@ export default function ChestRevealModal() {
             return;
         }
 
-        if (phase === 'closed') {
+        if (phase === 'closed' && !hasStartedRef.current) {
             const startSequence = async () => {
+                hasStartedRef.current = true;
                 console.log("🎬 [ChestReveal] Starting Sequence for:", chest.chestType);
                 setRevealedRewards([]);
                 setPhase('intro');
                 audioService.playSFX('riser');
 
-                // 1. Shaking / Intro (0.8s)
-                await new Promise(r => setTimeout(r, 800));
+                // 1. Shaking / Intro (0.5s)
+                await new Promise(r => setTimeout(r, 500));
                 setPhase('opening');
                 audioService.playSFX('bass_drop');
 
-                // 2. Open / Reward Reveal (1.8s total mark)
-                await new Promise(r => setTimeout(r, 1000));
+                // 2. Fetch REAL rewards from Service while opening
+                let items = [];
+                try {
+                    const result = await dispatch(openChestThunk({ chestId: chest.id })).unwrap();
+                    items = result.rewards;
+                } catch (e) {
+                    console.warn("⚠️ [ChestReveal] Fallback rewards used:", e.message);
+                    items = [{ type: 'coins', amount: 250 }, { type: 'gems', amount: 10, subject: 'master' }];
+                }
+
+                // 3. Open / Reward Reveal (Snappy 0.3s)
+                await new Promise(r => setTimeout(r, 300));
                 setPhase('rewards');
                 
-                const items = (chest.rewards && chest.rewards.length > 0) 
-                    ? chest.rewards 
-                    : [{ type: 'coins', amount: 250 }, { type: 'gems', amount: 10, subject: 'master' }];
-
                 console.log("💎 [ChestReveal] Revealing Rewards:", items);
 
                 for (let i = 0; i < items.length; i++) {
-                    await new Promise(r => setTimeout(r, 300));
+                    await new Promise(r => setTimeout(r, 250)); // Faster reveal between items
                     setRevealedRewards(prev => [...prev, items[i]]);
                     audioService.playSFX('challenge_click');
                 }
 
-                setTimeout(() => audioService.playSFX('victory'), 600); // Trumpet Fanfare per request
+                setTimeout(() => audioService.playSFX('victory'), 200);
             };
 
             startSequence();
         }
-    }, [chest]);
+    }, [chest, dispatch, phase]);
+
+    const finalizeCollection = useCallback(() => {
+        console.log("✅ [ChestReveal] Finalizing Collection...");
+        dispatch(dismissChest());
+        setPhase('closed');
+        setIsCollecting(false);
+        setRevealedRewards([]);
+        hasStartedRef.current = false; // Reset for next chest in queue
+    }, [dispatch]);
 
     const handleCollect = useCallback(() => {
         if (isCollecting || phase !== 'rewards') return;
@@ -87,47 +103,26 @@ export default function ChestRevealModal() {
         audioService.playSFX('collect-points');
     }, [isCollecting, phase]);
 
-    const finalizeCollection = useCallback(() => {
-        console.log("✅ [ChestReveal] Finalizing Collection...");
-        
-        revealedRewards.forEach(r => {
-            if (r.type === 'coins') {
-                dispatch(awardCoins(r.amount));
-            } else if (r.type === 'gems') {
-                dispatch(awardGems({ subject: r.subject || 'master', amount: r.amount }));
-            }
-        });
-        
-        // Sync Logic FIXED: Aggregate both Coins and Gems (Diamonds)
-        const totalCoins = revealedRewards.reduce((sum, r) => r.type === 'coins' ? sum + r.amount : sum, 0);
-        const totalGems = revealedRewards.reduce((sum, r) => r.type === 'gems' ? sum + r.amount : sum, 0);
-        
-        const updatedUser = { 
-            ...user, 
-            coins: (user.coins || 0) + totalCoins,
-            diamonds: (user.diamonds || 0) + Math.floor(totalGems / 2) // Diamonds are the base currency
-        };
-
-        // Add subject-specific gems if applicable
-        revealedRewards.forEach(r => {
-            if (r.type === 'gems' && r.subject) {
-                const key = `${r.subject}Gems`;
-                updatedUser[key] = (updatedUser[key] || 0) + r.amount;
-            }
-        });
-
-        syncService.uploadProfile(updatedUser).catch(console.error);
-        
-        // Cleanup
-        dispatch(dismissChest());
-        setPhase('closed');
-        setIsCollecting(false);
-        setRevealedRewards([]);
-    }, [dispatch, revealedRewards, user]);
-
     if (!chest || phase === 'closed') return null;
 
     const cfg = CHEST_CONFIG[chest.chestType] || CHEST_CONFIG.bronze;
+
+    const getSpicedReason = (rawReason) => {
+        if (!rawReason) return "CHEST UNLOCKED!";
+        const r = rawReason.toUpperCase();
+        if (r.includes('QUEST COMPLETED')) return "QUEST CONQUERED! 🏆";
+        if (r.includes('100% SCORE')) return "ROYAL EXCELLENCE! 👑";
+        if (r.includes('95%')) return "ELITE PERFORMANCE! ⭐";
+        if (r.includes('80%')) return "MASTERY MILESTONE! 🎯";
+        if (r.includes('70%')) return "STEADY PROGRESS! 📈";
+        if (r.includes('60%')) return "SCHOLAR'S PATH! 📖";
+        if (r.includes('FIRST QUEST')) return "RISING STAR! ✨";
+        if (r.includes('STREAK')) return "STREAK MASTER! 🔥";
+        if (r.includes('WEEKEND')) return "WEEKEND WARRIOR! ⚔️";
+        if (r.includes('EARLY BIRD')) return "EARLY BIRD! 🌅";
+        if (r.includes('NIGHT OWL')) return "NIGHT OWL! 🦉";
+        return r;
+    };
 
     const getGemName = (subject) => {
         if (!subject || subject === 'master' || subject === 'general') return 'Master Gem';
@@ -161,29 +156,30 @@ export default function ChestRevealModal() {
                 onComplete={finalizeCollection} 
             />
 
-            <div className="celebration-card-container !max-w-[380px]">
+            <div className="celebration-card-container">
                 {/* HEADER INFO */}
                 <motion.div 
-                    className="chest-header-section mb-2"
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    className="chest-header-group"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
                 >
                     {chest.reason && (
-                        <div className="chest-reason-tag !mb-2">{chest.reason}</div>
+                        <div className="achievement-badge-neon">{getSpicedReason(chest.reason)}</div>
                     )}
-                    <h1 className="chest-tier-name !text-3xl">{cfg.name}</h1>
+                    <h1 className="chest-tier-name">{cfg.name}</h1>
                 </motion.div>
-
-                {/* THE CHEST HERO - Compacted */}
-                <div className="chest-hero-wrapper !w-[220px] !h-[220px]">
-                    <div className="chest-glow-backlight !w-[180px] !h-[180px]" />
+                
+                {/* THE CHEST HERO - Balanced Scaling */}
+                <div className="chest-hero-wrapper-premium">
+                    <div className="chest-glow-backlight" />
                     <motion.div
-                        className="w-full h-full relative z-10"
+                        className="chest-lottie-container"
                         animate={phase === 'intro' ? {
-                            rotate: [-2, 2, -2, 2, 0],
-                            scale: [1, 1.05, 1],
+                            rotate: [-1, 1, -1, 1, 0],
+                            scale: [1, 1.03, 1],
                         } : {}}
-                        transition={phase === 'intro' ? { repeat: Infinity, duration: 0.2 } : {}}
+                        transition={phase === 'intro' ? { repeat: Infinity, duration: 0.25 } : {}}
                     >
                         <DotLottieReact
                             src="/assets/chests/master_gem_chest.lottie"
@@ -197,11 +193,11 @@ export default function ChestRevealModal() {
                 <div className="min-h-[120px] flex items-center justify-center">
                     <AnimatePresence>
                         {phase === 'rewards' && (
-                            <motion.div className="reward-tiles-row !my-4">
+                            <motion.div className="reward-tiles-row">
                                 {revealedRewards.map((r, i) => (
                                     <motion.div 
                                         key={i}
-                                        className="reward-tile !w-[110px] !py-4"
+                                        className={`reward-tile glow-${r.type} ${r.subject ? `glow-${r.subject}` : ''}`}
                                         initial={{ opacity: 0, scale: 0.5, y: 20, rotateX: 90 }}
                                         animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
                                         transition={{ type: 'spring', damping: 12, stiffness: 200 }}
@@ -209,10 +205,10 @@ export default function ChestRevealModal() {
                                         <img 
                                             src={r.type === 'coins' ? REWARD_ICONS.coins : REWARD_ICONS.gems(r.subject)} 
                                             alt={r.type} 
-                                            className="reward-tile-icon !w-10 !h-10"
+                                            className="reward-tile-icon"
                                         />
                                         <div className="flex flex-col items-center">
-                                            <span className="reward-tile-amount !text-xl">+{r.amount}</span>
+                                            <span className="reward-tile-amount">+{r.amount}</span>
                                             <span className="text-[9px] font-black text-white/40 uppercase tracking-tighter">
                                                 {r.type === 'coins' ? 'Coins' : getGemName(r.subject)}
                                             </span>
@@ -224,14 +220,14 @@ export default function ChestRevealModal() {
                     </AnimatePresence>
                 </div>
 
-                {/* ACTION BUTTON */}
+                {/* ACTION BUTTON - Pushed down for breathing room */}
                 <motion.div 
-                    className="w-full flex flex-col items-center mt-2"
+                    className="w-full flex flex-col items-center mt-12 mb-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: phase === 'rewards' ? 1 : 0 }}
                 >
                     <button 
-                        className="btn-claim-royal !h-14 !max-w-[240px]"
+                        className="btn-claim-royal"
                         onClick={handleCollect}
                         disabled={isCollecting || phase !== 'rewards'}
                     >

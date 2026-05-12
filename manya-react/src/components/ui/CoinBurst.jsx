@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getGem } from '../../config/assetUrls';
+import { getGem, IMAGES } from '../../config/assetUrls';
 
 const CoinParticle = ({ startPos, endPos, delay, onComplete }) => {
     return (
@@ -42,14 +42,8 @@ const CoinParticle = ({ startPos, endPos, delay, onComplete }) => {
                 {/* CORE GLOW */}
                 <div className="absolute inset-[-10px] bg-amber-400/40 rounded-full blur-xl animate-pulse" />
                 
-                {/* CSS COIN BASE (Guaranteed visibility) */}
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 rounded-full border-2 border-amber-200 shadow-[0_4px_10px_rgba(0,0,0,0.4),inset_0_2px_4px_rgba(255,255,255,0.4)] flex items-center justify-center overflow-hidden">
-                    <div className="w-4 h-4 rounded-full border border-amber-300/30 bg-transparent flex items-center justify-center">
-                        <span className="text-[10px] font-black text-amber-100/80 leading-none">$</span>
-                    </div>
-                    {/* Metallic Shine */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent rotate-45 transform translate-y-[-50%]" />
-                </div>
+                {/* IMAGE COIN */}
+                <img src={getGem('coin.svg')} alt="coin" className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)]" />
             </div>
         </motion.div>
     );

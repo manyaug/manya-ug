@@ -42,3 +42,6 @@ Thumbs.db
 # Local archive - redundant migration data
 archives_2/
 
+# Temporary upload data
+.tmp.driveupload/
+

@@ -105,8 +105,7 @@ class DynamicModeService {
 
         const newCorrectIdx = finalOptions.indexOf(originalQuestionText);
         const letters = ['A', 'B', 'C', 'D'];
-
-        console.log(`[DynamicMode] Reverse Generated: Prompt="${correctAnswerText}", CorrectIdx=${newCorrectIdx}`);
+        console.log(`[DynamicMode] Reverse Generated: Prompt="${correctAnswerText}", CorrectText="${originalQuestionText}"`);
 
         return {
             ...normalQuestion,
@@ -114,8 +113,8 @@ class DynamicModeService {
             question: reverseQuestionText,
             text: reverseQuestionText,
             options: finalOptions,
-            answer: `Option_${letters[newCorrectIdx]}`,
-            correctAnswer: `Option_${letters[newCorrectIdx]}`,
+            answer: originalQuestionText, // Match against the text ID
+            correctAnswer: originalQuestionText,
             isReverse: true,
             isReversed: true,
             hint: `🔁 Think back: What was the question that gave "${correctAnswerText}" as the answer?`

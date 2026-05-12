@@ -21,14 +21,15 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
     // 🛡️ [Manya v5.9] Payload Normalization
     // If the data comes from a single database row (MCQ), wrap it into the expected simulation format.
     const data = (rawData.question && !rawData.questions) 
-        ? { ...rawData, questions: [{ 
+        ? { ...rawData, id: rawData.id || rawData.qid, questions: [{ 
             ...rawData,
+            id: rawData.id || rawData.qid,
             question: rawData.question, 
             options: rawData.options || [], 
             correctAnswer: rawData.answer || rawData.correctAnswer,
             explanation: rawData.explanation 
           }], mode: 'quiz' }
-        : rawData;
+        : { ...rawData, id: rawData.id || rawData.qid };
 
     const mode = data.mode?.toLowerCase() || 
                  (data.questions?.length > 0 ? 'quiz' : 
@@ -64,11 +65,9 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
 
     // --- 📡 DATA LOAD ---
     useEffect(() => {
-        console.log(`%c 🌍 [UniversalGlobeEngine] Active Node: ${data.id || data.qid}`, 'color: #8b5cf6; font-weight: bold;');
-        console.log(`[UniversalGlobeEngine] Raw Payload:`, rawData);
-        console.log(`[UniversalGlobeEngine] Normalized Data:`, data);
-        console.log(`[UniversalGlobeEngine] Resolved Mode: ${mode}`);
-    }, [data, rawData, mode]);
+        const nodeId = data.id || data.qid || data.topic || 'simulation';
+        console.log(`%c 🌍 [UniversalGlobeEngine] Active Node: ${nodeId}`, 'color: #8b5cf6; font-weight: bold;');
+    }, [data.id, data.qid, data.topic]);
     
     useEffect(() => {
         storageFacade.get(`file:${assetUrl('data/world-atlas.json')}`)
@@ -83,16 +82,16 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
 
     // --- REPORT PARTIAL PROGRESS ---
     useEffect(() => {
-        if (onResult && data?.mode === 'quiz' && data?.questions?.length > 0 && activeTab !== lastReportedScore.current) {
+        if (onResult && mode === 'quiz' && data?.questions?.length > 0 && activeTab !== lastReportedScore.current) {
             lastReportedScore.current = activeTab;
             onResult({
                 isCorrect: false,
                 score: activeTab,
                 total: data.questions.length,
-                type: 'globe_partial'
+                type: 'pulse'
             });
         }
-    }, [activeTab, data?.questions?.length, onResult, data?.mode]);
+    }, [activeTab, data?.questions?.length, onResult, mode]);
 
     // --- 🧠 QUIZ LOGIC ---
     const handleQuizAnswer = (opt) => {

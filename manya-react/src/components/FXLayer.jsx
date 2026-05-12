@@ -6,7 +6,7 @@
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getGem } from '../config/assetUrls.js';
+import { getGem, IMAGES } from '../config/assetUrls.js';
 import { audioService } from '../infrastructure/audio/audioService';
 
 const PARTICLE_ICONS = {
@@ -89,7 +89,7 @@ const FXLayer = () => {
                             style={{ position: 'absolute', width: '30px', height: '30px' }}
                         >
                             <img 
-                                src={p.type === 'coin' ? getGem('coin.svg') : getGem(`${p.type}_gem.svg`)} 
+                                src={p.type === 'coin' ? IMAGES.coin_gem : getGem(`${p.type}_gem.svg`)} 
                                 alt={p.type} 
                                 style={{ 
                                     width: '100%', height: '100%', 

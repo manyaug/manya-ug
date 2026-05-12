@@ -18,7 +18,7 @@ export const rewardService = {
         const payload = {
             user_id: userId,
             chest_type: chestType,
-            reason: reason,
+            // reason: reason, // [FIX]: Column does not exist in schema
             opened: false,
             created_at: new Date().toISOString()
         };

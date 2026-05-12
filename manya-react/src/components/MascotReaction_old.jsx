@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../config/assetUrls';
-import { MASCOT_FEEDBACKS } from '../config/mascotFeedbacks';
 
 const CHARACTER_DATA = {
     science: { name: 'Kiki', icon: IMAGES.kiki_icon, full: IMAGES.kiki_full, color: '#fbbf24' },
     math: { name: 'Manya', icon: IMAGES.manya_icon, full: IMAGES.manya_icon, color: '#667eea' },
-    sst: { name: 'Zanny', icon: IMAGES.zany_icon, full: IMAGES.zany_full, color: '#ff6b6b' },
-    english: { name: 'Polly', icon: IMAGES.polly_icon, full: IMAGES.polly_full, color: '#48bb78' }
+    sst: { name: 'Polly', icon: IMAGES.polly_icon, full: IMAGES.polly_full, color: '#48bb78' },
+    english: { name: 'Zany', icon: IMAGES.manya_icon, full: IMAGES.manya_icon, color: '#ff6b6b' }
 };
 
 let globalAttemptCounter = 0;
@@ -37,9 +36,9 @@ const MascotReaction = ({ subject = 'science' }) => {
         const handleCorrect = (e) => {
             if (e.detail?.subject) setActiveSub(e.detail.subject);
             globalStreak++;
-            if (globalStreak === 3) showMessage("3 in a row! You're on fire! 🔥");
-            else if (globalStreak === 5) showMessage("5 correct! Unstoppable! 🚀");
-            else if (globalStreak === 10) showMessage("10 in a row?! Absolute genius! 🧠");
+            if (globalStreak === 3) showMessage("3 in a row! You're on fire! ≡ƒöÑ");
+            else if (globalStreak === 5) showMessage("5 correct! Unstoppable! ≡ƒÜÇ");
+            else if (globalStreak === 10) showMessage("10 in a row?! Absolute genius! ≡ƒºá");
             else if (globalStreak > 5 && globalStreak % 3 === 0) {
                 const generic = ["Flawless!", "Incredible momentum!", "You're doing amazing!"];
                 showMessage(generic[Math.floor(Math.random() * generic.length)]);
@@ -47,35 +46,23 @@ const MascotReaction = ({ subject = 'science' }) => {
         };
 
         const handleWrong = (e) => {
-            let currentSub = activeSub;
-            if (e.detail?.subject) {
-                setActiveSub(e.detail.subject);
-                currentSub = e.detail.subject;
-            }
+            if (e.detail?.subject) setActiveSub(e.detail.subject);
             if (globalStreak >= 3) {
-                showMessage("Aww, streak broken! But you're learning fast! 💪", 4000);
-            } else {
-                const subKey = currentSub.toLowerCase();
-                const encouragements = MASCOT_FEEDBACKS[subKey] || MASCOT_FEEDBACKS.science;
-                showMessage(encouragements[Math.floor(Math.random() * encouragements.length)], 4000);
+                showMessage("Oh no! Streak broken! Keep going! ≡ƒÆö", 4000);
+            } else if (Math.random() > 0.8) {
+                showMessage("That was tricky. Let's learn from it! ≡ƒôÜ", 4000);
             }
             globalStreak = 0;
-        };
-
-        const handleTimeout = () => {
-            showMessage("Time's up! Don't worry, let's try the next one! ⏱️", 4000);
         };
 
         window.addEventListener('manya-mascot-speak', handleSpeak);
         window.addEventListener('manya-correct', handleCorrect);
         window.addEventListener('manya-wrong', handleWrong);
-        window.addEventListener('manya-engine-timeout', handleTimeout);
         
         return () => {
             window.removeEventListener('manya-mascot-speak', handleSpeak);
             window.removeEventListener('manya-correct', handleCorrect);
             window.removeEventListener('manya-wrong', handleWrong);
-            window.removeEventListener('manya-engine-timeout', handleTimeout);
             if (timer) clearTimeout(timer);
         };
     }, []);

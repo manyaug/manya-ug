@@ -240,9 +240,11 @@ export const IMAGES = {
   manya_icon: uiImage('manya_icon'),
   polly_icon: uiImage('polly_icon'),
   kiki_icon: uiImage('kiki_icon'),
+  zany_icon: uiImage('zany_icon'),
   splash: uiImage('splash'),
   kiki_full: uiImage('kiki'),
   polly_full: uiImage('polly'),
+  zany_full: uiImage('zany'),
   math_island: uiImage('math_island'),
   science_island: uiImage('science_island'),
   sst_island: uiImage('sst_island'),
@@ -251,6 +253,7 @@ export const IMAGES = {
     Manya: uiImage('manya_icon'),
     Polly: uiImage('polly_icon'),
     Kiki: uiImage('kiki_icon'),
+    Zanny: uiImage('zany_icon'),
   }
 }
 

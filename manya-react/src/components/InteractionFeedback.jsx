@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getGem, IMAGES } from '../config/assetUrls.js';
 
 /**
  * InteractionFeedback
@@ -91,7 +92,7 @@ const InteractionFeedback = () => {
                         exit={{ scale: 1.5, opacity: 0 }}
                         className="fixed inset-0 flex items-center justify-center"
                     >
-                        <span className="text-5xl md:text-7xl font-black italic text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] tracking-tighter">
+                        <span className="text-5xl md:text-7xl font-black text-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.6)]" style={{ fontFamily: "'Bubblegum Sans', 'Fredoka', sans-serif", WebkitTextStroke: '1px rgba(0,0,0,0.15)' }}>
                             {word}
                         </span>
                     </motion.div>
@@ -108,6 +109,7 @@ const InteractionFeedback = () => {
                         exit={{ x: "100%", opacity: 0 }}
                         transition={{ type: "spring", damping: 15, stiffness: 200 }}
                         className="fixed top-24 right-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white px-6 py-4 rounded-3xl shadow-2xl flex items-center gap-3 border-2 border-white/20"
+                        style={{ fontFamily: "'Roboto', sans-serif" }}
                     >
                         <div className="bg-white/20 p-2 rounded-xl">
                             <span className="text-2xl">🎯</span>
@@ -131,8 +133,9 @@ const InteractionFeedback = () => {
                     >
                         <div className="relative">
                             {[...Array(12)].map((_, i) => (
-                                <motion.span
+                                <motion.img
                                     key={i}
+                                    src={i % 2 === 0 ? IMAGES.coin_gem : IMAGES.master_gem}
                                     initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
                                     animate={{ 
                                         x: (i % 2 === 0 ? 1 : -1) * (50 + Math.random() * 200), 
@@ -141,10 +144,8 @@ const InteractionFeedback = () => {
                                         scale: 2 
                                     }}
                                     transition={{ duration: 1.2, ease: "easeOut" }}
-                                    className="absolute text-5xl"
-                                >
-                                    {i % 2 === 0 ? '✨' : '🎉'}
-                                </motion.span>
+                                    className="absolute w-12 h-12"
+                                />
                             ))}
                             <motion.div
                                 initial={{ scale: 0 }}
@@ -152,7 +153,7 @@ const InteractionFeedback = () => {
                                 exit={{ scale: 1.5, opacity: 0 }}
                                 className="text-center"
                             >
-                                <h2 className="text-7xl font-black text-amber-500 drop-shadow-2xl italic tracking-tighter">100% MASTERED!</h2>
+                                <h2 className="text-7xl font-black text-amber-500 drop-shadow-2xl italic tracking-tighter" style={{ fontFamily: "'Roboto', sans-serif" }}>100% MASTERED!</h2>
                             </motion.div>
                         </div>
                     </motion.div>

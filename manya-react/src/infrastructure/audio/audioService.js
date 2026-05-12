@@ -64,7 +64,8 @@ class AudioService {
 
     correct() {
         this.playSFX('correct');
-        setTimeout(() => this.playCorrectVoice(), 400);
+        // Play vocal rewards (Wow, Amazing, etc.) 
+        this.playCorrectVoice();
     }
 
     wrong() {
