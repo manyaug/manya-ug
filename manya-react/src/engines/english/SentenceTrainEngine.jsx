@@ -13,8 +13,13 @@ import TrainRenderer from './SentenceTrain/TrainRenderer';
 
 const SentenceTrainEngine = ({ data, onComplete }) => {
     const questions = useMemo(() => {
-        const raw = data?.questions || data?.queries || data?.items || [];
+        // v9.9: Hardened Data Extraction - Look for single sentence or questions array
+        const payload = data?.data || data;
+        const raw = payload?.questions || payload?.queries || payload?.items || payload?.steps;
+        
         if (Array.isArray(raw) && raw.length > 0) return raw;
+        if (payload?.sentence) return [payload]; // Single sentence mode
+        
         return [{ sentence: "The quick brown fox jumps over the lazy dog." }];
     }, [data]);
 

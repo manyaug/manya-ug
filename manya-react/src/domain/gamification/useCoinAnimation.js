@@ -9,6 +9,7 @@
  *   - triggerFloatCoin(amount): floats coins up from the HUD without a source
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { getGem } from '../../config/assetUrls.js';
 
 // easeOutCubic: matches the original plain-JS implementation
 function easeOutCubic(t) {
@@ -56,18 +57,20 @@ export function useCoinAnimation(realCoins) {
      * Spawns a coin emoji that flies from sourceRef element to the HUD coin pill.
      * targetRef must be the coin HUD element.
      */
-    const triggerFlyingCoin = useCallback((sourceRef, targetRef, amount) => {
+    const triggerFlyingCoin = useCallback((sourceRef, targetRef, amount, type = 'coin') => {
         if (!sourceRef?.current || !targetRef?.current) return;
         const srcRect  = sourceRef.current.getBoundingClientRect();
         const destRect = targetRef.current.getBoundingClientRect();
 
-        const coin = document.createElement('div');
-        coin.textContent = '🪙';
+        const coin = document.createElement('img');
+        coin.src = type === 'gem' ? getGem('math_gem.svg') : getGem('coin.svg');
         coin.style.cssText = `
             position: fixed;
             left: ${srcRect.left + srcRect.width / 2}px;
             top:  ${srcRect.top  + srcRect.height / 2}px;
-            font-size: 32px;
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
             z-index: 20000;
             pointer-events: none;
             transition: left 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275),
@@ -119,19 +122,20 @@ export function useCoinAnimation(realCoins) {
     /**
      * Floats 3 coins up from the HUD pill (no source element).
      */
-    const triggerFloatCoin = useCallback((targetRef, amount) => {
+    const triggerFloatCoin = useCallback((targetRef, amount, type = 'coin') => {
         if (!targetRef?.current) return;
         const rect = targetRef.current.getBoundingClientRect();
 
         for (let i = 0; i < 3; i++) {
-            const coin = document.createElement('div');
-            coin.textContent = '🪙';
+            const coin = document.createElement('img');
+            coin.src = type === 'gem' ? getGem('math_gem.svg') : getGem('coin.svg');
             const x = rect.left + rect.width / 2 + (Math.random() - 0.5) * 50;
             const size = 18 + Math.random() * 14;
             coin.style.cssText = `
                 position: fixed;
                 left: ${x}px; top: ${rect.top - 10}px;
-                font-size: ${size}px;
+                width: ${size}px; height: ${size}px;
+                object-fit: contain;
                 z-index: 20000; pointer-events: none;
                 animation: manya-coin-float-up ${0.5 + Math.random() * 0.4}s ease-out ${i * 80}ms forwards;
             `;

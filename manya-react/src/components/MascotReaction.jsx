@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../config/assetUrls';
-import { MASCOT_FEEDBACKS } from '../config/mascotFeedbacks';
 
 const CHARACTER_DATA = {
-    science: { name: 'Kiki', icon: IMAGES.kiki_icon, full: IMAGES.kiki_full, color: '#fbbf24' },
-    math: { name: 'Manya', icon: IMAGES.manya_icon, full: IMAGES.manya_icon, color: '#667eea' },
-    sst: { name: 'Zanny', icon: IMAGES.zany_icon, full: IMAGES.zany_full, color: '#ff6b6b' },
-    english: { name: 'Polly', icon: IMAGES.polly_icon, full: IMAGES.polly_full, color: '#48bb78' }
+    science: { name: 'Kiki', icon: IMAGES.kiki_icon, color: '#fbbf24' },
+    math: { name: 'Manya', icon: IMAGES.manya_icon, color: '#667eea' },
+    sst: { name: 'Zanny', icon: IMAGES.zany_icon, color: '#ff6b6b' },
+    english: { name: 'Polly', icon: IMAGES.polly_icon, color: '#48bb78' }
 };
-
-let globalAttemptCounter = 0;
-let globalStreak = 0;
 
 const MascotReaction = ({ subject = 'science' }) => {
     const [message, setMessage] = useState(null);
@@ -28,38 +24,9 @@ const MascotReaction = ({ subject = 'science' }) => {
         };
 
         const handleSpeak = (e) => {
-            const { text, duration, subject } = e.detail;
-            if (subject) setActiveSub(subject);
-            // Standard explicit calls bypass streak logic
-            showMessage(text, duration);
-        };
-
-        const handleCorrect = (e) => {
-            if (e.detail?.subject) setActiveSub(e.detail.subject);
-            globalStreak++;
-            if (globalStreak === 3) showMessage("3 in a row! You're on fire! 🔥");
-            else if (globalStreak === 5) showMessage("5 correct! Unstoppable! 🚀");
-            else if (globalStreak === 10) showMessage("10 in a row?! Absolute genius! 🧠");
-            else if (globalStreak > 5 && globalStreak % 3 === 0) {
-                const generic = ["Flawless!", "Incredible momentum!", "You're doing amazing!"];
-                showMessage(generic[Math.floor(Math.random() * generic.length)]);
-            }
-        };
-
-        const handleWrong = (e) => {
-            let currentSub = activeSub;
-            if (e.detail?.subject) {
-                setActiveSub(e.detail.subject);
-                currentSub = e.detail.subject;
-            }
-            if (globalStreak >= 3) {
-                showMessage("Aww, streak broken! But you're learning fast! 💪", 4000);
-            } else {
-                const subKey = currentSub.toLowerCase();
-                const encouragements = MASCOT_FEEDBACKS[subKey] || MASCOT_FEEDBACKS.science;
-                showMessage(encouragements[Math.floor(Math.random() * encouragements.length)], 4000);
-            }
-            globalStreak = 0;
+            const { text, duration, subject: eventSub } = e.detail;
+            if (eventSub) setActiveSub(eventSub);
+            showMessage(text, duration || 3000);
         };
 
         const handleTimeout = () => {
@@ -67,51 +34,49 @@ const MascotReaction = ({ subject = 'science' }) => {
         };
 
         window.addEventListener('manya-mascot-speak', handleSpeak);
-        window.addEventListener('manya-correct', handleCorrect);
-        window.addEventListener('manya-wrong', handleWrong);
         window.addEventListener('manya-engine-timeout', handleTimeout);
         
         return () => {
             window.removeEventListener('manya-mascot-speak', handleSpeak);
-            window.removeEventListener('manya-correct', handleCorrect);
-            window.removeEventListener('manya-wrong', handleWrong);
             window.removeEventListener('manya-engine-timeout', handleTimeout);
             if (timer) clearTimeout(timer);
         };
     }, []);
 
     return (
-        <div className="fixed bottom-6 right-6 z-[20000] flex flex-col items-end gap-3 pointer-events-none">
+        <div className="fixed bottom-6 right-6 z-[20000] pointer-events-none">
             <AnimatePresence>
                 {message && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.5, x: 20, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                            className="bg-white text-slate-800 p-3 rounded-[1.25rem] rounded-br-none shadow-xl border-2 border-slate-100 max-w-[200px] relative mb-1"
-                        >
-                            <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-white border-r-2 border-b-2 border-slate-100 rotate-45" />
-                            <p className="text-xs font-bold leading-relaxed">{message}</p>
-                        </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 50, scale: 0.5 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 30, scale: 0.8 }}
+                        className="flex flex-col items-end gap-2"
+                    >
+                        {/* 💬 Speech Bubble (Premium Glassmorphism) */}
+                        <div className="bg-white/95 backdrop-blur-md text-slate-800 p-4 rounded-[1.5rem] rounded-br-none shadow-2xl border-2 border-white/50 max-w-[220px] relative">
+                            <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white/95 border-r-2 border-b-2 border-white/50 rotate-45" />
+                            <p className="text-xs font-black leading-relaxed tracking-tight">{message}</p>
+                        </div>
 
-                        <motion.div 
-                            initial={{ opacity: 0, y: 50, rotate: 15 }}
-                            animate={{ opacity: 1, y: 0, rotate: 0 }}
-                            exit={{ opacity: 0, y: 50, rotate: -15 }}
-                            whileHover={{ scale: 1.1 }}
-                            className="w-20 h-20 relative flex-shrink-0"
+                        {/* 🎭 Mascot Icon */}
+                        <div 
+                            className="w-12 h-12 relative flex-shrink-0"
                             style={{ 
-                                filter: `drop-shadow(0 10px 20px ${char.color}80)` 
+                                filter: `drop-shadow(0 0 15px ${char.color}88)` 
                             }}
                         >
                             <img 
                                 src={char.icon} 
                                 alt={char.name} 
                                 className="w-full h-full object-contain"
+                                onError={(e) => { 
+                                    console.warn(`[Mascot] Icon failed: ${char.icon}. Falling back to Manya.`);
+                                    e.target.src = IMAGES.manya_icon; 
+                                }}
                             />
-                        </motion.div>
-                    </>
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </div>

@@ -22,6 +22,7 @@ const SUBTOPIC_MAP = {
 export const fetchEnglishQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
+        console.log(`🗄️ [EnglishDB] Fetching bank for: ${subtopic}`);
         const subtopicLow = subtopic.toLowerCase();
         const isStorySearch = subtopicLow.includes('quest') || subtopicLow.includes('story') || topicId.toLowerCase().includes('quest');
 
@@ -40,7 +41,7 @@ export const fetchEnglishQuestions = async (topicId) => {
         }
 
         // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&item_type=eq:MCQ&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
+        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!data || data.length === 0) {
@@ -51,7 +52,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                 console.log(`🔍 [English Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:english&item_type=eq:MCQ&or=${keywordFilter}`);
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=${keywordFilter}`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [English Vault] Discovered ${keywordData.length} related questions via keywords.`);
@@ -65,6 +66,9 @@ export const fetchEnglishQuestions = async (topicId) => {
         const transformed = data.map(q => {
             const options = [q.option_a, q.option_b, q.option_c, q.option_d]
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
+
+            // v9.9: Hardened Data Extraction - Ensuring interactive payloads are preserved
+            const interactiveData = q.data || q.metadata || {};
 
             return {
                 id: q.qid,
@@ -83,11 +87,14 @@ export const fetchEnglishQuestions = async (topicId) => {
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],
                 engine_type: q.engine_type,
-                // Backward compatibility mapping for older English Fetcher versions
+                engineType: q.engine_type,
+                data: interactiveData, // CRITICAL: This was missing!
+                // Backward compatibility mapping
                 mapping: q.item_type === 'QUEST' || q.engine_type ? {
                     qid: q.qid,
                     engine_type: q.engine_type,
                     json_reference_path: q.qid, 
+                    data: interactiveData,
                     vocabulary: q.metadata?.tags || []
                 } : null
             };

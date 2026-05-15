@@ -232,6 +232,7 @@
 .game-node.active-node .node-cap {
     background: white;
     border: 6px solid var(--biome-color);
+    color: #1e293b;
     box-shadow:
         0 8px 0 var(--biome-color), 
         0 0 0 12px rgba(var(--biome-color-rgb), 0.2),
@@ -309,7 +310,7 @@
 }
 .game-node.active-node .node-label-elite {
     background: white;
-    color: var(--text-primary);
+    color: #1e293b;
     border-color: var(--biome-color);
     box-shadow: 0 8px 0 var(--biome-color), var(--shadow-premium);
 }

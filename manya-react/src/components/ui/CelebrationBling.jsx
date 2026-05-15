@@ -17,7 +17,7 @@ export const WorldClassConfetti = () => {
         let animationFrameId;
         let isActive = true;
 
-        const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#ec4899', '#f97316', '#06b6d4'];
+        const colors = ['#fde047', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#ec4899', '#f97316', '#06b6d4', '#ffffff'];
 
         const resize = () => {
             canvas.width = window.innerWidth;
@@ -27,36 +27,38 @@ export const WorldClassConfetti = () => {
         resize();
 
         class Particle {
-            constructor(x, y, angle, type = 'square') {
+            constructor(x, y, angle, type = 'square', explosiveMultiplier = 1) {
                 this.x = x;
                 this.y = y;
-                const speed = Math.random() * 20 + 10;
+                // Faster initial burst
+                const speed = (Math.random() * 25 + 15) * explosiveMultiplier;
                 this.vx = Math.cos(angle * Math.PI / 180) * speed;
                 this.vy = Math.sin(angle * Math.PI / 180) * speed;
 
-                this.gravity = 0.25; // Slower fall
-                this.friction = 0.99; // Less air drag
+                this.gravity = 0.35; // Better gravity feel
+                this.friction = 0.95; // More realistic air drag
                 this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.size = Math.random() * 12 + 6;
+                this.size = Math.random() * 14 + 8;
                 this.rotation = Math.random() * 360;
-                this.rSpeed = (Math.random() - 0.5) * 8;
-                this.wobbles = Math.random() * 10;
+                this.rSpeed = (Math.random() - 0.5) * 20;
                 this.opacity = 1;
                 this.type = type;
+                
+                // For stars
+                this.spikes = 4 + Math.floor(Math.random() * 3);
+                this.innerRadius = this.size / 2.5;
             }
 
             update() {
                 this.vx *= this.friction;
                 this.vy *= this.friction;
                 this.vy += this.gravity;
-                this.x += this.vx + Math.sin(this.wobbles) * 0.3;
+                this.x += this.vx;
                 this.y += this.vy;
                 this.rotation += this.rSpeed;
-                this.wobbles += 0.05;
 
-                // Extremely slow decay for the "50 second" stay
-                if (this.y > canvas.height * 0.8) {
-                    this.opacity -= 0.005;
+                if (this.y > canvas.height * 0.7) {
+                    this.opacity -= 0.015;
                 }
             }
 
@@ -64,16 +66,35 @@ export const WorldClassConfetti = () => {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation * Math.PI / 180);
-                ctx.globalAlpha = this.opacity;
+                ctx.globalAlpha = Math.max(0, this.opacity);
                 ctx.fillStyle = this.color;
 
-                const shimmer = Math.cos(this.rotation * 0.05) * this.size;
                 if (this.type === 'circle') {
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, this.size / 2, Math.abs(shimmer / 2), 0, 0, Math.PI * 2);
+                    ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (this.type === 'star') {
+                    ctx.beginPath();
+                    let rot = Math.PI / 2 * 3;
+                    let x = 0, y = 0;
+                    let step = Math.PI / this.spikes;
+                    ctx.moveTo(0, -this.size);
+                    for (let i = 0; i < this.spikes; i++) {
+                        x = Math.cos(rot) * this.size;
+                        y = Math.sin(rot) * this.size;
+                        ctx.lineTo(x, y);
+                        rot += step;
+                        x = Math.cos(rot) * this.innerRadius;
+                        y = Math.sin(rot) * this.innerRadius;
+                        ctx.lineTo(x, y);
+                        rot += step;
+                    }
+                    ctx.lineTo(0, -this.size);
+                    ctx.closePath();
                     ctx.fill();
                 } else {
-                    ctx.fillRect(-this.size / 2, -shimmer / 2, this.size, shimmer);
+                    const shimmer = Math.cos(this.rotation * 0.1) * this.size;
+                    ctx.fillRect(-this.size / 2, -shimmer / 2, this.size, Math.abs(shimmer) || 1);
                 }
                 ctx.restore();
             }
@@ -81,48 +102,50 @@ export const WorldClassConfetti = () => {
 
         let particles = [];
 
-        const fire = (count = 40) => {
+        const fire = (count = 50, isExplosive = false) => {
             if (!isActive) return;
-            // 4 Corners
-            const corners = [
-                { x: 0, y: canvas.height, aRange: [-80, -20] }, // Bottom Left (Up/Right)
-                { x: canvas.width, y: canvas.height, aRange: [-160, -100] }, // Bottom Right (Up/Left)
-                { x: 0, y: 0, aRange: [20, 80] },    // Top Left (Down/Right)
-                { x: canvas.width, y: 0, aRange: [100, 160] }   // Top Right (Down/Left)
+            // Center explosion + Corners
+            const origins = [
+                { x: canvas.width / 2, y: canvas.height * 0.6, aRange: [-180, 0], multiplier: 1.5 }, // Center blast
+                { x: 0, y: canvas.height, aRange: [-80, -20], multiplier: 1 },
+                { x: canvas.width, y: canvas.height, aRange: [-160, -100], multiplier: 1 }
             ];
 
-            corners.forEach(c => {
-                for (let i = 0; i < count; i++) {
+            origins.forEach(c => {
+                const burstCount = c.multiplier > 1 ? count * 2 : count;
+                for (let i = 0; i < burstCount; i++) {
                     const angle = Math.random() * (c.aRange[1] - c.aRange[0]) + c.aRange[0];
-                    particles.push(new Particle(c.x, c.y, angle, i % 2 === 0 ? 'square' : 'circle'));
+                    const rand = Math.random();
+                    const type = rand > 0.8 ? 'star' : rand > 0.4 ? 'circle' : 'square';
+                    particles.push(new Particle(c.x, c.y, angle, type, isExplosive ? c.multiplier : 0.6));
                 }
             });
         };
 
         // Massive Intro Burst
-        fire(80);
+        fire(60, true);
 
-        // Sustained bursts for 50 seconds
+        // Sustained bursts for celebration
         const startTime = Date.now();
-        const duration = 50000; // 50 seconds
+        const duration = 12000; // 12 seconds of celebration
 
         const sustainInterval = setInterval(() => {
             if (Date.now() - startTime < duration) {
-                fire(15); // Smaller micro-bursts
+                fire(20, false);
             } else {
                 clearInterval(sustainInterval);
             }
-        }, 3000);
+        }, 800);
 
         const render = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles = particles.filter(p => p.opacity > 0 && p.y < canvas.height + 100);
+            particles = particles.filter(p => p.opacity > 0 && p.y < canvas.height + 50);
             particles.forEach(p => {
                 p.update();
                 p.draw();
             });
 
-            if (isActive || particles.length > 0) {
+            if (isActive) {
                 animationFrameId = requestAnimationFrame(render);
             }
         };
@@ -140,7 +163,7 @@ export const WorldClassConfetti = () => {
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 pointer-events-none z-[5]"
+            className="fixed inset-0 pointer-events-none"
             style={{ width: '100vw', height: '100vh' }}
         />
     );

@@ -29,7 +29,7 @@ const SyntaxRenderer = ({
     onOptionHoverEnd
 }) => {
     return (
-        <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
+        <div className={`flex flex-col h-full overflow-hidden font-['Outfit'] transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
             {/* Header HUD */}
             <div className="flex-none p-8 text-center pb-2">
                 <div className={`inline-flex px-4 py-2 rounded-2xl text-[10px] font-black tracking-widest uppercase items-center gap-2 mb-4 ${isDark ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/10 shadow-lg' : 'bg-white text-indigo-600 border border-slate-100 shadow-sm'}`}>

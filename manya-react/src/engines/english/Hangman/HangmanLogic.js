@@ -9,10 +9,24 @@ export const MAX_INCORRECT = 6;
  * Normalizes input curriculum data.
  */
 export const initializeHangmanData = (data) => {
-    if (!data || !data.words) return [{ word: 'MANYA', hint: 'The learning app.' }];
-    return data.words.map(w => {
+    // v9.9: Hardened Data Extraction - Support for hydrated payloads
+    const payload = data?.data || data;
+    const words = payload?.words || payload?.vocabulary || payload?.items || payload?.word_list;
+
+    if (!Array.isArray(words) || words.length === 0) {
+        // Support for single word/hint payloads
+        const singleWord = payload?.word || payload?.text || payload?.term;
+        if (singleWord) {
+            return [{ word: String(singleWord).toUpperCase(), hint: payload.hint || payload.definition || 'A mystery word.' }];
+        }
+        return [{ word: 'MANYA', hint: 'The learning app.' }];
+    }
+
+    return words.map(w => {
         if (typeof w === 'string') return { word: w.toUpperCase(), hint: 'A mystery word.' };
-        return { word: w.word.toUpperCase(), hint: w.hint || 'A mystery word.' };
+        const wordStr = w.word || w.text || w.term || w.name || "";
+        const hintStr = w.hint || w.definition || w.desc || 'A mystery word.';
+        return { word: String(wordStr).toUpperCase(), hint: hintStr };
     });
 };
 

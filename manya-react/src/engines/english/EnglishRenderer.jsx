@@ -49,12 +49,9 @@ const EnglishRenderer = ({
     }, [timeLeft, isAnswered]);
 
     useEffect(() => {
-        if (isAnswered) {
-            if (userWasCorrect) {
-                window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'english' } }));
-                if (correctBtnRef.current) setTimeout(() => triggerRewardFlight(correctBtnRef.current, 'coin', 5), 300);
-            } else {
-                window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'english' } }));
+        if (isAnswered && userWasCorrect) {
+            if (correctBtnRef.current) {
+                setTimeout(() => triggerRewardFlight(correctBtnRef.current, 'coin', 5), 300);
             }
         }
     }, [isAnswered, userWasCorrect]);
@@ -66,7 +63,14 @@ const EnglishRenderer = ({
                 <div className="loader-blob loader-blob-1" style={{ background: cfg.color }} />
                 <div className="loader-blob loader-blob-2" style={{ background: cfg.color }} />
                 <div className="loader-content-card">
-                    <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}><img src={cfg.mascot} alt="Manya" className="loader-mascot-img" /></div>
+                    <div className="loader-mascot-ring" style={{ borderColor: cfg.color }}>
+                        <img 
+                            src={cfg.mascot || 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@v3.0.6/images/manya_icon.webp'} 
+                            alt="Manya" 
+                            className="loader-mascot-img" 
+                            onError={(e) => { e.target.src = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@v3.0.6/images/manya_icon.webp'; }}
+                        />
+                    </div>
                     <h3 className="loader-title">{cfg.title}</h3>
                     <div className="loader-bounce-dots">
                         <span className="loader-dot" style={{ background: cfg.color, animationDelay: '0ms' }} />
@@ -159,7 +163,7 @@ const EnglishRenderer = ({
                         </button>
                     ) : (
                         <div className={`w-full h-16 rounded-[2rem] flex items-center justify-center gap-3 font-black text-[10px] tracking-widest uppercase border-2 transition-all duration-500 ${userWasCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-amber-500/10 border-amber-500/30 text-amber-500'}`}>
-                            {userWasCorrect ? <>Magnificent! Keep going! <Check size={18} /></> : <>Analyzing solution... <AlertCircle size={18} /></>}
+                            {userWasCorrect ? <>Answer Confirmed <Check size={18} /></> : <>Analyzing Solution... <AlertCircle size={18} /></>}
                         </div>
                     )}
                 </div>

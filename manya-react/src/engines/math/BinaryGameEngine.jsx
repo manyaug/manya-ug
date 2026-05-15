@@ -14,8 +14,10 @@ import BinaryRenderer from './BinaryPower/BinaryRenderer';
  */
 
 export default function BinaryGameEngine({ data, onComplete, onResult }) {
-    const target = data?.questions?.[0]?.targetVal || 16;
-    const prompt = data?.questions?.[0]?.prompt || "Generate the target power!";
+    // v9.9: Aggressive Extraction (Search root, data, and questions sub-layers)
+    const root = data?.questions?.[0] || data?.data?.questions?.[0] || data?.data || data;
+    const target = root?.targetVal || root?.target || 16;
+    const prompt = root?.prompt || "Generate the target power!";
 
     const [n, setN] = useState(0);
     const [isResolved, setIsResolved] = useState(false);

@@ -32,9 +32,9 @@
     height: 60px;
     border-radius: 50%;
     position: relative;
-    border: 3px solid white;
+    border: 3px solid var(--bg-card);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    background: white;
+    background: var(--bg-card);
 }
 
 .test-avatar-wrap img {
@@ -201,8 +201,8 @@
 
 .promo-input {
     flex: 1;
-    background: rgba(0, 0, 0, 0.03);
-    border: 1.5px solid rgba(0, 0, 0, 0.05);
+    background: var(--bg-inset);
+    border: 1.5px solid var(--border-subtle);
     padding: 14px 18px;
     border-radius: 16px;
     color: var(--text-main);

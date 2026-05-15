@@ -35,51 +35,33 @@
     display: none;
 }
 
-/* --- 0. STATUS HEADER (Warm Glass) --- */
-/* 1. UNIFIED COMMAND CENTER */
-.home-command-center {
-    margin: 12px 16px 8px;
-    padding: 20px;
-    background: var(--bg-card);
-    border: 1.5px solid var(--border-subtle);
-    border-radius: 28px;
-    box-shadow: var(--shadow-card);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex-shrink: 0;
-}
-
-.command-header {
+/* 0. TOP NAVIGATION BAR */
+.top-navigation-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
-    z-index: 2;
+    padding: 10px 20px;
+    background: var(--bg-page);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .user-profile-mini {
     display: flex;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
 }
 
 .avatar-ring {
     width: 44px;
     height: 44px;
-    border-radius: 16px;
+    border-radius: 14px;
     background: var(--manya-purple-light);
     border: 2px solid var(--manya-purple);
     overflow: hidden;
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
-}
-
-.avatar-ring img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.1);
 }
 
 .user-text {
@@ -103,7 +85,7 @@
 }
 
 .streak-badge-premium {
-    background: var(--bg-secondary);
+    background: var(--bg-inset);
     border: 1.5px solid var(--border-subtle);
     padding: 8px 14px;
     border-radius: 18px;
@@ -112,64 +94,86 @@
     gap: 8px;
     font-size: 16px;
     font-weight: 950;
-    color: white;
+    color: var(--text-primary);
+    cursor: pointer;
 }
 
-/* LIVE MISSION BAR */
-.command-mission-bar {
-    background: linear-gradient(135deg, var(--manya-purple) 0%, var(--manya-purple-dark) 100%);
+/* 1. CHALLENGE HOME CARD — Engaging Teaser */
+.challenge-home-card {
+    margin: 12px 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-inset));
+    border: 3px solid var(--manya-purple, hsl(262, 83%, 58%));
     border-radius: 20px;
-    padding: 14px 18px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 14px;
     cursor: pointer;
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    z-index: 2;
+    transition: transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
-.mission-info {
+.challenge-home-card:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chc-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: hsla(262, 83%, 58%, 0.1);
+    border: 1.5px solid var(--manya-purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.chc-rocket {
+    color: var(--manya-purple);
+    filter: drop-shadow(0 2px 4px hsla(262, 83%, 58%, 0.3));
+}
+
+.chc-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
 }
 
-.mission-label {
-    font-size: 8px;
+.chc-label {
+    font-size: 9px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--manya-purple);
     letter-spacing: 1.5px;
 }
 
-.mission-name {
+.chc-name {
     font-size: 14px;
-    font-weight: 850;
-    color: white;
-    font-family: var(--font-display);
+    font-weight: 900;
+    color: var(--text-primary);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 180px;
 }
 
-.mission-play-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
-    background: white;
+.chc-cta {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    gap: 2px;
+    background: var(--manya-purple, hsl(262, 83%, 58%));
+    color: #ffffff;
+    padding: 6px 10px 6px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px hsla(262, 83%, 58%, 0.3);
 }
 
-.mission-play-btn svg {
-    fill: var(--manya-purple);
-}
 
 /* ═══════════════════════════════════════════════════════
    2. ZEN GRID 2.0: SUBJECT SQUARES
@@ -301,157 +305,5 @@
     font-family: var(--font-display);
 }
 
-/* THE SIM LAB FOOTER */
-/* 4. SIMULATION LAB (SOLID CAPSULE) */
-.home-sim-lab-cta {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: calc(100% - 32px);
-    margin: 4px 16px 12px;
-    /* Reduced margins */
-    padding: 12px 18px;
-    /* Tighter padding */
-    background: rgba(42, 31, 61, 0.6);
-    border: 4.5px solid var(--border-subtle);
-    border-radius: 24px;
-    color: white;
-    cursor: pointer;
-    overflow: hidden;
-    box-shadow: var(--shadow-warm);
-    transition: all 0.3s var(--transition-bounce);
-    flex-shrink: 0;
-}
 
-[data-theme='light'] .home-sim-lab-cta {
-    background: #7c3aed;
-}
 
-.sim-lab-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.sim-lab-icon-box {
-    width: clamp(32px, 4.5vh, 42px);
-    height: clamp(32px, 4.5vh, 42px);
-    background: var(--manya-purple);
-    color: white;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.sim-lab-text {
-    text-align: left;
-}
-
-.sim-lab-text h4 {
-    margin: 0;
-    font-size: clamp(12px, 1.3vh, 14px);
-    font-weight: 800;
-    color: var(--text-primary);
-    font-family: var(--font-display);
-}
-
-.sim-lab-text p {
-    margin: 0;
-    font-size: 9px;
-    font-weight: 800;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.sim-lab-arrow {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    font-weight: 950;
-    transition: 0.3s;
-}
-
-.home-sim-lab-cta:hover .sim-lab-arrow {
-    background: var(--manya-purple);
-    color: white;
-}
-
-/* --- MOBILE COMPACT REFINEMENT --- */
-@media (max-width: 480px) {
-    .manya-hub {
-        gap: 16px;
-    }
-
-    .home-status-header-glass {
-        padding: 10px 14px;
-        border-radius: var(--radius-xl);
-    }
-
-    .status-user-info .hi-text {
-        font-size: 16px;
-    }
-
-    .status-streak-pill {
-        padding: 6px 12px;
-    }
-
-    .resume-mission-card {
-        padding: clamp(10px, 1.4vh, 14px);
-        border-width: 2.5px;
-    }
-
-    .hero-avatar-mini-glow {
-        width: 44px;
-        height: 44px;
-        border-width: 3px;
-    }
-
-    .mission-details {
-        margin-left: 12px;
-    }
-
-    .mission-title {
-        font-size: 14px !important;
-    }
-
-    .subject-grid-elite {
-        gap: 10px 12px;
-        margin-top: 6px;
-    }
-
-    .orb-wrap {
-        width: 76px;
-        height: 76px;
-    }
-
-    .card-footer-info {
-        margin-top: 8px;
-    }
-
-    .home-sim-lab-cta {
-        padding: 8px 16px !important;
-    }
-
-    .sim-lab-icon-box {
-        width: 36px;
-        height: 36px;
-    }
-
-    .sim-lab-text h4 {
-        font-size: 14px;
-    }
-
-    .sim-lab-text p {
-        font-size: 10px;
-    }
-}

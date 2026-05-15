@@ -61,51 +61,41 @@ const GlobeRenderer = ({
 
                 <div className="flex-1 overflow-y-auto px-5 pt-3 pb-12 space-y-5 no-scrollbar">
                     {mode === 'study' && data.cases && (
-                        <div className="flex overflow-x-auto gap-2 px-1 py-1 no-scrollbar sticky top-0 z-10 bg-white dark:bg-slate-900 shadow-sm mb-4">
+                        <div className="flex bg-slate-800/80 p-1 rounded-xl gap-0 mb-3 border border-slate-700/50">
                             {data.cases.map((c, i) => (
                                 <button 
                                     key={i} 
                                     onClick={() => setActiveTab(i)} 
-                                    className={`uppercase text-[10px] whitespace-nowrap px-5 py-2.5 font-black rounded-xl transition-all active:scale-95 border-b-[4px] ${
+                                    className={`flex-1 uppercase text-[8px] whitespace-nowrap py-2 font-black rounded-lg transition-all active:scale-95 ${
                                         activeTab === i 
-                                            ? 'bg-indigo-600 border-indigo-800 text-white shadow-md shadow-indigo-500/30' 
-                                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'
+                                            ? 'bg-indigo-600 text-white shadow-lg' 
+                                            : 'text-slate-500 hover:text-slate-300'
                                     }`}
                                 >
-                                    {c.tabTitle || c.label || `Part ${i+1}`}
+                                    {c.tabTitle || c.label || `P${i+1}`}
                                 </button>
                             ))}
                         </div>
                     )}
 
                     {mode === 'study' && data.cases && (
-                        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                            <div className="mcq-q-card border-[4.5px] border-indigo-500 bg-white dark:bg-slate-800">
-                                <div className="toy-card-gloss" />
-                                <h1 className="text-[17px] uppercase font-black tracking-wide leading-tight text-center text-indigo-600 dark:text-indigo-400 relative z-10">
-                                    {data.cases[activeTab].title}
-                                </h1>
+                        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            <div className="text-center py-1">
+                                <span className="uppercase font-black tracking-[0.2em] text-indigo-400 opacity-80" style={{ fontSize: '10px', display: 'block' }}>
+                                    {data.cases[activeTab]?.title}
+                                </span>
                             </div>
                             
-                            <div className="space-y-3 mt-4">
-                                {data.cases[activeTab].steps.map((step, i) => (
-                                    <div key={i} className="flex gap-3 items-start p-4 rounded-2xl bg-white dark:bg-slate-800 border-[3.5px] border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
-                                        <div className="toy-card-gloss opacity-30" />
-                                        <div className="mt-0.5 flex-shrink-0 w-7 h-7 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-black text-[12px] shadow-lg shadow-indigo-500/20 relative z-10">
+                            <div className="grid gap-2">
+                                {data.cases[activeTab]?.steps.map((step, i) => (
+                                    <div key={i} className="flex gap-3 items-center p-3 rounded-xl bg-slate-800/40 border border-slate-700/50 relative overflow-hidden">
+                                        <div className="flex-shrink-0 w-6 h-6 rounded-md bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-[10px] border border-indigo-500/30">
                                             {i + 1}
                                         </div>
-                                        <p className="text-[13px] font-bold leading-relaxed text-slate-700 dark:text-slate-300 pt-0.5 relative z-10" dangerouslySetInnerHTML={{ __html: step }} />
+                                        <p className="text-[12px] font-medium leading-snug text-slate-300" dangerouslySetInnerHTML={{ __html: step }} />
                                     </div>
                                 ))}
                             </div>
-                            
-                            <button 
-                                onClick={onFinishActivity}
-                                className="mcq-btn-solid w-full py-4 bg-indigo-600 border-b-[6px] border-indigo-800 text-white rounded-2xl font-black text-[14px] uppercase tracking-widest shadow-xl shadow-indigo-500/30 active:scale-95 active:border-b-0 transition-all relative overflow-hidden"
-                            >
-                                <div className="toy-card-gloss" />
-                                FINISH ACTIVITY
-                            </button>
                         </div>
                     )}
 
@@ -164,11 +154,10 @@ const GlobeRenderer = ({
                             animate={{ opacity: 1, y: 0 }}
                             className="space-y-4"
                         >
-                             <div className="mcq-q-card border-[4.5px] border-indigo-500 bg-white dark:bg-slate-800">
-                                <div className="toy-card-gloss" />
-                                <h1 className="text-[17px] uppercase font-black tracking-wide leading-tight text-center text-indigo-600 dark:text-indigo-400 relative z-10">
+                             <div className="text-center py-1 mb-2">
+                                <span className="uppercase font-black tracking-[0.2em] text-indigo-400 opacity-80" style={{ fontSize: '10px', display: 'block' }}>
                                     {data.title || data.topic || data.concept || 'Lesson Overview'}
-                                </h1>
+                                </span>
                             </div>
                             
                              <p className="text-[14px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed px-2">

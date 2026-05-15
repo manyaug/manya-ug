@@ -98,6 +98,7 @@ export function evaluateRewards(metrics) {
     else if (m >= 85) drops.push({ ...REWARD_TRIGGERS.Q_GREAT, subject });
     else if (m >= 80) drops.push({ ...REWARD_TRIGGERS.Q_SOLID, subject });
     else if (m >= 70) drops.push({ ...REWARD_TRIGGERS.Q_GOOD, subject });
+    else if (m >= 50) drops.push({ ...REWARD_TRIGGERS.Q_IMPROVED, subject });
 
     if (isFirstQuest && !isExplore) drops.push({ ...REWARD_TRIGGERS.Q_FIRST, subject });
 

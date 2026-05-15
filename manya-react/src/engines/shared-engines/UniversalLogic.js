@@ -1,5 +1,5 @@
 /**
- * MANYA UNIVERSAL LOGIC
+ * MANYA UNIVERSAL LOGIC v5.0
  * Shared domain rules for all subjects.
  */
 
@@ -17,22 +17,50 @@ export const SUPPORTED_SIM_ENGINES = [
 export const normalize = (str) => String(str || '').trim().toLowerCase();
 
 /**
- * Determines the engine type from question data.
+ * Robustly extracts and parses data payloads from varied resource shapes.
+ * Handles: Raw DB rows, CDN resource objects, and already-parsed JSON.
+ */
+export const hydrateStepData = (q) => {
+    if (!q) return {};
+    
+    // v5.0: Priority Extraction
+    // 1. If it's already a clean data object
+    if (q.questions || q.sets || q.zones || q.slides) return q;
+    
+    // 2. Extract from common container keys
+    const raw = q.data || q.metadata || q.payload || q.content;
+    if (!raw) return q; // Fallback to the object itself
+
+    try {
+        const parsed = (typeof raw === 'string' ? JSON.parse(raw) : raw);
+        // If the parsed result is still just a string, it might be double-encoded
+        return (typeof parsed === 'string' ? JSON.parse(parsed) : parsed) || {};
+    } catch (e) {
+        console.warn("[UniversalLogic] Hydration failed for:", q.id || q.qid);
+        return {};
+    }
+};
+
+/**
+ * Determines the engine type from question data with heuristic fallbacks.
  */
 export const getEngineType = (q) => {
     const data = q?.data || q;
     const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
     const type = String(raw).toUpperCase().trim();
     
-    // Auto-detect NoteExplorer (Shared heuristic)
-    if (data?.study_notes || data?.mode === 'note_explorer') return 'NOTE_EXPLORER';
+    // Heuristic: Auto-detect NoteExplorer (Shared)
+    if (data?.study_notes || data?.mode === 'note_explorer' || data?.item_type === 'NOTE') return 'NOTE_EXPLORER';
 
-    // Auto-detect ReaderStudy for generic lesson nodes
+    // Heuristic: Auto-detect ReaderStudy for generic lesson nodes
     if (!type && (data?.text || data?.explanation || data?.steps || data?.content)) {
         return 'READER_STUDY';
     }
     
-    return type;
+    // Fallback for identified types that lack an engine
+    if (!type && q?.item_type === 'SIMULATION') return 'NOTE_EXPLORER';
+    
+    return type || 'MCQ_STANDALONE';
 };
 
 /**
@@ -43,15 +71,16 @@ export const isSimSafe = (q) => {
     const eType = getEngineType(q);
     if (!SUPPORTED_SIM_ENGINES.includes(eType)) return false;
 
+    const data = hydrateStepData(q);
+    
     // A real simulation must have structural interactive data
     const hasSimStructure = !!(
-        q?.data?.questions || q?.data?.sets || q?.data?.zones || 
-        q?.data?.interaction || q?.sets || q?.zones || q?.questions ||
-        q?.content || q?.steps
+        data.questions || data.sets || data.zones || 
+        data.interaction || data.content || data.steps || data.slides
     );
     
     // An MCQ has options and an answer
-    const isMCQ = !!(q?.options && q?.answer);
+    const isMCQ = !!(q?.options && q?.answer && q.options.length > 0);
     
     return hasSimStructure && !isMCQ;
 };

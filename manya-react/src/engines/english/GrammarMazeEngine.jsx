@@ -14,7 +14,9 @@ import MazeRenderer from './GrammarMaze/MazeRenderer';
 
 const GrammarMazeEngine = ({ data, onComplete }) => {
     const levels = useMemo(() => {
-        const raw = data?.levels || data?.questions || data?.items || [];
+        // v9.9: Hardened Data Extraction
+        const payload = data?.data || data;
+        const raw = payload?.levels || payload?.questions || payload?.queries || payload?.items || [];
         return (Array.isArray(raw) && raw.length > 0) ? raw : [{}];
     }, [data]);
 

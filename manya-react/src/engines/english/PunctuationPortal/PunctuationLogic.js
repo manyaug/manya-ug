@@ -7,17 +7,14 @@
  * Normalizes input curriculum data.
  */
 export const initializePunctuationData = (data) => {
-    const d = data?.data || data || {};
-    const rawQueries = d.queries || d.questions || d.items || [];
+    // v9.9: Hardened extraction to handle various DB payload structures
+    const d = data?.data || data?.metadata || data?.payload || data || {};
+    const rawQueries = d.queries || d.questions || d.items || d.steps || [];
     
     const defaultQueries = [
         { 
             parts: ["Wait", " I'm coming with you", "!"], 
             slots: [{ index: 1, expected: ',', hint: "Use a comma after 'Wait'!" }]
-        },
-        {
-            parts: ["Hello", " how are you", "?"],
-            slots: [{ index: 1, expected: ',', hint: "Greeting needs a pause." }]
         }
     ];
 

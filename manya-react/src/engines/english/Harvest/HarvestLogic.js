@@ -52,10 +52,12 @@ export const spawnHarvestItem = (wordPool, leftCat, nextId) => {
         text: word.text || word.word || "",
         cat: (word.type || word.category || "").toUpperCase().trim(),
         side: laneSide,
-        x: LANE_X[laneSide],
+        // v9.9: Organic Tilt - Add slight x-jitter and randomized leftward rotation
+        x: LANE_X[laneSide] + (Math.random() * 4 - 2), 
         y: -10,
-        vy: 0.25 + Math.random() * 0.15, // Slowed down from 0.6 to improve readability
-        hue: Math.random() * 360 // For "Juicy" variety
+        vy: 0.25 + Math.random() * 0.15,
+        rotation: (Math.random() * -10) - 2, // Subtle leftward tilt (-2 to -12 deg)
+        hue: Math.random() * 360 
     };
 };
 

@@ -59,12 +59,22 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
     }
     
     // 3. Specialty Game Engines
-    if (engineType.includes('WORDGRID')) engineType = 'WORDGRID_ENGINE';
-    if (engineType.includes('HARVEST')) engineType = 'HARVEST_GAME';
-    if (engineType === 'SENTENCE_BLOCKS' || engineType === 'SYNTAX_ARCHITECT') engineType = 'SENTENCE_BLOCKS';
-    if (engineType === 'GARDEN_GUARD' || engineType === 'GRAMMAR_GUARD') engineType = 'GARDEN_GUARD';
-    if (engineType === 'PUNCTUATION_STICKERS') engineType = 'PUNCTUATION_STICKERS';
-    if (engineType === 'TENSE_TREEHOUSE') engineType = 'TENSE_TREEHOUSE';
+    const engineUpper = engineType.toUpperCase();
+    if (engineUpper.includes('WORDGRID')) engineType = 'WORDGRID_ENGINE';
+    else if (engineUpper.includes('HARVEST')) engineType = 'HARVEST_GAME';
+    else if (engineUpper.includes('SENTENCE_TRAIN')) engineType = 'SENTENCE_TRAIN';
+    else if (engineUpper.includes('HANGMAN')) engineType = 'HANGMAN_ENGINE';
+    else if (engineUpper.includes('MEMORY_MATCH')) engineType = 'MEMORY_MATCH';
+    else if (engineUpper.includes('MORPH_GAME')) engineType = 'MORPH_GAME';
+    else if (engineUpper.includes('GRAMMAR_MAZE')) engineType = 'GRAMMAR_MAZE';
+    else if (engineUpper.includes('DEEP_READER')) engineType = 'DEEP_READER';
+    else if (engineUpper.includes('FUNCTIONAL_COMPOSER')) engineType = 'FUNCTIONAL_COMPOSER';
+    else if (engineUpper === 'SYNTAX_ARCHITECT' || engineUpper === 'SYNTAX_ENGINE') engineType = 'SYNTAX_ENGINE';
+    else if (engineUpper === 'SENTENCE_BLOCKS') engineType = 'SENTENCE_BLOCKS';
+    else if (engineUpper === 'GARDEN_GUARD' || engineUpper === 'GRAMMAR_GUARD') engineType = 'GARDEN_GUARD';
+    else if (engineUpper === 'PUNCTUATION_STICKERS' || engineUpper === 'PUNCTUATION_PORTAL') engineType = 'PUNCTUATION_STICKERS';
+    else if (engineUpper === 'TENSE_TREEHOUSE') engineType = 'TENSE_TREEHOUSE';
+    else if (engineUpper === 'ENGLISH_RULE_MASTER') engineType = 'ENGLISH_RULE_MASTER';
 
     const engineMeta = ENGINE_REGISTRY[engineType];
 
@@ -86,10 +96,8 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
         
         if (isWin) {
             audioService.victory?.();
-            window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: 'english' } }));
         } else {
             audioService.error?.();
-            window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: 'english' } }));
         }
 
         // Auto-advance after 1.5s to keep it snappy like an MCQ

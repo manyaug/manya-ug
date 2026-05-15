@@ -16,7 +16,7 @@ const EnglishRuleMasterEngine = ({ data, onComplete }) => {
     const [isDark, setIsDark] = useState(false);
     const startTimeRef = useRef(Date.now());
 
-    const actualData = useMemo(() => initializeRuleData(data), [data]);
+    const actualData = useMemo(() => initializeRuleData(data?.data || data), [data]);
     const rules = actualData.rules;
     const currentRule = rules[step];
 

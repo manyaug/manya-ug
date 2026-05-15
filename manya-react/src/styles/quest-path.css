@@ -170,12 +170,12 @@
 }
 
 .back-to-map-btn {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--bg-inset);
     border: none;
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    color: #1E293B;
+    color: var(--text-primary);
     cursor: pointer;
     transition: 0.1s;
     display: flex;
@@ -350,7 +350,8 @@
 
 /* ACTIVE NODE */
 .quest-node-abs.active .tactile-node {
-    background: #ffffff;
+    background: white;
+    color: #1e293b;
     border: 3px solid var(--biome-color);
     box-shadow:
         0 0 0 6px rgba(255, 255, 255, 1),
@@ -398,6 +399,7 @@
 
 .quest-node-abs.active .path-step-label {
     background: white;
+    color: #1e293b;
     border-color: var(--biome-color);
     box-shadow: 0 8px 0 var(--biome-color), var(--shadow-premium);
 }
@@ -465,7 +467,7 @@
 }
 
 /* ── DARK MODE OVERRIDES (Midnight Space v5.0) ── */
-@media (prefers-color-scheme: dark) {
+[data-theme='dark'] {
     .quest-path-root {
         background: radial-gradient(circle at 50% 0%, rgba(var(--biome-color-rgb), 0.25) 0%, #050714 80%);
     }

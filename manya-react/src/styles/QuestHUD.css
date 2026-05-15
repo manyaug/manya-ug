@@ -152,7 +152,7 @@
     background: var(--bg-secondary);
     border-radius: 20px;
     border: 1px solid var(--border-subtle);
-    overflow: visible;
+    overflow: hidden;
 }
 
 .hud-progress-fill-gradient {

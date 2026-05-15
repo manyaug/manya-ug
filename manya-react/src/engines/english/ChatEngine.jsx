@@ -79,12 +79,16 @@ const ChatEngine = ({ data, onComplete }) => {
         };
     }, [fullText]);
 
-    // Detect Dark Mode
+    // Detect Theme (v9.9: Hardened for data-theme support)
     useEffect(() => {
-        const checkDark = () => setIsDark(document.documentElement.classList.contains('dark') || getComputedStyle(document.body).backgroundColor === 'rgb(11, 14, 20)');
+        const checkDark = () => {
+            const isDarkAttr = document.documentElement.getAttribute('data-theme') === 'dark';
+            const hasDarkClass = document.documentElement.classList.contains('dark');
+            setIsDark(isDarkAttr || hasDarkClass);
+        };
         checkDark();
         const obs = new MutationObserver(checkDark);
-        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
         return () => obs.disconnect();
     }, []);
 
@@ -95,35 +99,47 @@ const ChatEngine = ({ data, onComplete }) => {
     };
 
     return (
-        <div className={`flex flex-col h-full overflow-hidden font-jakarta transition-colors duration-500 ${isDark ? 'bg-[#0B0E14] text-white' : 'bg-slate-50 text-slate-900'}`}>
+        <div 
+            className={`flex flex-col h-full overflow-hidden transition-colors duration-500`}
+            style={{ 
+                backgroundColor: 'var(--bg-page)', 
+                color: 'var(--text-main)',
+                fontFamily: 'var(--font-main)'
+            }}
+        >
             
             <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto scrollbar-hide">
                 
                 {/* 1. Optional Character/Subject Image */}
                 {data.image && (
-                    <div className="w-full max-w-sm aspect-video rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-2xl border-4 border-white dark:border-white/10 animate-in zoom-in duration-700 bg-slate-200">
+                    <div className={`w-full max-w-sm aspect-video rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-2xl border-4 animate-in zoom-in duration-700 ${isDark ? 'border-white/10 bg-white/5' : 'border-white bg-slate-200'}`}>
                         <img src={resolveRemoteUrl(data.image, data._originUrl)} className="w-full h-full object-cover" alt="Context" />
                     </div>
                 )}
-
+ 
                 {/* 2. Chat Row */}
                 <div className="w-full max-w-xl flex items-start gap-3 sm:gap-4">
                     {/* Avatar */}
-                    <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl flex-none overflow-hidden border-2 sm:border-4 shadow-xl ${isDark ? 'border-white/10' : 'border-white'} animate-in slide-in-from-left-4 duration-500`}>
-                        <img src={char.icon} className="w-full h-full object-cover bg-white" alt={char.name} />
+                    <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl flex-none overflow-hidden border-2 sm:border-4 shadow-xl animate-in slide-in-from-left-4 duration-500 ${isDark ? 'border-white/10 bg-[#1a1f2e]' : 'border-white bg-slate-100'}`}>
+                        <img src={char.icon} className="w-full h-full object-cover" alt={char.name} />
                     </div>
-
+ 
                     {/* Bubble */}
                     <div 
                         onClick={isTyping ? skipTyping : null}
-                        className={`flex-1 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] rounded-tl-none border transition-all animate-in slide-in-from-right-4 duration-500 cursor-pointer ${isDark ? 'bg-white/5 border-white/5 shadow-2xl shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-xl shadow-slate-200/50'}`}
+                        className={`flex-1 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] rounded-tl-none border transition-all animate-in slide-in-from-right-4 duration-500 cursor-pointer shadow-xl`}
+                        style={{ 
+                            backgroundColor: 'var(--bg-card)', 
+                            borderColor: 'var(--border-subtle)',
+                            boxShadow: 'var(--shadow-card)'
+                        }}
                     >
                         <div className="flex justify-between items-center mb-2">
                             <span className={`text-[9px] sm:text-[10px] font-black tracking-widest uppercase ${char.color}`}>{char.name}</span>
                             {isTyping && <div className="flex gap-1"><div className="w-1 h-1 bg-current rounded-full animate-bounce" /><div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:0.2s]" /><div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:0.4s]" /></div>}
                         </div>
                         <p 
-                            className={`text-sm sm:text-lg font-bold leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
+                            className={`text-sm sm:text-lg font-bold leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-700'}`}
                             dangerouslySetInnerHTML={{ __html: displayedText }}
                         />
                     </div>

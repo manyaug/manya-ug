@@ -78,9 +78,7 @@ const PremiumFXOverlay = () => {
         };
     }, []);
 
-    useEffect(() => {
-        if (motivation) audioService.collect?.();
-    }, [motivation]);
+    // v9.9: Audio now managed centrally by feedbackService
 
     return (
         <div className="premium-fx-container pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
@@ -103,35 +101,60 @@ const PremiumFXOverlay = () => {
 
             {/* 🎉 Celebration Ambient & Particles */}
             <AnimatePresence mode="wait">
-                {motivation && (
-                    <div key={motivation.id} className="fixed inset-0 flex items-center justify-center">
+        {motivation && (
+                    <div key={motivation.id} className="fixed inset-0 flex items-center justify-center pointer-events-none">
+                        {/* 🌟 Rotating Light Rays / Flares (v8.2) */}
+                        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                            {[...Array(8)].map((_, i) => (
+                                <motion.div
+                                    key={`ray-${i}`}
+                                    initial={{ scale: 0, opacity: 0, rotate: i * 45 }}
+                                    animate={{ 
+                                        scale: [0, 2.5, 3], 
+                                        opacity: [0, 0.4, 0],
+                                        rotate: [i * 45, i * 45 + 90]
+                                    }}
+                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                    className="absolute w-[100vw] h-2 bg-gradient-to-r from-transparent via-emerald-400 to-transparent blur-sm"
+                                />
+                            ))}
+                        </div>
+
                         {/* 🟢 Full Screen Ambient Pulse */}
                         <motion.div 
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 0.4, 0] }}
+                            animate={{ opacity: [0, 0.6, 0] }}
                             transition={{ duration: 1 }}
                             className="fixed inset-0 bg-emerald-500/20 mix-blend-screen"
                         />
 
-                        {/* ✨ Particle Confetti Burst */}
+                        {/* ✨ Physics-y Particle Confetti Burst */}
                         <div className="absolute inset-0">
-                            {[...Array(30)].map((_, i) => (
-                                <motion.span
-                                    key={`part-${motivation.id}-${i}`}
-                                    initial={{ x: '50vw', y: '50vh', opacity: 1, scale: 0 }}
-                                    animate={{ 
-                                        x: (Math.random() * 100) + 'vw',
-                                        y: (Math.random() * 100) + 'vh',
-                                        opacity: 0,
-                                        scale: Math.random() * 2 + 1,
-                                        rotate: Math.random() * 720
-                                    }}
-                                    transition={{ duration: 2, ease: "easeOut" }}
-                                    className="absolute text-3xl"
-                                >
-                                    {['✨', '⭐', '🔥', '⚡', '🎉'][i % 5]}
-                                </motion.span>
-                            ))}
+                            {[...Array(60)].map((_, i) => {
+                                const angle = (i / 60) * Math.PI * 2 + (Math.random() * 0.5);
+                                const velocity = 300 + Math.random() * 600;
+                                const tx = Math.cos(angle) * velocity;
+                                const ty = Math.sin(angle) * velocity;
+                                
+                                return (
+                                    <motion.span
+                                        key={`part-${motivation.id}-${i}`}
+                                        initial={{ x: '50vw', y: '50vh', opacity: 1, scale: 0 }}
+                                        animate={{ 
+                                            x: `calc(50vw + ${tx}px)`,
+                                            y: `calc(50vh + ${ty}px)`,
+                                            opacity: 0,
+                                            scale: Math.random() * 3 + 0.5,
+                                            rotate: Math.random() * 2000,
+                                            filter: ["blur(0px)", "blur(2px)", "blur(0px)"]
+                                        }}
+                                        transition={{ duration: 1.2 + Math.random() * 0.8, ease: "easeOut" }}
+                                        className="absolute text-4xl drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                                    >
+                                        {['✨', '⭐', '💎', '💎', '🔥', '💫'][i % 6]}
+                                    </motion.span>
+                                );
+                            })}
                         </div>
                     </div>
                 )}

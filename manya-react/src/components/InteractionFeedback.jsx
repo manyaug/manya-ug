@@ -16,35 +16,18 @@ const InteractionFeedback = () => {
     const [showComplete, setShowComplete] = useState(false);
 
     useEffect(() => {
-        const handleCorrect = (e) => {
-            setFlash('correct');
+        const handleFlash = (e) => {
+            const { type, word, message } = e.detail;
+            setFlash(type);
+            if (word) {
+                setWord(word);
+                setTimeout(() => setWord(null), 800);
+            }
+            if (message) {
+                setGrowthMessage(message);
+                setTimeout(() => setGrowthMessage(null), 2500);
+            }
             setTimeout(() => setFlash(null), 600);
-
-            // 100% chance for a royal word flash on every correct answer
-            const cheers = [
-                "AMAZING!", "AWESOME!", "BRILLIANT!", "WOW!", "EXCELLENT!", 
-                "CHAMPION!", "SUPERB!", "MAGNIFICENT!", "SPOT ON!", "ROYAL WIN!"
-            ];
-            setWord(cheers[Math.floor(Math.random() * cheers.length)]);
-            setTimeout(() => setWord(null), 800);
-        };
-
-        const handleWrong = () => {
-            setFlash('wrong');
-            setTimeout(() => setFlash(null), 600);
-
-            // Show growth mindset message
-            const messages = [
-                "🌱 We grow from this!",
-                "🧠 Mistakes build knowledge!",
-                "💪 Every try counts!",
-                "✨ Learning is a journey!",
-                "🎯 Closer every time!",
-                "🌟 Great effort! Let's see why.",
-                "🚀 Keep going, you've got this!"
-            ];
-            setGrowthMessage(messages[Math.floor(Math.random() * messages.length)]);
-            setTimeout(() => setGrowthMessage(null), 2500);
         };
 
         const handleMilestone = (e) => {
@@ -58,13 +41,11 @@ const InteractionFeedback = () => {
             setTimeout(() => setMilestone(null), 3000);
         };
 
-        window.addEventListener('manya-correct', handleCorrect);
-        window.addEventListener('manya-wrong', handleWrong);
+        window.addEventListener('manya-feedback-flash', handleFlash);
         window.addEventListener('manya-milestone', handleMilestone);
 
         return () => {
-            window.removeEventListener('manya-correct', handleCorrect);
-            window.removeEventListener('manya-wrong', handleWrong);
+            window.removeEventListener('manya-feedback-flash', handleFlash);
             window.removeEventListener('manya-milestone', handleMilestone);
         };
     }, []);

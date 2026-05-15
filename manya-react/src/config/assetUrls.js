@@ -12,8 +12,8 @@ const BASE_CDN_URL = CDN_BASE;
  * Maps subject keys to GitHub folder names (matching repo casing)
  */
 const SUBJECT_MAP = {
-  'english': 'English',
-  'math': 'Math',
+  'english': 'english',
+  'math': 'math',
   'science': 'science',
   'sst': 'sst'
 };
@@ -25,36 +25,30 @@ const SUBJECT_MAP = {
 export function assetUrl(path) {
   if (!path) return '';
 
-  // 1. Clean the path
-  let clean = path.trim().replace(/^\/+/, '');
+  // 1. Clean and normalize the path
+  let clean = path.trim().replace(/^\/+/, '').toLowerCase();
 
   // 1.1 Local Bypass for Chests (Premium)
   if (clean.startsWith('chests/')) {
     return `/images/${clean.replace('.png', '_compressed.png')}`;
   }
 
-  // 2. Flip extensions for webp consistency
-  if (clean.match(/\.(png|jpg|jpeg)$/i)) {
+  // 2. Flip extensions for webp consistency (Skip SVGs)
+  if (clean.match(/\.(png|jpg|jpeg)$/i) && !clean.includes('.svg')) {
     clean = clean.replace(/\.(png|jpg|jpeg)$/i, '.webp');
   }
 
   // 3. Smart Prefixing Logic
-  // - images/, data/, shared/, and content/ are at the ROOT of the repo.
-  // - english/, math/, science/, and sst/ folder binaries are under /assets/.
   const subjects = ['english', 'math', 'science', 'sst', 'shared'];
-  const rootFolders = ['images', 'data', 'content', 'assets', 'audios'];
-
-  const firstSeg = clean.split('/')[0].toLowerCase();
+  
+  const firstSeg = clean.split('/')[0];
 
   // If it's a subject or shared, and does not have assets/ prefix, add it.
   if (subjects.includes(firstSeg) && !clean.startsWith('assets/')) {
     clean = `assets/${clean}`;
   }
 
-  // 4. Normalize Binary Paths (audio vs audios)
-  // NOTE: The repo uses 'audios/' at root — do NOT rewrite to 'audio/'
-
-  // 5. Final Encoding (handles spaces in file names like "One More Try.mp3")
+  // 5. Final Encoding
   const encoded = clean.split('/').map(seg => encodeURIComponent(seg)).join('/');
 
   return `${BASE_CDN_URL}${encoded}`;
@@ -73,23 +67,21 @@ export function resolveRemoteUrl(url, contextUrl = null) {
   let clean = url.trim().replace(/^\/+/, '');
 
   // Normalize any absolute jsDelivr or GitHub Raw links into a relative path
-  // so they can be re-resolved against our current frozen version.
   if (clean.includes('cdn.jsdelivr.net/') || clean.includes('raw.githubusercontent.com/')) {
     clean = clean.replace(/^https?:\/\//, '');
     clean = clean.replace(/^cdn\.jsdelivr\.net\/gh\/manyaug\/manya-react-assets(@[^/]+)?\//, '');
     clean = clean.replace(/^raw\.githubusercontent\.com\/manyaug\/manya-react-assets\/[^/]+\//, '');
   }
 
-  // Early return for full external URLs (only if they aren't legacy links we just cleaned)
+  // Early return for full external URLs
   if (clean.startsWith('http') && !clean.includes('supabase.co')) return clean;
 
-  // 2. Registry Lookup (Try to resolve pre-defined keys first)
+  // 2. Registry Lookup
   if (GLB[clean]) return GLB[clean];
   if (AUDIO[clean]) return AUDIO[clean];
   if (SFX[clean]) return SFX[clean];
 
-  // 3. Handle Subject Context Relative Paths (../../)
-  // CRITICAL: Binaries (glb, mp3) should almost always resolve to /assets/ root, not relative to content/
+  // 3. Handle Subject Context Relative Paths
   const isBinary = clean.match(/\.(glb|mp3|wav|ogg)$/i);
 
   if (!isBinary && contextUrl && (clean.startsWith('.') || !clean.includes('/'))) {
@@ -97,27 +89,17 @@ export function resolveRemoteUrl(url, contextUrl = null) {
     return resolved;
   }
 
-  // 3. Handle Legacy Supabase URLs by extracting the filename
+  // 3. Handle Legacy Supabase URLs
   if (clean.includes('supabase.co')) {
     const match = clean.match(/public\/assets\/(.+)$/);
     const fallbackMatch = clean.match(/manya-assets\/(.+)$/);
     let relativePath = match ? match[1] : (fallbackMatch ? fallbackMatch[1] : '');
 
-    // Safety: if the extracted path already has 'assets/', strip it before calling assetUrl
-    // since assetUrl will re-add it or manage it.
     if (relativePath.startsWith('assets/')) {
       relativePath = relativePath.replace(/^assets\//, '');
     }
 
     if (relativePath) return assetUrl(relativePath);
-  }
-
-  // 4. Case-Specific science/ fix: If it matches a known GLB and is just a filename
-  // this catches cases where the JSON just says "spine.glb"
-  if (isBinary && !clean.includes('/')) {
-    // Find which quest it might belong to? 
-    // Actually, assetUrl will handle prefixing science/ -> assets/science/
-    // but we need the subfolder. For now, we prefer full paths in JSON.
   }
 
   // 5. Default Resolution
@@ -131,11 +113,9 @@ export function resolveRemoteUrl(url, contextUrl = null) {
  */
 function joinUrls(base, relative) {
   try {
-    // If base is a full URL, use the browser's URL constructor for smart joining
     if (base.startsWith('http')) {
       return new URL(relative, base).href;
     }
-    // Fallback for local-ish paths
     const baseParts = base.split('/').filter(p => p && !p.endsWith('.json'));
     const relParts = relative.split('/');
 
@@ -150,17 +130,21 @@ function joinUrls(base, relative) {
 }
 
 /**
- * Resolves a UI image URL with the industry-standard _compressed naming.
- * e.g., 'math_island' -> 'math_island_compressed.webp'
+ * UI Image Helper - Points to CDN images/
  */
-function uiImage(name, ext = 'webp') {
-  if (!name) return '';
-  let clean = name.replace(new RegExp(`\\.${ext}$`), '');
-  if (!clean.endsWith('_compressed')) {
-    clean = `${clean}_compressed`;
+export const uiImage = (name) => {
+  if (!name) return "";
+  if (name.startsWith('http')) return name;
+  
+  // v9.9: Support compressed suffix for icons and islands
+  let fileName = name;
+  const needsCompression = name.includes('_island') || name.includes('_icon');
+  if (needsCompression && !name.endsWith('_compressed')) {
+    fileName = `${name}_compressed`;
   }
-  return assetUrl(`images/${clean}.${ext}`);
-}
+  
+  return assetUrl(`images/${fileName}.png`);
+};
 
 // ---------------------------------------------------------------------------
 // 🎵 AMBIENT AUDIO
@@ -172,26 +156,22 @@ export const AUDIO = {
   shine: assetUrl('audios/shine.mp3'),
 }
 
-
-
 export const SFX = {
-  correct: assetUrl('audios/collect-points.mp3'),  // ✅ exists
-  mistake: assetUrl('audios/error-mistake.mp3'),    // ✅ exists
-  wrong: assetUrl('audios/error-mistake2.mp3'),    // alias
-  applause: assetUrl('audios/fanfare-trumpets.mp3'),     // 🎺 Replaced with trumpets per user request
-  click: assetUrl('audios/ui-click.mp3'),          // ✅ exists
-  tap: assetUrl('audios/ui-click.mp3'),          // ✅ exists (tap→ui-click)
-  whoosh: assetUrl('audios/whoosh.mp3'),            // ✅ exists
-  pop: assetUrl('audios/twin-sparkle.mp3'),      // ✅ exists (pop→twin-sparkle)
-  victory: assetUrl('audios/fanfare-trumpets.mp3'),  // ✅ exists
-  bonus: assetUrl('audios/game-bonus.mp3'),        // ✅ exists
-  levelup: assetUrl('audios/level-up.mp3'),          // ✅ exists
-  drumroll: assetUrl('audios/drum-roll.mp3'),         // ✅ exists
-  tick: assetUrl('audios/tick.mp3'),                  // ⏱️ Speedrun tick
-  rumble: assetUrl('audios/challenge_complete/bass_drop.mp3'), // 🌋 Earthquake rumble (High-fidelity fallback)
-  magic_positive: assetUrl('audios/magic-positive.mp3'), // ✨ Streak power
-
-  // High-fidelity Celebration SFX
+  correct: assetUrl('audios/collect-points.mp3'),
+  mistake: assetUrl('audios/error-mistake.mp3'),
+  wrong: assetUrl('audios/error-mistake2.mp3'),
+  applause: assetUrl('audios/fanfare-trumpets.mp3'),
+  click: assetUrl('audios/ui-click.mp3'),
+  tap: assetUrl('audios/ui-click.mp3'),
+  whoosh: assetUrl('audios/whoosh.mp3'),
+  pop: assetUrl('audios/twin-sparkle.mp3'),
+  victory: assetUrl('audios/fanfare-trumpets.mp3'),
+  bonus: assetUrl('audios/game-bonus.mp3'),
+  levelup: assetUrl('audios/level-up.mp3'),
+  drumroll: assetUrl('audios/drum-roll.mp3'),
+  tick: assetUrl('audios/tick.mp3'),
+  rumble: assetUrl('audios/challenge_complete/bass_drop.mp3'),
+  magic_positive: assetUrl('audios/magic-positive.mp3'),
   riser: assetUrl('audios/challenge_complete/riser.mp3'),
   riser2: assetUrl('audios/challenge_complete/riser2.mp3'),
   bass_drop: assetUrl('audios/challenge_complete/bass_drop.mp3'),
@@ -257,42 +237,34 @@ export const IMAGES = {
   }
 }
 
-/**
- * Resolves path tiles (the world map road).
- * NOTE: English uses raw names (way-1.webp), others use _compressed (way-1_compressed.webp).
- */
 export function getPathImage(subject, fileName) {
-  const sub = subject?.toLowerCase().replace('_path', ''); // handle safe subject key
+  const sub = subject?.toLowerCase().replace('_path', '');
   const folder = `${sub}_path`;
-
-  let finalFile = fileName.replace(/\.[^/.]+$/, ""); // strip ext
-
-  // Apply _compressed suffix only if NOT english (per repo structure)
+  let finalFile = fileName.replace(/\.[^/.]+$/, "");
   if (sub !== 'english' && !finalFile.endsWith('_compressed')) {
     finalFile = `${finalFile}_compressed`;
   }
-
   return assetUrl(`images/${folder}/${finalFile}.webp`);
 }
 
 export function getIsland(subject) {
   const sub = subject.toLowerCase();
   if (sub === 'math' || sub === 'mathematics') return IMAGES.math_island;
-  if (sub === 'science') return IMAGES.science_island;
-  if (sub === 'sst') return IMAGES.sst_island;
-  if (sub === 'english') return IMAGES.english_island;
+  if (sub === 'science' || sub === 'sci') return IMAGES.science_island;
+  if (sub === 'sst' || sub === 'social') return IMAGES.sst_island;
+  if (sub === 'english' || sub === 'eng') return IMAGES.english_island;
   return IMAGES.manya_icon;
 }
 
 export function getGem(fileName) {
-  if (!fileName) return "";
-  const file = fileName.toLowerCase().replace(/\s+/g, '_'); // Fix space bug (manya council -> manya_council)
+  if (!fileName) return IMAGES.master_gem;
+  const file = fileName.toLowerCase().replace(/\s+/g, '_');
   if (file.includes('math')) return IMAGES.math_gem;
-  if (file.includes('science')) return IMAGES.science_gem;
-  if (file.includes('sst')) return IMAGES.sst_gem;
-  if (file.includes('english')) return IMAGES.english_gem;
-  if (file.includes('master') || file.includes('general')) return IMAGES.master_gem;
-  return assetUrl(`images/gems/${file}`);
+  if (file.includes('science') || file.includes('sci')) return IMAGES.science_gem;
+  if (file.includes('sst') || file.includes('social')) return IMAGES.sst_gem;
+  if (file.includes('english') || file.includes('eng')) return IMAGES.english_gem;
+  if (file.includes('coin') || file.includes('gems')) return IMAGES.coin_gem;
+  return IMAGES.master_gem;
 }
 
 export function getGlb(key) {
@@ -300,6 +272,7 @@ export function getGlb(key) {
 }
 
 export function getSfx(name) {
-  const filePart = name.endsWith('.mp3') ? name : name + '.mp3';
-  return SFX[name] ?? assetUrl('audios/' + filePart);
+  const cleanName = String(name || '').toLowerCase();
+  const filePart = cleanName.endsWith('.mp3') ? cleanName : cleanName + '.mp3';
+  return SFX[cleanName] ?? assetUrl('audios/' + filePart);
 }

@@ -6,6 +6,7 @@ import { restoreCloudProgress } from '../domain/progress/questProgressService.js
 import { conceptMasteryService } from '../domain/mastery/conceptMasteryService.js';
 import { BADGES } from '../config/badges';
 import { rewardService } from '../infrastructure/services/rewardService.js';
+import { challengeService } from '../domain/gamification/challengeService.js';
 
 // Async thunk to boot user from IndexedDB
 export const initializeUser = createAsyncThunk(
@@ -257,7 +258,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     addDiamonds: (state, action) => {
-      state.data.diamonds += action.payload;
+      state.data.diamonds = (state.data.diamonds || 0) + action.payload;
     },
     updateProfile: (state, action) => {
       state.data = { ...state.data, ...action.payload };
@@ -285,11 +286,20 @@ export const userSlice = createSlice({
     // ── ECONOMY ─────────────────────────────────────────────────────────────
     awardGems: (state, action) => {
       const { subject, amount } = action.payload;
-      const gemKey = `${subject}Gems`;
-      if (state.data[gemKey] !== undefined) {
-        state.data[gemKey] += amount;
+      const s = subject?.toLowerCase();
+      
+      // Map 'general', 'master', or null to the global 'diamonds' balance
+      if (!s || s === 'general' || s === 'master' || s === 'overall') {
+          state.data.diamonds = (state.data.diamonds || 0) + amount;
+      } else {
+          const gemKey = `${s}Gems`;
+          if (state.data[gemKey] !== undefined) {
+            state.data[gemKey] += amount;
+          } else {
+            // Fallback to diamonds if subject key is missing
+            state.data.diamonds = (state.data.diamonds || 0) + amount;
+          }
       }
-      state.data.diamonds += Math.floor(amount / 2); // Bonus diamonds
     },
     // Award coins (Manya soft currency)
     awardCoins: (state, action) => {
@@ -350,6 +360,8 @@ export const userSlice = createSlice({
 
         state.data.longest_streak = Math.max(state.data.longest_streak || 0, state.data.current_streak);
         state.data.last_active_at = new Date().toISOString();
+
+        // 🏆 Challenge: Check streak milestones moved to thunk or engine
     },
     // ── SESSION ─────────────────────────────────────────────────────────────
     resetSession: (state) => {

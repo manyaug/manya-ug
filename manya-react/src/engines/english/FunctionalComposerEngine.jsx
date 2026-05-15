@@ -21,7 +21,10 @@ const FunctionalComposerEngine = ({ data, onComplete }) => {
     const [showFinish, setShowFinish] = useState(false);
 
     const startTimeRef = useRef(Date.now());
-    const questions = useMemo(() => data?.questions || [], [data]);
+    const questions = useMemo(() => {
+        const payload = data?.data || data;
+        return payload?.questions || payload?.queries || payload?.items || [];
+    }, [data]);
     const currentQ = questions[currentStep];
 
     const availableItems = useMemo(() => {

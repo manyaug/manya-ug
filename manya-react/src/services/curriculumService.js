@@ -14,32 +14,42 @@ let fetchPromise = null;
 let dynamicContentCache = {};
 let dynamicFetchPromise = {}; // SINGLE-FETCH LOCK for level 1.0 subjects
 
-/**
- * Pre-loads the curriculum. Should be called at app start.
- */
 export async function preloadCurriculum() {
+    // 1. Instant Cache Return
     if (curriculumCache) return curriculumCache;
+    
+    // 2. Return existing promise if already fetching
     if (fetchPromise) return fetchPromise;
 
+    // 3. Start Atomic Fetch
     fetchPromise = (async () => {
-        // Master curriculum is consistently stored in /content/ in the current version
         const CDN_URL = assetUrl('content/curriculum-master.json');
 
         try {
             console.log("☁️ [Curriculum] Fetching remote master curriculum...");
-            let raw;
-            try {
-                raw = await storageFacade.get(`file:${CDN_URL}`);
-            } catch (e) {
-                console.warn(`[Curriculum] Remote CDN fetch failed. Falling back to LOCAL bundled curriculum...`);
-                raw = await storageFacade.get('file:/curriculum-master.json');
-            }
+            
+            // Fail-safe: If the storageFacade hangs, we don't want to block the app forever
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Curriculum fetch timeout')), 8000)
+            );
+
+            const fetchOp = (async () => {
+                let raw;
+                try {
+                    raw = await storageFacade.get(`file:${CDN_URL}`);
+                } catch (e) {
+                    console.warn(`[Curriculum] Remote CDN fetch failed. Falling back to local...`);
+                    raw = await storageFacade.get('file:/curriculum-master.json');
+                }
+                return raw;
+            })();
+
+            const raw = await Promise.race([fetchOp, timeoutPromise]);
 
             if (!raw) {
-                throw new Error(`Master curriculum not found anywhere`);
+                throw new Error(`Master curriculum not found`);
             }
             
-            // Normalize keys to lowercase for resilient lookup
             const norm = {};
             Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
             
@@ -48,7 +58,9 @@ export async function preloadCurriculum() {
             return norm;
         } catch (err) {
             console.error("❌ [Curriculum] Load failed:", err);
-            return null;
+            // Fallback to empty object so findQuestData doesn't crash but at least returns
+            curriculumCache = {}; 
+            return {};
         } finally {
             fetchPromise = null;
         }

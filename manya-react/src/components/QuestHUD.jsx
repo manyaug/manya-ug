@@ -79,9 +79,9 @@ const QuestHUD = ({
     const PASS_THRESHOLD = 60;
     const isPassing = masteryScore >= PASS_THRESHOLD;
     
-    const themeColor = isPassing ? 'var(--manya-gold)' : 'var(--manya-purple)';
+    const themeColor = 'var(--manya-gold)'; // Unified Amber/Gold for high-contrast visibility
 
-    const showMastery = nodeType !== 'EXPLORE' && nodeType !== 'WARMUP';
+    const showMastery = nodeType !== 'EXPLORE'; 
 
     return (
         <div className="quest-hud-premium" data-subject={subject.toLowerCase()}>
@@ -125,12 +125,12 @@ const QuestHUD = ({
                 <div className={`hud-mastery-card-premium ${immersive ? 'hud-immersive-compact' : ''}`}>
                     <div className="mastery-label-flex">
                         <div className="mastery-progress-header">
-                             <span>{internalTotal > 0 ? `Quest ${internalIndex}/${internalTotal}` : 'Quest Progress'}</span>
+                             <span>{internalTotal > 0 ? `Step ${internalIndex}/${internalTotal}` : 'Mastery Progress'}</span>
                         </div>
                         {showMastery && (
                             <span className="mastery-pct-val" style={{ 
                                 color: themeColor,
-                                textShadow: isPassing ? `0 0 10px ${themeColor}88` : 'none'
+                                textShadow: `0 0 10px ${themeColor}66`
                             }}>
                                 <Trophy size={10} className="inline mr-1" />
                                 Mastery: {Math.round(masteryScore)}% / {PASS_THRESHOLD}%

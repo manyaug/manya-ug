@@ -7,36 +7,42 @@ import { getEngine } from '../config/engineRegistry';
 import { dynamicModeService } from '../domain/gamification/dynamicModeService';
 import { QuestSession } from '../application/QuestSession';
 import { audioService } from '../infrastructure/audio/audioService.js';
-import { updateBalanceThunk, dropChest, incrementQuestCount, checkAchievements, syncUserData } from '../store/userSlice';
+import { challengeService } from '../domain/gamification/challengeService.js';
+import { updateBalanceThunk, dropChest, incrementQuestCount, checkAchievements, syncUserData, updateSessionAfterAnswer } from '../store/userSlice';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
+import { syncService } from '../infrastructure/sync/syncService.js';
+import { conceptMasteryService } from '../domain/mastery/conceptMasteryService.js';
+import { parseQuestionId } from '../utils/questionParser';
+import { feedbackService } from '../application/feedbackService';
 
-const SUBJECT_COLOR = { 
-    math: 'var(--subject-math)', 
-    science: 'var(--subject-science)', 
-    sst: 'var(--subject-sst)', 
-    english: 'var(--subject-english)' 
+const SUBJECT_COLOR = {
+    math: 'var(--subject-math)',
+    science: 'var(--subject-science)',
+    sst: 'var(--subject-sst)',
+    english: 'var(--subject-english)'
 };
 
 export function useQuestOrchestrator() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const user     = useSelector(s => s.user.data);
+    const user = useSelector(s => s.user.data);
 
-    const [phase,    setPhase]    = useState('loading');
-    const [steps,    setSteps]    = useState([]);
-    const [stepIdx,  setStepIdx]  = useState(0);
-    const [frustration, setFrustration] = useState(0); 
+    const [phase, setPhase] = useState('loading');
+    const [steps, setSteps] = useState([]);
+    const [stepIdx, setStepIdx] = useState(0);
+    const [frustration, setFrustration] = useState(0);
     const [btnState, setBtnState] = useState({ enabled: true, label: 'CONTINUE', action: null });
-    const [meta,     setMeta]     = useState({ title: 'Quest', subject: 'math' });
+    const [meta, setMeta] = useState({ title: 'Quest', subject: 'math' });
     const [activeEngine, setActiveEngine] = useState(null);
     const [renderTrigger, setRenderTrigger] = useState(0);
     const [sessionRewards, setSessionRewards] = useState({ coins: 0, gems: 0 });
-    
+
     const [subProgress, setSubProgress] = useState({ current: 0, total: 0 });
     const [virtualTotal, setVirtualTotal] = useState(0);
-    
+
     const hasFinishedRewards = useRef(false);
-    
+
     const performanceRef = useRef({
         startTime: Date.now(),
         speedrunEngaged: false,
@@ -50,7 +56,7 @@ export function useQuestOrchestrator() {
         finalStars: 0,
         hintCount: 0
     });
-    
+
     const sessionRef = useRef(null);
     const initRef = useRef(false);
 
@@ -69,18 +75,18 @@ export function useQuestOrchestrator() {
                 let resolvedSteps, resolvedMeta;
                 if (state.steps && Array.isArray(state.steps)) {
                     resolvedSteps = state.steps;
-                    resolvedMeta  = { title: state.title || 'Quest', subject: state.subject || 'math' };
+                    resolvedMeta = { title: state.title || 'Quest', subject: state.subject || 'math' };
                 } else {
                     const { steps: s, meta: m } = await loadQuestSteps(state.subject, state.unitId, state.questFolder, state.file);
                     resolvedSteps = s;
-                    resolvedMeta  = { title: state.label || m.topic || 'Quest', subject: state.subject || 'math' };
+                    resolvedMeta = { title: state.label || m.topic || 'Quest', subject: state.subject || 'math' };
                 }
 
                 if (resolvedSteps.length === 0) throw new Error('No steps in quest');
 
                 setSteps(resolvedSteps);
                 setMeta(resolvedMeta);
-                
+
                 sessionRef.current = new QuestSession(resolvedSteps, resolvedMeta);
                 setStepIdx(sessionRef.current.stepIndex);
                 setPhase('running');
@@ -91,7 +97,7 @@ export function useQuestOrchestrator() {
             }
         }
         init();
-        
+
         return () => { window.__manyaIsTyping = false; };
     }, [location.key, navigate, dispatch]); // Use location.key for stability
 
@@ -115,12 +121,12 @@ export function useQuestOrchestrator() {
         }
 
         const isImmersive = engineMeta.isImmersive;
-        const isWait      = engineMeta.isWait;
-        const isLast      = stepIdx === steps.length - 1;
-        const isFetcher   = engineType.includes('FETCHER');
+        const isWait = engineMeta.isWait;
+        const isLast = stepIdx === steps.length - 1;
+        const isFetcher = engineType.includes('FETCHER');
 
         const startsEnabled = isWait && !isImmersive;
-        const initialLabel  = (isLast && !isFetcher) ? 'FINISH' : (isImmersive ? 'SUBMIT ANSWER' : 'CONTINUE');
+        const initialLabel = (isLast && !isFetcher) ? 'FINISH' : (isImmersive ? 'SUBMIT ANSWER' : 'CONTINUE');
 
         setBtnState({ enabled: startsEnabled, label: initialLabel, action: null });
 
@@ -130,13 +136,23 @@ export function useQuestOrchestrator() {
         }
 
         let mode = dynamicModeService.getNextMode(
-            location.state?.forceMode, 
+            location.state?.forceMode,
             location.state?.nodeType,
             { isRecap: currentStep.isRecap, isSimulation: currentStep.isSimulation, engineType: currentStep.engineType }
         );
 
         const baseData = currentStep.data || currentStep;
         let engineData = { ...baseData, currentMode: mode, unitId: location.state?.unitId, questFolder: location.state?.questFolder };
+        
+        // v9.1: GAMIFICATION PROTECTION
+        // Ensure study steps NEVER trigger speedrun/reverse timers
+        const isStudyStep = engineData?.isStudyStep || engineData?.noGamification || engineType === 'NOTE_EXPLORER';
+        if (isStudyStep && mode !== 'normal') {
+            console.log(`🛡️ [Orchestrator] Suppressing ${mode} for Study Step. Forcing normal.`);
+            mode = 'normal';
+            engineData.currentMode = 'normal';
+            dynamicModeService.stopSpeedrun();
+        }
 
         if (mode === 'reverse' && (engineType === 'MCQ' || engineType === 'MCQ_STANDALONE')) {
             const reversed = dynamicModeService.generateReverseQuestion(baseData, steps.map(s => s.data || s));
@@ -147,7 +163,7 @@ export function useQuestOrchestrator() {
                 engineData.currentMode = 'normal';
             }
         }
-        
+
         if (mode === 'speedrun') {
             dynamicModeService.startSpeedrun(18, () => {
                 window.dispatchEvent(new CustomEvent('manya-engine-timeout'));
@@ -157,7 +173,7 @@ export function useQuestOrchestrator() {
         }
 
         setSubProgress({ current: 0, total: 0 });
-        
+
         console.log(`[QuestOrchestrator] Mounting Engine: ${engineType} | Mode: ${mode}`);
         setActiveEngine({ ...engineMeta, engineType, data: engineData, currentMode: mode });
     }, [phase, stepIdx, steps[stepIdx], meta.subject, dispatch]); // Simplified dependencies
@@ -167,9 +183,9 @@ export function useQuestOrchestrator() {
         if (phase === 'finished' || hasFinishedRewards.current) return;
         setPhase('finished');
         hasFinishedRewards.current = true;
-        
+
         const result = await sessionRef.current.finalize(performanceRef.current, user, location.state);
-        
+
         performanceRef.current.finalMastery = result.masteryScore;
         performanceRef.current.finalCoins = result.earnedCoins;
         performanceRef.current.finalStars = result.stars;
@@ -186,8 +202,9 @@ export function useQuestOrchestrator() {
         });
 
         dispatch(incrementQuestCount());
-        
-        const msg = result.earnedRewards.length > 0 
+        challengeService.tick('QUEST_COUNT', 1);
+
+        const msg = result.earnedRewards.length > 0
             ? `🏆 Quest complete! Earned ${result.earnedCoins} Coins and ${result.earnedRewards.length} Reward Chests!`
             : `🏁 Quest complete! +${result.earnedCoins} Coins earned`;
         dispatch(addToast({ message: msg, type: 'success' }));
@@ -215,7 +232,7 @@ export function useQuestOrchestrator() {
 
     const handleEngineResult = useCallback(async (result) => {
         if (!sessionRef.current) return;
-        
+
         if (result?.type?.includes('partial') || result?.type?.includes('pulse')) {
             const current = result.subScore ?? result.score;
             const total = result.subTotal ?? result.total;
@@ -253,9 +270,69 @@ export function useQuestOrchestrator() {
 
         dynamicModeService.stopSpeedrun();
 
-        window.dispatchEvent(new CustomEvent(result.isCorrect ? 'manya-correct' : 'manya-wrong', { 
-            detail: { subject: meta.subject, isCorrect: result.isCorrect, conceptId: outcome.conceptId } 
+        // 🎯 [Universal Feedback] Centralized Motivation Utility
+        if (result.isCorrect) {
+            feedbackService.triggerCorrect(meta.subject, result);
+        } else {
+            feedbackService.triggerWrong(meta.subject);
+        }
+
+        window.dispatchEvent(new CustomEvent(result.isCorrect ? 'manya-correct' : 'manya-wrong', {
+            detail: { subject: meta.subject, isCorrect: result.isCorrect, conceptId: outcome.conceptId }
         }));
+
+        // 📊 [Manya Logic v8.5] Record granular telemetry for the adaptive engine
+        const { baseId } = parseQuestionId(outcome.conceptId || result.id || 'unknown');
+        
+        // 1. Update Concept Mastery (Spaced Repetition + Ladder State)
+        conceptMasteryService.updateAfterAnswer(meta.subject, baseId, result.isCorrect);
+        
+        // 2. Record locally for session history
+        ManyaDB.recordAnswer(meta.subject, {
+            questionId: outcome.conceptId || result.id || 'unknown',
+            conceptId: baseId,
+            isCorrect: result.isCorrect,
+            selectedAnswer: result.selectedAnswer,
+            correctAnswer: result.correctAnswer,
+            timeSpentMs: result.timeSpentMs || 5000,
+            hintUsed: result.hintUsed || false,
+            answerChanged: result.answerChanged || false,
+            frustrationLevel: frustration
+        });
+
+        // 3. Sync to Cloud
+        syncService.pushAnswer(meta.subject, {
+            questionId: outcome.conceptId || result.id || 'unknown',
+            isCorrect: result.isCorrect,
+            selectedAnswer: result.selectedAnswer,
+            correctAnswer: result.correctAnswer,
+            timeSpentMs: result.timeSpentMs || 5000,
+            hintUsed: result.hintUsed || false,
+            answerChanged: result.answerChanged || false,
+            frustrationLevel: frustration
+        });
+
+        // 4. Update UI state (HUD, etc.)
+        dispatch(updateSessionAfterAnswer({
+            subject: meta.subject,
+            isCorrect: result.isCorrect,
+            hintUsed: result.hintUsed || false,
+            answerChanged: result.answerChanged || false,
+            timeSpentMs: result.timeSpentMs || 5000,
+            questionId: outcome.conceptId || result.id || 'unknown'
+        }));
+
+        // 🏆 CHALLENGE ENGINE: Record progress in gamification system
+        challengeService.tick('QUESTIONS_ANSWERED', 1);
+        if (result.isCorrect) {
+            challengeService.tick('CORRECT_ANSWERS', 1);
+            if (meta.subject) {
+                challengeService.tick(`${meta.subject.toUpperCase()}_CORRECT`, 1);
+            }
+            if (!result.hintUsed && !result.answerChanged) {
+                challengeService.tick('PERFECT_ANSWERS', 1);
+            }
+        }
 
         if (!result?.type?.includes('partial') && !result?.type?.includes('pulse')) {
             const currentMastery = sessionRef.current?.lastMasteryScore || 0;
@@ -276,7 +353,7 @@ export function useQuestOrchestrator() {
         const updatedSteps = [...steps];
         updatedSteps.splice(stepIdx, 1, ...newSteps);
         setSteps(updatedSteps);
-        sessionRef.current.steps = updatedSteps; 
+        sessionRef.current.steps = updatedSteps;
         setVirtualTotal(updatedSteps.length);
     }, [steps, stepIdx]);
 

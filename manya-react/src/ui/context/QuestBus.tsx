@@ -6,6 +6,8 @@ interface QuestBusState {
     disableButton: () => void;
     setIsTyping: (val: boolean) => void;
     onEngineResult: (result: any) => void;
+    setPools: (pools: { MCQ?: any[], SIMULATION?: any[], NOTE?: any[], RECAP?: any[] }) => void;
+    replaceCurrentStepWith: (steps: any[]) => void;
 }
 
 const QuestBusContext = createContext<QuestBusState | null>(null);
@@ -13,15 +15,15 @@ const QuestBusContext = createContext<QuestBusState | null>(null);
 export const useQuestBus = () => {
     const context = useContext(QuestBusContext);
     if (!context) {
-        // We log instead of throw here to not crash legacy engines missing the context tree, 
-        // but ideally this throws an error.
         console.warn("[QuestBus] useQuestBus called outside QuestBusProvider! Returning no-ops.");
         return {
             advanceStep: () => {},
             enableButton: () => {},
             disableButton: () => {},
             setIsTyping: () => {},
-            onEngineResult: () => {}
+            onEngineResult: () => {},
+            setPools: () => {},
+            replaceCurrentStepWith: () => {}
         };
     }
     return context;

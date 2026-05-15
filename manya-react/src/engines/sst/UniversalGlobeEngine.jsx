@@ -18,17 +18,28 @@ import GlobeCanvas from './UniversalGlobe/GlobeCanvas';
  * - DECOUPLED: Logic (GlobeLogic), Renderer (GlobeRenderer), Canvas (GlobeCanvas), Controller (Engine)
  */
 const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) => {
-    // 🛡️ [Manya v5.9] Payload Normalization
-    // If the data comes from a single database row (MCQ), wrap it into the expected simulation format.
-    const data = (rawData.question && !rawData.questions) 
-        ? { ...rawData, id: rawData.id || rawData.qid, questions: [{ 
-            ...rawData,
-            id: rawData.id || rawData.qid,
-            question: rawData.question, 
-            options: rawData.options || [], 
-            correctAnswer: rawData.answer || rawData.correctAnswer,
-            explanation: rawData.explanation 
-          }], mode: 'quiz' }
+    // 🛡️ [Manya v5.9] Payload Normalization (v8.2)
+    // If the data comes from a single database row (MCQ) or is a simple marker, 
+    // wrap it into the expected simulation format to ensure rendering.
+    const data = (rawData.question || rawData.lat || rawData.lon) && !rawData.questions && !rawData.cases && !rawData.pieces
+        ? { 
+            ...rawData, 
+            id: rawData.id || rawData.qid, 
+            questions: rawData.question ? [{ 
+                ...rawData,
+                id: rawData.id || rawData.qid,
+                question: rawData.question, 
+                options: rawData.options || [], 
+                correctAnswer: rawData.answer || rawData.correctAnswer,
+                explanation: rawData.explanation 
+            }] : [],
+            cases: (rawData.lat || rawData.lon) ? [{
+                id: 'spotlight',
+                title: rawData.question || 'Geographic Focus',
+                markers: [{ lat: rawData.lat, lon: rawData.lon, label: rawData.subtopic || 'Location' }]
+            }] : [],
+            mode: rawData.question ? 'quiz' : 'study'
+          }
         : { ...rawData, id: rawData.id || rawData.qid };
 
     const mode = data.mode?.toLowerCase() || 
@@ -122,7 +133,7 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
                 }
             }));
 
-            if (onResult) onResult({ isCorrect: true, score: activeTab + 1, total: data.questions.length, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer });
+            if (onResult) onResult({ isCorrect: true, score: activeTab + 1, total: data.questions?.length || 1, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer });
             setQuizFeedback({ type: 'success', text: "Correct!" });
             setTimeout(() => {
                 if (activeTab < data.questions.length - 1) {
@@ -144,7 +155,7 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
                 }
             }, 1200);
         } else {
-            if (onResult) onResult({ isCorrect: false, score: activeTab, total: data.questions.length, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer, duration, mistakes: 1 });
+            if (onResult) onResult({ isCorrect: false, score: activeTab, total: data.questions?.length || 1, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer, duration, mistakes: 1 });
             mistakesRef.current += 1;
             onSimWrong?.(); // Snappy "Try Again" Overlay
             setQuizFeedback({ type: 'error', text: '' }); // Clear text to avoid distraction, just show overlay
@@ -255,6 +266,7 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
             }));
         }
 
+        if (onResult) onResult({ isCorrect: true, score: data.cases?.length || 1, total: data.cases?.length || 1, type: 'study' });
         if (onComplete) onComplete({ isCorrect: true, score: data.cases?.length || 1, total: data.cases?.length || 1, type: 'study' });
     };
 

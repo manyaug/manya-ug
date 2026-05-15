@@ -14,8 +14,12 @@ import GridRenderer from './WordGrid/GridRenderer';
 const WordGridEngine = ({ data, onComplete, onResult }) => {
     const gridSize = data?.size || 8;
     const rawWords = useMemo(() => {
-        if (!data?.words) return ["MANYA", "LEARN", "APP"];
-        return data.words.map(w => (typeof w === 'string' ? w : w.word).toUpperCase());
+        // v9.9: Hardened Data Extraction - Look for words in all possible keys
+        const payload = data?.data || data;
+        const words = payload?.words || payload?.vocabulary || payload?.word_list || payload?.segments || payload?.items;
+        
+        if (!Array.isArray(words)) return ["MANYA", "LEARN", "APP"];
+        return words.map(w => (typeof w === 'string' ? w : w.word).toUpperCase());
     }, [data]);
 
     const [grid, setGrid] = useState([]);

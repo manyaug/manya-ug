@@ -37,7 +37,7 @@ import ResetPasswordView from './views/ResetPasswordView';
 import SplashScreen from './components/SplashScreen';
 import DebugAuditView from './views/DebugAuditView';
 
-import { initializeUser } from './store/userSlice';
+import { initializeUser, addDiamonds, awardGems } from './store/userSlice';
 import { supabase } from './infrastructure/remote/supabaseClient';
 import './styles/global.css';
 
@@ -149,6 +149,26 @@ function AppContent() {
         return () => subscription.unsubscribe();
     }, [dispatch, navigate]);
 
+    // 🏆 CHALLENGE REWARD INTERCEPTOR: Listens for completions from ChallengeService
+    useEffect(() => {
+        const handleChallengeReward = (e) => {
+            const { challenge, reward } = e.detail;
+            if (!reward) return;
+
+            const subject = (challenge.subject || 'all').toLowerCase();
+            console.log(`🎁 [App] Challenge Reward Received: ${reward} gems for ${subject}`);
+
+            if (subject === 'all' || subject === 'general') {
+                dispatch(addDiamonds(reward));
+            } else {
+                dispatch(awardGems({ subject, amount: reward }));
+            }
+        };
+
+        window.addEventListener('manya-challenge-completed', handleChallengeReward);
+        return () => window.removeEventListener('manya-challenge-completed', handleChallengeReward);
+    }, [dispatch]);
+
     // Boot user from ManyaDB
     useEffect(() => {
         dispatch(initializeUser());
@@ -185,11 +205,11 @@ function AppContent() {
         <>
             <AudioManager />
             <FXLayer />
+            <RouterLayout />
             <InteractionFeedback />
             <MascotReaction />
-            {/* ChestRevealModal lives here so it overlays any screen in the app */}
             <ChestRevealModal />
-            <RouterLayout />
+            <BadgeCelebrationModal />
         </>
     );
 }

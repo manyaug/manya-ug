@@ -282,6 +282,22 @@ export function getEngine(engineType: string): EngineRegistryEntry {
     else if (resolvedType === 'MCQ') {
         resolvedType = 'MCQ_STANDALONE';
     }
+    // English Aliases
+    else if (resolvedType === 'PUNCTUATION_PORTAL') {
+        resolvedType = 'PUNCTUATION_STICKERS';
+    }
+    else if (resolvedType === 'SENTENCE_TRAIN_ENGINE') {
+        resolvedType = 'SENTENCE_TRAIN';
+    }
+    else if (resolvedType === 'SENTENCE_TRAIN_V2') {
+        resolvedType = 'SENTENCE_TRAIN';
+    }
+    else if (resolvedType === 'WORDGRID_ENGINE_LEGACY') {
+        resolvedType = 'WORDGRID_ENGINE';
+    }
+    else if (resolvedType === 'HANGMAN_CHALLENGE') {
+        resolvedType = 'HANGMAN_ENGINE';
+    }
 
     const entry = ENGINE_REGISTRY[resolvedType];
     

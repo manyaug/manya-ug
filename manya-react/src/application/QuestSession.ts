@@ -34,6 +34,9 @@ export class QuestSession {
     private _lastMasteryScore: number = 0;
     private _lastFrustrationScore: number = 0;
     private _sessionStartTime: number = Date.now();
+    private _simPool: any[] = [];
+    private _notePool: any[] = [];
+    private _recapPool: any[] = [];
     // Removed dependency on direct React dispatch. We return outcomes.
 
     constructor(steps: QuestStep[], meta: QuestMeta) {
@@ -58,6 +61,8 @@ export class QuestSession {
     }
 
     get isFinished(): boolean {
+        // [Manya Worldclass V8.5] ONLY finish when physical steps are exhausted.
+        // We no longer exit early on 100% mastery to ensure the pedagogical flow is complete.
         return this._currentIndex >= this._steps.length;
     }
 
@@ -77,6 +82,12 @@ export class QuestSession {
         return this._lastMasteryScore;
     }
 
+    setPools(pools: { SIMULATION?: any[], NOTE?: any[], RECAP?: any[] }) {
+        this._simPool = pools.SIMULATION || [];
+        this._notePool = pools.NOTE || [];
+        this._recapPool = pools.RECAP || [];
+    }
+
     /**
      * PEEK RESULT
      * Used for live granular progress (pulses) from simulation engines.
@@ -85,7 +96,8 @@ export class QuestSession {
     peekResult(engineResult: any) {
         if (!this.currentStep) return;
         // Denominator should be the total questions in the pool or the total steps in the quest
-        const totalQuestions = Math.max(engineResult.total || 0, this._steps.length);
+        // v8.5: Use a stable denominator to prevent score spikes
+        const totalQuestions = Math.max(10, this._steps.length);
         
         // Use the absolute score (correct + fractional) if provided by the fetcher
         const absoluteScore = engineResult.score !== undefined ? engineResult.score : (this._correctCount + (engineResult.pulseScore || 0));
@@ -108,15 +120,14 @@ export class QuestSession {
             }, this._meta.subject);
             this._lastMasteryScore = usp.masteryScore;
         } else {
-            // Updated: Calculate accuracy against the TOTAL quest questions
-            // Fetcher engines provide 'total' in the result.
-            const totalQuestions = Math.max(engineResult.total || 0, this._steps.length);
+            // v8.5: Use stable denominator (at least 10) to ensure smooth progression
+            const totalQuestions = Math.max(10, this._steps.length);
             const currentCorrect = this._correctCount + (engineResult.isCorrect ? 1 : 0);
             
-            this._lastMasteryScore = Math.round((currentCorrect / totalQuestions) * 100);
+            this._lastMasteryScore = Math.min(100, Math.round((currentCorrect / totalQuestions) * 100));
         }
         
-        console.log(`📊 [QuestSession] USP Mastery Score: ${this._lastMasteryScore}%`);
+        console.log(`📊 [QuestSession] USP Mastery Score: ${this._lastMasteryScore}% | Steps: ${this._currentIndex + 1}/${this._steps.length}`);
 
         const isCorrect = usp ? usp.isPassing : engineResult.isCorrect;
 
@@ -187,7 +198,10 @@ export class QuestSession {
         const rescueStep = await generateRescueStep(
             subject, 
             this._lastFrustrationScore, 
-            conceptId
+            conceptId,
+            this._simPool,
+            this._notePool,
+            this._recapPool
         );
         
         // Mutate array and return it
@@ -210,22 +224,21 @@ export class QuestSession {
         
         const completionBonus = baseCoins + (this._correctCount * scale);
         const earnedCoins = completionBonus + (performance.totalCoins || 0);
-        const hasFetcher = this._steps.some(s => s.engineType?.includes('FETCHER'));
-        let masteryScore = 100;
 
         let completionResult = null;
-        if (questKey && safeNodeType && !hasFetcher) {
-            if (safeNodeType === 'EXPLORE') {
-                masteryScore = 100;
-            } else {
-                masteryScore = this._lastMasteryScore || Math.round((this._correctCount / this._steps.length) * 100);
-            }
-            // @ts-ignore
-            completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
+        let masteryScore = 0;
+
+        // --- MASTERY FINALIZATION (v8.2) ---
+        // We now always calculate mastery against the processed session results
+        if (safeNodeType === 'EXPLORE') {
+            masteryScore = 100;
+        } else {
+            masteryScore = this._lastMasteryScore || Math.round((this._correctCount / Math.max(1, this._steps.length)) * 100);
         }
-        
-        if (hasFetcher) {
-            masteryScore = this._lastMasteryScore ?? 0;
+
+        // --- PERSISTENCE (Universal) ---
+        if (questKey && safeNodeType) {
+            console.log(`💾 [QuestSession] Saving node completion: ${subject} | ${questKey} | ${safeNodeType} | Mastery: ${masteryScore}%`);
             // @ts-ignore
             completionResult = saveNodeCompletion(subject, questKey, safeNodeType, masteryScore);
         }
@@ -283,6 +296,7 @@ export class QuestSession {
             syncService.recordContentUnlock(`${questKey}/${completionResult.nextNode}`, `Study: ${this._meta.title || completionResult.nextNode}`, subject);
         }
 
+        const hasFetcher = this._steps.some(s => s.engineType?.includes('FETCHER'));
         if (hasFetcher) {
             syncService.recordSimulationUnlock(questKey, subject, `Sim: ${this._meta.title || 'Interactive Lesson'}`);
         }

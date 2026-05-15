@@ -38,17 +38,17 @@ class AudioService {
 
     playCorrectVoice() {
         const files = [
-            'Amazing', 'Awesome', 'Bam', 'Bravo', 'Champion',
-            'Correct', 'Epic', 'Great', 'Super', 'Well Done',
-            'Wow', 'You are Sharp'
+            'amazing', 'awesome', 'bam', 'bravo', 'champion',
+            'correct', 'epic', 'great', 'super', 'well_done',
+            'wow', 'you_are_sharp'
         ];
         this._playRandomFromFolder('correct', files);
     }
 
     playWrongVoice() {
         const files = [
-            'Almost There', 'Getting Better', 'Good Try',
-            'Keep Going', 'One More Try', 'Try Again',
+            'almost_there', 'getting_better', 'good_try',
+            'keep_going', 'one_more_try', 'try_again',
             'error-mistake', 'hehe'
         ];
         this._playRandomFromFolder('wrong', files);
@@ -56,16 +56,15 @@ class AudioService {
 
     playQuestCompleteVoice() {
         const files = [
-            'Champ', 'Full Marks', 'Genius', 'Nailed It',
-            'Proud Of You', 'Strong Work', 'Unstoppable'
+            'champ', 'full_marks', 'genius', 'nailed_it',
+            'proud_of_you', 'strong_work', 'unstoppable'
         ];
         this._playRandomFromFolder('quest_complete', files);
     }
 
     correct() {
         this.playSFX('correct');
-        // Play vocal rewards (Wow, Amazing, etc.) 
-        this.playCorrectVoice();
+        // v9.9: Vocal rewards managed centrally by feedbackService to prevent clashing
     }
 
     wrong() {

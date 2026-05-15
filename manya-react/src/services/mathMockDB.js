@@ -1,6 +1,7 @@
 import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { parseSolutionToSteps } from '../utils/solutionVisualizer';
+import { hydrateStepData, getEngineType } from '../engines/shared-engines/UniversalLogic';
 
 const BANK_CACHE = {};
 let CACHE_CLEARED = false;
@@ -24,6 +25,8 @@ const SUBTOPIC_MAP = {
 export const fetchMathQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
+        const spaceSub = subtopic.replace(/_/g, ' ');
+        console.log(`🗄️ [MathDB] Fetching bank for: ${subtopic}`);
         
         if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
 
@@ -34,14 +37,7 @@ export const fetchMathQuestions = async (topicId) => {
             return cached;
         }
 
-        // --- RESILIENT VAULT QUERY (v5.0 - Hybrid Matcher) ---
-        // 1. Try subject with wildcards (matches 'math' and 'mathematics')
-        // 2. Allow MCQ, Question, and Practice item types
-        // 3. Match subtopic with underscores or spaces
-        const spaceSub = subtopic.replace(/_/g, ' ');
-        const itemFilter = 'item_type.ilike.%MCQ%,item_type.ilike.%Question%,item_type.ilike.%Practice%';
-        
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${itemFilter}&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${spaceSub}%,subtopic.ilike.%${topicId}%`);
+        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${spaceSub}%,subtopic.ilike.%${topicId}%`);
 
         // FALLBACK: Aggressive Keyword Splitting (v5.0)
         if (!data || data.length === 0) {
@@ -52,7 +48,7 @@ export const fetchMathQuestions = async (topicId) => {
                 console.log(`🔍 [Math Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${itemFilter}&or=${keywordFilter}`);
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${keywordFilter}`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Math Vault] Discovered ${keywordData.length} related questions via keywords.`);
@@ -63,31 +59,39 @@ export const fetchMathQuestions = async (topicId) => {
 
         if (!data || data.length === 0) return [];
 
-        console.log("🔍 [Math Vault] Sample Record:", data[0]);
-
         const transformed = data.map(q => {
-            const options = [q.option_a, q.option_b, q.option_c, q.option_d]
-                .filter(opt => opt !== null && opt !== 'null' && opt !== '');
+            // v10.0: Unified Hydration via UniversalLogic
+            const parsedData = hydrateStepData(q);
+            const engineType = getEngineType(q);
+            
+            const hasData = parsedData && (Object.keys(parsedData).length > 2 || parsedData.questions || parsedData.sets);
+            
+            if (q.item_type === 'SIMULATION' && !hasData) {
+                console.warn(`🚨 [MathDB] Ghost Simulation detected: ${q.qid || q.id}. Missing payload.`);
+            }
+
+            const options = [q.option_a, q.option_b, q.option_c, q.option_d].filter(opt => opt && opt !== 'null');
 
             return {
                 id: q.qid || q.id,
                 qid: q.qid || q.id,
-                subject: typeof q.subject === 'object' ? (q.subject.label || q.subject.id) : (q.subject || 'math'),
-                topic: typeof q.topic === 'object' ? (q.topic.label || q.topic.id) : (q.topic || q.subtopic),
+                subject: q.subject || 'math',
+                topic: q.topic,
                 subtopic: q.subtopic,
                 difficulty: q.difficulty || 'E',
-                question: q.question_text || q.prompt || q.text || q.content || q.description || q.question || 'Select the correct option:',
-                options: options,
-                answer: q.correct_answer,
+                question: q.question_text || q.prompt || q.text || q.content || q.description || q.question || `Let's explore ${q.subtopic || q.topic || 'this concept'}!`,
+                options: options.length > 0 ? options : ["I'm ready!", "Let's go!", "Start Learning"],
+                answer: q.correct_answer || q.answer || "I'm ready!",
                 explanation: parseSolutionToSteps(q.explanation),
                 raw_explanation: q.explanation,
                 hint: q.hint,
-                image_url: q.image_location === 'null' ? null : q.image_location,
-                variant: q.qid.includes('-V') ? q.qid.split('-V')[1] : 'V0',
+                image_url: q.image_location === 'null' ? null : (q.image_url || q.image_location),
+                variant: q.variant || (q.qid?.includes('-V') ? q.qid.split('-V')[1] : 'V1'),
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],
-                engine_type: q.engine_type
+                engineType: engineType,
+                data: parsedData || {}, 
             };
         });
 

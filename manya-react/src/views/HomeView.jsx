@@ -3,11 +3,13 @@ import { audioService } from '../infrastructure/audio/audioService.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Target, Zap, Trophy, FlaskConical } from 'lucide-react';
+import { Target, Zap, Trophy, FlaskConical, ArrowRight, Rocket, ChevronRight } from 'lucide-react';
 import { setAmbientMode } from '../store/audioSlice';
 import { updateStreak } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
 import { getIsland, getGem, IMAGES } from '../config/assetUrls';
+import { challengeService } from '../domain/gamification/challengeService.js';
+import ChallengesModal from '../components/ChallengesModal/ChallengesModal.jsx';
 import '../styles/home.css';
 
 function HomeView() {
@@ -16,6 +18,17 @@ function HomeView() {
   const dispatch = useDispatch();
   const [curriculum, setCurriculum] = useState(null);
   const [streakChecked, setStreakChecked] = useState(false);
+  const [showChallenges, setShowChallenges] = useState(false);
+  const [challengeData, setChallengeData] = useState(null);
+
+  // Fetch active challenge for home card
+  useEffect(() => {
+    challengeService.fetchActive().then(d => d && setChallengeData(d));
+    const unsub = challengeService.onChange(({ challenge, progress }) => {
+      if (challenge) setChallengeData({ challenge, progress });
+    });
+    return unsub;
+  }, []);
 
   // ─── STREAK CHECK ───
   useEffect(() => {
@@ -32,6 +45,7 @@ function HomeView() {
              const newStreak = isYesterday ? oldStreak + 1 : 1;
 
              dispatch(updateStreak());
+             challengeService.tick('STREAK', newStreak);
 
              setTimeout(() => {
                  dispatch(addToast({
@@ -116,46 +130,45 @@ function HomeView() {
     >
       {/* Aurora Engine removed for Solid Opaque style */}
 
-      {/* 🚀 UNIFIED COMMAND CENTER */}
-      <motion.div variants={itemVariants} className="home-command-center">
-        <div className="toy-card-gloss" />
-        
-        {/* Top Row: User & Streak */}
-        <div className="command-header">
-          <div className="user-profile-mini" onClick={() => navigate('/profile')}>
-            <div className="avatar-ring">
-               <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
-            </div>
-            <div className="user-text">
-               <span className="hi-msg">Hi, {user.nickname || 'Hero'} 👋</span>
-               <span className="status-msg">Level 1 Voyager</span>
-            </div>
+      {/* 🧭 TOP NAVIGATION BAR (Sleek & Sticky) */}
+      <div className="top-navigation-bar">
+        <div className="user-profile-mini" onClick={() => navigate('/profile')}>
+          <div className="avatar-ring">
+            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`} alt="Avatar" />
           </div>
-
-          <div className="streak-badge-premium" onClick={() => navigate('/achievements')}>
-             <Zap size={16} fill="var(--manya-gold)" color="var(--manya-gold)" />
-             <span>{user.current_streak || 0}</span>
+          <div className="user-text">
+            <span className="hi-msg">Hi, {user.nickname || 'Hero'} 👋</span>
+            <span className="status-msg">Level 1 Voyager</span>
           </div>
         </div>
 
-        {/* Bottom Row: Active Quest (Live Activity Style) */}
-        <div 
-          className="command-mission-bar"
-          onClick={() => handleOpenSpiral(activeBounty?.sub || 'math')}
-        >
-          <div className="mission-info">
-             <span className="mission-label">RESUME DISCOVERY</span>
-             <h3 className="mission-name">
-                {activeBounty?.sub?.toUpperCase()}: {activeBounty?.quest?.title || 'Kickoff'}
-             </h3>
-          </div>
-          <button className="mission-play-btn">
-             <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                <path d="M8 5v14l11-7z" />
-             </svg>
-          </button>
+        <div className="streak-badge-premium" onClick={() => navigate('/achievements')}>
+          <Zap size={16} fill="var(--manya-gold)" color="var(--manya-gold)" />
+          <span>{user.current_streak || 0}</span>
+        </div>
+      </div>
+
+      {/* 🏆 DAILY CHALLENGE — Engaging Teaser */}
+      <motion.div
+        variants={itemVariants}
+        className="challenge-home-card"
+        onClick={() => setShowChallenges(true)}
+      >
+        <div className="chc-icon-wrap">
+          <Rocket size={20} className="chc-rocket" />
+        </div>
+        <div className="chc-content">
+          <span className="chc-label">DAY {challengeData?.challenge?.day_number || user.challenge_day || 1} CHALLENGE</span>
+          <h3 className="chc-name">{challengeData?.challenge?.title || 'Daily Quest'}</h3>
+        </div>
+        <div className="chc-cta">
+          <span>START</span>
+          <ChevronRight size={16} />
         </div>
       </motion.div>
+
+      {/* Challenges Modal */}
+      <ChallengesModal isOpen={showChallenges} onClose={() => setShowChallenges(false)} />
 
       {/* ── ZEN GRID 2.0: SUBJECT SQUARES ── */}
       <div className="subject-grid-modern">
@@ -188,28 +201,6 @@ function HomeView() {
         ))}
       </div>
 
-      {/* COMPACT SIMULATION LAB FOOTER */}
-      <motion.button
-        variants={itemVariants}
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
-        onClick={() => navigate('/sim-test')}
-        className="home-sim-lab-cta group btn-toy btn-toy-purple"
-      >
-        <div className="toy-card-gloss" />
-        <div className="sim-lab-left" style={{ zIndex: 2 }}>
-          <div className="sim-lab-icon-box">
-            <FlaskConical size={18} />
-          </div>
-          <div className="sim-lab-text">
-            <h4>Simulation Lab</h4>
-            <p style={{ color: 'white', opacity: 0.8 }}>Experimental Access</p>
-          </div>
-        </div>
-        <div className="sim-lab-arrow" style={{ zIndex: 2 }}>
-          →
-        </div>
-      </motion.button>
     </motion.div>
   );
 }

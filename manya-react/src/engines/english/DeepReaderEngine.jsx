@@ -22,8 +22,15 @@ const DeepReaderEngine = ({ data, onComplete }) => {
     const [showCoinBurst, setShowCoinBurst] = useState(false);
     const dispatch = useDispatch();
 
-    const questions = useMemo(() => data?.questions || [], [data]);
-    const media = data?.media || { type: 'PASSAGE', content: 'No content provided.' };
+    const questions = useMemo(() => {
+        const payload = data?.data || data;
+        return payload?.questions || payload?.queries || payload?.items || [];
+    }, [data]);
+
+    const media = useMemo(() => {
+        const payload = data?.data || data;
+        return payload?.media || payload?.content || payload?.passage || { type: 'PASSAGE', content: 'No content provided.' };
+    }, [data]);
     const currentQ = questions[currentStep];
 
     // Detect Dark Mode

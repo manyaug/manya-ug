@@ -50,25 +50,25 @@ const PunctuationRenderer = ({
                             const slot = slots.find(s => s.index === i);
                             return (
                                 <React.Fragment key={i}>
-                                    <span className="text-xl sm:text-3xl font-black tracking-tight">{text}</span>
+                                    <span className="text-xl sm:text-4xl font-black tracking-tight">{text}</span>
                                     {slot && (
                                         <div 
-                                            className={`group relative w-12 h-12 sm:w-16 sm:h-16 rounded-[24px] border-4 border-dashed flex items-center justify-center transition-all ${
+                                            className={`group relative w-10 h-10 sm:w-12 sm:h-12 rounded-2xl border-4 border-dashed flex items-center justify-center transition-all ${
                                                 slot.current 
-                                                ? 'border-pink-300 bg-pink-500 rotate-6 scale-110 shadow-xl' 
+                                                ? 'border-pink-300 bg-pink-500 rotate-3 scale-105 shadow-xl' 
                                                 : (isDark ? 'border-white/10 bg-white/5 hover:border-pink-500/40' : 'border-slate-200 bg-white hover:border-pink-200')
                                             }`}
                                         >
                                             <AnimatePresence mode="wait">
                                                 {slot.current ? (
                                                     <motion.span 
-                                                        initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 6 }}
-                                                        className="text-3xl sm:text-4xl font-black text-white font-serif"
+                                                        initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }}
+                                                        className="text-2xl sm:text-3xl font-black text-white font-serif"
                                                     >
                                                         {slot.current}
                                                     </motion.span>
                                                 ) : (
-                                                    <div className="w-2 h-2 rounded-full bg-slate-200 dark:bg-white/20" />
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-pink-400/30 animate-pulse" />
                                                 )}
                                             </AnimatePresence>
                                         </div>

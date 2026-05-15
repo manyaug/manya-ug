@@ -33,17 +33,20 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult, subject }) => {
     const correctText = correctOpt?.text || correctId || '';
     const solution = useMemo(() => parseSolution(data.explanation), [data.explanation]);
 
-    // --- ⚡ SPEEDRUN ACTIVATION ---
+    // --- ⚡ SPEEDRUN & TIMEOUT HANDLING ---
     useEffect(() => {
-        if (data.mode === 'speedrun' || data.isSpeedrun) {
-            dynamicModeService.startSpeedrun(15, () => {
-                audioService.error();
-                setPhase('wrong');
-                onResult?.({ isCorrect: false, score: 0, type: 'mcq' });
-            });
-        }
-        return () => dynamicModeService.stopSpeedrun();
-    }, [data.mode, data.isSpeedrun, onResult]);
+        const handleTimeout = () => {
+            if (phase !== 'idle') return; // Already answered
+            audioService.error?.();
+            setPhase('wrong');
+            // Transition to solution so the user can see what they missed and Continue
+            setTimeout(() => setPhase('show-solution'), 1000);
+            onResult?.({ isCorrect: false, score: 0, type: 'mcq' });
+        };
+
+        window.addEventListener('manya-engine-timeout', handleTimeout);
+        return () => window.removeEventListener('manya-engine-timeout', handleTimeout);
+    }, [phase, onResult]);
 
     // --- 🎮 ACTIONS ---
     const handlePick = useCallback((opt) => {
@@ -58,10 +61,9 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult, subject }) => {
         const isCorrect = validateMCQAnswer(selected, correctId, options);
 
         if (isCorrect) {
-            audioService.success?.();
             setPhase('correct');
             
-            // 🎈 Trigger Global Celebration FX
+            // 🎈 Trigger Global Celebration FX (Particles only)
             window.dispatchEvent(new CustomEvent('manya-fx-correct'));
             
             onResult?.({ 
@@ -70,9 +72,7 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult, subject }) => {
                 type: 'mcq',
                 hintUsed: hintUsed
             });
-            // Auto-continue is handled by QuestRunner event listener
         } else {
-            audioService.error?.();
             setTimeout(() => setPhase('wrong'), 100);
             setTimeout(() => setPhase('show-solution'), 950);
             onResult?.({ 

@@ -18,22 +18,32 @@ import ManyaKeyboard from '../../components/engine/ManyaKeyboard';
 const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong }) => {
   // --- 🗃️ DATA NORMALIZATION (Manifest vs Single-Step) ---
   const normalizedData = React.useMemo(() => {
-    // 🔍 PIPELINE TRACE: Log every level of the incoming data
-    console.log("%c 🛰️ [SetTheory] RAW DATA KEYS:", "color: #f59e0b; font-weight: bold;", Object.keys(data || {}));
-    console.log("%c 🛰️ [SetTheory] data.sets:", "color: #f59e0b;", data?.sets);
-    console.log("%c 🛰️ [SetTheory] data.data keys:", "color: #f59e0b;", data?.data ? Object.keys(data.data) : 'NO data.data');
-    console.log("%c 🛰️ [SetTheory] data.data.sets:", "color: #f59e0b;", data?.data?.sets);
-    console.log("%c 🛰️ [SetTheory] data.questions:", "color: #f59e0b;", data?.questions ? `Array(${data.questions.length})` : data?.questions);
-    console.log("%c 🛰️ [SetTheory] data.data.questions:", "color: #f59e0b;", data?.data?.questions ? `Array(${data.data.questions.length})` : data?.data?.questions);
-
-    // 🧠 v8.9: Aggressively hunt for the manifest root (containing questions/sets)
-    // Supports: root, data sub-object, or single-step payloads
-    const root = data?.questions ? data : (data?.data?.questions ? data.data : data);
-    const sets = root?.sets || root?.data?.sets || data?.sets || data?.data?.sets;
-    const zones = root?.zones || root?.data?.zones || data?.zones || data?.data?.zones;
-    const questions = root?.questions || root?.steps || root?.data?.questions || root?.data?.steps || (Array.isArray(data) ? data : [root]);
+    // 🧠 v9.9: Data Autopsy (Print everything to find the hidden JSON)
+    console.log("%c 🕵️ [SetTheory Autopsy] Incoming Keys:", "color: #ef4444; font-weight: bold;", Object.keys(data || {}));
+    if (data?.data) console.log("%c 🕵️ [SetTheory Autopsy] data.data Keys:", "color: #ef4444;", Object.keys(data.data));
     
-    console.log("%c 🛰️ [SetTheory] RESOLVED: root.sets=", "color: #22c55e; font-weight: bold;", sets, "| root.zones=", zones);
+    // v9.9: Deep Search for the manifest root
+    const root = data?.questions ? data : (
+        data?.data?.questions ? data.data : (
+            data?.payload?.questions ? data.payload : (
+                data?.interactive_data?.questions ? data.interactive_data : data
+            )
+        )
+    );
+    
+    // Hunt for sets/zones in all possible layers
+    const sets = root?.sets || root?.data?.sets || data?.sets || data?.data?.sets || data?.payload?.sets || data?.interactive_data?.sets;
+    const zones = root?.zones || root?.data?.zones || data?.zones || data?.data?.zones || data?.payload?.zones || data?.interactive_data?.zones;
+    
+    // Hunt for questions/steps
+    let questions = root?.questions || root?.steps || root?.data?.questions || root?.data?.steps || data?.payload?.questions || data?.interactive_data?.questions;
+    
+    if (!questions) {
+        // Fallback: If no array, is the root itself a question?
+        questions = (root?.prompt || root?.question || root?.text) ? [root] : (Array.isArray(data) ? data : [root]);
+    }
+    
+    console.log("%c 🛰️ [SetTheory] RESOLVED: sets=", "color: #22c55e; font-weight: bold;", !!sets, "| questions=", questions?.length);
 
     return {
       ...root,

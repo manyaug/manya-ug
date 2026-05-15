@@ -26,6 +26,7 @@ const SUBTOPIC_MAP = {
 export const fetchScienceQuestions = async (topicId) => {
     try {
         const subtopic = SUBTOPIC_MAP[topicId] || topicId;
+        console.log(`🗄️ [ScienceDB] Fetching bank for: ${subtopic}`);
         
         if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
 

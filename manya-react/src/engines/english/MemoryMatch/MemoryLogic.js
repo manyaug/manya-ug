@@ -8,7 +8,7 @@
  */
 export const initializeMemoryDeck = (data) => {
     const raw = data?.data || data || {};
-    const rawPairs = raw.pairs || raw.questions || raw.items || [];
+    const rawPairs = raw.pairs || raw.questions || raw.items || raw.vocabulary || [];
     
     const defaultPairs = [
         { item1: 'Cat', item2: 'Kitten' },

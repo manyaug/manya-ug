@@ -32,7 +32,10 @@ const SyntaxArchitectEngine = ({ data, onResult, onComplete }) => {
         resetMetrics 
     } = useBehavioralTracker(!!pool.length);
     const initialQuestions = useMemo(() => {
-        const raw = data?.questions || data?.queries || data?.items || [];
+        // v9.9: Hardened Data Extraction
+        const payload = data?.data || data;
+        const raw = payload?.questions || payload?.queries || payload?.items || payload?.items_list || [];
+        
         if (Array.isArray(raw) && raw.length > 0) return raw;
         return [{
             prompt: "She ___ (to be) a doctor.",

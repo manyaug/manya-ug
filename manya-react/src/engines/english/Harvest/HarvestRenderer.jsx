@@ -164,9 +164,15 @@ const HarvestRenderer = ({
                         <motion.div
                             key={item.id}
                             className="absolute pointer-events-none"
-                            style={{ left: `${item.x}%`, top: `${item.y}%`, transform: 'translate(-50%,-50%)', zIndex: 50, filter: `hue-rotate(${item.hue}deg)` }}
-                            initial={{ scale: 0, rotate: -20, opacity: 0 }}
-                            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                            style={{ 
+                                left: `${item.x}%`, 
+                                top: `${item.y}%`, 
+                                transform: `translate(-50%,-50%) rotate(${item.rotation || 0}deg)`, 
+                                zIndex: 50, 
+                                filter: `hue-rotate(${item.hue}deg)` 
+                            }}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 1.2, opacity: 0 }}
                         >
                             <div className="relative flex items-center justify-center">
