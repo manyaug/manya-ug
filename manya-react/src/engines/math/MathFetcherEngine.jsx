@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { fetchMathQuestions } from '../../services/mathMockDB';
+import { fetchMathQuestions, clearMathCache } from '../../services/mathMockDB';
 import { useQuestBus } from '../../ui/context/QuestBus';
 import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { syncService } from '../../infrastructure/sync/syncService';
@@ -21,6 +21,7 @@ export default function MathFetcherEngine({ data, onComplete }) {
         async function explode() {
             if (fetchingRef.current) return;
             fetchingRef.current = true;
+            clearMathCache();
             
             console.log(`[MathFetcher] Explode sequence started for: ${data?.topic}`);
 
@@ -67,13 +68,15 @@ export default function MathFetcherEngine({ data, onComplete }) {
                         bus.setPools(adaptiveResult.pools);
 
                         const explodedSteps = selectedQuestions.map(q => {
-                            const isSim = isSimSafe(q);
-                            const engineType = isSim ? getEngineType(q) : 'MCQ_STANDALONE';
+                            // v11.0: Scalable Routing Pattern (Matches English/SST)
+                            // We no longer manually "protect" against ghosts here. 
+                            // The engine router handles selection, and engines handle their own data.
+                            const engineType = getEngineType(q, 'math');
 
                             return {
-                                ...q,
                                 engineType,
-                                isSimulation: isSim,
+                                data: q,
+                                isSimulation: engineType !== 'MCQ_STANDALONE',
                                 subject: 'math'
                             };
                         });

@@ -1,0 +1,1531 @@
+{
+  "math": {
+    "theme": "#db2777",
+    "units": [
+      {
+        "id": "set_theory",
+        "title": "Set Theory",
+        "quests": [
+          {
+            "folder": "quest_01_finite_infinite_sets",
+            "title": "01 Finite Infinite Sets",
+            "prefix": "01",
+            "resources": [
+              {
+                "label": "Study Finite Infinite",
+                "file": "study_finite_infinite"
+              },
+              {
+                "label": "Practice 001.2",
+                "file": "01-001_2"
+              },
+              {
+                "label": "Practice 001.3",
+                "file": "01-001_3"
+              },
+              {
+                "label": "Practice 001.4",
+                "file": "01-001_4"
+              },
+              {
+                "label": "Practice 002.2",
+                "file": "01-002_2"
+              },
+              {
+                "label": "Practice 002.3",
+                "file": "01-002_3"
+              },
+              {
+                "label": "Practice 002.4",
+                "file": "01-002_4"
+              },
+              {
+                "label": "Practice 003.2",
+                "file": "01-003_2"
+              },
+              {
+                "label": "Practice 003.3",
+                "file": "01-003_3"
+              },
+              {
+                "label": "Practice 003.4",
+                "file": "01-003_4"
+              },
+              {
+                "label": "Practice 004.2",
+                "file": "01-004_2"
+              },
+              {
+                "label": "Practice 004.3",
+                "file": "01-004_3"
+              },
+              {
+                "label": "Practice 005.2",
+                "file": "01-005_2"
+              },
+              {
+                "label": "Practice 005.3",
+                "file": "01-005_3"
+              },
+              {
+                "label": "Practice 006.2",
+                "file": "01-006_2"
+              },
+              {
+                "label": "Practice 006.3",
+                "file": "01-006_3"
+              },
+              {
+                "label": "Practice 007.2",
+                "file": "01-007_2"
+              },
+              {
+                "label": "Practice 007.3",
+                "file": "01-007_3"
+              },
+              {
+                "label": "Practice 007.4",
+                "file": "01-007_4"
+              },
+              {
+                "label": "Practice 007.5",
+                "file": "01-007_5"
+              },
+              {
+                "label": "Practice 008.2",
+                "file": "01-008_2"
+              },
+              {
+                "label": "Recap Finite Infinite",
+                "file": "recap_finite_infinite"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_02_set_notation_regions",
+            "title": "02 Set Notation Regions",
+            "prefix": "02",
+            "resources": [
+              {
+                "label": "Study Operations 1",
+                "file": "study_operations_1"
+              },
+              {
+                "label": "Study Relation",
+                "file": "study_relation"
+              },
+              {
+                "label": "Study Relations",
+                "file": "study_relations"
+              },
+              {
+                "label": "Recap Set Notation Regions",
+                "file": "recap_set_notation_regions"
+              }
+            ],
+            "practiceCount": 20
+          },
+          {
+            "folder": "quest_03_calculating_subsets",
+            "title": "03 Calculating Subsets",
+            "prefix": "03",
+            "resources": [
+              {
+                "label": "Study Subsets",
+                "file": "study_subsets"
+              },
+              {
+                "label": "Recap Subsets",
+                "file": "recap_subsets"
+              }
+            ],
+            "practiceCount": 10
+          },
+          {
+            "folder": "quest_04_calculating_proper_subsets",
+            "title": "04 Calculating Proper Subsets",
+            "prefix": "04",
+            "resources": [
+              {
+                "label": "Study Proper Subsets",
+                "file": "study_proper_subsets"
+              },
+              {
+                "label": "Recap Proper Subsets",
+                "file": "recap_proper_subsets"
+              }
+            ],
+            "practiceCount": 19
+          },
+          {
+            "folder": "quest_05_working_backwards",
+            "title": "05 Working Backwards",
+            "prefix": "05",
+            "resources": [
+              {
+                "label": "Study Reverse Subsets",
+                "file": "study_reverse_subsets"
+              },
+              {
+                "label": "Recap Working Backwards",
+                "file": "recap_working_backwards"
+              }
+            ],
+            "practiceCount": 19
+          },
+          {
+            "folder": "quest_06_placing_info_on_venn_diagrams",
+            "title": "06 Placing Info On Venn Diagrams",
+            "prefix": "06",
+            "resources": [
+              {
+                "label": "06-sim 1",
+                "file": "06-sim_1"
+              },
+              {
+                "label": "Study Placing Info",
+                "file": "study_placing_info"
+              },
+              {
+                "label": "Study Venn Logic",
+                "file": "study_venn_logic"
+              },
+              {
+                "label": "Study Ven Solving",
+                "file": "study_ven_solving"
+              },
+              {
+                "label": "Recap Venn Diagrams",
+                "file": "recap_venn_diagrams"
+              }
+            ],
+            "practiceCount": 24
+          },
+          {
+            "folder": "quest_07_solving_for_unknowns",
+            "title": "07 Solving For Unknowns",
+            "prefix": "07",
+            "resources": [
+              {
+                "label": "Study Complex Algebra",
+                "file": "study_complex_algebra"
+              },
+              {
+                "label": "Study Finding Unknowns",
+                "file": "study_finding_unknowns"
+              },
+              {
+                "label": "Recap Solving Unknowns",
+                "file": "recap_solving_unknowns"
+              }
+            ],
+            "practiceCount": 24
+          },
+          {
+            "folder": "quest_08_application_of_sets",
+            "title": "08 Application Of Sets",
+            "prefix": "08",
+            "resources": [
+              {
+                "label": "Study Applications",
+                "file": "study_applications"
+              },
+              {
+                "label": "Recap Applications",
+                "file": "recap_applications"
+              }
+            ],
+            "practiceCount": 21
+          },
+          {
+            "folder": "quest_09_difference_of_sets_complements",
+            "title": "09 Difference Of Sets Complements",
+            "prefix": "09",
+            "resources": [
+              {
+                "label": "Study Complements",
+                "file": "study_complements"
+              },
+              {
+                "label": "Recap Complements",
+                "file": "recap_complements"
+              }
+            ],
+            "practiceCount": 23
+          },
+          {
+            "folder": "quest_10_probability_using_venn_diagrams",
+            "title": "10 Probability Using Venn Diagrams",
+            "prefix": "10",
+            "resources": [
+              {
+                "label": "10-sim 1",
+                "file": "10-sim_1"
+              },
+              {
+                "label": "Study Probabilities",
+                "file": "study_probabilities"
+              },
+              {
+                "label": "Recap Probability",
+                "file": "recap_probability"
+              }
+            ],
+            "practiceCount": 37
+          }
+        ]
+      }
+    ]
+  },
+  "science": {
+    "theme": "#16a34a",
+    "units": [
+      {
+        "id": "musklo-skeletal-system",
+        "title": "Musklo-skeletal-system",
+        "quests": [
+          {
+            "folder": "quest_1_types_of_skeletons",
+            "title": "1 Types Of Skeletons",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Types of Skeletons",
+                "file": "note_types_skeleton"
+              },
+              {
+                "label": "Study Types Skeleton",
+                "file": "study_types_skeleton"
+              },
+              {
+                "label": "Recap Quest 1",
+                "file": "recap_quest_1"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_2_human_skeleton",
+            "title": "2 Human Skeleton",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Human Skeleton",
+                "file": "note_human_skeleton"
+              },
+              {
+                "label": "Labeling V1",
+                "file": "labeling_v1"
+              },
+              {
+                "label": "Labeling V2",
+                "file": "labeling_v2"
+              },
+              {
+                "label": "Labeling V3",
+                "file": "labeling_v3"
+
+              },
+              {
+                "label": "Recap Quest 2",
+                "file": "recap_quest_2"
+              },
+              {
+                "label": "Study Sim",
+                "file": "study_sim"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_3_axial_skull_spine",
+            "title": "3 Axial Skull Spine",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Axial Skull & Spine",
+                "file": "note_axial_skull"
+              },
+              {
+                "label": "Labeling Skull V1",
+                "file": "labeling_skull_v1"
+              },
+              {
+                "label": "Labeling Skull V2",
+                "file": "labeling_skull_v2"
+              },
+              {
+                "label": "Labeling Spine V1",
+                "file": "labeling_spine_v1"
+              },
+              {
+                "label": "Labeling Spine V2",
+                "file": "labeling_spine_v2"
+              },
+              {
+                "label": "Recap Quest 3",
+                "file": "recap_quest_3"
+              },
+              {
+                "label": "Skull Study",
+                "file": "skull_study"
+              },
+              {
+                "label": "Spine Study",
+                "file": "spine_study"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_4_axial_rib_cage",
+            "title": "4 Axial Rib Cage",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Axial Rib Cage",
+                "file": "note_axial_ribs"
+              },
+              {
+                "label": "Labeling V1",
+                "file": "labeling_v1"
+              },
+              {
+                "label": "Labeling V2",
+                "file": "labeling_v2"
+              },
+              {
+                "label": "Labeling V3",
+                "file": "labeling_v3"
+              },
+              {
+                "label": "Recap Quest 4",
+                "file": "recap_quest_4"
+              },
+              {
+                "label": "Rib Study",
+                "file": "rib_study"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_5_appendicular_limbs",
+            "title": "5 Appendicular Limbs",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Appendicular Limbs",
+                "file": "note_appendicular_limbs"
+              },
+              {
+                "label": "Arm Study",
+                "file": "arm_study"
+              },
+              {
+                "label": "Labeling Arm V1",
+                "file": "labeling_arm_v1"
+              },
+              {
+                "label": "Labeling Arm V2",
+                "file": "labeling_arm_v2"
+              },
+              {
+                "label": "Labeling Leg V1",
+                "file": "labeling_leg_v1"
+              },
+              {
+                "label": "Labeling Leg V2",
+                "file": "labeling_leg_v2"
+              },
+              {
+                "label": "Leg Study",
+                "file": "leg_study"
+              },
+              {
+                "label": "Recap Quest 5",
+                "file": "recap_quest_5"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_6_bone_structure",
+            "title": "6 Bone Structure",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Bone Structure",
+                "file": "note_bone_structure"
+              },
+              {
+                "label": "Bone Study",
+                "file": "bone_study"
+              },
+              {
+                "label": "Labeling Bone V1",
+                "file": "labeling_bone_v1"
+              },
+              {
+                "label": "Labeling Bone V2",
+                "file": "labeling_bone_v2"
+              },
+              {
+                "label": "Labeling Bone V3",
+                "file": "labeling_bone_v3"
+              },
+              {
+                "label": "Labeling Bone V4",
+                "file": "labeling_bone_v4"
+              },
+              {
+                "label": "Recap Quest 6",
+                "file": "recap_quest_6"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_7_joints_structure",
+            "title": "7 Joints Structure",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Joint Structure",
+                "file": "note_joints"
+              },
+              {
+                "label": "Knee Study 3d",
+                "file": "knee_study_3d"
+              },
+              {
+                "label": "Labeling Knee Joints V1",
+                "file": "labeling_knee_joints_v1"
+              },
+              {
+                "label": "Labeling Knee Joints V2",
+                "file": "labeling_knee_joints_v2"
+              },
+              {
+                "label": "Labeling Knee Joints V3",
+                "file": "labeling_knee_joints_v3"
+              },
+              {
+                "label": "Labeling Synovial V1",
+                "file": "labeling_synovial_v1"
+              },
+              {
+                "label": "Labeling Synovial V2",
+                "file": "labeling_synovial_v2"
+              },
+              {
+                "label": "Recap Quest 7",
+                "file": "recap_quest_7"
+              },
+              {
+                "label": "Synovial Study",
+                "file": "synovial_study"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_8_hinge_ball-and-socket",
+            "title": "8 Hinge Ball-and-socket",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Hinge & Ball-and-Socket",
+                "file": "note_hinge_socket"
+              },
+              {
+                "label": "Elbow 2d Study",
+                "file": "elbow_2d_study"
+              },
+              {
+                "label": "Elbow 3d Study",
+                "file": "elbow_3d_study"
+              },
+              {
+                "label": "Hip 2d Study",
+                "file": "hip_2d_study"
+              },
+              {
+                "label": "Hip 3d Study",
+                "file": "hip_3d_study"
+              },
+              {
+                "label": "Labeling Elbow 2d V1",
+                "file": "labeling_elbow_2d_v1"
+              },
+              {
+                "label": "Labeling Elbow 3d V1",
+                "file": "labeling_elbow_3d_v1"
+              },
+              {
+                "label": "Labeling Hip 2d V1",
+                "file": "labeling_hip_2d_v1"
+              },
+              {
+                "label": "Labeling Hip 3d V1",
+                "file": "labeling_hip_3d_v1"
+              },
+              {
+                "label": "Recap Quest 8",
+                "file": "recap_quest_8"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_9_pivot_and_gliding",
+            "title": "9 Pivot And Gliding",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Pivot & Gliding",
+                "file": "note_pivot_gliding"
+              },
+              {
+                "label": "Ankle Gliding Study",
+                "file": "ankle_gliding_study"
+              },
+              {
+                "label": "Labeling Ankle Gliding V1",
+                "file": "labeling_ankle_gliding_v1"
+              },
+              {
+                "label": "Labeling Neck Pivot V1",
+                "file": "labeling_neck_pivot_v1"
+              },
+              {
+                "label": "Labeling Wrist Gliding V1",
+                "file": "labeling_wrist_gliding_v1"
+              },
+              {
+                "label": "Neck Pivot Study",
+                "file": "neck_pivot_study"
+              },
+              {
+                "label": "Quest Skeleton Joints",
+                "file": "quest_skeleton_joints"
+              },
+              {
+                "label": "Recap Quest 9",
+                "file": "recap_quest_9"
+              },
+              {
+                "label": "Wrist Gliding Study",
+                "file": "wrist_gliding_study"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_10_muscular_system_types",
+            "title": "10 Muscular System Types",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Muscular System Types",
+                "file": "note_muscular_system"
+              },
+              {
+                "label": "Labeling Muscle Types V1",
+                "file": "labeling_muscle_types_v1"
+              },
+              {
+                "label": "Muscle Types Study",
+                "file": "muscle_types_study"
+              },
+              {
+                "label": "Recap Quest 10",
+                "file": "recap_quest_10"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_11_muscle_action_antagonistic_pairs",
+            "title": "11 Muscle Action Antagonistic Pairs",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Muscle Action & Antagonistic Pairs",
+                "file": "note_antagonistic_muscles"
+              },
+              {
+                "label": "Labeling Arm Muscles",
+                "file": "labeling_arm_muscles"
+              },
+              {
+                "label": "Labeling Bone Muscle Connection V1",
+                "file": "labeling_bone_muscle_connection_v1"
+              },
+              {
+                "label": "Labeling Flexor Extensor V1",
+                "file": "labeling_flexor_extensor_v1"
+              },
+              {
+                "label": "Labeling Muscle States V1",
+                "file": "labeling_muscle_states_v1"
+              },
+              {
+                "label": "Muscle Action Procedural",
+                "file": "muscle_action_procedural"
+              },
+              {
+                "label": "Muscle Action Study",
+                "file": "muscle_action_study"
+              },
+              {
+                "label": "Recap Quest 11",
+                "file": "recap_quest_11"
+              },
+              {
+                "label": "Skeletal Muscle Study",
+                "file": "skeletal_muscle_study"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_12_posture_and_teeth",
+            "title": "12 Posture And Teeth",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Posture and Teeth",
+                "file": "note_posture_teeth"
+              },
+              {
+                "label": "Posture Maintenance Study",
+                "file": "posture_maintenance_study"
+              },
+              {
+                "label": "Recap Quest 12",
+                "file": "recap_quest_12"
+              },
+              {
+                "label": "Teeth Types Quiz V1",
+                "file": "teeth_types_quiz_v1"
+              },
+              {
+                "label": "Teeth Types Study",
+                "file": "teeth_types_study"
+              },
+              {
+                "label": "Tooth Anatomy Quiz V1",
+                "file": "tooth_anatomy_quiz_v1"
+              },
+              {
+                "label": "Tooth Anatomy Study",
+                "file": "tooth_anatomy_study"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_13_disorders_and_first_aid",
+            "title": "13 Disorders And First Aid",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Disorders and First Aid",
+                "file": "note_disorders_first_aid"
+              },
+              {
+                "label": "Recap Quest 13",
+                "file": "recap_quest_13"
+              },
+              {
+                "label": "Study Disorders",
+                "file": "study_disorders"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_14_bone_diseases",
+            "title": "14 Bone Diseases",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Bone Diseases and Disorders",
+                "file": "note_bone_diseases"
+              },
+              {
+                "label": "Recap Quest 14",
+                "file": "recap_quest_14"
+              },
+              {
+                "label": "Study Diseases",
+                "file": "study_diseases"
+              }
+            ],
+            "practiceCount": 0
+          }
+        ]
+      }
+    ]
+  },
+  "sst": {
+    "theme": "#0ea5e9",
+    "units": [
+      {
+        "id": "locating_africa",
+        "title": "Locating Africa",
+        "quests": [
+          {
+            "folder": "quest_1_world_stage",
+            "title": "1 World Stage",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: World Stage",
+                "file": "note_world_stage"
+              },
+              {
+                "label": "Extremes Of Africa",
+                "file": "extremes_of_africa"
+              },
+              {
+                "label": "Project Genesis",
+                "file": "project_genesis"
+              },
+              {
+                "label": "Puzzle Regions",
+                "file": "puzzle_regions"
+              },
+              {
+                "label": "Recap Afrcan Facts",
+                "file": "recap_afrcan_facts"
+              },
+              {
+                "label": "Recap Continents",
+                "file": "recap_continents"
+              },
+              {
+                "label": "Recap Locating Africa",
+                "file": "recap_locating_africa"
+              },
+              {
+                "label": "Study Africa",
+                "file": "study_africa"
+              },
+              {
+                "label": "Study Continents",
+                "file": "study_continents"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_2_grid_master",
+            "title": "2 Grid Master",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Grid System",
+                "file": "note_grid"
+              },
+              {
+                "label": "Basics: Equator 0°",
+                "file": "quiz_grid_basics_01"
+              },
+              {
+                "label": "Basics: Uganda Highlight",
+                "file": "quiz_grid_basics_02"
+              },
+              {
+                "label": "Basics: Tropic of Capricorn",
+                "file": "quiz_grid_basics_03"
+              },
+              {
+                "label": "Basics: Cancer Solstice",
+                "file": "quiz_grid_basics_04"
+              },
+              {
+                "label": "Ext: Equator Division",
+                "file": "quiz_grid_ext_01"
+              },
+              {
+                "label": "Ext: Country Check",
+                "file": "quiz_grid_ext_02"
+              },
+              {
+                "label": "Ext: Southern Africa",
+                "file": "quiz_grid_ext_03"
+              },
+              {
+                "label": "Ext: Torrid Zone",
+                "file": "quiz_grid_ext_04"
+              },
+              {
+                "label": "Puzzle: Global Lines",
+                "file": "quiz_grid_puzzle_01"
+              },
+              {
+                "label": "Puzzle: World Identification",
+                "file": "quiz_grid_puzzle_02"
+              },
+              {
+                "label": "Master: Four Hemispheres",
+                "file": "quiz_grid_master_01"
+              },
+              {
+                "label": "Master: South Africa Climate",
+                "file": "quiz_grid_master_02"
+              },
+              {
+                "label": "Master: IDL Longitude",
+                "file": "quiz_grid_master_03"
+              },
+              {
+                "label": "Master: Algiers Meridian",
+                "file": "quiz_grid_master_04"
+              },
+              {
+                "label": "Master: Kampala Reference",
+                "file": "quiz_grid_master_05"
+              },
+              {
+                "label": "Adv: Arctic Latitude",
+                "file": "quiz_adv_grid_01"
+              },
+              {
+                "label": "Adv: Climatic Zones",
+                "file": "quiz_adv_grid_02"
+              },
+              {
+                "label": "Adv: Int. Date Line",
+                "file": "quiz_adv_grid_03"
+              },
+              {
+                "label": "Adv: Antarctic Continent",
+                "file": "quiz_adv_grid_04"
+              },
+              {
+                "label": "Adv: Date Line Rules",
+                "file": "quiz_adv_grid_05"
+              },
+              {
+                "label": "Recap Afrca Grid",
+                "file": "recap_afrca_grid"
+              },
+              {
+                "label": "Recap Global Grid",
+                "file": "recap_global_grid"
+              },
+              {
+                "label": "Study Grid",
+                "file": "study_grid"
+              },
+              {
+                "label": "Study Polar",
+                "file": "study_polar"
+              },
+              {
+                "label": "Study Tropics",
+                "file": "study_tropics"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_3_calculating_time",
+            "title": "3 Calculating Time",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Time Calculations",
+                "file": "note_time_calc"
+              },
+              {
+                "label": "Recap Time Calc",
+                "file": "recap_time_calc"
+              },
+              {
+                "label": "Study Calc Time 2",
+                "file": "study_calc_time_2"
+              },
+              {
+                "label": "Time: GMT to Uganda",
+                "file": "quiz_time_01"
+              },
+              {
+                "label": "Time: Uganda to London",
+                "file": "quiz_time_02"
+              },
+              {
+                "label": "Time: Uganda to Sydney",
+                "file": "quiz_time_03"
+              },
+              {
+                "label": "Time: Uganda to USA",
+                "file": "quiz_time_04"
+              },
+              {
+                "label": "Time: Finding Longitude",
+                "file": "quiz_time_05"
+              },
+              {
+                "label": "West: GMT to 30°W",
+                "file": "quiz_time_06"
+              },
+              {
+                "label": "West: Accra to NY",
+                "file": "quiz_time_07"
+              },
+              {
+                "label": "West: GMT to Brazil",
+                "file": "quiz_time_08"
+              },
+              {
+                "label": "West: Early Morning",
+                "file": "quiz_time_09"
+              },
+              {
+                "label": "East: GMT to Cairo",
+                "file": "quiz_time_10"
+              },
+              {
+                "label": "East: Ghana to Uganda",
+                "file": "quiz_time_11"
+              },
+              {
+                "label": "East: London to Mauritius",
+                "file": "quiz_time_12"
+              },
+              {
+                "label": "East: Finding Longitude",
+                "file": "quiz_time_13"
+              },
+              {
+                "label": "Expert: Cairo to Dhaka",
+                "file": "quiz_time_14"
+              },
+              {
+                "label": "Expert: Crossing 0°",
+                "file": "quiz_time_15"
+              },
+              {
+                "label": "Expert: London to Baghdad",
+                "file": "quiz_time_16"
+              },
+              {
+                "label": "Expert: Finding West",
+                "file": "quiz_time_17"
+              },
+              {
+                "label": "Puzzle: West Logic",
+                "file": "quiz_time_18"
+              },
+              {
+                "label": "Puzzle: East-East Calc",
+                "file": "quiz_time_19"
+              },
+              {
+                "label": "Puzzle: Crossing Line",
+                "file": "quiz_time_20"
+              },
+              {
+                "label": "Puzzle: Finding Location",
+                "file": "quiz_time_21"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_4_water_bodies",
+            "title": "4 Water Bodies",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Water Bodies",
+                "file": "note_water_bodies"
+              },
+              {
+                "label": "Ocean: Largest Pacific",
+                "file": "quiz_water_01"
+              },
+              {
+                "label": "Ocean: West Atlantic",
+                "file": "quiz_water_02"
+              },
+              {
+                "label": "Ocean: North Pole Arctic",
+                "file": "quiz_water_03"
+              },
+              {
+                "label": "Ocean: Southern Boundary",
+                "file": "quiz_water_04"
+              },
+              {
+                "label": "Ocean: East Africa Indian",
+                "file": "quiz_water_05"
+              },
+              {
+                "label": "Water: Mediterranean Sea",
+                "file": "quiz_water_06"
+              },
+              {
+                "label": "Water: Suez Canal",
+                "file": "quiz_water_07"
+              },
+              {
+                "label": "Water: Red Sea Boundary",
+                "file": "quiz_water_08"
+              },
+              {
+                "label": "Water: Bab-el-Mandeb",
+                "file": "quiz_water_09"
+              },
+              {
+                "label": "Water: Cape Agulhas",
+                "file": "quiz_water_10"
+              },
+              {
+                "label": "Recap Water Bodies Africa",
+                "file": "recap_water_bodies_africa"
+              },
+              {
+                "label": "Study African Waters",
+                "file": "study_african_waters"
+              },
+              {
+                "label": "Study Oceans",
+                "file": "study_oceans"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_5_coastal_features",
+            "title": "5 Coastal Features",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Coastal Features",
+                "file": "note_coastal_features"
+              },
+              {
+                "label": "Gulf: Guinea",
+                "file": "quiz_coastal_01"
+              },
+              {
+                "label": "Gulf: Aden",
+                "file": "quiz_coastal_02"
+              },
+              {
+                "label": "Gulf: Sirte",
+                "file": "quiz_coastal_03"
+              },
+              {
+                "label": "Gulf: Gabes",
+                "file": "quiz_coastal_04"
+              },
+              {
+                "label": "Island: Madagascar",
+                "file": "quiz_coastal_05"
+              },
+              {
+                "label": "Island: Indian Ocean",
+                "file": "quiz_coastal_06"
+              },
+              {
+                "label": "Island: Seychelles",
+                "file": "quiz_coastal_07"
+              },
+              {
+                "label": "Island: Cape Verde",
+                "file": "quiz_coastal_08"
+              },
+              {
+                "label": "Island: Sao Tome",
+                "file": "quiz_coastal_09"
+              },
+              {
+                "label": "Strait: Gibraltar",
+                "file": "quiz_coastal_10"
+              },
+              {
+                "label": "Peninsula: Horn of Africa",
+                "file": "quiz_coastal_11"
+              },
+              {
+                "label": "Strait: Bab-el-Mandeb",
+                "file": "quiz_coastal_12"
+              },
+              {
+                "label": "Cape: Agulhas Southern",
+                "file": "quiz_coastal_13"
+              },
+              {
+                "label": "Strait: Mozambique",
+                "file": "quiz_coastal_14"
+              },
+              {
+                "label": "Identify: Gibraltar",
+                "file": "quiz_coastal_15"
+              },
+              {
+                "label": "Identify: Gulf Guinea",
+                "file": "quiz_coastal_16"
+              },
+              {
+                "label": "Identify: Horn Africa",
+                "file": "quiz_coastal_17"
+              },
+              {
+                "label": "Identify: Cape Agulhas",
+                "file": "quiz_coastal_18"
+              },
+              {
+                "label": "Identify: Seychelles",
+                "file": "quiz_coastal_19"
+              },
+              {
+                "label": "Recap Coastal Feat Africa",
+                "file": "recap_coastal_feat_africa"
+              },
+              {
+                "label": "Study Coastal Features",
+                "file": "study_coastal_features"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_6_regional_division_capital_cities",
+            "title": "6 Regional Division Capital Cities",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Regions & Capitals",
+                "file": "note_regionals_capitals"
+              },
+              {
+                "label": "Region: East Africa",
+                "file": "quiz_reg_cap_01"
+              },
+              {
+                "label": "Region: West Africa",
+                "file": "quiz_reg_cap_02"
+              },
+              {
+                "label": "Region: Horn of Africa",
+                "file": "quiz_reg_cap_03"
+              },
+              {
+                "label": "Region: Central Africa",
+                "file": "quiz_reg_cap_04"
+              },
+              {
+                "label": "Region: North Africa",
+                "file": "quiz_reg_cap_05"
+              },
+              {
+                "label": "Region: Southern Africa",
+                "file": "quiz_reg_cap_06"
+              },
+              {
+                "label": "Region: West Africa Line",
+                "file": "quiz_reg_cap_07"
+              },
+              {
+                "label": "Capital: Kampala",
+                "file": "quiz_reg_cap_08"
+              },
+              {
+                "label": "Capital: Abuja",
+                "file": "quiz_reg_cap_09"
+              },
+              {
+                "label": "Capital: Cairo",
+                "file": "quiz_reg_cap_10"
+              },
+              {
+                "label": "Capital: Pretoria",
+                "file": "quiz_reg_cap_11"
+              },
+              {
+                "label": "Capital: Antananarivo",
+                "file": "quiz_reg_cap_12"
+              },
+              {
+                "label": "Capital: Mogadishu",
+                "file": "quiz_reg_cap_13"
+              },
+              {
+                "label": "Recap: Regions & Capitals",
+                "file": "recap_regions_capitals"
+              },
+              {
+                "label": "Study Regions",
+                "file": "study_regions"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_7_landlocked_countries",
+            "title": "7 Landlocked Countries",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "📚 Study Notes: Landlocked Countries",
+                "file": "note_landlocked"
+              },
+              {
+                "label": "Recap: Landlocked Nations",
+                "file": "recap_landlocked"
+              },
+              {
+                "label": "Study: Interior Nations",
+                "file": "study_landlocked"
+              },
+              {
+                "label": "Landlocked: Definition",
+                "file": "quiz_landlocked_01"
+              },
+              {
+                "label": "Landlocked: Uganda Port",
+                "file": "quiz_landlocked_02"
+              },
+              {
+                "label": "Landlocked: Ethiopia Port",
+                "file": "quiz_landlocked_03"
+              },
+              {
+                "label": "Landlocked: Lesotho Enclave",
+                "file": "quiz_landlocked_04"
+              },
+              {
+                "label": "Landlocked: Mali Gateway",
+                "file": "quiz_landlocked_05"
+              },
+              {
+                "label": "Landlocked: Central Africa",
+                "file": "quiz_landlocked_06"
+              },
+              {
+                "label": "Landlocked: Zambia TAZARA",
+                "file": "quiz_landlocked_07"
+              },
+              {
+                "label": "Landlocked: Zimbabwe Beira",
+                "file": "quiz_landlocked_08"
+              },
+              {
+                "label": "Landlocked: Botswana Kalahari",
+                "file": "quiz_landlocked_09"
+              },
+              {
+                "label": "Landlocked: Economic Impact",
+                "file": "quiz_landlocked_10"
+              }
+            ],
+            "practiceCount": 0
+          }
+        ]
+      }
+    ]
+  },
+  "english": {
+    "theme": "#7c3aed",
+    "units": [
+      {
+        "id": "holidays",
+        "title": "Holidays",
+        "quests": [
+          {
+            "folder": "quest_01_holiday_kickoff",
+            "title": "01 Holiday Kickoff",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "01 Holiday Kickoff",
+                "file": "01_holiday_kickoff"
+              },
+              {
+                "label": "Holiday Kickoff Recap",
+                "file": "recap_holiday_kickoff"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_02_going_to_mastery",
+            "title": "02 Going To Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "02 Going To Mastery",
+                "file": "02_going_to_mastery"
+              },
+              {
+                "label": "Going To Recap",
+                "file": "recap_going_to"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_03_question_tags_mastery",
+            "title": "03 Question Tags Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "03 Question Tags Mastery",
+                "file": "03_question_tags_mastery"
+              },
+              {
+                "label": "Question Tags Recap",
+                "file": "recap_question_tags"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_04_reported_speech_mastery",
+            "title": "04 Reported Speech Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "04 Reported Speech Mastery",
+                "file": "04_reported_speech_mastery"
+              },
+              {
+                "label": "Reported Speech Recap",
+                "file": "recap_reported_speech"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_05_village_arrival",
+            "title": "05 Village Arrival",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "05 Village Arrival",
+                "file": "05_village_arrival"
+              },
+              {
+                "label": "Village Arrival Recap",
+                "file": "recap_village_arrival"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_06_feeling_and_facts",
+            "title": "06 Feeling And Facts",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "06 Feeling And Facts",
+                "file": "06_feeling_and_facts"
+              },
+              {
+                "label": "Feeling And Facts Recap",
+                "file": "recap_adj_ing_ed"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_07_past_regrets",
+            "title": "07 Past Regrets",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "07 Past Regrets",
+                "file": "07_past_regrets"
+              },
+              {
+                "label": "Past Regrets Recap",
+                "file": "recap_conditional_type_3"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_08_voice_mastery",
+            "title": "08 Voice Mastery",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "08 Voice Mastery",
+                "file": "08_voice_mastery"
+              },
+              {
+                "label": "Voice Mastery Recap",
+                "file": "recap_active_passive"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_09_final_review",
+            "title": "09 Final Review",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "09 Final Review",
+                "file": "09_final_review"
+              },
+              {
+                "label": "Chapter Review Recap",
+                "file": "recap_chapter_review"
+              }
+            ],
+            "practiceCount": 0
+          },
+          {
+            "folder": "quest_10_vault",
+            "title": "10 Vault",
+            "prefix": "",
+            "resources": [
+              {
+                "label": "Dict Activities",
+                "file": "dict_activities"
+              },
+              {
+                "label": "Dict Holidays",
+                "file": "dict_holidays"
+              },
+              {
+                "label": "Rule Active Passive",
+                "file": "rule_active_passive"
+              },
+              {
+                "label": "Rule Adj Ing Ed",
+                "file": "rule_adj_ing_ed"
+              },
+              {
+                "label": "Rule Going To",
+                "file": "rule_going_to"
+              },
+              {
+                "label": "Rule If Type 3",
+                "file": "rule_if_type_3"
+              },
+              {
+                "label": "Rule Question Tags",
+                "file": "rule_question_tags"
+              },
+              {
+                "label": "Rule Reported Speech",
+                "file": "rule_reported_speech"
+              }
+            ],
+            "practiceCount": 0
+          }
+        ]
+      }
+    ]
+  }
+}

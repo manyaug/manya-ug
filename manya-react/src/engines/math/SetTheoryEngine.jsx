@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { triggerRewardFlight } from '../../utils/fxUtils';
 
 // Decoupled Resources
-import { REGION_MAP, normalize, evaluateExpr, validateInteraction } from './SetTheory/SetTheoryLogic';
+import { REGION_MAP, normalize, evaluateExpr, validateInteraction, getEffectiveSetCount } from './SetTheory/SetTheoryLogic';
 import VennCanvas from './SetTheory/VennCanvas';
 import ManyaKeyboard from '../../components/engine/ManyaKeyboard';
 
@@ -39,7 +39,6 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
     let questions = root?.questions || root?.steps || root?.data?.questions || root?.data?.steps || data?.payload?.questions || data?.interactive_data?.questions;
     
     if (!questions) {
-        // Fallback: If no array, is the root itself a question?
         questions = (root?.prompt || root?.question || root?.text) ? [root] : (Array.isArray(data) ? data : [root]);
     }
     
@@ -67,19 +66,28 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
   const [kbOpen, setKbOpen] = useState(false);
   const [activeKbId, setActiveKbId] = useState(null);
 
+  // --- 🧹 CLEAN SLATE ON MOUNT ---
+  useEffect(() => {
+    setSuccessfulAnswers({});
+    setStepIdx(0);
+    setIsResolved(false);
+    setUserAnswers({});
+    setSelectedRegions(new Set());
+    setFeedback({ text: '', type: '' });
+  }, [data?.id]);
+
   const draggingRef = useRef(null);
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   const containerRef = useRef(null);
   const feedbackBtnRef = useRef(null);
   
-  const currentStep = normalizedData.questions[stepIdx];
+  const currentStep = { ...(normalizedData.questions?.[stepIdx] || {}) };
+  const isTwoSet = !!(normalizedData.sets?.B || normalizedData.sets?.b);
   useEffect(() => {
     if (currentStep) {
         console.log(`%c 🧠 [SetTheory] Rendering Step ${stepIdx + 1}:`, 'color: #8b5cf6; font-weight: bold;', currentStep);
     }
   }, [currentStep, stepIdx]);
-  const isTwoSet = !!(normalizedData.sets?.B || currentStep?.sets?.B);
-
   // --- 🪄 THEME SYNC ---
   useLayoutEffect(() => {
     const checkTheme = () => setIsDark(document.documentElement.getAttribute('data-theme') === 'dark');
@@ -283,11 +291,12 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
     audioService.pop();
   };
 
-  // --- 🎨 FINAL RENDER ZONES (Always merge history for worksheets) ---
+  // --- 🎨 FINAL RENDER ZONES ---
   const mergedZones = { 
       ...(normalizedData.zones || {}), 
       ...(currentStep?.zones || {}),
-      ...successfulAnswers 
+      // v10.0: Zones are for diagram structure only. 
+      // Solved variables (x, y) are passed separately to evaluateExpr.
   };
 
   return (
@@ -344,6 +353,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                 activeSets={activeSets}
                 chips={chips}
                 frozenZones={mergedZones}
+                variables={successfulAnswers}
                 isHintVisible={isHintVisible}
                 onMouseDown={onMouseDown}
                 onMouseMove={onMouseMove}

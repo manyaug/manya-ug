@@ -25,12 +25,12 @@ const SUBJECT_MAP = {
 export function assetUrl(path) {
   if (!path) return '';
 
-  // 1. Clean and normalize the path
-  let clean = path.trim().replace(/^\/+/, '').toLowerCase();
+  // 1. Clean and normalize the path (Preserve casing for case-sensitive CDNs!)
+  let clean = path.trim().replace(/^\/+/, '');
 
   // 1.1 Local Bypass for Chests (Premium)
-  if (clean.startsWith('chests/')) {
-    return `/images/${clean.replace('.png', '_compressed.png')}`;
+  if (clean.toLowerCase().startsWith('chests/')) {
+    return `/images/${clean.replace(/\.png$/i, '_compressed.png')}`;
   }
 
   // 2. Flip extensions for webp consistency (Skip SVGs)
@@ -41,10 +41,10 @@ export function assetUrl(path) {
   // 3. Smart Prefixing Logic
   const subjects = ['english', 'math', 'science', 'sst', 'shared'];
   
-  const firstSeg = clean.split('/')[0];
+  const firstSeg = clean.split('/')[0].toLowerCase();
 
   // If it's a subject or shared, and does not have assets/ prefix, add it.
-  if (subjects.includes(firstSeg) && !clean.startsWith('assets/')) {
+  if (subjects.includes(firstSeg) && !clean.toLowerCase().startsWith('assets/')) {
     clean = `assets/${clean}`;
   }
 

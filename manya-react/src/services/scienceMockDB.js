@@ -1,5 +1,7 @@
 import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
+import { ASSET_VERSION } from '../config/constants';
+import { hydrateStepData } from '../engines/shared-engines/UniversalLogic';
 
 const BANK_CACHE = {};
 
@@ -30,15 +32,21 @@ export const fetchScienceQuestions = async (topicId) => {
         
         if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
 
-        const allCached = await ManyaDB.getCachedQuestions('science');
-        const cached = allCached.filter(q => q.subtopic === subtopic);
-        if (cached && cached.length > 0) {
-            BANK_CACHE[subtopic] = cached;
-            return cached;
+        let data = null;
+        try {
+            console.log(`📡 [ScienceDB] Querying Supabase for fresh records...`);
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
+        } catch (dbErr) {
+            console.warn(`⚠️ [ScienceDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
+            const allCached = await ManyaDB.getCachedQuestions('science');
+            const cached = allCached.filter(q => q.subtopic === subtopic);
+            if (cached && cached.length > 0) {
+                console.log(`💾 [ScienceDB] Successfully loaded ${cached.length} questions from local IndexedDB.`);
+                BANK_CACHE[subtopic] = cached;
+                return cached;
+            }
+            data = [];
         }
-
-        // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:science&item_type=eq:MCQ&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!data || data.length === 0) {
@@ -49,7 +57,7 @@ export const fetchScienceQuestions = async (topicId) => {
                 console.log(`🔍 [Science Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
-                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:science&item_type=eq:MCQ&or=${keywordFilter}`);
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=${keywordFilter}`);
                 
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Science Vault] Discovered ${keywordData.length} related questions via keywords.`);
@@ -60,14 +68,34 @@ export const fetchScienceQuestions = async (topicId) => {
 
         if (!data || data.length === 0) return [];
 
-        const transformed = data.map(q => {
+        const transformed = await Promise.all(data.map(async (q) => {
             const options = [q.option_a, q.option_b, q.option_c, q.option_d]
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
+            let interactivePayload = hydrateStepData(q) || {};
+
+            const isInteractive = q.item_type?.includes('INTERACTIVE') || q.item_type === 'SIMULATION' || q.item_type === 'RECAP' || q.engine_type;
+            if (isInteractive && q.cdn_url) {
+                try {
+                    let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');
+                    cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                    cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
+                    
+                    console.debug(`[ScienceDB] Fetching CDN Payload for ${q.qid}: ${cleanCdnUrl}`);
+                    const fetchedData = await storageFacade.get(`file:${cleanCdnUrl}`);
+                    if (fetchedData) {
+                        interactivePayload = { ...interactivePayload, ...fetchedData };
+                        console.log(`%c ✅ [ScienceDB] Hydrated Simulation: ${q.qid}`, 'color: #10b981; font-weight: bold;');
+                    }
+                } catch (e) {
+                    console.warn(`[ScienceDB] CDN Fetch failed for ${q.qid}:`, e.message);
+                }
+            }
+
             return {
                 ...q,
-                id: q.qid,
-                qid: q.qid,
+                id: q.qid || q.id,
+                qid: q.qid || q.id,
                 subject: 'science',
                 topic: q.topic,
                 subtopic: q.subtopic,
@@ -82,9 +110,10 @@ export const fetchScienceQuestions = async (topicId) => {
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],
-                engine_type: q.engine_type
+                engine_type: q.engine_type,
+                data: interactivePayload
             };
-        });
+        }));
 
         BANK_CACHE[subtopic] = transformed;
         await ManyaDB.cacheQuestions(transformed);

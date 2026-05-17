@@ -1,5 +1,8 @@
 import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
+import { findQuestData } from './curriculumService';
+import { assetUrl } from '../config/assetUrls';
+import { ASSET_VERSION } from '../config/constants';
 
 const BANK_CACHE = {};
 
@@ -28,20 +31,24 @@ export const fetchEnglishQuestions = async (topicId) => {
 
         if (BANK_CACHE[subtopic] && !isStorySearch) return BANK_CACHE[subtopic];
 
-        const allCached = await ManyaDB.getCachedQuestions('english');
-        const cached = allCached.filter(q => q.subtopic === subtopic);
-        
-        // Cache Repair Check
-        const validQuestions = cached.filter(q => q.question && q.question !== 'None');
-        const isBroken = cached.length > 0 && validQuestions.length === 0;
+        let data = null;
+        try {
+            console.log(`📡 [EnglishDB] Querying Supabase for fresh records...`);
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
+        } catch (dbErr) {
+            console.warn(`⚠️ [EnglishDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
+            const allCached = await ManyaDB.getCachedQuestions('english');
+            const cached = allCached.filter(q => q.subtopic === subtopic);
+            const validQuestions = cached.filter(q => q.question && q.question !== 'None');
+            const isBroken = cached.length > 0 && validQuestions.length === 0;
 
-        if (cached && cached.length > 0 && !isBroken && !isStorySearch) {
-            BANK_CACHE[subtopic] = cached;
-            return cached;
+            if (cached && cached.length > 0 && !isBroken && !isStorySearch) {
+                console.log(`💾 [EnglishDB] Successfully loaded ${cached.length} questions from local IndexedDB.`);
+                BANK_CACHE[subtopic] = cached;
+                return cached;
+            }
+            data = [];
         }
-
-        // --- RESILIENT VAULT QUERY (v4.5 - Keyword Fallback) ---
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!data || data.length === 0) {
@@ -61,18 +68,69 @@ export const fetchEnglishQuestions = async (topicId) => {
             }
         }
 
-        if (!data || data.length === 0) return [];
+        if (!data) data = [];
 
-        const transformed = data.map(q => {
+        // --- INJECT MISSING CURRICULUM RESOURCES ---
+        try {
+            const curriculumQuest = findQuestData('english', null, topicId) || findQuestData('english', null, subtopic);
+            if (curriculumQuest && curriculumQuest.resources) {
+                curriculumQuest.resources.forEach(res => {
+                    const isNoteOrRecap = res.file.includes('recap') || res.file.includes('note') || res.file.includes('study');
+                    const exists = data.some(d => d.qid === res.file || d.id === res.file);
+                    
+                    if (isNoteOrRecap && !exists) {
+                        console.log(`[EnglishDB] Auto-injecting missing curriculum resource: ${res.file}`);
+                        data.push({
+                            id: res.file,
+                            qid: res.file,
+                            subject: 'english',
+                            topic: topicId,
+                            subtopic: subtopic,
+                            item_type: res.file.includes('recap') ? 'RECAP' : 'NOTE',
+                            engine_type: 'NOTE_EXPLORER',
+                            cdn_url: assetUrl(`content/english/${curriculumQuest.folder}/${res.file}.json`),
+                            question_text: `Explore ${res.label}`,
+                            options: ["Ready!"],
+                            correct_answer: "Ready!",
+                            metadata: {}
+                        });
+                    }
+                });
+            }
+        } catch (e) {
+            console.warn("[EnglishDB] Failed to auto-inject curriculum resources:", e);
+        }
+
+        if (data.length === 0) return [];
+
+        const transformed = await Promise.all(data.map(async (q) => {
             const options = [q.option_a, q.option_b, q.option_c, q.option_d]
                 .filter(opt => opt !== null && opt !== 'null' && opt !== '');
 
             // v9.9: Hardened Data Extraction - Ensuring interactive payloads are preserved
-            const interactiveData = q.data || q.metadata || {};
+            let interactiveData = q.data || q.metadata || {};
+
+            const isInteractive = q.item_type?.includes('INTERACTIVE') || q.item_type === 'SIMULATION' || q.item_type === 'RECAP' || q.engine_type;
+            if (isInteractive && q.cdn_url) {
+                try {
+                    let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');
+                    cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                    cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
+                    
+                    console.debug(`[EnglishDB] Fetching CDN Payload for ${q.qid}: ${cleanCdnUrl}`);
+                    const fetchedData = await storageFacade.get(`file:${cleanCdnUrl}`);
+                    if (fetchedData) {
+                        interactiveData = { ...interactiveData, ...fetchedData };
+                        console.log(`%c ✅ [EnglishDB] Hydrated Simulation: ${q.qid}`, 'color: #10b981; font-weight: bold;');
+                    }
+                } catch (e) {
+                    console.warn(`[EnglishDB] CDN Fetch failed for ${q.qid}:`, e.message);
+                }
+            }
 
             return {
-                id: q.qid,
-                qid: q.qid,
+                id: q.qid || q.id,
+                qid: q.qid || q.id,
                 subject: 'english',
                 topic: q.topic,
                 subtopic: q.subtopic,
@@ -93,12 +151,12 @@ export const fetchEnglishQuestions = async (topicId) => {
                 mapping: q.item_type === 'QUEST' || q.engine_type ? {
                     qid: q.qid,
                     engine_type: q.engine_type,
-                    json_reference_path: q.qid, 
+                    json_reference_path: q.cdn_url || q.qid, 
                     data: interactiveData,
                     vocabulary: q.metadata?.tags || []
                 } : null
             };
-        });
+        }));
 
         if (transformed.length > 0) {
             BANK_CACHE[subtopic] = transformed;

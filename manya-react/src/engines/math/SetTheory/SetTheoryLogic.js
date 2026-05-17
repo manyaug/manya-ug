@@ -69,34 +69,17 @@ export const evaluateExpr = (expr, vars = 0) => {
         
         // Prepare context: numeric conversion of all variables
         const context = {};
-        let firstNum = null;
-        const SOLVED_KEYS = ['x', 'main', 'answer', 'ans'];
-        
         Object.keys(variables).forEach(k => {
             const val = parseFloat(variables[k]);
             if (!isNaN(val)) {
                 const lowerK = k.toLowerCase();
                 context[lowerK] = val;
-                // Only use official solved variables as candidates for smart mapping
-                if (SOLVED_KEYS.includes(lowerK)) {
-                    if (firstNum === null || (firstNum === 0 && val !== 0)) firstNum = val;
-                }
             }
         });
 
-        // 🧠 v8.7 SMART MAPPING: If the expression has exactly one unknown variable, 
-        // and we have a candidate number (firstNum), map it!
-        const exprVars = parser.parse(cleanExpr).variables();
-        const missingVars = exprVars.filter(v => !(v in context));
-        
-        if (missingVars.length === 1 && firstNum !== null) {
-            context[missingVars[0]] = firstNum;
-        }
-
         const result = parser.evaluate(cleanExpr, context);
-        console.log(`[MathLogic] evaluateExpr("${expr}") with vars:`, variables, "-> context:", context, "-> result:", result);
+        console.log(`[MathLogic] evaluateExpr("${expr}") result:`, result);
         
-        // If result is valid number, return it, otherwise fallback to expression
         return isNaN(result) ? expr : result;
     } catch (err) { 
         return expr; 
@@ -121,7 +104,7 @@ export const validateInteraction = (params) => {
     let corrected = "";
 
     // Helper: Safely count members across one or more target regions (supports Algebra)
-    const getTargetMemberCount = (target, vars) => {
+    const getTargetMemberCount = (target, vars, type) => {
         const zones = resolveZones(target);
         return zones.reduce((acc, z) => {
             const key = z === 'intersection' ? 'center' : z;
@@ -132,7 +115,11 @@ export const validateInteraction = (params) => {
                 // v8.5: Evaluate each member (e.g. "2y+8")
                 const val = evaluateExpr(String(m), vars);
                 const num = parseFloat(val);
-                zoneSum += isNaN(num) ? 1 : num;
+                if (type === 'COUNT_SUM') {
+                    zoneSum += isNaN(num) ? 0 : num;
+                } else {
+                    zoneSum += 1; // Standard behavior is to count the items
+                }
             });
             return acc + zoneSum;
         }, 0);
@@ -176,6 +163,7 @@ export const validateInteraction = (params) => {
     } else if (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType)) {
         const userVal = String(Object.values(userAnswers).find(v => v !== '') || '').trim();
         let target = currentStep.expected || currentStep.answer || currentStep.expected_x || currentStep.expression;
+        if (target === '?' || (typeof target === 'string' && target.trim() === '?')) target = null;
         
         // Combine explicit x_val with anything solved in previous steps
         const vars = { 
@@ -185,7 +173,7 @@ export const validateInteraction = (params) => {
 
         // 1. Resolve Dynamic Metadata (Counting)
         if (currentStep.targetRegion && (!target || ['COUNT', 'COUNT_SUM', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type))) {
-            const n = getTargetMemberCount(currentStep.targetRegion, vars);
+            const n = getTargetMemberCount(currentStep.targetRegion, vars, currentStep.type);
             
             if (['SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.type)) {
                 target = (currentStep.type === 'SUBSET_COUNT') ? Math.pow(2, n) : Math.pow(2, n) - 1;
@@ -233,4 +221,16 @@ export const validateInteraction = (params) => {
     }
 
     return { isCorrect, corrected };
+};
+
+/**
+ * Determines the actual number of active sets in a diagram based on definitions.
+ */
+export const getEffectiveSetCount = (data) => {
+    if (!data) return 0;
+    const sets = data.sets || {};
+    let count = 0;
+    if (sets.a || sets.A || sets.set_a) count++;
+    if (sets.b || sets.B || sets.set_b) count++;
+    return count;
 };

@@ -42,25 +42,39 @@ export const hydrateStepData = (q) => {
 };
 
 /**
- * Determines the engine type from question data with heuristic fallbacks.
+ * Determines the engine type from question data with subject/topic awareness.
+ * v6.0: Scalable Routing Heuristics
  */
-export const getEngineType = (q) => {
+export const getEngineType = (q, subject) => {
     const data = q?.data || q;
-    const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
-    const type = String(raw).toUpperCase().trim();
+    const topic = normalize(q?.topic || q?.subtopic || "");
+    const sub = normalize(subject || q?.subject || "");
     
-    // Heuristic: Auto-detect NoteExplorer (Shared)
-    if (data?.study_notes || data?.mode === 'note_explorer' || data?.item_type === 'NOTE') return 'NOTE_EXPLORER';
+    // 1. Explicit Engine Type (Highest Priority)
+    const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
+    let type = String(raw).toUpperCase().trim();
+    if (type && type !== 'MCQ' && type !== 'SIMULATION') return type;
 
-    // Heuristic: Auto-detect ReaderStudy for generic lesson nodes
-    if (!type && (data?.text || data?.explanation || data?.steps || data?.content)) {
-        return 'READER_STUDY';
+    // 2. Math-Specific Topic Routing (Scalable Heuristics)
+    if (sub === 'math') {
+        if (topic.includes('set_theory') || topic.includes('subset') || topic.includes('venn')) return 'SET_THEORY';
+        if (topic.includes('binary') || topic.includes('logic_gate')) return 'BINARY_GAME';
+        if (topic.includes('probability')) return 'VENN_PROB';
+        if (topic.includes('coordinate') || topic.includes('graph')) return 'COORDINATE_GAME';
+    }
+
+    // 3. Shared Heuristics (Notes, Recaps)
+    if (data?.study_notes || data?.mode === 'note_explorer' || data?.item_type === 'NOTE' || data?.item_type === 'INTERACTIVE_STUDY' || q?.item_type === 'INTERACTIVE_STUDY') return 'NOTE_EXPLORER';
+    if (data?.item_type === 'RECAP' || q?.item_type === 'RECAP') return 'STUDY_RECAP';
+
+    // 4. Fallback for generic simulations
+    if (q?.item_type === 'SIMULATION' || q?.type === 'simulation' || q?.item_type === 'INTERACTIVE_QUESTION') {
+        if (sub === 'english') return 'THREE_D_STUDY';
+        if (sub === 'science') return '3D_SKELETON';
+        return 'NOTE_EXPLORER';
     }
     
-    // Fallback for identified types that lack an engine
-    if (!type && q?.item_type === 'SIMULATION') return 'NOTE_EXPLORER';
-    
-    return type || 'MCQ_STANDALONE';
+    return 'MCQ_STANDALONE';
 };
 
 /**
@@ -76,11 +90,12 @@ export const isSimSafe = (q) => {
     // A real simulation must have structural interactive data
     const hasSimStructure = !!(
         data.questions || data.sets || data.zones || 
-        data.interaction || data.content || data.steps || data.slides
+        data.interaction || data.content || data.steps || data.slides ||
+        data.hotspots || data.wordBank || data.modelUrl || data.intro || data.notes || data.regions || data.landmarks
     );
     
     // An MCQ has options and an answer
-    const isMCQ = !!(q?.options && q?.answer && q.options.length > 0);
+    const isMCQ = !!(q?.options && q?.answer && q.options.length > 0 && !data.hotspots);
     
     return hasSimStructure && !isMCQ;
 };

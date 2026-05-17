@@ -198,10 +198,11 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             const hasSpecializedEngine = engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'MCQ_STANDALONE';
             
             // Strictly an MCQ ONLY if it has no specialized engine and fits MCQ patterns
-            const isStrictMCQ = !hasSpecializedEngine && (itemType.includes('MCQ') || itemType === 'QUESTION' || itemType === 'PRACTICE');
+            const isStrictMCQ = !hasSpecializedEngine && (itemType === 'MCQ' || itemType.includes('MCQ') || itemType === 'QUESTION' || itemType === 'PRACTICE');
             
             const isSimulation = !isStrictMCQ && (
                 itemType === 'SIMULATION' || 
+                itemType === 'INTERACTIVE_QUESTION' ||
                 itemType === 'QUEST' || 
                 hasSpecializedEngine ||
                 MATH_SIM_WHITELIST.includes(engineType) ||
@@ -213,7 +214,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             // v6.5: Explicit Note vs Recap vs Story partitioning
             const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
             const isRecap = itemType === 'RECAP' || q.isRecap || idLower.includes('recap') || (subject === 'english' && idLower.includes('rule'));
-            const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER' || q.isNote || idLower.includes('note') || idLower.includes('study') || idLower.includes('rule'));
+            const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || itemType === 'INTERACTIVE_STUDY' || engineType === 'NOTE_EXPLORER' || q.isNote || idLower.includes('note') || idLower.includes('study') || idLower.includes('rule'));
 
             if (isStory && isHydrated) {
                 pools.QUEST_STORY.push({ ...q, isSimulation: true });
@@ -250,7 +251,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 
                 const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
                 const isRecap = idLower.includes('recap') || itemType === 'RECAP' || sim.isRecap || (subject === 'english' && idLower.includes('rule'));
-                const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || engineType === 'NOTE_EXPLORER' || idLower.includes('note') || idLower.includes('study') || idLower.includes('rule') || sim.isNote);
+                const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || itemType === 'INTERACTIVE_STUDY' || engineType === 'NOTE_EXPLORER' || idLower.includes('note') || idLower.includes('study') || idLower.includes('rule') || sim.isNote);
 
                 const hydration = { ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file };
 
@@ -418,7 +419,28 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         // ── FINAL POLISH: Emergency Fallback ──
         if (finalQuestions.length < 5 && allQuestions.length > 0) {
-            finalQuestions.push(...allQuestions.slice(0, 5 - finalQuestions.length));
+            // FILTER: Only push standard MCQs/questions, NOT study resources, notes, or recaps, and NOT already selected
+            const fallbackPool = allQuestions.filter(q => {
+                const type = (q.item_type || q.question_type || q.type || "").toUpperCase();
+                const idLower = (q.qid || q.id || "").toLowerCase();
+                const isNoteOrRecap = type === 'NOTE' || type === 'RECAP' || type.includes('STUDY') || 
+                                      idLower.includes('recap') || idLower.includes('note') || idLower.includes('study') ||
+                                      q.isStudyStep || q.isIntro || q.isOutro;
+                const alreadySelected = finalQuestions.some(fq => fq.id === q.id || fq.qid === q.qid);
+                return !isNoteOrRecap && !alreadySelected;
+            });
+            
+            if (fallbackPool.length > 0) {
+                finalQuestions.push(...fallbackPool.slice(0, 5 - finalQuestions.length));
+            }
+            
+            // Desperate fallback: If still under 5 steps, grab anything that's not already in finalQuestions
+            if (finalQuestions.length < 5) {
+                const desperatePool = allQuestions.filter(q => 
+                    !finalQuestions.some(fq => fq.id === q.id || fq.qid === q.qid)
+                );
+                finalQuestions.push(...desperatePool.slice(0, 5 - finalQuestions.length));
+            }
         }
 
         console.log(`✨ [Adaptive] Empathetic Quest Assembled: ${finalQuestions.length} steps. (Mode: ${isBadCondition ? 'Remedial' : 'Reward-Heavy'})`);

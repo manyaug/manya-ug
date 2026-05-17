@@ -20,6 +20,7 @@ const VennCanvas = ({
     activeSets, 
     chips, 
     frozenZones,
+    variables,
     isHintVisible,
     onMouseDown,
     onMouseMove,
@@ -157,53 +158,73 @@ const VennCanvas = ({
 
             const renderMembers = (src) => {
                 if (!src) return;
-                ['left','center','right','outside'].forEach(reg => {
+                ['left', 'center', 'right', 'outside'].forEach(reg => {
                     const rawItems = src[reg] || [];
                     const items = Array.isArray(rawItems) ? rawItems : [rawItems];
-                    
-                    items.forEach((v, i) => {
-                        let lx, ly = cy;
-                        const spacing = isMobile ? 35 : 45; // Increased spacing for double-digit numbers
-                        
-                        if (reg === 'left') { 
-                            lx = c1.x - (isDisjoint ? 0 : offset * 0.85); 
-                        } else if (reg === 'right') { 
-                            lx = c2.x + (isDisjoint ? 0 : offset * 0.85); 
-                        } else if (reg === 'center') { 
-                            lx = width / 2; 
-                        } else if (reg === 'outside') { 
-                            lx = width - boxPad - 80; // Moved further in to avoid clipping
-                            ly = height - boxPad - 40; 
-                        }
-                        
-                        // Smart Grid/Staggering for multiple items
-                        if (items.length > 1) {
-                            const cols = Math.min(items.length, reg === 'outside' ? 3 : 4);
-                            const row = Math.floor(i / cols);
-                            const col = i % cols;
-                            
-                            const xOffset = (col - (cols - 1) / 2) * spacing;
-                            const yOffset = (row - Math.floor((items.length - 1) / cols) / 2) * 25;
-                            
-                            lx += xOffset;
-                            ly += yOffset;
-                        }
+                    if (items.length === 0) return;
 
-                        const displayVal = evaluateExpr(String(v), { 
+                    // 1. Calculate the Regional Anchor Point
+                    let anchorX, anchorY = cy;
+                    const rSmall = r * 0.7; // Inner "Safe Zone" radius
+
+                    if (reg === 'left') {
+                        anchorX = c1.x - (isTwoSet && !isDisjoint ? offset * 0.4 : 0);
+                    } else if (reg === 'right') {
+                        anchorX = c2.x + (isTwoSet && !isDisjoint ? offset * 0.4 : 0);
+                    } else if (reg === 'center') {
+                        anchorX = width / 2;
+                    } else if (reg === 'outside') {
+                        anchorX = width - boxPad - 60;
+                        anchorY = height - boxPad - 60;
+                    }
+
+                    // 2. Draw each item as a "Premium Chip" (Stacked Vertically)
+                    const vSpacing = 22; // Tight vertical gap
+                    const stackHeight = (items.length - 1) * vSpacing;
+
+                    items.forEach((v, i) => {
+                        const displayVal = String(evaluateExpr(String(v), { 
                             x: currentStep.x_val,
-                            ...frozenZones 
-                        });
-                        ctx.fillStyle = colors.text; 
-                        ctx.font = "800 18px 'Plus Jakarta Sans', sans-serif"; 
-                        ctx.textAlign = "center"; 
+                            ...variables 
+                        }));
+
+                        // Calculate Position: Centered Vertical Stack
+                        let lx = anchorX;
+                        let ly = anchorY + (i * vSpacing) - (stackHeight / 2);
+
+                        // --- DRAW CHIP UI ---
+                        ctx.save();
+                        ctx.font = "bold 14px 'Plus Jakarta Sans', sans-serif";
+                        const textMetrics = ctx.measureText(displayVal);
+                        const pX = 8, pY = 4;
+                        const chipW = Math.max(28, textMetrics.width + pX * 2);
+                        const chipH = 18 + pY;
+
+                        // Chip Background
+                        ctx.beginPath();
+                        ctx.roundRect(lx - chipW / 2, ly - chipH / 2, chipW, chipH, 6);
+                        ctx.fillStyle = isDark ? "rgba(30, 41, 59, 0.85)" : "rgba(255, 255, 255, 0.9)";
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = "rgba(0,0,0,0.1)";
+                        ctx.fill();
+
+                        // Chip Border
+                        ctx.strokeStyle = isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.08)";
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+
+                        // Item Text
+                        ctx.fillStyle = colors.text;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
                         ctx.fillText(displayVal, lx, ly);
+                        ctx.restore();
                     });
                 });
             };
-            // Render stationary members (from data.zones or history)
+            
             if (chips.length === 0) {
                 if (frozenZones) renderMembers(frozenZones);
-                else if (currentStep.interaction !== 'DRAG_SORT' && data.zones) renderMembers(data.zones);
             }
         }
 
@@ -213,7 +234,7 @@ const VennCanvas = ({
             ctx.strokeStyle = isResolved ? "#16a34a" : (isDark?"#4b5563":"#cbd5e1"); ctx.lineWidth=2; ctx.stroke();
             ctx.fillStyle=colors.text; ctx.font="800 20px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign="center"; ctx.fillText(c.val, c.x, c.y + 7); ctx.restore();
         });
-    }, [l, data, isDark, isTwoSet, isResolved, selectedRegions, activeSets, chips, frozenZones, isHintVisible, currentStep, REGION_MAP, evaluateExpr]);
+    }, [l, data, isDark, isTwoSet, isResolved, selectedRegions, activeSets, chips, frozenZones, variables, isHintVisible, currentStep, REGION_MAP, evaluateExpr]);
 
     // --- 🖋️ RENDER & EVENTS ---
     useEffect(() => {

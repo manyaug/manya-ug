@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "sync-assets": "node scripts/sync-assets.cjs",
-    "sync-db": "node scripts/sync-excel-db.cjs"
+    "sync-db": "node scripts/sync-excel-db.cjs",
+    "db:sync": "node scripts/sync_vault.mjs",
+    "db:sync:reset": "node scripts/sync_vault.mjs --reset"
   },
   "dependencies": {
     "@dotlottie/react-player": "^1.6.19",

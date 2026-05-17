@@ -2,9 +2,15 @@ import { storageFacade } from '../infrastructure/storage/storageFacade.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { parseSolutionToSteps } from '../utils/solutionVisualizer';
 import { hydrateStepData, getEngineType } from '../engines/shared-engines/UniversalLogic';
+import { ASSET_VERSION } from '../config/constants';
+import { findQuestData } from './curriculumService';
+import { assetUrl } from '../config/assetUrls';
 
 const BANK_CACHE = {};
-let CACHE_CLEARED = false;
+export const clearMathCache = () => {
+    Object.keys(BANK_CACHE).forEach(key => delete BANK_CACHE[key]);
+    console.log("🧹 [MathDB] Local bank cache cleared.");
+};
 
 const SUBTOPIC_MAP = {
     'quest_01_finite_infinite_sets': 'finite_vs_infinite_sets',
@@ -30,16 +36,22 @@ export const fetchMathQuestions = async (topicId) => {
         
         if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
 
-        const allCached = await ManyaDB.getCachedQuestions('math');
-        const cached = allCached.filter(q => q.subtopic === subtopic);
-        if (cached && cached.length > 0) {
-            BANK_CACHE[subtopic] = cached;
-            return cached;
+        let data = null;
+        try {
+            console.log(`📡 [MathDB] Querying Supabase for fresh records...`);
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${spaceSub}%,subtopic.ilike.%${topicId}%`);
+        } catch (dbErr) {
+            console.warn(`⚠️ [MathDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
+            const allCached = await ManyaDB.getCachedQuestions('math');
+            const cached = allCached.filter(q => q.subtopic === subtopic);
+            if (cached && cached.length > 0) {
+                console.log(`💾 [MathDB] Successfully loaded ${cached.length} questions from local IndexedDB.`);
+                BANK_CACHE[subtopic] = cached;
+                return cached;
+            }
+            data = [];
         }
 
-        let data = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${spaceSub}%,subtopic.ilike.%${topicId}%`);
-
-        // FALLBACK: Aggressive Keyword Splitting (v5.0)
         if (!data || data.length === 0) {
             const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
             const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
@@ -47,9 +59,7 @@ export const fetchMathQuestions = async (topicId) => {
             if (keywords.length > 0) {
                 console.log(`🔍 [Math Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
                 const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
-                
                 const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${keywordFilter}`);
-                
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Math Vault] Discovered ${keywordData.length} related questions via keywords.`);
                     data = keywordData;
@@ -57,43 +67,86 @@ export const fetchMathQuestions = async (topicId) => {
             }
         }
 
-        if (!data || data.length === 0) return [];
+        if (!data) data = [];
 
-        const transformed = data.map(q => {
-            // v10.0: Unified Hydration via UniversalLogic
-            const parsedData = hydrateStepData(q);
-            const engineType = getEngineType(q);
-            
-            const hasData = parsedData && (Object.keys(parsedData).length > 2 || parsedData.questions || parsedData.sets);
-            
-            if (q.item_type === 'SIMULATION' && !hasData) {
-                console.warn(`🚨 [MathDB] Ghost Simulation detected: ${q.qid || q.id}. Missing payload.`);
+        // --- INJECT MISSING CURRICULUM RESOURCES ---
+        try {
+            const curriculumQuest = findQuestData('math', null, topicId) || findQuestData('math', null, subtopic);
+            if (curriculumQuest && curriculumQuest.resources) {
+                curriculumQuest.resources.forEach(res => {
+                    const isNoteOrRecap = res.file.includes('recap') || res.file.includes('note') || res.file.includes('study');
+                    const exists = data.some(d => d.qid === res.file || d.id === res.file);
+                    
+                    if (isNoteOrRecap && !exists) {
+                        console.log(`[MathDB] Auto-injecting missing curriculum resource: ${res.file}`);
+                        data.push({
+                            id: res.file,
+                            qid: res.file,
+                            subject: 'math',
+                            topic: topicId,
+                            subtopic: subtopic,
+                            item_type: res.file.includes('recap') ? 'RECAP' : 'NOTE',
+                            engine_type: 'NOTE_EXPLORER',
+                            cdn_url: assetUrl(`content/math/${curriculumQuest.folder}/${res.file}.json`)
+                        });
+                    }
+                });
             }
+        } catch (e) {
+            console.warn("[MathDB] Failed to auto-inject curriculum resources:", e);
+        }
 
-            const options = [q.option_a, q.option_b, q.option_c, q.option_d].filter(opt => opt && opt !== 'null');
+        if (data.length === 0) return [];
+
+        // v11.1: Async Parallel Transformation (Scale-Ready)
+        const transformed = await Promise.all(data.map(async (q) => {
+            const finalQuestion = q.question_text || q.prompt || q.text || q.question || q.content || q.description || `Let's explore ${q.subtopic || q.topic || 'this concept'}!`;
+            
+            const rawOptions = q.options || [q.option_a, q.option_b, q.option_c, q.option_d];
+            const cleanOptions = (Array.isArray(rawOptions) ? rawOptions : Object.values(rawOptions || {}))
+                .filter(opt => opt && opt !== 'null' && opt !== '');
+            const finalOptions = cleanOptions.length > 0 ? cleanOptions : ["I'm ready!", "Let's go!", "Start Learning"];
+
+            // 🌐 [CDN HYDRATION]: If it's a simulation with a URL, grab the JSON
+            let interactivePayload = hydrateStepData(q) || {};
+            
+            const isInteractive = q.item_type?.includes('INTERACTIVE') || q.item_type === 'SIMULATION' || q.item_type === 'RECAP' || q.engine_type;
+            if (isInteractive && q.cdn_url) {
+                try {
+                    let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');
+                    cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                    cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
+                    
+                    console.debug(`[MathDB] Fetching CDN Payload for ${q.qid}: ${cleanCdnUrl}`);
+                    const fetchedData = await storageFacade.get(`file:${cleanCdnUrl}`);
+                    if (fetchedData) {
+                        interactivePayload = { ...interactivePayload, ...fetchedData };
+                        console.log(`%c ✅ [MathDB] Hydrated Simulation: ${q.qid}`, 'color: #10b981; font-weight: bold;');
+                    }
+                } catch (e) {
+                    console.warn(`[MathDB] CDN Fetch failed for ${q.qid}:`, e.message);
+                }
+            }
 
             return {
                 id: q.qid || q.id,
                 qid: q.qid || q.id,
                 subject: q.subject || 'math',
-                topic: q.topic,
+                topic: q.topic || topicId,
                 subtopic: q.subtopic,
                 difficulty: q.difficulty || 'E',
-                question: q.question_text || q.prompt || q.text || q.content || q.description || q.question || `Let's explore ${q.subtopic || q.topic || 'this concept'}!`,
-                options: options.length > 0 ? options : ["I'm ready!", "Let's go!", "Start Learning"],
-                answer: q.correct_answer || q.answer || "I'm ready!",
+                question: finalQuestion,
+                options: finalOptions,
+                answer: q.correct_answer || q.answer || finalOptions[0],
                 explanation: parseSolutionToSteps(q.explanation),
                 raw_explanation: q.explanation,
                 hint: q.hint,
                 image_url: q.image_location === 'null' ? null : (q.image_url || q.image_location),
                 variant: q.variant || (q.qid?.includes('-V') ? q.qid.split('-V')[1] : 'V1'),
-                isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
-                tags: q.metadata?.tags || [],
-                engineType: engineType,
-                data: parsedData || {}, 
+                data: interactivePayload, 
             };
-        });
+        }));
 
         BANK_CACHE[subtopic] = transformed;
         await ManyaDB.cacheQuestions(transformed);

@@ -36,10 +36,11 @@ export async function preloadCurriculum() {
             const fetchOp = (async () => {
                 let raw;
                 try {
-                    raw = await storageFacade.get(`file:${CDN_URL}`);
-                } catch (e) {
-                    console.warn(`[Curriculum] Remote CDN fetch failed. Falling back to local...`);
+                    console.log(`🌐 [Curriculum] Loading local deployment curriculum fallback first...`);
                     raw = await storageFacade.get('file:/curriculum-master.json');
+                } catch (e) {
+                    console.warn(`[Curriculum] Local deployment fetch failed. Falling back to remote CDN...`);
+                    raw = await storageFacade.get(`file:${CDN_URL}`);
                 }
                 return raw;
             })();

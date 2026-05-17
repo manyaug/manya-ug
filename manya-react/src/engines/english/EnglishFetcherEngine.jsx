@@ -5,6 +5,7 @@ import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { syncService } from '../../infrastructure/sync/syncService';
 import { findQuestData, preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
+import { getEngineType } from '../shared-engines/UniversalLogic';
 
 /**
  * MANYA ENGLISH FETCHER ENGINE v8.8 (Optimized)
@@ -67,15 +68,11 @@ export default function EnglishFetcherEngine({ data, onComplete }) {
                         bus.setPools(adaptiveResult.pools);
 
                         const explodedSteps = selectedQuestions.map(q => {
-                            const itemType = (q.item_type || q.type || "").toUpperCase();
+                            const engineType = getEngineType(q, 'english');
                             return {
-                                engineType: q.engineType || q.engine_type || (
-                                    (itemType === 'NOTE' || q.isNote) ? 'NOTE_EXPLORER' :
-                                    (itemType === 'RECAP' || q.isRecap) ? 'NOTE_EXPLORER' :
-                                    (q.type === 'simulation' || q.isSimulation) ? 'THREE_D_STUDY' : 
-                                    'MCQ_STANDALONE'
-                                ),
+                                engineType,
                                 data: q,
+                                isSimulation: engineType !== 'MCQ_STANDALONE',
                                 subject: 'english'
                             };
                         });

@@ -57,6 +57,7 @@ export default function QuestRunner() {
         sessionRewards, subProgress, virtualTotal, biomeColor,
         session, performance,
         advanceStep, handleEngineResult, replaceCurrentStepWith,
+        addSessionRewards,
         setBtnState
     } = useQuestOrchestrator();
 
@@ -64,6 +65,16 @@ export default function QuestRunner() {
     const [fact, setFact] = useState('');
     const claimBtnRef = useRef(null);
     const { triggerFlyingCoin } = useCoinAnimation(user?.coins || 0);
+
+    const autoContinueTimeoutRef = useRef(null);
+
+    const safeAdvanceStep = useCallback(() => {
+        if (autoContinueTimeoutRef.current) {
+            clearTimeout(autoContinueTimeoutRef.current);
+            autoContinueTimeoutRef.current = null;
+        }
+        advanceStep();
+    }, [advanceStep]);
 
     // Pick a random fact when we enter a loading state
     useEffect(() => {
@@ -85,16 +96,28 @@ export default function QuestRunner() {
                 }, i * 45);
             }
             
+            // Physical reward addition to the session
+            if (type === 'coin') {
+                addSessionRewards(amount, 0);
+            } else if (type === 'gem') {
+                addSessionRewards(0, amount);
+            }
+
             setTimeout(() => {
                 window.dispatchEvent(new CustomEvent('manya-reward-arrived', { detail: { type } }));
                 audioService.collect?.();
             }, 500 + (count * 45));
         };
         return () => { delete window.triggerRewardFlight; };
-    }, [triggerFlyingCoin]);
+    }, [triggerFlyingCoin, addSessionRewards]);
 
     useEffect(() => {
-        const handleAutoContinue = () => { setTimeout(() => advanceStep(), 2500); };
+        const handleAutoContinue = () => {
+            if (autoContinueTimeoutRef.current) clearTimeout(autoContinueTimeoutRef.current);
+            autoContinueTimeoutRef.current = setTimeout(() => {
+                safeAdvanceStep();
+            }, 2500);
+        };
         const handleChallengeComplete = (e) => {
             if (e.detail?.challenge) {
                 setChallengeReward(e.detail);
@@ -106,8 +129,9 @@ export default function QuestRunner() {
         return () => {
             window.removeEventListener('manya-fx-correct', handleAutoContinue);
             window.removeEventListener('manya-challenge-completed', handleChallengeComplete);
+            if (autoContinueTimeoutRef.current) clearTimeout(autoContinueTimeoutRef.current);
         };
-    }, [advanceStep]);
+    }, [safeAdvanceStep]);
 
     const subFrac = (subProgress.total > 1) ? (subProgress.current / subProgress.total) : 0;
     
@@ -120,7 +144,7 @@ export default function QuestRunner() {
     const progressPct = Math.min(100, Math.round(((currentTestableIdx + (!isCurrentStepNote ? subFrac : 0)) / totalTestable) * 100));
 
     const busState = useMemo(() => ({
-        advanceStep,
+        advanceStep: safeAdvanceStep,
         replaceCurrentStepWith,
         enableButton: (label, action) => setBtnState(s => ({ ...s, enabled: true, label: label || s.label, action: action || null })),
         disableButton: () => setBtnState(s => ({ ...s, enabled: false, action: null })),
@@ -130,7 +154,7 @@ export default function QuestRunner() {
         },
         onEngineResult: handleEngineResult,
         setPools: (pools) => session?.setPools(pools)
-    }), [advanceStep, replaceCurrentStepWith, handleEngineResult, session, setBtnState]);
+    }), [safeAdvanceStep, replaceCurrentStepWith, handleEngineResult, session, setBtnState]);
 
     return (
         <QuestBusProvider state={busState}>
@@ -194,13 +218,13 @@ export default function QuestRunner() {
                     />
                 )}
                 <main className="qr-content-area scroll-smooth flex-1 min-h-0 !p-0 !m-0 !w-full relative">
-                    <QuestErrorBoundary key={stepIdx + phase} onSkip={advanceStep}>
+                    <QuestErrorBoundary key={stepIdx + phase} onSkip={safeAdvanceStep}>
                         {/* 1. BACKGROUND LAYER: Fetchers mount here hidden to do their work */}
                         {phase === 'running' && activeEngine?.engineType?.includes('FETCHER') && (
                             <div className="hidden pointer-events-none" aria-hidden="true">
                                 <activeEngine.component 
                                     data={activeEngine.data} 
-                                    onComplete={advanceStep} 
+                                    onComplete={safeAdvanceStep} 
                                     onResult={handleEngineResult} 
                                 />
                             </div>
@@ -244,7 +268,7 @@ export default function QuestRunner() {
                                                     data={activeEngine.data} 
                                                     step={steps[stepIdx]}
                                                     nodeType={location.state?.nodeType} 
-                                                    onComplete={advanceStep} 
+                                                    onComplete={safeAdvanceStep} 
                                                     onResult={handleEngineResult} 
                                                 />
                                             </div>
@@ -284,7 +308,7 @@ export default function QuestRunner() {
                                     className="manya-btn-pro w-full" 
                                     style={{ backgroundColor: btnState.enabled ? biomeColor : 'var(--border-subtle)' }} 
                                     disabled={!btnState.enabled} 
-                                    onClick={btnState.action || advanceStep}
+                                    onClick={btnState.action || safeAdvanceStep}
                                 >
                                     {btnState.label}
                                 </button>

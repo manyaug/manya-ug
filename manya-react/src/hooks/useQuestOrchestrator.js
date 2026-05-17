@@ -357,12 +357,22 @@ export function useQuestOrchestrator() {
         setVirtualTotal(updatedSteps.length);
     }, [steps, stepIdx]);
 
+    const addSessionRewards = useCallback((coins = 0, gems = 0) => {
+        performanceRef.current.totalCoins = (performanceRef.current.totalCoins || 0) + coins;
+        performanceRef.current.totalGems = (performanceRef.current.totalGems || 0) + gems;
+        setSessionRewards({
+            coins: performanceRef.current.totalCoins,
+            gems: performanceRef.current.totalGems
+        });
+    }, []);
+
     return {
         phase, steps, stepIdx, frustration, btnState, meta, activeEngine,
         sessionRewards, subProgress, virtualTotal, biomeColor,
         session: sessionRef.current,
         performance: performanceRef.current,
         advanceStep, handleEngineResult, replaceCurrentStepWith,
+        addSessionRewards,
         setBtnState, setPhase
     };
 }
