@@ -1,4 +1,4 @@
-import { useEffect, Suspense, useState, useRef, useMemo } from 'react';
+import { useEffect, Suspense, useState, useRef, useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
