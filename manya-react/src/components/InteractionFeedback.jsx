@@ -57,9 +57,9 @@ const InteractionFeedback = () => {
                 {flash && (
                     <motion.div
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.25 }}
+                        animate={{ opacity: 0.75 }}
                         exit={{ opacity: 0 }}
-                        className={`fixed inset-0 ${flash === 'correct' ? 'bg-emerald-400' : 'bg-rose-400'}`}
+                        className={`fixed inset-0 ${flash === 'correct' ? 'bg-emerald-500' : 'bg-yellow-400'}`}
                     />
                 )}
             </AnimatePresence>
@@ -73,7 +73,15 @@ const InteractionFeedback = () => {
                         exit={{ scale: 1.5, opacity: 0 }}
                         className="fixed inset-0 flex items-center justify-center"
                     >
-                        <span className="text-5xl md:text-7xl font-black text-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.6)]" style={{ fontFamily: "'Bubblegum Sans', 'Fredoka', sans-serif", WebkitTextStroke: '1px rgba(0,0,0,0.15)' }}>
+                        <span 
+                            className="text-6xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-amber-300 via-yellow-400 to-amber-600 drop-shadow-[0_8px_24px_rgba(0,0,0,0.8)]" 
+                            style={{ 
+                                fontFamily: "'Sour Gummy', 'Bubblegum Sans', sans-serif", 
+                                fontWeight: 900,
+                                WebkitTextStroke: '2px rgba(0,0,0,0.25)',
+                                filter: 'drop-shadow(0 6px 12px rgba(251, 191, 36, 0.5))'
+                            }}
+                        >
                             {word}
                         </span>
                     </motion.div>

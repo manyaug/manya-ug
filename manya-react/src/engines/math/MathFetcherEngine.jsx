@@ -26,7 +26,7 @@ export default function MathFetcherEngine({ data, onComplete }) {
             console.log(`[MathFetcher] Explode sequence started for: ${data?.topic}`);
 
             const safetyTimeout = new Promise((resolve) => 
-                setTimeout(() => resolve('TIMEOUT'), 12000)
+                setTimeout(() => resolve('TIMEOUT'), 45000)
             );
 
             const fetchOperation = (async () => {
@@ -65,18 +65,18 @@ export default function MathFetcherEngine({ data, onComplete }) {
                         );
 
                         const selectedQuestions = adaptiveResult.questions;
+                        bus.setRawQuestions?.(questions);
                         bus.setPools(adaptiveResult.pools);
 
                         const explodedSteps = selectedQuestions.map(q => {
-                            // v11.0: Scalable Routing Pattern (Matches English/SST)
-                            // We no longer manually "protect" against ghosts here. 
-                            // The engine router handles selection, and engines handle their own data.
-                            const engineType = getEngineType(q, 'math');
+                            const rawEngineType = getEngineType(q, 'math');
+                            const isRealSim = isSimSafe(q, 'math');
+                            const engineType = isRealSim ? rawEngineType : 'MCQ_STANDALONE';
 
                             return {
                                 engineType,
                                 data: q,
-                                isSimulation: engineType !== 'MCQ_STANDALONE',
+                                isSimulation: isRealSim,
                                 subject: 'math'
                             };
                         });

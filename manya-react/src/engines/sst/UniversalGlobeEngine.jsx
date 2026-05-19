@@ -133,15 +133,38 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
                 }
             }));
 
-            if (onResult) onResult({ isCorrect: true, score: activeTab + 1, total: data.questions?.length || 1, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer });
             setQuizFeedback({ type: 'success', text: "Correct!" });
             setTimeout(() => {
                 if (activeTab < data.questions.length - 1) {
+                    // Send a pulse update to let the orchestrator know of intermediate tab success
+                    if (onResult) {
+                        onResult({ 
+                            type: 'pulse', 
+                            isCorrect: true, 
+                            score: activeTab + 1, 
+                            total: data.questions?.length || 1 
+                        });
+                    }
                     setActiveTab(prev => prev + 1);
                     setQuizFeedback(null);
                     setSelectedQuizOpt(null);
                     startTimeRef.current = Date.now();
                 } else {
+                    // Final completed step outcome: report comprehensive stats so session completes
+                    if (onResult) {
+                        onResult({
+                            isCorrect: mistakesRef.current === 0,
+                            accuracy: Math.max(0, (data.questions.length - mistakesRef.current) / data.questions.length),
+                            score: data.questions.length - mistakesRef.current,
+                            total: data.questions.length,
+                            type: 'simulation',
+                            engineType: 'GLOBE_QUIZ',
+                            selectedAnswer: selectedQuizOpt,
+                            correctAnswer: q.correctAnswer,
+                            mistakes: mistakesRef.current,
+                            duration: Date.now() - globalStartTimeRef.current
+                        });
+                    }
                     if (onComplete) onComplete({
                         isCorrect: mistakesRef.current === 0,
                         accuracy: Math.max(0, (data.questions.length - mistakesRef.current) / data.questions.length),
@@ -155,7 +178,20 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
                 }
             }, 1200);
         } else {
-            if (onResult) onResult({ isCorrect: false, score: activeTab, total: data.questions?.length || 1, type: 'quiz', selectedAnswer: selectedQuizOpt, correctAnswer: q.correctAnswer, duration, mistakes: 1 });
+            // intermediate wrong click: report as a pulse result so the orchestrator
+            // registers the mistake/frustration but does NOT finalize the step or re-adapt yet
+            if (onResult) {
+                onResult({ 
+                    type: 'pulse', 
+                    isCorrect: false, 
+                    score: activeTab, 
+                    total: data.questions?.length || 1, 
+                    selectedAnswer: selectedQuizOpt, 
+                    correctAnswer: q.correctAnswer, 
+                    duration, 
+                    mistakes: 1 
+                });
+            }
             mistakesRef.current += 1;
             onSimWrong?.(); // Snappy "Try Again" Overlay
             setQuizFeedback({ type: 'error', text: '' }); // Clear text to avoid distraction, just show overlay

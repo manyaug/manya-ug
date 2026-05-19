@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { updateProfile } from '../store/userSlice';
-import { setVolume, toggleMute as toggleAudioMute } from '../store/audioSlice';
+import { updateProfile, syncUserData } from '../store/userSlice';
+import { setVolume, toggleMute as toggleAudioMute, setRainy } from '../store/audioSlice';
 import { syncService } from '../infrastructure/sync/syncService.js';
+import { audioService } from '../infrastructure/audio/audioService.js';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { addToast } from '../store/toastSlice';
-import { IMAGES } from '../config/assetUrls';
 import { 
     ChevronLeft, 
     Moon, 
@@ -14,16 +14,17 @@ import {
     Volume2, 
     VolumeX, 
     RefreshCw, 
-    User,
-    Zap,
-    Bell,
-    Database
+    Zap, 
+    Bell, 
+    Database,
+    CloudRain,
+    Sparkles
 } from 'lucide-react';
 import '../styles/preferences.css';
 
 function PreferencesView() {
     const user = useSelector((state) => state.user.data);
-    const { volume, isMuted } = useSelector((state) => state.audio);
+    const { volume, isMuted, isRainy } = useSelector((state) => state.audio);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -31,12 +32,42 @@ function PreferencesView() {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [syncStatus, setSyncStatus] = useState(navigator.onLine ? '100% SECURE' : 'OFFLINE (QUEUED)');
 
+    useEffect(() => {
+        const handleOnline = () => { setIsOnline(true); setSyncStatus('100% SECURE'); };
+        const handleOffline = () => { setIsOnline(false); setSyncStatus('OFFLINE (QUEUED)'); };
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
+
+    const currentTheme = user?.theme || 'dark';
+    const pulseEnabled = user?.pulseEnabled !== false; // Default true
+
     const toggleTheme = (e) => {
         if (e) e.stopPropagation();
-        const current = user?.theme || 'dark';
-        const next = current === 'dark' ? 'light' : 'dark';
-        dispatch(updateProfile({ ...user, theme: next }));
+        audioService.tap();
+        const next = currentTheme === 'dark' ? 'light' : 'dark';
+        const updated = { ...user, theme: next };
+        dispatch(updateProfile(updated));
         document.documentElement.setAttribute('data-theme', next);
+        dispatch(syncUserData());
+    };
+
+    const togglePulse = (e) => {
+        if (e) e.stopPropagation();
+        audioService.tap();
+        const updated = { ...user, pulseEnabled: !pulseEnabled };
+        dispatch(updateProfile(updated));
+        dispatch(syncUserData());
+    };
+
+    const toggleRain = (e) => {
+        if (e) e.stopPropagation();
+        audioService.tap();
+        dispatch(setRainy(!isRainy));
     };
 
     const handleVolume = (e) => {
@@ -44,15 +75,39 @@ function PreferencesView() {
         dispatch(setVolume(val));
     };
 
+    const handleMuteToggle = (e) => {
+        if (e) e.stopPropagation();
+        audioService.tap();
+        dispatch(toggleAudioMute());
+    };
+
+    const handleClearCache = async (e) => {
+        if (e) e.stopPropagation();
+        audioService.pop();
+        if (window.confirm("CRITICAL: Prune cached quest files? (Your scores and progress will NOT be lost)")) {
+            try {
+                await ManyaDB.clearQuestionCache();
+                audioService.success();
+                dispatch(addToast({ message: "Curriculum Cache Pruned!", type: "success" }));
+            } catch (err) {
+                audioService.error();
+                dispatch(addToast({ message: "Failed to prune cache", type: "error" }));
+            }
+        }
+    };
+
     const triggerManualSync = async () => {
+        audioService.tap();
         setIsSyncing(true);
         setSyncStatus('SYNCING...');
         try {
             await syncService.processSyncQueue();
-            dispatch(addToast({ message: "Cloud Identity Synchronized", type: "success" }));
+            audioService.success();
+            dispatch(addToast({ message: "Cloud Identity Stabilized", type: "success" }));
             setSyncStatus(isOnline ? '100% SECURE' : 'OFFLINE (QUEUED)');
         } catch (err) {
-            dispatch(addToast({ message: "Sync Error", type: "error" }));
+            audioService.error();
+            dispatch(addToast({ message: "Sync Handshake Failed", type: "error" }));
             setSyncStatus('OFFLINE (QUEUED)');
         } finally {
             setIsSyncing(false);
@@ -60,8 +115,9 @@ function PreferencesView() {
     };
 
     return (
-        <div className="pref-view font-main">
-            <header className="pref-header-elite !p-6 mb-8">
+        <div className="pref-view font-main px-4">
+            {/* 🔙 ELITE HEADER (MATCHES IDENTITY VAULT METADATA CONSOLE) */}
+            <header className="pref-header-elite mb-8 !p-6">
                 <div className="toy-card-gloss" />
                 <div className="flex items-center gap-4 relative z-20">
                     <button onClick={() => navigate('/profile')} className="pref-back-btn btn-toy">
@@ -75,23 +131,24 @@ function PreferencesView() {
                 </div>
             </header>
 
-            {/* 2. BENTO SETTINGS MATRIX */}
-            <div className="pref-bento-grid">
+            {/* mobile row-based settings list */}
+            <div className="pref-row-list !p-0">
                 
-                {/* NIGHT MODE (SQUARE BENTO) */}
-                <div className="bento-card-elite" onClick={toggleTheme}>
+                {/* NIGHT MODE (ROW) */}
+                <div className="pref-row-card cursor-pointer" onClick={toggleTheme}>
                     <div className="toy-card-gloss" />
-                    <div className="pref-icon-box" style={{ background: 'var(--manya-purple-light)', color: 'var(--manya-purple)' }}>
-                        {user?.theme === 'dark' ? <Moon size={22} /> : <Sun size={22} />}
+                    <div className="pref-icon-box icon-box-purple">
+                        {currentTheme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
                     </div>
-                    <span className="bento-label">Night Mode</span>
-                    <span className="bento-sub">UI Theme</span>
-                    
+                    <div className="pref-row-info">
+                        <span className="pref-row-title">Night Mode</span>
+                        <span className="pref-row-desc">Switch between dark & light themes</span>
+                    </div>
                     <div className="premium-toggle-wrapper">
                         <input 
                             type="checkbox" 
                             className="premium-toggle-input" 
-                            checked={user?.theme === 'dark'}
+                            checked={currentTheme === 'dark'}
                             readOnly
                         />
                         <div className="premium-toggle-label">
@@ -101,49 +158,74 @@ function PreferencesView() {
                     </div>
                 </div>
 
-                {/* NOTIFICATION PULSE (SQUARE BENTO) */}
-                <div className="bento-card-elite">
+                {/* NOTIFICATION PULSE (ROW) */}
+                <div className="pref-row-card cursor-pointer" onClick={togglePulse}>
                     <div className="toy-card-gloss" />
-                    <div className="pref-icon-box" style={{ background: 'var(--manya-green-light)', color: 'var(--manya-green)' }}>
-                        <Bell size={22} />
+                    <div className="pref-icon-box icon-box-green">
+                        <Bell size={20} />
                     </div>
-                    <span className="bento-label">Pulse</span>
-                    <span className="bento-sub">Alert System</span>
-                    
+                    <div className="pref-row-info">
+                        <span className="pref-row-title">Pulse System</span>
+                        <span className="pref-row-desc">Receive instant in-app alerts</span>
+                    </div>
                     <div className="premium-toggle-wrapper">
                         <input 
                             type="checkbox" 
-                            className="premium-toggle-input" 
-                            id="notif-pulse-bento" 
-                            defaultChecked
+                            className="premium-toggle-input toggle-green" 
+                            checked={pulseEnabled}
+                            readOnly
                         />
-                        <label htmlFor="notif-pulse-bento" className="premium-toggle-label">
+                        <div className="premium-toggle-label">
                             <div className="toggle-switch"></div>
                             <div className="toggle-gloss"></div>
-                        </label>
+                        </div>
                     </div>
                 </div>
 
-                {/* MASTER ENERGY (WIDE BENTO DECK) */}
-                <div className="bento-card-elite bento-card-wide">
+                {/* AMBIENT ATMOSPHERE: RAIN SOUNDS (ROW) */}
+                <div className="pref-row-card cursor-pointer" onClick={toggleRain}>
                     <div className="toy-card-gloss" />
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="pref-icon-box mb-0" style={{ background: 'var(--manya-pink-light)', color: 'var(--manya-pink)' }}>
-                            <Zap size={22} />
+                    <div className="pref-icon-box icon-box-amber">
+                        <CloudRain size={20} />
+                    </div>
+                    <div className="pref-row-info">
+                        <span className="pref-row-title">Rain Ambience</span>
+                        <span className="pref-row-desc">Fades cozy rain background loop</span>
+                    </div>
+                    <div className="premium-toggle-wrapper">
+                        <input 
+                            type="checkbox" 
+                            className="premium-toggle-input toggle-amber" 
+                            checked={isRainy}
+                            readOnly
+                        />
+                        <div className="premium-toggle-label">
+                            <div className="toggle-switch"></div>
+                            <div className="toggle-gloss"></div>
                         </div>
-                        <div>
-                            <span className="bento-label block mb-0 leading-none">Master Energy</span>
-                            <span className="bento-sub block mb-0 leading-none mt-2">Audio Spectrum</span>
+                    </div>
+                </div>
+
+                {/* MASTER ENERGY (ROW DECK WITH SLIDER) */}
+                <div className="pref-row-card no-hover-card flex-col gap-4">
+                    <div className="toy-card-gloss" />
+                    <div className="flex items-center w-full relative z-20">
+                        <div className="pref-icon-box icon-box-pink mb-0">
+                            <Zap size={20} />
+                        </div>
+                        <div className="pref-row-info flex-1 ml-3">
+                            <span className="pref-row-title">Master Volume</span>
+                            <span className="pref-row-desc">Adjust sound effects & music</span>
                         </div>
                         <button 
-                            className={`ml-auto p-3 rounded-2xl border-2 transition-all ${isMuted ? 'bg-rose-50 border-rose-200 text-rose-500' : 'bg-slate-50 border-slate-200 text-slate-400'}`}
-                            onClick={() => dispatch(toggleAudioMute())}
+                            className={`manya-mute-btn ${isMuted ? 'active' : ''}`}
+                            onClick={handleMuteToggle}
                         >
-                            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
                         </button>
                     </div>
 
-                    <div className="manya-slider-container mt-2">
+                    <div className="manya-slider-container w-full mt-1 relative z-20">
                         <div 
                             className="slider-fill-track" 
                             style={{ width: `${volume * 100}%` }}
@@ -158,18 +240,65 @@ function PreferencesView() {
                     </div>
                 </div>
 
-                {/* SYSTEM SYNC (WIDE BENTO) */}
-                <div className="bento-card-elite bento-card-wide" onClick={triggerManualSync}>
+                {/* ENGINE DIAGNOSTICS: CLEAR CACHE (ROW) */}
+                <div className="pref-row-card cursor-pointer" onClick={handleClearCache}>
+                    <div className="toy-card-gloss" />
+                    <div className="pref-icon-box icon-box-teal">
+                        <Sparkles size={20} />
+                    </div>
+                    <div className="pref-row-info flex-1">
+                        <span className="pref-row-title">Diagnostics</span>
+                        <span className="pref-row-desc">Clear local quest cache safely</span>
+                    </div>
+                    <button className="btn-toy btn-toy-white text-[9px] px-3.5 py-1.5 bg-white border border-slate-200 rounded-full font-black uppercase tracking-wider z-10">
+                        Prune
+                    </button>
+                </div>
+
+                {/* AUDIO DIAGNOSTICS: TEST SPEAKER (ROW) */}
+                <div className="pref-row-card cursor-pointer" onClick={() => {
+                    try {
+                        const url = 'https://cdn.jsdelivr.net/gh/manyaug/manya-react-assets@v3.0.13/audios/ui-click.mp3';
+                        console.log("🔊 Playing test sound directly at 100% volume:", url);
+                        const testAudio = new Audio(url);
+                        testAudio.volume = 1.0;
+                        testAudio.play()
+                            .then(() => {
+                                dispatch(addToast({ message: "Test Sound Fired successfully at 100% Volume!", type: "success" }));
+                            })
+                            .catch(err => {
+                                console.error("❌ Audio playback failed:", err);
+                                dispatch(addToast({ message: `Playback failed: ${err.message}`, type: "error" }));
+                            });
+                    } catch (e) {
+                        dispatch(addToast({ message: `Initiation error: ${e.message}`, type: "error" }));
+                    }
+                }}>
+                    <div className="toy-card-gloss" />
+                    <div className="pref-icon-box icon-box-teal">
+                        <Volume2 size={20} />
+                    </div>
+                    <div className="pref-row-info flex-1">
+                        <span className="pref-row-title">Test Speakers</span>
+                        <span className="pref-row-desc">Play diagnostic beep at 100% volume</span>
+                    </div>
+                    <button className="btn-toy btn-toy-white text-[9px] px-3.5 py-1.5 bg-white border border-slate-200 rounded-full font-black uppercase tracking-wider z-10">
+                        Test
+                    </button>
+                </div>
+
+                {/* SYSTEM SYNC (ROW) */}
+                <div className="pref-row-card cursor-pointer" onClick={triggerManualSync}>
                      <div className="toy-card-gloss" />
-                     <div className="flex items-center gap-4 w-full">
-                         <div className="pref-icon-box mb-0" style={{ background: 'var(--manya-purple-light)', color: 'var(--manya-purple)' }}>
-                             {isSyncing ? <RefreshCw className="animate-spin" size={22} /> : <RefreshCw size={22} />}
+                     <div className="flex items-center gap-4 w-full relative z-20">
+                         <div className="pref-icon-box icon-box-blue mb-0">
+                             <RefreshCw className={isSyncing ? "animate-spin" : ""} size={20} />
                          </div>
-                         <div className="flex-1">
-                             <span className="bento-label block mb-0">Identity Stabilization</span>
-                             <span className="bento-sub block mb-0">Cloud Handshake</span>
+                         <div className="flex-1 ml-3">
+                             <span className="pref-row-title">Cloud Handshake</span>
+                             <span className="pref-row-desc">Backup user identity matrix</span>
                          </div>
-                         <div className="text-[10px] font-black text-blue-500 uppercase px-3 py-1 bg-blue-100 border-2 border-blue-200 rounded-full">
+                         <div className={`manya-badge-sync ${isSyncing ? 'syncing' : (!isOnline ? 'offline' : '')}`}>
                             {syncStatus}
                          </div>
                      </div>
@@ -178,11 +307,14 @@ function PreferencesView() {
             </div>
 
             {/* 3. VAULT ENTRANCE ACTION */}
-            <div className="mt-12 px-6 text-center">
+            <div className="mt-8 px-6 text-center">
                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-[4px] mb-6">Credential Management</p>
                  <button 
-                    onClick={() => navigate('/settings')}
-                    className="w-full btn-toy btn-toy-white h-16 text-[11px] text-slate-600 uppercase tracking-widest flex items-center justify-center gap-3"
+                    onClick={() => {
+                        audioService.click();
+                        navigate('/settings');
+                    }}
+                    className="w-full btn-toy btn-toy-white h-14 text-[11px] text-slate-600 uppercase tracking-widest flex items-center justify-center gap-3"
                  >
                     <Database size={16} /> Open Identity Vault →
                  </button>

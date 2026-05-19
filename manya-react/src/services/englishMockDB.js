@@ -88,7 +88,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                             subtopic: subtopic,
                             item_type: res.file.includes('recap') ? 'RECAP' : 'NOTE',
                             engine_type: 'NOTE_EXPLORER',
-                            cdn_url: assetUrl(`content/english/${curriculumQuest.folder}/${res.file}.json`),
+                            cdn_url: assetUrl(`content/english/holidays/${curriculumQuest.folder}/${res.file}.json`),
                             question_text: `Explore ${res.label}`,
                             options: ["Ready!"],
                             correct_answer: "Ready!",
@@ -110,7 +110,21 @@ export const fetchEnglishQuestions = async (topicId) => {
             // v9.9: Hardened Data Extraction - Ensuring interactive payloads are preserved
             let interactiveData = q.data || q.metadata || {};
 
-            const isInteractive = q.item_type?.includes('INTERACTIVE') || q.item_type === 'SIMULATION' || q.item_type === 'RECAP' || q.engine_type;
+            const isMcqQid = String(q.qid || q.id || '').toLowerCase().includes('quiz') || 
+                             String(q.qid || q.id || '').toLowerCase().includes('mcq') || 
+                             String(q.qid || q.id || '').toLowerCase().includes('question') ||
+                             String(q.qid || q.id || '').toLowerCase().includes('practice');
+
+            const engineUpper = (q.engine_type || "").toUpperCase();
+            const hasSpecializedEngine = engineUpper && engineUpper !== 'NULL' && engineUpper !== 'MCQ' && engineUpper !== 'NONE' && engineUpper !== 'MCQ_STANDALONE';
+
+            const isInteractive = (
+                q.item_type?.toUpperCase().includes('INTERACTIVE') || 
+                q.item_type?.toUpperCase() === 'SIMULATION' || 
+                q.item_type?.toUpperCase() === 'RECAP' || 
+                hasSpecializedEngine
+            ) && !isMcqQid;
+
             if (isInteractive && q.cdn_url) {
                 try {
                     let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');

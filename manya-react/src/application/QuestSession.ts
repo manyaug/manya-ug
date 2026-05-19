@@ -11,7 +11,7 @@ import { rewardService } from '../infrastructure/services/rewardService';
 
 // Extract the 'deriveMetadata' from QuestRunner
 function deriveMetadata(step: QuestStep | any) {
-    const identifier = step?.file || step?.id || 'unknown';
+    const identifier = step?.file || step?.id || step?.data?.qid || step?.data?.id || step?.data?.file || 'unknown';
     const { conceptId, variant } = masteryService.parseId(identifier);
     
     let pool = 'no';
@@ -37,6 +37,8 @@ export class QuestSession {
     private _simPool: any[] = [];
     private _notePool: any[] = [];
     private _recapPool: any[] = [];
+    private _mcqPool: any[] = [];
+    private _rawQuestions: any[] = [];
     // Removed dependency on direct React dispatch. We return outcomes.
 
     constructor(steps: QuestStep[], meta: QuestMeta) {
@@ -46,6 +48,30 @@ export class QuestSession {
 
     get currentStep(): QuestStep | undefined {
         return this._steps[this._currentIndex];
+    }
+
+    get rawQuestions(): any[] {
+        return this._rawQuestions;
+    }
+
+    setRawQuestions(questions: any[]) {
+        this._rawQuestions = questions;
+    }
+
+    get mcqPool(): any[] {
+        return this._mcqPool;
+    }
+
+    get simPool(): any[] {
+        return this._simPool;
+    }
+
+    get notePool(): any[] {
+        return this._notePool;
+    }
+
+    get recapPool(): any[] {
+        return this._recapPool;
     }
 
     set steps(newSteps: QuestStep[]) {
@@ -82,7 +108,8 @@ export class QuestSession {
         return this._lastMasteryScore;
     }
 
-    setPools(pools: { SIMULATION?: any[], NOTE?: any[], RECAP?: any[] }) {
+    setPools(pools: { MCQ?: any[], SIMULATION?: any[], NOTE?: any[], RECAP?: any[] }) {
+        this._mcqPool = pools.MCQ || [];
         this._simPool = pools.SIMULATION || [];
         this._notePool = pools.NOTE || [];
         this._recapPool = pools.RECAP || [];
@@ -144,7 +171,7 @@ export class QuestSession {
         if (!engineResult.type?.includes('adaptive_')) {
             syncService.pushAnswer(this._meta.subject, {
                 ...engineResult, // Spread all new high-fidelity metrics (idleTimeMs, hesitationCount, etc.)
-                questionId: this.currentStep.file || this.currentStep.id || this.currentStep.topic || 'unknown_step',
+                questionId: this.currentStep.file || this.currentStep.id || this.currentStep.data?.qid || this.currentStep.data?.id || this.currentStep.data?.file || this.currentStep.topic || 'unknown_step',
                 concept_id: conceptId,
                 variant: variant,
                 isCorrect: isCorrect,

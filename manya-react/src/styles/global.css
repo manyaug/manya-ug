@@ -5,12 +5,6 @@
    ════════════════════════════════════════════════════ */
 
 :root {
-  /* Inherit shared brand colors from tokens */
-  --manya-purple: var(--manya-purple);
-  --manya-pink: var(--manya-pink);
-  --manya-gold: var(--manya-gold);
-  --manya-green: var(--manya-green);
-  
   /* Theme-dependent aliases */
   --bg-main: var(--bg-primary);
   --bg-card: var(--bg-secondary);

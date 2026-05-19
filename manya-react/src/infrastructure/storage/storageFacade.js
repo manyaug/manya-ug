@@ -1,5 +1,6 @@
 import { supabase } from '../remote/supabaseClient.js';
 import { errorMapper } from './errorMapper.js';
+import { CDN_BASE } from '../../config/constants.js';
 
 /**
  * URI Parser helper
@@ -30,6 +31,10 @@ const localAdapter = {
 const fileAdapter = {
   resolveUrl(path) {
     if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    if (cleanPath.startsWith('content/')) {
+      return `${CDN_BASE}${cleanPath}`;
+    }
     if (path.startsWith('/')) return path; // Use as-is if absolute from root
     return `/api/files/${path}`;
   },
@@ -37,7 +42,23 @@ const fileAdapter = {
     const url = this.resolveUrl(path);
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`File fetch failed: ${resp.status} ${resp.statusText}`);
-    return asStream ? resp.body : resp.json();
+    if (asStream) return resp.body;
+
+    const buffer = await resp.arrayBuffer();
+    const arr = new Uint8Array(buffer);
+    
+    let decoder = new TextDecoder('utf-8');
+    if (arr.length >= 2) {
+      if (arr[0] === 0xFE && arr[1] === 0xFF) {
+        decoder = new TextDecoder('utf-16be');
+      } else if (arr[0] === 0xFF && arr[1] === 0xFE) {
+        decoder = new TextDecoder('utf-16le');
+      }
+    }
+    
+    const text = decoder.decode(arr);
+    const cleanText = text.replace(/^\ufeff/, '').trim();
+    return JSON.parse(cleanText);
   },
   async put(path, payload, { asStream = false } = {}) {
     const url = this.resolveUrl(path);

@@ -119,7 +119,13 @@ export default function MCQRenderer({
                     <div className="mcq-hint-container">
                         <button 
                             className={`mcq-hint-toggle-v2 ${hintUsed ? 'active' : ''}`}
-                            onClick={() => setHintUsed(!hintUsed)}
+                            onClick={() => {
+                                if (!hintUsed) {
+                                    const qId = data.id || data.qid || data.questionId || data.question || data.text;
+                                    window.dispatchEvent(new CustomEvent('manya-hint-taken', { detail: { questionId: qId } }));
+                                }
+                                setHintUsed(!hintUsed);
+                            }}
                         >
                             <Lightbulb size={20} strokeWidth={2.5} />
                         </button>
@@ -192,46 +198,7 @@ export default function MCQRenderer({
                         SUBMIT ANSWER <Zap size={16} fill="currentColor" />
                     </button>
                 ) : phase === 'correct' ? (
-                    <div className="mcq-feedback-banner correct animate-in slide-in-from-bottom-4 flex justify-between items-center w-full" style={{ backgroundColor: '#f0fdf4', borderColor: '#bbf7d0', padding: '1rem 1.5rem', borderRadius: '1.25rem', border: '2px solid #bbf7d0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-                        <div className="flex items-center gap-3">
-                            <div className="mcq-feedback-icon" style={{ backgroundColor: '#dcfce7', color: '#16a34a', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                <CheckCircle2 size={28} />
-                            </div>
-                            <div>
-                                <div className="mcq-feedback-title" style={{ color: '#16a34a', fontWeight: 900, fontSize: '1.1rem', letterSpacing: '0.05em' }}>EXCELLENT JOB!</div>
-                                <div className="mcq-feedback-sub" style={{ color: '#15803d', fontWeight: 700, fontSize: '0.9rem' }}>You nailed this question.</div>
-                            </div>
-                        </div>
-                        <button 
-                            className="mcq-popup-continue-correct" 
-                            onClick={onContinue}
-                            style={{ 
-                                backgroundColor: '#22c55e', 
-                                border: 'none', 
-                                padding: '0.75rem 2rem', 
-                                borderRadius: '1rem', 
-                                color: 'white', 
-                                fontWeight: 900, 
-                                fontSize: '1rem', 
-                                cursor: 'pointer',
-                                boxShadow: '0 4px 0 #16a34a',
-                                transition: 'all 0.1s ease',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem'
-                            }}
-                            onMouseDown={(e) => {
-                                e.currentTarget.style.transform = 'translateY(2px)';
-                                e.currentTarget.style.boxShadow = '0 2px 0 #16a34a';
-                            }}
-                            onMouseUp={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0px)';
-                                e.currentTarget.style.boxShadow = '0 4px 0 #16a34a';
-                            }}
-                        >
-                            CONTINUE <ChevronRight size={18} strokeWidth={3} />
-                        </button>
-                    </div>
+                    <div className="h-14" /> // Hide correct banner, auto-continue handles it!
                 ) : phase === 'wrong' || phase === 'show-solution' ? (
                     <div className="mcq-feedback-banner wrong animate-in slide-in-from-bottom-4" style={{ backgroundColor: '#fffbeb', borderColor: '#fde68a' }}>
                         <div className="flex items-center gap-3">

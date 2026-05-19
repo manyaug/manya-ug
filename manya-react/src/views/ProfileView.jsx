@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -12,11 +13,95 @@ import {
     BrainCircuit
 } from 'lucide-react';
 import { getIsland, IMAGES } from '../config/assetUrls';
+import { preloadCurriculum, fetchDynamicCurriculum } from '../services/curriculumService';
+import { getQuestProgress, getQuestKey } from '../domain/progress/questProgressService';
 import '../styles/profile.css';
 
 function ProfileView() {
     const user = useSelector((state) => state.user.data);
     const navigate = useNavigate();
+
+    // ── DYNAMIC ACADEMIC PROGRESS CALCULATION ──
+    const [realProgress, setRealProgress] = useState({
+        math: 0,
+        science: 0,
+        sst: 0,
+        english: 0
+    });
+
+    useEffect(() => {
+        async function calculateRealProgress() {
+            try {
+                // Ensure master curriculum is loaded
+                const masterCurr = await preloadCurriculum();
+                const subjects = ['math', 'science', 'sst', 'english'];
+                const progressMap = {};
+
+                for (const sub of subjects) {
+                    // Discover units dynamically
+                    const dynamicCurr = await fetchDynamicCurriculum(sub);
+                    
+                    const units = [];
+                    const seenUnitIds = new Set();
+
+                    // 1. Static units from curriculum-master
+                    if (masterCurr && masterCurr[sub] && masterCurr[sub].units) {
+                        masterCurr[sub].units.forEach(u => {
+                            units.push(u);
+                            seenUnitIds.add(u.id);
+                        });
+                    }
+
+                    // 2. Dynamic units from DB discovery
+                    if (dynamicCurr && dynamicCurr.units) {
+                        dynamicCurr.units.forEach(u => {
+                            if (!seenUnitIds.has(u.id)) {
+                                units.push(u);
+                                seenUnitIds.add(u.id);
+                            }
+                        });
+                    }
+
+                    // Collect all quests (subtopics/challenges)
+                    const quests = [];
+                    units.forEach(unit => {
+                        if (unit.quests) {
+                            unit.quests.forEach(q => {
+                                quests.push({
+                                    unitId: unit.id,
+                                    folder: q.folder,
+                                    title: q.title
+                                });
+                            });
+                        }
+                    });
+
+                    // Count completed quest nodes (out of the 5 nodes per quest)
+                    let completedNodes = 0;
+                    const NODE_TYPES = ['WARMUP', 'EXERCISE', 'PRACTICE', 'REINFORCE', 'MASTERY'];
+
+                    quests.forEach(q => {
+                        const qKey = getQuestKey(sub, q.unitId, q.folder || q.title);
+                        const progress = getQuestProgress(sub, qKey);
+                        NODE_TYPES.forEach(node => {
+                            if (progress[node] && progress[node].status === 'completed') {
+                                completedNodes += 1;
+                            }
+                        });
+                    });
+
+                    const totalNodes = quests.length * 5;
+                    const percentage = totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0;
+                    progressMap[sub] = percentage;
+                }
+
+                setRealProgress(progressMap);
+            } catch (e) {
+                console.error("⚠️ [Profile] Failed to compute real academic progress:", e);
+            }
+        }
+        calculateRealProgress();
+    }, []);
 
     // --- NATIONAL ARENA VARIANTS ---
     const containerVariants = {
@@ -30,13 +115,6 @@ function ProfileView() {
     };
 
     const stats = { rank: "Advanced Hero", league: "Bronze League", leagueColor: "var(--league-bronze)" };
-
-    const subjectProgress = [
-        { name: 'Mathematics', val: 78, color: 'var(--subject-math)', icon: getIsland('math') },
-        { name: 'Science', val: 45, color: 'var(--subject-science)', icon: getIsland('science') },
-        { name: 'SST', val: 62, color: 'var(--subject-sst)', icon: getIsland('sst') },
-        { name: 'English', val: 90, color: 'var(--subject-english)', icon: getIsland('english') }
-    ];
 
     const past7Days = Array.from({ length: 7 }, (_, i) => {
         const d = new Date();
@@ -180,10 +258,10 @@ function ProfileView() {
                     <div className="toy-card-gloss" />
                     
                     {[
-                        { name: 'Mathematics', val: 78, color: 'var(--manya-purple)', img: IMAGES.math_gem },
-                        { name: 'Science', val: 45, color: 'var(--subject-science)', img: IMAGES.science_gem },
-                        { name: 'SST', val: 62, color: 'var(--subject-sst)', img: IMAGES.sst_gem },
-                        { name: 'English', val: 90, color: 'var(--subject-english)', img: IMAGES.english_gem }
+                        { name: 'Mathematics', val: realProgress.math || 0, color: 'var(--manya-purple)', img: IMAGES.math_gem },
+                        { name: 'Science', val: realProgress.science || 0, color: 'var(--subject-science)', img: IMAGES.science_gem },
+                        { name: 'SST', val: realProgress.sst || 0, color: 'var(--subject-sst)', img: IMAGES.sst_gem },
+                        { name: 'English', val: realProgress.english || 0, color: 'var(--subject-english)', img: IMAGES.english_gem }
                     ].map((subj, idx) => (
                         <div key={idx} className="mb-4 last:mb-0">
                             <div className="flex items-center justify-between mb-1.5">

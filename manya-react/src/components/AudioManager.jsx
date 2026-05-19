@@ -23,12 +23,18 @@ export default function AudioManager() {
       track.loop = true;
       track.volume = 0;
       
-      // ─── ERROR SUPPRESSION (v3.8) ───
-      // Suppress ERR_QUIC_PROTOCOL_ERROR logs which appear as red 'X' in console.
-      // These are often transient or related to Supabase storage behavior.
+      // ─── ERROR SUPPRESSION & SELF-HEALING FALLBACK (v3.8) ───
+      // Suppress ERR_QUIC_PROTOCOL_ERROR logs and heal failing tracks by falling back to AUDIO.day
       track.onerror = (e) => {
-          // Log as warning instead of allowing it to become a fatal browser error
           console.warn(`🎧 [AudioManager] Ambient track throttled or load failed (handled):`, track.src);
+          if (track.src && !track.src.endsWith('day.mp3')) {
+              console.log(`🔄 [AudioManager] Applying working Day track fallback for failing asset.`);
+              try {
+                  track.src = AUDIO.day;
+                  track.load();
+                  track.play().catch(() => {});
+              } catch (err) {}
+          }
       };
     });
 

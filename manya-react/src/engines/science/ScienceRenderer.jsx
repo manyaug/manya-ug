@@ -179,7 +179,13 @@ const ScienceRenderer = ({
                                 {!isAnswered && q.hint && (
                                     <div className="absolute top-0 -right-2">
                                         <button 
-                                            onClick={() => setHintUsed(!hintUsed)} 
+                                            onClick={() => {
+                                                if (!hintUsed) {
+                                                    const qId = q.id || q.qid || q.questionId || q.question;
+                                                    window.dispatchEvent(new CustomEvent('manya-hint-taken', { detail: { questionId: qId } }));
+                                                }
+                                                setHintUsed(!hintUsed);
+                                            }} 
                                             className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center relative z-10 ${hintUsed ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
                                         >
                                             <Lightbulb size={20} strokeWidth={2.5} />

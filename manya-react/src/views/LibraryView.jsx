@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useMemo, useEffect, Suspense, lazy, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-    Sparkles, X, Zap, Search, Clock, Box, FileText, Map as MapIcon, PlayCircle
+    Sparkles, X, Zap, Search, Clock, Box, FileText, Map as MapIcon, PlayCircle, Trash2, AlertTriangle, Layers, RotateCcw, Check
 } from 'lucide-react';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { IMAGES, getIsland } from '../config/assetUrls';
@@ -21,19 +21,40 @@ const SUBJECTS = [
     { id: 'sst', label: 'SST', color: 'var(--subject-sst)', rgb: '245, 158, 11' },
 ];
 
+const TYPES = [
+    { id: 'ALL', label: 'All Assets', icon: Layers },
+    { id: 'SIM', label: 'Simulations 🎮', icon: PlayCircle },
+    { id: 'NOTE', label: 'Study Notes 📝', icon: FileText },
+    { id: 'RECAP', label: 'Recaps 🏆', icon: MapIcon },
+];
+
 export default function LibraryView() {
     const [artifacts, setArtifacts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [activeSub, setActiveSub] = useState('math');
+    const [activeType, setActiveType] = useState('ALL');
     const [previewItem, setPreviewItem] = useState(null);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [deleting, setDeleting] = useState(false);
 
     // ── INITIAL FETCH ──
     useEffect(() => {
         async function loadVault() {
             setLoading(true);
             const data = await syncService.pullVault();
-            setArtifacts(data);
+            
+            // Deduplicate items based on compound key (type, title, path, subject) to ensure real numbers
+            const seen = new Set();
+            const uniqueData = (data || []).filter(item => {
+                if (!item.type || !item.title) return true;
+                const key = `${item.type.toUpperCase()}|${item.title.toLowerCase()}|${(item.path || '').toLowerCase()}|${(item.subject || '').toLowerCase()}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+            
+            setArtifacts(uniqueData);
             setLoading(false);
         }
         loadVault();
@@ -43,10 +64,11 @@ export default function LibraryView() {
     const filtered = useMemo(() => {
         return artifacts.filter(item => {
             const matchesSub = (item.subject || '').toLowerCase() === activeSub.toLowerCase();
+            const matchesType = activeType === 'ALL' || item.type === activeType;
             const matchesSearch = (item.title || '').toLowerCase().includes(search.toLowerCase());
-            return matchesSub && matchesSearch;
+            return matchesSub && matchesType && matchesSearch;
         });
-    }, [artifacts, activeSub, search]);
+    }, [artifacts, activeSub, activeType, search]);
 
     // ── CATEGORIZATION ──
     const categories = useMemo(() => {
@@ -59,8 +81,38 @@ export default function LibraryView() {
         return Object.entries(groups).filter(([_, items]) => items.length > 0);
     }, [filtered]);
 
+    // ── DELETE TRANSACTION ──
+    const handleDeleteConfirm = async () => {
+        if (!itemToDelete) return;
+        setDeleting(true);
+        const success = await syncService.deleteVaultItem(itemToDelete.id);
+        if (success) {
+            setArtifacts(prev => prev.filter(item => item.id !== itemToDelete.id));
+            // Trigger feedback sound/effect
+            if (window.triggerToast) {
+                window.triggerToast({
+                    message: `Removed "${itemToDelete.title}" from Vault`,
+                    type: 'warning'
+                });
+            }
+        }
+        setDeleting(false);
+        setItemToDelete(null);
+    };
+
     const activeColor = SUBJECTS.find(s => s.id === activeSub)?.color || '#7c3aed';
     const activeRgb = SUBJECTS.find(s => s.id === activeSub)?.rgb || '124, 58, 237';
+
+    // ── STATS BREAKDOWN FOR CURRENT SUBJECT ──
+    const stats = useMemo(() => {
+        const subItems = artifacts.filter(item => (item.subject || '').toLowerCase() === activeSub.toLowerCase());
+        return {
+            total: subItems.length,
+            sims: subItems.filter(i => i.type === 'SIM').length,
+            notes: subItems.filter(i => i.type === 'NOTE').length,
+            recaps: subItems.filter(i => i.type === 'RECAP').length,
+        };
+    }, [artifacts, activeSub]);
 
     return (
         <div className="elite-vault-root" style={{ '--accent': activeColor, '--accent-rgb': activeRgb }}>
@@ -70,37 +122,65 @@ export default function LibraryView() {
                 <div className="vault-top-row">
                     <div className="vault-title-group">
                         <span className="text-[9px] font-black text-slate-500 tracking-[3px] uppercase">Archive</span>
-                        <h1 className="text-xl">Vault</h1>
+                        <h1 className="text-xl font-black">Vault</h1>
                     </div>
                     <div className="vault-count-pill !py-1 !px-3">
                         <Sparkles size={12} className="text-yellow-400" />
-                        <span className="text-[10px]">{artifacts.length}</span>
+                        <span className="text-[10px] font-bold">{stats.total} unlocked</span>
                     </div>
                 </div>
 
-                <div className="vault-search-box !mb-3">
-                    <Search className="search-icon !top-[12px] !left-[14px]" size={16} />
+                {/* SEARCH INPUT */}
+                <div className="vault-search-box">
+                    <Search className="search-icon" size={16} />
                     <input 
-                        className="!h-[40px] !text-xs !pl-10"
+                        className="!h-[44px] !text-xs !pl-10 !pr-10"
                         type="text" 
-                        placeholder="Search items..." 
+                        placeholder={`Search ${activeSub} assets...`} 
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
+                    {search && (
+                        <button className="search-clear-btn" onClick={() => setSearch('')}>
+                            <X size={14} />
+                        </button>
+                    )}
                 </div>
 
+                {/* SUBJECT PILLS */}
                 <div className="subject-grid-tabs">
                     {SUBJECTS.map(sub => (
                         <button
                             key={sub.id}
                             className={`sub-pill-compact ${activeSub === sub.id ? 'active' : ''}`}
-                            onClick={() => setActiveSub(sub.id)}
+                            onClick={() => {
+                                setActiveSub(sub.id);
+                                // Auto clear search if switching subjects
+                                setSearch('');
+                            }}
                             style={{ '--sub-color': sub.color }}
                         >
                             <img src={getIsland(sub.id)} className="w-4 h-4" alt={sub.label} />
                             <span>{sub.label}</span>
                         </button>
                     ))}
+                </div>
+
+                {/* TYPE FILTERS */}
+                <div className="type-filter-bar">
+                    {TYPES.map(type => {
+                        const Icon = type.icon;
+                        return (
+                            <button
+                                key={type.id}
+                                className={`type-filter-pill ${activeType === type.id ? 'active' : ''}`}
+                                onClick={() => setActiveType(type.id)}
+                            >
+                                <Icon size={12} />
+                                <span>{type.label}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </header>
 
@@ -115,12 +195,32 @@ export default function LibraryView() {
                     ) : filtered.length === 0 ? (
                         <motion.div 
                             key="empty"
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
                             className="vault-empty"
                         >
                             <img src={IMAGES.manya_icon} className="empty-icon" alt="Empty" />
-                            <h2>No {activeSub} Items</h2>
-                            <p>Complete quests in {activeSub} Chapter 1 to unlock simulations and study notes!</p>
+                            <h2>No Matching Items</h2>
+                            {search || activeType !== 'ALL' ? (
+                                <>
+                                    <p>No results matching your filters. Try clearing your search or category filters.</p>
+                                    <button 
+                                        className="clear-all-filters-btn"
+                                        onClick={() => {
+                                            setSearch('');
+                                            setActiveType('ALL');
+                                        }}
+                                    >
+                                        <RotateCcw size={12} /> Reset Filters
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <h2>No {activeSub} Items</h2>
+                                    <p>Complete quests in {activeSub} Chapter 1 to unlock simulations and study notes!</p>
+                                </>
+                            )}
                         </motion.div>
                     ) : (
                         <motion.div key="list" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -128,17 +228,21 @@ export default function LibraryView() {
                                 <div key={name} className="mb-8">
                                     <div className="vault-section-header">
                                         <span className="section-label">{name}</span>
+                                        <span className="section-count">{items.length} items</span>
                                         <div className="section-line" />
                                     </div>
                                     <div className="artifact-grid">
-                                        {items.map((item, idx) => (
-                                            <ArtifactCard 
-                                                key={item.id || idx} 
-                                                item={item} 
-                                                color={activeColor} 
-                                                onClick={() => setPreviewItem(item)} 
-                                            />
-                                        ))}
+                                        <AnimatePresence>
+                                            {items.map((item, idx) => (
+                                                <ArtifactCard 
+                                                    key={item.id || idx} 
+                                                    item={item} 
+                                                    color={activeColor} 
+                                                    onClick={() => setPreviewItem(item)} 
+                                                    onDelete={() => setItemToDelete(item)}
+                                                />
+                                            ))}
+                                        </AnimatePresence>
                                     </div>
                                 </div>
                             ))}
@@ -163,7 +267,7 @@ export default function LibraryView() {
                                 <h2 className="text-xl font-black">{previewItem.title}</h2>
                             </div>
                             <button className="p-close" onClick={() => setPreviewItem(null)}>
-                                <X size={24} />
+                                <X size={20} />
                             </button>
                         </header>
                         <div className="p-body">
@@ -174,16 +278,87 @@ export default function LibraryView() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* ── STUNNING GLASS DELETE CONFIRMATION DIALOG ── */}
+            <AnimatePresence>
+                {itemToDelete && (
+                    <motion.div 
+                        className="delete-confirm-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div 
+                            className="delete-confirm-card"
+                            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.9, y: 20, opacity: 0 }}
+                            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                        >
+                            <div className="warning-icon-wrapper">
+                                <AlertTriangle size={32} className="text-rose-500 animate-pulse" />
+                            </div>
+                            <h3>Remove Asset?</h3>
+                            <p className="delete-info-text">
+                                Are you sure you want to remove <strong>"{itemToDelete.title}"</strong> from your Library?
+                            </p>
+                            <p className="delete-warning-sub">
+                                This will remove it from your offline and online backup. You must complete the related quest node again to re-unlock it.
+                            </p>
+                            
+                            <div className="delete-confirm-actions">
+                                <button 
+                                    className="cancel-delete-btn" 
+                                    onClick={() => setItemToDelete(null)}
+                                    disabled={deleting}
+                                >
+                                    Keep Asset
+                                </button>
+                                <button 
+                                    className="confirm-delete-btn" 
+                                    onClick={handleDeleteConfirm}
+                                    disabled={deleting}
+                                >
+                                    {deleting ? 'Removing...' : 'Yes, Delete'}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
 
-function ArtifactCard({ item, color, onClick }) {
+function ArtifactCard({ item, color, onClick, onDelete }) {
     const Icon = item.type === 'SIM' ? PlayCircle : (item.type === 'NOTE' ? FileText : MapIcon);
 
     return (
-        <motion.div className="elite-card" whileTap={{ scale: 0.95 }} onClick={onClick}>
+        <motion.div 
+            className="elite-card" 
+            whileHover={{ y: -6, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }} 
+            onClick={onClick}
+            layout
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8, x: -100 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+        >
             <div className="card-glow" style={{ '--accent': color }} />
+            
+            {/* Trash button on card */}
+            <button 
+                className="card-delete-btn"
+                onClick={(e) => {
+                    e.stopPropagation(); // Avoid opening preview
+                    onDelete();
+                }}
+                aria-label="Remove asset"
+            >
+                <Trash2 size={12} />
+            </button>
+
             <div className="card-visual">
                 <span className="type-badge">{item.type}</span>
                 <div className="artifact-icon-wrapper">
@@ -195,7 +370,7 @@ function ArtifactCard({ item, color, onClick }) {
                 <h4 className="card-title">{item.title}</h4>
                 <div className="card-meta">
                     <Clock size={10} />
-                    <span>Unlocked {item.unlocked_at ? new Date(item.unlocked_at).toLocaleDateString() : 'Recently'}</span>
+                    <span>Unlocked {item.unlocked_at ? new Date(item.unlocked_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Recently'}</span>
                 </div>
             </div>
         </motion.div>
@@ -203,11 +378,9 @@ function ArtifactCard({ item, color, onClick }) {
 }
 
 function EngineLauncher({ item, onClose }) {
-    // Note: The 'path' here is the JSON location unpacked from our Smart Key
     const data = { file: item.path, title: item.title, subject: item.subject };
 
     if (item.type === 'SIM') {
-        // Resolve based on simulation engine needs
         return <ReaderStudyEngine data={data} onComplete={onClose} skipDiscovery={true} />;
     }
     
@@ -225,3 +398,4 @@ function VaultLoader({ color }) {
         </div>
     );
 }
+

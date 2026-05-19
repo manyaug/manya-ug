@@ -5,7 +5,7 @@ import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { syncService } from '../../infrastructure/sync/syncService';
 import { findQuestData, preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
-import { getEngineType } from '../shared-engines/UniversalLogic';
+import { getEngineType, isSimSafe } from '../shared-engines/UniversalLogic';
 
 /**
  * MANYA SCIENCE FETCHER ENGINE v8.0 (Stateless)
@@ -25,7 +25,7 @@ export default function ScienceFetcherEngine({ data, onComplete }) {
             console.log(`[ScienceFetcher] Explode sequence started for: ${data?.topic}`);
 
             const safetyTimeout = new Promise((resolve) => 
-                setTimeout(() => resolve('TIMEOUT'), 12000)
+                setTimeout(() => resolve('TIMEOUT'), 45000)
             );
 
             const fetchOperation = (async () => {
@@ -70,14 +70,17 @@ export default function ScienceFetcherEngine({ data, onComplete }) {
 
                         const selectedQuestions = adaptiveResult.questions;
                         console.log(`[ScienceFetcher] Exploding ${selectedQuestions.length} adaptive steps into quest.`);
+                        bus.setRawQuestions?.(questions);
                         bus.setPools(adaptiveResult.pools);
 
                         const explodedSteps = selectedQuestions.map(q => {
-                            const engineType = getEngineType(q, 'science');
+                            const rawEngineType = getEngineType(q, 'science');
+                            const isRealSim = isSimSafe(q, 'science');
+                            const engineType = isRealSim ? rawEngineType : 'MCQ_STANDALONE';
                             return {
                                 engineType,
                                 data: q,
-                                isSimulation: engineType !== 'MCQ_STANDALONE',
+                                isSimulation: isRealSim,
                                 subject: 'science'
                             };
                         });

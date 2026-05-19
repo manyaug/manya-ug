@@ -74,7 +74,21 @@ export const fetchScienceQuestions = async (topicId) => {
 
             let interactivePayload = hydrateStepData(q) || {};
 
-            const isInteractive = q.item_type?.includes('INTERACTIVE') || q.item_type === 'SIMULATION' || q.item_type === 'RECAP' || q.engine_type;
+            const isMcqQid = String(q.qid || q.id || '').toLowerCase().includes('quiz') || 
+                             String(q.qid || q.id || '').toLowerCase().includes('mcq') || 
+                             String(q.qid || q.id || '').toLowerCase().includes('question') ||
+                             String(q.qid || q.id || '').toLowerCase().includes('practice');
+
+            const engineUpper = (q.engine_type || "").toUpperCase();
+            const hasSpecializedEngine = engineUpper && engineUpper !== 'NULL' && engineUpper !== 'MCQ' && engineUpper !== 'NONE' && engineUpper !== 'MCQ_STANDALONE';
+
+            const isInteractive = (
+                q.item_type?.toUpperCase().includes('INTERACTIVE') || 
+                q.item_type?.toUpperCase() === 'SIMULATION' || 
+                q.item_type?.toUpperCase() === 'RECAP' || 
+                hasSpecializedEngine
+            ) && !isMcqQid;
+
             if (isInteractive && q.cdn_url) {
                 try {
                     let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');

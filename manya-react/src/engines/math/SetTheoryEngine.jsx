@@ -178,7 +178,7 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
         }
     } else { 
         setFeedback({ 
-            text: corrected ? `Correct solution: ${corrected}` : 'NOT QUITE RIGHT', 
+            text: 'NOT QUITE RIGHT', 
             type: 'error' 
         }); 
         audioService.wrong(); 

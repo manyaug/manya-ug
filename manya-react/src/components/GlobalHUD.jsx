@@ -23,17 +23,20 @@ function GlobalHUD() {
 
     // Current coin value from Redux
     const realCoins = user?.coins || 0;
-    const { displayCoins, triggerFloatCoin } = useCoinAnimation(realCoins);
+    const { displayCoins, triggerFloatCoin, triggerDeductCoin } = useCoinAnimation(realCoins);
 
-    // When Redux coins go up, trigger the floating animation
+    // When Redux coins change, trigger the floating or deduction animations
     const prevCoinsRef = useRef(realCoins);
     useEffect(() => {
         if (realCoins > prevCoinsRef.current) {
             const gained = realCoins - prevCoinsRef.current;
             triggerFloatCoin(coinPillRef, gained);
+        } else if (realCoins < prevCoinsRef.current) {
+            const lost = prevCoinsRef.current - realCoins;
+            triggerDeductCoin(coinPillRef, lost);
         }
         prevCoinsRef.current = realCoins;
-    }, [realCoins, triggerFloatCoin]);
+    }, [realCoins, triggerFloatCoin, triggerDeductCoin]);
 
     if (!user) return null;
 

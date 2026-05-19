@@ -40,7 +40,7 @@ export function assetUrl(path) {
 
   // 3. Smart Prefixing Logic
   const subjects = ['english', 'math', 'science', 'sst', 'shared'];
-  
+
   const firstSeg = clean.split('/')[0].toLowerCase();
 
   // If it's a subject or shared, and does not have assets/ prefix, add it.
@@ -135,14 +135,14 @@ function joinUrls(base, relative) {
 export const uiImage = (name) => {
   if (!name) return "";
   if (name.startsWith('http')) return name;
-  
+
   // v9.9: Support compressed suffix for icons and islands
   let fileName = name;
   const needsCompression = name.includes('_island') || name.includes('_icon');
   if (needsCompression && !name.endsWith('_compressed')) {
     fileName = `${name}_compressed`;
   }
-  
+
   return assetUrl(`images/${fileName}.png`);
 };
 
@@ -178,6 +178,8 @@ export const SFX = {
   challenge_win: assetUrl('audios/challenge_complete/complete.mp3'),
   challenge_woosh: assetUrl('audios/challenge_complete/whoosh.mp3'),
   challenge_click: assetUrl('audios/challenge_complete/click.mp3'),
+  'coin-drop': assetUrl('audios/dropping-coin.mp3'),
+  'coin_drop': assetUrl('audios/dropping-coin.mp3'),
 }
 
 // ---------------------------------------------------------------------------
@@ -191,7 +193,9 @@ export const GLB = {
   skull: assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/manya-skull_compressed.glb`),
   spine: assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/spine_compressed.glb`),
   spinal_column: assetUrl(`${GLB_BASE}/quest_3_axial_skull_spine/the_human_spinal_column_compressed.glb`),
-  rib_cage: assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/rib-cage-heart_compressed.glb`),
+  rib_cage: assetUrl(`${GLB_BASE}/quest_4_ax
+    
+    ial_rib_cage/rib-cage-heart_compressed.glb`),
   thoracic: assetUrl(`${GLB_BASE}/quest_4_axial_rib_cage/thoracic_compressed.glb`),
   lower_limb: assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/Lower_limb_compressed.glb`),
   skeleton_arm: assetUrl(`${GLB_BASE}/quest_5_appendicular_limbs/skeleton_arm.glb`),
@@ -272,7 +276,11 @@ export function getGlb(key) {
 }
 
 export function getSfx(name) {
-  const cleanName = String(name || '').toLowerCase();
+  const cleanName = String(name || '');
+  const lowerName = cleanName.toLowerCase();
+  if (SFX[lowerName]) {
+    return SFX[lowerName];
+  }
   const filePart = cleanName.endsWith('.mp3') ? cleanName : cleanName + '.mp3';
-  return SFX[cleanName] ?? assetUrl('audios/' + filePart);
+  return assetUrl('audios/' + filePart);
 }

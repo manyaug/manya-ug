@@ -14,6 +14,8 @@ import { syncService } from '../infrastructure/sync/syncService.js';
 import { conceptMasteryService } from '../domain/mastery/conceptMasteryService.js';
 import { parseQuestionId } from '../utils/questionParser';
 import { feedbackService } from '../application/feedbackService';
+import { generateAdaptiveQuest } from '../services/adaptiveEngine';
+import { getEngineType, isSimSafe, hydrateStepData } from '../engines/shared-engines/UniversalLogic';
 
 const SUBJECT_COLOR = {
     math: 'var(--subject-math)',
@@ -141,7 +143,9 @@ export function useQuestOrchestrator() {
             { isRecap: currentStep.isRecap, isSimulation: currentStep.isSimulation, engineType: currentStep.engineType }
         );
 
-        const baseData = currentStep.data || currentStep;
+        const rawData = currentStep.data || currentStep;
+        const cleanPayload = hydrateStepData(rawData);
+        const baseData = { ...rawData, ...cleanPayload };
         let engineData = { ...baseData, currentMode: mode, unitId: location.state?.unitId, questFolder: location.state?.questFolder };
         
         // v9.1: GAMIFICATION PROTECTION
@@ -229,6 +233,117 @@ export function useQuestOrchestrator() {
             setStepIdx(sessionRef.current.stepIndex);
         }
     }, [finishQuest]);
+
+    const reAdaptFutureSteps = useCallback(async () => {
+        if (!sessionRef.current) return;
+        
+        const rawQuestions = sessionRef.current.rawQuestions;
+        if (!rawQuestions || rawQuestions.length === 0) {
+            console.log("[Orchestrator] Dynamic re-adaptation bypassed: No raw question bank stored in session.");
+            return;
+        }
+
+        const remainingCount = steps.length - (stepIdx + 1);
+        if (remainingCount <= 0) {
+            console.log("[Orchestrator] Dynamic re-adaptation bypassed: No future steps remaining in quest.");
+            return;
+        }
+
+        const nextStep = steps[stepIdx + 1];
+        if (nextStep?.isRescue || nextStep?.id?.includes('rescue')) {
+            console.log("🛡️ [Orchestrator] Bypassing re-adaptation: Next step is a pedagogical rescue step.");
+            return;
+        }
+
+        try {
+            console.log(`🧠 [LiveAdapt] Initiating real-time re-adaptation for remaining ${remainingCount} steps...`);
+
+            // Fetch both cloud and local telemetries, merging them to ensure instantaneous updates
+            const cloudHistory = await syncService.fetchRecentTelemetry(meta.subject, 20) || [];
+            const localHistory = await ManyaDB.getAnswerHistory(meta.subject) || [];
+            
+            const historyMap = new Map();
+            cloudHistory.forEach(h => {
+                const qId = h.question_id || h.questionId || h.qid;
+                if (qId) historyMap.set(qId + '_' + (h.answered_at || h.answeredAt), h);
+            });
+            localHistory.forEach(h => {
+                const qId = h.question_id || h.questionId || h.qid;
+                if (qId) historyMap.set(qId + '_' + (h.answered_at || h.answeredAt), h);
+            });
+            
+            const history = [...historyMap.values()].sort((a, b) => {
+                const timeA = new Date(a.answered_at || a.answeredAt || 0).getTime();
+                const timeB = new Date(b.answered_at || b.answeredAt || 0).getTime();
+                return timeA - timeB;
+            });
+
+            // Extract updated session psychological markers
+            const currentFrustration = frustration;
+            const updatedSession = {
+                consecutiveWrong: sessionRef.current._wrongStreak || 0,
+                confidence: 100,
+                frustrationLevel: currentFrustration
+            };
+
+            const nodeType = location.state?.nodeType || 'PRACTICE';
+            const questKey = location.state?.questKey || `${meta.subject}_quest`;
+            const simResources = [
+                ...(sessionRef.current.simPool || []),
+                ...(sessionRef.current.notePool || []),
+                ...(sessionRef.current.recapPool || [])
+            ];
+
+            // Re-run generateAdaptiveQuest on the raw question bank for remainingCount steps
+            const adaptiveResult = await generateAdaptiveQuest(
+                rawQuestions,
+                nodeType,
+                meta.subject,
+                questKey,
+                updatedSession,
+                history,
+                simResources
+            );
+
+            const newSelectedQuestions = adaptiveResult.questions;
+            if (!newSelectedQuestions || newSelectedQuestions.length === 0) {
+                console.warn("[Orchestrator] Dynamic re-adaptation returned empty selected questions.");
+                return;
+            }
+
+            // Map the newly selected questions to their precise engine types
+            const sliceStart = stepIdx + 1;
+            const slicedQuestions = newSelectedQuestions.slice(sliceStart);
+            const finalSliced = slicedQuestions.length >= remainingCount
+                ? slicedQuestions.slice(0, remainingCount)
+                : newSelectedQuestions.slice(-remainingCount);
+
+            const newExplodedSteps = finalSliced.map(q => {
+                const rawEngineType = getEngineType(q, meta.subject);
+                const isRealSim = isSimSafe(q, meta.subject);
+                const engineType = isRealSim ? rawEngineType : 'MCQ_STANDALONE';
+                return {
+                    engineType,
+                    data: q,
+                    isSimulation: isRealSim,
+                    subject: meta.subject
+                };
+            });
+
+            console.log(`🧠 [LiveAdapt] Successfully re-adapted ${newExplodedSteps.length} future steps!`);
+
+            // Replace the future remaining steps in the steps array and session
+            const updatedSteps = [...steps];
+            updatedSteps.splice(stepIdx + 1, remainingCount, ...newExplodedSteps);
+            
+            setSteps(updatedSteps);
+            sessionRef.current.steps = updatedSteps;
+            setVirtualTotal(updatedSteps.length);
+
+        } catch (err) {
+            console.error("❌ [Orchestrator] Error during dynamic step re-adaptation:", err);
+        }
+    }, [steps, stepIdx, meta.subject, frustration, location.state]);
 
     const handleEngineResult = useCallback(async (result) => {
         if (!sessionRef.current) return;
@@ -337,6 +452,11 @@ export function useQuestOrchestrator() {
         if (!result?.type?.includes('partial') && !result?.type?.includes('pulse')) {
             const currentMastery = sessionRef.current?.lastMasteryScore || 0;
             dynamicModeService.update(result.isCorrect, currentMastery, steps.length, stepIdx);
+
+            // 🧠 Trigger Real-time Pedagogical & Psychological Re-adaptation!
+            setTimeout(() => {
+                reAdaptFutureSteps();
+            }, 100);
         }
 
         if (result.gemsEarned !== undefined || result.coinsEarned !== undefined) {
@@ -346,7 +466,7 @@ export function useQuestOrchestrator() {
         }
 
         setRenderTrigger(prev => prev + 1);
-    }, [dispatch, meta.subject, steps.length, stepIdx]);
+    }, [dispatch, meta.subject, steps.length, stepIdx, reAdaptFutureSteps]);
 
     const replaceCurrentStepWith = useCallback((newSteps) => {
         if (!sessionRef.current || !newSteps || newSteps.length === 0) return;

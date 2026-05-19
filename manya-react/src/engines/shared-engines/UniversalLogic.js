@@ -8,7 +8,13 @@ export const SUPPORTED_SIM_ENGINES = [
     'UNIVERSAL_GLOBE', 'IMAGE_HOTSPOTS', 'GALLERY_STUDY', 'READER_STUDY',
     'THREE_D_STUDY', '3D_SKELETON', 'SET_THEORY', 'SET_STUDY', 'VENN_PROB',
     'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER',
-    'VENN_LOGIC', 'VENN_PROB_ENGINE', 'MATH_STUDY', 'STUDY_RECAP'
+    'VENN_LOGIC', 'VENN_PROB_ENGINE', 'MATH_STUDY', 'STUDY_RECAP',
+    
+    // English Specialty Game Engines
+    'WORDGRID_ENGINE', 'HARVEST_GAME', 'SENTENCE_TRAIN', 'HANGMAN_ENGINE',
+    'MEMORY_MATCH', 'MORPH_GAME', 'GRAMMAR_MAZE', 'DEEP_READER',
+    'FUNCTIONAL_COMPOSER', 'SYNTAX_ENGINE', 'SENTENCE_BLOCKS', 'GARDEN_GUARD',
+    'PUNCTUATION_STICKERS', 'TENSE_TREEHOUSE', 'ENGLISH_RULE_MASTER', 'CHAT'
 ];
 
 /**
@@ -49,11 +55,19 @@ export const getEngineType = (q, subject) => {
     const data = q?.data || q;
     const topic = normalize(q?.topic || q?.subtopic || "");
     const sub = normalize(subject || q?.subject || "");
+    const qid = normalize(q?.qid || q?.id || "");
     
-    // 1. Explicit Engine Type (Highest Priority)
+    // 0. Explicit QID Keywords (Universal Fallbacks for Study/Recap items)
+    if (qid.includes('recap')) return 'STUDY_RECAP';
+    if (qid.includes('note')) return 'NOTE_EXPLORER';
+    if (qid.includes('study_sim')) return 'NOTE_EXPLORER';
+
+    // 1. Explicit Engine Type
     const raw = data?.engine_type || data?.engineType || q?.engine_type || q?.engineType || data?.type || q?.type || "";
     let type = String(raw).toUpperCase().trim();
-    if (type && type !== 'MCQ' && type !== 'SIMULATION') return type;
+    
+    const genericTypes = ['MCQ', 'SIMULATION', 'INTERACTIVE_QUESTION', 'INTERACTIVE_STUDY', 'NOTE', 'RECAP'];
+    if (type && !genericTypes.includes(type)) return type;
 
     // 2. Math-Specific Topic Routing (Scalable Heuristics)
     if (sub === 'math') {
@@ -63,12 +77,32 @@ export const getEngineType = (q, subject) => {
         if (topic.includes('coordinate') || topic.includes('graph')) return 'COORDINATE_GAME';
     }
 
+    // 2.5. Explicit SIM QID routing (prevents premature MCQ downgrading)
+    if (qid.startsWith('sim-') || qid.includes('sim-')) {
+        if (sub === 'english') return 'THREE_D_STUDY';
+        if (sub === 'science') return '3D_SKELETON';
+        if (sub === 'sst') return 'SST_STUDY';
+        return 'NOTE_EXPLORER';
+    }
+
     // 3. Shared Heuristics (Notes, Recaps)
     if (data?.study_notes || data?.mode === 'note_explorer' || data?.item_type === 'NOTE' || data?.item_type === 'INTERACTIVE_STUDY' || q?.item_type === 'INTERACTIVE_STUDY') return 'NOTE_EXPLORER';
     if (data?.item_type === 'RECAP' || q?.item_type === 'RECAP') return 'STUDY_RECAP';
 
     // 4. Fallback for generic simulations
-    if (q?.item_type === 'SIMULATION' || q?.type === 'simulation' || q?.item_type === 'INTERACTIVE_QUESTION') {
+    const itemType = normalize(q?.item_type || q?.question_type || "");
+    const qType = normalize(q?.type || "");
+    const isSimType = itemType.includes('simulation') || qType.includes('simulation') || 
+                      itemType.includes('interactive_question') || qType.includes('interactive_questions');
+                      
+    if (isSimType || q?.item_type === 'SIMULATION' || q?.type === 'simulation' || q?.item_type === 'INTERACTIVE_QUESTION') {
+        // 🛡️ MCQ Safety Guard: If it structurally has options and a correct answer, it's a standard MCQ question, not a simulation/note.
+        const hasOptions = !!(q.options && q.options.length > 0) || !!(q.option_a || q.option_b);
+        const hasAnswer = !!(q.answer || q.correct_answer);
+        if (hasOptions && hasAnswer) {
+            return 'MCQ_STANDALONE';
+        }
+
         if (sub === 'english') return 'THREE_D_STUDY';
         if (sub === 'science') return '3D_SKELETON';
         return 'NOTE_EXPLORER';
@@ -81,9 +115,23 @@ export const getEngineType = (q, subject) => {
  * Robust check to see if an item should be rendered as a simulation.
  * Prevents MCQs from being mistaken for simulations due to engine_type metadata.
  */
-export const isSimSafe = (q) => {
-    const eType = getEngineType(q);
+export const isSimSafe = (q, subject) => {
+    const eType = getEngineType(q, subject || q?.subject);
     if (!SUPPORTED_SIM_ENGINES.includes(eType)) return false;
+
+    // Study/Recap/English game engines are ALWAYS simulations and should never be downgraded to MCQ
+    const isPureStudyEngine = [
+        'NOTE_EXPLORER', 'STUDY_RECAP', 'SST_STUDY', 'GALLERY_STUDY', 
+        'READER_STUDY', 'THREE_D_STUDY', '3D_SKELETON', 'MATH_STUDY', 'SET_STUDY',
+        
+        // English Specialty Game Engines
+        'WORDGRID_ENGINE', 'HARVEST_GAME', 'SENTENCE_TRAIN', 'HANGMAN_ENGINE',
+        'MEMORY_MATCH', 'MORPH_GAME', 'GRAMMAR_MAZE', 'DEEP_READER',
+        'FUNCTIONAL_COMPOSER', 'SYNTAX_ENGINE', 'SENTENCE_BLOCKS', 'GARDEN_GUARD',
+        'PUNCTUATION_STICKERS', 'TENSE_TREEHOUSE', 'ENGLISH_RULE_MASTER', 'CHAT'
+    ].includes(eType);
+
+    if (isPureStudyEngine) return true;
 
     const data = hydrateStepData(q);
     
@@ -94,10 +142,7 @@ export const isSimSafe = (q) => {
         data.hotspots || data.wordBank || data.modelUrl || data.intro || data.notes || data.regions || data.landmarks
     );
     
-    // An MCQ has options and an answer
-    const isMCQ = !!(q?.options && q?.answer && q.options.length > 0 && !data.hotspots);
-    
-    return hasSimStructure && !isMCQ;
+    return hasSimStructure;
 };
 
 /**

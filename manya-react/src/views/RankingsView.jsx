@@ -142,30 +142,6 @@ export default function RankingsView() {
                     )}
                 </div>
             </div>
-
-            {/* ── USER STICKY RANK ── */}
-            {currentUserRank && (
-                <div className="user-sticky-rank" style={{ backgroundColor: activeColor }}>
-                    <div className="flex items-center gap-3">
-                        <span className="font-black text-white">#{currentUserRank.rank_pos}</span>
-                        <img src={currentUserRank.avatar_url || IMAGES.manya_icon} className="w-8 h-8 rounded-full border-2 border-white/20" alt="Me" />
-                        <span className="font-bold text-white uppercase text-[10px]">You</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5">
-                            <Star size={10} className="text-yellow-300" fill="currentColor" />
-                            <span className="font-black text-white text-xs">{currentUserRank.total_stars}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <img src={activeGem} className="w-3.5 h-3.5" alt="gem" />
-                            <span className="font-black text-white text-xs">{currentUserRank.total_gems}</span>
-                        </div>
-                        <div className="h-4 w-[1px] bg-white/20 mx-1" />
-                        <Zap size={10} className="text-white" fill="currentColor" />
-                        <span className="font-black text-white text-xs">{currentUserRank.power_score.toLocaleString()}</span>
-                    </div>
-                </div>
-            )}
         </motion.div>
     );
 }

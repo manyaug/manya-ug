@@ -48,7 +48,15 @@ export const audioPersistenceMiddleware = store => next => action => {
 // Selection helper to load initial state
 export const getPersistedAudioState = () => {
     const saved = localStorage.getItem('manya_audio_settings');
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            return {
+                ...initialState,
+                ...parsed
+            };
+        } catch (e) {}
+    }
     return null;
 };
 

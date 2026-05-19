@@ -73,15 +73,115 @@ function walkDir(dir, filter) {
     return results;
 }
 
-// ─── Classify item_type from JSON mode field ────────────
-function classifyItemType(mode, fileName) {
-    if (mode === 'quiz' || mode === 'puzzle') return 'INTERACTIVE_QUESTION';
-    if (mode === 'study' || mode === 'note_explorer') return 'INTERACTIVE_STUDY';
-    if (mode === 'recap') return 'RECAP';
-    // Fallback: use filename heuristics when mode is missing
-    if (fileName.includes('recap')) return 'RECAP';
-    if (fileName.includes('study') || fileName.includes('note') || fileName.includes('rule') || fileName.includes('dict')) return 'INTERACTIVE_STUDY';
-    return 'INTERACTIVE_QUESTION';
+// ─── Classify item_type from JSON content ────────────
+function classifyItemType(payload, fileName, isExcel = false) {
+    if (isExcel) return "MCQ's";
+    
+    const data = payload || {};
+    const mode = data.mode;
+    const engineType = data.engineType || data.engine_type;
+    const lowerName = String(fileName || '').toLowerCase();
+
+    // 1. Recaps
+    if (lowerName.includes('recap') || mode === 'recap') {
+        return "Recaps";
+    }
+
+    // 2. Notes
+    if (lowerName.startsWith('note_') || mode === 'note_explorer' || lowerName.includes('note')) {
+        return "Notes";
+    }
+
+    // 3. Interactive Study
+    if (lowerName.includes('study') || lowerName.includes('guide') || lowerName.includes('rule') || mode === 'study') {
+        if (engineType && engineType !== 'MCQ_STANDALONE') {
+            return "Interactive_study";
+        }
+        return "Notes";
+    }
+
+    // 4. MCQ's
+    const hasOptions = !!(data.options && data.options.length > 0) || 
+                       !!(data.option_a || data.option_b) ||
+                       (data.questions && data.questions.some(q => q.options || q.choices));
+    const hasAnswer = !!(data.answer || data.correct_answer) ||
+                      (data.questions && data.questions.some(q => q.answer || q.correct_answer || q.expected));
+
+    if (engineType === 'MCQ_STANDALONE' || (hasOptions && hasAnswer && !engineType) || lowerName.startsWith('pq-') || lowerName.includes('quiz') || lowerName.includes('practice')) {
+        return "MCQ's";
+    }
+
+    // 5. Interactive Questions
+    return "Interactive_questions";
+}
+
+// ─── Resolve actual engine type ──────────────────────────
+function resolveEngineType(payload, qid, subject, itemType) {
+    const data = payload || {};
+    const sub = String(subject || data?.subject || '').trim().toLowerCase();
+    const id = String(qid || data?.qid || '').trim().toLowerCase();
+    const topic = String(data?.topic || data?.subtopic || '').trim().toLowerCase();
+
+    // 0. Explicit QID Keywords
+    if (id.includes('recap')) return 'STUDY_RECAP';
+    if (id.includes('note')) return 'NOTE_EXPLORER';
+    if (id.includes('study_sim')) return 'NOTE_EXPLORER';
+
+    // 1. Explicit Engine Type
+    const raw = data?.engineType || data?.engine_type || data?.type || "";
+    let type = String(raw).toUpperCase().trim();
+    
+    const genericTypes = ['MCQ', 'SIMULATION', 'INTERACTIVE_QUESTION', 'INTERACTIVE_STUDY', 'NOTE', 'RECAP'];
+    if (type && !genericTypes.includes(type)) return type;
+
+    // 2. Math-Specific Topic Routing
+    if (sub === 'math') {
+        if (topic.includes('set_theory') || topic.includes('subset') || topic.includes('venn')) return 'SET_THEORY';
+        if (topic.includes('binary') || topic.includes('logic_gate')) return 'BINARY_GAME';
+        if (topic.includes('probability')) return 'VENN_PROB';
+        if (topic.includes('coordinate') || topic.includes('graph')) return 'COORDINATE_GAME';
+    }
+
+    // 3. Shared Heuristics
+    if (data?.study_notes || data?.mode === 'note_explorer' || itemType === 'Notes' || itemType === 'Interactive_study') return 'NOTE_EXPLORER';
+    if (itemType === 'Recaps') return 'STUDY_RECAP';
+
+    // 4. Fallback for generic simulations
+    if (itemType === 'Interactive_questions') {
+        if (sub === 'english') return 'THREE_D_STUDY';
+        if (sub === 'science') return '3D_SKELETON';
+        return 'NOTE_EXPLORER';
+    }
+    
+    return 'MCQ_STANDALONE';
+}
+
+// ─── Extract MCQ Options and Correct Answer ─────────────
+function extractMCQData(payload, rowOptionA, rowOptionB, rowOptionC, rowOptionD, rowCorrectAnswer) {
+    let option_a = rowOptionA || null;
+    let option_b = rowOptionB || null;
+    let option_c = rowOptionC || null;
+    let option_d = rowOptionD || null;
+    let correct_answer = rowCorrectAnswer || null;
+
+    if (payload) {
+        const q = payload.questions?.[0] || payload;
+        const options = q.options || q.choices || [];
+        if (options.length > 0) {
+            option_a = options[0] || null;
+            option_b = options[1] || null;
+            option_c = options[2] || null;
+            option_d = options[3] || null;
+        } else {
+            option_a = q.option_a || q.optionA || option_a;
+            option_b = q.option_b || q.optionB || option_b;
+            option_c = q.option_c || q.optionC || option_c;
+            option_d = q.option_d || q.optionD || option_d;
+        }
+        correct_answer = q.correct_answer || q.correctAnswer || q.answer || q.expected || correct_answer;
+    }
+
+    return { option_a, option_b, option_c, option_d, correct_answer };
 }
 
 // ─── Wipe ───────────────────────────────────────────────
@@ -97,6 +197,124 @@ async function wipeDatabase() {
         else console.log(`  ✅ Cleared ${sub} (${count || 0} rows)`);
     }
     console.log(`\n✨ Wipe complete!\n`);
+}
+
+// Build a master lookup mapping from clean human-readable subtopic/quest labels to quest folders
+let LABEL_TO_FOLDER_MAP = {};
+
+function initNomenclatureMap() {
+    if (!fs.existsSync(LOCAL_CURRICULUM_PATH)) {
+        console.warn(`⚠️ Local curriculum master not found at ${LOCAL_CURRICULUM_PATH} for nomenclature mapping`);
+        return;
+    }
+    try {
+        const curriculum = JSON.parse(fs.readFileSync(LOCAL_CURRICULUM_PATH, 'utf8'));
+        for (const sub of Object.keys(curriculum)) {
+            const uppercaseSubject = sub.toUpperCase();
+            LABEL_TO_FOLDER_MAP[uppercaseSubject] = LABEL_TO_FOLDER_MAP[uppercaseSubject] || {};
+            
+            for (const unit of (curriculum[sub].units || [])) {
+                for (const quest of (unit.quests || [])) {
+                    if (quest.label && quest.folder) {
+                        const cleanLabel = quest.label.trim().toLowerCase().replace(/[-_ ]/g, '');
+                        LABEL_TO_FOLDER_MAP[uppercaseSubject][cleanLabel] = quest.folder;
+                    }
+                }
+            }
+        }
+        
+        // Explicit mappings to guarantee 100% precision across all subjects
+        LABEL_TO_FOLDER_MAP['SST'] = {
+            ...LABEL_TO_FOLDER_MAP['SST'],
+            'theworldstage': 'quest_1_world_stage',
+            'worldstage': 'quest_1_world_stage',
+            'gridmath': 'quest_2_grid_master',
+            'gridmaster': 'quest_2_grid_master',
+            'calculatingtime': 'quest_3_calculating_time',
+            'waterbodies': 'quest_4_water_bodies',
+            'coastalfeatures': 'quest_5_coastal_features',
+            'regionsandcapitals': 'quest_6_regional_division_capital_cities',
+            'regionaldivisioncapitalcities': 'quest_6_regional_division_capital_cities',
+            'landlockedcountries': 'quest_7_landlocked_countries'
+        };
+
+        LABEL_TO_FOLDER_MAP['MATH'] = {
+            ...LABEL_TO_FOLDER_MAP['MATH'],
+            'finitevsinfinitesets': 'quest_01_finite_infinite_sets',
+            'setnotationregions': 'quest_02_set_notation_regions',
+            'calculatingsubsets': 'quest_03_calculating_subsets',
+            'calculatingpropersubsets': 'quest_04_calculating_proper_subsets',
+            'workingbackwards': 'quest_05_working_backwards',
+            'placinginfoonvenndiagrams': 'quest_06_placing_info_on_venn_diagrams',
+            'venndiagramplacement': 'quest_06_placing_info_on_venn_diagrams',
+            'solvingforunknowns': 'quest_07_solving_for_unknowns',
+            'applicationofsets': 'quest_08_application_of_sets',
+            'differenceofsetscomplements': 'quest_09_difference_of_sets_complements',
+            'differencecomplements': 'quest_09_difference_of_sets_complements',
+            'probabilityusingvenndiagrams': 'quest_10_probability_using_venn_diagrams',
+            'probabilityvenndiagrams': 'quest_10_probability_using_venn_diagrams'
+        };
+
+        LABEL_TO_FOLDER_MAP['SCIENCE'] = {
+            ...LABEL_TO_FOLDER_MAP['SCIENCE'],
+            'typesofskeleton': 'quest_1_types_of_skeletons',
+            'humanskeleton': 'quest_2_human_skeleton',
+            'axialskullspine': 'quest_3_axial_skull_spine',
+            'axialribcage': 'quest_4_axial_rib_cage',
+            'appendicularlimbs': 'quest_5_appendicular_limbs',
+            'bonestructure': 'quest_6_bone_structure',
+            'jointsstructure': 'quest_7_joints_structure',
+            'hingeballandsocket': 'quest_8_hinge_ball-and-socket',
+            'pivotandgliding': 'quest_9_pivot_and_gliding',
+            'muscularsystemtypes': 'quest_10_muscular_system_types',
+            'muscleactionantagonisticpairs': 'quest_11_muscle_action_antagonistic_pairs',
+            'postureandteeth': 'quest_12_posture_and_teeth',
+            'disordersandfirstaid': 'quest_13_disorders_and_first_aid',
+            'bonediseases': 'quest_14_bone_diseases'
+        };
+
+        LABEL_TO_FOLDER_MAP['ENGLISH'] = {
+            ...LABEL_TO_FOLDER_MAP['ENGLISH'],
+            'vault': 'quest_10_vault',
+            'holidaykickoff': 'quest_01_holiday_kickoff',
+            'goingtomastery': 'quest_02_going_to_mastery',
+            'questiontagsmastery': 'quest_03_question_tags_mastery',
+            'reportedspeechmastery': 'quest_04_reported_speech_mastery',
+            'villagearrival': 'quest_05_village_arrival',
+            'feelingandfacts': 'quest_06_feeling_and_facts',
+            'pastregrets': 'quest_07_past_regrets',
+            'voicemastery': 'quest_08_voice_mastery',
+            'finalreview': 'quest_09_final_review'
+        };
+        
+        console.log(`📋 Nomenclature map initialized successfully for subjects:`, Object.keys(LABEL_TO_FOLDER_MAP));
+    } catch (e) {
+        console.error(`⚠️ Failed to build nomenclature map:`, e.message);
+    }
+}
+
+function getBestQuestFolder(subject, subtopic) {
+    if (!subtopic) return null;
+    const subjUpper = String(subject).toUpperCase();
+    const cleanSub = subtopic.trim().toLowerCase().replace(/[-_ ]/g, '');
+    
+    // Direct lookup in our dynamic label-to-folder map
+    if (LABEL_TO_FOLDER_MAP[subjUpper]?.[cleanSub]) {
+        return LABEL_TO_FOLDER_MAP[subjUpper][cleanSub];
+    }
+    
+    // Fallback fuzzy search if it contains parts of the folder name
+    if (LABEL_TO_FOLDER_MAP[subjUpper]) {
+        for (const cleanLabel of Object.keys(LABEL_TO_FOLDER_MAP[subjUpper])) {
+            const folder = LABEL_TO_FOLDER_MAP[subjUpper][cleanLabel];
+            const cleanFolder = folder.toLowerCase().replace(/[-_ ]/g, '');
+            if (cleanFolder.includes(cleanSub) || cleanSub.includes(cleanFolder) || cleanFolder.replace(/^quest\d+/, '').includes(cleanSub)) {
+                return folder;
+            }
+        }
+    }
+    
+    return subtopic;
 }
 
 // ─── Excel Processing ───────────────────────────────────
@@ -144,13 +362,31 @@ function processExcelFile(fileName, subject) {
             } catch { tags = [String(cleanRow.tags)]; }
         }
 
+        const item_type = "MCQ's";
+        const engine_type = resolveEngineType(null, qid, subject, item_type);
+
+        let cdn_url = cleanRow.filepathsim || cleanRow.jsonreferencepath || null;
+        if (cdn_url) {
+            if (cdn_url.includes('manyaug/manya-react-assets')) {
+                const match = cdn_url.match(/content\/.+$/i);
+                if (match) {
+                    cdn_url = '/' + match[0];
+                }
+            } else if (!cdn_url.startsWith('/')) {
+                cdn_url = '/' + cdn_url;
+            }
+        }
+
+        const rawSubtopic = cleanRow.subtopic || null;
+        const resolvedSubtopic = getBestQuestFolder(subject, rawSubtopic);
+
         return {
             qid, subject,
             grade_level:    GRADE_LEVEL,
             topic:          cleanRow.topic || null,
-            subtopic:       cleanRow.subtopic || null,
+            subtopic:       resolvedSubtopic,
             difficulty:     cleanRow.difficulty || 'E',
-            item_type:      cleanRow.questiontype || 'MCQ',
+            item_type,
             question_text:  cleanRow.questiontext || null,
             option_a:       cleanRow.optiona || null,
             option_b:       cleanRow.optionb || null,
@@ -159,8 +395,8 @@ function processExcelFile(fileName, subject) {
             correct_answer: cleanRow.correctanswer || null,
             hint:           cleanRow.hint || null,
             explanation:    cleanRow.detailedsolution || cleanRow.explanation || null,
-            engine_type:    cleanRow.enginetypesim || cleanRow.enginetype || null,
-            cdn_url:        cleanRow.filepathsim || cleanRow.jsonreferencepath || null,
+            engine_type,
+            cdn_url,
             metadata:       { tags, term: cleanRow.term || null }
         };
     }).filter(Boolean);
@@ -193,25 +429,34 @@ function buildCurriculumRecords() {
                     const fileName = res.file;
                     const localPath = path.join(ASSETS_ROOT, 'content', subject, unitId, questFolder, `${fileName}.json`);
 
-                    let engine_type = null, jsonMode = null;
+                    let payload = null;
                     if (fs.existsSync(localPath)) {
                         try {
-                            const payload = readJsonFile(localPath);
-                            engine_type = payload.engineType || payload.engine_type || null;
-                            jsonMode = payload.mode || null;
+                            payload = readJsonFile(localPath);
                         } catch { /* skip */ }
                         found++;
                     } else { missing++; }
 
-                    const item_type = classifyItemType(jsonMode, fileName);
-                    const cdn_url = `${CDN_BASE}content/${subject}/${unitId}/${questFolder}/${fileName}.json`;
+                    const item_type = classifyItemType(payload, fileName);
+                    const engine_type = resolveEngineType(payload, fileName, uppercaseSubject, item_type);
+                    const cdn_url = `/content/${subject}/${unitId}/${questFolder}/${fileName}.json`;
+
+                    let option_a = null, option_b = null, option_c = null, option_d = null, correct_answer = null;
+                    if (item_type === "MCQ's") {
+                        const mcq = extractMCQData(payload);
+                        option_a = mcq.option_a;
+                        option_b = mcq.option_b;
+                        option_c = mcq.option_c;
+                        option_d = mcq.option_d;
+                        correct_answer = mcq.correct_answer;
+                    }
 
                     records.push({
                         qid: fileName, subject: uppercaseSubject, grade_level: GRADE_LEVEL,
                         topic: unitId, subtopic: questFolder,
                         item_type, engine_type, cdn_url,
-                        question_text: `Explore ${res.label || fileName}`,
-                        option_a: 'Ready!', correct_answer: 'Ready!',
+                        question_text: payload?.variantTitle || payload?.title || payload?.topic || `Explore ${res.label || fileName}`,
+                        option_a, option_b, option_c, option_d, correct_answer,
                         metadata: { is_interactive: true, label: res.label || null, source: 'curriculum-master' }
                     });
                 }
@@ -233,10 +478,7 @@ function buildSIMRecords() {
 
     for (const filePath of simFiles) {
         const fileName = path.basename(filePath, '.json');
-        // Derive subject/unit/quest from directory structure
-        // e.g. .../content/science/musklo-skeletal-system/quest_4_axial_rib_cage/SIM-SC7-T1-4-0004.json
         const relPath = path.relative(contentRoot, filePath).split(path.sep);
-        // relPath = ['science', 'musklo-skeletal-system', 'quest_4_axial_rib_cage', 'SIM-SC7-T1-4-0004.json']
 
         if (relPath.length < 4) continue; // malformed path
 
@@ -245,26 +487,34 @@ function buildSIMRecords() {
         const questFolder = relPath[2];   // e.g. 'quest_4_axial_rib_cage'
         const subject = SUBJECT_MAP[subjectDir] || subjectDir.toUpperCase();
 
-        let engine_type = null, jsonMode = null, variantTitle = null;
+        let payload = null;
         try {
-            const payload = readJsonFile(filePath);
-            engine_type = payload.engineType || payload.engine_type || null;
-            jsonMode = payload.mode || null;
-            variantTitle = payload.variantTitle || payload.topic || null;
+            payload = readJsonFile(filePath);
             parsed++;
         } catch (e) {
             errors++;
         }
 
-        const item_type = classifyItemType(jsonMode, fileName);
-        const cdn_url = `${CDN_BASE}content/${subjectDir}/${unitId}/${questFolder}/${fileName}.json`;
+        const item_type = classifyItemType(payload, fileName);
+        const engine_type = resolveEngineType(payload, fileName, subject, item_type);
+        const cdn_url = `/content/${subjectDir}/${unitId}/${questFolder}/${fileName}.json`;
+
+        let option_a = null, option_b = null, option_c = null, option_d = null, correct_answer = null;
+        if (item_type === "MCQ's") {
+            const mcq = extractMCQData(payload);
+            option_a = mcq.option_a;
+            option_b = mcq.option_b;
+            option_c = mcq.option_c;
+            option_d = mcq.option_d;
+            correct_answer = mcq.correct_answer;
+        }
 
         records.push({
             qid: fileName, subject, grade_level: GRADE_LEVEL,
             topic: unitId, subtopic: questFolder,
             item_type, engine_type, cdn_url,
-            question_text: variantTitle || `Interactive ${fileName}`,
-            option_a: 'Ready!', correct_answer: 'Ready!',
+            question_text: payload?.variantTitle || payload?.title || payload?.topic || `Interactive ${fileName}`,
+            option_a, option_b, option_c, option_d, correct_answer,
             metadata: { is_interactive: true, source: 'filesystem-scan' }
         });
     }
@@ -292,24 +542,32 @@ function buildPQRecords() {
         const questFolder = relPath[2];
         const subject = SUBJECT_MAP[subjectDir] || subjectDir.toUpperCase();
 
-        let engine_type = null, jsonMode = null, variantTitle = null;
+        let payload = null;
         try {
-            const payload = readJsonFile(filePath);
-            engine_type = payload.engineType || payload.engine_type || null;
-            jsonMode = payload.mode || null;
-            variantTitle = payload.variantTitle || payload.topic || null;
+            payload = readJsonFile(filePath);
             parsed++;
         } catch { errors++; }
 
-        const item_type = classifyItemType(jsonMode, fileName);
-        const cdn_url = `${CDN_BASE}content/${subjectDir}/${unitId}/${questFolder}/${fileName}.json`;
+        const item_type = classifyItemType(payload, fileName);
+        const engine_type = resolveEngineType(payload, fileName, subject, item_type);
+        const cdn_url = `/content/${subjectDir}/${unitId}/${questFolder}/${fileName}.json`;
+
+        let option_a = null, option_b = null, option_c = null, option_d = null, correct_answer = null;
+        if (item_type === "MCQ's") {
+            const mcq = extractMCQData(payload);
+            option_a = mcq.option_a;
+            option_b = mcq.option_b;
+            option_c = mcq.option_c;
+            option_d = mcq.option_d;
+            correct_answer = mcq.correct_answer;
+        }
 
         records.push({
             qid: fileName, subject, grade_level: GRADE_LEVEL,
             topic: unitId, subtopic: questFolder,
             item_type, engine_type, cdn_url,
-            question_text: variantTitle || `Practice ${fileName}`,
-            option_a: 'Ready!', correct_answer: 'Ready!',
+            question_text: payload?.variantTitle || payload?.title || payload?.topic || `Practice ${fileName}`,
+            option_a, option_b, option_c, option_d, correct_answer,
             metadata: { is_interactive: true, source: 'filesystem-scan' }
         });
     }
@@ -353,6 +611,7 @@ async function bulkInsert(data) {
 // ─── Main ───────────────────────────────────────────────
 async function run() {
     console.log(`\n⚡ MANYA_VAULT UNIVERSAL SYNC (v3.0.8) ⚡\n`);
+    initNomenclatureMap();
 
     if (isReset) {
         await wipeDatabase();

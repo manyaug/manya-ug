@@ -45,7 +45,7 @@
   background: var(--active-color);
   border-radius: 0 0 12px 12px;
   z-index: 10;
-  transform: translateX(-50%);
+  margin-left: -16px; /* Precise centering offset for 32px width */
   transition: all 0.4s var(--transition-bounce);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

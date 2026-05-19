@@ -6,13 +6,13 @@ import { hydrateStepData } from '../engines/shared-engines/UniversalLogic';
 const BANK_CACHE = {};
 
 const SUBTOPIC_MAP = {
-    'quest_1_world_stage': 'world_stage',
-    'quest_2_grid_master': 'latitudes_longitudes',
-    'quest_3_calculating_time': 'time_calc',
-    'quest_4_water_bodies': 'Water Bodies',
-    'quest_5_coastal_features': 'coastal_features',
-    'quest_6_regional_division_capital_cities': 'Regional Division Capital Cities',
-    'quest_7_landlocked_countries': 'regions_capitals'
+    'quest_1_world_stage': ['The World Stage', 'world_stage'],
+    'quest_2_grid_master': ['Grid Master', 'Grid Math', 'latitudes_longitudes', 'quest_2_grid_master'],
+    'quest_3_calculating_time': ['Calculating Time', 'time_calc', 'quest_3_calculating_time'],
+    'quest_4_water_bodies': ['Water Bodies'],
+    'quest_5_coastal_features': ['Coastal Features', 'coastal_features'],
+    'quest_6_regional_division_capital_cities': ['Regions and Capitals', 'Regional Division Capital Cities'],
+    'quest_7_landlocked_countries': ['Landlocked Countries', 'regions_capitals']
 };
 
 /**
@@ -20,22 +20,33 @@ const SUBTOPIC_MAP = {
  */
 export const fetchSstQuestions = async (topicId) => {
     try {
-        const subtopic = SUBTOPIC_MAP[topicId] || topicId;
-        console.log(`🗄️ [SSTDB] Fetching bank for: ${subtopic}`);
+        const searchTerms = SUBTOPIC_MAP[topicId] 
+            ? [...SUBTOPIC_MAP[topicId], topicId] 
+            : [topicId];
+            
+        // De-duplicate search terms
+        const uniqueTerms = [...new Set(searchTerms)];
         
-        if (BANK_CACHE[subtopic]) return BANK_CACHE[subtopic];
+        console.log(`🗄️ [SSTDB] Fetching bank for: ${topicId} (Search terms: ${uniqueTerms.join(', ')})`);
+        
+        if (BANK_CACHE[topicId]) return BANK_CACHE[topicId];
 
         let data = null;
         try {
             console.log(`📡 [SSTDB] Querying Supabase for fresh records...`);
-            data = await storageFacade.get(`db:/manya_vault?subject=ilike:sst&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
+            
+            // Build the query containing all ILIKE conditions
+            const orConditions = uniqueTerms.map(term => `subtopic.ilike.%${term}%`).join(',');
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:sst&or=${orConditions}`);
         } catch (dbErr) {
             console.warn(`⚠️ [SSTDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
             const allCached = await ManyaDB.getCachedQuestions('sst');
-            const cached = allCached.filter(q => q.subtopic === subtopic);
+            const cached = allCached.filter(q => 
+                uniqueTerms.some(term => q.subtopic?.toLowerCase().includes(term.toLowerCase()))
+            );
             if (cached && cached.length > 0) {
                 console.log(`💾 [SSTDB] Successfully loaded ${cached.length} questions from local IndexedDB.`);
-                BANK_CACHE[subtopic] = cached;
+                BANK_CACHE[topicId] = cached;
                 return cached;
             }
             data = [];
@@ -67,7 +78,21 @@ export const fetchSstQuestions = async (topicId) => {
 
             let interactivePayload = hydrateStepData(q) || {};
 
-            const isInteractive = q.item_type?.includes('INTERACTIVE') || q.item_type === 'SIMULATION' || q.item_type === 'RECAP' || q.engine_type;
+            const isMcqQid = String(q.qid || q.id || '').toLowerCase().includes('quiz') || 
+                             String(q.qid || q.id || '').toLowerCase().includes('mcq') || 
+                             String(q.qid || q.id || '').toLowerCase().includes('question') ||
+                             String(q.qid || q.id || '').toLowerCase().includes('practice');
+
+            const engineUpper = (q.engine_type || "").toUpperCase();
+            const hasSpecializedEngine = engineUpper && engineUpper !== 'NULL' && engineUpper !== 'MCQ' && engineUpper !== 'NONE' && engineUpper !== 'MCQ_STANDALONE';
+
+            const isInteractive = (
+                q.item_type?.toUpperCase().includes('INTERACTIVE') || 
+                q.item_type?.toUpperCase() === 'SIMULATION' || 
+                q.item_type?.toUpperCase() === 'RECAP' || 
+                hasSpecializedEngine
+            ) && !isMcqQid;
+
             if (isInteractive && q.cdn_url) {
                 try {
                     let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');
@@ -108,7 +133,7 @@ export const fetchSstQuestions = async (topicId) => {
             };
         }));
 
-        BANK_CACHE[subtopic] = transformed;
+        BANK_CACHE[topicId] = transformed;
         await ManyaDB.cacheQuestions(transformed);
         return transformed;
 

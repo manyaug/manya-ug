@@ -36,7 +36,7 @@ function BottomNav() {
 
   const location = useLocation();
   const activeIndex = navItems.findIndex(item => location.pathname.startsWith(item.to));
-  const activeColor = activeIndex !== -1 ? navItems[activeIndex].color : '#818cf8';
+  const activeColor = 'var(--manya-purple)';
 
   return (
     <nav className="bottom-nav">

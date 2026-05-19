@@ -49,8 +49,14 @@ export const feedbackService = {
 
         globalStreak++;
         
-        // 1. Determine the motivating word (Flash)
-        const word = CHEERS[Math.floor(Math.random() * CHEERS.length)];
+        // 1. Determine the motivating word (Flash) by picking a voiceover file name
+        const voiceFiles = [
+            'Amazing', 'Awesome', 'Bam', 'Bravo', 'Champion',
+            'Correct', 'Epic', 'Great', 'Super', 'Well Done',
+            'Wow', 'You are Sharp'
+        ];
+        const selectedVoice = voiceFiles[Math.floor(Math.random() * voiceFiles.length)];
+        const word = selectedVoice.toUpperCase() + '!';
         
         // 2. Determine Mascot Message
         let mascotMsg = MASCOT_PRAISE[Math.floor(Math.random() * MASCOT_PRAISE.length)];
@@ -75,8 +81,8 @@ export const feedbackService = {
         // 4. Play Audio (Managed centrally)
         audioService.playSFX('correct'); 
         
-        // v9.9: High-energy vocal boosters (Wow!, Amazing!, etc.)
-        setTimeout(() => audioService.playCorrectVoice(), 300);
+        // play voice booster instantly alongside the visual flash to avoid audio-visual lag
+        audioService.playCorrectVoice(selectedVoice);
     },
 
     triggerWrong: (subject = 'math') => {

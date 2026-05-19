@@ -64,7 +64,7 @@ export default function QuestRunner() {
     const [challengeReward, setChallengeReward] = useState(null);
     const [fact, setFact] = useState('');
     const claimBtnRef = useRef(null);
-    const { triggerFlyingCoin } = useCoinAnimation(user?.coins || 0);
+    const { triggerFlyingCoin, triggerDeductCoin } = useCoinAnimation(user?.coins || 0);
 
     const autoContinueTimeoutRef = useRef(null);
 
@@ -108,8 +108,18 @@ export default function QuestRunner() {
                 audioService.collect?.();
             }, 500 + (count * 45));
         };
-        return () => { delete window.triggerRewardFlight; };
-    }, [triggerFlyingCoin, addSessionRewards]);
+
+        window.triggerDeductCoins = (amount = 50) => {
+            const targetEl = document.getElementById('hud-coin-pill');
+            if (!targetEl) return;
+            triggerDeductCoin({ current: targetEl }, amount);
+        };
+
+        return () => { 
+            delete window.triggerRewardFlight; 
+            delete window.triggerDeductCoins;
+        };
+    }, [triggerFlyingCoin, triggerDeductCoin, addSessionRewards]);
 
     useEffect(() => {
         const handleAutoContinue = () => {
@@ -153,7 +163,8 @@ export default function QuestRunner() {
             setBtnState(s => ({ ...s, enabled: !val }));
         },
         onEngineResult: handleEngineResult,
-        setPools: (pools) => session?.setPools(pools)
+        setPools: (pools) => session?.setPools(pools),
+        setRawQuestions: (questions) => session?.setRawQuestions(questions)
     }), [safeAdvanceStep, replaceCurrentStepWith, handleEngineResult, session, setBtnState]);
 
     return (

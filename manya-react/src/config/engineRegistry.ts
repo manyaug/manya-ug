@@ -282,6 +282,9 @@ export function getEngine(engineType: string): EngineRegistryEntry {
     else if (resolvedType === 'MCQ') {
         resolvedType = 'MCQ_STANDALONE';
     }
+    else if (resolvedType === 'STUDY_RECAP') {
+        resolvedType = 'READER_STUDY';
+    }
     // English Aliases
     else if (resolvedType === 'PUNCTUATION_PORTAL') {
         resolvedType = 'PUNCTUATION_STICKERS';

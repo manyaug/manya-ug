@@ -162,7 +162,7 @@ export const validateInteraction = (params) => {
         corrected = (currentStep.inputs || []).map(inp => `${inp.region}:${inp.expected}`).join(' | ');
     } else if (['ALGEBRA_SOLVE', 'ALGEBRA_SUBSTITUTE', 'ALGEBRA_EVAL', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'PROBABILITY', 'PROB', 'FRACTION'].includes(currentStep.type) || ['ALGEBRA_SOLVE', 'COUNT_SUM', 'COUNT', 'SUBSET_COUNT', 'PROPER_SUBSET_COUNT'].includes(currentStep.engineType)) {
         const userVal = String(Object.values(userAnswers).find(v => v !== '') || '').trim();
-        let target = currentStep.expected || currentStep.answer || currentStep.expected_x || currentStep.expression;
+        let target = currentStep.expected || currentStep.answer || currentStep.expected_x || currentStep.expression || currentStep.expected_val || currentStep.expectedVal;
         if (target === '?' || (typeof target === 'string' && target.trim() === '?')) target = null;
         
         // Combine explicit x_val with anything solved in previous steps
@@ -186,8 +186,12 @@ export const validateInteraction = (params) => {
         if (['SUBSET_COUNT', 'PROPER_SUBSET_COUNT', 'REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET', 'COUNT', 'COUNT_SUM'].includes(currentStep.type) && !currentStep.expression) {
             // Numeric literal check
             if (['REVERSE_SUBSET', 'REVERSE_PROPER_SUBSET'].includes(currentStep.type)) {
-                const val = parseInt(target);
-                target = (currentStep.type === 'REVERSE_SUBSET') ? Math.log2(val) : Math.log2(val + 1);
+                // If expected_val or expectedVal is specified, it represents the final answer directly.
+                // We only perform the log2 conversion if target represents the subsets count (i.e. expected_val is not defined).
+                if (currentStep.expected_val === undefined && currentStep.expectedVal === undefined) {
+                    const val = parseInt(target);
+                    target = (currentStep.type === 'REVERSE_SUBSET') ? Math.log2(val) : Math.log2(val + 1);
+                }
             }
             
             // Standardize comparison: Use numbers for numeric types, normalization for others

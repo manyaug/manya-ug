@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Puzzle, AlertCircle } from 'lucide-react';
 import { ENGINE_REGISTRY, getEngine } from '../../config/engineRegistry';
 import { audioService } from '../../infrastructure/audio/audioService.js';
+import { feedbackService } from '../../application/feedbackService';
 
 class EngineErrorBoundary extends React.Component {
     constructor(props) {
@@ -95,9 +96,9 @@ const EnglishBridge = ({ step, onComplete, onResult, onAttempt, nodeType, onSimS
         const isWin = res?.isCorrect ?? (res?.accuracy !== undefined ? res.accuracy > 0.5 : true);
         
         if (isWin) {
-            audioService.victory?.();
+            feedbackService.triggerCorrect('english', { type: 'simulation' });
         } else {
-            audioService.error?.();
+            feedbackService.triggerWrong('english');
         }
 
         // Auto-advance after 1.5s to keep it snappy like an MCQ

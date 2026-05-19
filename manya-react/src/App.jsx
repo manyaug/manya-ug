@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux';
@@ -37,14 +37,14 @@ import ResetPasswordView from './views/ResetPasswordView';
 import SplashScreen from './components/SplashScreen';
 import DebugAuditView from './views/DebugAuditView';
 
-import { initializeUser, addDiamonds, awardGems } from './store/userSlice';
+import { initializeUser, addDiamonds, awardGems, updateBalanceThunk } from './store/userSlice';
 import { supabase } from './infrastructure/remote/supabaseClient';
 import './styles/global.css';
 
 // Routes that hide the global HUD (have their own header)
-const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test'];
+const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test', '/preferences', '/settings', '/membership'];
 // Routes that also hide the BottomNav
-const HIDE_NAV_ROUTES = ['/quest-path', '/quest', '/sim-test', '/quest'];
+const HIDE_NAV_ROUTES = ['/quest-path', '/quest', '/sim-test', '/quest', '/membership'];
 
 /**
  * RouterLayout — lives INSIDE <Router> so it can call useLocation().
@@ -122,6 +122,7 @@ function AppContent() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { data: user, isLoading } = useSelector(state => state.user);
+    const hasInitializedRef = useRef(false);
     const [splashFinished, setSplashFinished] = useState(false);
 
     // 🎯 GLOBAL AUTH GUARDIAN: Listen for Supabase events (Recovery, Sign-in, etc.)
@@ -136,8 +137,13 @@ function AppContent() {
             
             if (event === 'SIGNED_IN' && session) {
                 // If we just signed in, re-initialize to ensure profile is synced
-                console.log("👤 [Auth] User Signed In. Initializing Profile...");
-                dispatch(initializeUser());
+                if (!hasInitializedRef.current) {
+                    hasInitializedRef.current = true;
+                    console.log("👤 [Auth] User Signed In. Initializing Profile...");
+                    dispatch(initializeUser());
+                } else {
+                    console.log("👤 [Auth] User already initialized. Skipping redundant sync.");
+                }
             }
 
             if (event === 'SIGNED_OUT') {
@@ -169,9 +175,40 @@ function AppContent() {
         return () => window.removeEventListener('manya-challenge-completed', handleChallengeReward);
     }, [dispatch]);
 
+    // 💡 HINT ECONOMY INTERCEPTOR: Deduct 50 coins when user takes a hint
+    const deductedHintsRef = useRef(new Set());
+    useEffect(() => {
+        const handleHintTaken = (e) => {
+            const { questionId } = e.detail || {};
+            if (!questionId) return;
+
+            if (deductedHintsRef.current.has(questionId)) return;
+            deductedHintsRef.current.add(questionId);
+
+            console.log(`💡 [Economy] Deducting 50 coins for hint on: ${questionId}`);
+            dispatch(updateBalanceThunk({
+                currency: 'coins',
+                amount: -50,
+                type: 'hint_use',
+                contextId: questionId
+            }));
+
+            // Spawn visual deduction animation & sound effects on the HUD coin counter
+            if (window.triggerDeductCoins) {
+                window.triggerDeductCoins(50);
+            }
+        };
+
+        window.addEventListener('manya-hint-taken', handleHintTaken);
+        return () => window.removeEventListener('manya-hint-taken', handleHintTaken);
+    }, [dispatch]);
+
     // Boot user from ManyaDB
     useEffect(() => {
-        dispatch(initializeUser());
+        if (!hasInitializedRef.current) {
+            hasInitializedRef.current = true;
+            dispatch(initializeUser());
+        }
     }, [dispatch]);
 
     // Sync global theme whenever it changes in Redux

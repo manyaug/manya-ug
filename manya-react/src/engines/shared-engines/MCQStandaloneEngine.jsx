@@ -72,6 +72,11 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult, subject }) => {
                 type: 'mcq',
                 hintUsed: hintUsed
             });
+
+            // Automatically advance to the next question after a 1.5-second delay
+            setTimeout(() => {
+                onComplete?.();
+            }, 1500);
         } else {
             setTimeout(() => setPhase('wrong'), 100);
             setTimeout(() => setPhase('show-solution'), 950);
@@ -82,7 +87,7 @@ const MCQStandaloneEngine = ({ data, onComplete, onResult, subject }) => {
                 hintUsed: hintUsed
             });
         }
-    }, [phase, selected, correctId, options, data.points, onResult, hintUsed]);
+    }, [phase, selected, correctId, options, data.points, onResult, hintUsed, onComplete]);
 
     return (
         <MCQRenderer 

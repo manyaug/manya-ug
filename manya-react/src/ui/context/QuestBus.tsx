@@ -7,6 +7,7 @@ interface QuestBusState {
     setIsTyping: (val: boolean) => void;
     onEngineResult: (result: any) => void;
     setPools: (pools: { MCQ?: any[], SIMULATION?: any[], NOTE?: any[], RECAP?: any[] }) => void;
+    setRawQuestions?: (questions: any[]) => void;
     replaceCurrentStepWith: (steps: any[]) => void;
 }
 
@@ -23,6 +24,7 @@ export const useQuestBus = () => {
             setIsTyping: () => {},
             onEngineResult: () => {},
             setPools: () => {},
+            setRawQuestions: () => {},
             replaceCurrentStepWith: () => {}
         };
     }

@@ -177,7 +177,13 @@ const MathRenderer = ({
                                 </div>
                                 {!isAnswered && q.hint && (
                                     <div className="relative">
-                                        <button onClick={() => setHintUsed(!hintUsed)} className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}><Lightbulb size={18} /></button>
+                                        <button onClick={() => {
+                                            if (!hintUsed) {
+                                                const qId = q.id || q.qid || q.questionId || q.question;
+                                                window.dispatchEvent(new CustomEvent('manya-hint-taken', { detail: { questionId: qId } }));
+                                            }
+                                            setHintUsed(!hintUsed);
+                                        }} className={`p-2 rounded-xl transition-all relative z-10 ${hintUsed ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}><Lightbulb size={18} /></button>
                                         {hintUsed && (
                                             <div className="mcq-hint-bubble">
                                                 <div className="toy-card-gloss" />

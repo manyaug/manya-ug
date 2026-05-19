@@ -158,7 +158,11 @@ export const updateBalanceThunk = createAsyncThunk(
     async ({ currency, amount, type, contextId }, { dispatch }) => {
         // 1. Instant UI update via reducer
         if (currency === 'coins') {
-            dispatch(userSlice.actions.awardCoins(amount));
+            if (amount >= 0) {
+                dispatch(userSlice.actions.awardCoins(amount));
+            } else {
+                dispatch(userSlice.actions.deductCoins(Math.abs(amount)));
+            }
         } else if (currency.includes('gem')) {
             const subject = currency.replace('gem_', '');
             dispatch(userSlice.actions.awardGems({ subject, amount }));

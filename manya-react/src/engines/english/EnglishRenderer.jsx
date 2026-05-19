@@ -116,7 +116,13 @@ const EnglishRenderer = ({
                                 </div>
                                 {!isAnswered && currentQ?.hint && (
                                     <div className="relative">
-                                        <button onClick={() => setHintUsed(!hintUsed)} className={`p-2.5 rounded-2xl transition-all relative z-20 ${hintUsed ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}><Lightbulb size={20} /></button>
+                                        <button onClick={() => {
+                                            if (!hintUsed) {
+                                                const qId = currentQ.id || currentQ.qid || currentQ.questionId || currentQ.question;
+                                                window.dispatchEvent(new CustomEvent('manya-hint-taken', { detail: { questionId: qId } }));
+                                            }
+                                            setHintUsed(!hintUsed);
+                                        }} className={`p-2.5 rounded-2xl transition-all relative z-20 ${hintUsed ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}><Lightbulb size={20} /></button>
                                         <AnimatePresence>
                                             {hintUsed && (
                                                 <motion.div initial={{ opacity: 0, scale: 0.8, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 10 }} className="mcq-hint-bubble" style={{ right: '-5px', top: '55px', width: '240px', background: '#ffffff', border: '3px solid #f59e0b', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', opacity: 1 }}>

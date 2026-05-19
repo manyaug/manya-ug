@@ -1,5 +1,6 @@
 import { calculateFrustration, calculateHistoricalPsych } from '../domain/psych/psychTracker';
 import { syncService } from '../infrastructure/sync/syncService.js';
+import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { parseQuestionId, areSameConcept } from '../utils/questionParser';
 import { masteryService } from '../domain/mastery/masteryService';
 import { conceptMasteryService } from '../domain/mastery/conceptMasteryService';
@@ -61,7 +62,13 @@ export function scoreQuestion(question, history, subject, subjectMasteryMap, con
     factors.push(`mastery_${mastery}`);
 
     const conceptRecord = conceptRecordMap[conceptId] || null;
-    const conceptAnswers = history.filter(ans => (ans.concept_id || parseQuestionId(ans.questionId).baseId) === conceptId);
+    
+    // Support both snake_case (Supabase) and camelCase (IndexedDB) schemas robustly
+    const conceptAnswers = (history || []).filter(ans => {
+        const qId = ans.question_id || ans.questionId || ans.qid || '';
+        const cId = ans.concept_id || ans.conceptId || parseQuestionId(qId).baseId;
+        return cId === conceptId;
+    });
     
     if (conceptRecord && conceptRecord.nextReviewAt) {
         const reviewPriority = spacedRepetitionService.getReviewPriority(conceptRecord);
@@ -71,10 +78,14 @@ export function scoreQuestion(question, history, subject, subjectMasteryMap, con
         }
     } else {
         const lastAns = conceptAnswers.length > 0 ? conceptAnswers[conceptAnswers.length - 1] : null;
-        const lastVariantSeen = lastAns ? parseQuestionId(lastAns.questionId || lastAns.qid).variant : null;
-        const lastSeen = lastAns ? new Date(lastAns.answeredAt) : null;
         
-        if (lastSeen) {
+        const qId = lastAns ? (lastAns.question_id || lastAns.questionId || lastAns.qid) : null;
+        const lastVariantSeen = qId ? parseQuestionId(qId).variant : null;
+        
+        const rawTime = lastAns ? (lastAns.answered_at || lastAns.answeredAt) : null;
+        const lastSeen = rawTime ? new Date(rawTime) : null;
+        
+        if (lastSeen && !isNaN(lastSeen.getTime())) {
             const hoursSince = (Date.now() - lastSeen.getTime()) / (1000 * 60 * 60);
             if (hoursSince < 24) {
                 // Penalize the concept globally to avoid immediate repetition
@@ -87,7 +98,9 @@ export function scoreQuestion(question, history, subject, subjectMasteryMap, con
         }
 
         // --- VARIANT PROGRESSION & RECOVERY LOGIC ---
-        if (!lastAns?.isCorrect && lastVariantSeen === variant) {
+        // Support both snake_case is_correct and camelCase isCorrect
+        const wasCorrect = lastAns ? (lastAns.is_correct !== undefined ? lastAns.is_correct : lastAns.isCorrect) : true;
+        if (!wasCorrect && lastVariantSeen === variant) {
             score -= 2000; // Never ask the same variant immediately after a mistake
         }
     }
@@ -134,7 +147,29 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         console.log(`🧠 [Adaptive V6] Generating ${nodeType} quest for ${subject}. Bank: ${allQuestions.length}`);
     
         // ── THE BRAIN: FETCH HISTORICAL TELEMETRY ──
-        const recentTelemetry = await syncService.fetchRecentTelemetry(subject, 10);
+        const cloudTelemetry = await syncService.fetchRecentTelemetry(subject, 20) || [];
+        const localTelemetry = await ManyaDB.getAnswerHistory(subject) || [];
+        
+        // Merge cloud and local telemetry, prioritizing local telemetry for instantaneous updates
+        const telMap = new Map();
+        cloudTelemetry.forEach(h => {
+            const qId = h.question_id || h.questionId || h.qid;
+            if (qId) telMap.set(qId + '_' + (h.answered_at || h.answeredAt), h);
+        });
+        localTelemetry.forEach(h => {
+            const qId = h.question_id || h.questionId || h.qid;
+            if (qId) telMap.set(qId + '_' + (h.answered_at || h.answeredAt), h);
+        });
+        
+        const recentTelemetry = [...telMap.values()].sort((a, b) => {
+            const timeA = new Date(a.answered_at || a.answeredAt || 0).getTime();
+            const timeB = new Date(b.answered_at || b.answeredAt || 0).getTime();
+            return timeA - timeB;
+        });
+
+        // Reassign history to our complete merged recentTelemetry!
+        history = recentTelemetry;
+
         const historicalPsych = calculateHistoricalPsych(recentTelemetry);
         const sessionPsych = calculateFrustration(session);
 
@@ -281,7 +316,9 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         // 2. CONDITION CHECK
         const recentAccuracy = history.length > 0 ? (history.slice(-5).filter(h => h.isCorrect).length / Math.min(5, history.length)) : 1;
-        const isBadCondition = frustrationScore > 70 || recentAccuracy <= 0.4 || dominantMastery.startsWith('struggling') || isHardGuesser;
+        
+        // 🛡️ Note Loop Fix: Only trigger bad condition if there's enough history or high frustration
+        const isBadCondition = frustrationScore > 70 || (recentAccuracy <= 0.4 && history.length >= 3) || dominantMastery.startsWith('struggling') || isHardGuesser;
         const needsMotivation = frustrationScore > 54 || recentAccuracy <= 0.6;
 
         console.log(`📡 [Adaptive] ${isBadCondition ? '🚨 CRITICAL' : needsMotivation ? '⚠️ STRUGGLING' : '✅ HEALTHY'} | Acc: ${recentAccuracy.toFixed(2)} | Guessing: ${behaviorPattern.guessingRate}%`);
@@ -342,7 +379,19 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         // v9.2: Don't start with a note. Move it to the middle if needed.
         let remedialNote = null;
         if (isBadCondition && nodeType !== 'WARMUP') {
-            remedialNote = pools.NOTE.length > 0 ? pools.NOTE[0] : pools.QUEST_STORY[0];
+            const attemptedIds = new Set([
+                ...(history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase())
+            ]);
+            const unattemptedNotes = pools.NOTE.filter(n => {
+                const idLower = String(n.qid || n.id || n.file || '').toLowerCase();
+                return !attemptedIds.has(idLower);
+            });
+            const unattemptedStories = pools.QUEST_STORY.filter(s => {
+                const idLower = String(s.qid || s.id || s.file || '').toLowerCase();
+                return !attemptedIds.has(idLower);
+            });
+
+            remedialNote = unattemptedNotes.length > 0 ? unattemptedNotes[0] : (unattemptedStories.length > 0 ? unattemptedStories[0] : null);
             if (remedialNote) {
                 remedialNote = { ...remedialNote, isIntro: true, isStudyStep: true, noGamification: true };
             }
@@ -355,7 +404,29 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         let coreMcqPool = mcqCandidates.filter(q => q.variant === 'V2' || q.variant === 'V1');
         if (coreMcqPool.length < 5) coreMcqPool = [...mcqCandidates]; 
         
-        const simStack = [...pools.SIMULATION].sort(() => 0.5 - Math.random());
+        // Prevent repeating simulations from history or current quest
+        const attemptedIds = new Set([
+            ...(history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase()),
+            ...finalQuestions.map(fq => String(fq.qid || fq.id || '').toLowerCase())
+        ]);
+
+        const unattemptedSims = [];
+        const attemptedSims = [];
+
+        pools.SIMULATION.forEach(sim => {
+            const idLower = String(sim.qid || sim.id || sim.file || '').toLowerCase();
+            if (attemptedIds.has(idLower)) {
+                attemptedSims.push(sim);
+            } else {
+                unattemptedSims.push(sim);
+            }
+        });
+
+        // Shuffle each group and stack them so unattempted are at the top (end of array for popping)
+        const simStack = [
+            ...attemptedSims.sort(() => 0.5 - Math.random()),
+            ...unattemptedSims.sort(() => 0.5 - Math.random())
+        ];
         
         // ── CORE ASSEMBLY LOOP ──
         let coreCount = 0;

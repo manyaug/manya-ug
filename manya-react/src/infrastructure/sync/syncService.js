@@ -684,6 +684,17 @@ export const syncService = {
         }
     },
 
+    async deleteVaultItem(id) {
+        try {
+            await storageFacade.delete(`db:/user_vault/${id}`);
+            console.log(`☁️ [Sync] Vault row ${id} deleted.`);
+            return true;
+        } catch (error) {
+            console.error(`⚠️ [Sync] Vault delete failed for ${id}:`, error.message);
+            return false;
+        }
+    },
+
     /**
      * RANKINGS: The Live Hero Engine (Phase 6 🏆)
      */

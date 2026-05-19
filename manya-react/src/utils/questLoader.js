@@ -47,9 +47,9 @@ function resolveQid(subject, unitId, questFolder, file) {
     const fileStr = typeof file === 'string' ? file : (file?.file || String(file));
     const filename = fileStr.replace(/\.json$/, '');
     
-    // Direct ID mapping (Handles ENG-quest-p7-001 or pq-02-001 etc) - Case Insensitive
+    // Direct ID mapping (Handles ENG-quest-p7-001, pq-02-001, or SIM-ENG7-T1-06-0001 etc) - Case Insensitive
     const upperFilename = filename.toUpperCase();
-    if (upperFilename.startsWith('ENG-') || upperFilename.startsWith('PQ-')) {
+    if (upperFilename.startsWith('ENG-') || upperFilename.startsWith('PQ-') || upperFilename.startsWith('SIM-')) {
         return filename;
     }
 
@@ -216,7 +216,11 @@ async function loadQuestStepsLegacy(subject, unitId, questFolder, file) {
             json = await storageFacade.get(`file:${url}`);
         } catch (e) {
             // 🛡️ FALLBACK: If folder-specific path fails, try the parent unit folder
-            const fallbackUrl = `${BASE_CONTENT_URL}${subject}/${unitId}/${file.replace(/\.json$/, '')}.json`;
+            let unitDir = unitId;
+            if (subject === 'english' && (unitId === 'english-master-path' || unitId === 'english_master_path')) {
+                unitDir = 'holidays';
+            }
+            const fallbackUrl = `${BASE_CONTENT_URL}${subject}/${unitDir}/${file.replace(/\.json$/, '')}.json`;
             json = await storageFacade.get(`file:${fallbackUrl}`);
             url = fallbackUrl;
         }

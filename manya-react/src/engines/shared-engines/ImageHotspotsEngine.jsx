@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { discoverArtifact } from '../../store/userSlice';
 import { addToast } from '../../store/toastSlice';
 import { audioService } from '../../infrastructure/audio/audioService.js';
+import { feedbackService } from '../../application/feedbackService';
 import HotspotsRenderer from './ImageHotspots/HotspotsRenderer';
 import { 
     validatePinChoice, 
@@ -83,7 +84,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
         });
 
         if (isCorrect) {
-            audioService.success?.();
+            feedbackService.triggerCorrect(data?.subject || 'science', { type: 'simulation' });
             onSimSuccess?.(); // Cinematic Dim + Badge
             
             // 🚀 Coin Flight Burst
@@ -104,7 +105,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
             }, 800);
             startTimeRef.current = Date.now();
         } else {
-            audioService.whoosh?.();
+            feedbackService.triggerWrong(data?.subject || 'science');
             onSimWrong?.(); // Snappy "Try Again" Overlay
             setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: word });

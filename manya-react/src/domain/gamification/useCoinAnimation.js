@@ -10,6 +10,7 @@
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getGem } from '../../config/assetUrls.js';
+import { audioService } from '../../infrastructure/audio/audioService.js';
 
 // easeOutCubic: matches the original plain-JS implementation
 function easeOutCubic(t) {
@@ -157,5 +158,41 @@ export function useCoinAnimation(realCoins) {
         setTimeout(() => label.remove(), 900);
     }, []);
 
-    return { displayCoins, triggerFlyingCoin, triggerFloatCoin };
+    /**
+     * Spawns a red float-down anim for coin deductions and shakes the HUD.
+     */
+    const triggerDeductCoin = useCallback((targetRef, amount) => {
+        if (!targetRef?.current) return;
+        const rect = targetRef.current.getBoundingClientRect();
+
+        // 1. Play coin deduction dropping coin sound
+        try {
+            audioService.playSFX?.('coin-drop');
+        } catch (e) {}
+
+        // 2. Shake HUD pill with negative style
+        targetRef.current?.classList.add('coin-hud-deduct-shake');
+        setTimeout(() => targetRef.current?.classList.remove('coin-hud-deduct-shake'), 400);
+
+        // 3. Drop "-50" label below the coin pill
+        const label = document.createElement('div');
+        label.textContent = `-${amount}`;
+        label.style.cssText = `
+            position: fixed;
+            left: ${rect.left + rect.width / 2}px;
+            top: ${rect.top + rect.height + 5}px;
+            font-size: 22px; 
+            font-weight: 900;
+            color: #ef4444; 
+            z-index: 20001; 
+            pointer-events: none;
+            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+            animation: manya-coin-deduct 0.85s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+            font-family: 'Sour Gummy', 'Bubblegum Sans', sans-serif;
+        `;
+        document.body.appendChild(label);
+        setTimeout(() => label.remove(), 900);
+    }, []);
+
+    return { displayCoins, triggerFlyingCoin, triggerFloatCoin, triggerDeductCoin };
 }

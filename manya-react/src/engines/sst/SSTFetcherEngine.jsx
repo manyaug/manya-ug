@@ -5,7 +5,7 @@ import { generateAdaptiveQuest } from '../../services/adaptiveEngine';
 import { syncService } from '../../infrastructure/sync/syncService';
 import { findQuestData, preloadCurriculum } from '../../services/curriculumService';
 import { loadQuestSteps } from '../../utils/questLoader';
-import { getEngineType } from '../shared-engines/UniversalLogic';
+import { getEngineType, isSimSafe } from '../shared-engines/UniversalLogic';
 
 /**
  * MANYA SST FETCHER ENGINE v8.8 (Optimized)
@@ -26,7 +26,7 @@ export default function SSTFetcherEngine({ data, onComplete }) {
 
             // v8.8: Increased timeout for heavy resource counts
             const safetyTimeout = new Promise((resolve) => 
-                setTimeout(() => resolve('TIMEOUT'), 12000)
+                setTimeout(() => resolve('TIMEOUT'), 45000)
             );
 
             const fetchOperation = (async () => {
@@ -66,14 +66,17 @@ export default function SSTFetcherEngine({ data, onComplete }) {
                         );
 
                         const selectedQuestions = adaptiveResult.questions;
+                        bus.setRawQuestions?.(questions);
                         bus.setPools(adaptiveResult.pools);
 
                         const explodedSteps = selectedQuestions.map(q => {
-                            const engineType = getEngineType(q, 'sst');
+                            const rawEngineType = getEngineType(q, 'sst');
+                            const isRealSim = isSimSafe(q, 'sst');
+                            const engineType = isRealSim ? rawEngineType : 'MCQ_STANDALONE';
                             return {
                                 engineType,
                                 data: q,
-                                isSimulation: engineType !== 'MCQ_STANDALONE',
+                                isSimulation: isRealSim,
                                 subject: 'sst'
                             };
                         });
