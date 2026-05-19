@@ -26,6 +26,14 @@ export default function BinaryGameEngine({ data, onComplete, onResult }) {
     
     const startTimeRef = useRef(Date.now());
 
+    useEffect(() => {
+        onResult?.({
+            score: 0,
+            total: 1,
+            type: 'pulse'
+        });
+    }, [onResult]);
+
     const modify = (delta) => {
         if (isResolved) return;
         setN(prev => Math.max(0, Math.min(8, prev + delta)));

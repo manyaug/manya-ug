@@ -45,6 +45,14 @@ export default function VennProbEngine({ data, onComplete, onResult, onAttempt }
         }
     }, [currentStep, question]);
 
+    useEffect(() => {
+        onResult?.({
+            score: currentStep,
+            total: totalLevels,
+            type: 'pulse'
+        });
+    }, [currentStep, totalLevels, onResult]);
+
     // Handle dropping a chip
     const handleDragEnd = (event, info, chipId) => {
         if (phase !== 'setup') return;

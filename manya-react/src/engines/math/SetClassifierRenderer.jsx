@@ -48,19 +48,21 @@ const SetClassifierRenderer = ({
                 </div>
 
                 {/* 3. CONTROLS */}
-                <div className="p-6 flex flex-col gap-4 border-t border-slate-100 dark:border-white/5">
+                <div className="p-6 flex flex-col gap-4 border-t border-[var(--border-color)]">
                     <div className={`grid grid-cols-2 gap-3 transition-all duration-500 ${isResolved ? 'opacity-0 scale-95 absolute inset-0 pointer-events-none' : 'opacity-100'}`}>
-                        <button onClick={() => handleChoice('finite')} className="h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all bg-emerald-500 text-white shadow-[0_5px_0_#059669] active:translate-y-1 active:shadow-none">
-                            FINITE <span className="text-[8px] opacity-60 block lowercase font-semibold">Limited</span>
+                        <button onClick={() => handleChoice('finite')} className="h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all bg-[#58cc02] text-white border-[#46a302] border-b-[6px] active:translate-y-[2px] active:border-b-[4px] hover:bg-[#46a302] shadow-[0_4px_10px_rgba(88,204,2,0.15)] flex flex-col items-center justify-center">
+                            <span className="leading-none">FINITE</span>
+                            <span className="text-[8px] opacity-80 block lowercase font-semibold mt-0.5">Limited</span>
                         </button>
-                        <button onClick={() => handleChoice('infinite')} className="h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all bg-pink-500 text-white shadow-[0_5px_0_#db2777] active:translate-y-1 active:shadow-none">
-                            INFINITE <span className="text-[8px] opacity-60 block lowercase font-semibold">Endless</span>
+                        <button onClick={() => handleChoice('infinite')} className="h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all bg-rose-500 text-white border-rose-700 border-b-[6px] active:translate-y-[2px] active:border-b-[4px] hover:bg-rose-600 shadow-[0_4px_10px_rgba(244,63,94,0.15)] flex flex-col items-center justify-center">
+                            <span className="leading-none">INFINITE</span>
+                            <span className="text-[8px] opacity-80 block lowercase font-semibold mt-0.5">Endless</span>
                         </button>
                     </div>
 
                     <button 
                         onClick={handleNext}
-                        className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-3 bg-indigo-600 text-white shadow-glow-indigo ${isResolved ? 'opacity-100' : 'opacity-0 pointer-events-none absolute'}`}
+                        className={`w-full h-14 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-3 bg-[#58cc02] text-white border-[#46a302] border-b-[6px] active:translate-y-[2px] active:border-b-[4px] hover:bg-[#46a302] ${isResolved ? 'opacity-100' : 'opacity-0 pointer-events-none absolute'}`}
                     >
                         {stepIdx === totalQuestions - 1 ? 'Finish Activity' : 'Next Question'} <ArrowRight size={18} strokeWidth={4} />
                     </button>

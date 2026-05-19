@@ -52,6 +52,15 @@ const SetStudyEngine = ({ data, onComplete, onResult, skipDiscovery = false }) =
         console.log(`%c 📖 [SetStudy] Slide ${stepIdx + 1}:`, 'color: #ec4899; font-weight: bold;', currentSlide);
     }
   }, [currentSlide, stepIdx]);
+  
+  useEffect(() => {
+    onResult?.({
+      score: stepIdx,
+      total: slides.length,
+      type: 'pulse'
+    });
+  }, [stepIdx, slides.length, onResult]);
+
   const allSeen = visitedIndices.size === slides.length;
 
   // --- 🎨 CANVAS ANIMATION LOOP ---

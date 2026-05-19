@@ -97,6 +97,18 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
     return () => obs.disconnect();
   }, []);
 
+  // --- 🪄 INITIAL PROGRESS PULSE ---
+  useEffect(() => {
+    if (onResult && normalizedData.questions?.length > 0) {
+      onResult({
+        score: stepIdx,
+        total: normalizedData.questions.length,
+        isCorrect: false,
+        type: 'pulse'
+      });
+    }
+  }, [stepIdx, normalizedData.questions?.length, onResult]);
+
   // --- 📏 LAYOUT ENGINE ---
   const computeLayout = useCallback(() => {
     if (canvasSize.width === 0 || canvasSize.height === 0) return null;
@@ -141,18 +153,12 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
     if (onResult) onResult({ isCorrect, selectedAnswer: Object.values(userAnswers).join('|'), correctAnswer: corrected, type: 'simulation' });
     
     if (isCorrect) { 
-        setIsResolved(true); 
-        setFeedback({ text: 'CORRECT!', type: 'success' }); 
-        
         // Premium Feedback & Global Events
-        // onSimSuccess handles high-fidelity audio (success.mp3) and coin bursts
-        if (onSimSuccess) onSimSuccess();
-        else {
-            audioService.correct();
+        if (onSimSuccess) {
+            onSimSuccess();
+        } else {
             setTimeout(() => triggerRewardFlight({ x: window.innerWidth/2, y: window.innerHeight - 80 }, 'coin', 5), 200);
         }
-        
-        window.dispatchEvent(new CustomEvent('manya-correct', { detail: { subject: normalizedData.subject || 'math' } }));
 
         // [Manya v4 Pulse] Notify parent HUD of step completion
         onResult?.({
@@ -176,14 +182,26 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                 return next;
             });
         }
+
+        // 🚀 AUTO-CONTINUE TO NEXT QUESTION after 1.0 second delay
+        setTimeout(() => {
+            if (stepIdx < normalizedData.questions?.length - 1) {
+                setStepIdx(p => p + 1);
+                setUserAnswers({});
+                setSelectedRegions(new Set());
+                setKbOpen(false);
+                setActiveKbId(null);
+                setFeedback({ text: '', type: '' });
+            } else {
+                onComplete();
+            }
+        }, 1000);
     } else { 
         setFeedback({ 
             text: 'NOT QUITE RIGHT', 
             type: 'error' 
         }); 
-        audioService.wrong(); 
         if (onSimWrong) onSimWrong();
-        window.dispatchEvent(new CustomEvent('manya-wrong', { detail: { subject: normalizedData.subject || 'math' } }));
     }
   }, [isResolved, stepIdx, normalizedData, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult, onSimSuccess, onSimWrong, successfulAnswers]);
 
@@ -325,8 +343,12 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                         </div>
                         <button 
                             onClick={() => {
+                                if (!isHintVisible) {
+                                    audioService.click();
+                                    const qId = currentStep.id || currentStep.qid || currentStep.questionId || `set_theory_${stepIdx}`;
+                                    window.dispatchEvent(new CustomEvent('manya-hint-taken', { detail: { questionId: qId } }));
+                                }
                                 setIsHintVisible(!isHintVisible);
-                                if (!isHintVisible) audioService.click();
                             }}
                             className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center ${
                                 isHintVisible 
@@ -426,7 +448,11 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
         </div>
 
         {/* 3. PREMIUM UNIFIED HUD (Manya Elite Style) */}
-        <div className={`p-6 bg-[#0f172a] border-t-2 border-white/5 z-20 transition-all ${kbOpen ? 'pb-8' : 'pb-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]'}`}>
+        <div className={`p-6 z-20 transition-all border-t-2 ${
+            isDark 
+            ? 'bg-[#0f172a] border-white/5 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]' 
+            : 'bg-[#FFF8F0] border-[#E8DDD0] shadow-[0_-20px_50px_rgba(139,90,43,0.06)]'
+        } ${kbOpen ? 'pb-8' : 'pb-10'}`}>
             <AnimatePresence mode="wait">
                 {feedback.type ? (
                     /* ELITE FEEDBACK LAYER */
@@ -482,10 +508,12 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                                     return (
                                         <button 
                                             key={opt} onClick={() => { setUserAnswers({ main: opt }); audioService.tap(); }}
-                                            className={`flex-1 min-w-[120px] h-14 rounded-2xl border-2 font-black text-[11px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
+                                            className={`flex-1 min-w-[120px] h-14 rounded-2xl border-2 font-black text-[11px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden active:translate-y-[2px] ${
                                                 isSelected 
-                                                ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400 shadow-lg' 
-                                                : 'bg-white/5 border-white/10 text-slate-400'
+                                                ? 'border-[#7c3aed] bg-[#7c3aed]/15 text-[#7c3aed] shadow-lg shadow-[#7c3aed]/10' 
+                                                : (isDark 
+                                                    ? 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10' 
+                                                    : 'bg-white border-[#E8DDD0] text-[#8B7FA3] hover:bg-slate-50')
                                             }`}
                                         >
                                             <div className="toy-card-gloss" />
@@ -504,10 +532,20 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                                         <button 
                                             key={inp.region} onClick={() => openKeyboard(inp.region)}
                                             className={`flex-1 h-16 rounded-2xl border-2 font-black text-xl flex items-center justify-center transition-all ${
-                                                activeKbId === inp.region ? 'border-indigo-500 bg-indigo-500/20 text-white shadow-lg' : 'bg-white/5 border-white/10 text-white shadow-sm'
+                                                activeKbId === inp.region 
+                                                ? 'border-[#7c3aed] bg-[#7c3aed]/15 text-[#7c3aed] shadow-lg shadow-[#7c3aed]/10' 
+                                                : (isDark 
+                                                    ? 'bg-white/5 border-white/10 text-white shadow-sm' 
+                                                    : 'bg-white border-[#E8DDD0] text-[#2D1B4E] shadow-sm')
                                             }`}
                                         >
-                                            {userAnswers[inp.region] || <span className="opacity-20 text-sm font-bold uppercase tracking-widest">{inp.label || 'Enter...'}</span>}
+                                            {userAnswers[inp.region] || (
+                                                <span className={`text-sm font-bold uppercase tracking-widest ${
+                                                    activeKbId === inp.region ? 'text-[#7c3aed]/60' : (isDark ? 'text-white/30' : 'text-[#2D1B4E]/45')
+                                                }`}>
+                                                    {inp.label || 'Enter...'}
+                                                </span>
+                                            )}
                                         </button>
                                     ))}
                                 </div>
@@ -519,14 +557,16 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                                     <button 
                                         onClick={handleInteraction}
                                         disabled={!hasInteraction}
-                                        className={`flex-1 h-16 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden border-b-[6px] ${
+                                        className={`flex-1 h-16 rounded-2xl font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden border-b-[6px] active:translate-y-[2px] active:border-b-[4px] ${
                                             hasInteraction 
-                                            ? 'bg-indigo-600 text-white border-indigo-900 hover:bg-link active:translate-y-1 active:shadow-none shadow-[0_10px_30px_rgba(79,70,229,0.3)]' 
-                                            : 'bg-slate-800 text-slate-500 border-slate-900 pointer-events-none'
+                                            ? 'bg-[#58cc02] hover:bg-[#46a302] text-white border-[#46a302] shadow-[0_10px_20px_rgba(88,204,2,0.25)]' 
+                                            : (isDark 
+                                                ? 'bg-slate-800 text-slate-500 border-slate-900 pointer-events-none' 
+                                                : 'bg-[#e5e5e5] text-[#a0a0a0] border-[#d4d4d4] pointer-events-none')
                                         }`}
                                     >
                                         <div className="btn-toy-gloss" />
-                                        <span className="relative z-10 flex items-center gap-2">Check Progress <Zap size={14} fill="currentColor" /></span>
+                                        <span className="relative z-10 flex items-center gap-2">SUBMIT <Zap size={14} fill="currentColor" /></span>
                                     </button>
                                 );
                             })()}

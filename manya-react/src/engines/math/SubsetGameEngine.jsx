@@ -21,6 +21,15 @@ export default function SubsetGameEngine({ data, onComplete, onResult }) {
     const [errorAnim, setErrorAnim] = useState(false);
     const [successAnim, setSuccessAnim] = useState(false);
     const [levelMistakes, setLevelMistakes] = useState(0);
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const checkTheme = () => setIsDark(document.documentElement.getAttribute('data-theme') === 'dark');
+        checkTheme();
+        const obs = new MutationObserver(checkTheme);
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => obs.disconnect();
+    }, []);
 
     const startTimeRef = useRef(Date.now());
     const dropZoneRef = useRef(null);
@@ -31,6 +40,14 @@ export default function SubsetGameEngine({ data, onComplete, onResult }) {
     
     const items = useMemo(() => currentQuestion?.items || [], [currentQuestion]);
     const totalSubsets = useMemo(() => calculatePowerSetSize(items.length), [items]);
+
+    useEffect(() => {
+        onResult?.({
+            score: currentStep,
+            total: totalLevels,
+            type: 'pulse'
+        });
+    }, [currentStep, totalLevels, onResult]);
 
     const toggleItem = (item) => {
         if (isResolved) return;
@@ -88,15 +105,15 @@ export default function SubsetGameEngine({ data, onComplete, onResult }) {
     };
 
     return (
-        <div className="flex flex-col h-full w-full bg-[#0F172A] font-jakarta overflow-hidden relative selection:bg-transparent">
+        <div className="flex flex-col h-full w-full bg-[var(--bg-main)] text-[var(--text-main)] font-jakarta overflow-hidden relative selection:bg-transparent">
             {/* STAGE */}
             <div className="flex-1 relative flex flex-col p-6 overflow-y-auto no-scrollbar">
                 <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-violet-600/20 rounded-xl flex items-center justify-center text-violet-500"><Zap size={16} fill="currentColor" /></div>
-                    <div className="text-violet-500 font-extrabold text-[12px] uppercase tracking-widest">Level {currentStep + 1}</div>
+                    <div className="text-violet-500 font-extrabold text-[12px] uppercase tracking-widest text-[#7c3aed]">Level {currentStep + 1}</div>
                 </div>
                 
-                <h2 className="font-bold text-white text-xl mb-6">{currentQuestion?.prompt}</h2>
+                <h2 className="font-bold text-[var(--text-main)] text-xl mb-6">{currentQuestion?.prompt}</h2>
 
                 <SubsetRenderer 
                     theme={currentQuestion?.theme} items={items} insideItems={insideItems} 
@@ -106,9 +123,9 @@ export default function SubsetGameEngine({ data, onComplete, onResult }) {
             </div>
 
             {/* HUD / Shelf */}
-            <div className="flex-none bg-slate-900/80 backdrop-blur-3xl p-6 pb-safe border-t border-white/10 rounded-t-[40px] z-20 flex flex-col gap-4 shadow-2xl">
+            <div className="flex-none bg-[var(--bg-card)] p-6 pb-safe border-t border-[var(--border-color)] rounded-t-[40px] z-20 flex flex-col gap-4 shadow-2xl">
                 <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest"><Target size={14} className="text-emerald-500" /> Progression</div>
+                    <div className="flex items-center gap-2 text-[var(--text-sub)] font-bold text-xs uppercase tracking-widest"><Target size={14} className="text-emerald-500" /> Progression</div>
                     <div className="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-xs font-black">{found.size} / {totalSubsets} FOUND</div>
                 </div>
 
@@ -120,11 +137,12 @@ export default function SubsetGameEngine({ data, onComplete, onResult }) {
 
                 <motion.button
                     onClick={checkPacking}
-                    className={`w-full py-5 rounded-[2rem] font-black flex items-center justify-center gap-3 text-sm uppercase transition-all ${
-                        isResolved ? 'bg-emerald-500 text-white' :
-                        errorAnim ? 'bg-rose-500 text-white' : 'bg-violet-600 text-white shadow-lg'
+                    className={`w-full py-5 rounded-[2rem] font-black flex items-center justify-center gap-3 text-sm uppercase transition-all border-b-[6px] active:translate-y-[2px] active:border-b-[4px] ${
+                        isResolved ? 'bg-[#58cc02] border-[#46a302] text-white hover:bg-[#46a302]' :
+                        errorAnim ? 'bg-rose-500 border-rose-700 text-white hover:bg-rose-600' : 'bg-[#58cc02] border-[#46a302] text-white hover:bg-[#46a302] shadow-[0_10px_20px_rgba(88,204,2,0.25)]'
                     }`}
                 >
+                    <div className="btn-toy-gloss" />
                     {isResolved ? (currentStep < totalLevels - 1 ? <><ArrowRight size={20} /> NEXT LEVEL</> : <><CheckCircle2 size={20} /> COMPLETE</>) :
                      errorAnim ? <><AlertTriangle size={20} /> USED!</> : <><PackageOpen size={20} /> PACK IT!</>}
                 </motion.button>

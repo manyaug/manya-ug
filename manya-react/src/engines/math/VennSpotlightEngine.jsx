@@ -27,6 +27,14 @@ export default function VennSpotlightEngine({ data, onComplete, onResult, onAtte
         startTimeRef.current = Date.now();
     }, [currentStep]);
 
+    useEffect(() => {
+        onResult?.({
+            score: currentStep,
+            total: totalLevels,
+            type: 'pulse'
+        });
+    }, [currentStep, totalLevels, onResult]);
+
     const handleTap = (e) => {
         if (isResolved) return;
         const rect = containerRef.current.getBoundingClientRect();

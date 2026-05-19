@@ -9,7 +9,7 @@ import { getDeductedScene, initBrandedParticles } from './SetClassifierLogic';
  * - DECOUPLED: Separates particle physics from UI.
  * - Optimized 60FPS tick-loop.
  */
-const SetClassifierEngine = ({ data, onComplete, onAttempt }) => {
+const SetClassifierEngine = ({ data, onComplete, onAttempt, onResult }) => {
   const [stepIdx, setStepIdx] = useState(0);
   const [isDark, setIsDark] = useState(false);
   const [feedback, setFeedback] = useState('idle'); 
@@ -28,6 +28,14 @@ const SetClassifierEngine = ({ data, onComplete, onAttempt }) => {
   const questions = useMemo(() => data.questions || [], [data]);
   const currentQ = questions[stepIdx];
   const scene = useMemo(() => getDeductedScene(currentQ), [currentQ]);
+
+  useEffect(() => {
+    onResult?.({
+      score: stepIdx,
+      total: questions.length,
+      type: 'pulse'
+    });
+  }, [stepIdx, questions.length, onResult]);
 
   // --- 🎨 CANVAS DRAW LOOP ---
   const drawModel = (ctx, w, h, s) => {

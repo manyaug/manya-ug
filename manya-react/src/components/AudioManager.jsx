@@ -50,39 +50,62 @@ export default function AudioManager() {
     // Day Track
     if (dayTrack.current) {
         const targetDay = (ambientMode === 'day' || (ambientMode !== 'night' && theme !== 'dark')) ? effectiveVolume * 0.3 : 0;
+        if (targetDay > 0 && dayTrack.current.paused) {
+            dayTrack.current.play().catch(err => console.debug("[AudioManager] Day track play deferred:", err.message));
+        }
         fadeVolume(dayTrack.current, targetDay);
     }
 
     // Night Track
     if (nightTrack.current) {
         const targetNight = (ambientMode === 'night' || (ambientMode !== 'day' && theme === 'dark')) ? effectiveVolume * 0.3 : 0;
+        if (targetNight > 0 && nightTrack.current.paused) {
+            nightTrack.current.play().catch(err => console.debug("[AudioManager] Night track play deferred:", err.message));
+        }
         fadeVolume(nightTrack.current, targetNight);
     }
 
     // Rain Track
     if (rainTrack.current) {
         const targetRain = isRainy ? effectiveVolume * 0.4 : 0;
+        if (targetRain > 0 && rainTrack.current.paused) {
+            rainTrack.current.play().catch(err => console.debug("[AudioManager] Rain track play deferred:", err.message));
+        }
         fadeVolume(rainTrack.current, targetRain);
     }
   }, [volume, isMuted, ambientMode, isRainy, theme]);
 
-  // Self-Correction: Audio playback must start after user interaction
+  // Self-Correction: Dynamic click & keypress listener to heal and play ambient tracks dynamically when active
   useEffect(() => {
-    const startAudio = () => {
-        dayTrack.current.play().catch(() => {});
-        nightTrack.current.play().catch(() => {});
-        rainTrack.current.play().catch(() => {});
-        window.removeEventListener('click', startAudio);
-        window.removeEventListener('keydown', startAudio);
+    const healAudio = () => {
+        const effectiveVolume = isMuted ? 0 : volume;
+        
+        // Day Track
+        const targetDay = (ambientMode === 'day' || (ambientMode !== 'night' && theme !== 'dark')) ? effectiveVolume * 0.3 : 0;
+        if (targetDay > 0 && dayTrack.current && dayTrack.current.paused) {
+            dayTrack.current.play().catch(() => {});
+        }
+
+        // Night Track
+        const targetNight = (ambientMode === 'night' || (ambientMode !== 'day' && theme === 'dark')) ? effectiveVolume * 0.3 : 0;
+        if (targetNight > 0 && nightTrack.current && nightTrack.current.paused) {
+            nightTrack.current.play().catch(() => {});
+        }
+
+        // Rain Track
+        const targetRain = isRainy ? effectiveVolume * 0.4 : 0;
+        if (targetRain > 0 && rainTrack.current && rainTrack.current.paused) {
+            rainTrack.current.play().catch(() => {});
+        }
     };
 
-    window.addEventListener('click', startAudio);
-    window.addEventListener('keydown', startAudio);
+    window.addEventListener('click', healAudio);
+    window.addEventListener('keydown', healAudio);
     return () => {
-        window.removeEventListener('click', startAudio);
-        window.removeEventListener('keydown', startAudio);
+        window.removeEventListener('click', healAudio);
+        window.removeEventListener('keydown', healAudio);
     };
-  }, []);
+  }, [volume, isMuted, ambientMode, isRainy, theme]);
 
   return null; // Side-effect only component
 }

@@ -57,8 +57,8 @@ const SetStudyRenderer = ({
 
          {/* 3. CONTROLS */}
          <div className={`p-5 flex gap-4 border-t ${theme.b} bg-inherit flex-shrink-0`}>
-            <button className={`w-24 h-14 rounded-2xl flex items-center justify-center transition-all active:scale-90 ${stepIdx === 0 ? 'opacity-0 pointer-events-none' : (isDark ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-400')}`} onClick={hPrev}><ChevronLeft size={22} strokeWidth={4} /></button>
-            <button className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase transition-all active:scale-95 shadow-glow-pink flex items-center justify-center gap-3 ${isLast ? 'bg-[#7c3aed] text-white' : 'bg-[#DB2777] text-white'}`} onClick={hNext}>
+            <button className={`w-24 h-14 rounded-2xl flex items-center justify-center transition-all border-b-[6px] active:translate-y-[2px] active:border-b-[4px] ${stepIdx === 0 ? 'opacity-0 pointer-events-none' : (isDark ? 'bg-slate-800 text-white border-slate-950' : 'bg-slate-100 text-slate-400 border-slate-300')}`} onClick={hPrev}><ChevronLeft size={22} strokeWidth={4} /></button>
+            <button className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase transition-all flex items-center justify-center gap-3 border-b-[6px] active:translate-y-[2px] active:border-b-[4px] bg-[#58cc02] border-[#46a302] text-white hover:bg-[#46a302] shadow-[0_10px_20px_rgba(88,204,2,0.15)]`} onClick={hNext}>
                {isLast ? 'Complete' : 'Next Step'} <ChevronRight size={18} strokeWidth={4} />
             </button>
          </div>

@@ -30,7 +30,7 @@ const SubsetRenderer = ({
                 className={`relative flex flex-wrap content-center justify-center gap-6 p-8 shadow-2xl transition-all duration-300 ${
                     theme === 'flag' 
                         ? 'w-[300px] h-[180px] bg-white/5 border-2 border-white/10 rounded-2xl flex-row overflow-hidden' 
-                        : 'w-full max-w-[340px] aspect-[4/3] bg-slate-900/50 backdrop-blur-xl border-4 border-slate-700/50 rounded-[40px]'
+                        : 'w-full max-w-[340px] aspect-[4/3] bg-[var(--bg-card)] backdrop-blur-xl border-4 border-[var(--border-color)] rounded-[40px]'
                 }`}
             >
                 {theme === 'flag' ? (
@@ -41,7 +41,7 @@ const SubsetRenderer = ({
                     <>
                         <AnimatePresence>
                             {insideItems.size === 0 && (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.2 }} exit={{ opacity: 0 }} className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 font-black tracking-widest pointer-events-none">
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.2 }} exit={{ opacity: 0 }} className="absolute inset-0 flex flex-col items-center justify-center text-[var(--text-muted)] font-black tracking-widest pointer-events-none">
                                     <PackageOpen size={64} className="mb-4 opacity-10" />
                                     <span>EMPTY SET (∅)</span>
                                 </motion.div>

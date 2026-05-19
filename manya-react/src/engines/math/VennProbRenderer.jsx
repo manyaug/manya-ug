@@ -31,11 +31,11 @@ const VennProbRenderer = ({
     chips.forEach(c => { counts[c.region]++; });
 
     return (
-        <div className="flex flex-col h-full w-full bg-slate-50 overflow-hidden relative selection:bg-transparent">
+        <div className="flex flex-col h-full w-full bg-[var(--bg-main)] text-[var(--text-main)] overflow-hidden relative selection:bg-transparent">
             {/* 1. CANVAS WRAPPER */}
             <div 
                 ref={containerRef}
-                className="flex-1 relative bg-[radial-gradient(ellipse_at_top,_#ffffff_0%,_#f1f5f9_100%)] overflow-hidden"
+                className="flex-1 relative bg-[radial-gradient(ellipse_at_top,_var(--bg-secondary)_0%,_var(--bg-primary)_100%)] overflow-hidden"
             >
                 {/* SVG Venn Background */}
                 <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid meet">
@@ -49,7 +49,7 @@ const VennProbRenderer = ({
                             <stop offset="100%" stopColor="#ec4899" stopOpacity="0.1" />
                         </linearGradient>
                     </defs>
-                    <rect x="50" y="50" width="900" height="550" rx="30" fill="white" stroke="#e2e8f0" strokeWidth="3" />
+                    <rect x="50" y="50" width="900" height="550" rx="30" fill="var(--bg-card)" stroke="var(--border-color)" strokeWidth="3" />
                     <text x="80" y="110" fill="#cbd5e1" fontSize="32" fontFamily="sans-serif" fontWeight="bold">ξ</text>
                     
                     <g transform="translate(500, 320)">
@@ -63,7 +63,7 @@ const VennProbRenderer = ({
                             {question?.sets?.B?.label || "B"}
                         </text>
                     </g>
-                    <line x1="0" y1="650" x2="1000" y2="650" stroke="#e2e8f0" strokeWidth="4" strokeDasharray="8 8" />
+                    <line x1="0" y1="650" x2="1000" y2="650" stroke="var(--border-color)" strokeWidth="4" strokeDasharray="8 8" />
                 </svg>
 
                 {/* Diagram Fill HUD (Overlaid on Canvas) */}
@@ -86,7 +86,7 @@ const VennProbRenderer = ({
                                         placeholder="?"
                                         value={regionInputs[loc.id] || ''}
                                         onChange={e => setRegionInputs(prev => ({ ...prev, [loc.id]: e.target.value }))}
-                                        className="w-14 h-14 bg-white/90 backdrop-blur-sm border-2 border-indigo-200 rounded-2xl text-center font-black text-xl shadow-lg focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-slate-300"
+                                        className="w-14 h-14 bg-[var(--bg-card)] border-2 border-[var(--border-color)] text-[var(--text-main)] rounded-2xl text-center font-black text-xl shadow-lg focus:border-[#7c3aed] focus:ring-4 focus:ring-[#7c3aed]/10 outline-none transition-all placeholder:text-slate-300"
                                     />
                                 </div>
                             ))}
@@ -136,60 +136,64 @@ const VennProbRenderer = ({
             </div>
 
             {/* 2. HUD AREA */}
-            <div className="flex-none bg-white p-4 pb-safe border-t border-slate-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-[32px] z-20 flex flex-col">
+            <div className="flex-none bg-[var(--bg-card)] p-5 pb-safe border-t border-[var(--border-color)] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] rounded-t-[40px] z-20 flex flex-col gap-4">
                 <AnimatePresence mode="wait">
                     {phase === 'setup' ? (
                         <motion.div
                             key="setup-hud" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                            className="flex flex-col gap-3"
+                            className="flex flex-col gap-4"
                         >
-                            <div className="bg-teal-50 border border-teal-100 p-3 rounded-xl text-teal-800 font-semibold text-sm leading-snug">{question?.story}</div>
+                            <div className="bg-[#14b8a6]/10 border border-[#14b8a6]/20 p-4 rounded-2xl text-[#14b8a6] font-bold text-sm leading-relaxed">{question?.story}</div>
                             <div className="flex flex-wrap justify-between gap-2 px-1 text-xs font-mono font-bold">
-                                <span className={counts.left === question?.setup?.aOnly ? 'text-emerald-600' : 'text-slate-400'}>A: {counts.left}/{question?.setup?.aOnly}</span>
-                                <span className={counts.center === question?.setup?.intersection ? 'text-emerald-600' : 'text-slate-400'}>Both: {counts.center}/{question?.setup?.intersection}</span>
-                                <span className={counts.right === question?.setup?.bOnly ? 'text-emerald-600' : 'text-slate-400'}>B: {counts.right}/{question?.setup?.bOnly}</span>
-                                <span className={counts.outside === question?.setup?.outside ? 'text-emerald-600' : 'text-slate-400'}>Out: {counts.outside}/{question?.setup?.outside}</span>
+                                <span className={counts.left === question?.setup?.aOnly ? 'text-emerald-500' : 'text-slate-400'}>A: {counts.left}/{question?.setup?.aOnly}</span>
+                                <span className={counts.center === question?.setup?.intersection ? 'text-emerald-500' : 'text-slate-400'}>Both: {counts.center}/{question?.setup?.intersection}</span>
+                                <span className={counts.right === question?.setup?.bOnly ? 'text-emerald-500' : 'text-slate-400'}>B: {counts.right}/{question?.setup?.bOnly}</span>
+                                <span className={counts.outside === question?.setup?.outside ? 'text-emerald-500' : 'text-slate-400'}>Out: {counts.outside}/{question?.setup?.outside}</span>
                             </div>
-                             <button onClick={handleCheckSetup} className="w-full py-4 bg-purple-600 text-white rounded-xl font-black flex items-center justify-center gap-2 uppercase tracking-wide shadow-[0_4px_0_#6b21a8] active:translate-y-[4px] active:shadow-none transition-all">
-                                <GripHorizontal size={20} /> CHECK SETUP
+                             <button onClick={handleCheckSetup} className="w-full py-4.5 rounded-[2rem] bg-[#58cc02] border-b-[6px] border-[#46a302] hover:bg-[#46a302] text-white font-black flex items-center justify-center gap-2 uppercase tracking-widest text-xs transition-all active:translate-y-[2px] active:border-b-[4px]">
+                                <GripHorizontal size={18} /> CHECK SETUP
                             </button>
                         </motion.div>
                     ) : phase === 'fill' ? (
                         <motion.div
                             key="fill-hud" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                            className="flex flex-col gap-3"
+                            className="flex flex-col gap-4"
                         >
-                            <div className="bg-indigo-50 border border-indigo-100 p-3 rounded-xl text-indigo-800 font-semibold text-sm leading-snug">{question?.story || "Fill the diagram counts."}</div>
-                            <button onClick={handleCheckFill} className="w-full py-4 bg-indigo-600 text-white rounded-xl font-black flex items-center justify-center gap-2 uppercase tracking-wide shadow-[0_4px_0_#4338ca] active:translate-y-[4px] active:shadow-none transition-all">
-                                <CheckCircle2 size={20} /> VERIFY DIAGRAM
+                            <div className="bg-[#6366f1]/10 border border-[#6366f1]/20 p-4 rounded-2xl text-[#6366f1] font-bold text-sm leading-relaxed">{question?.story || "Fill the diagram counts."}</div>
+                            <button onClick={handleCheckFill} className="w-full py-4.5 rounded-[2rem] bg-[#58cc02] border-b-[6px] border-[#46a302] hover:bg-[#46a302] text-white font-black flex items-center justify-center gap-2 uppercase tracking-widest text-xs transition-all active:translate-y-[2px] active:border-b-[4px]">
+                                <CheckCircle2 size={18} /> VERIFY DIAGRAM
                             </button>
                         </motion.div>
                     ) : (
                         <motion.div
                             key="calc-hud" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                            className="flex flex-col gap-3"
+                            className="flex flex-col gap-4"
                         >
-                            <div className="bg-fuchsia-50 border border-fuchsia-100 p-3 rounded-xl text-fuchsia-800 font-semibold text-sm leading-snug">{question?.question}</div>
+                            <div className="bg-[#d946ef]/10 border border-[#d946ef]/20 p-4 rounded-2xl text-[#d946ef] font-bold text-sm leading-relaxed">{question?.question}</div>
                             <div className="flex items-center justify-center gap-4 my-2">
-                                <span className="font-bold text-slate-500">Prob(x) =</span>
+                                <span className="font-bold text-[var(--text-sub)]">Prob(x) =</span>
                                 <div className="flex flex-col gap-1 w-20">
-                                    <input type="number" value={numInput} onChange={e => setNumInput(e.target.value)} className="w-full text-center font-bold text-xl border-2 border-slate-300 rounded-md focus:border-fuchsia-500 focus:outline-none py-1" placeholder="?" />
-                                    <div className="h-1 bg-slate-400 rounded-full w-full" />
-                                    <input type="number" value={denInput} onChange={e => setDenInput(e.target.value)} className="w-full text-center font-bold text-xl border-2 border-slate-300 rounded-md focus:border-fuchsia-500 focus:outline-none py-1" placeholder="?" />
+                                    <input type="number" value={numInput} onChange={e => setNumInput(e.target.value)} className="w-full text-center font-bold text-xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] rounded-md focus:border-[#7c3aed] focus:outline-none py-1" placeholder="?" />
+                                    <div className="h-1 bg-[var(--border-color)] rounded-full w-full" />
+                                    <input type="number" value={denInput} onChange={e => setDenInput(e.target.value)} className="w-full text-center font-bold text-xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] rounded-md focus:border-[#7c3aed] focus:outline-none py-1" placeholder="?" />
                                 </div>
                             </div>
-                            <button onClick={handleCheckProb} disabled={isResolved} className={`w-full py-4 rounded-xl font-black flex items-center justify-center gap-2 uppercase tracking-wide transition-all ${isResolved ? 'bg-emerald-500 text-white shadow-none translate-y-[4px]' : 'bg-purple-600 text-white shadow-[0_4px_0_#6b21a8] active:translate-y-[4px] active:shadow-none'}`}>
+                            <button onClick={handleCheckProb} disabled={isResolved} className={`w-full py-4.5 rounded-[2rem] font-black flex items-center justify-center gap-2 uppercase tracking-widest text-xs transition-all ${
+                                isResolved 
+                                ? 'bg-[#58cc02] border-b-[4px] border-[#46a302] text-white pointer-events-none translate-y-[2px]' 
+                                : 'bg-[#58cc02] border-b-[6px] border-[#46a302] hover:bg-[#46a302] text-white active:translate-y-[2px] active:border-b-[4px]'
+                            }`}>
                                 {isResolved ? (
-                                    <>{currentStep < totalLevels - 1 ? <ChevronRight size={20} className="stroke-[3px]" /> : <CheckCircle2 size={20} className="stroke-[3px]" />} {currentStep < totalLevels - 1 ? "NEXT LEVEL" : "QUEST COMPLETE"}</>
+                                    <>{currentStep < totalLevels - 1 ? <ChevronRight size={18} className="stroke-[3px]" /> : <CheckCircle2 size={18} className="stroke-[3px]" />} {currentStep < totalLevels - 1 ? "NEXT LEVEL" : "QUEST COMPLETE"}</>
                                 ) : (
-                                    <><Calculator size={20} strokeWidth={3} /> CHECK PROBABILITY</>
+                                    <><Calculator size={18} strokeWidth={3} /> CHECK PROBABILITY</>
                                 )}
                             </button>
                         </motion.div>
                     )}
                 </AnimatePresence>
                 {errorMsg && (
-                    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="text-rose-500 font-bold text-sm text-center mt-3 flex items-center justify-center gap-1">
+                    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="text-rose-500 font-bold text-sm text-center mt-2 flex items-center justify-center gap-1">
                         <XCircle size={16} /> {errorMsg}
                     </motion.div>
                 )}

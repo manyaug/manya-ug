@@ -143,7 +143,7 @@ export default function QuestRunner() {
         };
     }, [safeAdvanceStep]);
 
-    const subFrac = (subProgress.total > 1) ? (subProgress.current / subProgress.total) : 0;
+    const subFrac = (subProgress.total > 0) ? (subProgress.current / subProgress.total) : 0;
     
     // v9.7: Testable Only Progress. Exclude Notes from the count.
     const testableSteps = steps.filter(s => s.engineType !== 'NOTE_EXPLORER' && s.engineType !== 'READER_STUDY');

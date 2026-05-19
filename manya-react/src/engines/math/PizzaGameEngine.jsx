@@ -64,6 +64,14 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
         setLevelMistakes(0); setCustomerMood('neutral'); setPhase('ordering');
     }, [currentLevel]);
 
+    useEffect(() => {
+        onResult?.({
+            score: currentLevel,
+            total: totalLevels,
+            type: 'pulse'
+        });
+    }, [currentLevel, totalLevels, onResult]);
+
     const toggle = (id) => {
         if (phase !== 'ordering') return;
         const next = new Set(selected);
@@ -112,13 +120,13 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
                         <motion.div key="ordering" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                             <div className="grid grid-cols-6 gap-2 mb-4">
                                 {TOPPINGS.map(t => (
-                                    <button key={t.id} onClick={() => toggle(t.id)} className={`flex flex-col items-center gap-1 py-3 rounded-2xl border-2 transition-all ${selected.has(t.id) ? 'border-orange-500 bg-orange-500/20 scale-105 shadow-xl' : 'border-white/10 bg-white/5 shadow-md'}`}>
+                                    <button key={t.id} onClick={() => toggle(t.id)} className={`flex flex-col items-center gap-1 py-3 rounded-2xl border-2 transition-all active:translate-y-[2px] ${selected.has(t.id) ? 'border-orange-500 bg-orange-500/20 scale-105 shadow-xl' : 'border-white/10 bg-white/5 shadow-md'}`}>
                                         <span className="text-2xl leading-none">{t.icon}</span>
                                         <span className="text-[9px] font-bold text-white/40 uppercase">{t.label}</span>
                                     </button>
                                 ))}
                             </div>
-                            <button onClick={serve} disabled={n === 0} className={`w-full h-14 font-black flex items-center justify-center gap-2 tracking-widest uppercase rounded-2xl transition-all ${n === 0 ? 'bg-white/10 text-white/30' : 'bg-orange-500 text-white shadow-lg'}`}>
+                            <button onClick={serve} disabled={n === 0} className={`w-full h-14 font-black flex items-center justify-center gap-2 tracking-widest uppercase rounded-2xl transition-all border-b-[6px] active:translate-y-[2px] active:border-b-[4px] ${n === 0 ? 'bg-neutral-800 text-neutral-600 border-neutral-900 pointer-events-none' : 'bg-[#ff6b00] border-[#cc5200] text-white hover:bg-[#cc5200] shadow-[0_10px_20px_rgba(255,107,0,0.15)]'}`}>
                                 <ChefHat size={20} /> SERVE PIZZA
                             </button>
                         </motion.div>
@@ -131,7 +139,7 @@ export default function PizzaGameEngine({ data, onComplete, onResult }) {
                     {phase === 'celebrating' && (
                         <motion.div key="celebrating" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 text-center">
                             <div className="text-white/60 font-bold">Excellent Ratio! {customer.name} is impressed.</div>
-                            <button onClick={handleNext} className="w-full h-14 bg-emerald-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-2">
+                            <button onClick={handleNext} className="w-full h-14 bg-[#58cc02] border-[#46a302] border-b-[6px] active:translate-y-[2px] active:border-b-[4px] text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-2 hover:bg-[#46a302]">
                                 <ArrowRight size={20} /> {currentLevel < totalLevels - 1 ? 'NEXT LEVEL' : 'FINISH SHIFT'}
                             </button>
                         </motion.div>

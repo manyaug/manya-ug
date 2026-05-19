@@ -175,7 +175,7 @@ function AppContent() {
         return () => window.removeEventListener('manya-challenge-completed', handleChallengeReward);
     }, [dispatch]);
 
-    // 💡 HINT ECONOMY INTERCEPTOR: Deduct 50 coins when user takes a hint
+    // 💡 HINT ECONOMY INTERCEPTOR: Deduct 100 coins when user takes a hint
     const deductedHintsRef = useRef(new Set());
     useEffect(() => {
         const handleHintTaken = (e) => {
@@ -185,17 +185,17 @@ function AppContent() {
             if (deductedHintsRef.current.has(questionId)) return;
             deductedHintsRef.current.add(questionId);
 
-            console.log(`💡 [Economy] Deducting 50 coins for hint on: ${questionId}`);
+            console.log(`💡 [Economy] Deducting 100 coins for hint on: ${questionId}`);
             dispatch(updateBalanceThunk({
                 currency: 'coins',
-                amount: -50,
+                amount: -100,
                 type: 'hint_use',
                 contextId: questionId
             }));
 
             // Spawn visual deduction animation & sound effects on the HUD coin counter
             if (window.triggerDeductCoins) {
-                window.triggerDeductCoins(50);
+                window.triggerDeductCoins(100);
             }
         };
 

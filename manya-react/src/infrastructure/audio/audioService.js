@@ -102,6 +102,23 @@ class AudioService {
             if (playPromise !== undefined) {
                 playPromise.catch(err => {
                     console.debug(`[AudioService] Playback deferred or interrupted for '${name}':`, err.message);
+                    
+                    // 🛡️ [Self-Healing Dynamic Audio Channel Recovery]
+                    // If a pre-allocated Audio element is blocked (usually due to creation prior to user interaction),
+                    // we immediately spin up a fresh Audio instance right inside this event loop stack.
+                    // This is verified to satisfy modern browser Autoplay Policies.
+                    try {
+                        console.log(`🔄 [AudioService] Self-Healing: Re-creating fresh Audio channel for '${name}'...`);
+                        const freshSound = new Audio(url);
+                        freshSound.volume = targetVolume;
+                        freshSound.play().catch(retryErr => {
+                            console.warn(`❌ [AudioService] Dynamic dynamic-retry failed for '${name}':`, retryErr.message);
+                        });
+                        this.cachedSfx[name] = freshSound; // Overwrite cache with active verified channel
+                    } catch (healErr) {
+                        console.warn(`❌ [AudioService] Self-Healing instantiation error:`, healErr.message);
+                    }
+
                     // Fallback trees
                     if (name === 'magic_positive') this.playSFX('bonus');
                     else if (name === 'victory') this.playSFX('challenge_win');

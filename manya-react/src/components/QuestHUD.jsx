@@ -125,7 +125,7 @@ const QuestHUD = ({
                 <div className={`hud-mastery-card-premium ${immersive ? 'hud-immersive-compact' : ''}`}>
                     <div className="mastery-label-flex">
                         <div className="mastery-progress-header">
-                             <span>{internalTotal > 0 ? `Step ${internalIndex}/${internalTotal}` : 'Mastery Progress'}</span>
+                             <span>Progress: {Math.round(progressPct)}%</span>
                         </div>
                         {showMastery && (
                             <span className="mastery-pct-val" style={{ 

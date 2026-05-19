@@ -227,7 +227,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             const isHydrated = !!(q.data || q.steps || q.content || q.engine_type || q.engineType || q.study_notes || q.json_reference_path);
             const hasInteractiveData = !!(q.markers || q.cases || q.points || q.lat || q.lon || q.interactive || q.sim_data);
 
-            const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP', 'READER_STUDY', 'GALLERY_STUDY', 'IMAGE_HOTSPOTS', 'NOTE_EXPLORER'];
+            const MATH_SIM_WHITELIST = ['SET_THEORY', 'SET_STUDY', 'MATH_STUDY', 'VENN_PROB', 'VENN_LOGIC', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME', 'BINARY_GENERATOR', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'STUDY_RECAP', 'READER_STUDY', 'GALLERY_STUDY', 'IMAGE_HOTSPOTS', 'NOTE_EXPLORER'];
 
             // v6.5: Robust specialized engine detection
             const hasSpecializedEngine = engineType && engineType !== 'NULL' && engineType !== 'MCQ' && engineType !== 'NONE' && engineType !== 'MCQ_STANDALONE';
