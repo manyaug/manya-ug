@@ -65,12 +65,10 @@ function HomeView() {
 
   // Load Curriculum
   useEffect(() => {
-    import('../infrastructure/storage/storageFacade.js').then(({ storageFacade }) => {
-      storageFacade.get('file:/curriculum-master.json')
+    import('../services/curriculumService.js').then(({ preloadCurriculum }) => {
+      preloadCurriculum()
         .then(data => {
-            const norm = {};
-            Object.keys(data).forEach(k => { norm[k.toLowerCase()] = data[k]; });
-            setCurriculum(norm);
+            setCurriculum(data);
         })
         .catch(console.error);
     });

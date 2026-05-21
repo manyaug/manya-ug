@@ -10,6 +10,9 @@ export const toastSlice = createSlice({
   reducers: {
     addToast: (state, action) => {
       // payload format: { message: "msg", type: "success|error|info" }
+      const exists = state.toasts.some(toast => toast.message === action.payload.message);
+      if (exists) return;
+
       const newToast = {
         id: Date.now() + Math.random().toString(36).substr(2, 9),
         message: action.payload.message,

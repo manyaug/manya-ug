@@ -12,8 +12,8 @@ import { ChevronLeft, Lock, CheckCheck } from 'lucide-react';
 import { setAmbientMode, setRainy, setNightMode } from '../store/audioSlice';
 import { getPathImage, getGem } from '../config/assetUrls';
 import { getQuestKey, loadAllProgress } from '../domain/progress/questProgressService.js';
-import { fetchDynamicCurriculum } from '../services/curriculumService';
-import { storageFacade } from '../infrastructure/storage/storageFacade.js';
+import { fetchDynamicCurriculum, preloadCurriculum } from '../services/curriculumService';
+import { getTopicAlias } from '../config/topicAliases';
 import '../styles/spiral.css';
 
 // ---- HOTSPOT POSITIONS (exact from original engine) ----
@@ -111,7 +111,7 @@ function WeatherLayer({ type, count = 50 }) {
 }
 
 // ---- NODE COMPONENT ----
-function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap, style }) {
+function GameNode({ unit, index, label, isCompleted, isActive, isUnlocked, biome, onTap, style }) {
     const stateClass = isActive ? 'active-node' : isCompleted ? 'completed-node' : 'locked-node';
 
     return (
@@ -156,7 +156,7 @@ function GameNode({ unit, index, isCompleted, isActive, isUnlocked, biome, onTap
                 </div>
 
                 {/* Label below */}
-                <div className="node-label-elite">{unit.title || `Node ${index + 1}`}</div>
+                <div className="node-label-elite">{label}</div>
             </motion.div>
         </div>
     );
@@ -170,12 +170,18 @@ function SpiralView() {
     const user = useSelector(state => state.user.data);
     const { isNightMode } = useSelector(state => state.audio);
     const [curriculum, setCurriculum] = useState(null);
+    const [failedTiles, setFailedTiles] = useState({});
     const containerRef = useRef(null);
 
     const sub = (subjectId || 'math').toLowerCase();
     const biome = BIOMES[sub] || BIOMES.math;
     const gemCount = user?.[biome.gemsKey] || 0;
     const progress = user?.[biome.progKey] || 0;
+
+    // Reset failed tiles on subject switch
+    useEffect(() => {
+        setFailedTiles({});
+    }, [sub]);
 
     // Set CSS variables for biome theme colours
     useEffect(() => {
@@ -229,10 +235,8 @@ function SpiralView() {
                     setCurriculum(prev => ({ ...prev, english: dynamic }));
                 } else {
                     // Legacy: JSON-Driven World
-                    const raw = await storageFacade.get('file:/curriculum-master.json');
-                    const norm = {};
-                    Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
-                    setCurriculum(prev => ({ ...prev, ...norm }));
+                    const data = await preloadCurriculum();
+                    setCurriculum(prev => ({ ...prev, ...data }));
                 }
             } catch (e) {
                 console.error('Spiral curriculum load failed:', e);
@@ -318,6 +322,10 @@ function SpiralView() {
             const isFinal = (unit.title || unit.folder || "").toLowerCase().includes("final");
             const nodeIcon = isFinal ? '🏆' : (i % 2 === 0 ? biome.icon : '✨');
 
+            // Resolve modern child-friendly short name
+            const rawTitle = unit.title || `Node ${i + 1}`;
+            const displayName = getTopicAlias(sub, rawTitle);
+
             return {
                 unit, i,
                 coord,
@@ -326,10 +334,11 @@ function SpiralView() {
                 isActive: i === progress, // suggested/linear pointer
                 isCompleted: isFinished,
                 uniqueKey: unit.uniqueKey,
-                nodeIcon
+                nodeIcon,
+                displayName
             };
         });
-    }, [units, allQuestProgress, progress, biome.icon]);
+    }, [units, allQuestProgress, progress, biome.icon, sub]);
 
     return (
         <div className={`spiral-view animate-in ${isNightMode ? 'is-night' : ''}`}>
@@ -374,14 +383,21 @@ function SpiralView() {
                 <div className="map-canvas" style={{ height: `${totalHeight}px` }}>
 
                     {/* PATH TILES */}
-                    {tiles.map(tile => (
+                    {curriculum && tiles.map(tile => (
                         <img
                             key={tile.i}
                             src={tile.src}
                             className="physical-tile"
                             alt=""
-                            style={{ bottom: `${tile.bottom}px`, zIndex: tile.zIndex }}
-                            onError={e => { e.target.style.opacity = '0'; }}
+                            style={{
+                                bottom: `${tile.bottom}px`,
+                                zIndex: tile.zIndex,
+                                opacity: failedTiles[tile.i] ? 0 : 1
+                            }}
+                            onError={() => {
+                                console.error(`[SpiralView] Background tile ${tile.i} failed to load from: ${tile.src}`);
+                                setFailedTiles(prev => ({ ...prev, [tile.i]: true }));
+                            }}
                         />
                     ))}
 
@@ -391,6 +407,7 @@ function SpiralView() {
                             key={node.uniqueKey}
                             unit={node.unit}
                             index={node.i}
+                            label={node.displayName}
                             isUnlocked={node.isUnlocked}
                             isActive={node.isActive}
                             isCompleted={node.isCompleted}

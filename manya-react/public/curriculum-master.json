@@ -1,11 +1,23 @@
 {
   "math": {
     "theme": "#db2777",
-    "units": [
+    "chapters": [
       {
         "id": "set_theory",
         "title": "Set Theory",
-        "quests": [
+        "aliases": {
+          "01 Finite Infinite Sets": "Infinity Portal",
+          "02 Set Notation Regions": "Symbol Kingdom",
+          "03 Calculating Subsets": "Subset Challenge",
+          "04 Calculating Proper Subsets": "Proper Power",
+          "05 Working Backwards": "Reverse Logic",
+          "06 Placing Info On Venn Diagrams": "Venn Wizard",
+          "07 Solving For Unknowns": "X Factor",
+          "08 Application Of Sets": "Sets Unleashed",
+          "09 Difference Of Sets Complements": "Complement Master",
+          "10 Probability Using Venn Diagrams": "Probability Quest"
+        },
+        "subtopics": [
           {
             "folder": "quest_01_finite_infinite_sets",
             "title": "01 Finite Infinite Sets",
@@ -1068,11 +1080,27 @@
   },
   "science": {
     "theme": "#059669",
-    "units": [
+    "chapters": [
       {
         "id": "musklo-skeletal-system",
         "title": "Musklo Skeletal System",
-        "quests": [
+        "aliases": {
+          "01 Types Of Skeletons": "Skeleton Zoo",
+          "02 Human Skeleton": "Bone Blueprint",
+          "03 Axial Skull Spine": "Head & Spine",
+          "04 Axial Rib Cage": "Chest Fortress",
+          "05 Appendicular Limbs": "Limb Legends",
+          "06 Bone Structure": "Bone Builder",
+          "07 Joints Structure": "Joint Junction",
+          "08 Hinge Ball-And-Socket": "Epic Joints",
+          "09 Pivot And Gliding": "Smooth Moves",
+          "10 Muscular System Types": "Muscle Tribe",
+          "11 Muscle Action Antagonistic Pairs": "Muscle Duos",
+          "12 Posture And Teeth": "Stand Strong",
+          "13 Disorders And First Aid": "Injury Rescue",
+          "14 Bone Diseases": "Bone Defense"
+        },
+        "subtopics": [
           {
             "folder": "quest_1_types_of_skeletons",
             "title": "01 Types Of Skeletons",
@@ -1575,11 +1603,20 @@
   },
   "sst": {
     "theme": "#4f46e5",
-    "units": [
+    "chapters": [
       {
         "id": "locating_africa",
         "title": "Locating Africa",
-        "quests": [
+        "aliases": {
+          "01 World Stage": "Africa Rising",
+          "02 Grid Master": "Latitude Legend",
+          "03 Calculating Time": "Time Wizard",
+          "04 Water Bodies": "Ocean Realm",
+          "05 Coastal Features": "Shore Magic",
+          "06 Regional Division Capital Cities": "Capital Kings",
+          "07 Landlocked Countries": "Interior Legends"
+        },
+        "subtopics": [
           {
             "folder": "quest_1_world_stage",
             "title": "01 World Stage",
@@ -2146,11 +2183,23 @@
   },
   "english": {
     "theme": "#d97706",
-    "units": [
+    "chapters": [
       {
         "id": "holidays",
         "title": "Holidays",
-        "quests": [
+        "aliases": {
+          "01 Holiday Kickoff": "Holiday Rush",
+          "02 Going To Mastery": "Future Vision",
+          "03 Question Tags Mastery": "Tag Team",
+          "04 Reported Speech Mastery": "Speech Flow",
+          "05 Village Arrival": "Village Life",
+          "06 Feeling And Facts": "Adjective Art",
+          "07 Past Regrets": "Time Rewind",
+          "08 Voice Mastery": "Voice Shift",
+          "09 Final Review": "Quest Complete",
+          "10 Vault": "Knowledge Bank"
+        },
+        "subtopics": [
           {
             "folder": "quest_01_holiday_kickoff",
             "title": "01 Holiday Kickoff",

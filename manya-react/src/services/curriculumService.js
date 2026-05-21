@@ -51,8 +51,27 @@ export async function preloadCurriculum() {
                 throw new Error(`Master curriculum not found`);
             }
             
+            // Normalize curriculum to lower-case keys, and map chapters -> units, subtopics -> quests
             const norm = {};
-            Object.keys(raw).forEach(k => { norm[k.toLowerCase()] = raw[k]; });
+            Object.keys(raw).forEach(k => {
+                const subjectKey = k.toLowerCase();
+                const subjectData = { ...raw[k] };
+                
+                // If curriculum has chapters, normalize to units for backward compatibility
+                if (subjectData.chapters && !subjectData.units) {
+                    subjectData.units = subjectData.chapters.map(chapter => {
+                        const unit = { ...chapter };
+                        if (chapter.subtopics && !chapter.quests) {
+                            unit.quests = chapter.subtopics.map(subtopic => ({
+                                ...subtopic
+                            }));
+                        }
+                        return unit;
+                    });
+                }
+                
+                norm[subjectKey] = subjectData;
+            });
             
             curriculumCache = norm;
             console.log("✅ [Curriculum] Master curriculum cached.");
