@@ -98,8 +98,8 @@
 /* 📦 CHEST HERO SECTION - Scaled for Mobile */
 .chest-hero-wrapper-premium {
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 190px;
+    height: 190px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,8 +173,8 @@
 }
 
 .reward-tile.glow-gems.glow-science {
-    box-shadow: 0 0 40px rgba(34, 211, 238, 0.25), 0 20px 40px rgba(0,0,0,0.5);
-    border-color: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.25), 0 20px 40px rgba(0,0,0,0.5);
+    border-color: rgba(16, 185, 129, 0.4);
 }
 
 .reward-tile.glow-gems.glow-math {
@@ -277,4 +277,14 @@
 @keyframes pulseOpacity {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 0.8; }
+}
+
+.chest-shake-active {
+    animation: chestShake 0.4s ease-in-out infinite;
+}
+
+@keyframes chestShake {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    20%, 60% { transform: rotate(-2deg) scale(1.02); }
+    40%, 80% { transform: rotate(2deg) scale(1.02); }
 }

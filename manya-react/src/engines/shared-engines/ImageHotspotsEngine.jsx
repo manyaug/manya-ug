@@ -20,6 +20,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
+    const [wrongWords, setWrongWords] = useState(new Set());   // permanently failed — no retry
     const [imageLoaded, setImageLoaded] = useState(false);
     const [feedbackState, setFeedbackState] = useState(null); // { type: 'error'|'success', id: string }
     const [showCompletion, setShowCompletion] = useState(false);
@@ -47,14 +48,15 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
         }
     }, [showCompletion, isQuizMode, correctPinIds.size, hotspots.length, onResult, totalMistakes]);
 
-    // --- 🏁 COMPLETION CHECK ---
+    // --- 🏁 COMPLETION CHECK: all pins resolved (correct OR wrong) ---
     useEffect(() => {
-        if (correctPinIds.size === hotspots.length && hotspots.length > 0) {
+        const resolved = correctPinIds.size + wrongWords.size;
+        if (resolved === hotspots.length && hotspots.length > 0) {
             const timer = setTimeout(() => setShowCompletion(true), 800);
             audioService.finish?.();
             return () => clearTimeout(timer);
         }
-    }, [correctPinIds.size, hotspots.length]);
+    }, [correctPinIds.size, wrongWords.size, hotspots.length]);
 
     // --- 🎮 ACTIONS ---
     const handlePinClick = (pinId) => {
@@ -85,18 +87,10 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
 
         if (isCorrect) {
             feedbackService.triggerCorrect(data?.subject || 'science', { type: 'simulation' });
-            onSimSuccess?.(); // Cinematic Dim + Badge
-            
-            // 🚀 Coin Flight Burst
+            onSimSuccess?.();
             window.dispatchEvent(new CustomEvent('manya-fx-flight', {
-                detail: {
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 2,
-                    type: 'coin',
-                    amount: 5
-                }
+                detail: { x: window.innerWidth / 2, y: window.innerHeight / 2, type: 'coin', amount: 5 }
             }));
-
             setCorrectPinIds(prev => new Set([...prev, selectedPinId]));
             setFeedbackState({ type: 'success', id: word });
             setTimeout(() => {
@@ -105,11 +99,17 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
             }, 800);
             startTimeRef.current = Date.now();
         } else {
+            // ── NO RETRY POLICY ──────────────────────────────────────────────
+            // Wrong word is permanently marked with ✕, deselect immediately.
             feedbackService.triggerWrong(data?.subject || 'science');
-            onSimWrong?.(); // Snappy "Try Again" Overlay
+            onSimWrong?.();
             setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: word });
-            setTimeout(() => setFeedbackState(null), 600);
+            setWrongWords(prev => new Set([...prev, word]));  // lock this word permanently
+            setTimeout(() => {
+                setFeedbackState(null);
+                setSelectedPinId(null);  // deselect so student picks the next pin
+            }, 700);
         }
     };
 
@@ -164,6 +164,7 @@ export function ImageHotspotsEngine({ data, onComplete, onResult, onAttempt, onS
             wordBank={wordBank}
             selectedPinId={selectedPinId}
             correctPinIds={correctPinIds}
+            wrongWords={wrongWords}
             imageLoaded={imageLoaded}
             feedbackState={feedbackState}
             showCompletion={showCompletion}

@@ -54,7 +54,7 @@ export const fetchSstQuestions = async (topicId) => {
 
         // FALLBACK: Aggressive Keyword Splitting (v4.5)
         if (!data || data.length === 0) {
-            const cleanSub = subtopic.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
+            const cleanSub = topicId.replace(/^quest_\d+_/, '').replace(/_/g, ' ');
             const keywords = cleanSub.split(' ').filter(k => k.length > 2); 
             
             if (keywords.length > 0) {
@@ -124,7 +124,7 @@ export const fetchSstQuestions = async (topicId) => {
                 explanation: q.explanation,
                 hint: q.hint,
                 image_url: q.image_location === 'null' ? null : q.image_location,
-                variant: q.qid.includes('-V') ? q.qid.split('-V')[1] : 'V0',
+                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V1'),
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],

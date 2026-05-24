@@ -17,6 +17,7 @@ export default function HotspotsRenderer({
     wordBank,
     selectedPinId,
     correctPinIds,
+    wrongWords = new Set(),
     imageLoaded,
     feedbackState,
     showCompletion,
@@ -93,25 +94,30 @@ export default function HotspotsRenderer({
 
                             {hotspots.map((hs) => {
                                 const isCorrect = correctPinIds.has(hs.id);
-                                const isActive = selectedPinId === hs.id;
-                                const isError = feedbackState?.type === 'error' && isActive;
+                                const isActive  = selectedPinId === hs.id;
+                                const isError   = feedbackState?.type === 'error' && isActive;
+                                const isWrong   = !isCorrect && wrongWords.has(
+                                    hotspots.find(h => h.id === hs.id)?.label
+                                );
                                 return (
                                     <div 
                                         key={hs.id}
-                                        className={`absolute w-14 h-14 -translate-x-1/2 -translate-y-1/2 cursor-pointer z-[100] flex items-center justify-center transition-all duration-300 ${
-                                            isCorrect && isQuizMode ? 'pointer-events-none' : 'pointer-events-auto'
+                                        className={`absolute w-14 h-14 -translate-x-1/2 -translate-y-1/2 z-[100] flex items-center justify-center transition-all duration-300 ${
+                                            (isCorrect || isWrong) ? 'pointer-events-none cursor-default' : 'pointer-events-auto cursor-pointer'
                                         } ${isError ? 'animate-shake' : ''}`}
                                         style={{ left: `${hs.x}%`, top: `${hs.y}%` }}
-                                        onClick={(e) => { e.stopPropagation(); onPinClick(hs.id); }}
+                                        onClick={(e) => { e.stopPropagation(); if (!isCorrect && !isWrong) onPinClick(hs.id); }}
                                     >
                                         <div className={`relative w-6 h-6 rounded-full border-2 border-white transition-all duration-500 shadow-xl ${
                                             isCorrect ? 'bg-[#10B981]' 
-                                            : isError ? 'bg-rose-500 scale-125 shadow-[0_0_20px_rgba(244,63,94,0.8)]'
+                                            : isWrong  ? 'bg-rose-700 opacity-50 scale-90 shadow-none'
+                                            : isError  ? 'bg-rose-500 scale-125 shadow-[0_0_20px_rgba(244,63,94,0.8)]'
                                             : isActive ? 'bg-[#db2777] scale-150 shadow-[0_0_25px_rgba(219,39,119,0.9)]' 
                                             : 'bg-[#7c3aed] scale-100 shadow-[0_0_15px_rgba(124,58,237,0.6)]'
                                         }`}>
-                                            {!isCorrect && !isError && <div className="absolute inset-0 rounded-full border-2 border-inherit animate-ping opacity-40" />}
+                                            {!isCorrect && !isWrong && !isError && <div className="absolute inset-0 rounded-full border-2 border-inherit animate-ping opacity-40" />}
                                             {isCorrect && <Check size={14} className="text-white absolute inset-0 m-auto" />}
+                                            {isWrong  && <X    size={14} className="text-white/70 absolute inset-0 m-auto" />}
                                         </div>
                                     </div>
                                 );
@@ -122,19 +128,23 @@ export default function HotspotsRenderer({
                     {isQuizMode && (
                         <div className="px-5 pb-6 pt-2 grid grid-cols-2 gap-2.5 z-20 bg-gradient-to-t from-[var(--bg-card)] via-[var(--bg-card)] to-transparent">
                             {wordBank.map((word, i) => {
-                                const isUsed = Array.from(correctPinIds).some(pid => hotspots.find(h => h.id === pid)?.label === word);
-                                const isError = feedbackState?.type === 'error' && feedbackState?.id === word;
-                                const isSuccess = feedbackState?.type === 'success' && feedbackState?.id === word;
+                                const isUsed    = Array.from(correctPinIds).some(pid => hotspots.find(h => h.id === pid)?.label === word);
+                                const isWrongW  = wrongWords.has(word);
+                                const isError   = feedbackState?.type === 'error'   && feedbackState?.id === word;
+                                const isSuccess = feedbackState?.type === 'success'  && feedbackState?.id === word;
                                 return (
                                     <button 
                                         key={i}
-                                        className={`p-3.5 rounded-xl border font-black text-[11px] transition-all tracking-tight active:scale-95 ${
+                                        className={`p-3.5 rounded-xl border font-black text-[11px] transition-all tracking-tight active:scale-95 flex items-center justify-center gap-1.5 ${
                                             isUsed || isSuccess ? 'bg-emerald-50 border-emerald-500 text-emerald-600 opacity-50' 
-                                            : isError ? 'bg-rose-50 border-rose-500 text-rose-600 animate-shake'
+                                            : isWrongW  ? 'bg-rose-50 border-rose-300 text-rose-400 opacity-50 cursor-default'
+                                            : isError   ? 'bg-rose-50 border-rose-500 text-rose-600 animate-shake'
                                             : 'bg-[var(--bg-card)] border-[var(--border-subtle)] text-[var(--text-main)] shadow-sm hover:border-[#7c3aed]/50'
                                         }`}
-                                        onClick={() => onWordSelection(word)}
+                                        onClick={() => !isWrongW && onWordSelection(word)}
+                                        disabled={isUsed || isWrongW}
                                     >
+                                        {isWrongW && <X size={12} className="text-rose-400 shrink-0" />}
                                         {word}
                                     </button>
                                 );

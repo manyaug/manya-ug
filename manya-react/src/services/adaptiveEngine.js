@@ -353,7 +353,27 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         }
 
         mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
-        const selectedMCQs = mcqCandidates.slice(0, questLength);
+
+        // ── VARIANT NORMALIZATION: V0 = unversioned legacy record → treat as V1 ──
+        // Fixes science/sst/english questions that default to 'V0' in their fetchers,
+        // ensuring they participate correctly in warmup/core/boss partitioning.
+        mcqCandidates.forEach(q => {
+            if (!q.variant || q.variant === 'V0') q.variant = 'V1';
+        });
+
+        // ── VARIANT-AWARE MCQ POOL BUILDING ──
+        // Enforce VARIANT_DISTRIBUTIONS[nodeType] so rephrased questions (V2/V3)
+        // actually appear at the right difficulty tier, not just V1 every time.
+        const dist = VARIANT_DISTRIBUTIONS[nodeType] || VARIANT_DISTRIBUTIONS.PRACTICE;
+        const targetV1 = Math.max(1, Math.round(questLength * dist.V1));
+        const targetV2 = Math.round(questLength * dist.V2);
+        const targetV3 = Math.round(questLength * dist.V3);
+
+        const v1Pool = mcqCandidates.filter(q => q.variant === 'V1');
+        const v2Pool = mcqCandidates.filter(q => q.variant === 'V2');
+        const v3Pool = mcqCandidates.filter(q => q.variant === 'V3');
+
+        console.log(`📊 [Adaptive] Variant pools → V1:${v1Pool.length} V2:${v2Pool.length} V3:${v3Pool.length} | Targets → V1:${targetV1} V2:${targetV2} V3:${targetV3}`);
 
         // 4. EMPATHETIC STRUCTURED FLOW ASSEMBLY (v8.6)
         const finalQuestions = [];
@@ -361,68 +381,52 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         
         // ── STEP A: WARMUP (Force V1) ──
         if (isWarmupNeeded || nodeType === 'WARMUP') {
-            const warmupPool = mcqCandidates.filter(q => q.variant === 'V1' || q.difficulty === 'E');
-            // If no V1s, fallback to any easy questions
-            const finalWarmupPool = warmupPool.length > 0 ? warmupPool : mcqCandidates.slice(0, 20);
-            
-            const warmupChoices = finalWarmupPool.slice(0, 3);
-            console.log(`🌱 [Adaptive] Injected 3 Warmup questions (Variant: V1)`);
+            // V1 pool is already normalized above — includes V0→V1 records
+            const warmupPool = v1Pool.length > 0 ? v1Pool : mcqCandidates.slice(0, 20);
+            const warmupChoices = warmupPool.slice(0, 3);
+            console.log(`🌱 [Adaptive] Injected ${warmupChoices.length} Warmup questions (V1)`);
             finalQuestions.push(...warmupChoices);
-            
             warmupChoices.forEach(wc => {
                 const idx = mcqCandidates.findIndex(m => m.id === wc.id);
                 if (idx !== -1) mcqCandidates.splice(idx, 1);
             });
         }
 
-        // ── STEP B: SELECTIVE INTRODUCTION (Notes) ──
-        // v9.2: Don't start with a note. Move it to the middle if needed.
-        let remedialNote = null;
-        if (isBadCondition && nodeType !== 'WARMUP') {
-            const attemptedIds = new Set([
-                ...(history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase())
-            ]);
-            const unattemptedNotes = pools.NOTE.filter(n => {
-                const idLower = String(n.qid || n.id || n.file || '').toLowerCase();
-                return !attemptedIds.has(idLower);
-            });
-            const unattemptedStories = pools.QUEST_STORY.filter(s => {
-                const idLower = String(s.qid || s.id || s.file || '').toLowerCase();
-                return !attemptedIds.has(idLower);
-            });
+        // ── STEP B: BUILD DYNAMIC STUDY QUEUE (Notes + Recaps) ──
+        // v10.0: Notes and recaps are no longer locked to intro/outro positions.
+        // They are injected dynamically based on LIVE struggle signals throughout the quest.
+        const historyAttemptedIds = new Set(
+            (history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase())
+        );
+        const studyQueue = [
+            // Prioritize unattempted notes (fresh content the student hasn't seen)
+            ...pools.NOTE.filter(n => !historyAttemptedIds.has(String(n.qid || n.id || '').toLowerCase())),
+            // Then recaps (reinforcement of what was just taught)
+            ...pools.RECAP.filter(r => !historyAttemptedIds.has(String(r.qid || r.id || '').toLowerCase())),
+            // Fallback: previously seen notes (better than nothing when frustration is high)
+            ...pools.NOTE.filter(n => historyAttemptedIds.has(String(n.qid || n.id || '').toLowerCase())),
+        ];
 
-            remedialNote = unattemptedNotes.length > 0 ? unattemptedNotes[0] : (unattemptedStories.length > 0 ? unattemptedStories[0] : null);
-            if (remedialNote) {
-                remedialNote = { ...remedialNote, isIntro: true, isStudyStep: true, noGamification: true };
-            }
-        }
-
-        // ── STEP C: CORE BATTLE (Strict Interleaving + Capping) ──
+        // ── STEP C: CORE BATTLE (v10.0 — Dynamic Study Injection) ──
         const targetCoreLength = Math.max(8, questLength - 2);
         
-        // v9.2: Relaxed filtering - if we have no V1/V2, take anything to reach target length
+        // Core MCQ pool: V1 + V2. V3 is reserved for the Boss Fight (Step D).
         let coreMcqPool = mcqCandidates.filter(q => q.variant === 'V2' || q.variant === 'V1');
-        if (coreMcqPool.length < 5) coreMcqPool = [...mcqCandidates]; 
+        // Top up from V2-targeted pool first, then V3 if still short
+        if (coreMcqPool.length < 5) coreMcqPool = [...v2Pool, ...v1Pool, ...v3Pool];
+        if (coreMcqPool.length < 5) coreMcqPool = [...mcqCandidates];
         
-        // Prevent repeating simulations from history or current quest
+        // Remove questions already in warmup from core pool
+        const warmupIds = new Set(finalQuestions.map(q => q.id || q.qid));
+        coreMcqPool = coreMcqPool.filter(q => !warmupIds.has(q.id || q.qid));
+        
+        // Track simulations: prefer unattempted
         const attemptedIds = new Set([
-            ...(history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase()),
+            ...historyAttemptedIds,
             ...finalQuestions.map(fq => String(fq.qid || fq.id || '').toLowerCase())
         ]);
-
-        const unattemptedSims = [];
-        const attemptedSims = [];
-
-        pools.SIMULATION.forEach(sim => {
-            const idLower = String(sim.qid || sim.id || sim.file || '').toLowerCase();
-            if (attemptedIds.has(idLower)) {
-                attemptedSims.push(sim);
-            } else {
-                unattemptedSims.push(sim);
-            }
-        });
-
-        // Shuffle each group and stack them so unattempted are at the top (end of array for popping)
+        const unattemptedSims = pools.SIMULATION.filter(s => !attemptedIds.has(String(s.qid || s.id || '').toLowerCase()));
+        const attemptedSims   = pools.SIMULATION.filter(s =>  attemptedIds.has(String(s.qid || s.id || '').toLowerCase()));
         const simStack = [
             ...attemptedSims.sort(() => 0.5 - Math.random()),
             ...unattemptedSims.sort(() => 0.5 - Math.random())
@@ -431,27 +435,66 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         // ── CORE ASSEMBLY LOOP ──
         let coreCount = 0;
         let simsInjected = 0;
-        const maxSims = subject === 'english' ? 4 : 2; // v9.8: English needs more simulations for its modular stories/games
+        let studyInjected = 0;
+        let mcqsSinceLastStudy = 0;           // MCQs since the last note/recap was shown
+        const maxSims = subject === 'english' ? 4 : 2;
+        const STRUGGLE_STREAK_THRESHOLD = 3;  // inject a study resource after 3 genuinely struggling MCQs
+        const MAX_MCQS_WITHOUT_STUDY = 5;     // hard ceiling when isBadCondition is active
+
 
         while (coreCount < targetCoreLength && (coreMcqPool.length > 0 || (simStack.length > 0 && simsInjected < maxSims))) {
-            const hasSim = simStack.length > 0 && simsInjected < maxSims;
-            const hasMcq = coreMcqPool.length > 0;
+            const hasSim  = simStack.length > 0 && simsInjected < maxSims;
+            const hasMcq  = coreMcqPool.length > 0;
 
-            // v9.2: Inject remedial note as the 3rd step if it exists
-            if (coreCount === 2 && remedialNote) {
-                remedialNote.isStudyStep = true;
-                remedialNote.noGamification = true;
-                finalQuestions.push(remedialNote);
-                remedialNote = null; 
+            // ── DYNAMIC STUDY INJECTION (v10.1) ──────────────────────────────
+            //
+            // BUG FIX: Two bugs caused an infinite note loop:
+            //
+            // Bug 1 — Window not reset after injection:
+            //   We filtered finalQuestions for non-study MCQs and sliced the last 3.
+            //   After injecting a note, those same 3 MCQs were still the last 3 non-study
+            //   steps, so recentStruggleCount stayed at 3 → another injection → repeat.
+            //   Fix: Track `lastStudyInsertedAt` (index in finalQuestions after last injection).
+            //   Only count MCQs that were added AFTER that index.
+            //
+            // Bug 2 — Mastery 'new' treated as struggling:
+            //   Every new student has mastery='new' on all concepts (no history yet).
+            //   Counting 'new' as a struggle signal means ALL 3 warmup-level MCQs trigger
+            //   a note injection, then another 3, endlessly.
+            //   Fix: Only 'struggling_v1/v2/v3' are genuine struggle signals.
+            //
+            const lastStudyInsertedAt = studyInjected > 0
+                ? finalQuestions.map((q, i) => q.isDynamicInjection ? i : -1).filter(i => i >= 0).pop()
+                : -1;
+
+            // Only count MCQs added AFTER the last study injection
+            const mcqsAfterLastStudy = finalQuestions
+                .slice(lastStudyInsertedAt + 1)
+                .filter(q => !q.isStudyStep && !q.isSimulation);
+
+            const genuineStruggleCount = mcqsAfterLastStudy.filter(q =>
+                q._adaptive?.mastery?.startsWith('struggling') // ONLY struggling_v1/v2/v3 — NOT 'new'
+            ).length;
+
+            const studyNeeded = studyQueue.length > 0 && (
+                genuineStruggleCount >= STRUGGLE_STREAK_THRESHOLD ||
+                (isBadCondition && mcqsSinceLastStudy >= MAX_MCQS_WITHOUT_STUDY)
+            );
+
+            if (studyNeeded) {
+                const studyStep = studyQueue.shift();
+                finalQuestions.push({ ...studyStep, isStudyStep: true, noGamification: true, isDynamicInjection: true });
+                studyInjected++;
+                mcqsSinceLastStudy = 0;
                 coreCount++;
+                console.log(`📚 [Adaptive v10.1] Mid-quest study injection #${studyInjected} at step ${coreCount} (struggle:${genuineStruggleCount}, bad:${isBadCondition})`);
                 continue;
             }
+            // ─────────────────────────────────────────────────────────────────
 
-            // Rhythm: MCQ -> MCQ -> [Potential Sim] -> MCQ
-            const shouldInjectSim = hasSim && (
-                (coreCount % 3 === 2) || // Every 3rd step
-                (!hasMcq) // Or if no MCQs left
-            );
+
+            // Rhythm: MCQ → MCQ → [Sim] → MCQ (every 3rd step)
+            const shouldInjectSim = hasSim && (coreCount % 3 === 2 || !hasMcq);
 
             if (shouldInjectSim) {
                 const sim = simStack.pop();
@@ -459,13 +502,14 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 sim.noGamification = true;
                 finalQuestions.push(sim);
                 simsInjected++;
+                mcqsSinceLastStudy = 0; // sims also count as a "break"
             } else if (hasMcq) {
                 const nextQ = coreMcqPool.shift();
                 const mIdx = mcqCandidates.findIndex(m => m.id === nextQ.id);
                 if (mIdx !== -1) mcqCandidates.splice(mIdx, 1);
-                
                 nextQ.isStudyStep = false;
                 finalQuestions.push(nextQ);
+                mcqsSinceLastStudy++;
             }
             coreCount++;
         }
@@ -483,9 +527,13 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         }
 
         // ── STEP E: OUTRO (Recap) ──
-        // Only show Recap if they struggled DURING this session or are in bad condition.
-        if (pools.RECAP.length > 0 && isBadCondition) {
-            finalQuestions.push({ ...pools.RECAP[0], isOutro: true });
+        // Show a recap at the end if student struggled AND no recap was already injected mid-quest.
+        // If studyInjected > 0, they've already gotten study support — skip the outro to avoid overload.
+        const recapAlreadyInjected = finalQuestions.some(q => q.isDynamicInjection && pools.RECAP.some(r => r.qid === q.qid || r.id === q.id));
+        if (studyQueue.length > 0 && isBadCondition && studyInjected === 0 && !recapAlreadyInjected) {
+            // Use remaining recap from studyQueue (recaps are after notes in the queue)
+            const outroRecap = studyQueue.find(q => pools.RECAP.some(r => r.qid === q.qid || r.id === q.id)) || studyQueue[studyQueue.length - 1];
+            if (outroRecap) finalQuestions.push({ ...outroRecap, isOutro: true, isStudyStep: true, noGamification: true });
         }
 
         // ── FINAL POLISH: Emergency Fallback ──

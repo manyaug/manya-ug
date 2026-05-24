@@ -23,6 +23,14 @@ const CHEST_CONFIG = {
     diamond: { name: 'Diamond Chest', color: '#22d3ee', glow: 'rgba(34, 211, 238, 0.4)' },
 };
 
+const SUBJECT_COLORS = {
+    science: 'rgba(16, 185, 129, 0.4)', // Vibrant emerald green for Science
+    math: 'rgba(99, 102, 241, 0.4)',    // Purple/Indigo for Math
+    sst: 'rgba(245, 158, 11, 0.4)',     // Amber Gold for SST
+    english: 'rgba(219, 39, 119, 0.4)', // Pink/Rose for English
+    overall: 'rgba(239, 68, 68, 0.4)'   // Red/Crimson for overall/master
+};
+
 const REWARD_ICONS = { 
     coins: IMAGES.coin_gem,
     gems: (subject) => getGem(subject || 'master')
@@ -54,20 +62,21 @@ export default function ChestRevealModal() {
                 setPhase('intro');
                 audioService.playSFX('riser');
 
+                // Start fetching REAL rewards immediately in the background (runs in parallel with intro/shake)
+                const rewardsPromise = dispatch(openChestThunk({ chestId: chest.id })).unwrap()
+                    .then(res => res.rewards)
+                    .catch(e => {
+                        console.warn("⚠️ [ChestReveal] Fallback rewards used:", e.message);
+                        return [{ type: 'coins', amount: 250 }, { type: 'gems', amount: 10, subject: 'master' }];
+                    });
+
                 // 1. Shaking / Intro (0.5s)
                 await new Promise(r => setTimeout(r, 500));
                 setPhase('opening');
                 audioService.playSFX('bass_drop');
 
-                // 2. Fetch REAL rewards from Service while opening
-                let items = [];
-                try {
-                    const result = await dispatch(openChestThunk({ chestId: chest.id })).unwrap();
-                    items = result.rewards;
-                } catch (e) {
-                    console.warn("⚠️ [ChestReveal] Fallback rewards used:", e.message);
-                    items = [{ type: 'coins', amount: 250 }, { type: 'gems', amount: 10, subject: 'master' }];
-                }
+                // 2. Resolve the pre-fetched rewards (already resolved or near completion)
+                const items = await rewardsPromise;
 
                 // 3. Open / Reward Reveal (Snappy 0.3s)
                 await new Promise(r => setTimeout(r, 300));
@@ -76,7 +85,9 @@ export default function ChestRevealModal() {
                 console.log("💎 [ChestReveal] Revealing Rewards:", items);
 
                 for (let i = 0; i < items.length; i++) {
-                    await new Promise(r => setTimeout(r, 250)); // Faster reveal between items
+                    if (i > 0) {
+                        await new Promise(r => setTimeout(r, 200)); // Super snappy and satisfying sequential reveal
+                    }
                     setRevealedRewards(prev => [...prev, items[i]]);
                     audioService.playSFX('challenge_click');
                 }
@@ -107,6 +118,31 @@ export default function ChestRevealModal() {
 
     const cfg = CHEST_CONFIG[chest.chestType] || CHEST_CONFIG.bronze;
 
+    // --- Subject Extraction & Glow Isolation ---
+    const s = String(chest.subject || '').toLowerCase();
+    const r = String(chest.reason || '').toLowerCase();
+    const path = String(window.location?.pathname || '').toLowerCase();
+    
+    let matchedSubject = s;
+    if (!matchedSubject || matchedSubject === 'overall') {
+        if (r.includes('math') || r.includes('algebra') || r.includes('geometry')) matchedSubject = 'math';
+        else if (r.includes('science') || r.includes('biology') || r.includes('physics') || r.includes('chem')) matchedSubject = 'science';
+        else if (r.includes('sst') || r.includes('social') || r.includes('history') || r.includes('geography')) matchedSubject = 'sst';
+        else if (r.includes('english') || r.includes('grammar') || r.includes('vocab')) matchedSubject = 'english';
+        else if (path.includes('science') || path.includes('sci')) matchedSubject = 'science';
+        else if (path.includes('math') || path.includes('geometry')) matchedSubject = 'math';
+        else if (path.includes('sst') || path.includes('social')) matchedSubject = 'sst';
+        else if (path.includes('english') || path.includes('lang')) matchedSubject = 'english';
+    }
+    
+    let canonicalSubject = 'overall';
+    if (matchedSubject === 'english' || matchedSubject === 'eng') canonicalSubject = 'english';
+    else if (matchedSubject === 'math' || matchedSubject === 'mathematics') canonicalSubject = 'math';
+    else if (matchedSubject === 'science' || matchedSubject === 'sci') canonicalSubject = 'science';
+    else if (matchedSubject === 'sst' || matchedSubject === 'social') canonicalSubject = 'sst';
+
+    const glowColor = SUBJECT_COLORS[canonicalSubject] || cfg.glow;
+
     const getSpicedReason = (rawReason) => {
         if (!rawReason) return "CHEST UNLOCKED!";
         const r = rawReason.toUpperCase();
@@ -135,7 +171,7 @@ export default function ChestRevealModal() {
     };
 
     return (
-        <div className="celebration-arena-overlay" style={{ '--chest-glow': cfg.glow }}>
+        <div className="celebration-arena-overlay" style={{ '--chest-glow': glowColor }}>
             {/* RAY BACKGROUND */}
             {(phase === 'opening' || phase === 'rewards') && (
                 <motion.div 
@@ -168,25 +204,75 @@ export default function ChestRevealModal() {
                         <div className="achievement-badge-neon">{getSpicedReason(chest.reason)}</div>
                     )}
                     <h1 className="chest-tier-name">{cfg.name}</h1>
+                    <p className="text-white/70 text-[10px] mt-2 font-black tracking-wide max-w-[280px] leading-relaxed mx-auto bg-black/25 py-1.5 px-3 rounded-full border border-white/5 uppercase">
+                        {(() => {
+                            const rawReason = String(chest.reason || '').toLowerCase();
+                            const prettySub = canonicalSubject === 'overall' ? 'OVERALL' : canonicalSubject.toUpperCase();
+                            
+                            if (rawReason.includes('perfect') || rawReason.includes('100%')) {
+                                return `Royal Excellence: Perfect Score in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('95%') || rawReason.includes('elite')) {
+                                return `Elite Score: 95%+ Mastery in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('90%') || rawReason.includes('master')) {
+                                return `Master Score: 90%+ Mastery in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('85%') || rawReason.includes('great')) {
+                                return `Great Score: 85%+ Mastery in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('80%') || rawReason.includes('solid')) {
+                                return `Solid Score: 80%+ Mastery in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('75%') || rawReason.includes('good') || rawReason.includes('job')) {
+                                return `Good Score: 75%+ Mastery in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('60%') || rawReason.includes('impr') || rawReason.includes('star')) {
+                                return `Rapid Progress: Steady effort in ${prettySub}!`;
+                            }
+                            if (rawReason.includes('streak')) {
+                                return `Daily habit: Keep your study streak burning!`;
+                            }
+                            if (rawReason.includes('first')) {
+                                return `Rising Star: Completed your first quest!`;
+                            }
+                            return `Loot earned from quest in ${prettySub}!`;
+                        })()}
+                    </p>
                 </motion.div>
                 
-                {/* THE CHEST HERO - Balanced Scaling */}
-                <div className="chest-hero-wrapper-premium">
+                <div className={`chest-hero-wrapper-premium ${phase === 'intro' ? 'chest-shake-active' : ''}`}>
                     <div className="chest-glow-backlight" />
-                    <motion.div
-                        className="chest-lottie-container"
-                        animate={phase === 'intro' ? {
-                            rotate: [-1, 1, -1, 1, 0],
-                            scale: [1, 1.03, 1],
-                        } : {}}
-                        transition={phase === 'intro' ? { repeat: Infinity, duration: 0.25 } : {}}
-                    >
+                    <div className="chest-lottie-container" style={{ width: '190px', height: '190px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <DotLottieReact
-                            src="/assets/chests/master_gem_chest.lottie"
+                            src={(() => {
+                                const s = String(chest.subject || '').toLowerCase();
+                                const r = String(chest.reason || '').toLowerCase();
+                                const path = String(window.location?.pathname || '').toLowerCase();
+                                
+                                let matchedSubject = s;
+                                if (!matchedSubject || matchedSubject === 'overall') {
+                                    if (r.includes('math') || r.includes('algebra') || r.includes('geometry')) matchedSubject = 'math';
+                                    else if (r.includes('science') || r.includes('biology') || r.includes('physics') || r.includes('chem')) matchedSubject = 'science';
+                                    else if (r.includes('sst') || r.includes('social') || r.includes('history') || r.includes('geography')) matchedSubject = 'sst';
+                                    else if (r.includes('english') || r.includes('grammar') || r.includes('vocab')) matchedSubject = 'english';
+                                    else if (path.includes('science') || path.includes('sci')) matchedSubject = 'science';
+                                    else if (path.includes('math') || path.includes('geometry')) matchedSubject = 'math';
+                                    else if (path.includes('sst') || path.includes('social')) matchedSubject = 'sst';
+                                    else if (path.includes('english') || path.includes('lang')) matchedSubject = 'english';
+                                }
+
+                                if (matchedSubject === 'english' || matchedSubject === 'eng') return "/assets/chests/english_gem_chest.lottie";
+                                if (matchedSubject === 'math' || matchedSubject === 'mathematics') return "/assets/chests/math_gem_chest.lottie";
+                                if (matchedSubject === 'science' || matchedSubject === 'sci') return "/assets/chests/science_gem_chest.lottie";
+                                if (matchedSubject === 'sst' || matchedSubject === 'social') return "/assets/chests/sst_gem_chest.lottie";
+                                return "/assets/chests/master_gem_chest.lottie";
+                            })()}
                             autoplay
                             loop={false}
+                            style={{ width: '190px', height: '190px' }}
                         />
-                    </motion.div>
+                    </div>
                 </div>
 
                 {/* REWARD TILES - Compacted */}

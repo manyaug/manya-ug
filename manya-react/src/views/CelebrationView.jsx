@@ -5,6 +5,8 @@ import { ArrowRight, X, Zap, Star, Sparkles, BookOpen, Layers, Trophy } from 'lu
 import { Ribbon, WorldClassConfetti } from '../components/ui/CelebrationBling';
 import { audioService } from '../infrastructure/audio/audioService';
 import { getGem } from '../config/assetUrls';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { dismissChest, openChestThunk } from '../store/userSlice.js';
 import PremiumChest from '../components/ui/PremiumChest';
 
 const CoinCounter = ({ value }) => {
@@ -189,30 +191,15 @@ const CelebrationView = ({
                 {/*  Mascot Hero or Active Chest */}
                 <div className="w-full flex items-center justify-center mb-6 relative min-h-[160px]">
                     <AnimatePresence mode="wait">
-                        {activeChest ? (
-                            <motion.div
-                                key="chest"
-                                initial={{ scale: 0, rotate: -15 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                exit={{ scale: 0, opacity: 0 }}
-                            >
-                                <PremiumChest 
-                                    type={activeChest.chestType}
-                                    phase={revealPhase === 'closed' ? 'closed' : revealPhase === 'opening' ? 'opening' : 'open'}
-                                    onClick={handleOpenChest}
-                                />
-                            </motion.div>
-                        ) : (
-                            <motion.div key="mascot" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                                <motion.img
-                                    src={char.image}
-                                    alt={char.name}
-                                    className={`w-32 h-32 object-contain ${!isPassing ? 'grayscale opacity-60' : ''}`}
-                                    animate={isPassing ? { y: [0, -10, 0] } : { x: [-2, 2, -2] }}
-                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                />
-                            </motion.div>
-                        )}
+                        <motion.div key="mascot" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <motion.img
+                                src={char.image}
+                                alt={char.name}
+                                className={`w-32 h-32 object-contain ${!isPassing ? 'grayscale opacity-60' : ''}`}
+                                animate={isPassing ? { y: [0, -10, 0] } : { x: [-2, 2, -2] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                        </motion.div>
                     </AnimatePresence>
                 </div>
 

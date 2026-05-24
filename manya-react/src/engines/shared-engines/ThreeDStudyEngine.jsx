@@ -20,12 +20,13 @@ export function ThreeDStudyEngine({ data, onComplete, onResult, onAttempt, onSim
     const dispatch = useDispatch();
     const [selectedPinId, setSelectedPinId] = useState(null);
     const [correctPinIds, setCorrectPinIds] = useState(new Set());
+    const [wrongPinIds, setWrongPinIds] = useState(new Set());  // permanently failed — no retry
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [feedbackState, setFeedbackState] = useState(null); // { type: 'success' | 'error', id: string }
     const [isFinished, setIsFinished] = useState(false);
     const [showScrollHint, setShowScrollHint] = useState(false);
     const [totalMistakes, setTotalMistakes] = useState(0);
-    
+
     const globalStartTimeRef = useRef(Date.now());
     const startTimeRef = useRef(Date.now());
     const viewerRef = useRef(null);
@@ -76,18 +77,10 @@ export function ThreeDStudyEngine({ data, onComplete, onResult, onAttempt, onSim
 
         if (isCorrect) {
             feedbackService.triggerCorrect(data?.subject || 'science', { type: 'simulation' });
-            onSimSuccess?.(); // Cinematic Dim + Badge
-            
-            // 🚀 Coin Flight Burst
+            onSimSuccess?.();
             window.dispatchEvent(new CustomEvent('manya-fx-flight', {
-                detail: {
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 2,
-                    type: 'coin',
-                    amount: 5
-                }
+                detail: { x: window.innerWidth / 2, y: window.innerHeight / 2, type: 'coin', amount: 5 }
             }));
-
             setCorrectPinIds(prev => new Set([...prev, selectedPinId]));
             setFeedbackState({ type: 'success', id: selectedPinId });
             setTimeout(() => {
@@ -97,11 +90,19 @@ export function ThreeDStudyEngine({ data, onComplete, onResult, onAttempt, onSim
             }, 1200);
             startTimeRef.current = Date.now();
         } else {
+            // ── NO RETRY POLICY ──────────────────────────────────────────────
+            // Mark pin as permanently wrong (✕), disable it, move on immediately.
             feedbackService.triggerWrong(data?.subject || 'science');
-            onSimWrong?.(); // Snappy "Try Again" Overlay
+            onSimWrong?.();
             setTotalMistakes(prev => prev + 1);
             setFeedbackState({ type: 'error', id: selectedPinId });
-            setTimeout(() => setFeedbackState(null), 800);
+            // Lock the wrong pin and deselect — student cannot try it again
+            setWrongPinIds(prev => new Set([...prev, selectedPinId]));
+            setTimeout(() => {
+                setFeedbackState(null);
+                setSelectedPinId(null);
+                if (viewerRef.current) viewerRef.current.cameraTarget = "auto auto auto";
+            }, 800);
         }
     };
 
@@ -119,6 +120,14 @@ export function ThreeDStudyEngine({ data, onComplete, onResult, onAttempt, onSim
             });
         }
     }, [correctPinIds.size, hotspots.length, onResult, isQuiz]);
+
+    // CHECK COMPLETION: finish when ALL pins have been resolved (correct OR permanently wrong)
+    useEffect(() => {
+        const resolved = correctPinIds.size + wrongPinIds.size;
+        if (isQuiz && hotspots.length > 0 && resolved === hotspots.length) {
+            setTimeout(() => setIsFinished(true), 800);
+        }
+    }, [correctPinIds.size, wrongPinIds.size, hotspots.length, isQuiz]);
 
     // CHECK COMPLETION
     useEffect(() => {
@@ -177,6 +186,7 @@ export function ThreeDStudyEngine({ data, onComplete, onResult, onAttempt, onSim
             accent={accent}
             selectedPinId={selectedPinId}
             correctPinIds={correctPinIds}
+            wrongPinIds={wrongPinIds}
             feedbackState={feedbackState}
             isFinished={isFinished}
             showScrollHint={showScrollHint}

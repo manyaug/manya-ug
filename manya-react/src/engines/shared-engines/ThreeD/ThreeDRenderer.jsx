@@ -19,6 +19,7 @@ export default function ThreeDRenderer({
     accent,
     selectedPinId,
     correctPinIds,
+    wrongPinIds = new Set(),
     feedbackState,
     isFinished,
     showScrollHint,
@@ -68,26 +69,33 @@ export default function ThreeDRenderer({
                         onLoad={() => console.log(`[3DViewer] Model loaded: ${data.modelUrl}`)}
                         onError={(e) => console.error(`[3DViewer] Error loading ${data.modelUrl}:`, e.detail || e)}
                     >
-                        {hotspots.map((hs, idx) => (
-                            <button
-                                key={hs.id}
-                                slot={`hotspot-${hs.id}`}
-                                className={`Hotspot group transition-all duration-500 ${
-                                    selectedPinId === hs.id ? 'selected' : ''
-                                } ${correctPinIds.has(hs.id) ? 'correct-pin' : ''} ${
-                                    feedbackState?.id === hs.id && feedbackState?.type === 'error' ? 'animate-shake' : ''
-                                }`}
-                                data-id={hs.id}
-                                data-position={hs.pos}
-                                data-normal={hs.norm || '0 1 0'}
-                                onClick={() => onPinClick(hs)}
-                                disabled={correctPinIds.has(hs.id)}
-                            >
-                                <span className="pointer-events-none drop-shadow-sm">
-                                    {correctPinIds.has(hs.id) ? '✓' : idx + 1}
-                                </span>
-                            </button>
-                        ))}
+                        {hotspots.map((hs, idx) => {
+                            const isCorrect = correctPinIds.has(hs.id);
+                            const isWrong   = wrongPinIds.has(hs.id);
+                            const isDone    = isCorrect || isWrong;
+                            return (
+                                <button
+                                    key={hs.id}
+                                    slot={`hotspot-${hs.id}`}
+                                    className={`Hotspot group transition-all duration-500 ${
+                                        selectedPinId === hs.id ? 'selected' : ''
+                                    } ${isCorrect ? 'correct-pin' : ''} ${
+                                        isWrong ? 'wrong-pin' : ''
+                                    } ${
+                                        feedbackState?.id === hs.id && feedbackState?.type === 'error' ? 'animate-shake' : ''
+                                    }`}
+                                    data-id={hs.id}
+                                    data-position={hs.pos}
+                                    data-normal={hs.norm || '0 1 0'}
+                                    onClick={() => !isDone && onPinClick(hs)}
+                                    disabled={isDone}
+                                >
+                                    <span className="pointer-events-none drop-shadow-sm">
+                                        {isCorrect ? '✓' : isWrong ? '✕' : idx + 1}
+                                    </span>
+                                </button>
+                            );
+                        })}
                     </model-viewer>
 
                     <div className="absolute right-4 bottom-4 flex flex-col gap-3 z-50">
@@ -114,19 +122,22 @@ export default function ThreeDRenderer({
                             <div className="flex items-center justify-center -mt-1 mb-1">
                                 <div className="w-12 h-1 bg-white/10 rounded-full" />
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                                 {wordBank.map((word, idx) => {
                                     const isCorrect = Array.from(correctPinIds).some(pid => hotspots.find(h => h.id === pid)?.label === word);
-                                    const isError = feedbackState?.id === word && feedbackState?.type === 'error';
+                                    const isWrong   = Array.from(wrongPinIds).some(pid => hotspots.find(h => h.id === pid)?.label === word);
+                                    const isError   = feedbackState?.id === selectedPinId && feedbackState?.type === 'error'
+                                        && hotspots.find(h => h.id === selectedPinId)?.label === word;
                                     
                                     return (
                                         <button
                                             key={idx}
                                             onClick={() => onWordSelection(word)}
-                                            disabled={isCorrect}
+                                            disabled={isCorrect || isWrong}
                                             className={`h-11 rounded-xl border font-black text-[9.5px] tracking-wide transition-all active:scale-95 flex items-center justify-center px-4 relative overflow-hidden ${
                                                 isCorrect ? 'bg-green-500/5 border-green-500/10 text-green-500/20 shadow-none'
-                                                : isError ? 'bg-red-500/10 border-red-500/30 text-red-500 animate-shake shadow-lg shadow-red-500/10'
+                                                : isWrong  ? 'bg-red-500/5 border-red-500/15 text-red-500/30 shadow-none'
+                                                : isError  ? 'bg-red-500/10 border-red-500/30 text-red-500 animate-shake shadow-lg shadow-red-500/10'
                                                 : selectedPinId ? 'bg-[#1a1c23] border-[var(--accent-color)] text-[var(--accent-color)] shadow-xl shadow-[var(--accent-color)]/10 hover:scale-[1.03] z-10'
                                                 : 'bg-white/5 border-white/5 text-white/60'
                                             }`}
@@ -135,6 +146,11 @@ export default function ThreeDRenderer({
                                             {isCorrect && (
                                                 <div className="absolute inset-0 flex items-center justify-center bg-green-500/5">
                                                     <CheckCircle2 size={14} className="text-green-500/30" />
+                                                </div>
+                                            )}
+                                            {isWrong && (
+                                                <div className="absolute inset-0 flex items-center justify-center bg-red-500/5">
+                                                    <X size={14} className="text-red-500/40" />
                                                 </div>
                                             )}
                                         </button>
@@ -188,8 +204,9 @@ export default function ThreeDRenderer({
                 model-viewer { display: block; width: 100%; height: 100%; --poster-color: transparent; }
                 .Hotspot { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-color); border: 2.5px solid white; cursor: pointer; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); color: white; font-weight: 900; }
                 .Hotspot.selected { transform: scale(1.6); background: #ef4444; border-color: white; z-index: 1000; box-shadow: 0 0 40px #ef4444, 0 0 20px rgba(239, 68, 68, 0.4); }
-                .Hotspot.correct-pin { background: #10B981; border-color: white; transform: scale(0.9); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-                .Hotspot:not(.selected):not(.correct-pin) { animation: pinPulse 2s infinite; }
+                .Hotspot.correct-pin { background: #10B981; border-color: white; transform: scale(0.9); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); cursor: default; }
+                .Hotspot.wrong-pin { background: #ef4444; border-color: #fca5a5; transform: scale(0.85); opacity: 0.55; cursor: default; box-shadow: none; animation: none !important; }
+                .Hotspot:not(.selected):not(.correct-pin):not(.wrong-pin) { animation: pinPulse 2s infinite; }
                 @keyframes pinPulse { 0% { box-shadow: 0 0 0 0 var(--accent-color); opacity: 1; } 70% { box-shadow: 0 0 0 15px transparent; opacity: 1; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }
                 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
                 .animate-shake { animation: shake 0.4s ease-in-out; }

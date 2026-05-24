@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { audioService } from '../infrastructure/audio/audioService.js';
+import { getSfx } from '../config/assetUrls.js';
 
 /**
  * PremiumFXOverlay
@@ -17,6 +18,7 @@ const PremiumFXOverlay = () => {
     const [motivation, setMotivation] = useState(null); // { word, id }
     
     const timerRef = useRef(null);
+    const drumrollAudioRef = useRef(null);
 
     useEffect(() => {
         const handleCorrect = () => {
@@ -50,16 +52,47 @@ const PremiumFXOverlay = () => {
                 setSpeedrun(prev => {
                     if (!prev || prev.timeLeft <= 0) {
                         clearInterval(timerRef.current);
+                        if (drumrollAudioRef.current) {
+                            try {
+                                drumrollAudioRef.current.pause();
+                                drumrollAudioRef.current.currentTime = 0;
+                            } catch (err) {}
+                        }
                         return null;
                     }
                     return { ...prev, timeLeft: prev.timeLeft - 1 };
                 });
             }, 1000);
+
+            // Play loop tense drumroll/heartbeat SFX
+            try {
+                if (!drumrollAudioRef.current) {
+                    const audio = new Audio(getSfx('drumroll'));
+                    audio.loop = true;
+                    drumrollAudioRef.current = audio;
+                }
+                const prefs = audioService.getAudioPreferences?.() || { volume: 0.5, isMuted: false };
+                if (!prefs.isMuted) {
+                    drumrollAudioRef.current.volume = Math.min(1.0, (prefs.volume ?? 0.5) * 1.5);
+                    drumrollAudioRef.current.currentTime = 0;
+                    drumrollAudioRef.current.play().catch(() => {});
+                }
+            } catch (err) {
+                console.error("[SpeedrunAudio] Failed to play drumroll:", err);
+            }
         };
 
         const handleSpeedrunStop = () => {
             setSpeedrun(null);
             if (timerRef.current) clearInterval(timerRef.current);
+
+            // Pause loop audio
+            if (drumrollAudioRef.current) {
+                try {
+                    drumrollAudioRef.current.pause();
+                    drumrollAudioRef.current.currentTime = 0;
+                } catch (err) {}
+            }
         };
 
         window.addEventListener('manya-fx-correct', handleCorrect);
@@ -75,6 +108,11 @@ const PremiumFXOverlay = () => {
             window.removeEventListener('manya-fx-speedrun-start', handleSpeedrunStart);
             window.removeEventListener('manya-fx-speedrun-stop', handleSpeedrunStop);
             if (timerRef.current) clearInterval(timerRef.current);
+            if (drumrollAudioRef.current) {
+                try {
+                    drumrollAudioRef.current.pause();
+                } catch (err) {}
+            }
         };
     }, []);
 

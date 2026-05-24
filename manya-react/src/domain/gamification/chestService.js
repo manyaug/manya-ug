@@ -161,7 +161,8 @@ export function evaluateRewards(metrics) {
     return [{
         chestType: bestDrop.type || 'bronze',
         reason: bestDrop.reason,
-        rewards: generateBalancedRewards(bestDrop.type, bestDrop.subject)
+        subject: subject || bestDrop.subject || 'overall',
+        rewards: generateBalancedRewards(bestDrop.type, subject || bestDrop.subject || 'overall')
     }];
 }
 
@@ -188,7 +189,8 @@ function generateBalancedRewards(type, subject = 'overall') {
 
 // ── Legacy Compatibility Shim ───────────────────────────────────────────────
 export function rollChestRewards(type) {
-    return generateBalancedRewards(type);
+    const matchedSubject = window.__currentSubject || 'overall';
+    return generateBalancedRewards(type, matchedSubject);
 }
 
 export function shouldDropBronzeChest() {

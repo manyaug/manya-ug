@@ -154,7 +154,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                 answer: q.correct_answer,
                 explanation: q.explanation,
                 hint: q.hint,
-                variant: q.qid.includes('-V') ? 'V' + q.qid.split('-V')[1] : 'V0',
+                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V1'),
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],

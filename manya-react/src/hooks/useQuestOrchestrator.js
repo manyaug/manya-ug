@@ -111,7 +111,19 @@ export function useQuestOrchestrator() {
 
         audioService.whoosh();
 
-        const engineType = currentStep.engineType || 'UNKNOWN';
+        // Resolve engine type using the universal resolver — handles both camelCase (engineType)
+        // and snake_case (engine_type) fields, plus qid keywords and subject heuristics.
+        // This prevents the 'UNKNOWN' crash when a raw vault MCQ object (from the adaptive engine)
+        // only has engine_type not engineType, or has no engine field at all.
+        const rawEngineType = currentStep.engineType
+            || currentStep.engine_type
+            || currentStep.data?.engineType
+            || currentStep.data?.engine_type;
+
+        const engineType = rawEngineType
+            ? String(rawEngineType).toUpperCase().trim()
+            : getEngineType(currentStep, meta.subject);
+
         let engineMeta;
         try {
             engineMeta = getEngine(engineType);
@@ -179,6 +191,7 @@ export function useQuestOrchestrator() {
         setSubProgress({ current: 0, total: 0 });
 
         console.log(`[QuestOrchestrator] Mounting Engine: ${engineType} | Mode: ${mode}`);
+        window.__currentSubject = meta.subject;
         setActiveEngine({ ...engineMeta, engineType, data: engineData, currentMode: mode });
     }, [phase, stepIdx, steps[stepIdx], meta.subject, dispatch]); // Simplified dependencies
 
@@ -188,6 +201,7 @@ export function useQuestOrchestrator() {
         setPhase('finished');
         hasFinishedRewards.current = true;
 
+        window.__currentSubject = meta.subject;
         const result = await sessionRef.current.finalize(performanceRef.current, user, location.state);
 
         performanceRef.current.finalMastery = result.masteryScore;
@@ -202,7 +216,7 @@ export function useQuestOrchestrator() {
         }));
 
         result.earnedRewards.forEach(drop => {
-            dispatch(dropChest({ chestType: drop.chestType, id: drop.id, reason: drop.reason }));
+            dispatch(dropChest({ chestType: drop.chestType, id: drop.id, reason: drop.reason, subject: drop.subject || meta.subject || 'overall' }));
         });
 
         dispatch(incrementQuestCount());
