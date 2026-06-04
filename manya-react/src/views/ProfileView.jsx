@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useDispatch } from 'react-redux';
 import {
     Sliders,
     UserCog,
@@ -10,8 +11,12 @@ import {
     Target,
     Trophy,
     ChevronRight,
-    BrainCircuit
+    BrainCircuit,
+    ShieldCheck,
+    Share2
 } from 'lucide-react';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
+import { addToast } from '../store/toastSlice';
 import { getIsland, IMAGES } from '../config/assetUrls';
 import { preloadCurriculum, fetchDynamicCurriculum } from '../services/curriculumService';
 import { getQuestProgress, getQuestKey } from '../domain/progress/questProgressService';
@@ -20,6 +25,40 @@ import '../styles/profile.css';
 function ProfileView() {
     const user = useSelector((state) => state.user.data);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const [sharing, setSharing] = useState(false);
+
+    const handleShareProgress = async () => {
+        if (!user?.parent_whatsapp) {
+            dispatch(addToast({ message: 'Please set up a parent WhatsApp number in the Parent Portal first.', type: 'warning' }));
+            return;
+        }
+        setSharing(true);
+        try {
+            // 1. Fetch signed student token from Supabase
+            const { data: token, error } = await supabase.rpc('get_signed_student_token', {
+                p_user_id: user.uid || user.id
+            });
+            if (error) throw error;
+            if (!token) throw new Error('Failed to generate secure student token');
+
+            const parentPhone = user.parent_whatsapp.replace(/\D/g, '');
+            const botNumber = import.meta.env.VITE_BOT_NUMBER || '17343493088';
+            
+            // 2. Format pre-filled WhatsApp message URL
+            const textMessage = `Hi Mom/Dad, my weekly exam report is ready. Click here to view it on the Official Bot: https://wa.me/${botNumber}?text=GET_REPORT_${token}`;
+            const waUrl = `https://wa.me/${parentPhone}?text=${encodeURIComponent(textMessage)}`;
+            
+            // 3. Open WhatsApp deep link
+            window.open(waUrl, '_blank');
+            dispatch(addToast({ message: 'Redirecting to WhatsApp to share progress... 📲', type: 'success' }));
+        } catch (err) {
+            dispatch(addToast({ message: `Failed to share: ${err.message}`, type: 'error' }));
+        } finally {
+            setSharing(false);
+        }
+    };
 
     // ── DYNAMIC ACADEMIC PROGRESS CALCULATION ──
     const [realProgress, setRealProgress] = useState({
@@ -305,6 +344,36 @@ function ProfileView() {
                     <div className="s-content" style={{ zIndex: 2 }}>
                         <span className="s-name">App Preferences</span>
                         <span className="s-desc" style={{ color: 'white', opacity: 0.9 }}>Audio, Theme & Matrix Sync</span>
+                    </div>
+                    <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
+                </div>
+
+                <div className="service-row-elite btn-toy btn-toy-purple" onClick={() => navigate('/parent-portal')}>
+                    <div className="toy-card-gloss" />
+                    <div className="s-icon-box" style={{ background: 'white', color: 'var(--manya-purple)' }}>
+                        <ShieldCheck size={20} />
+                    </div>
+                    <div className="s-content" style={{ zIndex: 2 }}>
+                        <span className="s-name">Parent Portal</span>
+                        <span className="s-desc" style={{ color: 'white', opacity: 0.9 }}>Reports, PIN & Guardian Settings</span>
+                    </div>
+                    <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
+                </div>
+
+                <div 
+                    className="service-row-elite btn-toy btn-toy-purple" 
+                    onClick={sharing ? undefined : handleShareProgress}
+                    style={{ opacity: sharing ? 0.6 : 1 }}
+                >
+                    <div className="toy-card-gloss" />
+                    <div className="s-icon-box" style={{ background: 'white', color: 'var(--manya-purple)' }}>
+                        <Share2 size={20} />
+                    </div>
+                    <div className="s-content" style={{ zIndex: 2 }}>
+                        <span className="s-name">Share Progress</span>
+                        <span className="s-desc" style={{ color: 'white', opacity: 0.9 }}>
+                            {sharing ? 'Generating link...' : "Send report link to parent's WhatsApp"}
+                        </span>
                     </div>
                     <ChevronRight size={18} className="s-chevron" style={{ zIndex: 2 }} />
                 </div>

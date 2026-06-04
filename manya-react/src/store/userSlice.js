@@ -59,6 +59,10 @@ export const initializeUser = createAsyncThunk(
             sst_correct: Math.max(localUser?.sst_correct || 0, cloudProfile.sst_correct || 0),
             is_pro: cloudProfile.is_pro || false,
             learning_type: cloudProfile.learning_type || 'ADAPTIVE',
+            parent_name: cloudProfile.parent_name || '',
+            parent_whatsapp: cloudProfile.parent_whatsapp || '',
+            parent_pin_hash: cloudProfile.parent_pin_hash || '',
+            report_enabled: cloudProfile.report_enabled !== undefined ? cloudProfile.report_enabled : true,
             unlockedBadges: Array.from(new Set([
                 ...(localUser?.unlockedBadges || []), 
                 ...(cloudProfile.unlocked_badges || [])
@@ -68,7 +72,7 @@ export const initializeUser = createAsyncThunk(
                 ...(cloudVault || [])
             ])),
             pendingChests: await rewardService.fetchPendingChests(cloudProfile.id),
-            onboarded: true 
+            onboarded: cloudProfile.onboarded || false
         };
 
         // 🏺 SILENT ACHIEVEMENT CATCH-UP

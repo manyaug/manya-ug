@@ -158,6 +158,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],
+                passage: q.passage || null,
                 engine_type: q.engine_type,
                 engineType: q.engine_type,
                 data: interactiveData, // CRITICAL: This was missing!

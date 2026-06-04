@@ -145,6 +145,69 @@ function calculateDynamicQuestLength(nodeType, frustrationScore, dominantMastery
 export async function generateAdaptiveQuest(allQuestions, nodeType, subject, questKey, session, history, simResources = []) {
     try {
         console.log(`🧠 [Adaptive V6] Generating ${nodeType} quest for ${subject}. Bank: ${allQuestions.length}`);
+        
+        // ── READING COMPREHENSION SEQUENCING ROUTE (English Quest 10) ──
+        if (subject === 'english' && allQuestions.some(q => q.passage)) {
+            console.log(`📖 [Adaptive English] Reading Comprehension detected. Selecting a single passage and its questions sequentially.`);
+            
+            // 1. Group questions by passage
+            const passageGroups = {};
+            allQuestions.forEach(q => {
+                if (q.passage) {
+                    if (!passageGroups[q.passage]) {
+                        passageGroups[q.passage] = [];
+                    }
+                    passageGroups[q.passage].push(q);
+                }
+            });
+            
+            const passagesList = Object.keys(passageGroups);
+            if (passagesList.length > 0) {
+                const historyAttemptedQids = new Set(
+                    (history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase())
+                );
+                
+                let selectedPassage = null;
+                
+                // Group passages with their unattempted question ratio
+                const passageMetrics = passagesList.map(pass => {
+                    const questions = passageGroups[pass];
+                    const unattemptedCount = questions.filter(q => !historyAttemptedQids.has(String(q.qid || q.id || '').toLowerCase())).length;
+                    const ratio = unattemptedCount / questions.length;
+                    return { pass, ratio, unattemptedCount };
+                });
+                
+                // Pick the passage with the highest unattempted ratio (most "new" content)
+                passageMetrics.sort((a, b) => b.ratio - a.ratio);
+                
+                if (passageMetrics[0].ratio === 0) {
+                    // Fallback to random if all passages have been attempted
+                    const randomIdx = Math.floor(Math.random() * passagesList.length);
+                    selectedPassage = passagesList[randomIdx];
+                } else {
+                    selectedPassage = passageMetrics[0].pass;
+                }
+                
+                const passageQuestions = passageGroups[selectedPassage];
+                
+                // Sort questions by QID to preserve original sequential order
+                passageQuestions.sort((a, b) => String(a.qid || a.id).localeCompare(String(b.qid || b.id)));
+                
+                console.log(`✨ [Adaptive English] Selected passage containing ${passageQuestions.length} questions. QIDs: ${passageQuestions.map(q => q.qid || q.id).join(', ')}`);
+                
+                return {
+                    questions: passageQuestions,
+                    pools: { MCQ: passageQuestions, SIMULATION: [], QUEST_STORY: [], NOTE: [], RECAP: [] },
+                    metadata: {
+                        questLength: passageQuestions.length,
+                        frustration: 0,
+                        isBadCondition: false,
+                        gameMode: 'NORMAL',
+                        isReadingComprehension: true
+                    }
+                };
+            }
+        }
     
         // ── THE BRAIN: FETCH HISTORICAL TELEMETRY ──
         const cloudTelemetry = await syncService.fetchRecentTelemetry(subject, 20) || [];

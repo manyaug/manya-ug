@@ -24,7 +24,7 @@ const isReset = process.argv.includes('--reset');
 // ─── Configuration ──────────────────────────────────────
 const EXCEL_DIR = 'D:\\manya_garage\\archived data\\_archive\\content_backup\\main_bank';
 const FILE_MAP = [
-    { file: 'english-p7-question-bank.xlsx', subject: 'ENGLISH' },
+    { file: 'eng-p7-question-bank.xlsx', subject: 'ENGLISH' },
     { file: 'math_p7_question_bank.xlsx', subject: 'MATH' },
     { file: 'science-p7-question-bank.xlsx', subject: 'SCIENCE' },
     { file: 'sst_p7_question_bank.xlsx', subject: 'SST' }
@@ -397,6 +397,7 @@ function processExcelFile(fileName, subject) {
             explanation:    cleanRow.detailedsolution || cleanRow.explanation || null,
             engine_type,
             cdn_url,
+            passage:        cleanRow.passage || null,
             metadata:       { tags, term: cleanRow.term || null }
         };
     }).filter(Boolean);

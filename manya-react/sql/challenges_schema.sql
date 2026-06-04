@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS public.user_challenges (
   completed_at timestamp with time zone,
   last_updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT user_challenges_pkey PRIMARY KEY (id),
-  CONSTRAINT user_challenges_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users (id),
+  CONSTRAINT user_challenges_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users (id) ON DELETE CASCADE,
   CONSTRAINT user_challenges_challenge_id_fkey FOREIGN KEY (challenge_id) REFERENCES public.challenges (id),
   CONSTRAINT user_challenges_unique UNIQUE (user_id, challenge_id)
 );

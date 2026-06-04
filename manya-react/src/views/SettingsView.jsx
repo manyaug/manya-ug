@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { updateProfile, resetUser } from '../store/userSlice';
 import { addToast } from '../store/toastSlice';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { ManyaDB } from '../infrastructure/db/manyaDB.js';
 import { IMAGES } from '../config/assetUrls';
+import { supabase } from '../infrastructure/remote/supabaseClient.js';
 import {
     ChevronLeft,
     User,
@@ -54,8 +55,6 @@ function SettingsView() {
     const [formState, setFormState] = useState({
         nickname: user?.nickname || '',
         grade_level: user?.grade_level || 'Primary 7',
-        parent_email: user?.parent_email || '',
-        parent_phone: user?.parent_phone || ''
     });
 
 
@@ -137,8 +136,13 @@ function SettingsView() {
     };
 
     const saveHeroChanges = async () => {
-        if (formState.parent_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.parent_email)) {
-            dispatch(addToast({ message: "CRITICAL: Invalid Guardian Email Format", type: "error" }));
+        if (formState.parent_whatsapp && !/^\+?[1-9]\d{1,14}$/.test(formState.parent_whatsapp.replace(/\s+/g, ''))) {
+            dispatch(addToast({ message: "CRITICAL: WhatsApp number must be in E.164 format (+256...)", type: "error" }));
+            return;
+        }
+
+        if (formState.new_parent_pin && (formState.new_parent_pin.length !== 4 || isNaN(Number(formState.new_parent_pin)))) {
+            dispatch(addToast({ message: "CRITICAL: Security PIN must be 4 digits", type: "error" }));
             return;
         }
 
@@ -149,8 +153,6 @@ function SettingsView() {
                 ...user,
                 nickname: formState.nickname,
                 grade_level: formState.grade_level,
-                parent_email: formState.parent_email,
-                parent_phone: formState.parent_phone,
                 last_active_at: new Date().toISOString()
             };
 
@@ -161,7 +163,7 @@ function SettingsView() {
             dispatch(addToast({ message: "Identity DNA Stabilized!", type: "success" }));
             navigate('/profile');
         } catch (err) {
-            dispatch(addToast({ message: "Sync Refraction: Changes Queued", type: "warning" }));
+            dispatch(addToast({ message: `Save failed: ${err.message}`, type: "warning" }));
             setSyncStatus('OFFLINE (QUEUED)');
         } finally {
             setLoading(false);
@@ -296,7 +298,6 @@ function SettingsView() {
                     </div>
                 </div>
 
-
                 {/* 💾 ACTIONS */}
                 <button 
                     onClick={saveHeroChanges}
@@ -308,7 +309,7 @@ function SettingsView() {
 
                 {/* 🚨 DANGER ZONE */}
                 <div className="mt-12 text-center">
-                    <p className="text-[10px] font-black text-rose-500 uppercase tracking-[4px] mb-6">Security Clearance & Purge</p>
+                    <p className="text-[10px] font-black text-rose-500 uppercase tracking-[4px] mb-6">Security Clearance &amp; Purge</p>
                     <div className="flex gap-4">
                         <button onClick={handleLogout} className="flex-1 btn-toy btn-toy-white h-16 text-[10px] text-slate-500 uppercase">
                            <LogOut size={16} className="inline mr-2" /> Sign Out

@@ -2188,16 +2188,16 @@
         "id": "holidays",
         "title": "Holidays",
         "aliases": {
-          "01 Holiday Kickoff": "Holiday Rush",
-          "02 Going To Mastery": "Future Vision",
-          "03 Question Tags Mastery": "Tag Team",
-          "04 Reported Speech Mastery": "Speech Flow",
-          "05 Village Arrival": "Village Life",
-          "06 Feeling And Facts": "Adjective Art",
-          "07 Past Regrets": "Time Rewind",
-          "08 Voice Mastery": "Voice Shift",
-          "09 Final Review": "Quest Complete",
-          "10 Vault": "Knowledge Bank"
+          "01 Holiday Kickoff": "The Announcement",
+          "02 Going To Mastery": "Planning the Journey",
+          "03 Question Tags Mastery": "Question Tag Traps",
+          "04 Reported Speech Mastery": "Reporting the News",
+          "05 Detail Order": "The Decorating Quest",
+          "06 Village Arrival": "The Enchanted Farm",
+          "07 Past Regrets": "The Regret Rule",
+          "08 Voice Mastery": "Active vs Passive",
+          "09 Village Life": "Daily Adventures",
+          "10 Comprehension": "Stories from the Village"
         },
         "subtopics": [
           {
@@ -2266,11 +2266,51 @@
                 "file": "SIM-ENG7-T1-01-0015"
               },
               {
+                "label": "Practice ENG7-T1-01-0016",
+                "file": "SIM-ENG7-T1-01-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0017",
+                "file": "SIM-ENG7-T1-01-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0018",
+                "file": "SIM-ENG7-T1-01-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0019",
+                "file": "SIM-ENG7-T1-01-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0020",
+                "file": "SIM-ENG7-T1-01-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0021",
+                "file": "SIM-ENG7-T1-01-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0022",
+                "file": "SIM-ENG7-T1-01-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0023",
+                "file": "SIM-ENG7-T1-01-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0024",
+                "file": "SIM-ENG7-T1-01-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-01-0025",
+                "file": "SIM-ENG7-T1-01-0025"
+              },
+              {
                 "label": "Holiday Vocab & Grammar Recap",
                 "file": "recap_holiday_kickoff"
               }
             ],
-            "practiceCount": 15
+            "practiceCount": 24
           },
           {
             "folder": "quest_02_going_to_mastery",
@@ -2342,11 +2382,51 @@
                 "file": "SIM-ENG7-T1-02-0015"
               },
               {
+                "label": "Practice ENG7-T1-02-0016",
+                "file": "SIM-ENG7-T1-02-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0017",
+                "file": "SIM-ENG7-T1-02-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0018",
+                "file": "SIM-ENG7-T1-02-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0019",
+                "file": "SIM-ENG7-T1-02-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0020",
+                "file": "SIM-ENG7-T1-02-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0021",
+                "file": "SIM-ENG7-T1-02-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0022",
+                "file": "SIM-ENG7-T1-02-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0023",
+                "file": "SIM-ENG7-T1-02-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0024",
+                "file": "SIM-ENG7-T1-02-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-02-0025",
+                "file": "SIM-ENG7-T1-02-0025"
+              },
+              {
                 "label": "Going To Mastery Recap",
                 "file": "recap_going_to"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 25
           },
           {
             "folder": "quest_03_question_tags_mastery",
@@ -2418,11 +2498,51 @@
                 "file": "SIM-ENG7-T1-03-0015"
               },
               {
+                "label": "Practice ENG7-T1-03-0016",
+                "file": "SIM-ENG7-T1-03-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0017",
+                "file": "SIM-ENG7-T1-03-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0018",
+                "file": "SIM-ENG7-T1-03-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0019",
+                "file": "SIM-ENG7-T1-03-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0020",
+                "file": "SIM-ENG7-T1-03-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0021",
+                "file": "SIM-ENG7-T1-03-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0022",
+                "file": "SIM-ENG7-T1-03-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0023",
+                "file": "SIM-ENG7-T1-03-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0024",
+                "file": "SIM-ENG7-T1-03-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-03-0025",
+                "file": "SIM-ENG7-T1-03-0025"
+              },
+              {
                 "label": "Question Tag Mastery Recap",
                 "file": "recap_question_tags"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 25
           },
           {
             "folder": "quest_04_reported_speech_mastery",
@@ -2494,20 +2614,60 @@
                 "file": "SIM-ENG7-T1-04-0015"
               },
               {
+                "label": "Practice ENG7-T1-04-0016",
+                "file": "SIM-ENG7-T1-04-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0017",
+                "file": "SIM-ENG7-T1-04-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0018",
+                "file": "SIM-ENG7-T1-04-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0019",
+                "file": "SIM-ENG7-T1-04-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0020",
+                "file": "SIM-ENG7-T1-04-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0021",
+                "file": "SIM-ENG7-T1-04-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0022",
+                "file": "SIM-ENG7-T1-04-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0023",
+                "file": "SIM-ENG7-T1-04-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0024",
+                "file": "SIM-ENG7-T1-04-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-04-0025",
+                "file": "SIM-ENG7-T1-04-0025"
+              },
+              {
                 "label": "Reported Speech Mastery Recap",
                 "file": "recap_reported_speech"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 25
           },
           {
-            "folder": "quest_05_village_arrival",
-            "title": "05 Village Arrival",
+            "folder": "quest_05_detail_order",
+            "title": "05 Detail Order",
             "prefix": "05",
             "resources": [
               {
-                "label": "Life on the Farm",
-                "file": "05_village_arrival"
+                "label": "The Decorating Quest",
+                "file": "05_detail_order"
               },
               {
                 "label": "Practice ENG7-T1-05-0001",
@@ -2570,20 +2730,48 @@
                 "file": "SIM-ENG7-T1-05-0015"
               },
               {
-                "label": "Village Arrival Recap",
-                "file": "recap_village_arrival"
+                "label": "Practice ENG7-T1-05-0016",
+                "file": "SIM-ENG7-T1-05-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-05-0017",
+                "file": "SIM-ENG7-T1-05-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-05-0018",
+                "file": "SIM-ENG7-T1-05-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-05-0019",
+                "file": "SIM-ENG7-T1-05-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-05-0020",
+                "file": "SIM-ENG7-T1-05-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-05-0021",
+                "file": "SIM-ENG7-T1-05-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-05-0022",
+                "file": "SIM-ENG7-T1-05-0022"
+              },
+              {
+                "label": "Adjective Order Recap",
+                "file": "recap_adjective_order"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 22
           },
           {
-            "folder": "quest_06_feeling_and_facts",
-            "title": "06 Feeling And Facts",
+            "folder": "quest_06_village_arrival",
+            "title": "06 Village Arrival",
             "prefix": "06",
             "resources": [
               {
-                "label": "Describing the Village",
-                "file": "06_feeling_and_facts"
+                "label": "The Enchanted Farm",
+                "file": "06_village_arrival"
               },
               {
                 "label": "Practice ENG7-T1-06-0001",
@@ -2646,11 +2834,39 @@
                 "file": "SIM-ENG7-T1-06-0015"
               },
               {
-                "label": "-ing and -ed Adjectives Recap",
-                "file": "recap_adj_ing_ed"
+                "label": "Practice ENG7-T1-06-0016",
+                "file": "SIM-ENG7-T1-06-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-06-0017",
+                "file": "SIM-ENG7-T1-06-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-06-0018",
+                "file": "SIM-ENG7-T1-06-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-06-0019",
+                "file": "SIM-ENG7-T1-06-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-06-0020",
+                "file": "SIM-ENG7-T1-06-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-06-0021",
+                "file": "SIM-ENG7-T1-06-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-06-0022",
+                "file": "SIM-ENG7-T1-06-0022"
+              },
+              {
+                "label": "Participles Recap",
+                "file": "recap_participles"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 22
           },
           {
             "folder": "quest_07_past_regrets",
@@ -2722,11 +2938,51 @@
                 "file": "SIM-ENG7-T1-07-0015"
               },
               {
+                "label": "Practice ENG7-T1-07-0016",
+                "file": "SIM-ENG7-T1-07-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0017",
+                "file": "SIM-ENG7-T1-07-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0018",
+                "file": "SIM-ENG7-T1-07-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0019",
+                "file": "SIM-ENG7-T1-07-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0020",
+                "file": "SIM-ENG7-T1-07-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0021",
+                "file": "SIM-ENG7-T1-07-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0022",
+                "file": "SIM-ENG7-T1-07-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0023",
+                "file": "SIM-ENG7-T1-07-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0024",
+                "file": "SIM-ENG7-T1-07-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-07-0025",
+                "file": "SIM-ENG7-T1-07-0025"
+              },
+              {
                 "label": "Past Regrets Recap",
                 "file": "recap_conditional_type_3"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 25
           },
           {
             "folder": "quest_08_voice_mastery",
@@ -2798,20 +3054,60 @@
                 "file": "SIM-ENG7-T1-08-0015"
               },
               {
+                "label": "Practice ENG7-T1-08-0016",
+                "file": "SIM-ENG7-T1-08-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0017",
+                "file": "SIM-ENG7-T1-08-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0018",
+                "file": "SIM-ENG7-T1-08-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0019",
+                "file": "SIM-ENG7-T1-08-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0020",
+                "file": "SIM-ENG7-T1-08-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0021",
+                "file": "SIM-ENG7-T1-08-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0022",
+                "file": "SIM-ENG7-T1-08-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0023",
+                "file": "SIM-ENG7-T1-08-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0024",
+                "file": "SIM-ENG7-T1-08-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-08-0025",
+                "file": "SIM-ENG7-T1-08-0025"
+              },
+              {
                 "label": "Active and Passive Recap",
                 "file": "recap_active_passive"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 25
           },
           {
-            "folder": "quest_09_final_review",
-            "title": "09 Final Review",
+            "folder": "quest_09_village_life",
+            "title": "09 Village Life",
             "prefix": "09",
             "resources": [
               {
-                "label": "Chapter 1 Mastery",
-                "file": "09_final_review"
+                "label": "Daily Adventures",
+                "file": "09_village_life"
               },
               {
                 "label": "Practice ENG7-T1-09-0001",
@@ -2874,17 +3170,177 @@
                 "file": "SIM-ENG7-T1-09-0015"
               },
               {
-                "label": "Final Review Recap",
-                "file": "recap_chapter_review"
+                "label": "Practice ENG7-T1-09-0016",
+                "file": "SIM-ENG7-T1-09-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-09-0017",
+                "file": "SIM-ENG7-T1-09-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-09-0018",
+                "file": "SIM-ENG7-T1-09-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-09-0019",
+                "file": "SIM-ENG7-T1-09-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-09-0020",
+                "file": "SIM-ENG7-T1-09-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-09-0021",
+                "file": "SIM-ENG7-T1-09-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-09-0022",
+                "file": "SIM-ENG7-T1-09-0022"
+              },
+              {
+                "label": "Adverbs Recap",
+                "file": "recap_adverbs"
               }
             ],
-            "practiceCount": 16
+            "practiceCount": 22
           },
           {
-            "folder": "quest_10_vault",
-            "title": "10 Vault",
+            "folder": "quest_10_comprehension",
+            "title": "10 Comprehension",
             "prefix": "10",
             "resources": [
+              {
+                "label": "Stories from the Village",
+                "file": "10_comprehension"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0001",
+                "file": "SIM-ENG7-T1-10-0001"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0002",
+                "file": "SIM-ENG7-T1-10-0002"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0003",
+                "file": "SIM-ENG7-T1-10-0003"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0004",
+                "file": "SIM-ENG7-T1-10-0004"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0005",
+                "file": "SIM-ENG7-T1-10-0005"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0006",
+                "file": "SIM-ENG7-T1-10-0006"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0007",
+                "file": "SIM-ENG7-T1-10-0007"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0008",
+                "file": "SIM-ENG7-T1-10-0008"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0009",
+                "file": "SIM-ENG7-T1-10-0009"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0010",
+                "file": "SIM-ENG7-T1-10-0010"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0011",
+                "file": "SIM-ENG7-T1-10-0011"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0012",
+                "file": "SIM-ENG7-T1-10-0012"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0013",
+                "file": "SIM-ENG7-T1-10-0013"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0014",
+                "file": "SIM-ENG7-T1-10-0014"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0015",
+                "file": "SIM-ENG7-T1-10-0015"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0016",
+                "file": "SIM-ENG7-T1-10-0016"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0017",
+                "file": "SIM-ENG7-T1-10-0017"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0018",
+                "file": "SIM-ENG7-T1-10-0018"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0019",
+                "file": "SIM-ENG7-T1-10-0019"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0020",
+                "file": "SIM-ENG7-T1-10-0020"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0021",
+                "file": "SIM-ENG7-T1-10-0021"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0022",
+                "file": "SIM-ENG7-T1-10-0022"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0023",
+                "file": "SIM-ENG7-T1-10-0023"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0024",
+                "file": "SIM-ENG7-T1-10-0024"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0025",
+                "file": "SIM-ENG7-T1-10-0025"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0026",
+                "file": "SIM-ENG7-T1-10-0026"
+              },
+              {
+                "label": "Practice ENG7-T1-10-0027",
+                "file": "SIM-ENG7-T1-10-0027"
+              },
+              {
+                "label": "Comprehension Skills Recap",
+                "file": "recap_reading"
+              }
+            ],
+            "practiceCount": 27
+          },
+          {
+            "folder": "quest_11_vault",
+            "title": "11 Vault",
+            "prefix": "11",
+            "resources": [
+              {
+                "label": "Dict Activities",
+                "file": "dict_activities"
+              },
+              {
+                "label": "Dict Holidays",
+                "file": "dict_holidays"
+              },
               {
                 "label": "Rule Active Passive",
                 "file": "rule_active_passive"
@@ -2892,6 +3348,10 @@
               {
                 "label": "Rule Adj Ing Ed",
                 "file": "rule_adj_ing_ed"
+              },
+              {
+                "label": "Rule Adverbs",
+                "file": "rule_adverbs"
               },
               {
                 "label": "Rule Going To",
@@ -2902,23 +3362,23 @@
                 "file": "rule_if_type_3"
               },
               {
+                "label": "Rule Order Of Adjectives",
+                "file": "rule_order_of_adjectives"
+              },
+              {
+                "label": "Rule Participles",
+                "file": "rule_participles"
+              },
+              {
                 "label": "Rule Question Tags",
                 "file": "rule_question_tags"
               },
               {
                 "label": "Rule Reported Speech",
                 "file": "rule_reported_speech"
-              },
-              {
-                "label": "Dict Activities",
-                "file": "dict_activities"
-              },
-              {
-                "label": "Dict Holidays",
-                "file": "dict_holidays"
               }
             ],
-            "practiceCount": 2
+            "practiceCount": 11
           }
         ]
       }

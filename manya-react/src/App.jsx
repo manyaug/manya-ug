@@ -32,6 +32,7 @@ import OnboardingView from './views/OnboardingView';
 import LoginView from './views/LoginView';
 import LandingView from './views/LandingView';
 import PreferencesView from './views/PreferencesView';
+import ParentPortalView from './views/ParentPortalView';
 import SimulationTestingView from './views/SimulationTestingView';
 import ResetPasswordView from './views/ResetPasswordView';
 import SplashScreen from './components/SplashScreen';
@@ -42,7 +43,7 @@ import { supabase } from './infrastructure/remote/supabaseClient';
 import './styles/global.css';
 
 // Routes that hide the global HUD (have their own header)
-const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test', '/preferences', '/settings', '/membership'];
+const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test', '/preferences', '/settings', '/membership', '/parent-portal'];
 // Routes that also hide the BottomNav
 const HIDE_NAV_ROUTES = ['/quest-path', '/quest', '/sim-test', '/quest', '/membership'];
 
@@ -85,6 +86,7 @@ function RouterLayout() {
                     <Route path="/settings" element={<SettingsView />} />
                     <Route path="/membership" element={<MembershipView />} />
                     <Route path="/preferences" element={<PreferencesView />} />
+                    <Route path="/parent-portal" element={<ParentPortalView />} />
                     
                     {/* Quest Execution */}
                     <Route path="/quest" element={<QuestRunner />} />
@@ -136,14 +138,14 @@ function AppContent() {
             }
             
             if (event === 'SIGNED_IN' && session) {
-                // If we just signed in, re-initialize to ensure profile is synced
-                if (!hasInitializedRef.current) {
-                    hasInitializedRef.current = true;
-                    console.log("👤 [Auth] User Signed In. Initializing Profile...");
-                    dispatch(initializeUser());
-                } else {
-                    console.log("👤 [Auth] User already initialized. Skipping redundant sync.");
+                // If the user is currently completing onboarding, skip full initialization
+                // to prevent loading splash screen from unmounting/resetting the onboarding wizard.
+                if (window.location.pathname.includes('/onboarding')) {
+                    console.log("👤 [Auth] User Signed In during Onboarding. Skipping full initialization to preserve wizard state.");
+                    return;
                 }
+                console.log("👤 [Auth] User Signed In. Initializing Profile...");
+                dispatch(initializeUser());
             }
 
             if (event === 'SIGNED_OUT') {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { addToast } from '../store/toastSlice';
+import { initializeUser } from '../store/userSlice';
 import { Lock, ShieldCheck, ChevronLeft, RefreshCw } from 'lucide-react';
 import '../styles/onboarding.css';
 
@@ -71,13 +72,16 @@ function ResetPasswordView() {
             const { error } = await syncService.updatePassword(password);
             if (error) throw error;
 
+            // Trigger full state re-initialization from Cloud to ensure Redux has the profile
+            await dispatch(initializeUser()).unwrap();
+
             dispatch(addToast({ message: "Security Key Re-Stabilized!", type: "success" }));
             
             // Clean up to prevent re-triggering
             window.history.replaceState(null, '', window.location.pathname);
             
-            // Send back to login to confirm fresh session
-            navigate('/login');
+            // Direct to home since the user is already authenticated
+            navigate('/home');
         } catch (err) {
             dispatch(addToast({ message: `Reset Failed: ${err.message}`, type: "error" }));
         } finally {

@@ -106,9 +106,9 @@ export const syncService = {
      * Push local profile changes to cloud (write to Supabase + local SQLite).
      * On Android: writes to SQLite immediately, queues for Supabase sync.
      */
-    async uploadProfile(profileData) {
+    async uploadProfile(profileData, explicitUid = null) {
         return syncQueue.execute(async () => {
-            const uid = await this.getUserId();
+            const uid = explicitUid || await this.getUserId();
             if (!uid) return;
             const payload = {
                 id: uid,
@@ -119,7 +119,14 @@ export const syncService = {
                 current_streak: profileData.current_streak || 0,
                 longest_streak: profileData.longest_streak || 0,
                 last_active_at: new Date().toISOString(),
-                preferences: profileData.preferences || {}
+                preferences: profileData.preferences || {},
+                parent_name: profileData.parent_name || null,
+                parent_whatsapp: profileData.parent_whatsapp || null,
+                // NOTE: parent_pin_hash is intentionally excluded here.
+                // It is only ever set by the set_parent_pin RPC (bcrypt via crypt()).
+                // Including it here would overwrite the real bcrypt hash with a stale value.
+                report_enabled: profileData.report_enabled !== undefined ? profileData.report_enabled : true,
+                onboarded: profileData.onboarded || false
             };
             await storageFacade.put('db:/profiles', payload);
             console.log('☁️ [Sync] Profile synced.');

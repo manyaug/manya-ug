@@ -27,7 +27,8 @@
  * │    stats_hints_used INTEGER DEFAULT 0,                                      │
  * │    stats_explanations_viewed INTEGER DEFAULT 0,                             │
  * │    theme TEXT DEFAULT 'dark', preferences TEXT DEFAULT '{}',                │
- * │    parent TEXT DEFAULT '{}', created_at TEXT                                │
+ * │    parent_name TEXT, parent_whatsapp TEXT, parent_pin_hash TEXT,            │
+ * │    report_enabled INTEGER DEFAULT 1, created_at TEXT                        │
  * │                                                                              │
  * │  TABLE: questions                                                            │
  * │    qid TEXT PRIMARY KEY, subject TEXT NOT NULL,                             │
@@ -348,7 +349,10 @@ export const ManyaDB = {
             stats_hints_used: 0, stats_explanations_viewed: 0,
             theme: 'dark',
             preferences: { likes: [], hates: [] },
-            parent: { name: '', whatsapp: '' },
+            parent_name: '',
+            parent_whatsapp: '',
+            parent_pin_hash: '',
+            report_enabled: true,
             pendingBadgeCelebrations: [],
             vaultArtifacts: [],
             is_pro: false,

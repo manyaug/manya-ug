@@ -49,7 +49,7 @@ function MembershipView() {
     // --- MAIN STATES ---
     const [currentTier, setCurrentTier] = useState('Scholar'); // 'Starter' or 'Scholar'
     const [activeProvider, setActiveProvider] = useState(null); // 'MTN' or 'Airtel' or null
-    const [phoneInput, setPhoneInput] = useState(user?.parent_phone || '');
+    const [phoneInput, setPhoneInput] = useState(user?.parent_whatsapp || user?.parent_phone || '');
     
     // --- STAGES: 'idle' | 'phone-entry' | 'handshake' | 'ussd-pin' | 'processing' | 'success' ---
     const [checkoutStage, setCheckoutStage] = useState('idle');
