@@ -525,6 +525,90 @@ export const syncService = {
         }, 'pushSession');
     },
 
+    // ── PVP QUIZ DUELS (Online Only) ──────────────────────────────────────────
+    async createQuizDuel(challengedId, wager, subject, questions) {
+        try {
+            const { data, error } = await supabase.rpc('create_quiz_duel_escrow', {
+                p_challenged_id: challengedId,
+                p_wager: wager,
+                p_subject: subject,
+                p_questions: questions
+            });
+            if (error) throw error;
+            return data;
+        } catch (e) {
+            console.error('⚔️ [Sync] Create duel failed:', e.message);
+            throw e;
+        }
+    },
+
+    async acceptQuizDuel(duelId) {
+        try {
+            const { data, error } = await supabase.rpc('accept_quiz_duel_escrow', {
+                p_duel_id: duelId
+            });
+            if (error) throw error;
+            return data;
+        } catch (e) {
+            console.error('⚔️ [Sync] Accept duel failed:', e.message);
+            throw e;
+        }
+    },
+
+    async declineOrExpireDuel(duelId) {
+        try {
+            const { data, error } = await supabase.rpc('decline_or_expire_duel', {
+                p_duel_id: duelId
+            });
+            if (error) throw error;
+            return data;
+        } catch (e) {
+            console.error('⚔️ [Sync] Decline duel failed:', e.message);
+            throw e;
+        }
+    },
+
+    async submitDuelParticipantResults(duelId, score, timeSpentMs, answers) {
+        try {
+            const uid = await this.getUserId();
+            const { error } = await supabase
+                .from('quiz_duel_participants')
+                .update({
+                    score: score,
+                    time_spent_ms: timeSpentMs,
+                    answers: answers,
+                    completed_at: new Date().toISOString()
+                })
+                .eq('duel_id', duelId)
+                .eq('user_id', uid);
+            if (error) throw error;
+
+            const { data: resolveData, error: resolveError } = await supabase.rpc('resolve_quiz_duel_payout', {
+                p_duel_id: duelId
+            });
+            if (resolveError) throw resolveError;
+            return resolveData;
+        } catch (e) {
+            console.error('⚔️ [Sync] Submit duel results failed:', e.message);
+            throw e;
+        }
+    },
+
+    async fetchDuelDetails(duelId) {
+        try {
+            const { data, error } = await supabase
+                .from('quiz_duels')
+                .select('*, challenger:challenger_id(full_name, avatar_url), challenged:challenged_id(full_name, avatar_url)')
+                .eq('id', duelId)
+                .single();
+            if (error) throw error;
+            return data;
+        } catch (e) {
+            console.error('⚔️ [Sync] Fetch duel details failed:', e.message);
+            throw e;
+        }
+    },
+
     // ── RANKINGS (Online Only) ────────────────────────────────────────────────
     /**
      * Fetch global rankings.
