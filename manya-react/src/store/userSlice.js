@@ -63,6 +63,9 @@ export const initializeUser = createAsyncThunk(
             parent_whatsapp: cloudProfile.parent_whatsapp || '',
             parent_pin_hash: cloudProfile.parent_pin_hash || '',
             report_enabled: cloudProfile.report_enabled !== undefined ? cloudProfile.report_enabled : true,
+            // ── LEAGUE SYSTEM ──────────────────────────────────────────────
+            league: cloudProfile.league || 'Wood',
+            weeklyXp: cloudProfile.weekly_xp || 0,
             unlockedBadges: Array.from(new Set([
                 ...(localUser?.unlockedBadges || []), 
                 ...(cloudProfile.unlocked_badges || [])
@@ -221,6 +224,7 @@ const initialState = {
     answerChangeCount: 0,
     question_history: [],
   },
+  onlineUsers: [],
   isLoading: true,
   isError: false,
 };
@@ -350,6 +354,13 @@ export const userSlice = createSlice({
             state.data.pendingChests.shift();
         }
     },
+    // ── LEAGUE SYSTEM ───────────────────────────────────────────────────────
+    setLeague: (state, action) => {
+        state.data.league = action.payload;
+    },
+    addWeeklyXp: (state, action) => {
+        state.data.weeklyXp = (state.data.weeklyXp || 0) + action.payload;
+    },
     // ── STREAK ──────────────────────────────────────────────────────────────
     updateStreak: (state) => {
         const today = new Date().toDateString();
@@ -377,6 +388,9 @@ export const userSlice = createSlice({
         ...initialState.session,
         startedAt: new Date().toISOString()
       };
+    },
+    setOnlineUsers: (state, action) => {
+      state.onlineUsers = action.payload;
     },
     updateSessionAfterAnswer: (state, action) => {
       const { subject, isCorrect, hintUsed, answerChanged, timeSpentMs } = action.payload;
@@ -467,7 +481,10 @@ export const {
     updateStreak,
     resetSession,
     updateSessionAfterAnswer,
-    discoverArtifact: discoverArtifactLocal
+    setLeague,
+    addWeeklyXp,
+    discoverArtifact: discoverArtifactLocal,
+    setOnlineUsers
 } = userSlice.actions;
 
 // Re-export thunks as primary actions

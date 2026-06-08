@@ -230,6 +230,9 @@ export function useQuestOrchestrator() {
         dispatch(checkAchievements());
         dispatch(syncUserData());
         audioService.finish();
+
+        // 🏆 LEAGUE: Award weekly XP for completing a quest (fire-and-forget)
+        syncService.incrementWeeklyXp(20).catch(() => {});
     }, [phase, user, location.state, dispatch]);
 
     const advanceStep = useCallback(() => {
@@ -461,6 +464,8 @@ export function useQuestOrchestrator() {
             if (!result.hintUsed && !result.answerChanged) {
                 challengeService.tick('PERFECT_ANSWERS', 1);
             }
+            // 🏆 LEAGUE: +2 weekly XP per correct answer (fire-and-forget)
+            syncService.incrementWeeklyXp(2).catch(() => {});
         }
 
         if (!result?.type?.includes('partial') && !result?.type?.includes('pulse')) {

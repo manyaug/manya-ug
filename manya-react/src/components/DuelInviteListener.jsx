@@ -47,6 +47,7 @@ export default function DuelInviteListener() {
                                 challengerName: profile?.full_name || 'Another Student',
                                 challengerAvatar: profile?.avatar_url,
                                 wager: newDuel.gem_wager,
+                                currency: newDuel.wager_currency || 'gems',
                                 subject: newDuel.subject
                             });
                             setError('');
@@ -98,12 +99,21 @@ export default function DuelInviteListener() {
         setLoading(true);
         setError('');
 
-        // Perform balance pre-check
-        const playerGems = user.diamonds || 0;
-        if (playerGems < invite.wager) {
-            setError(`You need at least ${invite.wager} Gems to accept this challenge!`);
-            setLoading(false);
-            return;
+        // Perform balance pre-check for appropriate currency
+        if (invite.currency === 'coins') {
+            const playerCoins = user.coins || 0;
+            if (playerCoins < invite.wager) {
+                setError(`You need at least ${invite.wager} Coins to accept this challenge!`);
+                setLoading(false);
+                return;
+            }
+        } else {
+            const playerGems = user.diamonds || 0;
+            if (playerGems < invite.wager) {
+                setError(`You need at least ${invite.wager} Gems to accept this challenge!`);
+                setLoading(false);
+                return;
+            }
         }
 
         try {
@@ -127,7 +137,7 @@ export default function DuelInviteListener() {
             if (response && response.success) {
                 // Instantly update Redux balance locally to reflect deducted stake
                 dispatch(updateBalanceThunk({
-                    currency: 'gem_overall',
+                    currency: invite.currency === 'coins' ? 'coins' : 'gem_overall',
                     amount: -invite.wager,
                     type: 'DUEL_ESCROW_OUT',
                     contextId: invite.duelId
@@ -181,8 +191,8 @@ export default function DuelInviteListener() {
                             <div className="flex items-center gap-2">
                                 <span className="text-[10px] font-black text-[#5d4037] uppercase tracking-widest">STAKE:</span>
                                 <span className="flex items-center gap-1.5 text-sm font-black text-amber-800">
-                                    <img src={getGem(invite.subject)} className="w-4.5 h-4.5" alt="gem" />
-                                    {invite.wager} Gems
+                                    {invite.currency !== 'coins' && <img src={getGem(invite.subject)} className="w-4.5 h-4.5" alt="gem" />}
+                                    {invite.wager} {invite.currency === 'coins' ? 'Coins 🪙' : 'Gems'}
                                 </span>
                             </div>
                         </div>
@@ -195,21 +205,42 @@ export default function DuelInviteListener() {
                         )}
 
                         <div className="relative z-10 flex gap-4">
+                            {/* DECLINE button — blood-carved stone */}
                             <button
                                 disabled={loading}
                                 onClick={handleDecline}
-                                className="flex-1 py-3 bg-[#4e342e] hover:bg-[#3e2723] text-[#d7ccc8] border-2 border-[#8d6e63] font-black rounded-xl active:translate-y-0.5 transition-all text-xs"
+                                className="relative flex-1 group disabled:opacity-40"
                             >
-                                <X size={14} />
-                                DECLINE
+                                <div className="absolute inset-0 rounded-xl bg-[#5a1a1a] translate-y-[3px] border-b-2 border-[#3a0a0a]" />
+                                <div className="relative flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl
+                                    bg-gradient-to-b from-[#8b2020] via-[#6b1515] to-[#5a1010]
+                                    border-2 border-[#a33030] border-b-[#5a1a1a]
+                                    shadow-[inset_0_1px_0_rgba(255,120,120,0.15),0_0_8px_rgba(180,30,30,0.3)]
+                                    active:translate-y-[2px] active:shadow-none transition-all duration-100
+                                    group-hover:from-[#9b2525] group-hover:via-[#7b1a1a] group-hover:to-[#641212]">
+                                    <X size={13} className="text-rose-200 shrink-0" />
+                                    <span className="text-[11px] font-black text-rose-200 uppercase tracking-widest leading-none">Decline</span>
+                                </div>
                             </button>
+
+                            {/* ACCEPT button — gold-carved stone */}
                             <button
                                 disabled={loading}
                                 onClick={handleAccept}
-                                className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-black rounded-xl shadow-[0_3px_0_#795548] border border-amber-300/30 active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-1.5 text-xs"
+                                className="relative flex-1 group disabled:opacity-40"
                             >
-                                <Check size={14} />
-                                {loading ? 'ACCEPTING...' : 'ACCEPT'}
+                                <div className="absolute inset-0 rounded-xl bg-[#3e2200] translate-y-[3px] border-b-2 border-[#1a0f00]" />
+                                <div className="relative flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl
+                                    bg-gradient-to-b from-[#c5a036] via-[#a07d20] to-[#8a6a10]
+                                    border-2 border-[#e0c060] border-b-[#3e2200]
+                                    shadow-[inset_0_1px_0_rgba(255,230,100,0.25),0_0_10px_rgba(197,160,54,0.25)]
+                                    active:translate-y-[2px] active:shadow-none transition-all duration-100
+                                    group-hover:from-[#d4ae40] group-hover:via-[#b08a28] group-hover:to-[#967518]">
+                                    <Check size={13} className="text-amber-100 shrink-0" />
+                                    <span className="text-[11px] font-black text-amber-100 uppercase tracking-widest leading-none">
+                                        {loading ? 'ACCEPTING...' : 'ACCEPT'}
+                                    </span>
+                                </div>
                             </button>
                         </div>
                     </motion.div>

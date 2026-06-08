@@ -229,4 +229,79 @@
 }
 [data-theme='light'] .hud-pill {
     background: var(--bg-card);
+}
+
+/* BELL PILL AND DUEL INBOX CUSTOM STYLES */
+.hud-bell-pill {
+    background: var(--bg-card);
+    position: relative;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.hud-bell-pill:hover {
+    transform: scale(1.05);
+}
+
+.hud-bell-pill:active {
+    transform: translateY(2px);
+}
+
+.hud-bell-active {
+    background: linear-gradient(to bottom, #2d1b0f, #42210b);
+    border-color: #d84315 !important;
+    box-shadow: 0 0 10px rgba(216, 67, 21, 0.3);
+}
+
+[data-theme='light'] .hud-bell-active {
+    background: linear-gradient(to bottom, #fff3e0, #ffe0b2);
+    border-color: #ff5722 !important;
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.2);
+}
+
+.hud-bell-icon {
+    color: var(--text-primary);
+    transition: transform 0.2s;
+}
+
+.hud-bell-active .hud-bell-icon {
+    color: #ffb74d;
+}
+
+.hud-bell-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff3d00;
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--bg-card);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.hud-bell-wiggle {
+    animation: bell-wiggle 1.2s ease-in-out infinite;
+}
+
+@keyframes bell-wiggle {
+    0%, 100% { transform: rotate(0); }
+    10% { transform: rotate(15deg); }
+    20% { transform: rotate(-15deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-10deg); }
+    50% { transform: rotate(5deg); }
+    60% { transform: rotate(-5deg); }
+    70% { transform: rotate(0); }
 }

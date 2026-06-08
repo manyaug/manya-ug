@@ -38,14 +38,15 @@ import ResetPasswordView from './views/ResetPasswordView';
 import SplashScreen from './components/SplashScreen';
 import DebugAuditView from './views/DebugAuditView';
 import DuelArenaView from './views/DuelArenaView';
+import InboxView from './views/InboxView';
 import DuelInviteListener from './components/DuelInviteListener';
 
-import { initializeUser, addDiamonds, awardGems, updateBalanceThunk } from './store/userSlice';
+import { initializeUser, addDiamonds, awardGems, updateBalanceThunk, setOnlineUsers } from './store/userSlice';
 import { supabase } from './infrastructure/remote/supabaseClient';
 import './styles/global.css';
 
 // Routes that hide the global HUD (have their own header)
-const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test', '/preferences', '/settings', '/membership', '/parent-portal', '/duel'];
+const HIDE_HUD_ROUTES = ['/spiral', '/quest-path', '/quest', '/sim-test', '/preferences', '/settings', '/membership', '/parent-portal', '/duel', '/inbox'];
 // Routes that also hide the BottomNav
 const HIDE_NAV_ROUTES = ['/quest-path', '/quest', '/sim-test', '/membership', '/duel'];
 
@@ -95,6 +96,9 @@ function RouterLayout() {
 
                     {/* PvP Duel Arena */}
                     <Route path="/duel/:duelId" element={<DuelArenaView />} />
+
+                    {/* Message Center / Inbox */}
+                    <Route path="/inbox" element={<InboxView />} />
 
                     {/* World Map (full-screen with own HUD) */}
                     <Route path="/spiral/:subjectId" element={<SpiralView />} />
@@ -223,6 +227,40 @@ function AppContent() {
         const theme = user?.theme || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
     }, [user?.theme]);
+
+    // Supabase Global Presence Tracking
+    useEffect(() => {
+        if (!supabase || !user?.id) return;
+
+        const channel = supabase.channel('online-status', {
+            config: {
+                presence: {
+                    key: user.id
+                }
+            }
+        });
+
+        const handleSync = () => {
+            const state = channel.presenceState();
+            const onlineIds = Object.keys(state);
+            dispatch(setOnlineUsers(onlineIds));
+        };
+
+        channel
+            .on('presence', { event: 'sync' }, handleSync)
+            .subscribe(async (status) => {
+                if (status === 'SUBSCRIBED') {
+                    await channel.track({
+                        user_id: user.id,
+                        online_at: new Date().toISOString()
+                    });
+                }
+            });
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user?.id, dispatch]);
 
     // Show splash while loading or booting
     if (!splashFinished || isLoading) {

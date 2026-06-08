@@ -526,13 +526,14 @@ export const syncService = {
     },
 
     // ── PVP QUIZ DUELS (Online Only) ──────────────────────────────────────────
-    async createQuizDuel(challengedId, wager, subject, questions) {
+    async createQuizDuel(challengedId, wager, subject, questions, currency = 'gems') {
         try {
             const { data, error } = await supabase.rpc('create_quiz_duel_escrow', {
                 p_challenged_id: challengedId,
                 p_wager: wager,
                 p_subject: subject,
-                p_questions: questions
+                p_questions: questions,
+                p_currency: currency
             });
             if (error) throw error;
             return data;
@@ -630,6 +631,43 @@ export const syncService = {
             return [];
         }
     },
+
+    async pullLeagueCohortStandings() {
+        const uid = await this.getUserId();
+        if (!uid) return [];
+        try {
+            const { data, error } = await supabase.rpc('get_league_cohort_standings', {
+                p_user_id: uid
+            });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.error('🏆 [Sync] League standings fetch failed:', e.message);
+            return [];
+        }
+    },
+
+    /**
+     * Increment the current user's weekly XP for the league ladder.
+     * Also auto-joins them into a cohort if this is their first activity this week.
+     * @param {number} amount - XP points to add (e.g. 2 per correct answer, 20 per quest, 25 per duel win)
+     */
+    async incrementWeeklyXp(amount = 10) {
+        const uid = await this.getUserId();
+        if (!uid) return;
+        try {
+            const { error } = await supabase.rpc('increment_weekly_xp', {
+                p_user_id: uid,
+                p_amount: amount
+            });
+            if (error) throw error;
+            console.log(`⚡ [League] +${amount} weekly XP awarded`);
+        } catch (e) {
+            // Silent fail — league XP is non-critical
+            console.warn('⚡ [League] Weekly XP increment failed (non-critical):', e.message);
+        }
+    },
+
 
     // ── CLOUD SEED (First Login) ──────────────────────────────────────────────
     /**

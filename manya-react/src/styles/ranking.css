@@ -258,29 +258,55 @@
     letter-spacing: 1px;
 }
 
+.rank-list {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .rank-row-elite {
-    background: var(--bg-card);
-    border-radius: var(--radius-md);
-    margin-bottom: 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: 0;
+    margin-bottom: 0;
     padding: 12px 16px;
-    border: 3px solid var(--border-subtle);
-    box-shadow: var(--shadow-warm);
     display: flex;
     align-items: center;
     gap: 12px;
+    min-height: 80px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.rank-row-elite:last-child {
+    border-bottom: none;
+}
+
+.rank-row-elite.zone-promote-row {
+    border-left: 6px solid #2e7d32 !important;
+    background: rgba(46, 125, 50, 0.15);
+}
+
+.rank-row-elite.zone-demote-row {
+    border-left: 6px solid #c62828 !important;
+    background: rgba(198, 40, 40, 0.15);
 }
 
 .rank-row-elite.is-user {
-    border-color: var(--tab-color) !important;
-    background: var(--bg-card);
-    transform: scale(1.02);
+    border-y: 1px solid var(--primary-color, #c5a036) !important;
+    background: rgba(197, 160, 54, 0.15) !important;
 }
 
 .r-pos {
-    width: 30px;
+    width: 32px;
     font-weight: 900;
     color: var(--text-secondary);
-    opacity: 0.6;
+    opacity: 0.85;
+    font-size: 15px;
 }
 
 .r-avatar {
@@ -290,6 +316,7 @@
     background: var(--bg-elevated);
     border: 2px solid var(--border-subtle);
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .r-info {
@@ -298,27 +325,82 @@
 
 .r-name {
     display: block;
+    font-family: var(--font-display), sans-serif;
     font-weight: 900;
     color: var(--text-primary);
-    font-size: 14px;
+    font-size: 15px;
+    letter-spacing: -0.2px;
 }
 
-.r-stars {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--text-secondary);
+.r-stats-capsule {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    flex-shrink: 0;
 }
 
-.r-stat {
-    display: flex;
+.r-stats-capsule.stars {
+    background: linear-gradient(180deg, #c5a036 0%, #9e7815 100%);
+    border: 2px solid #ffd54f;
+    box-shadow: 
+        0 2.5px 0 #4a3000,
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.r-stats-capsule.gems {
+    background: linear-gradient(180deg, #0288d1 0%, #01579b 100%);
+    border: 2px solid #4fc3f7;
+    box-shadow: 
+        0 2.5px 0 #002f6c,
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.r-league-row-badge {
+    display: inline-flex;
     align-items: center;
     gap: 4px;
+    background: rgba(235, 220, 185, 0.08);
+    border: 1.5px solid rgba(140, 107, 69, 0.35);
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: #ebdcb9;
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.r-score-val {
+.r-stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    margin-right: 4px;
+}
+
+.r-score-num {
+    font-family: var(--font-display), sans-serif;
     font-weight: 950;
-    font-size: 16px;
-    color: var(--text-primary);
+    font-size: 18px;
+    color: #d84315;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    line-height: 1;
+}
+
+.r-score-lbl {
+    font-size: 8px;
+    font-weight: 900;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1px;
+    opacity: 0.7;
 }
 
 /* ── STICKY RANK ── */
@@ -354,4 +436,246 @@
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
-}
+}
+
+/* ── PARCHMENT SCROLL MODAL ── */
+.parchment-scroll {
+    background: linear-gradient(160deg, #f5e6c8 0%, #ede0c4 40%, #e8d5a3 100%);
+    border: 4px solid #8c6b45;
+    border-radius: 24px;
+    box-shadow:
+        0 0 0 2px #c5a880,
+        0 20px 60px rgba(0, 0, 0, 0.7),
+        inset 0 0 20px rgba(62, 39, 35, 0.08);
+    position: relative;
+}
+
+.parchment-scroll::before,
+.parchment-scroll::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #8c6b45 20%, #8c6b45 80%, transparent);
+    opacity: 0.35;
+    border-radius: 2px;
+}
+
+.parchment-scroll::before { top: 16px; }
+.parchment-scroll::after  { bottom: 16px; }
+
+/* ── GLOW BUTTON (medieval gold) ── */
+.glow-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff8e1;
+    background: linear-gradient(180deg, #c5a036 0%, #a07d20 55%, #8a6a10 100%);
+    border: 2px solid #e0c060;
+    box-shadow:
+        0 4px 0 #3e2200,
+        inset 0 1px 0 rgba(255, 230, 100, 0.25),
+        0 0 12px rgba(197, 160, 54, 0.3);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    overflow: hidden;
+}
+
+.glow-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.glow-button:hover {
+    background: linear-gradient(180deg, #d4ae40 0%, #b08a28 55%, #967518 100%);
+    box-shadow:
+        0 4px 0 #3e2200,
+        inset 0 1px 0 rgba(255, 230, 100, 0.25),
+        0 0 20px rgba(197, 160, 54, 0.5);
+}
+
+.glow-button:active {
+    transform: translateY(3px);
+    box-shadow:
+        0 1px 0 #3e2200,
+        inset 0 1px 0 rgba(255, 230, 100, 0.15);
+}
+
+/* ── LEAGUE TIER ZONE BADGES ── */
+.medieval-badge-promote {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(180deg, #1b5e20 0%, #0d3c0a 100%);
+    border: 2px solid #81c784;
+    border-radius: 10px;
+    color: #e8f5e9;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    animation: badge-pulse-green 2s infinite ease-in-out;
+}
+
+.medieval-badge-demote {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(180deg, #b71c1c 0%, #7f0000 100%);
+    border: 2px solid #ef9a9a;
+    border-radius: 10px;
+    color: #ffebee;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 0 10px rgba(244, 67, 54, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    animation: badge-pulse-red 2s infinite ease-in-out;
+}
+
+@keyframes badge-pulse-green {
+    0%, 100% { box-shadow: 0 0 8px rgba(76, 175, 80, 0.3); }
+    50% { box-shadow: 0 0 14px rgba(76, 175, 80, 0.6); border-color: #a5d6a7; }
+}
+
+@keyframes badge-pulse-red {
+    0%, 100% { box-shadow: 0 0 8px rgba(244, 67, 54, 0.3); }
+    50% { box-shadow: 0 0 14px rgba(244, 67, 54, 0.6); border-color: #ffcdd2; }
+}
+
+/* ── COHORT LEAGUE BANNER ── */
+.league-cohort-banner {
+    background: linear-gradient(135deg, #ebdcb9, #f5e6c8);
+    border: 2px solid #8c6b45;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    margin: 16px 20px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 0 8px rgba(62, 39, 35, 0.06);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.league-cohort-banner:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ── WEEKLY XP PROGRESS BAR ── */
+.weekly-xp-bar {
+    height: 6px;
+    border-radius: 100px;
+    background: rgba(62, 39, 35, 0.12);
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.weekly-xp-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #f57f17, #ffa726);
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.r-action-duel-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #c5a036 0%, #a07d20 55%, #8a6a10 100%);
+    border: 2px solid #e0c060;
+    box-shadow: 
+        0 3px 0 #3e2200,
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: all 0.1s ease;
+}
+
+.rank-row-elite:hover .r-action-duel-btn {
+    background: linear-gradient(180deg, #d4ae40 0%, #b08a28 55%, #967518 100%);
+    box-shadow: 
+        0 3px 0 #3e2200,
+        0 6px 12px rgba(197, 160, 54, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.rank-row-elite:active .r-action-duel-btn {
+    transform: translateY(2px);
+    box-shadow: 
+        0 1px 0 #3e2200,
+        0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.r-stats-capsule.xp {
+    background: linear-gradient(180deg, #ff9800 0%, #e65100 100%);
+    border: 2px solid #ffb74d;
+    box-shadow: 
+        0 2.5px 0 #5d2500,
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.r-user-crown-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffeb3b 0%, #f57f17 100%);
+    border: 2px solid #fff176;
+    box-shadow: 
+        0 3px 0 #5d4037,
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    animation: badge-pulse-green 3s infinite ease-in-out;
+}
+
+.r-status-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #9e9e9e;
+    border: 2px solid #fff8e7;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+.r-status-dot.is-online {
+    background: #4caf50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.7), 0 1px 2px rgba(0, 0, 0, 0.3);
+    animation: status-pulse 2s infinite ease-in-out;
+}
+
+@keyframes status-pulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(76, 175, 80, 0.5); }
+    50% { box-shadow: 0 0 10px rgba(76, 175, 80, 0.9); }
+}
+

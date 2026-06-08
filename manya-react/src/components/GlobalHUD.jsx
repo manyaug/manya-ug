@@ -3,23 +3,27 @@
  * =================================
  * Redesigned after the manya_logic app header visual.
  * Features:
- *   - Streak pill (🔥)
  *   - Diamond/Gem pill with idle bounce animation
  *   - Coin pill with animated count-up (ported from coinAnimation.js)
  *   - Fly-to-HUD coin effect triggered by Redux `coins` change
+ *   - Notification bell → navigates to /inbox
  */
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Bell } from 'lucide-react';
 import { getGem } from '../config/assetUrls';
 import { useCoinAnimation } from '../domain/gamification/useCoinAnimation.js';
+import { supabase } from '../backend/remote/supabaseClient';
 import '../styles/globalHud.css';
 
 function GlobalHUD() {
     const user       = useSelector(s => s.user.data);
     const navigate   = useNavigate();
     const coinPillRef = useRef(null);
+
+    const [inviteCount, setInviteCount] = useState(0);
 
     // Current coin value from Redux
     const realCoins = user?.coins || 0;
@@ -38,9 +42,67 @@ function GlobalHUD() {
         prevCoinsRef.current = realCoins;
     }, [realCoins, triggerFloatCoin, triggerDeductCoin]);
 
+    // Track pending invite count for the badge (lightweight — count only)
+    useEffect(() => {
+        if (!user?.id || !supabase) return;
+
+        const fetchCount = async () => {
+            try {
+                const { count, error } = await supabase
+                    .from('quiz_duels')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('challenged_id', user.id)
+                    .eq('status', 'pending');
+                if (!error) setInviteCount(count || 0);
+            } catch (err) {
+                console.error('[HUD] invite count error:', err);
+            }
+        };
+        fetchCount();
+
+        const channel = supabase.channel(`hud-count:${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'quiz_duels',
+                    filter: `challenged_id=eq.${user.id}`
+                },
+                () => { fetchCount(); }
+            )
+            .subscribe();
+
+        return () => { supabase.removeChannel(channel); };
+    }, [user?.id]);
+
+    // Listen for when a duel we challenged gets accepted by the opponent
+    useEffect(() => {
+        if (!user?.id || !supabase) return;
+
+        const pullChannel = supabase.channel(`hud-pull:${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'quiz_duels',
+                    filter: `challenger_id=eq.${user.id}`
+                },
+                (payload) => {
+                    if (payload.new.status === 'active') {
+                        // Auto-pull the challenger into the arena
+                        navigate(`/duel/${payload.new.id}`);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => { supabase.removeChannel(pullChannel); };
+    }, [user?.id, navigate]);
+
     if (!user) return null;
 
-    const streak     = user.current_streak || user.currentStreak || 0;
     const diamonds   = user.diamonds || 0;
 
     return (
@@ -51,7 +113,7 @@ function GlobalHUD() {
                 transition={{ type: 'spring', damping: 20, stiffness: 120 }}
                 className="hud-master-shell"
             >
-                {/* ── LEFT: Avatar + XP bar ─────────────────────────────── */}
+                {/* ── LEFT: Avatar + Name ─────────────────────────────── */}
                 <div className="hud-left-content" onClick={() => navigate('/profile')}>
                     <div className="hud-avatar-wrapper">
                         <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.avatarSeed || 'Hero'}`} alt="Manya" className="hud-avatar-img" />
@@ -61,8 +123,23 @@ function GlobalHUD() {
                     </div>
                 </div>
 
-                {/* ── RIGHT: Streak + Gems + Coins ──────────────────────── */}
+                {/* ── RIGHT: Bell + Coins + Gems ─────────────────────── */}
                 <div className="hud-right-content">
+                    {/* Notification Bell → opens dedicated Inbox page */}
+                    <button
+                        className={`hud-pill hud-bell-pill ${inviteCount > 0 ? 'hud-bell-active' : ''}`}
+                        title="Message Center"
+                        onClick={() => navigate('/inbox')}
+                        style={{ border: '1px solid var(--border-subtle)' }}
+                    >
+                        <div className="relative flex items-center justify-center">
+                            <Bell size={18} className={`hud-bell-icon ${inviteCount > 0 ? 'hud-bell-wiggle' : ''}`} />
+                            {inviteCount > 0 && (
+                                <span className="hud-bell-badge">{inviteCount}</span>
+                            )}
+                        </div>
+                    </button>
+
                     {/* Coins — animated count-up */}
                     <div
                         id="hud-coin-pill"
