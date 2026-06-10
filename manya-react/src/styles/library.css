@@ -9,7 +9,10 @@
     --border: var(--border-color);
     --text-dim: var(--text-secondary);
 
-    width: 100%; height: 100%;
+    /* Pull up to reduce gap below HUD, and pull out to negate the 16px global padding */
+    margin: -32px -16px 0 -16px;
+    width: calc(100% + 32px); 
+    height: calc(100% + 32px);
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: 'Outfit', sans-serif;
@@ -19,13 +22,13 @@
 
 /* ── COMPACT HEADER ── */
 .vault-header-area {
-    padding: 16px 20px 12px;
+    padding: 10px 16px 8px;
     background: var(--bg-main);
     z-index: 10;
     border-bottom: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .vault-top-row {
@@ -33,7 +36,7 @@
 }
 
 .vault-title-group h1 {
-    font-size: 24px; font-weight: 900; letter-spacing: -0.04em;
+    font-size: 18px; font-weight: 900; letter-spacing: -0.04em;
     color: var(--text-main);
 }
 
@@ -194,15 +197,15 @@
 }
 
 .sub-pill-compact {
-    padding: 8px 4px;
-    border-radius: 14px;
+    padding: 4px 6px;
+    border-radius: 10px;
     background: var(--card-bg);
     border: 1px solid var(--border);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     font-size: 11px;
     font-weight: 800;
     transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
@@ -251,7 +254,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 4px 10px;
     border-radius: 100px;
     background: var(--bg-inset);
     border: 1px solid var(--border);

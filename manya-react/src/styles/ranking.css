@@ -44,6 +44,87 @@
     animation: pulse 2s infinite;
 }
 
+/* ── ADVANCED SHIMMER SKELETONS ── */
+@keyframes advanced-shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.skeleton-base {
+    background: linear-gradient(90deg, var(--bg-elevated) 8%, rgba(255,255,255,0.05) 18%, var(--bg-elevated) 33%);
+    background-size: 1000px 100%;
+    animation: advanced-shimmer 2s infinite linear;
+    border-radius: 8px;
+}
+
+.podium-skeleton-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 30%;
+}
+
+.skel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+}
+
+.skel-name {
+    width: 70%;
+    height: 12px;
+}
+
+.skel-score {
+    width: 50%;
+    height: 20px;
+    border-radius: 100px;
+}
+
+.rank-row-skeleton {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    min-height: 80px;
+}
+
+.skel-row-pos {
+    width: 32px;
+    height: 16px;
+}
+
+.skel-row-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.skel-row-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.skel-row-name {
+    width: 40%;
+    height: 14px;
+}
+
+.skel-row-badge {
+    width: 20%;
+    height: 10px;
+}
+
+.skel-row-score {
+    width: 40px;
+    height: 24px;
+    margin-left: auto;
+}
+
 /* ── TIMEFRAME TOGGLE ── */
 .timeframe-toggle-bar {
     background: var(--bg-card);

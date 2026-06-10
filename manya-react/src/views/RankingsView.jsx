@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Trophy, Zap, Star, Sword, X, AlertCircle } from 'lucide-react';
+import { Sparkles, Trophy, Zap, Star, Sword, X, AlertCircle, Search, Loader2 } from 'lucide-react';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { getGem } from '../config/assetUrls';
 import { updateBalanceThunk } from '../store/userSlice';
@@ -10,7 +10,7 @@ import { supabase } from '../backend/remote/supabaseClient';
 import '../styles/ranking.css';
 
 const SUBJECTS = [
-    { id: 'all', label: 'TOP', gem: getGem('master'), color: 'var(--manya-purple)' },
+    { id: 'all', label: 'Overall', gem: getGem('master'), color: 'var(--manya-purple)' },
     { id: 'math', label: 'Math', gem: getGem('math'), color: 'var(--subject-math)' },
     { id: 'science', label: 'Sci', gem: getGem('science'), color: 'var(--subject-science)' },
     { id: 'sst', label: 'SST', gem: getGem('sst'), color: 'var(--subject-sst)' },
@@ -28,6 +28,11 @@ export default function RankingsView() {
     const [loading, setLoading] = useState(true);
     const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
 
+    // Search feature
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
+
     // Selected Player for detail profile card modal
     const [selectedProfile, setSelectedProfile] = useState(null);
     
@@ -39,10 +44,20 @@ export default function RankingsView() {
     const [sendingChallenge, setSendingChallenge] = useState(false);
     const [challengeError, setChallengeError] = useState('');
     const [proposedTime, setProposedTime] = useState('4:00 PM EAT');
+    const [numQuestions, setNumQuestions] = useState(5);
     const [offlineSuccessInfo, setOfflineSuccessInfo] = useState(null);
 
     // Derived balance shorthand
-    const myGems = user?.diamonds || 0;
+    const getSubjectGems = (subject) => {
+        switch (subject) {
+            case 'math': return user?.mathGems || 0;
+            case 'science': return user?.scienceGems || 0;
+            case 'english': return user?.englishGems || 0;
+            case 'sst': return user?.sstGems || 0;
+            default: return user?.diamonds || 0;
+        }
+    };
+    const myGems = getSubjectGems(challengeSub);
     const myCoins = user?.coins || 0;
     const wagerGems = wagerCurrency === 'gems' ? wagerAmount : 0; // kept for refund compatibility
 
@@ -86,7 +101,7 @@ export default function RankingsView() {
                     rank_pos: parseInt(item.rank),
                     total_stars: 0,
                     total_gems: 0,
-                    power_score: item.weekly_xp,
+                    power_score: item.power_score,
                     league: item.league
                 }));
                 setRankings(formatted);
@@ -98,6 +113,35 @@ export default function RankingsView() {
         }
         loadRankings();
     }, [activeSub, timeframe]);
+
+    // ── DEBOUNCED SEARCH ──
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            setSearchResults([]);
+            setIsSearching(false);
+            return;
+        }
+
+        setIsSearching(true);
+        const timer = setTimeout(async () => {
+            try {
+                const { data, error } = await supabase.rpc('search_students_for_duel', {
+                    p_query: searchQuery.trim(),
+                    p_limit: 15
+                });
+                
+                if (!error && data) {
+                    setSearchResults(data);
+                }
+            } catch (err) {
+                console.error("Search error:", err);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     // ── LISTEN FOR DUEL ACCEPTANCE OR DECLINE ──
     useEffect(() => {
@@ -179,6 +223,12 @@ export default function RankingsView() {
         setChallengeError('');
 
         // Validate sender balance for the chosen currency
+        if (typeof wagerAmount !== 'number' || wagerAmount <= 0 || isNaN(wagerAmount)) {
+            setChallengeError('Please enter a valid wager amount greater than 0.');
+            setSendingChallenge(false);
+            return;
+        }
+
         if (wagerCurrency === 'coins') {
             if (myCoins < wagerAmount) {
                 setChallengeError(`You only have ${myCoins} coins. Need ${wagerAmount} to place this wager!`);
@@ -209,21 +259,42 @@ export default function RankingsView() {
                 return;
             }
 
-            // 1. Fetch 5 random MCQ questions from manya_vault for this subject
-            const { data: rawQuestions, error: qErr } = await supabase
-                .from('manya_vault')
-                .select('*')
-                .eq('subject', challengeSub.toUpperCase())
-                .eq('item_type', "MCQ's")
-                .limit(45);
+            // 1. Fetch random MCQ questions from manya_vault for this subject
+            let rawQuestions = [];
+            let qErr = null;
+
+            if (challengeSub === 'all') {
+                const subKeys = ['MATH', 'SCIENCE', 'ENGLISH', 'SST'];
+                const promises = subKeys.map(sub => 
+                    supabase.from('manya_vault')
+                        .select('*')
+                        .eq('subject', sub)
+                        .eq('item_type', "MCQ's")
+                        .limit(Math.max(15, numQuestions))
+                );
+                const results = await Promise.all(promises);
+                results.forEach(res => {
+                    if (res.error) qErr = res.error;
+                    if (res.data) rawQuestions.push(...res.data);
+                });
+            } else {
+                const { data, error } = await supabase
+                    .from('manya_vault')
+                    .select('*')
+                    .eq('subject', challengeSub.toUpperCase())
+                    .eq('item_type', "MCQ's")
+                    .limit(Math.max(45, numQuestions * 3));
+                rawQuestions = data;
+                qErr = error;
+            }
 
             if (qErr || !rawQuestions || rawQuestions.length === 0) {
                 throw new Error('Failed to find quiz questions for this subject.');
             }
 
-            // Shuffle and choose 5 questions
+            // Shuffle and choose the requested number of questions
             const shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
-            const selectedQuestions = shuffled.slice(0, 5).map(q => {
+            const selectedQuestions = shuffled.slice(0, numQuestions).map(q => {
                 const rawOptions = q.options || [q.option_a, q.option_b, q.option_c, q.option_d];
                 const cleanOptions = (Array.isArray(rawOptions) ? rawOptions : Object.values(rawOptions || {}))
                     .filter(opt => opt && opt !== 'null' && opt !== '');
@@ -353,14 +424,8 @@ export default function RankingsView() {
                                     <div className="text-sm font-black text-[#2e1d0f] leading-tight">
                                         {currentLeagueMeta.name}
                                     </div>
-                                    <div className="weekly-xp-bar mt-1.5" style={{ width: '120px' }}>
-                                        <div
-                                            className="weekly-xp-fill"
-                                            style={{ width: `${Math.min(100, ((user?.weeklyXp || 0) / 500) * 100)}%` }}
-                                        />
-                                    </div>
-                                    <div className="text-[9px] text-amber-800 font-bold mt-0.5">
-                                        ⚡ {user?.weeklyXp || 0} XP this week
+                                    <div className="text-[9px] text-amber-800 font-bold mt-1 leading-tight">
+                                        Top 5 promote · Bottom 5 demote each week
                                     </div>
                                 </div>
                             </div>
@@ -413,8 +478,12 @@ export default function RankingsView() {
 
             {/* ── THE PODIUM ── */}
             <div className="podium-section">
-                {loading ? (
-                    <div className="podium-shimmer" />
+                {loading || !isOnline ? (
+                    <div className="podium-layout">
+                        <div className="podium-skeleton-slot mt-6"><div className="skeleton-base skel-avatar" /><div className="skeleton-base skel-name" /><div className="skeleton-base skel-score" /></div>
+                        <div className="podium-skeleton-slot"><div className="skeleton-base skel-avatar" /><div className="skeleton-base skel-name" /><div className="skeleton-base skel-score" /></div>
+                        <div className="podium-skeleton-slot mt-8"><div className="skeleton-base skel-avatar" /><div className="skeleton-base skel-name" /><div className="skeleton-base skel-score" /></div>
+                    </div>
                 ) : (
                     <div className="podium-layout">
                         {/* Rank 2 */}
@@ -441,16 +510,68 @@ export default function RankingsView() {
                 )}
             </div>
 
+            {/* ── SEARCH DUELERS ── */}
+            <div className="px-5 mb-4 relative z-20">
+                <div className="relative flex items-center bg-[#2a1c0d] border-2 border-[#8d6e63]/40 rounded-xl px-3 py-2.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] transition-all focus-within:border-[#c5a880] focus-within:shadow-[0_0_10px_rgba(197,160,54,0.3)]">
+                    <Search size={18} className="text-[#8d6e63] mr-2 shrink-0" />
+                    <input 
+                        type="text" 
+                        placeholder="Search for a student to duel..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="bg-transparent border-none text-[13px] font-bold text-[#e0e0e0] placeholder-[#8d6e63] w-full outline-none"
+                    />
+                    {isSearching ? (
+                        <Loader2 size={16} className="text-[#8d6e63] animate-spin shrink-0 ml-2" />
+                    ) : searchQuery ? (
+                        <button onClick={() => setSearchQuery('')} className="text-[#8d6e63] hover:text-[#d7ccc8] shrink-0 ml-2">
+                            <X size={16} />
+                        </button>
+                    ) : null}
+                </div>
+            </div>
+
             {/* ── LEADERBOARD LIST ── */}
             <div className="leaderboard-container">
-                <div className="list-header">
-                    <span>{timeframe === 'weekly' ? 'WEEKLY COHORT STANDINGS' : `${activeSub.toUpperCase()} LEADERBOARD`}</span>
-                    <span>{timeframe === 'weekly' ? 'WEEKLY XP (⚡)' : 'HERO POWER (⚡)'}</span>
+                <div className="flex justify-between px-5 mb-2 text-[10px] font-black text-[#5d4037] uppercase tracking-widest">
+                    <span className="truncate mr-2">{timeframe === 'weekly' ? 'WEEKLY COHORT STANDINGS' : `${activeSub.toUpperCase()} LEADERBOARD`}</span>
+                    <span className="shrink-0">{timeframe === 'weekly' ? 'WEEKLY SCORE (⚡)' : 'HERO POWER (⚡)'}</span>
                 </div>
 
                 <div className="rank-list">
-                    {loading ? (
-                        <div className="py-20 text-center opacity-50">Calculating Ranks...</div>
+                    {loading || !isOnline ? (
+                        [1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="rank-row-skeleton">
+                                <div className="skeleton-base skel-row-pos" />
+                                <div className="skeleton-base skel-row-avatar" />
+                                <div className="skel-row-info">
+                                    <div className="skeleton-base skel-row-name" />
+                                    <div className="skeleton-base skel-row-badge" />
+                                </div>
+                                <div className="skeleton-base skel-row-score" />
+                            </div>
+                        ))
+                    ) : searchQuery.trim() ? (
+                        isSearching ? (
+                            <div className="py-20 flex justify-center opacity-50"><Loader2 className="animate-spin text-[#c5a880]" size={30} /></div>
+                        ) : searchResults.length === 0 ? (
+                            <div className="py-20 text-center text-[#8d6e63] font-bold text-xs uppercase tracking-wider opacity-70">
+                                No students found matching "{searchQuery}"
+                            </div>
+                        ) : (
+                            searchResults.map((item) => (
+                                <RankRow 
+                                    key={item.user_id} 
+                                    data={{...item, rank_pos: '?'}} 
+                                    isUser={item.user_id === user?.id} 
+                                    color={activeColor}
+                                    gem={activeGem}
+                                    isWeekly={false}
+                                    isOnline={onlineUsers.includes(item.user_id) || item.user_id === user?.id}
+                                    onClick={() => handlePlayerClick(item)}
+                                />
+                            ))
+                        )
                     ) : allRankings.length === 0 ? (
                         <div className="py-20 text-center opacity-50">No students ranked in this category yet.</div>
                     ) : (
@@ -493,7 +614,7 @@ export default function RankingsView() {
                                 </div>
                                 <div className="flex gap-2">
                                     <span className="text-[#a73a15]">⚔️</span>
-                                    <span>Earn XP by completing quests, lessons, or defeating rivals in PvP duels.</span>
+                                    <span>Your standing in the cohort is based on your <strong className="text-amber-900">Rank Score</strong> — earned from stars, gems and mastery.</span>
                                 </div>
                                 <div className="flex gap-2">
                                     <span className="text-[#a73a15]">📈</span>
@@ -647,12 +768,12 @@ export default function RankingsView() {
                                         {/* Subject selector */}
                                         <div className="flex flex-col gap-1.5">
                                             <span className="text-[8px] font-black text-[#5d4037] tracking-wider uppercase">⚔️ SELECT ARENA SUBJECT</span>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {SUBJECTS.filter(s => s.id !== 'all').map(s => (
+                                            <div className="flex flex-wrap justify-center gap-2">
+                                                {SUBJECTS.map(s => (
                                                     <button
                                                         key={s.id}
                                                         onClick={() => setChallengeSub(s.id)}
-                                                        className={`py-2 px-2.5 rounded-xl border-2 text-[11px] font-black transition-all flex items-center gap-1.5 justify-center ${challengeSub === s.id ? 'border-[#3e2723] bg-[#3e2723] text-white' : 'border-[#b49060]/40 bg-[#d7ccc8]/25 text-[#3e2723]'}`}
+                                                        className={`py-2 px-3 rounded-xl border-2 text-[11px] font-black transition-all flex items-center gap-1.5 justify-center flex-grow ${challengeSub === s.id ? 'border-[#3e2723] bg-[#3e2723] text-white' : 'border-[#b49060]/40 bg-[#d7ccc8]/25 text-[#3e2723]'}`}
                                                     >
                                                         <img src={s.gem} className="w-3.5 h-3.5" alt={s.label} />
                                                         <span>{s.label}</span>
@@ -696,31 +817,34 @@ export default function RankingsView() {
                                             <span className="text-[8px] font-black text-[#5d4037] tracking-wider uppercase">
                                                 {wagerCurrency === 'gems' ? '💎 PLEDGE GEMS' : '🪙 PLEDGE COINS'}
                                             </span>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                {(wagerCurrency === 'gems' ? [5, 10, 20] : [50, 100, 250]).map(val => {
-                                                    const bal = wagerCurrency === 'gems' ? myGems : myCoins;
-                                                    const cantAfford = bal < val;
-                                                    return (
-                                                        <button
-                                                            key={val}
-                                                            onClick={() => !cantAfford && setWagerAmount(val)}
-                                                            disabled={cantAfford}
-                                                            className={`py-2 px-2 rounded-xl border-2 text-xs font-black transition-all flex flex-col items-center gap-0.5 ${
-                                                                cantAfford
-                                                                    ? 'opacity-40 border-[#b49060]/20 bg-transparent text-[#8d6e63] cursor-not-allowed'
-                                                                    : wagerAmount === val
-                                                                        ? 'border-amber-600 bg-amber-600/15 text-amber-800'
-                                                                        : 'border-[#b49060]/40 bg-[#d7ccc8]/25 text-[#5d4037]'
-                                                            }`}
-                                                        >
-                                                            {wagerCurrency === 'gems'
-                                                                ? <img src={getGem(challengeSub)} className="w-3.5 h-3.5" alt="gem" />
-                                                                : <span className="text-[13px] leading-none">🪙</span>
-                                                            }
-                                                            <span>{val}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                            <div className="flex items-center gap-2">
+                                                <div className="relative flex-1">
+                                                    <input
+                                                        type="number"
+                                                        min="1"
+                                                        max={wagerCurrency === 'gems' ? myGems : myCoins}
+                                                        value={wagerAmount === '' ? '' : wagerAmount}
+                                                        onChange={(e) => {
+                                                            const val = parseInt(e.target.value, 10);
+                                                            if (isNaN(val)) setWagerAmount('');
+                                                            else setWagerAmount(val);
+                                                        }}
+                                                        className="w-full py-2 pl-9 pr-3 rounded-xl border-2 border-[#b49060]/60 bg-[#d7ccc8]/30 text-[#3e2723] font-black text-sm focus:outline-none focus:border-amber-600 focus:bg-[#ebdcb9] transition-all"
+                                                        placeholder="Amount..."
+                                                    />
+                                                    <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                        {wagerCurrency === 'gems'
+                                                            ? <img src={getGem(challengeSub)} className="w-4 h-4 opacity-90" alt="gem" />
+                                                            : <span className="text-[14px] leading-none opacity-90">🪙</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => setWagerAmount(wagerCurrency === 'gems' ? myGems : myCoins)}
+                                                    className="py-2 px-4 rounded-xl bg-[#3e2723] text-[#ebdcb9] font-black text-xs hover:bg-[#4e342e] active:scale-95 transition-all shadow-[0_2px_0_#1a0f08] border border-[#5d4037]"
+                                                >
+                                                    MAX
+                                                </button>
                                             </div>
                                             {/* Insufficient balance warning */}
                                             {(() => {
@@ -736,6 +860,23 @@ export default function RankingsView() {
                                                 }
                                                 return null;
                                             })()}
+                                        </div>
+
+                                        {/* Question Count selector */}
+                                        <div className="flex flex-col gap-1.5">
+                                            <span className="text-[8px] font-black text-[#5d4037] tracking-wider uppercase">🎯 DUEL LENGTH</span>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                {[5, 10, 15].map(n => (
+                                                    <button
+                                                        key={n}
+                                                        onClick={() => setNumQuestions(n)}
+                                                        className={`py-2 px-2 rounded-xl border-2 text-[11px] font-black transition-all flex flex-col items-center gap-0.5 ${numQuestions === n ? 'border-[#3e2723] bg-[#3e2723] text-white' : 'border-[#b49060]/40 bg-[#d7ccc8]/25 text-[#3e2723]'}`}
+                                                    >
+                                                        <span className="text-base leading-none">{n}</span>
+                                                        <span className="text-[8px] font-bold opacity-70">Qs</span>
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
 
                                         {/* Proposed Meeting Time (only if target is offline) */}
@@ -970,15 +1111,15 @@ function RankRow({ data, isUser, color, gem, isWeekly, isOnline, onClick }) {
         if (data.rank_pos <= 5) {
             rowStyleClass = "zone-promote-row";
             indicatorBadge = (
-                <div className="medieval-badge-promote scale-90 shrink-0">
-                    <span>👑 PROMOTING</span>
+                <div className="flex items-center justify-center text-emerald-500" title="Promoting">
+                    <span className="text-[14px] font-black leading-none drop-shadow-md">▲</span>
                 </div>
             );
         } else if (data.rank_pos >= 26) {
             rowStyleClass = "zone-demote-row";
             indicatorBadge = (
-                <div className="medieval-badge-demote scale-90 shrink-0">
-                    <span>⚠️ DANGER ZONE</span>
+                <div className="flex items-center justify-center text-rose-500" title="Danger Zone">
+                    <span className="text-[14px] font-black leading-none drop-shadow-md">▼</span>
                 </div>
             );
         }
@@ -990,25 +1131,25 @@ function RankRow({ data, isUser, color, gem, isWeekly, isOnline, onClick }) {
             style={isUser ? { '--tab-color': color } : {}}
             onClick={onClick}
         >
-            <span className="r-pos">#{data.rank_pos}</span>
+            <div className="flex flex-col items-center justify-center shrink-0 w-[32px]">
+                <span className="r-pos text-center !w-auto leading-none mb-1">#{data.rank_pos}</span>
+                {indicatorBadge}
+            </div>
             <div className="relative shrink-0">
                 <div className="r-avatar">
                     <img src={data.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.full_name}`} alt={data.full_name} />
                 </div>
                 <span className={`r-status-dot ${isOnline ? 'is-online' : ''}`} title={isOnline ? 'Online' : 'Offline'} />
             </div>
-            <div className="r-info min-w-0">
-                <span className="r-name">{data.full_name} {isUser ? '(YOU)' : ''}</span>
-                {indicatorBadge && (
-                    <div className="mt-1 flex">
-                        {indicatorBadge}
-                    </div>
-                )}
+            <div className="r-info min-w-0 flex flex-col justify-center">
+                <div className="flex items-center gap-1.5 overflow-hidden w-full">
+                    <span className="r-name truncate shrink-0 max-w-[120px] sm:max-w-[150px]">{data.full_name} {isUser ? '(YOU)' : ''}</span>
+                </div>
             </div>
             <div className="flex items-center gap-3 shrink-0 ml-auto">
                 <div className="r-stat-box">
                     <span className="r-score-num">{data.power_score.toLocaleString()}</span>
-                    <span className="r-score-lbl">{isWeekly ? 'XP' : 'POWER'}</span>
+                    <span className="r-score-lbl">SCORE</span>
                 </div>
                 {!isUser ? (
                     <div className="r-action-duel-btn shrink-0" title="Tap to Duel">

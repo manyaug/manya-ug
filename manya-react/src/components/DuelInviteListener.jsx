@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Sword, Check, X } from 'lucide-react';
+import { ShieldAlert, Sword, Check, X, Reply } from 'lucide-react';
 import { supabase } from '../backend/remote/supabaseClient';
 import { syncService } from '../backend/sync/syncService';
 import { updateBalanceThunk } from '../store/userSlice';
@@ -48,7 +48,8 @@ export default function DuelInviteListener() {
                                 challengerAvatar: profile?.avatar_url,
                                 wager: newDuel.gem_wager,
                                 currency: newDuel.wager_currency || 'gems',
-                                subject: newDuel.subject
+                                subject: newDuel.subject,
+                                message: newDuel.message
                             });
                             setError('');
                         } catch (e) {
@@ -62,13 +63,28 @@ export default function DuelInviteListener() {
                 {
                     event: 'UPDATE',
                     schema: 'public',
-                    table: 'quiz_duels',
-                    filter: `challenged_id=eq.${user.id}`
+                    table: 'quiz_duels'
                 },
                 (payload) => {
-                    // If the challenger cancelled the challenge while B was looking at it, dismiss it
                     const updatedDuel = payload.new;
-                    if (updatedDuel.status === 'cancelled' || updatedDuel.status === 'declined') {
+                    
+                    // Auto-pull both users into the arena when the match officially starts
+                    if (updatedDuel.status === 'accepted') {
+                        if (updatedDuel.challenger_id === user.id || updatedDuel.challenged_id === user.id) {
+                            navigate(`/duel/${updatedDuel.id}`);
+                        }
+                    }
+
+                    // If the other user accepted the terms, AND we are online (because this runs),
+                    // automatically start the match if we are the challenger.
+                    if (updatedDuel.status === 'accepted_terms' && updatedDuel.challenger_id === user.id) {
+                        syncService.readyQuizDuel(updatedDuel.id).catch(err => {
+                            console.error("Auto-ready failed:", err);
+                        });
+                    }
+
+                    // If the challenger cancelled the challenge while B was looking at it, dismiss it
+                    if (updatedDuel.challenged_id === user.id && (updatedDuel.status === 'cancelled' || updatedDuel.status === 'declined')) {
                         setInvite(prev => (prev && prev.duelId === updatedDuel.id) ? null : prev);
                     }
                 }
@@ -78,7 +94,7 @@ export default function DuelInviteListener() {
         return () => {
             supabase.removeChannel(dbChannel);
         };
-    }, [user?.id]);
+    }, [user?.id, navigate]);
 
     const handleDecline = async () => {
         if (!invite) return;
@@ -179,9 +195,20 @@ export default function DuelInviteListener() {
                             CHALLENGE RECEIVED!
                         </h2>
                         
-                        <p className="relative z-10 text-[#d7ccc8] text-xs mb-6">
+                        <p className="relative z-10 text-[#d7ccc8] text-xs mb-4">
                             <strong className="text-white text-sm">{invite.challengerName}</strong> has challenged you to a duel!
                         </p>
+
+                        {invite.message && (
+                            <div className="relative z-10 w-full bg-[#3e2723]/60 border border-[#b49060]/50 rounded-xl p-3 mb-4 text-left shadow-inner">
+                                <div className="text-[9px] font-black text-[#b49060] uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    ✉️ Message from {invite.challengerName}
+                                </div>
+                                <div className="text-sm font-medium text-[#ebdcb9] italic">
+                                    "{invite.message}"
+                                </div>
+                            </div>
+                        )}
 
                         <div className="relative z-10 bg-[#ebdcb9] border-2 border-[#b49060] rounded-2xl p-4 flex flex-col items-center gap-3 mb-6 shadow-[inset_0_0_6px_rgba(62,39,35,0.2),0_3px_0_#1a0f08]">
                             <div className="flex items-center gap-2">
@@ -204,8 +231,8 @@ export default function DuelInviteListener() {
                             </div>
                         )}
 
-                        <div className="relative z-10 flex gap-4">
-                            {/* DECLINE button — blood-carved stone */}
+                        <div className="relative z-10 flex gap-3 mb-3">
+                            {/* DECLINE button */}
                             <button
                                 disabled={loading}
                                 onClick={handleDecline}
@@ -223,7 +250,7 @@ export default function DuelInviteListener() {
                                 </div>
                             </button>
 
-                            {/* ACCEPT button — gold-carved stone */}
+                            {/* ACCEPT button */}
                             <button
                                 disabled={loading}
                                 onClick={handleAccept}
@@ -240,6 +267,29 @@ export default function DuelInviteListener() {
                                     <span className="text-[11px] font-black text-amber-100 uppercase tracking-widest leading-none">
                                         {loading ? 'ACCEPTING...' : 'ACCEPT'}
                                     </span>
+                                </div>
+                            </button>
+                        </div>
+
+                        {/* COUNTER button */}
+                        <div className="relative z-10 w-full">
+                            <button
+                                disabled={loading}
+                                onClick={() => {
+                                    setInvite(null);
+                                    navigate('/inbox');
+                                }}
+                                className="relative w-full group disabled:opacity-40"
+                            >
+                                <div className="absolute inset-0 rounded-xl bg-[#1c2e4a] translate-y-[3px] border-b-2 border-[#0a1526]" />
+                                <div className="relative flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl
+                                    bg-gradient-to-b from-[#2a4365] via-[#1e3a5f] to-[#152e4d]
+                                    border-2 border-[#3b5982] border-b-[#1c2e4a]
+                                    shadow-[inset_0_1px_0_rgba(100,150,255,0.15),0_0_8px_rgba(30,80,180,0.3)]
+                                    active:translate-y-[2px] active:shadow-none transition-all duration-100
+                                    group-hover:from-[#324f77] group-hover:via-[#244570] group-hover:to-[#1a385c]">
+                                    <Reply size={13} className="text-blue-200 shrink-0" />
+                                    <span className="text-[11px] font-black text-blue-200 uppercase tracking-widest leading-none">Propose Different Terms</span>
                                 </div>
                             </button>
                         </div>

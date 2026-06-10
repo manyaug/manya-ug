@@ -8,7 +8,7 @@
     padding: 0 0 100px;
     position: relative;
     overflow-x: hidden;
-    background: var(--bg-page);
+    background: var(--bg-primary);
 }
 
 /* ── STICKY HEADER (same pattern as Preferences .mobile-header-sleek) ── */
@@ -18,14 +18,14 @@
     left: 0;
     right: 0;
     height: 72px;
-    background: rgba(5, 7, 20, 0.8);
+    background: rgba(26, 15, 8, 0.85); /* Rich dark wood tone to match Home/Vault */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
-    border-bottom: 2px solid var(--border-subtle);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     z-index: 100;
 }
 
@@ -65,7 +65,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2.5px;
-    color: var(--manya-purple);
+    color: var(--text-secondary);
 }
 
 .inbox-title {
@@ -383,16 +383,17 @@
 }
 
 .inbox-empty-icon-box {
-    width: 72px;
-    height: 72px;
-    border-radius: 22px;
-    background: var(--bg-card);
-    border: 4px solid var(--border-subtle);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(197, 160, 54, 0.1);
+    border: 2px solid rgba(197, 160, 54, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
-    box-shadow: var(--shadow-warm);
+    color: var(--primary-color, #c5a036);
+    box-shadow: 0 0 30px rgba(197, 160, 54, 0.15), inset 0 0 15px rgba(197, 160, 54, 0.1);
+    font-size: 36px;
 }
 
 .inbox-empty-state h4 {

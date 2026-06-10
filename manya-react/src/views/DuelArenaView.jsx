@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sword, Trophy, Zap, Clock, ShieldAlert, Sparkles, CheckCircle2, AlertTriangle, ArrowLeft, LogOut, BookOpen, ShieldCheck, Play } from 'lucide-react';
 import { supabase } from '../backend/remote/supabaseClient';
 import { syncService } from '../backend/sync/syncService';
-import { updateBalanceThunk } from '../store/userSlice';
+import { updateBalanceThunk, userSlice } from '../store/userSlice';
 import { getGem, IMAGES } from '../config/assetUrls';
 import { audioService } from '../infrastructure/audio/audioService.js';
 import '../styles/engines.css';
@@ -160,6 +160,8 @@ export default function DuelArenaView() {
 
     // ── RPG BATTLE LOG TICKER & MASCOT WATCHERS ──
     const prevOpponentIdxRef = useRef(0);
+    const abandonTimeoutRef = useRef(null);
+
     useEffect(() => {
         if (!opponentProgress) return;
         const currentOppIdx = opponentProgress.questionIndex;
@@ -171,13 +173,61 @@ export default function DuelArenaView() {
             ]);
             prevOpponentIdxRef.current = currentOppIdx;
         }
+
         if (opponentProgress.disconnected) {
             setBattleLogs(prev => [
                 ...prev.slice(-3),
                 `⚠️ Opponent has disconnected from the arena!`
             ]);
+            
+            // Auto-claim victory if opponent abandons (5 second grace period)
+            if (!duelResult && !finishing && !opponentProgress.finished) {
+                if (abandonTimeoutRef.current) clearTimeout(abandonTimeoutRef.current);
+                abandonTimeoutRef.current = setTimeout(async () => {
+                    try {
+                        const result = await syncService.claimAbandonedDuel(duelId);
+                        if (result && result.success && result.resolved) {
+                            setBattleLogs(prev => [...prev.slice(-3), `🏆 Opponent abandoned! You claim the victory!`]);
+                            resolveMatchOutcome(result);
+                        }
+                    } catch (e) {
+                        console.error("Failed to claim abandoned duel:", e);
+                    }
+                }, 5000);
+            }
+        } else {
+            // Clears the timeout if they reconnect
+            if (abandonTimeoutRef.current) {
+                clearTimeout(abandonTimeoutRef.current);
+                abandonTimeoutRef.current = null;
+            }
         }
-    }, [opponentProgress]);
+
+        return () => {
+            if (abandonTimeoutRef.current) clearTimeout(abandonTimeoutRef.current);
+        };
+    }, [opponentProgress, duelResult, finishing, duelId]);
+
+    // Handle user refreshing the page (fallback forfeit)
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (!duelResult && !finishing) {
+                // Best effort synchronous attempt to forfeit
+                try {
+                    const timeSpentMs = 9999999;
+                    const forfeitedAnswers = questions.map(q => ({
+                        questionId: q.id || q.qid,
+                        selected: "FORFEITED",
+                        correct: q.answer,
+                        isCorrect: false
+                    }));
+                    syncService.submitDuelParticipantResults(duelId, 0, timeSpentMs, forfeitedAnswers).catch(() => {});
+                } catch (err) {}
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [duelResult, finishing, duelId, questions]);
 
     // Mascot sweating state when time is low
     useEffect(() => {
@@ -190,7 +240,7 @@ export default function DuelArenaView() {
 
     // Question-timer loop
     useEffect(() => {
-        if (loading || duelResult || isAnswered || showForfeitConfirm || showRules) return;
+        if (loading || duelResult || isAnswered || showForfeitConfirm || showRules || duel?.status === 'accepted_terms') return;
 
         setTimeLeft(30);
         timerRef.current = setInterval(() => {
@@ -415,23 +465,21 @@ export default function DuelArenaView() {
         if (updatedDuel.winner_id === user.id) {
             setDuelResult('win');
             try { audioService.playSFX('victory'); } catch (e) {}
-            dispatch(updateBalanceThunk({
-                currency: currencyKey,
-                amount: duel.gem_wager * 2,
-                type: 'DUEL_WIN',
-                contextId: duelId
-            }));
+            if (currencyKey === 'coins') {
+                dispatch(userSlice.actions.awardCoins(duel.gem_wager * 2));
+            } else {
+                dispatch(userSlice.actions.awardGems({ subject: 'overall', amount: duel.gem_wager * 2 }));
+            }
             // 🏆 LEAGUE: +25 XP for winning a duel
             syncService.incrementWeeklyXp(25).catch(() => {});
         } else if (updatedDuel.winner_id === null) {
             setDuelResult('tie');
             try { audioService.playSFX('pop'); } catch (e) {}
-            dispatch(updateBalanceThunk({
-                currency: currencyKey,
-                amount: duel.gem_wager,
-                type: 'DUEL_REFUND',
-                contextId: duelId
-            }));
+            if (currencyKey === 'coins') {
+                dispatch(userSlice.actions.awardCoins(duel.gem_wager));
+            } else {
+                dispatch(userSlice.actions.awardGems({ subject: 'overall', amount: duel.gem_wager }));
+            }
             // 🏆 LEAGUE: +10 XP for a tie
             syncService.incrementWeeklyXp(10).catch(() => {});
         } else {
@@ -671,8 +719,28 @@ export default function DuelArenaView() {
             <div className="torch-glow-2" />
 
             {/* Combustion overlay for low time */}
-            {!isAnswered && !duelResult && timeLeft <= 8 && (
+            {!isAnswered && !duelResult && timeLeft <= 8 && duel?.status !== 'accepted_terms' && (
                 <div className="combustion-vignette" />
+            )}
+
+            {/* WAITING FOR OPPONENT OVERLAY */}
+            {duel?.status === 'accepted_terms' && (
+                <div className="absolute inset-0 z-[99999] bg-[#1c120c]/95 flex flex-col items-center justify-center p-6 backdrop-blur-md">
+                    <div className="relative w-20 h-20 bg-[#3e2723] rounded-full border-4 border-[#c5a880] flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(197,168,128,0.3)]">
+                        <Sword size={36} className="text-[#c5a880] animate-pulse" />
+                    </div>
+                    <h2 className="text-2xl font-black text-white text-center tracking-widest uppercase mb-3">
+                        Waiting for Opponent
+                    </h2>
+                    <p className="text-[#ebdcb9] text-center text-sm font-medium mb-10 max-w-xs">
+                        The challenge has been accepted! The duel will commence as soon as {opponent?.full_name || opponent?.nickname || 'they'} arrives...
+                    </p>
+                    <div className="flex gap-3 items-center">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#c5a880] animate-bounce shadow-sm" style={{ animationDelay: '0ms' }} />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#c5a880] animate-bounce shadow-sm" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#c5a880] animate-bounce shadow-sm" style={{ animationDelay: '300ms' }} />
+                    </div>
+                </div>
             )}
 
             {/* ── ARENA HUD — Compact single row ── */}
@@ -841,13 +909,14 @@ export default function DuelArenaView() {
                             </div>
                         </motion.div>
                     ) : (
-                        /* Medieval End Battle Outcome Cards - High-End Parchment Banner Scroll */
-                        <motion.div 
-                            initial={{ scale: 0.9, y: 15, opacity: 0 }}
-                            animate={{ scale: 1, y: 0, opacity: 1 }}
-                            className="max-w-md mx-auto w-full parchment-scroll p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
-                        >
-                            {/* Inner premium borders and gold corner ornaments */}
+                        <div className="flex-1 flex items-center justify-center p-4 w-full z-20">
+                            {/* Medieval End Battle Outcome Cards - High-End Parchment Banner Scroll */}
+                            <motion.div 
+                                initial={{ scale: 0.9, y: 15, opacity: 0 }}
+                                animate={{ scale: 1, y: 0, opacity: 1 }}
+                                className="max-w-md mx-auto w-full parchment-scroll p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+                            >
+                                {/* Inner premium borders and gold corner ornaments */}
                             <div className="absolute inset-2 border-2 border-[#8c6b45] rounded-xl pointer-events-none opacity-40" />
                             <div className="absolute inset-3 border border-dashed border-[#8c6b45]/30 rounded-lg pointer-events-none" />
                             <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-amber-800" />
@@ -863,9 +932,24 @@ export default function DuelArenaView() {
                                     </div>
                                     <h3 className="text-2xl font-black text-amber-950 uppercase tracking-widest leading-none mb-2">HONOR GUARD</h3>
                                     <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#8c6b45] to-transparent mb-4" />
-                                    <p className="text-amber-900 text-xs font-bold max-w-xs leading-relaxed">
+                                    <p className="text-amber-900 text-xs font-bold max-w-xs leading-relaxed mb-6">
                                         You finished with a score of <strong className="text-amber-950 font-black text-sm">{score}/{questions.length}</strong>. Waiting for your opponent to complete their challenge...
                                     </p>
+                                    
+                                    <button 
+                                        onClick={() => navigate('/rankings')}
+                                        className="relative w-full group"
+                                    >
+                                        <div className="absolute inset-0 rounded-xl bg-[#3e2200] translate-y-[3px] border-b-2 border-[#1a0f00]" />
+                                        <div className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                                            bg-gradient-to-b from-[#c5a036] via-[#a07d20] to-[#8a6a10]
+                                            border-2 border-[#e0c060] border-b-[#3e2200]
+                                            shadow-[inset_0_1px_0_rgba(255,230,100,0.25),0_0_10px_rgba(197,160,54,0.25)]
+                                            active:translate-y-[2px] active:shadow-none transition-all duration-100
+                                            group-hover:from-[#d4ae40] group-hover:via-[#b08a28] group-hover:to-[#967518]">
+                                            <span className="text-xs font-black text-amber-100 uppercase tracking-widest leading-none">RETURN TO TOWN HALL</span>
+                                        </div>
+                                    </button>
                                 </div>
                             )}
 
@@ -1030,7 +1114,8 @@ export default function DuelArenaView() {
                                     </button>
                                 </div>
                             )}
-                        </motion.div>
+                            </motion.div>
+                        </div>
                     )}
                 </AnimatePresence>
             </main>

@@ -317,13 +317,26 @@ export const syncService = {
         return syncQueue.execute(async () => {
             const uid = await this.getUserId();
             if (!uid) return;
-            const smartKey = `${type.toUpperCase()}|${title}|${path || id}`;
+            const uniquePath = path || id;
+            const smartKey = `${type.toUpperCase()}|${title}|${uniquePath}`;
             const payload = { user_id: uid, artifact_id: smartKey, subject };
-            const existing = await storageFacade.get(`db:/user_vault?uid=${uid}&artifact_id=${smartKey}&single=maybe`);
-            if (existing) {
-                console.log(`🏺 [Vault] "${title}" already in Vault. Skipping.`);
-                return;
+            
+            // Check if this path already exists
+            const vaultRows = await storageFacade.get(`db:/user_vault?uid=${uid}`);
+            if (vaultRows) {
+                 const exists = vaultRows.some(r => {
+                      if (r.artifact_id && r.artifact_id.includes('|')) {
+                           const parts = r.artifact_id.split('|');
+                           return parts.length > 2 && parts[2] === uniquePath;
+                      }
+                      return r.artifact_id === uniquePath;
+                 });
+                 if (exists) {
+                      console.log(`🏺 [Vault] Asset "${uniquePath}" already in Vault. Skipping.`);
+                      return;
+                 }
             }
+            
             await storageFacade.put('db:/user_vault', payload);
             console.log(`☁️ [Vault] Saved: ${title} (${type})`);
         }, 'pushToVault');
@@ -526,19 +539,33 @@ export const syncService = {
     },
 
     // ── PVP QUIZ DUELS (Online Only) ──────────────────────────────────────────
-    async createQuizDuel(challengedId, wager, subject, questions, currency = 'gems') {
+    async createQuizDuel(challengedId, wager, subject, questions, currency = 'gems', message = null) {
         try {
             const { data, error } = await supabase.rpc('create_quiz_duel_escrow', {
                 p_challenged_id: challengedId,
                 p_wager: wager,
                 p_subject: subject,
                 p_questions: questions,
-                p_currency: currency
+                p_currency: currency,
+                p_message: message
             });
             if (error) throw error;
             return data;
         } catch (e) {
             console.error('⚔️ [Sync] Create duel failed:', e.message);
+            throw e;
+        }
+    },
+
+    async readyQuizDuel(duelId) {
+        try {
+            const { data, error } = await supabase.rpc('ready_quiz_duel', {
+                p_duel_id: duelId
+            });
+            if (error) throw error;
+            return data;
+        } catch (e) {
+            console.error('⚔️ [Sync] Ready duel failed:', e.message);
             throw e;
         }
     },
@@ -591,6 +618,19 @@ export const syncService = {
             return resolveData;
         } catch (e) {
             console.error('⚔️ [Sync] Submit duel results failed:', e.message);
+            throw e;
+        }
+    },
+
+    async claimAbandonedDuel(duelId) {
+        try {
+            const { data: resolveData, error: resolveError } = await supabase.rpc('claim_abandoned_duel', {
+                p_duel_id: duelId
+            });
+            if (resolveError) throw resolveError;
+            return resolveData;
+        } catch (e) {
+            console.error('⚔️ [Sync] Claim abandoned duel failed:', e.message);
             throw e;
         }
     },

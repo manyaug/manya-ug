@@ -5,6 +5,9 @@ import {
 } from 'lucide-react';
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { IMAGES, getIsland } from '../config/assetUrls';
+import { useNavigate } from 'react-router-dom';
+import { loadQuestSteps } from '../utils/questLoader';
+import { getEngineMetadata } from '../utils/engineRouter';
 import '../styles/library.css';
 
 // Lazy Load Engines for Preview
@@ -134,7 +137,7 @@ export default function LibraryView() {
                 <div className="vault-search-box">
                     <Search className="search-icon" size={16} />
                     <input 
-                        className="!h-[44px] !text-xs !pl-10 !pr-10"
+                        className="!h-[36px] !text-xs !pl-10 !pr-10"
                         type="text" 
                         placeholder={`Search ${activeSub} assets...`} 
                         value={search}
@@ -378,16 +381,49 @@ function ArtifactCard({ item, color, onClick, onDelete }) {
 }
 
 function EngineLauncher({ item, onClose }) {
-    const data = { file: item.path, title: item.title, subject: item.subject };
+    const navigate = useNavigate();
+    const [step, setStep] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    if (item.type === 'SIM') {
-        return <ReaderStudyEngine data={data} onComplete={onClose} skipDiscovery={true} />;
-    }
+    useEffect(() => {
+        // Simulations are fully interactive quests, so jump into the QuestRunner!
+        if (item.type === 'SIM') {
+            navigate('/quest', { state: { questKey: item.path, subject: item.subject, nodeType: 'EXPLORE' } });
+            onClose();
+            return;
+        }
+
+        async function fetchContent() {
+             try {
+                 const res = await loadQuestSteps(item.subject || 'general', 'vault', 'vault', item.path);
+                 if (res && res.steps && res.steps.length > 0) {
+                     setStep(res.steps[0]);
+                 } else {
+                     setStep({ engineType: 'NOTE_EXPLORER', data: { file: item.path, title: item.title, subject: item.subject } });
+                 }
+             } catch(e) {
+                 console.error('[LibraryView] EngineLauncher error:', e);
+                 setStep({ engineType: 'NOTE_EXPLORER', data: { file: item.path, title: item.title, subject: item.subject } });
+             }
+             setLoading(false);
+        }
+        fetchContent();
+    }, [item, navigate, onClose]);
+
+    if (item.type === 'SIM') return null; // handled by navigate
+    if (loading) return <div className="flex flex-col items-center justify-center h-full text-[var(--text-sub)]"><div className="w-8 h-8 border-4 border-[var(--accent-color)] border-t-transparent rounded-full animate-spin mb-4" />Loading...</div>;
+    if (!step) return <div className="p-8 text-center opacity-50">No content available.</div>;
+
+    const data = step.data || { file: item.path, title: item.title, subject: item.subject };
+    const eType = step.engineType || (item.type === 'RECAP' ? 'READER_STUDY' : 'NOTE_EXPLORER');
     
-    if (item.type === 'RECAP') {
-        return <ReaderStudyEngine data={data} onComplete={onClose} skipDiscovery={true} />;
+    const meta = getEngineMetadata(eType);
+    if (meta && meta.component) {
+        const DynamicEngine = meta.component;
+        return <DynamicEngine data={data} onComplete={onClose} skipDiscovery={true} />;
     }
 
+    // Fallback if engine missing
     return <NoteExplorerEngine data={data} onComplete={onClose} skipDiscovery={true} />;
 }
 

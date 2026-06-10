@@ -33,6 +33,7 @@ import { getGem } from '../config/assetUrls';
 import '../styles/inbox.css';
 
 const SUBJECTS = [
+    { id: 'all', label: 'Overall', gem: getGem('master'), color: 'var(--manya-purple)' },
     { id: 'math', label: 'Math', gem: getGem('math'), color: 'var(--subject-math)' },
     { id: 'science', label: 'Sci', gem: getGem('science'), color: 'var(--subject-science)' },
     { id: 'sst', label: 'SST', gem: getGem('sst'), color: 'var(--subject-sst)' },
@@ -93,9 +94,7 @@ export default function InboxView() {
     const [error, setError]                     = useState('');
     const [actionLoadingId, setActionLoadingId] = useState(null);
     const [bargainingInvite, setBargainingInvite] = useState(null);
-    const [pendingDuelId, setPendingDuelId] = useState(null);
-    const [pendingDuelStatus, setPendingDuelStatus] = useState(null);
-    const [pendingOpponentName, setPendingOpponentName] = useState('');
+
     // Track dismissed system messages
     const [dismissedSys, setDismissedSys]       = useState(() => {
         try {
@@ -103,17 +102,15 @@ export default function InboxView() {
         } catch { return []; }
     });
 
-    // ── Fetch pending duel invitations ──────────────────────
+    // ── Fetch pending duel invitations & ready handshakes ──────────────────────
     const fetchInvites = useCallback(async () => {
         if (!user?.id || !supabase) return;
         setLoading(true);
         try {
-            // Only select columns that exist on profiles: full_name, avatar_url
             const { data, error: fetchErr } = await supabase
                 .from('quiz_duels')
-                .select('*, challenger:challenger_id(full_name, avatar_url)')
-                .eq('challenged_id', user.id)
-                .eq('status', 'pending')
+                .select('*, challenger:challenger_id(full_name, avatar_url), challenged:challenged_id(full_name, avatar_url)')
+                .or(`and(challenged_id.eq.${user.id},status.eq.pending),and(challenger_id.eq.${user.id},status.eq.accepted_terms)`)
                 .order('created_at', { ascending: false });
 
             if (fetchErr) {
@@ -141,18 +138,28 @@ export default function InboxView() {
                 {
                     event: '*',
                     schema: 'public',
-                    table: 'quiz_duels',
-                    filter: `challenged_id=eq.${user.id}`
+                    table: 'quiz_duels'
                 },
                 async (payload) => {
-                    if (payload.eventType === 'INSERT' && payload.new.status === 'pending') {
+                    const isRelevantNew = payload.new && (
+                        (payload.new.challenged_id === user.id && payload.new.status === 'pending') ||
+                        (payload.new.challenger_id === user.id && payload.new.status === 'accepted_terms')
+                    );
+                    
+                    if (payload.eventType === 'INSERT' && isRelevantNew) {
                         try {
                             const { data: profile } = await supabase
                                 .from('profiles')
                                 .select('full_name, avatar_url')
-                                .eq('id', payload.new.challenger_id)
+                                .eq('id', payload.new.challenger_id === user.id ? payload.new.challenged_id : payload.new.challenger_id)
                                 .single();
-                            const enriched = { ...payload.new, challenger: profile };
+                            
+                            const enriched = { 
+                                ...payload.new, 
+                                challenger: payload.new.challenger_id === user.id ? user : profile,
+                                challenged: payload.new.challenged_id === user.id ? user : profile
+                            };
+                            
                             setInvites(prev => {
                                 if (prev.some(d => d.id === payload.new.id)) return prev;
                                 return [enriched, ...prev];
@@ -161,7 +168,11 @@ export default function InboxView() {
                             console.error('[Inbox] Error enriching new invite:', e);
                         }
                     } else if (payload.eventType === 'UPDATE') {
-                        if (payload.new.status !== 'pending') {
+                        if (isRelevantNew) {
+                            // Enforce re-fetch or manual update
+                            fetchInvites();
+                        } else {
+                            // If it's no longer relevant (e.g. accepted or completed), remove it
                             setInvites(prev => prev.filter(d => d.id !== payload.new.id));
                         }
                     } else if (payload.eventType === 'DELETE') {
@@ -172,87 +183,88 @@ export default function InboxView() {
             .subscribe();
 
         return () => { supabase.removeChannel(channel); };
-    }, [user?.id]);
+    }, [user?.id, fetchInvites]);
 
     // ── Accept a duel ───────────────────────────────────────
     const handleAccept = async (invite) => {
         setActionLoadingId(invite.id);
         setError('');
 
-        const isOnline = onlineUsers.includes(invite.challenger_id);
-        if (!isOnline) {
-            dispatch(addToast({
-                message: `${invite.challenger?.full_name || 'The challenger'} is currently offline. Please Counter-Propose a specific meeting time instead so they can join later!`,
-                type: 'warning'
-            }));
-            
-            // Auto open the bargaining modal
-            setBargainingInvite({
-                ...invite,
-                proposed_wager: invite.gem_wager || 5,
-                proposed_currency: invite.wager_currency || 'gems',
-                proposed_subject: invite.subject || 'general',
-                proposed_meet_time: invite.proposed_meet_time || '4:00 PM EAT'
-            });
-            setActionLoadingId(null);
-            return;
-        }
+        const isPending = invite.status === 'pending';
+        const isAcceptedTerms = invite.status === 'accepted_terms';
 
-        const wager    = invite.gem_wager || 0;
-        const currency = invite.wager_currency || 'gems';
+        if (isPending) {
+            // I am the challenged, accepting the terms
+            const wager    = invite.gem_wager || 0;
+            const currency = invite.wager_currency || 'gems';
 
-        if (currency === 'coins') {
-            if ((user.coins || 0) < wager) {
-                setError(`You need at least ${wager} Coins to accept this duel.`);
-                setActionLoadingId(null);
-                return;
-            }
-        } else {
-            if ((user.diamonds || 0) < wager) {
-                setError(`You need at least ${wager} Gems to accept this duel.`);
-                setActionLoadingId(null);
-                return;
-            }
-        }
-
-        try {
-            const { data: sessionData } = await supabase.auth.getSession();
-            let activeSession = sessionData?.session;
-            if (!activeSession) {
-                const { data: refreshData } = await supabase.auth.refreshSession();
-                activeSession = refreshData?.session;
-            }
-            if (!activeSession) {
-                setError('Session expired. Please log out and back in.');
-                setActionLoadingId(null);
-                return;
-            }
-
-            const response = await syncService.acceptQuizDuel(invite.id);
-            if (response?.success) {
-                dispatch(updateBalanceThunk({
-                    currency: currency === 'coins' ? 'coins' : 'gem_overall',
-                    amount: -wager,
-                    type: 'DUEL_ESCROW_OUT',
-                    contextId: invite.id
-                }));
-                navigate(`/duel/${invite.id}`);
+            if (currency === 'coins') {
+                if ((user.coins || 0) < wager) {
+                    setError(`You need at least ${wager} Coins to accept this duel.`);
+                    setActionLoadingId(null);
+                    return;
+                }
             } else {
-                setError(response?.message || 'Failed to accept challenge.');
+                if ((user.diamonds || 0) < wager) {
+                    setError(`You need at least ${wager} Gems to accept this duel.`);
+                    setActionLoadingId(null);
+                    return;
+                }
             }
-        } catch (e) {
-            setError(e.message || 'An error occurred.');
-        } finally {
-            setActionLoadingId(null);
+
+            try {
+                const response = await syncService.acceptQuizDuel(invite.id);
+                if (response?.success) {
+                    dispatch(updateBalanceThunk({
+                        currency: currency === 'coins' ? 'coins' : 'gem_overall',
+                        amount: -wager,
+                        type: 'DUEL_ESCROW_OUT',
+                        contextId: invite.id
+                    }));
+                    dispatch(addToast({
+                        message: 'Challenge accepted! Waiting for the opponent to start the match.',
+                        type: 'success'
+                    }));
+                    // Do NOT navigate yet. Remove from local list since it's no longer pending for us
+                    setInvites(prev => prev.filter(d => d.id !== invite.id));
+                } else {
+                    setError(response?.message || 'Failed to accept challenge.');
+                }
+            } catch (e) {
+                setError(e.message || 'An error occurred.');
+            } finally {
+                setActionLoadingId(null);
+            }
+        } else if (isAcceptedTerms) {
+            // I am the original challenger, finalizing the match start
+            try {
+                const response = await syncService.readyQuizDuel(invite.id);
+                if (response?.success) {
+                    // Start the duel and pull us in
+                    navigate(`/duel/${invite.id}`);
+                } else {
+                    setError(response?.message || 'Failed to start the match.');
+                }
+            } catch (e) {
+                setError(e.message || 'An error occurred.');
+            } finally {
+                setActionLoadingId(null);
+            }
         }
     };
 
     // ── Counter Propose / Bargain ───────────────────────────
-    const handleCounterPropose = async (oldInvite, newSubject, newCurrency, newWager, newTime) => {
+    const handleCounterPropose = async (oldInvite, newSubject, newCurrency, newWager, newTime, message, numQs = 5) => {
         setActionLoadingId(oldInvite.id);
         setError('');
         try {
             // Check balance for new wager
+            if (typeof newWager !== 'number' || newWager <= 0 || isNaN(newWager)) {
+                setError('Please enter a valid wager amount greater than 0.');
+                setActionLoadingId(null);
+                return;
+            }
+
             if (newCurrency === 'coins') {
                 if ((user.coins || 0) < newWager) {
                     setError(`You need at least ${newWager} Coins to send this proposal.`);
@@ -271,32 +283,93 @@ export default function InboxView() {
             await syncService.declineOrExpireDuel(oldInvite.id);
             setInvites(prev => prev.filter(d => d.id !== oldInvite.id));
             
-            // 2. Generate dummy questions
-            const dummyQuestions = [
-                { id: 'dummy-1', question: 'Counter proposed duel questions will be loaded in arena', options: ['A','B','C','D'], correct: 'A' }
-            ];
+            // 2. Fetch random MCQ questions — multi-subject if 'all'
+            let rawQuestions = [];
+            let qErr = null;
+
+            if (newSubject === 'all') {
+                const subKeys = ['MATH', 'SCIENCE', 'ENGLISH', 'SST'];
+                const results = await Promise.all(
+                    subKeys.map(sub =>
+                        supabase.from('manya_vault').select('*')
+                            .eq('subject', sub).eq('item_type', "MCQ's")
+                            .limit(Math.max(15, numQs))
+                    )
+                );
+                results.forEach(res => {
+                    if (res.error) qErr = res.error;
+                    if (res.data) rawQuestions.push(...res.data);
+                });
+            } else {
+                const { data, error } = await supabase.from('manya_vault').select('*')
+                    .eq('subject', newSubject.toUpperCase())
+                    .eq('item_type', "MCQ's")
+                    .limit(Math.max(45, numQs * 3));
+                rawQuestions = data;
+                qErr = error;
+            }
+
+            if (qErr || !rawQuestions || rawQuestions.length === 0) {
+                throw new Error('Failed to find quiz questions for this subject.');
+            }
+
+            // Shuffle and choose the requested number of questions
+            const shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
+            const selectedQuestions = shuffled.slice(0, numQs).map(q => {
+                const rawOptions = q.options || [q.option_a, q.option_b, q.option_c, q.option_d];
+                const cleanOptions = (Array.isArray(rawOptions) ? rawOptions : Object.values(rawOptions || {}))
+                    .filter(opt => opt && opt !== 'null' && opt !== '');
+                const finalOptions = cleanOptions.length > 0 ? cleanOptions : ["A", "B", "C", "D"];
+                
+                const rawAns = q.correct_answer || q.answer || '';
+                let resolvedAnswer = rawAns;
+                
+                const optMatch = String(rawAns).trim().match(/^option[ _]([a-d])$/i);
+                if (optMatch) {
+                    const idx = optMatch[1].toUpperCase().charCodeAt(0) - 65;
+                    if (idx >= 0 && idx < finalOptions.length) {
+                        resolvedAnswer = finalOptions[idx];
+                    }
+                } else if (String(rawAns).trim().length === 1 && /^[a-d]$/i.test(String(rawAns).trim())) {
+                    const idx = String(rawAns).trim().toUpperCase().charCodeAt(0) - 65;
+                    if (idx >= 0 && idx < finalOptions.length) {
+                        resolvedAnswer = finalOptions[idx];
+                    }
+                } else {
+                    const num = parseInt(rawAns, 10);
+                    if (!isNaN(num) && num >= 0 && num < finalOptions.length) {
+                        resolvedAnswer = finalOptions[num];
+                    } else {
+                        const matchIdx = finalOptions.findIndex(o => String(o).trim().toLowerCase() === String(rawAns).trim().toLowerCase());
+                        if (matchIdx !== -1) {
+                            resolvedAnswer = finalOptions[matchIdx];
+                        }
+                    }
+                }
+
+                return {
+                    id: q.qid || q.id,
+                    question: q.question_text || q.prompt || q.text || q.question,
+                    options: finalOptions,
+                    answer: resolvedAnswer
+                };
+            });
             
             // 3. Create new counter-invite (challenged_id = old challenger)
             const response = await syncService.createQuizDuel(
                 oldInvite.challenger_id,
                 newWager,
                 newSubject,
-                dummyQuestions,
-                newCurrency
+                selectedQuestions,
+                newCurrency,
+                message
             );
             
             if (response && response.success) {
-                const newDuelId = response.duel_id;
-                // Add the proposed_meet_time client-side since RPC doesn't take it yet
-                await supabase
-                    .from('quiz_duels')
-                    .update({ proposed_meet_time: newTime })
-                    .eq('id', newDuelId);
-
-                // Set pending lobby
-                setPendingDuelId(newDuelId);
-                setPendingDuelStatus('pending');
-                setPendingOpponentName(oldInvite.challenger?.full_name || 'Opponent');
+                dispatch(addToast({
+                    message: 'Counter proposal sent!',
+                    type: 'success'
+                }));
             }
             setBargainingInvite(null);
         } catch (e) {
@@ -305,53 +378,7 @@ export default function InboxView() {
             setActionLoadingId(null);
         }
     };
-    // ── LISTEN FOR DUEL ACCEPTANCE OR DECLINE ───────────────
-    useEffect(() => {
-        if (!pendingDuelId || !supabase) return;
 
-        const dbChannel = supabase.channel(`duel-status-inbox:${pendingDuelId}`)
-            .on(
-                'postgres_changes',
-                { 
-                    event: 'UPDATE', 
-                    schema: 'public', 
-                    table: 'quiz_duels', 
-                    filter: `id=eq.${pendingDuelId}` 
-                },
-                (payload) => {
-                    const updatedDuel = payload.new;
-                    
-                    if (updatedDuel.status === 'accepted') {
-                        supabase.removeChannel(dbChannel);
-                        setPendingDuelId(null);
-                        setPendingDuelStatus(null);
-                        navigate(`/duel/${pendingDuelId}`);
-                    } else if (updatedDuel.status === 'declined') {
-                        setPendingDuelStatus('declined');
-                        setTimeout(() => {
-                            setPendingDuelId(null);
-                            setPendingDuelStatus(null);
-                        }, 3000);
-                        supabase.removeChannel(dbChannel);
-                    }
-                }
-            )
-            .subscribe();
-
-        return () => { supabase.removeChannel(dbChannel); };
-    }, [pendingDuelId, navigate]);
-
-    const handleCancelChallenge = async () => {
-        if (!pendingDuelId) return;
-        try {
-            await syncService.declineOrExpireDuel(pendingDuelId);
-            setPendingDuelId(null);
-            setPendingDuelStatus(null);
-        } catch (e) {
-            console.error("Failed to cancel challenge:", e);
-            setError("Failed to cancel challenge.");
-        }
-    };
 
     // ── Decline a duel ──────────────────────────────────────
     const handleDecline = async (duelId) => {
@@ -488,9 +515,9 @@ export default function InboxView() {
                 ) : filteredMessages.length === 0 ? (
                     <div className="inbox-empty-state">
                         <div className="inbox-empty-icon-box">
-                            <Inbox size={30} />
+                            <span style={{ fontSize: '38px', lineHeight: 1, filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }}>📜</span>
                         </div>
-                        <h4>No messages yet</h4>
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', color: 'var(--text-primary)' }}>Your Inbox is Empty</h4>
                         <p>
                             {tab === 'duels'
                                 ? 'When another student challenges you to a duel, it will appear here.'
@@ -521,72 +548,7 @@ export default function InboxView() {
                 )}
             </div>
 
-            {/* ── CHALLENGER-SIDE PENDING LOBBY OVERLAY ── */}
-            <AnimatePresence>
-                {pendingDuelId && (
-                    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-6 bg-black/85 backdrop-blur-sm">
-                        <motion.div 
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-[#111116] border border-white/10 rounded-3xl p-8 max-w-sm w-full shadow-2xl relative overflow-hidden"
-                        >
-                            {/* Animated Background Elements */}
-                            <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden rounded-3xl">
-                                <motion.div 
-                                    className="absolute -top-1/2 -left-1/2 w-full h-full bg-blue-500/10 blur-[100px] rounded-full"
-                                    animate={{ rotate: 360, scale: [1, 1.2, 1] }}
-                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                                />
-                            </div>
 
-                            <div className="relative z-10 flex flex-col items-center text-center">
-                                {/* Status Icon */}
-                                <div className="mb-6 relative">
-                                    {pendingDuelStatus === 'declined' ? (
-                                        <motion.div 
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
-                                            className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center"
-                                        >
-                                            <X size={40} className="text-red-400" />
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div 
-                                            className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center"
-                                            animate={{ boxShadow: ["0 0 0 0 rgba(59, 130, 246, 0.4)", "0 0 0 20px rgba(59, 130, 246, 0)"] }}
-                                            transition={{ duration: 1.5, repeat: Infinity }}
-                                        >
-                                            <Sword size={40} className="text-blue-400 animate-pulse" />
-                                        </motion.div>
-                                    )}
-                                </div>
-
-                                {/* Title & Message */}
-                                <h2 className="text-2xl font-bold text-white mb-2">
-                                    {pendingDuelStatus === 'declined' ? 'Challenge Declined' : 'Waiting for Opponent'}
-                                </h2>
-                                <p className="text-white/60 text-sm mb-8 leading-relaxed">
-                                    {pendingDuelStatus === 'declined' 
-                                        ? `${pendingOpponentName} declined your counter-proposal. Your wager has been refunded.`
-                                        : `Waiting for ${pendingOpponentName} to accept your counter-proposal.`}
-                                </p>
-
-                                {/* Action Button */}
-                                {pendingDuelStatus !== 'declined' && (
-                                    <button 
-                                        onClick={handleCancelChallenge}
-                                        className="w-full py-4 bg-white/5 hover:bg-white/10 text-white/80 rounded-xl font-semibold 
-transition-all active:scale-95 border border-white/5"
-                                    >
-                                        Cancel Challenge
-                                    </button>
-                                )}
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
 
             {/* ── BARGAINING MODAL OVERLAY ── */}
             <AnimatePresence>
@@ -678,6 +640,16 @@ function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelet
                     >
                         {/* Details chips */}
                         <div className="inbox-chips" style={{ paddingTop: '12px' }}>
+                            {invite.message && (
+                                <div className="w-full bg-[#3e2723]/30 border border-[#b49060]/30 rounded-xl p-3 mb-2">
+                                    <div className="text-[9px] font-black text-[#b49060] uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        ✉️ Message from {invite.status === 'accepted_terms' ? invite.challenged?.full_name : challengerName}
+                                    </div>
+                                    <div className="text-sm font-medium text-[#ebdcb9] italic">
+                                        "{invite.message}"
+                                    </div>
+                                </div>
+                            )}
                             <div className="inbox-chip">
                                 <span className="inbox-chip-label">Subject</span>
                                 <img src={getGem(subject)} alt={subject} />
@@ -690,6 +662,12 @@ function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelet
                                     {wager} {currency === 'coins' ? 'Coins' : 'Gems'}
                                 </span>
                             </div>
+                            {invite.questions?.length > 0 && (
+                                <div className="inbox-chip">
+                                    <span className="inbox-chip-label">🎯 Questions</span>
+                                    <span className="inbox-chip-value">{invite.questions.length} Qs</span>
+                                </div>
+                            )}
                             {invite.proposed_meet_time && (
                                 <div className="inbox-chip">
                                     <Clock size={12} style={{ color: 'var(--text-secondary)' }} />
@@ -700,43 +678,68 @@ function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelet
                         </div>
 
                         {/* Actions */}
-                        <div className="inbox-actions" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                            <button
-                                className="inbox-btn btn-decline"
-                                disabled={actionLoadingId !== null}
-                                onClick={(e) => { e.stopPropagation(); onDecline(invite.id); }}
-                                style={{ flex: 1 }}
-                            >
-                                <X size={12} />
-                                {isLoading ? '...' : 'Decline'}
-                            </button>
-                            <button
-                                className="inbox-btn"
-                                disabled={actionLoadingId !== null}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onBargain({
-                                        ...invite,
-                                        proposed_wager: wager || 5,
-                                        proposed_currency: currency || 'gems',
-                                        proposed_subject: subject || 'general',
-                                        proposed_meet_time: invite.proposed_meet_time || '4:00 PM EAT'
-                                    });
-                                }}
-                                style={{ flex: 1, backgroundColor: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
-                            >
-                                <Clock size={12} />
-                                Counter
-                            </button>
-                            <button
-                                className="inbox-btn btn-accept"
-                                disabled={actionLoadingId !== null}
-                                onClick={(e) => { e.stopPropagation(); onAccept(invite); }}
-                                style={{ flex: 1 }}
-                            >
-                                <Sword size={12} />
-                                {isLoading ? '...' : 'Accept'}
-                            </button>
+                        <div className="inbox-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
+                            {invite.status === 'accepted_terms' ? (
+                                <>
+                                    <button
+                                        className="inbox-btn btn-decline"
+                                        disabled={actionLoadingId !== null}
+                                        onClick={(e) => { e.stopPropagation(); onDecline(invite.id); }}
+                                        style={{ flex: 1 }}
+                                    >
+                                        <X size={12} />
+                                        {isLoading ? '...' : 'Cancel'}
+                                    </button>
+                                    <button
+                                        className="inbox-btn btn-accept"
+                                        disabled={actionLoadingId !== null}
+                                        onClick={(e) => { e.stopPropagation(); onAccept(invite); }}
+                                        style={{ flex: 2 }}
+                                    >
+                                        <Sword size={12} />
+                                        {isLoading ? '...' : 'Start Match'}
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        className="inbox-btn btn-decline"
+                                        disabled={actionLoadingId !== null}
+                                        onClick={(e) => { e.stopPropagation(); onDecline(invite.id); }}
+                                        style={{ flex: 1 }}
+                                    >
+                                        <X size={12} />
+                                        {isLoading ? '...' : 'Decline'}
+                                    </button>
+                                    <button
+                                        className="inbox-btn"
+                                        disabled={actionLoadingId !== null}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onBargain({
+                                                ...invite,
+                                                proposed_wager: wager || 5,
+                                                proposed_currency: currency || 'gems',
+                                                proposed_subject: subject || 'general',
+                                                proposed_meet_time: invite.proposed_meet_time || '4:00 PM EAT'
+                                            });
+                                        }}
+                                        style={{ flex: 1, backgroundColor: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
+                                    >
+                                        <Clock size={12} />
+                                        Counter
+                                    </button>
+                                    <button
+                                        className="inbox-btn btn-accept"
+                                        disabled={actionLoadingId !== null}
+                                        onClick={(e) => { e.stopPropagation(); onAccept(invite); }}
+                                        style={{ flex: 1 }}
+                                    >
+                                        <Sword size={12} />
+                                        {isLoading ? '...' : 'Accept'}
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 )}
@@ -750,13 +753,29 @@ function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelet
    ════════════════════════════════════════════════════════════ */
 function CounterProposeModal({ invite, user, onCancel, onSubmit, sending }) {
     const challengerName = invite.challenger?.full_name || 'Student';
-    const myGems = user?.diamonds || 0;
     const myCoins = user?.coins || 0;
 
     const [wagerCurrency, setWagerCurrency] = useState(invite.proposed_currency || 'gems');
     const [wagerAmount, setWagerAmount] = useState(invite.proposed_wager || 5);
     const [challengeSub, setChallengeSub] = useState(invite.proposed_subject || 'math');
     const [proposedTime, setProposedTime] = useState(invite.proposed_meet_time || '4:00 PM EAT');
+    const [message, setMessage] = useState('');
+    const [numQuestions, setNumQuestions] = useState(
+        invite.questions?.length && [5, 10, 15].includes(invite.questions.length)
+            ? invite.questions.length
+            : 5
+    );
+
+    const getSubjectGems = (subject) => {
+        switch (subject) {
+            case 'math': return user?.mathGems || 0;
+            case 'science': return user?.scienceGems || 0;
+            case 'english': return user?.englishGems || 0;
+            case 'sst': return user?.sstGems || 0;
+            default: return user?.diamonds || 0;
+        }
+    };
+    const myGems = getSubjectGems(challengeSub);
 
     const cantAfford = wagerCurrency === 'gems' ? myGems < wagerAmount : myCoins < wagerAmount;
 
@@ -820,31 +839,34 @@ function CounterProposeModal({ invite, user, onCancel, onSubmit, sending }) {
                             <span className="text-[8px] font-black text-[#5d4037] tracking-wider uppercase">
                                 {wagerCurrency === 'gems' ? '💎 PLEDGE GEMS' : '🪙 PLEDGE COINS'}
                             </span>
-                            <div className="grid grid-cols-3 gap-2">
-                                {(wagerCurrency === 'gems' ? [5, 10, 20] : [50, 100, 250]).map(val => {
-                                    const bal = wagerCurrency === 'gems' ? myGems : myCoins;
-                                    const cantAffordVal = bal < val;
-                                    return (
-                                        <button
-                                            key={val}
-                                            onClick={() => !cantAffordVal && setWagerAmount(val)}
-                                            disabled={cantAffordVal}
-                                            className={`py-2 px-1 rounded-xl border-2 text-xs font-black transition-all flex flex-col items-center gap-0.5 ${
-                                                cantAffordVal
-                                                    ? 'opacity-40 border-[#b49060]/20 bg-transparent text-[#8d6e63] cursor-not-allowed'
-                                                    : wagerAmount === val
-                                                        ? 'border-amber-600 bg-amber-600/15 text-amber-800'
-                                                        : 'border-[#b49060]/40 bg-[#d7ccc8]/25 text-[#5d4037]'
-                                            }`}
-                                        >
-                                            {wagerCurrency === 'gems'
-                                                ? <img src={getGem(challengeSub)} className="w-3.5 h-3.5" alt="gem" />
-                                                : <span className="text-[13px] leading-none">🪙</span>
-                                            }
-                                            <span>{val}</span>
-                                        </button>
-                                    );
-                                })}
+                            <div className="flex items-center gap-2">
+                                <div className="relative flex-1">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={wagerCurrency === 'gems' ? myGems : myCoins}
+                                        value={wagerAmount === '' ? '' : wagerAmount}
+                                        onChange={(e) => {
+                                            const val = parseInt(e.target.value, 10);
+                                            if (isNaN(val)) setWagerAmount('');
+                                            else setWagerAmount(val);
+                                        }}
+                                        className="w-full py-2 pl-9 pr-3 rounded-xl border-2 border-[#b49060]/60 bg-[#d7ccc8]/30 text-[#3e2723] font-black text-sm focus:outline-none focus:border-amber-600 focus:bg-[#ebdcb9] transition-all"
+                                        placeholder="Amount..."
+                                    />
+                                    <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        {wagerCurrency === 'gems'
+                                            ? <img src={getGem(challengeSub)} className="w-4 h-4 opacity-90" alt="gem" />
+                                            : <span className="text-[14px] leading-none opacity-90">🪙</span>
+                                        }
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setWagerAmount(wagerCurrency === 'gems' ? myGems : myCoins)}
+                                    className="py-2 px-4 rounded-xl bg-[#3e2723] text-[#ebdcb9] font-black text-xs hover:bg-[#4e342e] active:scale-95 transition-all shadow-[0_2px_0_#1a0f08] border border-[#5d4037]"
+                                >
+                                    MAX
+                                </button>
                             </div>
                             {cantAfford && (
                                 <div className="flex items-center gap-1.5 p-2 bg-red-950/40 border border-red-500/40 rounded-lg text-red-500 text-[9px] font-bold mt-1">
@@ -852,6 +874,23 @@ function CounterProposeModal({ invite, user, onCancel, onSubmit, sending }) {
                                     Not enough {wagerCurrency}! Need {wagerAmount}, have {wagerCurrency === 'gems' ? myGems : myCoins}.
                                 </div>
                             )}
+                        </div>
+
+                        {/* Question Count selector */}
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-[8px] font-black text-[#5d4037] tracking-wider uppercase">🎯 DUEL LENGTH</span>
+                            <div className="grid grid-cols-3 gap-2">
+                                {[5, 10, 15].map(n => (
+                                    <button
+                                        key={n}
+                                        onClick={() => setNumQuestions(n)}
+                                        className={`py-2 px-2 rounded-xl border-2 text-[11px] font-black transition-all flex flex-col items-center gap-0.5 ${numQuestions === n ? 'border-[#3e2723] bg-[#3e2723] text-white' : 'border-[#b49060]/40 bg-[#d7ccc8]/25 text-[#3e2723]'}`}
+                                    >
+                                        <span className="text-base leading-none">{n}</span>
+                                        <span className="text-[8px] font-bold opacity-70">Qs</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Proposed Meeting Time */}
@@ -885,6 +924,20 @@ function CounterProposeModal({ invite, user, onCancel, onSubmit, sending }) {
                                 </select>
                             </div>
                         </div>
+
+                        {/* Optional Message */}
+                        <div className="flex flex-col gap-1.5 border-t border-[#b49060]/30 pt-3 mt-1 text-left">
+                            <span className="text-[8px] font-black text-[#5d4037] tracking-wider uppercase flex items-center gap-1">
+                                ✉️ ADD A MESSAGE (OPTIONAL)
+                            </span>
+                            <textarea
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="E.g., Let's see who is better at Math!"
+                                maxLength={60}
+                                className="w-full bg-[#ebdcb9] border-2 border-[#b49060] rounded-xl px-3 py-2 text-xs font-black text-[#2e1d0f] shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] outline-none focus:border-[#3e2723] resize-none h-16"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex gap-3">
@@ -907,7 +960,7 @@ function CounterProposeModal({ invite, user, onCancel, onSubmit, sending }) {
                         {/* SEND OFFER */}
                         <button
                             disabled={sending || cantAfford}
-                            onClick={() => onSubmit(invite, challengeSub, wagerCurrency, wagerAmount, proposedTime)}
+                            onClick={() => onSubmit(invite, challengeSub, wagerCurrency, wagerAmount, proposedTime, message, numQuestions)}
                             className="relative flex-[1.5] group disabled:opacity-40"
                         >
                             <div className="absolute inset-0 rounded-xl bg-[#3e2200] translate-y-[3px] border-b-2 border-[#1a0f00]" />

@@ -9,17 +9,19 @@
  *   - Notification bell → navigates to /inbox
  */
 import { useRef, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Bell } from 'lucide-react';
 import { getGem } from '../config/assetUrls';
 import { useCoinAnimation } from '../domain/gamification/useCoinAnimation.js';
 import { supabase } from '../backend/remote/supabaseClient';
+import { addToast } from '../store/toastSlice';
 import '../styles/globalHud.css';
 
 function GlobalHUD() {
     const user       = useSelector(s => s.user.data);
+    const dispatch   = useDispatch();
     const navigate   = useNavigate();
     const coinPillRef = useRef(null);
 
@@ -42,7 +44,7 @@ function GlobalHUD() {
         prevCoinsRef.current = realCoins;
     }, [realCoins, triggerFloatCoin, triggerDeductCoin]);
 
-    // Track pending invite count for the badge (lightweight — count only)
+    // Track pending invite count for the badge
     useEffect(() => {
         if (!user?.id || !supabase) return;
 
@@ -51,8 +53,7 @@ function GlobalHUD() {
                 const { count, error } = await supabase
                     .from('quiz_duels')
                     .select('id', { count: 'exact', head: true })
-                    .eq('challenged_id', user.id)
-                    .eq('status', 'pending');
+                    .or(`and(challenged_id.eq.${user.id},status.eq.pending),and(challenger_id.eq.${user.id},status.eq.accepted_terms)`);
                 if (!error) setInviteCount(count || 0);
             } catch (err) {
                 console.error('[HUD] invite count error:', err);
@@ -66,40 +67,57 @@ function GlobalHUD() {
                 {
                     event: '*',
                     schema: 'public',
-                    table: 'quiz_duels',
-                    filter: `challenged_id=eq.${user.id}`
+                    table: 'quiz_duels'
                 },
-                () => { fetchCount(); }
+                (payload) => {
+                    if (payload.new) {
+                        const isRelevant = (payload.new.challenged_id === user.id && payload.new.status === 'pending') ||
+                                           (payload.new.challenger_id === user.id && payload.new.status === 'accepted_terms');
+                        if (isRelevant) fetchCount();
+                        else if (payload.eventType === 'DELETE' || payload.eventType === 'UPDATE') fetchCount(); // Safe fallback
+                    }
+                }
             )
             .subscribe();
 
         return () => { supabase.removeChannel(channel); };
     }, [user?.id]);
 
-    // Listen for when a duel we challenged gets accepted by the opponent
+
+
+    // Check for recently abandoned duels
     useEffect(() => {
         if (!user?.id || !supabase) return;
-
-        const pullChannel = supabase.channel(`hud-pull:${user.id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'UPDATE',
-                    schema: 'public',
-                    table: 'quiz_duels',
-                    filter: `challenger_id=eq.${user.id}`
-                },
-                (payload) => {
-                    if (payload.new.status === 'active') {
-                        // Auto-pull the challenger into the arena
-                        navigate(`/duel/${payload.new.id}`);
+        const checkAbandoned = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('quiz_duels')
+                    .select('id, wager_currency, gem_wager')
+                    .eq('abandoned_by', user.id)
+                    .eq('status', 'completed')
+                    .order('resolved_at', { ascending: false })
+                    .limit(1);
+                    
+                if (!error && data && data.length > 0) {
+                    const duel = data[0];
+                    const dismissedStr = localStorage.getItem('manya_dismissed_abandons') || '[]';
+                    const dismissed = JSON.parse(dismissedStr);
+                    if (!dismissed.includes(duel.id)) {
+                        dispatch(addToast({
+                            type: 'error',
+                            message: `You were disqualified from a recent duel for leaving the arena. Wager lost.`,
+                            duration: 10000
+                        }));
+                        dismissed.push(duel.id);
+                        localStorage.setItem('manya_dismissed_abandons', JSON.stringify(dismissed));
                     }
                 }
-            )
-            .subscribe();
-
-        return () => { supabase.removeChannel(pullChannel); };
-    }, [user?.id, navigate]);
+            } catch (err) {}
+        };
+        // Delay slightly to ensure toast renders after navigation/mounting
+        const t = setTimeout(checkAbandoned, 1500);
+        return () => clearTimeout(t);
+    }, [user?.id, dispatch]);
 
     if (!user) return null;
 
