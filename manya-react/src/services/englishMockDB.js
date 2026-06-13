@@ -87,7 +87,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                             topic: topicId,
                             subtopic: subtopic,
                             item_type: res.file.includes('recap') ? 'RECAP' : 'NOTE',
-                            engine_type: 'NOTE_EXPLORER',
+                            engine_type: res.file.includes('recap') ? 'READER_STUDY' : 'NOTE_EXPLORER',
                             cdn_url: assetUrl(`content/english/holidays/${curriculumQuest.folder}/${res.file}.json`),
                             question_text: `Explore ${res.label}`,
                             options: ["Ready!"],

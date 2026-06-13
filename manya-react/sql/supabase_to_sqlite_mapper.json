@@ -1,0 +1,3995 @@
+{
+  "comment": "MANYA DATABASE MAPPER — Generated mapping for WebView / .NET MAUI SQLite Bridge",
+  "version": "2.0",
+  "tables": {
+    "answers": {
+      "sqlite_table": "answers",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "bigint"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "question_id": {
+          "sqlite_column": "question_id",
+          "type": "text"
+        },
+        "is_correct": {
+          "sqlite_column": "is_correct",
+          "type": "boolean"
+        },
+        "selected_answer": {
+          "sqlite_column": "selected_answer",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "time_spent_ms": {
+          "sqlite_column": "time_spent_ms",
+          "type": "integer"
+        },
+        "hint_used": {
+          "sqlite_column": "hint_used",
+          "type": "boolean"
+        },
+        "answered_at": {
+          "sqlite_column": "answered_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "auth_logs": {
+      "sqlite_table": "auth_logs",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "event_type": {
+          "sqlite_column": "event_type",
+          "type": "text"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "email": {
+          "sqlite_column": "email",
+          "type": "text"
+        },
+        "payload": {
+          "sqlite_column": "payload",
+          "type": "jsonb"
+        },
+        "status": {
+          "sqlite_column": "status",
+          "type": "text"
+        },
+        "error_message": {
+          "sqlite_column": "error_message",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "badges": {
+      "sqlite_table": "badges",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "badge_type": {
+          "sqlite_column": "badge_type",
+          "type": "text"
+        },
+        "badge_name": {
+          "sqlite_column": "badge_name",
+          "type": "text"
+        },
+        "badge_icon": {
+          "sqlite_column": "badge_icon",
+          "type": "text"
+        },
+        "rarity": {
+          "sqlite_column": "rarity",
+          "type": "text"
+        },
+        "earned_at": {
+          "sqlite_column": "earned_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "challenges": {
+      "sqlite_table": "challenges",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "day_number": {
+          "sqlite_column": "day_number",
+          "type": "integer"
+        },
+        "title": {
+          "sqlite_column": "title",
+          "type": "text"
+        },
+        "description": {
+          "sqlite_column": "description",
+          "type": "text"
+        },
+        "challenge_type": {
+          "sqlite_column": "challenge_type",
+          "type": "text"
+        },
+        "target_value": {
+          "sqlite_column": "target_value",
+          "type": "integer"
+        },
+        "reward_type": {
+          "sqlite_column": "reward_type",
+          "type": "text"
+        },
+        "reward_value": {
+          "sqlite_column": "reward_value",
+          "type": "integer"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "is_active": {
+          "sqlite_column": "is_active",
+          "type": "boolean"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "chest_reward_pool": {
+      "sqlite_table": "chest_reward_pool",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "integer"
+        },
+        "chest_type": {
+          "sqlite_column": "chest_type",
+          "type": "text"
+        },
+        "reward_type": {
+          "sqlite_column": "reward_type",
+          "type": "text"
+        },
+        "reward_value": {
+          "sqlite_column": "reward_value",
+          "type": "text"
+        },
+        "min_amount": {
+          "sqlite_column": "min_amount",
+          "type": "integer"
+        },
+        "max_amount": {
+          "sqlite_column": "max_amount",
+          "type": "integer"
+        },
+        "probability": {
+          "sqlite_column": "probability",
+          "type": "double precision"
+        },
+        "is_active": {
+          "sqlite_column": "is_active",
+          "type": "boolean"
+        }
+      }
+    },
+    "concept_error_tracking": {
+      "sqlite_table": "concept_error_tracking",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "error_count": {
+          "sqlite_column": "error_count",
+          "type": "integer"
+        },
+        "last_question_id": {
+          "sqlite_column": "last_question_id",
+          "type": "text"
+        },
+        "updated_at": {
+          "sqlite_column": "updated_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "concept_mastery": {
+      "sqlite_table": "concept_mastery",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "base_id": {
+          "sqlite_column": "base_id",
+          "type": "text"
+        },
+        "mastery_level": {
+          "sqlite_column": "mastery_level",
+          "type": "text"
+        },
+        "correct_streak": {
+          "sqlite_column": "correct_streak",
+          "type": "integer"
+        },
+        "total_attempts": {
+          "sqlite_column": "total_attempts",
+          "type": "integer"
+        },
+        "total_correct": {
+          "sqlite_column": "total_correct",
+          "type": "integer"
+        },
+        "next_review_at": {
+          "sqlite_column": "next_review_at",
+          "type": "timestamp with time zone"
+        },
+        "updated_at": {
+          "sqlite_column": "updated_at",
+          "type": "timestamp with time zone"
+        },
+        "review_count": {
+          "sqlite_column": "review_count",
+          "type": "integer"
+        },
+        "last_reviewed_at": {
+          "sqlite_column": "last_reviewed_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "emotional_metrics": {
+      "sqlite_table": "emotional_metrics",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "session_id": {
+          "sqlite_column": "session_id",
+          "type": "text"
+        },
+        "emotion": {
+          "sqlite_column": "emotion",
+          "type": "text"
+        },
+        "intensity": {
+          "sqlite_column": "intensity",
+          "type": "integer"
+        },
+        "context": {
+          "sqlite_column": "context",
+          "type": "text"
+        },
+        "recorded_at": {
+          "sqlite_column": "recorded_at",
+          "type": "timestamp with time zone"
+        },
+        "response_time_ms": {
+          "sqlite_column": "response_time_ms",
+          "type": "integer"
+        }
+      }
+    },
+    "league_cohort_members": {
+      "sqlite_table": "league_cohort_members",
+      "columns": {
+        "cohort_id": {
+          "sqlite_column": "cohort_id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "joined_at": {
+          "sqlite_column": "joined_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "league_cohorts": {
+      "sqlite_table": "league_cohorts",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "league_tier": {
+          "sqlite_column": "league_tier",
+          "type": "text"
+        },
+        "cycle_week_start": {
+          "sqlite_column": "cycle_week_start",
+          "type": "timestamp with time zone"
+        },
+        "max_members": {
+          "sqlite_column": "max_members",
+          "type": "integer"
+        },
+        "member_count": {
+          "sqlite_column": "member_count",
+          "type": "integer"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "manya_vault": {
+      "sqlite_table": "manya_vault",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_english": {
+      "sqlite_table": "manya_vault_english",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_english_g4": {
+      "sqlite_table": "manya_vault_english_g4",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_english_g5": {
+      "sqlite_table": "manya_vault_english_g5",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_english_g6": {
+      "sqlite_table": "manya_vault_english_g6",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_english_g7": {
+      "sqlite_table": "manya_vault_english_g7",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_math": {
+      "sqlite_table": "manya_vault_math",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_math_g4": {
+      "sqlite_table": "manya_vault_math_g4",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_math_g5": {
+      "sqlite_table": "manya_vault_math_g5",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_math_g6": {
+      "sqlite_table": "manya_vault_math_g6",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_math_g7": {
+      "sqlite_table": "manya_vault_math_g7",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_science": {
+      "sqlite_table": "manya_vault_science",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_science_g4": {
+      "sqlite_table": "manya_vault_science_g4",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_science_g5": {
+      "sqlite_table": "manya_vault_science_g5",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_science_g6": {
+      "sqlite_table": "manya_vault_science_g6",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_science_g7": {
+      "sqlite_table": "manya_vault_science_g7",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_sst": {
+      "sqlite_table": "manya_vault_sst",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_sst_g4": {
+      "sqlite_table": "manya_vault_sst_g4",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_sst_g5": {
+      "sqlite_table": "manya_vault_sst_g5",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_sst_g6": {
+      "sqlite_table": "manya_vault_sst_g6",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "manya_vault_sst_g7": {
+      "sqlite_table": "manya_vault_sst_g7",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        },
+        "assets": {
+          "sqlite_column": "assets",
+          "type": "jsonb"
+        },
+        "passage": {
+          "sqlite_column": "passage",
+          "type": "text"
+        }
+      }
+    },
+    "power_ups": {
+      "sqlite_table": "power_ups",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "power_up_type": {
+          "sqlite_column": "power_up_type",
+          "type": "text"
+        },
+        "quantity": {
+          "sqlite_column": "quantity",
+          "type": "integer"
+        },
+        "acquired_at": {
+          "sqlite_column": "acquired_at",
+          "type": "timestamp with time zone"
+        },
+        "expires_at": {
+          "sqlite_column": "expires_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "profiles": {
+      "sqlite_table": "profiles",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "full_name": {
+          "sqlite_column": "full_name",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "is_pro": {
+          "sqlite_column": "is_pro",
+          "type": "boolean"
+        },
+        "avatar_url": {
+          "sqlite_column": "avatar_url",
+          "type": "text"
+        },
+        "preferences": {
+          "sqlite_column": "preferences",
+          "type": "jsonb"
+        },
+        "parent_email": {
+          "sqlite_column": "parent_email",
+          "type": "text"
+        },
+        "parent_phone": {
+          "sqlite_column": "parent_phone",
+          "type": "text"
+        },
+        "last_active_at": {
+          "sqlite_column": "last_active_at",
+          "type": "timestamp with time zone"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "learning_type": {
+          "sqlite_column": "learning_type",
+          "type": "text"
+        },
+        "current_streak": {
+          "sqlite_column": "current_streak",
+          "type": "integer"
+        },
+        "longest_streak": {
+          "sqlite_column": "longest_streak",
+          "type": "integer"
+        },
+        "challenge_day": {
+          "sqlite_column": "challenge_day",
+          "type": "integer"
+        },
+        "parent_name": {
+          "sqlite_column": "parent_name",
+          "type": "text"
+        },
+        "parent_whatsapp": {
+          "sqlite_column": "parent_whatsapp",
+          "type": "text"
+        },
+        "parent_pin_hash": {
+          "sqlite_column": "parent_pin_hash",
+          "type": "text"
+        },
+        "report_enabled": {
+          "sqlite_column": "report_enabled",
+          "type": "boolean"
+        },
+        "report_frequency": {
+          "sqlite_column": "report_frequency",
+          "type": "text"
+        },
+        "last_report_sent": {
+          "sqlite_column": "last_report_sent",
+          "type": "timestamp with time zone"
+        },
+        "math_correct": {
+          "sqlite_column": "math_correct",
+          "type": "integer"
+        },
+        "science_correct": {
+          "sqlite_column": "science_correct",
+          "type": "integer"
+        },
+        "english_correct": {
+          "sqlite_column": "english_correct",
+          "type": "integer"
+        },
+        "sst_correct": {
+          "sqlite_column": "sst_correct",
+          "type": "integer"
+        },
+        "unlocked_badges": {
+          "sqlite_column": "unlocked_badges",
+          "type": "ARRAY"
+        },
+        "onboarded": {
+          "sqlite_column": "onboarded",
+          "type": "boolean"
+        },
+        "league": {
+          "sqlite_column": "league",
+          "type": "text"
+        },
+        "weekly_xp": {
+          "sqlite_column": "weekly_xp",
+          "type": "integer"
+        }
+      }
+    },
+    "quest_progress": {
+      "sqlite_table": "quest_progress",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "bigint"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "quest_key": {
+          "sqlite_column": "quest_key",
+          "type": "text"
+        },
+        "node_type": {
+          "sqlite_column": "node_type",
+          "type": "text"
+        },
+        "mastery": {
+          "sqlite_column": "mastery",
+          "type": "integer"
+        },
+        "status": {
+          "sqlite_column": "status",
+          "type": "text"
+        },
+        "attempts": {
+          "sqlite_column": "attempts",
+          "type": "integer"
+        },
+        "last_attempted_at": {
+          "sqlite_column": "last_attempted_at",
+          "type": "timestamp with time zone"
+        },
+        "unlocked_at": {
+          "sqlite_column": "unlocked_at",
+          "type": "timestamp with time zone"
+        },
+        "streak_broken_at": {
+          "sqlite_column": "streak_broken_at",
+          "type": "timestamp without time zone"
+        },
+        "stars": {
+          "sqlite_column": "stars",
+          "type": "integer"
+        }
+      }
+    },
+    "questions_english": {
+      "sqlite_table": "questions_english",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "questions_math": {
+      "sqlite_table": "questions_math",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "questions_science": {
+      "sqlite_table": "questions_science",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "questions_sst": {
+      "sqlite_table": "questions_sst",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "grade_level": {
+          "sqlite_column": "grade_level",
+          "type": "text"
+        },
+        "qid": {
+          "sqlite_column": "qid",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "unit_id": {
+          "sqlite_column": "unit_id",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "topic": {
+          "sqlite_column": "topic",
+          "type": "text"
+        },
+        "subtopic": {
+          "sqlite_column": "subtopic",
+          "type": "text"
+        },
+        "difficulty": {
+          "sqlite_column": "difficulty",
+          "type": "character"
+        },
+        "question_text": {
+          "sqlite_column": "question_text",
+          "type": "text"
+        },
+        "option_a": {
+          "sqlite_column": "option_a",
+          "type": "text"
+        },
+        "option_b": {
+          "sqlite_column": "option_b",
+          "type": "text"
+        },
+        "option_c": {
+          "sqlite_column": "option_c",
+          "type": "text"
+        },
+        "option_d": {
+          "sqlite_column": "option_d",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "explanation": {
+          "sqlite_column": "explanation",
+          "type": "text"
+        },
+        "hint": {
+          "sqlite_column": "hint",
+          "type": "text"
+        },
+        "interaction_config": {
+          "sqlite_column": "interaction_config",
+          "type": "jsonb"
+        },
+        "metadata": {
+          "sqlite_column": "metadata",
+          "type": "jsonb"
+        },
+        "parent_id": {
+          "sqlite_column": "parent_id",
+          "type": "uuid"
+        },
+        "file_hash": {
+          "sqlite_column": "file_hash",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "quiz_duel_participants": {
+      "sqlite_table": "quiz_duel_participants",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "duel_id": {
+          "sqlite_column": "duel_id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "score": {
+          "sqlite_column": "score",
+          "type": "integer"
+        },
+        "time_spent_ms": {
+          "sqlite_column": "time_spent_ms",
+          "type": "integer"
+        },
+        "answers": {
+          "sqlite_column": "answers",
+          "type": "jsonb"
+        },
+        "completed_at": {
+          "sqlite_column": "completed_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "quiz_duels": {
+      "sqlite_table": "quiz_duels",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "challenger_id": {
+          "sqlite_column": "challenger_id",
+          "type": "uuid"
+        },
+        "challenged_id": {
+          "sqlite_column": "challenged_id",
+          "type": "uuid"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "gem_wager": {
+          "sqlite_column": "gem_wager",
+          "type": "integer"
+        },
+        "status": {
+          "sqlite_column": "status",
+          "type": "USER-DEFINED"
+        },
+        "questions": {
+          "sqlite_column": "questions",
+          "type": "jsonb"
+        },
+        "winner_id": {
+          "sqlite_column": "winner_id",
+          "type": "uuid"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "expires_at": {
+          "sqlite_column": "expires_at",
+          "type": "timestamp with time zone"
+        },
+        "resolved_at": {
+          "sqlite_column": "resolved_at",
+          "type": "timestamp with time zone"
+        },
+        "wager_currency": {
+          "sqlite_column": "wager_currency",
+          "type": "text"
+        },
+        "proposed_meet_time": {
+          "sqlite_column": "proposed_meet_time",
+          "type": "text"
+        },
+        "abandoned_by": {
+          "sqlite_column": "abandoned_by",
+          "type": "uuid"
+        },
+        "message": {
+          "sqlite_column": "message",
+          "type": "text"
+        },
+        "updated_at": {
+          "sqlite_column": "updated_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "report_logs": {
+      "sqlite_table": "report_logs",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "sent_at": {
+          "sqlite_column": "sent_at",
+          "type": "timestamp with time zone"
+        },
+        "channel": {
+          "sqlite_column": "channel",
+          "type": "text"
+        },
+        "recipient": {
+          "sqlite_column": "recipient",
+          "type": "text"
+        },
+        "trigger_type": {
+          "sqlite_column": "trigger_type",
+          "type": "text"
+        },
+        "status": {
+          "sqlite_column": "status",
+          "type": "text"
+        },
+        "error_message": {
+          "sqlite_column": "error_message",
+          "type": "text"
+        },
+        "message_sid": {
+          "sqlite_column": "message_sid",
+          "type": "text"
+        }
+      }
+    },
+    "user_answers": {
+      "sqlite_table": "user_answers",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "question_id": {
+          "sqlite_column": "question_id",
+          "type": "text"
+        },
+        "is_correct": {
+          "sqlite_column": "is_correct",
+          "type": "boolean"
+        },
+        "selected_answer": {
+          "sqlite_column": "selected_answer",
+          "type": "text"
+        },
+        "correct_answer": {
+          "sqlite_column": "correct_answer",
+          "type": "text"
+        },
+        "time_spent_ms": {
+          "sqlite_column": "time_spent_ms",
+          "type": "integer"
+        },
+        "hint_used": {
+          "sqlite_column": "hint_used",
+          "type": "boolean"
+        },
+        "hint_level": {
+          "sqlite_column": "hint_level",
+          "type": "integer"
+        },
+        "answer_changed": {
+          "sqlite_column": "answer_changed",
+          "type": "boolean"
+        },
+        "answer_history": {
+          "sqlite_column": "answer_history",
+          "type": "jsonb"
+        },
+        "option_hover_times": {
+          "sqlite_column": "option_hover_times",
+          "type": "jsonb"
+        },
+        "confidence_rating": {
+          "sqlite_column": "confidence_rating",
+          "type": "integer"
+        },
+        "tab_switched": {
+          "sqlite_column": "tab_switched",
+          "type": "boolean"
+        },
+        "idle_time_ms": {
+          "sqlite_column": "idle_time_ms",
+          "type": "integer"
+        },
+        "time_to_first_click_ms": {
+          "sqlite_column": "time_to_first_click_ms",
+          "type": "integer"
+        },
+        "hesitation_count": {
+          "sqlite_column": "hesitation_count",
+          "type": "integer"
+        },
+        "reaction_emoji": {
+          "sqlite_column": "reaction_emoji",
+          "type": "text"
+        },
+        "frustration_clicks": {
+          "sqlite_column": "frustration_clicks",
+          "type": "integer"
+        },
+        "self_reported_difficulty": {
+          "sqlite_column": "self_reported_difficulty",
+          "type": "integer"
+        },
+        "session_id": {
+          "sqlite_column": "session_id",
+          "type": "uuid"
+        },
+        "session_question_number": {
+          "sqlite_column": "session_question_number",
+          "type": "integer"
+        },
+        "device_type": {
+          "sqlite_column": "device_type",
+          "type": "text"
+        },
+        "network_type": {
+          "sqlite_column": "network_type",
+          "type": "text"
+        },
+        "time_of_day": {
+          "sqlite_column": "time_of_day",
+          "type": "text"
+        },
+        "day_of_week": {
+          "sqlite_column": "day_of_week",
+          "type": "text"
+        },
+        "quest_id": {
+          "sqlite_column": "quest_id",
+          "type": "text"
+        },
+        "quest_question_number": {
+          "sqlite_column": "quest_question_number",
+          "type": "integer"
+        },
+        "points_earned": {
+          "sqlite_column": "points_earned",
+          "type": "integer"
+        },
+        "streak_at_time": {
+          "sqlite_column": "streak_at_time",
+          "type": "integer"
+        },
+        "answered_at": {
+          "sqlite_column": "answered_at",
+          "type": "timestamp with time zone"
+        },
+        "client_timestamp": {
+          "sqlite_column": "client_timestamp",
+          "type": "timestamp with time zone"
+        },
+        "synced": {
+          "sqlite_column": "synced",
+          "type": "boolean"
+        },
+        "frustration_level": {
+          "sqlite_column": "frustration_level",
+          "type": "integer"
+        }
+      }
+    },
+    "user_balances": {
+      "sqlite_table": "user_balances",
+      "columns": {
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "coins": {
+          "sqlite_column": "coins",
+          "type": "integer"
+        },
+        "gem_overall": {
+          "sqlite_column": "gem_overall",
+          "type": "integer"
+        },
+        "gem_math": {
+          "sqlite_column": "gem_math",
+          "type": "integer"
+        },
+        "gem_science": {
+          "sqlite_column": "gem_science",
+          "type": "integer"
+        },
+        "gem_english": {
+          "sqlite_column": "gem_english",
+          "type": "integer"
+        },
+        "gem_sst": {
+          "sqlite_column": "gem_sst",
+          "type": "integer"
+        },
+        "updated_at": {
+          "sqlite_column": "updated_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "user_challenges": {
+      "sqlite_table": "user_challenges",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "challenge_id": {
+          "sqlite_column": "challenge_id",
+          "type": "uuid"
+        },
+        "current_value": {
+          "sqlite_column": "current_value",
+          "type": "integer"
+        },
+        "is_completed": {
+          "sqlite_column": "is_completed",
+          "type": "boolean"
+        },
+        "completed_at": {
+          "sqlite_column": "completed_at",
+          "type": "timestamp with time zone"
+        },
+        "last_updated_at": {
+          "sqlite_column": "last_updated_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "user_chests": {
+      "sqlite_table": "user_chests",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "chest_type": {
+          "sqlite_column": "chest_type",
+          "type": "text"
+        },
+        "opened": {
+          "sqlite_column": "opened",
+          "type": "boolean"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        },
+        "opened_at": {
+          "sqlite_column": "opened_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "user_sessions": {
+      "sqlite_table": "user_sessions",
+      "columns": {
+        "session_id": {
+          "sqlite_column": "session_id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "current_quest_id": {
+          "sqlite_column": "current_quest_id",
+          "type": "integer"
+        },
+        "quest_questions": {
+          "sqlite_column": "quest_questions",
+          "type": "jsonb"
+        },
+        "quest_results": {
+          "sqlite_column": "quest_results",
+          "type": "jsonb"
+        },
+        "question_history": {
+          "sqlite_column": "question_history",
+          "type": "jsonb"
+        },
+        "frustration_level": {
+          "sqlite_column": "frustration_level",
+          "type": "integer"
+        },
+        "mastery_level": {
+          "sqlite_column": "mastery_level",
+          "type": "text"
+        },
+        "session_start": {
+          "sqlite_column": "session_start",
+          "type": "timestamp with time zone"
+        },
+        "last_active": {
+          "sqlite_column": "last_active",
+          "type": "timestamp with time zone"
+        },
+        "ended_at": {
+          "sqlite_column": "ended_at",
+          "type": "timestamp with time zone"
+        },
+        "confidence_rating": {
+          "sqlite_column": "confidence_rating",
+          "type": "integer"
+        },
+        "engagement_level": {
+          "sqlite_column": "engagement_level",
+          "type": "integer"
+        },
+        "cognitive_load": {
+          "sqlite_column": "cognitive_load",
+          "type": "integer"
+        }
+      }
+    },
+    "user_transactions": {
+      "sqlite_table": "user_transactions",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "currency": {
+          "sqlite_column": "currency",
+          "type": "text"
+        },
+        "amount_change": {
+          "sqlite_column": "amount_change",
+          "type": "integer"
+        },
+        "transaction_type": {
+          "sqlite_column": "transaction_type",
+          "type": "text"
+        },
+        "context_id": {
+          "sqlite_column": "context_id",
+          "type": "text"
+        },
+        "created_at": {
+          "sqlite_column": "created_at",
+          "type": "timestamp with time zone"
+        }
+      }
+    },
+    "user_vault": {
+      "sqlite_table": "user_vault",
+      "columns": {
+        "id": {
+          "sqlite_column": "id",
+          "type": "uuid"
+        },
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "artifact_id": {
+          "sqlite_column": "artifact_id",
+          "type": "text"
+        },
+        "subject": {
+          "sqlite_column": "subject",
+          "type": "text"
+        },
+        "unlocked_at": {
+          "sqlite_column": "unlocked_at",
+          "type": "timestamp with time zone"
+        },
+        "title": {
+          "sqlite_column": "title",
+          "type": "text"
+        },
+        "item_type": {
+          "sqlite_column": "item_type",
+          "type": "text"
+        },
+        "engine_type": {
+          "sqlite_column": "engine_type",
+          "type": "text"
+        },
+        "cdn_url": {
+          "sqlite_column": "cdn_url",
+          "type": "text"
+        }
+      }
+    },
+    "weekly_user_stats": {
+      "sqlite_table": "weekly_user_stats",
+      "columns": {
+        "user_id": {
+          "sqlite_column": "user_id",
+          "type": "uuid"
+        },
+        "nickname": {
+          "sqlite_column": "nickname",
+          "type": "text"
+        },
+        "parent_name": {
+          "sqlite_column": "parent_name",
+          "type": "text"
+        },
+        "parent_whatsapp": {
+          "sqlite_column": "parent_whatsapp",
+          "type": "text"
+        },
+        "report_enabled": {
+          "sqlite_column": "report_enabled",
+          "type": "boolean"
+        },
+        "last_report_sent": {
+          "sqlite_column": "last_report_sent",
+          "type": "timestamp with time zone"
+        },
+        "current_streak": {
+          "sqlite_column": "current_streak",
+          "type": "integer"
+        },
+        "longest_streak": {
+          "sqlite_column": "longest_streak",
+          "type": "integer"
+        },
+        "week_start": {
+          "sqlite_column": "week_start",
+          "type": "date"
+        },
+        "week_end": {
+          "sqlite_column": "week_end",
+          "type": "date"
+        },
+        "total_time_ms": {
+          "sqlite_column": "total_time_ms",
+          "type": "bigint"
+        },
+        "total_questions": {
+          "sqlite_column": "total_questions",
+          "type": "bigint"
+        },
+        "total_correct": {
+          "sqlite_column": "total_correct",
+          "type": "bigint"
+        },
+        "accuracy_pct": {
+          "sqlite_column": "accuracy_pct",
+          "type": "numeric"
+        },
+        "math_total": {
+          "sqlite_column": "math_total",
+          "type": "bigint"
+        },
+        "math_correct_week": {
+          "sqlite_column": "math_correct_week",
+          "type": "bigint"
+        },
+        "math_time_ms": {
+          "sqlite_column": "math_time_ms",
+          "type": "bigint"
+        },
+        "science_total": {
+          "sqlite_column": "science_total",
+          "type": "bigint"
+        },
+        "science_correct_week": {
+          "sqlite_column": "science_correct_week",
+          "type": "bigint"
+        },
+        "science_time_ms": {
+          "sqlite_column": "science_time_ms",
+          "type": "bigint"
+        },
+        "english_total": {
+          "sqlite_column": "english_total",
+          "type": "bigint"
+        },
+        "english_correct_week": {
+          "sqlite_column": "english_correct_week",
+          "type": "bigint"
+        },
+        "english_time_ms": {
+          "sqlite_column": "english_time_ms",
+          "type": "bigint"
+        },
+        "sst_total": {
+          "sqlite_column": "sst_total",
+          "type": "bigint"
+        },
+        "sst_correct_week": {
+          "sqlite_column": "sst_correct_week",
+          "type": "bigint"
+        },
+        "sst_time_ms": {
+          "sqlite_column": "sst_time_ms",
+          "type": "bigint"
+        },
+        "coins": {
+          "sqlite_column": "coins",
+          "type": "integer"
+        },
+        "gem_math": {
+          "sqlite_column": "gem_math",
+          "type": "integer"
+        },
+        "gem_science": {
+          "sqlite_column": "gem_science",
+          "type": "integer"
+        },
+        "gem_english": {
+          "sqlite_column": "gem_english",
+          "type": "integer"
+        },
+        "gem_sst": {
+          "sqlite_column": "gem_sst",
+          "type": "integer"
+        },
+        "math_correct_lifetime": {
+          "sqlite_column": "math_correct_lifetime",
+          "type": "integer"
+        },
+        "science_correct_lifetime": {
+          "sqlite_column": "science_correct_lifetime",
+          "type": "integer"
+        },
+        "english_correct_lifetime": {
+          "sqlite_column": "english_correct_lifetime",
+          "type": "integer"
+        },
+        "sst_correct_lifetime": {
+          "sqlite_column": "sst_correct_lifetime",
+          "type": "integer"
+        },
+        "unlocked_badges": {
+          "sqlite_column": "unlocked_badges",
+          "type": "ARRAY"
+        }
+      }
+    }
+  }
+}

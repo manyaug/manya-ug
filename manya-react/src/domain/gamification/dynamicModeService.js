@@ -7,6 +7,7 @@
  */
 
 import { audioService } from '../../infrastructure/audio/audioService';
+import { getEngineType } from '../../engines/shared-engines/UniversalLogic';
 
 class DynamicModeService {
     constructor() {
@@ -84,7 +85,27 @@ class DynamicModeService {
 
         // 3. Get distractors from other questions' texts in the pool
         const otherQuestions = (distractorPool || [])
-            .filter(q => q.id !== normalQuestion.id && (q.question || q.text) !== originalQuestionText)
+            .filter(q => {
+                if (!q) return false;
+                
+                // Exclude current question by ID or text match
+                const isCurrent = q.id === normalQuestion.id;
+                const text = q.question || q.text;
+                const isSameText = text === originalQuestionText;
+                if (isCurrent || isSameText) return false;
+                
+                // Ensure q is a valid MCQ question
+                const eType = getEngineType(q);
+                const isMCQ = eType === 'MCQ' || eType === 'MCQ_STANDALONE';
+                const hasOptions = q.options && Array.isArray(q.options) && q.options.length > 0;
+                if (!isMCQ || !hasOptions) return false;
+                
+                // Ensure text is not a placeholder/quest title
+                const isQuestTitle = text && (text.startsWith('Quest ') || text.startsWith('Quest:'));
+                if (isQuestTitle) return false;
+                
+                return true;
+            })
             .map(q => q.question || q.text)
             .filter(txt => !!txt && txt.length > 5);
         

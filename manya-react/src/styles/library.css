@@ -506,10 +506,15 @@
 .vault-preview-layer {
     position: fixed;
     inset: 0;
-    z-index: 2000;
+    z-index: 11000;
     background: var(--bg-main);
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden;
 }
 
 .preview-nav {
@@ -543,6 +548,10 @@
 .p-body {
     flex: 1;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .vault-loader {

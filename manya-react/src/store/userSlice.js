@@ -235,12 +235,78 @@ const initialState = {
  */
 export const discoverArtifactThunk = createAsyncThunk(
     'user/discoverArtifact',
-    async (artifact, { getState, dispatch }) => {
+    async (rawArtifact, { getState, dispatch }) => {
         const state = getState().user.data;
+        const artifact = { ...rawArtifact };
+        const data = artifact.data || {};
+
+        // 🧠 Normalize originUrl and cdnUrl
+        const originUrl = data._originUrl || data.cdn_url || data.path || artifact.id;
+        let cdnUrl = originUrl;
         
+        // Clean CDN url to relative path starting with /content/
+        if (cdnUrl && typeof cdnUrl === 'string') {
+            const contentIdx = cdnUrl.indexOf('content/');
+            if (contentIdx !== -1) {
+                cdnUrl = '/' + cdnUrl.substring(contentIdx);
+            }
+        }
+
+        // 🧠 Stable ID extraction from originUrl filename
+        let stableId = artifact.id;
+        const isDynamicId = !stableId || (stableId.includes('_') && /^\d+$/.test(stableId.split('_').pop()));
+        const hasValidOrigin = originUrl && typeof originUrl === 'string' && originUrl.includes('/');
+        
+        if ((isDynamicId || stableId.includes('note_') || stableId.includes('recap_') || stableId.includes('globe_') || stableId.includes('3d_') || stableId.includes('gallery_') || stableId.includes('hotspots_') || stableId.includes('math_') || stableId.includes('sim_')) && hasValidOrigin) {
+            const cleanUrl = originUrl.split('?')[0];
+            const filename = cleanUrl.split('/').pop().replace('.json', '');
+            if (filename && !/^\d+$/.test(filename) && filename.length > 2) {
+                stableId = filename;
+            }
+        }
+
+        // 🧠 Subject resolution from originUrl path
+        let resolvedSubject = artifact.subject || data.subject;
+        if ((!resolvedSubject || resolvedSubject.toLowerCase() === 'general' || resolvedSubject.toLowerCase() === 'overall') && originUrl) {
+            const pathLower = originUrl.toLowerCase();
+            if (pathLower.includes('/science/')) resolvedSubject = 'science';
+            else if (pathLower.includes('/math/') || pathLower.includes('/mathematics/')) resolvedSubject = 'math';
+            else if (pathLower.includes('/english/')) resolvedSubject = 'english';
+            else if (pathLower.includes('/sst/') || pathLower.includes('/social-studies/')) resolvedSubject = 'sst';
+        }
+        resolvedSubject = resolvedSubject || 'general';
+
+        // 🧠 Title resolution from various metadata fields
+        let resolvedTitle = artifact.title || data.title || data.topic;
+        if (data.study_notes?.title) {
+            resolvedTitle = data.study_notes.title;
+        } else if (data.sections?.[0]?.title) {
+            resolvedTitle = data.sections[0].title;
+        } else if (data.title) {
+            resolvedTitle = data.title;
+        }
+        resolvedTitle = resolvedTitle || 'Study Material';
+
+        // 🧠 Rebuild artifact properties
+        artifact.id = stableId;
+        artifact.subject = resolvedSubject;
+        artifact.title = resolvedTitle;
+        artifact.data = {
+            ...data,
+            id: stableId,
+            subject: resolvedSubject,
+            title: resolvedTitle,
+            cdn_url: cdnUrl,
+            _originUrl: originUrl
+        };
+
         // 🛡️ VALIDATION: Only allow STUDY/SIMULATION types in the vault
         // No MCQs, Quizzes, or interactive questions should be vaulted.
-        const allowedTypes = ['note', 'recap', 'study_sim', 'simulation', 'artifact'];
+        const allowedTypes = [
+            'note', 'recap', 'study_sim', 'simulation', 'artifact', 
+            '3d', 'gallery', 'hotspots', 'universal_globe', 'study', 
+            'set_study', 'map', 'dictionary'
+        ];
         if (!allowedTypes.includes(artifact.type)) {
             console.log(`🚫 [Vault] Skipping non-study artifact type: ${artifact.type}`);
             return;
@@ -255,7 +321,13 @@ export const discoverArtifactThunk = createAsyncThunk(
 
         // 1. Sync to Cloud
         try {
-            await syncService.pushVault(artifact.id, artifact.subject || 'overall');
+            await syncService.pushVault(artifact.id, artifact.subject, {
+                type: artifact.type,
+                title: artifact.title,
+                path: cdnUrl,
+                engine_type: data.engine_type || data.engineType || artifact.type,
+                cdn_url: cdnUrl
+            });
         } catch (e) {
             console.warn('🏺 [Vault] Cloud sync failed:', e.message);
         }

@@ -125,7 +125,7 @@ const QuestHUD = ({
                 <div className={`hud-mastery-card-premium ${immersive ? 'hud-immersive-compact' : ''}`}>
                     <div className="mastery-label-flex">
                         <div className="mastery-progress-header">
-                             <span>Progress: {Math.round(progressPct)}%</span>
+                             <span>Progress: {Math.round(showMastery ? masteryScore : progressPct)}%</span>
                         </div>
                         {showMastery && (
                             <span className="mastery-pct-val" style={{ 
@@ -146,15 +146,15 @@ const QuestHUD = ({
                              )}
                              <div className="hud-scale-marker" style={{ left: '100%' }}><div className="marker-line" /></div>
 
-                             {/* MAIN BAR = COMPLETION */}
+                             {/* MAIN BAR = MASTERY/COMPLETION */}
                              <div className="hud-progress-fill-gradient" 
                                   style={{ 
-                                      width: `${progressPct}%`, 
+                                      width: `${showMastery ? masteryScore : progressPct}%`, 
                                       backgroundColor: isPassing ? 'var(--manya-gold)' : 'var(--manya-green)',
                                       boxShadow: isPassing 
                                           ? '0 0 15px rgba(251, 191, 36, 0.4)'
                                           : '0 0 15px rgba(16, 185, 129, 0.3)',
-                                      transition: 'background-color 0.6s ease, box-shadow 0.6s ease'
+                                      transition: 'background-color 0.6s ease, box-shadow 0.6s ease, width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
                                   }} 
                              />
                         </div>

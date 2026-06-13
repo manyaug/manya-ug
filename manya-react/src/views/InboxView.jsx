@@ -571,11 +571,14 @@ export default function InboxView() {
    ════════════════════════════════════════════════════════════ */
 function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelete, actionLoadingId }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const user = useSelector(state => state.user.data);
 
-    const challengerName = invite.challenger?.full_name || 'Unknown Student';
-    const avatarUrl = invite.challenger?.avatar_url
-        || `https://api.dicebear.com/7.x/avataaars/svg?seed=${challengerName}`;
-    const isOnline = onlineUsers.includes(invite.challenger_id);
+    const isChallenger = invite.challenger_id === user?.id;
+    const opponent = isChallenger ? invite.challenged : invite.challenger;
+    const opponentName = opponent?.full_name || 'Unknown Student';
+    const avatarUrl = opponent?.avatar_url
+        || `https://api.dicebear.com/7.x/avataaars/svg?seed=${opponentName}`;
+    const isOnline = onlineUsers.includes(isChallenger ? invite.challenged_id : invite.challenger_id);
     const wager    = invite.gem_wager || 0;
     const currency = invite.wager_currency || 'gems';
     const subject  = invite.subject || 'general';
@@ -606,15 +609,17 @@ function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelet
                 style={{ cursor: 'pointer' }}
             >
                 <div className="inbox-avatar-box">
-                    <img src={avatarUrl} alt={challengerName} />
+                    <img src={avatarUrl} alt={opponentName} />
                 </div>
                 <div className="inbox-card-meta">
                     <div className="inbox-sender-name">
-                        {challengerName}
+                        {opponentName}
                         {isOnline && <span className="inbox-online-dot" title="Online now" />}
                     </div>
                     <div className="inbox-card-subtitle">
-                        ⚔️ {subjectLabel} Duel Challenge
+                        {invite.status === 'accepted_terms' 
+                            ? `⚔️ Accepted ${subjectLabel} Challenge` 
+                            : `⚔️ ${subjectLabel} Duel Challenge`}
                     </div>
                 </div>
                 <div className="inbox-card-timestamp" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -643,7 +648,7 @@ function DuelCard({ invite, onlineUsers, onAccept, onDecline, onBargain, onDelet
                             {invite.message && (
                                 <div className="w-full bg-[#3e2723]/30 border border-[#b49060]/30 rounded-xl p-3 mb-2">
                                     <div className="text-[9px] font-black text-[#b49060] uppercase tracking-wider mb-1 flex items-center gap-1">
-                                        ✉️ Message from {invite.status === 'accepted_terms' ? invite.challenged?.full_name : challengerName}
+                                        ✉️ Message from {opponentName}
                                     </div>
                                     <div className="text-sm font-medium text-[#ebdcb9] italic">
                                         "{invite.message}"

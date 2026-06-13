@@ -42,6 +42,7 @@ import InboxView from './views/InboxView';
 import DuelInviteListener from './components/DuelInviteListener';
 
 import { initializeUser, addDiamonds, awardGems, updateBalanceThunk, setOnlineUsers } from './store/userSlice';
+import { resetLayout } from './store/layoutSlice';
 import { supabase } from './infrastructure/remote/supabaseClient';
 import './styles/global.css';
 
@@ -56,8 +57,17 @@ const HIDE_NAV_ROUTES = ['/quest-path', '/quest', '/sim-test', '/membership', '/
  */
 function RouterLayout() {
     const location = useLocation();
-    const hideHud = HIDE_HUD_ROUTES.some(r => location.pathname.startsWith(r));
-    const hideNav = HIDE_NAV_ROUTES.some(r => location.pathname.startsWith(r));
+    const dispatch = useDispatch();
+    const hideBottomNav = useSelector(state => state.layout.hideBottomNav);
+    const hideGlobalHUD = useSelector(state => state.layout.hideGlobalHUD);
+
+    const hideHud = HIDE_HUD_ROUTES.some(r => location.pathname.startsWith(r)) || hideGlobalHUD;
+    const hideNav = HIDE_NAV_ROUTES.some(r => location.pathname.startsWith(r)) || hideBottomNav;
+
+    // Reset layout state on route changes
+    useEffect(() => {
+        dispatch(resetLayout());
+    }, [location.pathname, dispatch]);
 
     // Reset scroll position to top on every route change
     useEffect(() => {

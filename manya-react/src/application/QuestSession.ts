@@ -86,6 +86,15 @@ export class QuestSession {
         return this._steps.length;
     }
 
+    get testableStepsCount(): number {
+        const count = this._steps.filter(s => {
+            const rawEngineType = s.engineType || s.engine_type || s.data?.engineType || s.data?.engine_type;
+            const engineType = rawEngineType ? String(rawEngineType).toUpperCase().trim() : '';
+            return engineType !== 'NOTE_EXPLORER' && engineType !== 'READER_STUDY' && !s.isStudyStep && !s.noGamification;
+        }).length;
+        return count || 1;
+    }
+
     get isFinished(): boolean {
         // [Manya Worldclass V8.5] ONLY finish when physical steps are exhausted.
         // We no longer exit early on 100% mastery to ensure the pedagogical flow is complete.
@@ -122,9 +131,7 @@ export class QuestSession {
      */
     peekResult(engineResult: any) {
         if (!this.currentStep) return;
-        // Denominator should be the total questions in the pool or the total steps in the quest
-        // v8.5: Use a stable denominator to prevent score spikes
-        const totalQuestions = Math.max(10, this._steps.length);
+        const totalQuestions = this.testableStepsCount;
         
         // Use the absolute score (correct + fractional) if provided by the fetcher
         const absoluteScore = engineResult.score !== undefined ? engineResult.score : (this._correctCount + (engineResult.pulseScore || 0));
@@ -147,8 +154,7 @@ export class QuestSession {
             }, this._meta.subject);
             this._lastMasteryScore = usp.masteryScore;
         } else {
-            // v8.5: Use stable denominator (at least 10) to ensure smooth progression
-            const totalQuestions = Math.max(10, this._steps.length);
+            const totalQuestions = this.testableStepsCount;
             const currentCorrect = this._correctCount + (engineResult.isCorrect ? 1 : 0);
             
             this._lastMasteryScore = Math.min(100, Math.round((currentCorrect / totalQuestions) * 100));
@@ -260,7 +266,7 @@ export class QuestSession {
         if (safeNodeType === 'EXPLORE') {
             masteryScore = 100;
         } else {
-            masteryScore = this._lastMasteryScore || Math.round((this._correctCount / Math.max(1, this._steps.length)) * 100);
+            masteryScore = this._lastMasteryScore || Math.round((this._correctCount / this.testableStepsCount) * 100);
         }
 
         // --- PERSISTENCE (Universal) ---

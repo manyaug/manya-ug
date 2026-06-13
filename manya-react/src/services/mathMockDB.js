@@ -86,8 +86,8 @@ export const fetchMathQuestions = async (topicId) => {
                             topic: topicId,
                             subtopic: subtopic,
                             item_type: res.file.includes('recap') ? 'RECAP' : 'NOTE',
-                            engine_type: 'NOTE_EXPLORER',
-                            cdn_url: assetUrl(`content/math/${curriculumQuest.folder}/${res.file}.json`)
+                            engine_type: res.file.includes('recap') ? 'READER_STUDY' : 'NOTE_EXPLORER',
+                            cdn_url: assetUrl(`content/math/${curriculumQuest.unitId || 'set_theory'}/${curriculumQuest.folder}/${res.file}.json`)
                         });
                     }
                 });
@@ -128,19 +128,24 @@ export const fetchMathQuestions = async (topicId) => {
             if (isInteractive && q.cdn_url) {
                 try {
                     let cleanCdnUrl = q.cdn_url.replace('.net.net', '.net');
-                    cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                    cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^/]+\/)\/content\/[^/]+\//g, '$1');
                     cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
                     
                     console.debug(`[MathDB] Fetching CDN Payload for ${q.qid}: ${cleanCdnUrl}`);
                     const fetchedData = await storageFacade.get(`file:${cleanCdnUrl}`);
                     if (fetchedData) {
                         interactivePayload = { ...interactivePayload, ...fetchedData };
+                        interactivePayload._originUrl = cleanCdnUrl;
+                        interactivePayload.cdn_url = cleanCdnUrl;
                         console.log(`%c ✅ [MathDB] Hydrated Simulation: ${q.qid}`, 'color: #10b981; font-weight: bold;');
                     }
                 } catch (e) {
                     console.warn(`[MathDB] CDN Fetch failed for ${q.qid}:`, e.message);
                 }
             }
+
+            const originUrl = interactivePayload._originUrl || q.cdn_url;
+            const resolvedEngine = q.engine_type || (q.item_type === 'RECAP' ? 'READER_STUDY' : (q.item_type === 'NOTE' ? 'NOTE_EXPLORER' : 'MCQ'));
 
             return {
                 id: q.qid || q.id,
@@ -158,7 +163,22 @@ export const fetchMathQuestions = async (topicId) => {
                 image_url: q.image_location === 'null' ? null : (q.image_url || q.image_location),
                 variant: q.variant || (q.qid?.includes('-V') ? q.qid.split('-V')[1] : 'V1'),
                 type: q.item_type || 'MCQ',
-                data: interactivePayload, 
+                engine_type: resolvedEngine,
+                engineType: resolvedEngine,
+                cdn_url: originUrl,
+                _originUrl: originUrl,
+                data: {
+                    ...interactivePayload,
+                    id: q.qid || q.id,
+                    qid: q.qid || q.id,
+                    subject: q.subject || 'math',
+                    topic: q.topic || topicId,
+                    subtopic: q.subtopic,
+                    engine_type: resolvedEngine,
+                    engineType: resolvedEngine,
+                    cdn_url: originUrl,
+                    _originUrl: originUrl
+                }, 
             };
         }));
 

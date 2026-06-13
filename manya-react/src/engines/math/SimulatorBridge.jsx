@@ -1,6 +1,9 @@
 import React, { useState, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Puzzle } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { discoverArtifact, syncUserData } from '../../store/userSlice';
+import { addToast } from '../../store/toastSlice';
 import { getEngineType, SUPPORTED_SIM_ENGINES } from './MathLogic';
 import { calculateUSP } from '../../domain/scoring/scoringUtility.js';
 import { useBehavioralTracker } from '../../hooks/useBehavioralTracker';
@@ -27,6 +30,7 @@ import SetClassifierEngine from './SetClassifierEngine';
  * Connects the Math Fetcher to specialized Simulation Engines with seamless transitions.
  */
 const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
+    const dispatch = useDispatch();
     // --- REMOVED INTERNAL OVERLAYS (Now using global InteractionFeedback) ---
     
     // 🧠 [Phase 3] Universal Behavioral Tracking for Simulations
@@ -58,6 +62,53 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
             timeSpentMs: finalResults?.duration || finalResults?.timeSpentMs || 30000,
             engineType: engineType
         }, 'math');
+
+        // ── Archive study content / simulation to Knowledge Vault ──
+        const isStudyOrSim = [
+            'SET_STUDY', 'MATH_STUDY', 'STUDY_RECAP', 'READER_STUDY', 'NOTE_EXPLORER',
+            'SET_THEORY', 'VENN_LOGIC', 'VENN_PROB_ENGINE', 'SUBSET_GAME', 'PIZZA_GAME',
+            'BINARY_GAME', 'BINARY_GENERATOR', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER',
+            'UNIVERSAL_GLOBE', 'IMAGE_HOTSPOTS', 'GALLERY_STUDY'
+        ].includes(engineType);
+
+        if (isStudyOrSim) {
+            const artifactTypeMap = {
+                'READER_STUDY': 'recap',
+                'STUDY_RECAP': 'recap',
+                'NOTE_EXPLORER': 'note',
+                'SET_STUDY': 'set_study',
+                'MATH_STUDY': 'set_study',
+                'IMAGE_HOTSPOTS': 'hotspots',
+                'UNIVERSAL_GLOBE': 'universal_globe',
+                'GALLERY_STUDY': 'gallery'
+            };
+            const artifactType = artifactTypeMap[engineType] || 'simulation';
+            const artifactTitle = simData?.title || simData?.topic || simData?.subtopic || step?.title || 'Math Discovery';
+            const originUrl = simData?._originUrl || simData?.cdn_url || simData?.path || step?.id;
+
+            dispatch(discoverArtifact({
+                id: step?.id || simData?.id || `math_sim_${Date.now()}`,
+                type: artifactType,
+                title: artifactTitle,
+                subject: simData?.subject || 'math',
+                data: {
+                    ...simData,
+                    _originUrl: originUrl,
+                    cdn_url: originUrl,
+                    engine_type: engineType
+                }
+            }));
+
+            // 🚀 Force sync to cloud database
+            setTimeout(() => {
+                dispatch(syncUserData());
+            }, 100);
+
+            dispatch(addToast({
+                message: `"${artifactTitle}" saved to your Library! 🏺`,
+                type: 'success',
+            }));
+        }
 
         onComplete({
             success: true, 
@@ -112,7 +163,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
             
             case 'MATH_STUDY':
             case 'SET_STUDY':
-            case 'STUDY_RECAP':
+            case 'STUDY_RECAP': {
                 // 🧠 SMART ROUTING (v8.5): If a STUDY card actually contains simulation data, 
                 // we "promote" it to the SetTheoryEngine so it doesn't render as an empty card.
                 const hasSimData = simData.interaction || simData.targetRegion || simData.expression || simData.questions?.[0]?.interaction;
@@ -120,6 +171,7 @@ const SimulatorBridge = ({ step, onComplete, onAttempt, onResult }) => {
                     return <SetTheoryEngine {...sharedProps} />;
                 }
                 return <SetStudyEngine {...sharedProps} />;
+            }
             
             case 'VENN_PROB_ENGINE':
                 return <VennProbEngine {...sharedProps} />;

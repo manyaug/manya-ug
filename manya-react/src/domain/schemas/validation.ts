@@ -34,6 +34,14 @@ export function validateAndNormalizeStep(raw: unknown, originUrl: string | null 
     const data = result.data;
     let engineType = data.engineType || data.engine;
 
+    // Infer id/qid from originUrl if missing
+    if (!data.id && !data.qid && originUrl) {
+        const parts = originUrl.split('/');
+        const filename = parts[parts.length - 1].replace(/\.json$/, '');
+        data.id = filename;
+        data.qid = filename;
+    }
+
     // Legacy heuristics mapping (from questLoader)
     if (!engineType) {
         if (data.mode === 'note_explorer' || data.study_notes) {

@@ -311,7 +311,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
             // v6.5: Explicit Note vs Recap vs Story partitioning
             const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
-            const isRecap = itemType === 'RECAP' || q.isRecap || idLower.includes('recap') || (subject === 'english' && idLower.includes('rule'));
+            const isRecap = itemType === 'RECAP' || engineType === 'READER_STUDY' || q.isRecap || idLower.includes('recap') || (subject === 'english' && idLower.includes('rule'));
             const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || itemType === 'INTERACTIVE_STUDY' || engineType === 'NOTE_EXPLORER' || q.isNote || idLower.includes('note') || idLower.includes('study') || idLower.includes('rule'));
 
             if (isStory && isHydrated) {
@@ -348,7 +348,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 const idLower = (sim.qid || sim.id || sim.file || "").toLowerCase();
                 
                 const isStory = itemType === 'QUEST_STORY' || engineType === 'CHAT' || engineType === 'QUEST_RUNNER' || (itemType === 'QUEST' && engineType !== 'HARVEST_GAME');
-                const isRecap = idLower.includes('recap') || itemType === 'RECAP' || sim.isRecap || (subject === 'english' && idLower.includes('rule'));
+                const isRecap = idLower.includes('recap') || itemType === 'RECAP' || engineType === 'READER_STUDY' || sim.isRecap || (subject === 'english' && idLower.includes('rule'));
                 const isNote = !isRecap && (itemType === 'GRAMMAR' || itemType === 'NOTE' || itemType === 'INTERACTIVE_STUDY' || engineType === 'NOTE_EXPLORER' || idLower.includes('note') || idLower.includes('study') || idLower.includes('rule') || sim.isNote);
 
                 const hydration = { ...sim, isSimulation: true, id: sim.qid || sim.id || sim.file };
@@ -399,14 +399,8 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         });
 
         // Concept De-duplication
-        const conceptMap = {};
-        mcqCandidates.forEach(cand => {
-            const { baseId } = parseQuestionId(cand.id || cand.qid);
-            if (!conceptMap[baseId] || cand._adaptive.score > conceptMap[baseId]._adaptive.score) {
-                conceptMap[baseId] = cand;
-            }
-        });
-        mcqCandidates = Object.values(conceptMap);
+        // [v11.0 Fix]: Global de-duplication is removed here to preserve variant records (V1, V2, V3) in pools.
+        // Instead, de-duplication by concept is performed dynamically during Warmup, Boss, and Core Battle assembly.
 
         // Variant Spacing
         const recentQIds = (history || []).slice(-3).map(h => h.questionId).filter(Boolean);
@@ -438,50 +432,115 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         console.log(`📊 [Adaptive] Variant pools → V1:${v1Pool.length} V2:${v2Pool.length} V3:${v3Pool.length} | Targets → V1:${targetV1} V2:${targetV2} V3:${targetV3}`);
 
-        // 4. EMPATHETIC STRUCTURED FLOW ASSEMBLY (v8.6)
+        // 4. EMPATHETIC STRUCTURED FLOW ASSEMBLY (v11.0 - Dynamic variant selector & de-duplication)
         const finalQuestions = [];
         const isWarmupNeeded = needsWarmup(history, session);
         
+        const usedConceptIds = new Set();
+        let remainingV1 = targetV1;
+        let remainingV2 = targetV2;
+        let remainingV3 = targetV3;
+
+        // Dynamic multi-tier variant drawer that enforces uniqueness
+        function drawQuestionFromTiers() {
+            const tiers = [
+                { name: 'V2', pool: v2Pool, remaining: remainingV2 },
+                { name: 'V3', pool: v3Pool, remaining: remainingV3 },
+                { name: 'V1', pool: v1Pool, remaining: remainingV1 }
+            ];
+            // Sort tiers by remaining target count descending
+            tiers.sort((a, b) => b.remaining - a.remaining);
+
+            for (const tier of tiers) {
+                const idx = tier.pool.findIndex(q => {
+                    const { baseId } = parseQuestionId(q.id || q.qid);
+                    return !usedConceptIds.has(baseId);
+                });
+                if (idx !== -1) {
+                    const q = tier.pool.splice(idx, 1)[0];
+                    if (tier.name === 'V1') remainingV1--;
+                    else if (tier.name === 'V2') remainingV2--;
+                    else if (tier.name === 'V3') remainingV3--;
+                    return q;
+                }
+            }
+
+            // Fallback: draw from sorted mcqCandidates
+            const fallbackIdx = mcqCandidates.findIndex(q => {
+                const { baseId } = parseQuestionId(q.id || q.qid);
+                return !usedConceptIds.has(baseId);
+            });
+            if (fallbackIdx !== -1) {
+                return mcqCandidates.splice(fallbackIdx, 1)[0];
+            }
+            return null;
+        }
+
         // ── STEP A: WARMUP (Force V1) ──
         if (isWarmupNeeded || nodeType === 'WARMUP') {
-            // V1 pool is already normalized above — includes V0→V1 records
-            const warmupPool = v1Pool.length > 0 ? v1Pool : mcqCandidates.slice(0, 20);
-            const warmupChoices = warmupPool.slice(0, 3);
-            console.log(`🌱 [Adaptive] Injected ${warmupChoices.length} Warmup questions (V1)`);
+            const warmupChoices = [];
+            for (let i = 0; i < 3; i++) {
+                const idx = v1Pool.findIndex(q => {
+                    const { baseId } = parseQuestionId(q.id || q.qid);
+                    return !usedConceptIds.has(baseId);
+                });
+                if (idx !== -1) {
+                    const q = v1Pool.splice(idx, 1)[0];
+                    remainingV1--;
+                    warmupChoices.push(q);
+                    usedConceptIds.add(parseQuestionId(q.id || q.qid).baseId);
+                } else {
+                    const q = drawQuestionFromTiers();
+                    if (q) {
+                        warmupChoices.push(q);
+                        usedConceptIds.add(parseQuestionId(q.id || q.qid).baseId);
+                    }
+                }
+            }
+            console.log(`🌱 [Adaptive] Injected ${warmupChoices.length} Warmup questions`);
             finalQuestions.push(...warmupChoices);
-            warmupChoices.forEach(wc => {
-                const idx = mcqCandidates.findIndex(m => m.id === wc.id);
-                if (idx !== -1) mcqCandidates.splice(idx, 1);
-            });
         }
 
         // ── STEP B: BUILD DYNAMIC STUDY QUEUE (Notes + Recaps) ──
-        // v10.0: Notes and recaps are no longer locked to intro/outro positions.
-        // They are injected dynamically based on LIVE struggle signals throughout the quest.
         const historyAttemptedIds = new Set(
             (history || []).map(h => String(h.questionId || h.qid || h.id || '').toLowerCase())
         );
         const studyQueue = [
-            // Prioritize unattempted notes (fresh content the student hasn't seen)
             ...pools.NOTE.filter(n => !historyAttemptedIds.has(String(n.qid || n.id || '').toLowerCase())),
-            // Then recaps (reinforcement of what was just taught)
             ...pools.RECAP.filter(r => !historyAttemptedIds.has(String(r.qid || r.id || '').toLowerCase())),
-            // Fallback: previously seen notes (better than nothing when frustration is high)
             ...pools.NOTE.filter(n => historyAttemptedIds.has(String(n.qid || n.id || '').toLowerCase())),
         ];
 
+        // ── STEP D: BOSS FIGHT RESERVATION (Force V3 / High Difficulty) ──
+        let bossQuestion = null;
+        if (nodeType !== 'WARMUP') {
+            // Try v3Pool first
+            let bossIdx = v3Pool.findIndex(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId));
+            if (bossIdx !== -1) {
+                bossQuestion = v3Pool.splice(bossIdx, 1)[0];
+                remainingV3--;
+            } else {
+                // Try difficulty H or V3 in mcqCandidates
+                bossIdx = mcqCandidates.findIndex(q => 
+                    !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId) && 
+                    (q.variant === 'V3' || q.difficulty === 'H')
+                );
+                if (bossIdx !== -1) {
+                    bossQuestion = mcqCandidates.splice(bossIdx, 1)[0];
+                    if (bossQuestion.variant === 'V3') remainingV3--;
+                } else {
+                    // Fallback: draw any question
+                    bossQuestion = drawQuestionFromTiers();
+                }
+            }
+            if (bossQuestion) {
+                usedConceptIds.add(parseQuestionId(bossQuestion.id || bossQuestion.qid).baseId);
+                bossQuestion.isBoss = true;
+            }
+        }
+
         // ── STEP C: CORE BATTLE (v10.0 — Dynamic Study Injection) ──
         const targetCoreLength = Math.max(8, questLength - 2);
-        
-        // Core MCQ pool: V1 + V2. V3 is reserved for the Boss Fight (Step D).
-        let coreMcqPool = mcqCandidates.filter(q => q.variant === 'V2' || q.variant === 'V1');
-        // Top up from V2-targeted pool first, then V3 if still short
-        if (coreMcqPool.length < 5) coreMcqPool = [...v2Pool, ...v1Pool, ...v3Pool];
-        if (coreMcqPool.length < 5) coreMcqPool = [...mcqCandidates];
-        
-        // Remove questions already in warmup from core pool
-        const warmupIds = new Set(finalQuestions.map(q => q.id || q.qid));
-        coreMcqPool = coreMcqPool.filter(q => !warmupIds.has(q.id || q.qid));
         
         // Track simulations: prefer unattempted
         const attemptedIds = new Set([
@@ -504,28 +563,18 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         const STRUGGLE_STREAK_THRESHOLD = 3;  // inject a study resource after 3 genuinely struggling MCQs
         const MAX_MCQS_WITHOUT_STUDY = 5;     // hard ceiling when isBadCondition is active
 
-
-        while (coreCount < targetCoreLength && (coreMcqPool.length > 0 || (simStack.length > 0 && simsInjected < maxSims))) {
+        while (coreCount < targetCoreLength) {
             const hasSim  = simStack.length > 0 && simsInjected < maxSims;
-            const hasMcq  = coreMcqPool.length > 0;
+            const hasMcq = v1Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
+                           v2Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
+                           v3Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
+                           mcqCandidates.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId));
+
+            if (!hasMcq && (!hasSim || simsInjected >= maxSims)) {
+                break; // No content left
+            }
 
             // ── DYNAMIC STUDY INJECTION (v10.1) ──────────────────────────────
-            //
-            // BUG FIX: Two bugs caused an infinite note loop:
-            //
-            // Bug 1 — Window not reset after injection:
-            //   We filtered finalQuestions for non-study MCQs and sliced the last 3.
-            //   After injecting a note, those same 3 MCQs were still the last 3 non-study
-            //   steps, so recentStruggleCount stayed at 3 → another injection → repeat.
-            //   Fix: Track `lastStudyInsertedAt` (index in finalQuestions after last injection).
-            //   Only count MCQs that were added AFTER that index.
-            //
-            // Bug 2 — Mastery 'new' treated as struggling:
-            //   Every new student has mastery='new' on all concepts (no history yet).
-            //   Counting 'new' as a struggle signal means ALL 3 warmup-level MCQs trigger
-            //   a note injection, then another 3, endlessly.
-            //   Fix: Only 'struggling_v1/v2/v3' are genuine struggle signals.
-            //
             const lastStudyInsertedAt = studyInjected > 0
                 ? finalQuestions.map((q, i) => q.isDynamicInjection ? i : -1).filter(i => i >= 0).pop()
                 : -1;
@@ -553,8 +602,6 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 console.log(`📚 [Adaptive v10.1] Mid-quest study injection #${studyInjected} at step ${coreCount} (struggle:${genuineStruggleCount}, bad:${isBadCondition})`);
                 continue;
             }
-            // ─────────────────────────────────────────────────────────────────
-
 
             // Rhythm: MCQ → MCQ → [Sim] → MCQ (every 3rd step)
             const shouldInjectSim = hasSim && (coreCount % 3 === 2 || !hasMcq);
@@ -567,26 +614,21 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 simsInjected++;
                 mcqsSinceLastStudy = 0; // sims also count as a "break"
             } else if (hasMcq) {
-                const nextQ = coreMcqPool.shift();
-                const mIdx = mcqCandidates.findIndex(m => m.id === nextQ.id);
-                if (mIdx !== -1) mcqCandidates.splice(mIdx, 1);
-                nextQ.isStudyStep = false;
-                finalQuestions.push(nextQ);
-                mcqsSinceLastStudy++;
+                const nextQ = drawQuestionFromTiers();
+                if (nextQ) {
+                    usedConceptIds.add(parseQuestionId(nextQ.id || nextQ.qid).baseId);
+                    nextQ.isStudyStep = false;
+                    finalQuestions.push(nextQ);
+                    mcqsSinceLastStudy++;
+                }
             }
             coreCount++;
         }
 
-        // ── STEP D: BOSS FIGHT (Force V3) ──
-        if (nodeType !== 'WARMUP') {
-            const bossPool = mcqCandidates.filter(q => q.variant === 'V3' || q.difficulty === 'H');
-            const boss = bossPool[0] || mcqCandidates[0]; // Fallback to highest ranked if no V3
-            if (boss) {
-                console.log(`💀 [Adaptive] Boss Fight Selected: ${boss.id} (Variant: ${boss.variant || 'RAW'})`);
-                finalQuestions.push({ ...boss, isBoss: true });
-                const bIdx = mcqCandidates.findIndex(m => m.id === boss.id);
-                if (bIdx !== -1) mcqCandidates.splice(bIdx, 1);
-            }
+        // ── STEP D: APPEND BOSS FIGHT ──
+        if (bossQuestion) {
+            console.log(`💀 [Adaptive] Appending Boss Fight: ${bossQuestion.id || bossQuestion.qid} (Variant: ${bossQuestion.variant})`);
+            finalQuestions.push(bossQuestion);
         }
 
         // ── STEP E: OUTRO (Recap) ──
@@ -625,7 +667,7 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             }
         }
 
-        console.log(`✨ [Adaptive] Empathetic Quest Assembled: ${finalQuestions.length} steps. (Mode: ${isBadCondition ? 'Remedial' : 'Reward-Heavy'})`);
+        console.log(`` + `✨ [Adaptive] Empathetic Quest Assembled: ${finalQuestions.length} steps. (Mode: ${isBadCondition ? 'Remedial' : 'Reward-Heavy'})`);
 
         return {
             questions: finalQuestions,

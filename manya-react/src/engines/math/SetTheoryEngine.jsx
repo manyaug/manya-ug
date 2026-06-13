@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { audioService } from '../../infrastructure/audio/audioService.js';
 import { Lightbulb, AlertCircle, Compass, Zap, Check, X, ArrowRight } from 'lucide-react';
@@ -81,7 +82,9 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
   const containerRef = useRef(null);
   const feedbackBtnRef = useRef(null);
   
-  const currentStep = { ...(normalizedData.questions?.[stepIdx] || {}) };
+  const currentStep = React.useMemo(() => {
+    return { ...(normalizedData.questions?.[stepIdx] || {}) };
+  }, [normalizedData.questions, stepIdx]);
   const isTwoSet = !!(normalizedData.sets?.B || normalizedData.sets?.b);
   useEffect(() => {
     if (currentStep) {
@@ -201,9 +204,18 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
             text: 'NOT QUITE RIGHT', 
             type: 'error' 
         }); 
+        setIsResolved(true);
         if (onSimWrong) onSimWrong();
+        
+        // Notify parent HUD of step completion (incorrect)
+        onResult?.({
+            score: stepIdx,
+            total: normalizedData.questions.length,
+            isCorrect: false,
+            type: 'step_complete'
+        });
     }
-  }, [isResolved, stepIdx, normalizedData, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult, onSimSuccess, onSimWrong, successfulAnswers]);
+  }, [isResolved, stepIdx, normalizedData, userAnswers, chips, activeSets, computeLayout, isTwoSet, selectedRegions, onComplete, onResult, onSimSuccess, onSimWrong, successfulAnswers, currentStep]);
 
   const onMouseDown = (e) => {
     if (e.cancelable) e.preventDefault();
@@ -461,34 +473,30 @@ const SetTheoryEngine = ({ data, onComplete, onResult, onSimSuccess, onSimWrong 
                         initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
                         className="flex flex-col gap-5"
                     >
-                        <div className={`w-full py-4 px-6 rounded-2xl flex items-center justify-center gap-3 font-black text-[13px] tracking-[0.2em] uppercase border-2 ${
-                            feedback.type === 'success' 
-                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.1)]' 
-                            : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
-                        }`}>
-                            {feedback.type === 'success' ? (
-                                <><Check size={20} strokeWidth={4} /> {feedback.text || 'Magnificent!'}</>
-                            ) : (
-                                <><AlertCircle size={20} strokeWidth={4} /> {feedback.text || 'Solution Pending...'}</>
-                            )}
-                        </div>
+                        {feedback.type === 'success' && (
+                            <div className="w-full py-4 px-6 rounded-2xl flex items-center justify-center gap-3 font-black text-[13px] tracking-[0.2em] uppercase border-2 bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                                <Check size={20} strokeWidth={4} /> {feedback.text || 'Magnificent!'}
+                            </div>
+                        )}
 
                         <button 
                             onClick={() => {
-                                if (feedback.type === 'success') handleInteraction();
+                                if (feedback.type === 'success' || feedback.type === 'error') handleInteraction();
                                 else setFeedback({ text: '', type: '' });
                             }}
                             className={`w-full h-16 rounded-2xl font-black text-xs tracking-[0.25em] uppercase transition-all flex items-center justify-center gap-2 relative overflow-hidden shadow-xl active:translate-y-1 ${
                                 feedback.type === 'success' 
                                 ? 'bg-[#58cc02] border-b-[6px] border-[#46a302] text-white hover:bg-[#46a302]' 
-                                : 'bg-rose-500 border-b-[6px] border-rose-700 text-white hover:bg-rose-600'
+                                : 'bg-[#f59e0b] border-b-[6px] border-[#d97706] text-white hover:bg-[#d97706]'
                             }`}
                         >
                             <div className="btn-toy-gloss" />
                             <span className="relative z-10">
-                                {feedback.type === 'success' 
-                                    ? (stepIdx < normalizedData.questions.length - 1 ? 'Next Challenge' : 'Complete Quest') 
-                                    : 'Try Again'}
+                                {feedback.type === 'error'
+                                    ? (stepIdx < normalizedData.questions.length - 1 ? 'Next' : 'Complete')
+                                    : (feedback.type === 'success'
+                                        ? (stepIdx < normalizedData.questions.length - 1 ? 'Next Challenge' : 'Complete Quest') 
+                                        : 'Try Again')}
                             </span>
                             <ArrowRight size={18} className="relative z-10" />
                         </button>

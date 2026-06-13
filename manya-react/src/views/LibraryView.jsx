@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Sparkles, X, Zap, Search, Clock, Box, FileText, Map as MapIcon, PlayCircle, Trash2, AlertTriangle, Layers, RotateCcw, Check
@@ -6,8 +7,10 @@ import {
 import { syncService } from '../infrastructure/sync/syncService.js';
 import { IMAGES, getIsland } from '../config/assetUrls';
 import { useNavigate } from 'react-router-dom';
-import { loadQuestSteps } from '../utils/questLoader';
-import { getEngineMetadata } from '../utils/engineRouter';
+import { loadQuestSteps, transformJsonToSteps } from '../utils/questLoader';
+import { getEngine } from '../config/engineRegistry';
+import { storageFacade } from '../infrastructure/storage/storageFacade.js';
+import { setHideBottomNav, setHideGlobalHUD } from '../store/layoutSlice';
 import '../styles/library.css';
 
 // Lazy Load Engines for Preview
@@ -32,6 +35,7 @@ const TYPES = [
 ];
 
 export default function LibraryView() {
+    const dispatch = useDispatch();
     const [artifacts, setArtifacts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -40,6 +44,16 @@ export default function LibraryView() {
     const [previewItem, setPreviewItem] = useState(null);
     const [itemToDelete, setItemToDelete] = useState(null);
     const [deleting, setDeleting] = useState(false);
+
+    // Sync bottom nav and HUD visibility with previewItem state
+    useEffect(() => {
+        dispatch(setHideBottomNav(!!previewItem));
+        dispatch(setHideGlobalHUD(!!previewItem));
+        return () => {
+            dispatch(setHideBottomNav(false));
+            dispatch(setHideGlobalHUD(false));
+        };
+    }, [previewItem, dispatch]);
 
     // ── INITIAL FETCH ──
     useEffect(() => {
@@ -380,6 +394,27 @@ function ArtifactCard({ item, color, onClick, onDelete }) {
     );
 }
 
+const ENGINE_TYPE_MAP = {
+    '3d': '3D_SKELETON',
+    'gallery': 'GALLERY_STUDY',
+    'hotspots': 'IMAGE_HOTSPOTS',
+    'recap': 'READER_STUDY',
+    'study_sim': 'NOTE_EXPLORER',
+    'universal_globe': 'UNIVERSAL_GLOBE',
+    'globe': 'UNIVERSAL_GLOBE',
+    'note': 'NOTE_EXPLORER',
+    'sim': 'NOTE_EXPLORER',
+    'simulation': 'NOTE_EXPLORER',
+    'artifact': 'NOTE_EXPLORER',
+    'study': 'NOTE_EXPLORER',
+    'deep_reader': 'DEEP_READER',
+    'sentence_blocks': 'SENTENCE_BLOCKS',
+    'set_study': 'SET_STUDY',
+    'math_study': 'MATH_STUDY',
+    'map': 'IMAGE_HOTSPOTS',
+    'dictionary': 'NOTE_EXPLORER'
+};
+
 function EngineLauncher({ item, onClose }) {
     const navigate = useNavigate();
     const [step, setStep] = useState(null);
@@ -395,6 +430,22 @@ function EngineLauncher({ item, onClose }) {
 
         async function fetchContent() {
              try {
+                 if (item.cdn_url) {
+                     let cleanCdnUrl = item.cdn_url.replace('.net.net', '.net');
+                     cleanCdnUrl = cleanCdnUrl.replace(new RegExp('(/content/[^/]+/)/content/[^/]+/', 'g'), '$1');
+                     
+                     const json = await storageFacade.get(`file:${cleanCdnUrl}`);
+                     if (json) {
+                         json._originUrl = cleanCdnUrl;
+                         const res = await transformJsonToSteps(json, item.subject || 'general', null, null, null);
+                         if (res && res.steps && res.steps.length > 0) {
+                             setStep(res.steps[0]);
+                             setLoading(false);
+                             return;
+                         }
+                     }
+                 }
+
                  const res = await loadQuestSteps(item.subject || 'general', 'vault', 'vault', item.path);
                  if (res && res.steps && res.steps.length > 0) {
                      setStep(res.steps[0]);
@@ -415,9 +466,21 @@ function EngineLauncher({ item, onClose }) {
     if (!step) return <div className="p-8 text-center opacity-50">No content available.</div>;
 
     const data = step.data || { file: item.path, title: item.title, subject: item.subject };
-    const eType = step.engineType || (item.type === 'RECAP' ? 'READER_STUDY' : 'NOTE_EXPLORER');
     
-    const meta = getEngineMetadata(eType);
+    let rawEType = step.engineType;
+    if (!rawEType || rawEType === 'UNKNOWN') {
+        rawEType = item.engine_type || (item.type === 'RECAP' ? 'READER_STUDY' : 'NOTE_EXPLORER');
+    }
+    const cleanEType = String(rawEType).toLowerCase().trim();
+    const eType = ENGINE_TYPE_MAP[cleanEType] || String(rawEType).toUpperCase();
+    
+    let meta = null;
+    try {
+        meta = getEngine(eType);
+    } catch (err) {
+        console.warn(`[LibraryView] Unknown engine type "${eType}", using fallback:`, err.message);
+    }
+
     if (meta && meta.component) {
         const DynamicEngine = meta.component;
         return <DynamicEngine data={data} onComplete={onClose} skipDiscovery={true} />;

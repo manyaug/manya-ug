@@ -308,18 +308,130 @@ export const syncService = {
     },
 
     // ── VAULT ─────────────────────────────────────────────────────────────────
+    async resolveVaultMetadata(idOrQid, subject) {
+        if (!idOrQid) return null;
+        const qid = idOrQid.includes('/') ? idOrQid.split('/').pop() : idOrQid;
+        const cleanSubject = (subject || 'general').toLowerCase().trim();
+        const tablesToTry = [];
+        
+        if (cleanSubject === 'english') {
+            tablesToTry.push('manya_vault_english', 'manya_vault');
+        } else if (cleanSubject === 'science') {
+            tablesToTry.push('manya_vault_science', 'manya_vault');
+        } else if (cleanSubject === 'math' || cleanSubject === 'mathematics') {
+            tablesToTry.push('manya_vault_math', 'manya_vault');
+        } else if (cleanSubject === 'sst' || cleanSubject === 'social_studies') {
+            tablesToTry.push('manya_vault_sst', 'manya_vault');
+        } else {
+            tablesToTry.push('manya_vault');
+        }
+        
+        for (const table of tablesToTry) {
+            try {
+                const records = await storageFacade.get(`db:/${table}?or=qid.eq.${qid},subtopic.eq.${qid},quest_id.eq.${qid}`);
+                if (records && records.length > 0) {
+                    const record = records.find(r => r.item_type && ['simulation', 'study', '3d', 'gallery', 'hotspots'].includes(r.item_type.toLowerCase())) || records[0];
+                    return {
+                        engine_type: record.engine_type,
+                        cdn_url: record.cdn_url,
+                        item_type: record.item_type,
+                        title: record.question_text || record.topic || null
+                    };
+                }
+            } catch (e) {
+                // Ignore and try next
+            }
+        }
+        return null;
+    },
+
     /**
      * Save a discovered content artifact to the vault.
      * Android: insert into user_vault SQLite table.
      * Smart key format: "[TYPE]|[TITLE]|[PATH]"  e.g. "NOTE|Algebra Intro|content/math/algebra/story.html"
      */
-    async pushToVault({ id, title, type, subject, path }) {
+    async pushToVault({ id, title, type, subject, path, engine_type, cdn_url }) {
         return syncQueue.execute(async () => {
             const uid = await this.getUserId();
             if (!uid) return;
             const uniquePath = path || id;
             const smartKey = `${type.toUpperCase()}|${title}|${uniquePath}`;
-            const payload = { user_id: uid, artifact_id: smartKey, subject };
+            
+            let resolvedEngineType = engine_type;
+            let resolvedCdnUrl = cdn_url;
+            let resolvedTitle = title;
+            let resolvedType = type;
+
+            if (!resolvedEngineType || !resolvedCdnUrl) {
+                const dbMeta = await this.resolveVaultMetadata(uniquePath, subject);
+                if (dbMeta) {
+                    if (dbMeta.engine_type) resolvedEngineType = dbMeta.engine_type;
+                    if (dbMeta.cdn_url) resolvedCdnUrl = dbMeta.cdn_url;
+                    if (dbMeta.item_type) resolvedType = dbMeta.item_type;
+                    if (dbMeta.title && (!resolvedTitle || resolvedTitle === 'Study Note' || resolvedTitle === 'Interactive Study')) {
+                        resolvedTitle = dbMeta.title;
+                    }
+                }
+            }
+
+            // If still not resolved, infer type and engine_type from the path filename
+            if (resolvedType === 'NOTE' || resolvedType === 'SIM' || !resolvedEngineType) {
+                const pathLower = uniquePath.toLowerCase();
+                if (pathLower.includes('recap')) {
+                    resolvedType = 'recap';
+                    resolvedEngineType = resolvedEngineType || 'READER_STUDY';
+                } else if (pathLower.includes('3d')) {
+                    resolvedType = '3d';
+                    resolvedEngineType = resolvedEngineType || '3D_SKELETON';
+                } else if (pathLower.includes('gallery')) {
+                    resolvedType = 'gallery';
+                    resolvedEngineType = resolvedEngineType || 'GALLERY_STUDY';
+                } else if (pathLower.includes('hotspots')) {
+                    resolvedType = 'hotspots';
+                    resolvedEngineType = resolvedEngineType || 'IMAGE_HOTSPOTS';
+                } else if (pathLower.includes('globe')) {
+                    resolvedType = 'universal_globe';
+                    resolvedEngineType = resolvedEngineType || 'UNIVERSAL_GLOBE';
+                } else if (pathLower.includes('sim') || pathLower.includes('simulation')) {
+                    resolvedType = 'simulation';
+                    resolvedEngineType = resolvedEngineType || 'NOTE_EXPLORER';
+                }
+            }
+
+            const defaultEngineMap = {
+                '3d': '3D_SKELETON',
+                'gallery': 'GALLERY_STUDY',
+                'hotspots': 'IMAGE_HOTSPOTS',
+                'recap': 'READER_STUDY',
+                'study_sim': 'NOTE_EXPLORER',
+                'universal_globe': 'UNIVERSAL_GLOBE',
+                'globe': 'UNIVERSAL_GLOBE',
+                'note': 'NOTE_EXPLORER',
+                'sim': 'NOTE_EXPLORER',
+                'simulation': 'NOTE_EXPLORER',
+                'study': 'NOTE_EXPLORER'
+            };
+            const typeKey = String(resolvedType || type || 'NOTE').toLowerCase().trim();
+            resolvedEngineType = resolvedEngineType || defaultEngineMap[typeKey] || 'NOTE_EXPLORER';
+            resolvedCdnUrl = resolvedCdnUrl || uniquePath;
+
+            // Clean CDN url to relative path starting with /content/
+            if (resolvedCdnUrl && typeof resolvedCdnUrl === 'string') {
+                const contentIdx = resolvedCdnUrl.indexOf('content/');
+                if (contentIdx !== -1) {
+                    resolvedCdnUrl = '/' + resolvedCdnUrl.substring(contentIdx);
+                }
+            }
+
+            const payload = { 
+                user_id: uid, 
+                artifact_id: smartKey, 
+                subject,
+                title: resolvedTitle,
+                item_type: resolvedType,
+                engine_type: resolvedEngineType,
+                cdn_url: resolvedCdnUrl
+            };
             
             // Check if this path already exists
             const vaultRows = await storageFacade.get(`db:/user_vault?uid=${uid}`);
@@ -338,22 +450,113 @@ export const syncService = {
             }
             
             await storageFacade.put('db:/user_vault', payload);
-            console.log(`☁️ [Vault] Saved: ${title} (${type})`);
+            console.log(`☁️ [Vault] Saved: ${resolvedTitle} (${resolvedType})`);
         }, 'pushToVault');
     },
 
     async recordContentUnlock(contentId, title = 'Study Note', subject = 'general') {
+        if (!contentId) return;
+        const parts = contentId.split('/');
+        const lastPart = parts[parts.length - 1].toUpperCase();
+        const standardNodes = ['WARMUP', 'EXPLORE', 'EXERCISE', 'PRACTICE', 'REINFORCE', 'MASTERY'];
+        if (standardNodes.includes(lastPart)) {
+            console.log(`🏺 [Vault] Skipping recordContentUnlock for standard node type: ${lastPart}`);
+            return;
+        }
         return this.pushToVault({ id: contentId, title, type: 'NOTE', subject });
     },
     async recordSimulationUnlock(simId, subject = 'math', title = 'Interactive Study') {
         return this.pushToVault({ id: simId, title, type: 'SIM', subject });
     },
 
-    async pushVault(artifactId, subject) {
+    async pushVault(artifactId, subject, meta = {}) {
         return syncQueue.execute(async () => {
             const uid = await this.getUserId();
             if (!uid) return;
-            const payload = { user_id: uid, artifact_id: artifactId, subject };
+
+            let type = meta.type || 'NOTE';
+            let title = meta.title || 'Study Note';
+            let path = meta.path || artifactId;
+
+            if (artifactId.includes('|')) {
+                const parts = artifactId.split('|');
+                type = parts[0];
+                title = parts[1];
+                path = parts[2];
+            }
+
+            let resolvedEngineType = meta.engine_type;
+            let resolvedCdnUrl = meta.cdn_url;
+
+            if (!resolvedEngineType || !resolvedCdnUrl) {
+                const dbMeta = await this.resolveVaultMetadata(path, subject);
+                if (dbMeta) {
+                    if (dbMeta.engine_type) resolvedEngineType = dbMeta.engine_type;
+                    if (dbMeta.cdn_url) resolvedCdnUrl = dbMeta.cdn_url;
+                    if (dbMeta.item_type) type = dbMeta.item_type;
+                    if (dbMeta.title) title = dbMeta.title;
+                }
+            }
+
+            // If still not resolved, infer type and engine_type from the path filename
+            if (type === 'NOTE' || type === 'SIM' || !resolvedEngineType) {
+                const pathLower = path.toLowerCase();
+                if (pathLower.includes('recap')) {
+                    type = 'recap';
+                    resolvedEngineType = resolvedEngineType || 'READER_STUDY';
+                } else if (pathLower.includes('3d')) {
+                    type = '3d';
+                    resolvedEngineType = resolvedEngineType || '3D_SKELETON';
+                } else if (pathLower.includes('gallery')) {
+                    type = 'gallery';
+                    resolvedEngineType = resolvedEngineType || 'GALLERY_STUDY';
+                } else if (pathLower.includes('hotspots')) {
+                    type = 'hotspots';
+                    resolvedEngineType = resolvedEngineType || 'IMAGE_HOTSPOTS';
+                } else if (pathLower.includes('globe')) {
+                    type = 'universal_globe';
+                    resolvedEngineType = resolvedEngineType || 'UNIVERSAL_GLOBE';
+                } else if (pathLower.includes('sim') || pathLower.includes('simulation')) {
+                    type = 'simulation';
+                    resolvedEngineType = resolvedEngineType || 'NOTE_EXPLORER';
+                }
+            }
+
+            const defaultEngineMap = {
+                '3d': '3D_SKELETON',
+                'gallery': 'GALLERY_STUDY',
+                'hotspots': 'IMAGE_HOTSPOTS',
+                'recap': 'READER_STUDY',
+                'study_sim': 'NOTE_EXPLORER',
+                'universal_globe': 'UNIVERSAL_GLOBE',
+                'globe': 'UNIVERSAL_GLOBE',
+                'note': 'NOTE_EXPLORER',
+                'sim': 'NOTE_EXPLORER',
+                'simulation': 'NOTE_EXPLORER',
+                'study': 'NOTE_EXPLORER'
+            };
+            const typeKey = String(type || 'NOTE').toLowerCase().trim();
+            resolvedEngineType = resolvedEngineType || defaultEngineMap[typeKey] || 'NOTE_EXPLORER';
+            resolvedCdnUrl = resolvedCdnUrl || path;
+
+            // Clean CDN url to relative path starting with /content/
+            if (resolvedCdnUrl && typeof resolvedCdnUrl === 'string') {
+                const contentIdx = resolvedCdnUrl.indexOf('content/');
+                if (contentIdx !== -1) {
+                    resolvedCdnUrl = '/' + resolvedCdnUrl.substring(contentIdx);
+                }
+            }
+
+            const payload = { 
+                user_id: uid, 
+                artifact_id: artifactId, 
+                subject,
+                title,
+                item_type: type,
+                engine_type: resolvedEngineType,
+                cdn_url: resolvedCdnUrl
+            };
+
             const existing = await storageFacade.get(`db:/user_vault?uid=${uid}&artifact_id=${artifactId}&single=maybe`);
             if (existing) return;
             await storageFacade.put('db:/user_vault', payload);
@@ -366,11 +569,60 @@ export const syncService = {
         try {
             const data = await storageFacade.get(`db:/user_vault?uid=${uid}`);
             return data.map(row => {
-                if (row.artifact_id.includes('|')) {
-                    const [type, title, path] = row.artifact_id.split('|');
-                    return { id: row.id, type, title, path, subject: row.subject, unlocked_at: row.unlocked_at };
+                if (row.cdn_url && row.engine_type) {
+                    return {
+                        id: row.id,
+                        type: row.item_type || 'NOTE',
+                        title: row.title || 'Untitled',
+                        path: row.cdn_url,
+                        engine_type: row.engine_type,
+                        cdn_url: row.cdn_url,
+                        subject: row.subject,
+                        unlocked_at: row.unlocked_at
+                    };
                 }
-                return { id: row.id, artifactId: row.artifact_id, type: 'LEGACY', title: row.artifact_id || 'Legacy Asset', path: row.artifact_id || '', subject: row.subject, unlocked_at: row.unlocked_at };
+
+                if (row.artifact_id && row.artifact_id.includes('|')) {
+                    const [type, title, path] = row.artifact_id.split('|');
+                    const cleanType = String(type).toUpperCase();
+                    let inferredEngine = 'NOTE_EXPLORER';
+                    if (cleanType === 'RECAP') inferredEngine = 'READER_STUDY';
+                    else if (cleanType === '3D') inferredEngine = '3D_SKELETON';
+                    else if (cleanType === 'GALLERY') inferredEngine = 'GALLERY_STUDY';
+                    else if (cleanType === 'HOTSPOTS') inferredEngine = 'IMAGE_HOTSPOTS';
+                    else if (cleanType === 'GLOBE' || cleanType === 'UNIVERSAL_GLOBE') inferredEngine = 'UNIVERSAL_GLOBE';
+
+                    return { 
+                        id: row.id, 
+                        type, 
+                        title, 
+                        path, 
+                        engine_type: inferredEngine,
+                        cdn_url: path,
+                        subject: row.subject, 
+                        unlocked_at: row.unlocked_at 
+                    };
+                }
+
+                const pathLower = String(row.artifact_id || '').toLowerCase();
+                let inferredEngine = 'NOTE_EXPLORER';
+                if (pathLower.includes('recap')) inferredEngine = 'READER_STUDY';
+                else if (pathLower.includes('3d')) inferredEngine = '3D_SKELETON';
+                else if (pathLower.includes('gallery')) inferredEngine = 'GALLERY_STUDY';
+                else if (pathLower.includes('hotspots')) inferredEngine = 'IMAGE_HOTSPOTS';
+                else if (pathLower.includes('globe')) inferredEngine = 'UNIVERSAL_GLOBE';
+
+                return { 
+                    id: row.id, 
+                    artifactId: row.artifact_id, 
+                    type: 'LEGACY', 
+                    title: row.artifact_id || 'Legacy Asset', 
+                    path: row.artifact_id || '', 
+                    engine_type: inferredEngine,
+                    cdn_url: row.artifact_id || '',
+                    subject: row.subject, 
+                    unlocked_at: row.unlocked_at 
+                };
             });
         } catch (error) {
             console.warn(`⚠️ [Sync] Vault fetch failed:`, error.message);

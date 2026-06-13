@@ -70,6 +70,8 @@ export function useQuestOrchestrator() {
         if (!state) { navigate('/library'); return; }
         if (initRef.current) return; // Prevent double init
 
+        let active = true;
+
         async function init() {
             initRef.current = true;
             dynamicModeService.reset();
@@ -84,6 +86,8 @@ export function useQuestOrchestrator() {
                     resolvedMeta = { title: state.label || m.topic || 'Quest', subject: state.subject || 'math' };
                 }
 
+                if (!active) return;
+
                 if (resolvedSteps.length === 0) throw new Error('No steps in quest');
 
                 setSteps(resolvedSteps);
@@ -93,6 +97,7 @@ export function useQuestOrchestrator() {
                 setStepIdx(sessionRef.current.stepIndex);
                 setPhase('running');
             } catch (err) {
+                if (!active) return;
                 console.error('[QuestOrchestrator] init failed:', err);
                 dispatch(addToast({ message: 'Could not load quest content.', type: 'error' }));
                 navigate('/library');
@@ -100,7 +105,10 @@ export function useQuestOrchestrator() {
         }
         init();
 
-        return () => { window.__manyaIsTyping = false; };
+        return () => { 
+            active = false;
+            window.__manyaIsTyping = false; 
+        };
     }, [location.key, navigate, dispatch]); // Use location.key for stability
 
     // ── ENGINE MOUNT HOOK ─────────────────────────────────────────────────────

@@ -149,7 +149,7 @@ export async function loadQuestSteps(subject, unitId, questFolder, file, targetT
             if (row.cdn_url) {
                 // 🛡️ SANITIZATION (v2.2): Fix duplicate .net and repeated content folders
                 cleanCdnUrl = row.cdn_url.replace('.net.net', '.net');
-                cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^\/]+\/)\/content\/[^\/]+\//g, '$1');
+                cleanCdnUrl = cleanCdnUrl.replace(/(\/content\/[^/]+\/)\/content\/[^/]+\//g, '$1');
                 cleanCdnUrl = cleanCdnUrl.replace('@main/', `@${ASSET_VERSION}/`);
             } else {
                 // Reconstruct from topics if missing. 
@@ -238,7 +238,7 @@ async function loadQuestStepsLegacy(subject, unitId, questFolder, file) {
 /**
  * Universal Step Transformer (JSON -> Standard Step Shape)
  */
-async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
+export async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
     let result;
 
     if (Array.isArray(json.steps)) {
@@ -271,6 +271,13 @@ async function transformJsonToSteps(json, subject, unitId, questFolder, file) {
         };
     } else {
         const step = validateAndNormalizeStep(json, json._originUrl);
+        if (!step.id && !step.qid && file) {
+            step.id = file.replace(/\.json$/, '');
+            step.qid = file.replace(/\.json$/, '');
+        }
+        if (!step.file && file) {
+            step.file = file;
+        }
         result = {
             steps: [step],
             meta: { topic: json.topic || file, variantTitle: json.variantTitle }
