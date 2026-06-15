@@ -34,7 +34,7 @@ export const fetchEnglishQuestions = async (topicId) => {
         let data = null;
         try {
             console.log(`📡 [EnglishDB] Querying Supabase for fresh records...`);
-            data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%,qid.eq.${subtopic},qid.eq.${topicId}`);
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=subtopic.ilike.%25${subtopic}%25,subtopic.ilike.%25${topicId}%25,qid.eq.${subtopic},qid.eq.${topicId}`);
         } catch (dbErr) {
             console.warn(`⚠️ [EnglishDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
             const allCached = await ManyaDB.getCachedQuestions('english');
@@ -57,7 +57,7 @@ export const fetchEnglishQuestions = async (topicId) => {
             
             if (keywords.length > 0) {
                 console.log(`🔍 [English Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
-                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%25${k}%25,topic.ilike.%25${k}%25`).join(',');
                 
                 const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:english&or=${keywordFilter}`);
                 
@@ -154,7 +154,7 @@ export const fetchEnglishQuestions = async (topicId) => {
                 answer: q.correct_answer,
                 explanation: q.explanation,
                 hint: q.hint,
-                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V1'),
+                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V0'),
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],

@@ -56,7 +56,7 @@ export default function ScienceFetcherEngine({ data, onComplete }) {
 
                         // 🧠 ADAPTIVE ENGINE INTEGRATION
                         const history = await syncService.fetchRecentTelemetry('science', 20) || [];
-                        const session = { consecutiveWrong: 0, confidence: 100 }; 
+                        const session = { consecutiveWrong: 0, confidence: 100, startTime: Date.now() }; 
                         
                         const adaptiveResult = await generateAdaptiveQuest(
                             questions, 

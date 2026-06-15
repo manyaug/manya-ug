@@ -52,7 +52,7 @@ export default function MathFetcherEngine({ data, onComplete }) {
                         }
 
                         const history = await syncService.fetchRecentTelemetry('math', 20) || [];
-                        const session = { consecutiveWrong: 0, confidence: 100 }; 
+                        const session = { consecutiveWrong: 0, confidence: 100, startTime: Date.now() }; 
                         
                         const adaptiveResult = await generateAdaptiveQuest(
                             questions, 

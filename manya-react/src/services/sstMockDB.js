@@ -36,7 +36,7 @@ export const fetchSstQuestions = async (topicId) => {
             console.log(`📡 [SSTDB] Querying Supabase for fresh records...`);
             
             // Build the query containing all ILIKE conditions
-            const orConditions = uniqueTerms.map(term => `subtopic.ilike.%${term}%`).join(',');
+            const orConditions = uniqueTerms.map(term => `subtopic.ilike.%25${term}%25`).join(',');
             data = await storageFacade.get(`db:/manya_vault?subject=ilike:sst&or=${orConditions}`);
         } catch (dbErr) {
             console.warn(`⚠️ [SSTDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
@@ -59,7 +59,7 @@ export const fetchSstQuestions = async (topicId) => {
             
             if (keywords.length > 0) {
                 console.log(`🔍 [SST Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
-                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%25${k}%25,topic.ilike.%25${k}%25`).join(',');
                 
                 const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:sst&or=${keywordFilter}`);
                 
@@ -124,7 +124,7 @@ export const fetchSstQuestions = async (topicId) => {
                 explanation: q.explanation,
                 hint: q.hint,
                 image_url: q.image_location === 'null' ? null : q.image_location,
-                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V1'),
+                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V0'),
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],

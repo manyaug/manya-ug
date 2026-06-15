@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Map as MapIcon, 
   ChevronRight, 
@@ -30,7 +31,9 @@ const GlobeRenderer = ({
     handleDragStart,
     focusOn,
     onFinishActivity,
-    mode
+    onNext,
+    mode,
+    puzzleFeedback
 }) => {
     return (
         <div className="globe-engine-root flex flex-col h-full bg-[#0B0E14] overflow-hidden">
@@ -111,13 +114,13 @@ const GlobeRenderer = ({
                             <div className="grid gap-3">
                                 {data.questions[activeTab].options.map((opt, i) => {
                                     const isSelected = selectedQuizOpt === opt;
-                                    const isCorrect = quizFeedback?.type === 'success' && opt === data.questions[activeTab].correctAnswer;
+                                    const isCorrect = quizFeedback !== null && opt === data.questions[activeTab].correctAnswer;
                                     const isWrong = quizFeedback?.type === 'error' && isSelected;
 
                                     return (
                                         <button
                                             key={i}
-                                            disabled={quizFeedback?.type === 'success'}
+                                            disabled={quizFeedback !== null}
                                             onClick={() => handleQuizAnswer(opt)}
                                             className={`mcq-fe-btn relative overflow-hidden transition-all ${
                                                 isCorrect ? 'mcq-fe-correct' : 
@@ -144,6 +147,34 @@ const GlobeRenderer = ({
                                 >
                                     <span className="relative z-10 flex items-center gap-2">SUBMIT ANSWER <Zap size={14} fill="currentColor" /></span>
                                 </button>
+                            )}
+
+                            {quizFeedback?.type === 'error' && data.questions[activeTab].explanation && createPortal(
+                                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                                    <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)' }} onClick={onNext} />
+                                    <div className="relative w-full max-w-md z-[10000] rounded-[2.5rem] overflow-hidden bg-[#151921] p-6 shadow-2xl border border-white/10 animate-in zoom-in duration-300">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-11 h-11 rounded-xl bg-red-100/10 flex items-center justify-center text-red-500"><X size={20} strokeWidth={3} /></div>
+                                            <div>
+                                                <div className="font-black text-lg text-white">Not quite!</div>
+                                                <div className="text-xs text-slate-400 font-bold">Here's how to solve it</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-xs font-bold text-emerald-400 mb-4">
+                                            <CheckCircle2 size={14} strokeWidth={3} /><span>Correct Answer:</span><strong>{data.questions[activeTab].correctAnswer}</strong>
+                                        </div>
+                                        <div className="no-scrollbar mb-5 max-h-[45vh] overflow-y-auto pr-1">
+                                            <p 
+                                                className="text-slate-300 font-bold text-sm leading-relaxed"
+                                                dangerouslySetInnerHTML={{ __html: data.questions[activeTab].explanation || 'Detailed concept explanation coming soon.' }}
+                                            />
+                                        </div>
+                                        <button onClick={onNext} className="w-full h-14 rounded-2xl bg-indigo-600 text-white font-black text-sm tracking-wide active:scale-95 transition-all flex items-center justify-center gap-2">
+                                            Continue <ChevronRight size={18} strokeWidth={3} />
+                                        </button>
+                                    </div>
+                                </div>,
+                                document.body
                             )}
                         </div>
                     )}
@@ -228,19 +259,79 @@ const GlobeRenderer = ({
                     )}
 
                     {mode === 'puzzle' && (
-                        <div className="grid grid-cols-2 gap-4 pt-4">
-                            {data.pieces?.map((p, i) => (
-                                <div key={i} onMouseDown={e => handleDragStart(e, p)} onTouchStart={e => handleDragStart(e, p)}
-                                    className={`p-4 rounded-2xl text-center font-black text-[12px] border-[3.5px] uppercase transition-all shadow-md active:scale-90 select-none cursor-grab active:cursor-grabbing relative overflow-hidden ${
-                                        placedPieces.includes(p.id) 
-                                            ? 'bg-green-500/10 border-green-500/30 text-green-600 opacity-50 scale-95' 
-                                            : 'bg-white border-slate-100 text-slate-700 active:border-indigo-500'
-                                    }`}>
-                                    <div className="toy-card-gloss opacity-40" />
-                                    <span className="relative z-10">{p.label}</span>
-                                </div>
-                            ))}
-                        </div>
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="space-y-4"
+                        >
+                            <div className="text-center py-1 mb-2">
+                                <span className="uppercase font-black tracking-[0.2em] text-indigo-400 opacity-80" style={{ fontSize: '10px', display: 'block' }}>
+                                    {data.title || data.topic || data.concept || 'Puzzle Challenge'}
+                                </span>
+                            </div>
+                            
+                            <p className="text-[14px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed px-2 text-center">
+                                {data.text || data.question || data.description || data.body || 'Drag the puzzle pieces to their correct locations on the globe!'}
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-4 pt-4">
+                                {data.pieces?.map((p, i) => {
+                                    const isPlaced = placedPieces.includes(p.id);
+                                    const isCorrectTarget = p.target;
+                                    const isDisabled = isPlaced || puzzleFeedback !== null;
+
+                                    let cardClass = 'bg-white border-slate-100 text-slate-700 active:border-indigo-500';
+                                    if (isPlaced) {
+                                        cardClass = 'bg-green-500/10 border-green-500/30 text-green-600 opacity-50 scale-95';
+                                    } else if (puzzleFeedback === 'error' && isCorrectTarget) {
+                                        cardClass = 'bg-emerald-500/20 border-emerald-500/40 text-emerald-500 scale-95 font-black shadow-lg';
+                                    } else if (puzzleFeedback === 'error') {
+                                        cardClass = 'bg-slate-800/20 border-slate-800/10 text-slate-600 opacity-30 scale-95';
+                                    }
+
+                                    return (
+                                        <div key={i} 
+                                            onMouseDown={e => !isDisabled && handleDragStart(e, p)} 
+                                            onTouchStart={e => !isDisabled && handleDragStart(e, p)}
+                                            className={`p-4 rounded-2xl text-center font-black text-[12px] border-[3.5px] uppercase transition-all shadow-md select-none relative overflow-hidden ${
+                                                isDisabled ? '' : 'active:scale-90 cursor-grab active:cursor-grabbing'
+                                            } ${cardClass}`}
+                                        >
+                                            <div className="toy-card-gloss opacity-40" />
+                                            <span className="relative z-10">{p.label}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {puzzleFeedback === 'error' && createPortal(
+                                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                                    <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)' }} onClick={onNext} />
+                                    <div className="relative w-full max-w-md z-[10000] rounded-[2.5rem] overflow-hidden bg-[#151921] p-6 shadow-2xl border border-white/10 animate-in zoom-in duration-300">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-11 h-11 rounded-xl bg-red-100/10 flex items-center justify-center text-red-500"><X size={20} strokeWidth={3} /></div>
+                                            <div>
+                                                <div className="font-black text-lg text-white">Not quite!</div>
+                                                <div className="text-xs text-slate-400 font-bold">Here's how to solve it</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-xs font-bold text-emerald-400 mb-4">
+                                            <CheckCircle2 size={14} strokeWidth={3} /><span>Correct Answer:</span><strong>{data.pieces?.find(x => x.target)?.label || 'N/A'}</strong>
+                                        </div>
+                                        <div className="no-scrollbar mb-5 max-h-[45vh] overflow-y-auto pr-1">
+                                            <p 
+                                                className="text-slate-300 font-bold text-sm leading-relaxed"
+                                                dangerouslySetInnerHTML={{ __html: data.explanation || data.text || 'Drag the piece to its corresponding degree line on the globe to calculate the time difference.' }}
+                                            />
+                                        </div>
+                                        <button onClick={onNext} className="w-full h-14 rounded-2xl bg-indigo-600 text-white font-black text-sm tracking-wide active:scale-95 transition-all flex items-center justify-center gap-2">
+                                            Continue <ChevronRight size={18} strokeWidth={3} />
+                                        </button>
+                                    </div>
+                                </div>,
+                                document.body
+                            )}
+                        </motion.div>
                     )}
                 </div>
             </div>

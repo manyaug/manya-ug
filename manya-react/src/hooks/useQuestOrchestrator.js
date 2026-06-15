@@ -308,7 +308,8 @@ export function useQuestOrchestrator() {
             const updatedSession = {
                 consecutiveWrong: sessionRef.current._wrongStreak || 0,
                 confidence: 100,
-                frustrationLevel: currentFrustration
+                frustrationLevel: currentFrustration,
+                startTime: sessionRef.current._sessionStartTime
             };
 
             const nodeType = location.state?.nodeType || 'PRACTICE';
@@ -339,8 +340,8 @@ export function useQuestOrchestrator() {
             // Map the newly selected questions to their precise engine types
             const sliceStart = stepIdx + 1;
             const slicedQuestions = newSelectedQuestions.slice(sliceStart);
-            const finalSliced = slicedQuestions.length >= remainingCount
-                ? slicedQuestions.slice(0, remainingCount)
+            const finalSliced = slicedQuestions.length > 0
+                ? slicedQuestions
                 : newSelectedQuestions.slice(-remainingCount);
 
             const newExplodedSteps = finalSliced.map(q => {

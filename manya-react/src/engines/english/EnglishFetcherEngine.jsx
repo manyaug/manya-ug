@@ -52,7 +52,7 @@ export default function EnglishFetcherEngine({ data, onComplete }) {
                         }
 
                         const history = await syncService.fetchRecentTelemetry('english', 20) || [];
-                        const session = { consecutiveWrong: 0, confidence: 100 }; 
+                        const session = { consecutiveWrong: 0, confidence: 100, startTime: Date.now() }; 
                         
                         const adaptiveResult = await generateAdaptiveQuest(
                             questions, 

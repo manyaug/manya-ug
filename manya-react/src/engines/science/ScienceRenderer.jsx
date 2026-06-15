@@ -274,9 +274,10 @@ const ScienceRenderer = ({
                             "{correctText}"
                         </div>
                         <div className="max-h-[25vh] overflow-y-auto no-scrollbar mb-6">
-                            <p className="text-[var(--text-sub)] text-sm font-bold text-center leading-relaxed">
-                                {q.explanation || "Scientific discovery often takes a few tries! Keep observing the patterns."}
-                            </p>
+                            <p 
+                                className="text-[var(--text-sub)] text-sm font-bold text-center leading-relaxed"
+                                dangerouslySetInnerHTML={{ __html: q.explanation || "Scientific discovery often takes a few tries! Keep observing the patterns." }}
+                            />
                         </div>
                         <button onClick={nextQuestion} className="w-full h-14 bg-indigo-600 text-white rounded-xl font-black text-[10px] tracking-[0.2em] uppercase active:scale-95 transition-all">
                             CONTINUE RESEARCH

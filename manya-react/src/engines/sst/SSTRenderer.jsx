@@ -264,7 +264,10 @@ const SSTRenderer = ({
                             <Check size={14} strokeWidth={3} /><span>Correct Answer:</span><strong>{correctText}</strong>
                         </div>
                         <div className="no-scrollbar mb-5 maxHeight-[45vh] overflow-y-auto">
-                            <p className="text-[var(--text-main)] font-bold text-sm leading-relaxed">{q.explanation || 'Detailed concept explanation coming soon.'}</p>
+                            <p 
+                                className="text-[var(--text-main)] font-bold text-sm leading-relaxed"
+                                dangerouslySetInnerHTML={{ __html: q.explanation || 'Detailed concept explanation coming soon.' }}
+                            />
                         </div>
                         <button onClick={nextQuestion} className="w-full h-14 rounded-2xl bg-red-500 text-white font-black text-sm tracking-wide shadow-[0_6px_0_#b91c1c] active:shadow-none active:translate-y-1 transition-all flex items-center justify-center gap-2">
                             {isLast ? 'FINISH QUEST' : 'Continue'} <ArrowRight size={18} strokeWidth={3} />

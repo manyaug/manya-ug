@@ -39,7 +39,7 @@ export const fetchMathQuestions = async (topicId) => {
         let data = null;
         try {
             console.log(`📡 [MathDB] Querying Supabase for fresh records...`);
-            data = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${spaceSub}%,subtopic.ilike.%${topicId}%`);
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:%25math%25&or=subtopic.ilike.%25${subtopic}%25,subtopic.ilike.%25${spaceSub}%25,subtopic.ilike.%25${topicId}%25`);
         } catch (dbErr) {
             console.warn(`⚠️ [MathDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
             const allCached = await ManyaDB.getCachedQuestions('math');
@@ -58,8 +58,8 @@ export const fetchMathQuestions = async (topicId) => {
             
             if (keywords.length > 0) {
                 console.log(`🔍 [Math Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
-                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
-                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:%math%&or=${keywordFilter}`);
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%25${k}%25,topic.ilike.%25${k}%25`).join(',');
+                const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:%25math%25&or=${keywordFilter}`);
                 if (keywordData?.length > 0) {
                     console.log(`✨ [Math Vault] Discovered ${keywordData.length} related questions via keywords.`);
                     data = keywordData;
@@ -161,7 +161,7 @@ export const fetchMathQuestions = async (topicId) => {
                 raw_explanation: q.explanation,
                 hint: q.hint,
                 image_url: q.image_location === 'null' ? null : (q.image_url || q.image_location),
-                variant: q.variant || (q.qid?.includes('-V') ? q.qid.split('-V')[1] : 'V1'),
+                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V0'),
                 type: q.item_type || 'MCQ',
                 engine_type: resolvedEngine,
                 engineType: resolvedEngine,

@@ -53,7 +53,7 @@ export default function SSTFetcherEngine({ data, onComplete }) {
                         }
 
                         const history = await syncService.fetchRecentTelemetry('sst', 20) || [];
-                        const session = { consecutiveWrong: 0, confidence: 100 }; 
+                        const session = { consecutiveWrong: 0, confidence: 100, startTime: Date.now() }; 
                         
                         const adaptiveResult = await generateAdaptiveQuest(
                             questions, 
