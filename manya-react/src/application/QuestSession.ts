@@ -39,7 +39,6 @@ export class QuestSession {
     private _recapPool: any[] = [];
     private _mcqPool: any[] = [];
     private _rawQuestions: any[] = [];
-    private _stepScores: { [index: number]: number } = {};
     // Removed dependency on direct React dispatch. We return outcomes.
 
     constructor(steps: QuestStep[], meta: QuestMeta) {
@@ -87,34 +86,13 @@ export class QuestSession {
         return this._steps.length;
     }
 
-    get sessionStartTime(): number {
-        return this._sessionStartTime;
-    }
-
     get testableStepsCount(): number {
         const count = this._steps.filter(s => {
             const rawEngineType = s.engineType || s.engine_type || s.data?.engineType || s.data?.engine_type;
             const engineType = rawEngineType ? String(rawEngineType).toUpperCase().trim() : '';
-            return engineType !== 'NOTE_EXPLORER' && engineType !== 'READER_STUDY';
+            return engineType !== 'NOTE_EXPLORER' && engineType !== 'READER_STUDY' && !s.isStudyStep && !s.noGamification;
         }).length;
         return count || 1;
-    }
-
-    get cumulativeMasteryScore(): number {
-        const totalQuestions = this.testableStepsCount;
-        let sum = 0;
-        for (const idx of Object.keys(this._stepScores)) {
-            const step = this._steps[Number(idx)];
-            if (step) {
-                const rawEngineType = step.engineType || step.engine_type || step.data?.engineType || step.data?.engine_type;
-                const engineTypeStr = rawEngineType ? String(rawEngineType).toUpperCase().trim() : '';
-                const isTestable = engineTypeStr !== 'NOTE_EXPLORER' && engineTypeStr !== 'READER_STUDY';
-                if (isTestable) {
-                    sum += this._stepScores[Number(idx)];
-                }
-            }
-        }
-        return Math.min(100, Math.round(sum / totalQuestions));
     }
 
     get isFinished(): boolean {
@@ -153,12 +131,11 @@ export class QuestSession {
      */
     peekResult(engineResult: any) {
         if (!this.currentStep) return;
-        const absoluteScore = engineResult.score !== undefined ? engineResult.score : (engineResult.pulseScore || 0);
-        const total = engineResult.total || 1;
-        const stepScore = Math.min(100, Math.round((absoluteScore / total) * 100));
+        const totalQuestions = this.testableStepsCount;
         
-        this._stepScores[this._currentIndex] = stepScore;
-        this._lastMasteryScore = this.cumulativeMasteryScore;
+        // Use the absolute score (correct + fractional) if provided by the fetcher
+        const absoluteScore = engineResult.score !== undefined ? engineResult.score : (this._correctCount + (engineResult.pulseScore || 0));
+        this._lastMasteryScore = Math.min(100, Math.round((absoluteScore / totalQuestions) * 100));
     }
 
     async processResult(engineResult: EngineResult) {
@@ -167,7 +144,6 @@ export class QuestSession {
         const engineType = this.currentStep.engineType || engineResult.engineType || 'unknown';
         const isSimulation = engineResult.type === 'simulation' || engineResult.type === 'legacy_capture';
 
-        let stepScore = 0;
         let usp = null;
         if (isSimulation) {
             usp = calculateUSP({
@@ -176,21 +152,13 @@ export class QuestSession {
                 timeSpentMs: engineResult.timeSpentMs || (Date.now() - this._sessionStartTime),
                 engineType: engineType
             }, this._meta.subject);
-            stepScore = usp.masteryScore;
+            this._lastMasteryScore = usp.masteryScore;
         } else {
-            stepScore = engineResult.isCorrect ? 100 : 0;
+            const totalQuestions = this.testableStepsCount;
+            const currentCorrect = this._correctCount + (engineResult.isCorrect ? 1 : 0);
+            
+            this._lastMasteryScore = Math.min(100, Math.round((currentCorrect / totalQuestions) * 100));
         }
-
-        // Store the score for the current step index (only if testable)
-        const rawEngineType = this.currentStep.engineType || this.currentStep.engine_type || this.currentStep.data?.engineType || this.currentStep.data?.engine_type;
-        const engineTypeStr = rawEngineType ? String(rawEngineType).toUpperCase().trim() : '';
-        const isTestable = engineTypeStr !== 'NOTE_EXPLORER' && engineTypeStr !== 'READER_STUDY';
-
-        if (isTestable) {
-            this._stepScores[this._currentIndex] = stepScore;
-        }
-
-        this._lastMasteryScore = this.cumulativeMasteryScore;
         
         console.log(`📊 [QuestSession] USP Mastery Score: ${this._lastMasteryScore}% | Steps: ${this._currentIndex + 1}/${this._steps.length}`);
 

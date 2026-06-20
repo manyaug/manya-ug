@@ -6,7 +6,7 @@
  */
 
 export function parseQuestionId(qId) {
-    if (!qId) return { baseId: 'unknown', variant: 'V0', variantNum: 0 };
+    if (!qId) return { baseId: 'unknown', variant: 'V1', variantNum: 1 };
     
     // Pattern 1: Standard -V1, -V2
     const vMatch = qId.match(/^(.+)-V(\d+)$/i);
@@ -19,17 +19,16 @@ export function parseQuestionId(qId) {
     }
 
     // Pattern 2: Rephrased suffixes (-R, -R1, -REP, -REP2, -REPHRASED)
-    const rMatch = qId.match(/^(.+)-(R|REP|REPHRASED)(\d*)$/i);
+    const rMatch = qId.match(/^(.+)-(R|REP|REPHRASED)\d*$/i);
     if (rMatch) {
-        const num = rMatch[3] ? parseInt(rMatch[3]) : 1;
         return {
             baseId: rMatch[1],
-            variant: 'V' + num,
-            variantNum: num
+            variant: 'REPHRASED',
+            variantNum: 1
         };
     }
 
-    return { baseId: qId, variant: 'V0', variantNum: 0 };
+    return { baseId: qId, variant: 'V1', variantNum: 1 };
 }
 
 export function extractTopic(qId) {

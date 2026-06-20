@@ -35,7 +35,7 @@ export const fetchScienceQuestions = async (topicId) => {
         let data = null;
         try {
             console.log(`📡 [ScienceDB] Querying Supabase for fresh records...`);
-            data = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=subtopic.ilike.%25${subtopic}%25,subtopic.ilike.%25${topicId}%25`);
+            data = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=subtopic.ilike.%${subtopic}%,subtopic.ilike.%${topicId}%`);
         } catch (dbErr) {
             console.warn(`⚠️ [ScienceDB] Supabase query failed, falling back to local IndexedDB cache:`, dbErr);
             const allCached = await ManyaDB.getCachedQuestions('science');
@@ -55,7 +55,7 @@ export const fetchScienceQuestions = async (topicId) => {
             
             if (keywords.length > 0) {
                 console.log(`🔍 [Science Vault] No exact match for "${cleanSub}". Trying keywords:`, keywords);
-                const keywordFilter = keywords.map(k => `subtopic.ilike.%25${k}%25,topic.ilike.%25${k}%25`).join(',');
+                const keywordFilter = keywords.map(k => `subtopic.ilike.%${k}%,topic.ilike.%${k}%`).join(',');
                 
                 const keywordData = await storageFacade.get(`db:/manya_vault?subject=ilike:science&or=${keywordFilter}`);
                 
@@ -120,7 +120,7 @@ export const fetchScienceQuestions = async (topicId) => {
                 explanation: q.explanation,
                 hint: q.hint,
                 image_url: q.image_location === 'null' ? null : q.image_location,
-                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V0'),
+                variant: q.variant || (q.qid?.includes('-V') ? ('V' + q.qid.split('-V').pop()) : 'V1'),
                 isPLE: q.metadata?.is_ple || false,
                 type: q.item_type || 'MCQ',
                 tags: q.metadata?.tags || [],

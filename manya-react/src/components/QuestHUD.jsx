@@ -11,13 +11,6 @@ import { getGem, IMAGES } from '../config/assetUrls.js';
 import { audioService } from '../infrastructure/audio/audioService';
 import '../styles/QuestHUD.css';
 
-const SUBJECT_GRADIENTS = {
-    math: { start: '#6366f1', end: '#818cf8' },
-    science: { start: '#10b981', end: '#34d399' },
-    english: { start: '#d946ef', end: '#e879f9' },
-    sst: { start: '#7c3aed', end: '#a78bfa' }
-};
-
 const QuestHUD = ({ 
     subject = 'science', 
     current = 1, 
@@ -90,14 +83,6 @@ const QuestHUD = ({
 
     const showMastery = nodeType !== 'EXPLORE'; 
 
-    const subKey = subject.toLowerCase();
-    const grad = SUBJECT_GRADIENTS[subKey] || SUBJECT_GRADIENTS.science;
-    let progressBg = `linear-gradient(to right, ${grad.start}, ${grad.end})`;
-    if (showMastery && masteryScore > 60) {
-        const transitionPct = (60 / masteryScore) * 100;
-        progressBg = `linear-gradient(to right, ${grad.start} 0%, ${grad.end} ${transitionPct}%, var(--manya-gold) ${transitionPct}%, var(--manya-gold) 100%)`;
-    }
-
     return (
         <div className="quest-hud-premium" data-subject={subject.toLowerCase()}>
             {/* 📏 TOP INDICATOR (v8.3) */}
@@ -165,11 +150,11 @@ const QuestHUD = ({
                              <div className="hud-progress-fill-gradient" 
                                   style={{ 
                                       width: `${showMastery ? masteryScore : progressPct}%`, 
-                                      background: progressBg,
+                                      backgroundColor: isPassing ? 'var(--manya-gold)' : 'var(--manya-green)',
                                       boxShadow: isPassing 
                                           ? '0 0 15px rgba(251, 191, 36, 0.4)'
-                                          : undefined,
-                                      transition: 'background 0.6s ease, box-shadow 0.6s ease, width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                                          : '0 0 15px rgba(16, 185, 129, 0.3)',
+                                      transition: 'background-color 0.6s ease, box-shadow 0.6s ease, width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
                                   }} 
                              />
                         </div>

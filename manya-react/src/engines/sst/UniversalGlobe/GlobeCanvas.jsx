@@ -19,7 +19,6 @@ const GlobeCanvas = ({
     projectionRef,
     pathRef,
     isD3Ready,
-    puzzleFeedback,
     onPinClick
 }) => {
     const canvasRef = useRef(null);
@@ -178,72 +177,6 @@ const GlobeCanvas = ({
                 ctx.fillText(p.label, x, y - 14); ctx.shadowBlur = 0;
             }
         });
-
-        // ─── PUZZLE TARGETS (UNPLACED) ───
-        if (data?.mode === 'puzzle' && data.pieces) {
-            data.pieces.forEach(piece => {
-                if (placedPieces.includes(piece.id) || puzzleFeedback !== null) return;
-                const coords = piece.target;
-                if (!coords || coords.length < 2 || isNaN(coords[0]) || isNaN(coords[1])) return;
-                if (d3.geoDistance(coords, projection.invert([width/2, height/2])) > 1.57) return; 
-                const [x, y] = projection(coords);
-                
-                // Draw a pulsing dotted target circle
-                ctx.beginPath();
-                ctx.arc(x, y, 15, 0, 2 * Math.PI);
-                ctx.strokeStyle = isDark ? "rgba(245, 158, 11, 0.7)" : "rgba(217, 119, 6, 0.7)";
-                ctx.lineWidth = 2;
-                ctx.setLineDash([4, 4]);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                
-                // Draw a center dot
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, 2 * Math.PI);
-                ctx.fillStyle = isDark ? "rgba(245, 158, 11, 0.9)" : "rgba(217, 119, 6, 0.9)";
-                ctx.fill();
-
-                if (piece.label && !isDraggingRef.current) {
-                    ctx.fillStyle = isDark ? "rgba(255,255,255,0.7)" : "rgba(15,23,42,0.7)";
-                    ctx.font = "bold 9px 'Plus Jakarta Sans'";
-                    ctx.textAlign = "center";
-                    ctx.fillText("DROP HERE", x, y - 20);
-                }
-            });
-        }
-
-        // ─── PLACED PUZZLE PIECES OR SHOWN ANSWERS ───
-        if (data?.mode === 'puzzle' && data.pieces) {
-            data.pieces.forEach(piece => {
-                const isPlaced = placedPieces.includes(piece.id);
-                const shouldShow = isPlaced || (puzzleFeedback === 'error' && piece.target);
-                if (!shouldShow) return;
-
-                const coords = piece.target;
-                if (!coords || coords.length < 2 || isNaN(coords[0]) || isNaN(coords[1])) return;
-                if (d3.geoDistance(coords, projection.invert([width/2, height/2])) > 1.57) return; 
-                const [x, y] = projection(coords);
-
-                ctx.beginPath();
-                ctx.arc(x, y, 8, 0, 2 * Math.PI);
-                ctx.fillStyle = isPlaced ? "#22c55e" : "#ef4444";
-                ctx.fill();
-                ctx.strokeStyle = "#fff";
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                if (piece.label && !isDraggingRef.current) {
-                    const displayText = (piece.icon ? piece.icon + " " : "") + piece.label;
-                    ctx.fillStyle = isDark ? "#fff" : "#0f172a";
-                    ctx.font = "900 11px 'Plus Jakarta Sans'";
-                    ctx.textAlign = "center";
-                    ctx.shadowBlur = 6;
-                    ctx.shadowColor = isDark ? "rgba(0,0,0,0.8)" : "rgba(255,255,255,0.8)";
-                    ctx.fillText(displayText, x, y - 14);
-                    ctx.shadowBlur = 0;
-                }
-            });
-        }
 
         // ─── ATMOSPHERIC SHINE & BORDER ───
         ctx.beginPath(); path({type: "Sphere"});

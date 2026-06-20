@@ -119,14 +119,10 @@ export const isSimSafe = (q, subject) => {
     const eType = getEngineType(q, subject || q?.subject);
     if (!SUPPORTED_SIM_ENGINES.includes(eType)) return false;
 
-    // Study/Recap/Specialized game/simulation engines are ALWAYS simulations and should never be downgraded to MCQ
+    // Study/Recap/English game engines are ALWAYS simulations and should never be downgraded to MCQ
     const isPureStudyEngine = [
         'NOTE_EXPLORER', 'STUDY_RECAP', 'SST_STUDY', 'GALLERY_STUDY', 
         'READER_STUDY', 'THREE_D_STUDY', '3D_SKELETON', 'MATH_STUDY', 'SET_STUDY',
-        'UNIVERSAL_GLOBE', 'GLOBE_TIME_ENGINE', 'GLOBE_ENGINE', 'IMAGE_HOTSPOTS',
-        'SET_THEORY', 'VENN_PROB', 'SUBSET_GAME', 'PIZZA_GAME', 'BINARY_GAME',
-        'BINARY_GENERATOR', 'VENN_SPOTLIGHT', 'SET_CLASSIFIER', 'VENN_LOGIC',
-        'VENN_PROB_ENGINE',
         
         // English Specialty Game Engines
         'WORDGRID_ENGINE', 'HARVEST_GAME', 'SENTENCE_TRAIN', 'HANGMAN_ENGINE',
@@ -143,8 +139,7 @@ export const isSimSafe = (q, subject) => {
     const hasSimStructure = !!(
         data.questions || data.sets || data.zones || 
         data.interaction || data.content || data.steps || data.slides ||
-        data.hotspots || data.wordBank || data.modelUrl || data.intro || data.notes || data.regions || data.landmarks ||
-        data.markers || data.points || data.cases || data.lat || data.lon || data.interactive || data.sim_data
+        data.hotspots || data.wordBank || data.modelUrl || data.intro || data.notes || data.regions || data.landmarks
     );
     
     return hasSimStructure;

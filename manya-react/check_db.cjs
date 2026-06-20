@@ -14,29 +14,14 @@ if (!supabaseUrl || !supabaseKey) {
     process.exit(1);
 }
 
-fetch(`${supabaseUrl}/rest/v1/manya_vault?subject=ilike.*math*&subtopic=ilike.*calculating_subsets*`, {
+fetch(`${supabaseUrl}/rest/v1/math_questions?select=*&limit=1`, {
     headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`
     }
 })
 .then(res => res.json())
-.then(async (data) => {
-    console.log(`Loaded ${data.length} records`);
-    const subtopics = new Set();
-    data.forEach((d) => {
-        subtopics.add(d.subtopic);
-    });
-    console.log("Subtopics in DB:", Array.from(subtopics));
-    console.log("First 10 items qid, subtopic, variant:", data.slice(0, 10).map(d => ({ qid: d.qid || d.id, subtopic: d.subtopic, variant: d.variant })));
-    console.log("Items 60-70 qid, subtopic, variant:", data.slice(60, 70).map(d => ({ qid: d.qid || d.id, subtopic: d.subtopic, variant: d.variant })));
+.then(data => {
+    console.log(JSON.stringify(data[0], null, 2));
 })
 .catch(console.error);
-
-
-
-
-
-
-
-

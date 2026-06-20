@@ -24,11 +24,11 @@ import { QuestEngineCore } from '../domain/progress/questEngine.js';
 // ── CONSTANTS & CONFIG ──────────────────────────────────────────────────────
 
 const VARIANT_DISTRIBUTIONS = {
-    WARMUP:    { V0: 1.00, V1: 0.00, V2: 0.00, V3: 0.00 },
-    EXPLORE:   { V0: 0.50, V1: 0.30, V2: 0.15, V3: 0.05 },
-    PRACTICE:  { V0: 0.30, V1: 0.40, V2: 0.20, V3: 0.10 },
-    REINFORCE: { V0: 0.15, V1: 0.30, V2: 0.35, V3: 0.20 },
-    MASTERY:   { V0: 0.05, V1: 0.15, V2: 0.30, V3: 0.50 },
+    WARMUP:    { V1: 1.00, V2: 0.00, V3: 0.00 },
+    EXPLORE:   { V1: 0.60, V2: 0.30, V3: 0.10 },
+    PRACTICE:  { V1: 0.30, V2: 0.50, V3: 0.20 },
+    REINFORCE: { V1: 0.20, V2: 0.40, V3: 0.40 },
+    MASTERY:   { V1: 0.10, V2: 0.20, V3: 0.70 },
 };
 
 const BASE_LENGTHS = { WARMUP: 5, EXPLORE: 8, PRACTICE: 10, REINFORCE: 12, MASTERY: 12 };
@@ -107,11 +107,11 @@ export function scoreQuestion(question, history, subject, subjectMasteryMap, con
 
     if (mastery === 'ready_for_v2' && variant === 'V2') score += 50;
     else if (mastery === 'ready_for_v3' && variant === 'V3') score += 50;
-    else if (mastery === 'new' && (variant === 'V0' || variant === 'V1')) score += 50;
-    else if (mastery === 'struggling_v1' && (variant === 'V0' || variant === 'V1')) score += 100;
-    else if (mastery === 'struggling_v2' && (variant === 'V0' || variant === 'V1')) score += 150; // Force demotion to V0/V1
+    else if (mastery === 'new' && variant === 'V1') score += 50;
+    else if (mastery === 'struggling_v1' && variant === 'V1') score += 100;
+    else if (mastery === 'struggling_v2' && variant === 'V1') score += 150; // Force demotion to V1
     else if (mastery === 'struggling_v3' && variant === 'V2') score += 150; // Force demotion to V2
-    else if (mastery.startsWith('struggling') && (variant === 'V0' || variant === 'V1')) score += 60;
+    else if (mastery.startsWith('struggling') && variant === 'V1') score += 60;
 
     // ── PSYCHOLOGICAL DIFFICULTY ADAPTATION ──
     // If the student is in a "Flow" state (low frustration, high engagement),
@@ -411,29 +411,32 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         mcqCandidates.sort((a, b) => b._adaptive.score - a._adaptive.score);
 
+        // ── VARIANT NORMALIZATION: V0 = unversioned legacy record → treat as V1 ──
+        // Fixes science/sst/english questions that default to 'V0' in their fetchers,
+        // ensuring they participate correctly in warmup/core/boss partitioning.
+        mcqCandidates.forEach(q => {
+            if (!q.variant || q.variant === 'V0') q.variant = 'V1';
+        });
+
         // ── VARIANT-AWARE MCQ POOL BUILDING ──
         // Enforce VARIANT_DISTRIBUTIONS[nodeType] so rephrased questions (V2/V3)
         // actually appear at the right difficulty tier, not just V1 every time.
         const dist = VARIANT_DISTRIBUTIONS[nodeType] || VARIANT_DISTRIBUTIONS.PRACTICE;
-        const targetV0 = Math.max(1, Math.round(questLength * dist.V0));
-        const targetV1 = Math.round(questLength * dist.V1);
+        const targetV1 = Math.max(1, Math.round(questLength * dist.V1));
         const targetV2 = Math.round(questLength * dist.V2);
         const targetV3 = Math.round(questLength * dist.V3);
 
-        const v0Pool = mcqCandidates.filter(q => q.variant === 'V0');
         const v1Pool = mcqCandidates.filter(q => q.variant === 'V1');
         const v2Pool = mcqCandidates.filter(q => q.variant === 'V2');
         const v3Pool = mcqCandidates.filter(q => q.variant === 'V3');
 
-        console.log(`📊 [Adaptive] Variant pools → V0:${v0Pool.length} V1:${v1Pool.length} V2:${v2Pool.length} V3:${v3Pool.length} | Targets → V0:${targetV0} V1:${targetV1} V2:${targetV2} V3:${targetV3}`);
+        console.log(`📊 [Adaptive] Variant pools → V1:${v1Pool.length} V2:${v2Pool.length} V3:${v3Pool.length} | Targets → V1:${targetV1} V2:${targetV2} V3:${targetV3}`);
 
         // 4. EMPATHETIC STRUCTURED FLOW ASSEMBLY (v11.0 - Dynamic variant selector & de-duplication)
         const finalQuestions = [];
         const isWarmupNeeded = needsWarmup(history, session);
         
-        let bossQuestion = null;
         const usedConceptIds = new Set();
-        let remainingV0 = targetV0;
         let remainingV1 = targetV1;
         let remainingV2 = targetV2;
         let remainingV3 = targetV3;
@@ -441,10 +444,9 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         // Dynamic multi-tier variant drawer that enforces uniqueness
         function drawQuestionFromTiers() {
             const tiers = [
-                { name: 'V0', pool: v0Pool, remaining: remainingV0 },
-                { name: 'V1', pool: v1Pool, remaining: remainingV1 },
                 { name: 'V2', pool: v2Pool, remaining: remainingV2 },
-                { name: 'V3', pool: v3Pool, remaining: remainingV3 }
+                { name: 'V3', pool: v3Pool, remaining: remainingV3 },
+                { name: 'V1', pool: v1Pool, remaining: remainingV1 }
             ];
             // Sort tiers by remaining target count descending
             tiers.sort((a, b) => b.remaining - a.remaining);
@@ -452,89 +454,51 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
             for (const tier of tiers) {
                 const idx = tier.pool.findIndex(q => {
                     const { baseId } = parseQuestionId(q.id || q.qid);
-                    const qid = q.id || q.qid;
-                    const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                    const isBoss = bossQuestion && (bossQuestion.id === qid || bossQuestion.qid === qid);
-                    return !usedConceptIds.has(baseId) && !isAlreadyAdded && !isBoss;
+                    return !usedConceptIds.has(baseId);
                 });
                 if (idx !== -1) {
                     const q = tier.pool.splice(idx, 1)[0];
-                    if (tier.name === 'V0') remainingV0--;
-                    else if (tier.name === 'V1') remainingV1--;
+                    if (tier.name === 'V1') remainingV1--;
                     else if (tier.name === 'V2') remainingV2--;
                     else if (tier.name === 'V3') remainingV3--;
                     return q;
                 }
             }
 
-            // Fallback: draw from sorted mcqCandidates (unused concepts, unused questions)
+            // Fallback: draw from sorted mcqCandidates
             const fallbackIdx = mcqCandidates.findIndex(q => {
                 const { baseId } = parseQuestionId(q.id || q.qid);
-                const qid = q.id || q.qid;
-                const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                const isBoss = bossQuestion && (bossQuestion.id === qid || bossQuestion.qid === qid);
-                return !usedConceptIds.has(baseId) && !isAlreadyAdded && !isBoss;
+                return !usedConceptIds.has(baseId);
             });
             if (fallbackIdx !== -1) {
                 return mcqCandidates.splice(fallbackIdx, 1)[0];
             }
-
-            // Fallback 2: relax uniqueness constraint (concept reuse allowed, but keep question unique)
-            const fallbackReuseIdx = mcqCandidates.findIndex(q => {
-                const qid = q.id || q.qid;
-                const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                const isBoss = bossQuestion && (bossQuestion.id === qid || bossQuestion.qid === qid);
-                return !isAlreadyAdded && !isBoss;
-            });
-            if (fallbackReuseIdx !== -1) {
-                return mcqCandidates.splice(fallbackReuseIdx, 1)[0];
-            }
-
             return null;
         }
 
-        // ── STEP A: WARMUP (Force V0/V1) ──
+        // ── STEP A: WARMUP (Force V1) ──
         if (isWarmupNeeded || nodeType === 'WARMUP') {
-            let warmupInjected = 0;
+            const warmupChoices = [];
             for (let i = 0; i < 3; i++) {
-                let idx = v0Pool.findIndex(q => {
+                const idx = v1Pool.findIndex(q => {
                     const { baseId } = parseQuestionId(q.id || q.qid);
-                    const qid = q.id || q.qid;
-                    const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                    const isBoss = bossQuestion && (bossQuestion.id === qid || bossQuestion.qid === qid);
-                    return !usedConceptIds.has(baseId) && !isAlreadyAdded && !isBoss;
+                    return !usedConceptIds.has(baseId);
                 });
                 if (idx !== -1) {
-                    const q = v0Pool.splice(idx, 1)[0];
-                    remainingV0--;
-                    finalQuestions.push(q);
+                    const q = v1Pool.splice(idx, 1)[0];
+                    remainingV1--;
+                    warmupChoices.push(q);
                     usedConceptIds.add(parseQuestionId(q.id || q.qid).baseId);
-                    warmupInjected++;
                 } else {
-                    idx = v1Pool.findIndex(q => {
-                        const { baseId } = parseQuestionId(q.id || q.qid);
-                        const qid = q.id || q.qid;
-                        const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                        const isBoss = bossQuestion && (bossQuestion.id === qid || bossQuestion.qid === qid);
-                        return !usedConceptIds.has(baseId) && !isAlreadyAdded && !isBoss;
-                    });
-                    if (idx !== -1) {
-                        const q = v1Pool.splice(idx, 1)[0];
-                        remainingV1--;
-                        finalQuestions.push(q);
+                    const q = drawQuestionFromTiers();
+                    if (q) {
+                        warmupChoices.push(q);
                         usedConceptIds.add(parseQuestionId(q.id || q.qid).baseId);
-                        warmupInjected++;
-                    } else {
-                        const q = drawQuestionFromTiers();
-                        if (q) {
-                            finalQuestions.push(q);
-                            usedConceptIds.add(parseQuestionId(q.id || q.qid).baseId);
-                            warmupInjected++;
-                        }
                     }
                 }
             }
-            console.log(`🌱 [Adaptive] Injected ${warmupInjected} Warmup questions`);
+            console.log(`🌱 [Adaptive] Injected ${warmupChoices.length} Warmup questions`);
+            finalQuestions.push(...warmupChoices);
         }
 
         // ── STEP B: BUILD DYNAMIC STUDY QUEUE (Notes + Recaps) ──
@@ -548,25 +512,19 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
         ];
 
         // ── STEP D: BOSS FIGHT RESERVATION (Force V3 / High Difficulty) ──
+        let bossQuestion = null;
         if (nodeType !== 'WARMUP') {
             // Try v3Pool first
-            let bossIdx = v3Pool.findIndex(q => {
-                const qid = q.id || q.qid;
-                const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                return !usedConceptIds.has(parseQuestionId(qid).baseId) && !isAlreadyAdded;
-            });
+            let bossIdx = v3Pool.findIndex(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId));
             if (bossIdx !== -1) {
                 bossQuestion = v3Pool.splice(bossIdx, 1)[0];
                 remainingV3--;
             } else {
                 // Try difficulty H or V3 in mcqCandidates
-                bossIdx = mcqCandidates.findIndex(q => {
-                    const qid = q.id || q.qid;
-                    const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                    return !usedConceptIds.has(parseQuestionId(qid).baseId) && 
-                           !isAlreadyAdded &&
-                           (q.variant === 'V3' || q.difficulty === 'H');
-                });
+                bossIdx = mcqCandidates.findIndex(q => 
+                    !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId) && 
+                    (q.variant === 'V3' || q.difficulty === 'H')
+                );
                 if (bossIdx !== -1) {
                     bossQuestion = mcqCandidates.splice(bossIdx, 1)[0];
                     if (bossQuestion.variant === 'V3') remainingV3--;
@@ -607,17 +565,10 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
 
         while (coreCount < targetCoreLength) {
             const hasSim  = simStack.length > 0 && simsInjected < maxSims;
-            const hasMcq = v0Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
-                           v1Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
+            const hasMcq = v1Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
                            v2Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
                            v3Pool.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
-                           mcqCandidates.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId)) ||
-                           mcqCandidates.some(q => {
-                               const qid = q.id || q.qid;
-                               const isAlreadyAdded = finalQuestions.some(fq => fq.id === qid || fq.qid === qid);
-                               const isBoss = bossQuestion && (bossQuestion.id === qid || bossQuestion.qid === qid);
-                               return !isAlreadyAdded && !isBoss;
-                           });
+                           mcqCandidates.some(q => !usedConceptIds.has(parseQuestionId(q.id || q.qid).baseId));
 
             if (!hasMcq && (!hasSim || simsInjected >= maxSims)) {
                 break; // No content left
@@ -672,81 +623,6 @@ export async function generateAdaptiveQuest(allQuestions, nodeType, subject, que
                 }
             }
             coreCount++;
-        }
-
-        // ── STEP D: WRONG ANSWER RETRIES ──
-        const sessionStartTime = session?.startTime || Date.now();
-        const latestSessionAttemptByConcept = new Map();
-        (history || []).forEach(h => {
-            const time = new Date(h.answeredAt || h.answered_at || 0).getTime();
-            const isSessionAnswer = time >= sessionStartTime - 5000;
-            if (isSessionAnswer) {
-                const qId = h.questionId || h.question_id || h.qid;
-                const baseId = parseQuestionId(qId).baseId;
-                const isAnsCorrect = h.isCorrect !== undefined ? h.isCorrect : h.is_correct;
-                if (baseId) {
-                    latestSessionAttemptByConcept.set(baseId, isAnsCorrect);
-                }
-            }
-        });
-
-        const sessionWrongBaseIds = new Set();
-        for (const [baseId, isCorrect] of latestSessionAttemptByConcept.entries()) {
-            if (isCorrect === false) {
-                sessionWrongBaseIds.add(baseId);
-            }
-        }
-
-        const retryQuestions = [];
-        if (sessionWrongBaseIds.size > 0 && allQuestions.length > 0) {
-            for (const baseId of sessionWrongBaseIds) {
-                // Find all candidate questions in the bank that belong to this concept
-                const candidates = allQuestions.filter(q => parseQuestionId(q.id || q.qid).baseId === baseId);
-                if (candidates.length === 0) continue;
-
-                // Find which question IDs have been attempted in this session
-                const sessionAttemptedQIds = new Set(
-                    (history || [])
-                        .filter(h => {
-                            const time = new Date(h.answeredAt || h.answered_at || 0).getTime();
-                            return time >= sessionStartTime - 5000;
-                        })
-                        .map(h => h.questionId || h.question_id || h.qid)
-                );
-
-                // Filter candidates to find those NOT attempted in the current session
-                const unattemptedCandidates = candidates.filter(q => !sessionAttemptedQIds.has(q.id || q.qid));
-
-                if (unattemptedCandidates.length > 0) {
-                    // Sort by variant order (V1 -> V2 -> V3 -> V0)
-                    unattemptedCandidates.sort((a, b) => {
-                        const vA = parseQuestionId(a.id || a.qid).variantNum;
-                        const vB = parseQuestionId(b.id || b.qid).variantNum;
-                        const numA = vA === 0 ? 0 : vA;
-                        const numB = vB === 0 ? 0 : vB;
-                        return numA - numB;
-                    });
-                    
-                    const retryQ = unattemptedCandidates[0];
-                    // Clean clone of retry question to prevent modifying references, marking it as a retry step
-                    const retryQClone = { 
-                        ...retryQ, 
-                        isRetry: true, 
-                        isStudyStep: false,
-                        _adaptive: {
-                            ...retryQ._adaptive,
-                            score: 9999
-                        }
-                    };
-                    retryQuestions.push(retryQClone);
-                    console.log(`🔁 [Adaptive Engine] Scheduled retry question for concept ${baseId}: ${retryQClone.id || retryQClone.qid} (Variant: ${retryQClone.variant})`);
-                }
-            }
-        }
-
-        if (retryQuestions.length > 0) {
-            console.log(`🔁 [Adaptive] Appending ${retryQuestions.length} Retry questions`);
-            finalQuestions.push(...retryQuestions);
         }
 
         // ── STEP D: APPEND BOSS FIGHT ──

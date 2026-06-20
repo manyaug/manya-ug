@@ -27,7 +27,7 @@ const SolutionDisplayer = ({ explanation }) => {
                         <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 shrink-0 mt-1"><Lightbulb size={14} /></div>
                         <div>
                             <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-1">Logic</p>
-                            <p className="text-[var(--text-main)] text-[14px] font-bold leading-relaxed" dangerouslySetInnerHTML={{ __html: sol.logic }} />
+                            <p className="text-[var(--text-main)] text-[14px] font-bold leading-relaxed">{sol.logic}</p>
                         </div>
                     </div>
                 )}
@@ -36,7 +36,7 @@ const SolutionDisplayer = ({ explanation }) => {
                         <div className="w-6 h-6 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 mt-1"><Zap size={14} /></div>
                         <div>
                             <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-1">Working</p>
-                            <div className="text-[var(--text-main)] text-[14px] font-medium leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-[var(--border-color)]" dangerouslySetInnerHTML={{ __html: sol.calculation }} />
+                            <div className="text-[var(--text-main)] text-[14px] font-medium leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-[var(--border-color)]">{sol.calculation}</div>
                         </div>
                     </div>
                 )}
@@ -52,7 +52,7 @@ const SolutionDisplayer = ({ explanation }) => {
             </div>
         );
     }
-    return <p className="text-[var(--text-main)] font-bold text-[14px] leading-relaxed text-center" dangerouslySetInnerHTML={{ __html: String(explanation) }} />;
+    return <p className="text-[var(--text-main)] font-bold text-[14px] leading-relaxed text-center">{String(explanation)}</p>;
 };
 
 /**

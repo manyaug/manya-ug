@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { discoverArtifact } from '../../store/userSlice';
 import { addToast } from '../../store/toastSlice';
@@ -18,115 +18,29 @@ import GlobeCanvas from './UniversalGlobe/GlobeCanvas';
  * - DECOUPLED: Logic (GlobeLogic), Renderer (GlobeRenderer), Canvas (GlobeCanvas), Controller (Engine)
  */
 const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, onSimSuccess, onSimWrong, skipDiscovery = false }) => {
-    // 🛡️ [Manya v5.9] Payload Normalization (v8.2) + Decoy Generation
-    const data = useMemo(() => {
-        let baseData = (rawData.question || rawData.lat || rawData.lon) && !rawData.questions && !rawData.cases && !rawData.pieces
-            ? { 
-                ...rawData, 
-                id: rawData.id || rawData.qid, 
-                questions: rawData.question ? [{ 
-                    ...rawData,
-                    id: rawData.id || rawData.qid,
-                    question: rawData.question, 
-                    options: rawData.options || [], 
-                    correctAnswer: rawData.answer || rawData.correctAnswer,
-                    explanation: rawData.explanation 
-                }] : [],
-                cases: (rawData.lat || rawData.lon) ? [{
-                    id: 'spotlight',
-                    title: rawData.question || 'Geographic Focus',
-                    markers: [{ lat: rawData.lat, lon: rawData.lon, label: rawData.subtopic || 'Location' }]
-                }] : [],
-                mode: rawData.question ? 'quiz' : 'study'
-              }
-            : { ...rawData, id: rawData.id || rawData.qid };
-
-        const tempMode = baseData.mode?.toLowerCase() || 
-                         (baseData.questions?.length > 0 ? 'quiz' : 
-                          (baseData.pieces?.length > 0 ? 'puzzle' : 
-                           (baseData.cases?.length > 0 || baseData.points?.length > 0) ? 'study' : 'study'));
-
-        // Shuffled decoy generation for single-piece puzzle mode questions
-        if (tempMode === 'puzzle' && baseData.pieces?.length === 1) {
-            const correctPiece = baseData.pieces[0];
-            const timeRegex = /(\d{1,2}):(\d{2})\s*(AM|PM|A\.M\.|P\.M\.)/i;
-            const match = correctPiece.label.match(timeRegex);
-            const decoyTimes = new Set();
-            const correctNormalized = correctPiece.label.replace(/\s+/g, ' ').toUpperCase();
-
-            if (match) {
-                const hour = parseInt(match[1], 10);
-                const minute = match[2];
-                const meridiem = match[3];
-                const isDotFormat = meridiem.includes('.');
-                const cleanMeridiem = meridiem.toUpperCase().replace(/\./g, '');
-
-                const formatDecoyTime = (h, m, mer) => {
-                    let normH = h % 12;
-                    if (normH === 0) normH = 12;
-                    let formattedMer = mer;
-                    if (isDotFormat) {
-                        formattedMer = mer === 'AM' ? 'A.M.' : 'P.M.';
-                    } else {
-                        formattedMer = mer;
-                    }
-                    return `${normH}:${m} ${formattedMer}`;
-                };
-
-                const offsets = [3, 6, 9, 2, 4, 5, 7, 8];
-                for (const offset of offsets) {
-                    const decoyH = (hour + offset - 1) % 12 + 1;
-                    const decoyLabel = correctPiece.label.replace(timeRegex, formatDecoyTime(decoyH, minute, cleanMeridiem));
-                    if (decoyLabel.replace(/\s+/g, ' ').toUpperCase() !== correctNormalized) {
-                        decoyTimes.add(decoyLabel);
-                    }
-                    if (decoyTimes.size >= 2) break;
-                }
-
-                const oppositeMer = cleanMeridiem === 'AM' ? 'PM' : 'AM';
-                const oppositeLabel = correctPiece.label.replace(timeRegex, formatDecoyTime(hour, minute, oppositeMer));
-                if (oppositeLabel.replace(/\s+/g, ' ').toUpperCase() !== correctNormalized) {
-                    decoyTimes.add(oppositeLabel);
-                }
-
-                if (decoyTimes.size < 3) {
-                    for (const offset of offsets) {
-                        const decoyH = (hour + offset - 1) % 12 + 1;
-                        const decoyLabel = correctPiece.label.replace(timeRegex, formatDecoyTime(decoyH, minute, oppositeMer));
-                        if (decoyLabel.replace(/\s+/g, ' ').toUpperCase() !== correctNormalized) {
-                            decoyTimes.add(decoyLabel);
-                        }
-                        if (decoyTimes.size >= 3) break;
-                    }
-                }
-            } else {
-                decoyTimes.add(`${correctPiece.label} B`);
-                decoyTimes.add(`${correctPiece.label} C`);
-                decoyTimes.add(`${correctPiece.label} D`);
-            }
-
-            const decoys = Array.from(decoyTimes).map((label, idx) => ({
-                id: `decoy_${idx}`,
-                label,
-                icon: correctPiece.icon || "🕐",
-                target: null,
-                color: correctPiece.color || "#94a3b8"
-            }));
-
-            const combined = [correctPiece, ...decoys];
-            for (let i = combined.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [combined[i], combined[j]] = [combined[j], combined[i]];
-            }
-
-            baseData = {
-                ...baseData,
-                pieces: combined
-            };
-        }
-
-        return baseData;
-    }, [rawData]);
+    // 🛡️ [Manya v5.9] Payload Normalization (v8.2)
+    // If the data comes from a single database row (MCQ) or is a simple marker, 
+    // wrap it into the expected simulation format to ensure rendering.
+    const data = (rawData.question || rawData.lat || rawData.lon) && !rawData.questions && !rawData.cases && !rawData.pieces
+        ? { 
+            ...rawData, 
+            id: rawData.id || rawData.qid, 
+            questions: rawData.question ? [{ 
+                ...rawData,
+                id: rawData.id || rawData.qid,
+                question: rawData.question, 
+                options: rawData.options || [], 
+                correctAnswer: rawData.answer || rawData.correctAnswer,
+                explanation: rawData.explanation 
+            }] : [],
+            cases: (rawData.lat || rawData.lon) ? [{
+                id: 'spotlight',
+                title: rawData.question || 'Geographic Focus',
+                markers: [{ lat: rawData.lat, lon: rawData.lon, label: rawData.subtopic || 'Location' }]
+            }] : [],
+            mode: rawData.question ? 'quiz' : 'study'
+          }
+        : { ...rawData, id: rawData.id || rawData.qid };
 
     const mode = data.mode?.toLowerCase() || 
                  (data.questions?.length > 0 ? 'quiz' : 
@@ -138,7 +52,6 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
     const [placedPieces, setPlacedPieces] = useState([]);
     const [quizFeedback, setQuizFeedback] = useState(null);
     const [selectedQuizOpt, setSelectedQuizOpt] = useState(null);
-    const [puzzleFeedback, setPuzzleFeedback] = useState(null);
     const [isDark, setIsDark] = useState(false);
     const [isD3Ready, setIsD3Ready] = useState(false);
     
@@ -193,13 +106,13 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
 
     // --- 🧠 QUIZ LOGIC ---
     const handleQuizAnswer = (opt) => {
-        if (quizFeedback !== null) return;
+        if (quizFeedback?.type === 'success') return;
         setSelectedQuizOpt(opt);
         setQuizFeedback(null);
     };
 
     const submitQuizAnswer = () => {
-        if (!selectedQuizOpt || quizFeedback !== null) return;
+        if (!selectedQuizOpt || quizFeedback?.type === 'success') return;
         const q = data.questions[activeTab];
         const isCorrect = validateQuizAnswer(selectedQuizOpt, q.correctAnswer);
         const duration = Date.now() - startTimeRef.current;
@@ -285,45 +198,8 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
         }
     };
 
-    const handleNext = () => {
-        const q = data.questions[activeTab];
-        if (activeTab < data.questions.length - 1) {
-            setActiveTab(prev => prev + 1);
-            setQuizFeedback(null);
-            setSelectedQuizOpt(null);
-            startTimeRef.current = Date.now();
-        } else {
-            // Final completed step outcome: report comprehensive stats so session completes
-            if (onResult) {
-                onResult({
-                    isCorrect: mistakesRef.current === 0,
-                    accuracy: Math.max(0, (data.questions.length - mistakesRef.current) / data.questions.length),
-                    score: data.questions.length - mistakesRef.current,
-                    total: data.questions.length,
-                    type: 'simulation',
-                    engineType: 'GLOBE_QUIZ',
-                    selectedAnswer: selectedQuizOpt,
-                    correctAnswer: q.correctAnswer,
-                    mistakes: mistakesRef.current,
-                    duration: Date.now() - globalStartTimeRef.current
-                });
-            }
-            if (onComplete) onComplete({
-                isCorrect: mistakesRef.current === 0,
-                accuracy: Math.max(0, (data.questions.length - mistakesRef.current) / data.questions.length),
-                score: data.questions.length - mistakesRef.current,
-                total: data.questions.length,
-                mistakes: mistakesRef.current,
-                duration: Date.now() - globalStartTimeRef.current,
-                type: 'simulation',
-                engineType: 'GLOBE_QUIZ'
-            });
-        }
-    };
-
     // --- 🧩 PUZZLE LOGIC ---
     const handleDragStart = (e, piece) => {
-        if (puzzleFeedback !== null) return;
         const uv = e.touches ? e.touches[0] : e;
         const ghost = document.createElement('div');
         ghost.className = 'fixed pointer-events-none z-[9999] px-4 py-2 bg-amber-500 text-white rounded-xl font-bold shadow-lg';
@@ -341,19 +217,21 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
             document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up);
             ghost.remove();
 
+            // Simple hit-test fallback since Canvas lives in child GlobeCanvas
+            // In a better design, we'd use a shared event bus, but for now we query the canvas directly if needed
             const canvas = document.querySelector('.globe-engine-root canvas');
             if (canvas) {
                 const rect = canvas.getBoundingClientRect();
                 if (uv_up.clientX >= rect.left && uv_up.clientX <= rect.right && uv_up.clientY >= rect.top && uv_up.clientY <= rect.bottom) {
                     const coords = projectionRef.current.invert([uv_up.clientX - rect.left, uv_up.clientY - rect.top]);
-                    const isCorrect = piece.target && d3.geoDistance(coords, piece.target) < 0.45;
+                    const isCorrect = d3.geoDistance(coords, piece.target) < 0.45;
                     const duration = Date.now() - startTimeRef.current;
-                    const targetCount = data.pieces.filter(x => x.target).length;
 
                     if (isCorrect) {
                         audioService.success?.();
                         onSimSuccess?.(); // Cinematic Dim + Badge
 
+                        // 🚀 Coin Flight Burst
                         window.dispatchEvent(new CustomEvent('manya-fx-flight', {
                             detail: {
                                 x: uv_up.clientX,
@@ -366,9 +244,9 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
                         if (onAttempt) onAttempt({ isCorrect: true, label: `Globe Puzzle Piece: ${piece.label}`, duration, mistakes: 0 });
                         setPlacedPieces(p => {
                             const n = [...p, piece.id];
-                            if (onResult) onResult({ isCorrect: true, score: n.length, total: targetCount, type: 'puzzle' });
-                            if (n.length === targetCount) {
-                                if (onComplete) setTimeout(() => onComplete({ isCorrect: true, score: targetCount, total: targetCount, type: 'puzzle' }), 1200);
+                            if (onResult) onResult({ isCorrect: true, score: n.length, total: data.pieces.length, type: 'puzzle' });
+                            if (n.length === data.pieces.length) {
+                                if (onComplete) setTimeout(() => onComplete({ isCorrect: true, score: data.pieces.length, total: data.pieces.length, type: 'puzzle' }), 1200);
                             }
                             return n;
                         });
@@ -377,21 +255,6 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
                         mistakesRef.current += 1;
                         onSimWrong?.(); // Snappy "Try Again" Overlay
                         if (onAttempt) onAttempt({ isCorrect: false, label: `Globe Puzzle Piece: ${piece.label}`, duration, mistakes: 1 });
-                        
-                        // For single-target puzzles, enter failure state on first mistake
-                        if (targetCount === 1) {
-                            setPuzzleFeedback('error');
-                            if (onResult) {
-                                onResult({
-                                    isCorrect: false,
-                                    score: 0,
-                                    total: 1,
-                                    type: 'puzzle',
-                                    mistakes: mistakesRef.current,
-                                    duration: Date.now() - globalStartTimeRef.current
-                                });
-                            }
-                        }
                     }
                 }
             }
@@ -458,14 +321,11 @@ const UniversalGlobeEngine = ({ data: rawData, onComplete, onResult, onAttempt, 
             handleDragStart={handleDragStart}
             focusOn={focusOn}
             onFinishActivity={handleFinishActivity}
-            onNext={handleNext}
             isD3Ready={isD3Ready}
-            puzzleFeedback={puzzleFeedback}
             GlobeCanvas={<GlobeCanvas 
                 worldData={worldData} data={data} activeTab={activeTab} placedPieces={placedPieces}
                 isDark={isDark} rotationRef={rotationRef} scaleRef={scaleRef} isDraggingRef={isDraggingRef}
                 projectionRef={projectionRef} pathRef={pathRef} isD3Ready={isD3Ready}
-                puzzleFeedback={puzzleFeedback}
                 onPinClick={(idx) => {
                     const curCase = (data?.mode === 'study') ? data.cases[activeTab] : 
                                    (data?.mode === 'quiz')  ? data.questions[activeTab] : {};
